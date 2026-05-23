@@ -11,6 +11,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.util.List;
 
+import ch.qos.logback.classic.BasicConfigurator;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.Configurator;
@@ -42,6 +43,24 @@ public class ContextInitializerTest {
               .extracting(Status::getMessage)
               .noneMatch(message -> message.startsWith(
                       "Versions of logback-classic and logback-core are different"));
+    } finally {
+      loggerContext.stop();
+    }
+  }
+
+  @Test
+  void basicFallbackConfiguratorAddsConsoleAppender() {
+    LoggerContext loggerContext = new LoggerContext();
+    try {
+      BasicConfigurator configurator = new BasicConfigurator();
+      configurator.setContext(loggerContext);
+      Configurator.ExecutionStatus status = configurator.configure(loggerContext);
+
+      assertThat(status).isEqualTo(Configurator.ExecutionStatus.NEUTRAL);
+      Logger rootLogger = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+      Appender<ILoggingEvent> consoleAppender = rootLogger.getAppender("console");
+      assertThat(consoleAppender).isNotNull();
+      assertThat(consoleAppender.isStarted()).isTrue();
     } finally {
       loggerContext.stop();
     }

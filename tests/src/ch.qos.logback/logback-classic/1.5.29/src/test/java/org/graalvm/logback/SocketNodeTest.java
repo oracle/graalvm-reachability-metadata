@@ -18,6 +18,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.net.SimpleSocketServer;
 import ch.qos.logback.classic.net.SocketNode;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.LoggerContextVO;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEventVO;
 import ch.qos.logback.classic.util.LogbackMDCAdapter;
@@ -78,7 +79,12 @@ public class SocketNodeTest {
 
   private static LoggingEventVO createLoggingEvent(Logger logger, String message) {
     LoggingEvent loggingEvent = new LoggingEvent(SocketNodeTest.class.getName(), logger, Level.INFO, message, null,
-        null);
+        null) {
+      @Override
+      public LoggerContextVO getLoggerContextVO() {
+        return null;
+      }
+    };
     return LoggingEventVO.build(loggingEvent);
   }
 }

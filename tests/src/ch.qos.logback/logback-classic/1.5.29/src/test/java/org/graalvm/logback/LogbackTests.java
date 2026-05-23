@@ -6,7 +6,6 @@
  */
 package org.graalvm.logback;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -27,13 +26,20 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
-import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.classic.log4j.XMLLayout;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ConsoleAppender;
+import ch.qos.logback.core.FileAppender;
+import ch.qos.logback.core.Layout;
+import ch.qos.logback.core.encoder.Encoder;
+import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
 import ch.qos.logback.core.joran.util.PropertySetter;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
-import org.graalvm.logback.util.AppenderTags;
-import org.graalvm.logback.util.LayoutTags;
+import ch.qos.logback.core.rolling.RollingFileAppender;
+import ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy;
+import ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy;
+import ch.qos.logback.core.util.FileSize;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -53,12 +59,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LogbackTests {
 
   private static final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-
-  private static final Map<String, String> layoutTagMap = new HashMap<>();
-  static {
-    layoutTagMap.put("patternLayout", LayoutTags.PATTERN_TAG);
-    layoutTagMap.put("xmlLayout", LayoutTags.XML_TAG);
-  }
 
   private static final Map<String, String> layoutResultMap = new HashMap<>();
   static {
@@ -101,52 +101,92 @@ public class LogbackTests {
 
   @ParameterizedTest
   @ValueSource(strings = {"patternLayout", "xmlLayout"})
-  void testLayouts(String layoutName) throws Exception {
-    JoranConfigurator joranConfigurator = new JoranConfigurator();
-    joranConfigurator.setContext(context);
+  void testLayouts(String layoutName) {
+    Layout<ILoggingEvent> layout = createLayout(layoutName);
+    LayoutWrappingEncoder<ILoggingEvent> encoder = createLayoutWrappingEncoder(layout);
+    ConsoleAppender<ILoggingEvent> appender = createConsoleAppender("layout-" + layoutName, encoder);
+    Logger testLogger = getRootLogger(appender);
+    try {
+      testLogger.info("test info message");
 
-    String configXml = LayoutTags.CONFIG_TAG.formatted(layoutTagMap.get(layoutName));
-    joranConfigurator.doConfigure(new ByteArrayInputStream(configXml.getBytes()));
-
-    Logger testLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
-    testLogger.info("test info message");
-
-    String loggedMessage = outputStreamCaptor.toString();
-    assertThat(loggedMessage).contains(layoutResultMap.get(layoutName));
+      String loggedMessage = outputStreamCaptor.toString();
+      assertThat(loggedMessage).contains(layoutResultMap.get(layoutName));
+    } finally {
+      cleanUp(encoder, appender, testLogger);
+      layout.stop();
+    }
   }
 
   @Test
   void testFileAppender() throws Exception {
-    JoranConfigurator joranConfigurator = new JoranConfigurator();
-    joranConfigurator.setContext(context);
+    String filePath = tempDirPath.resolve("log.txt").toString();
+    PatternLayoutEncoder encoder = createEncoder("%msg");
+    FileAppender<ILoggingEvent> appender = new FileAppender<>();
+    appender.setName("FILE");
+    appender.setContext(context);
+    appender.setFile(filePath);
+    appender.setAppend(true);
+    appender.setPrudent(false);
+    appender.setEncoder(encoder);
+    appender.setImmediateFlush(true);
+    appender.start();
 
-    String filePath = tempDirPath + "/log.txt";
-    String filesTag = AppenderTags.FILE_TAG.formatted(filePath);
-    String configXml = AppenderTags.CONFIG_TAG.formatted(filesTag);
-    joranConfigurator.doConfigure(new ByteArrayInputStream(configXml.getBytes()));
+    Logger testLogger = getRootLogger(appender);
+    try {
+      testLogger.info("test info message");
+      appender.stop();
 
-    Logger testLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
-    testLogger.info("test info message");
-
-    String loggedMessage = Files.readAllLines(Paths.get(filePath)).get(0);
-    assertThat(loggedMessage).isEqualTo("test info message");
+      String loggedMessage = Files.readAllLines(Paths.get(filePath)).get(0);
+      assertThat(loggedMessage).isEqualTo("test info message");
+    } finally {
+      cleanUp(encoder, appender, testLogger);
+    }
   }
 
   @Test
   void testRollingFileAppender() throws Exception {
-    JoranConfigurator joranConfigurator = new JoranConfigurator();
-    joranConfigurator.setContext(context);
+    String filePath = tempDirPath.resolve("rolling-log.txt").toString();
+    PatternLayoutEncoder encoder = createEncoder("%msg");
+    RollingFileAppender<ILoggingEvent> appender = new RollingFileAppender<>();
+    appender.setName("FILE");
+    appender.setContext(context);
+    appender.setFile(filePath);
+    appender.setAppend(true);
+    appender.setPrudent(false);
+    appender.setEncoder(encoder);
+    appender.setImmediateFlush(true);
 
-    String filePath = tempDirPath + "/rolling-log.txt";
-    String filesTag = AppenderTags.ROLLING_FILE_TAG.formatted(filePath);
-    String configXml = AppenderTags.CONFIG_TAG.formatted(filesTag);
-    joranConfigurator.doConfigure(new ByteArrayInputStream(configXml.getBytes()));
+    SizeAndTimeBasedRollingPolicy<ILoggingEvent> rollingPolicy = new SizeAndTimeBasedRollingPolicy<>();
+    rollingPolicy.setContext(context);
+    rollingPolicy.setParent(appender);
+    rollingPolicy.setFileNamePattern(tempDirPath.resolve("rolling-log-%d{yyyy-MM-dd}.%i.txt").toString());
+    rollingPolicy.setMaxFileSize(FileSize.valueOf("100MB"));
+    rollingPolicy.setMaxHistory(60);
+    rollingPolicy.setTotalSizeCap(FileSize.valueOf("20GB"));
+    rollingPolicy.setCleanHistoryOnStart(false);
+    rollingPolicy.start();
 
-    Logger testLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
-    testLogger.info("test info message");
+    SizeBasedTriggeringPolicy<ILoggingEvent> triggeringPolicy = new SizeBasedTriggeringPolicy<>();
+    triggeringPolicy.setContext(context);
+    triggeringPolicy.setMaxFileSize(FileSize.valueOf("100MB"));
+    triggeringPolicy.start();
 
-    String loggedMessage = Files.readAllLines(Paths.get(filePath)).get(0);
-    assertThat(loggedMessage).isEqualTo("test info message");
+    appender.setRollingPolicy(rollingPolicy);
+    appender.setTriggeringPolicy(triggeringPolicy);
+    appender.start();
+
+    Logger testLogger = getRootLogger(appender);
+    try {
+      testLogger.info("test info message");
+      appender.stop();
+
+      String loggedMessage = Files.readAllLines(Paths.get(filePath)).get(0);
+      assertThat(loggedMessage).isEqualTo("test info message");
+    } finally {
+      cleanUp(encoder, appender, testLogger);
+      triggeringPolicy.stop();
+      rollingPolicy.stop();
+    }
   }
 
   @Test
@@ -208,6 +248,35 @@ public class LogbackTests {
     }
   }
 
+  private Layout<ILoggingEvent> createLayout(String layoutName) {
+    if ("patternLayout".equals(layoutName)) {
+      PatternLayout layout = new PatternLayout();
+      layout.setContext(context);
+      layout.setPattern("%msg");
+      layout.setOutputPatternAsHeader(true);
+      layout.start();
+      return layout;
+    }
+    if ("xmlLayout".equals(layoutName)) {
+      XMLLayout layout = new XMLLayout();
+      layout.setContext(context);
+      layout.setLocationInfo(true);
+      layout.setProperties(true);
+      layout.start();
+      return layout;
+    }
+    throw new IllegalArgumentException("Unsupported layout name: " + layoutName);
+  }
+
+  private LayoutWrappingEncoder<ILoggingEvent> createLayoutWrappingEncoder(Layout<ILoggingEvent> layout) {
+    LayoutWrappingEncoder<ILoggingEvent> encoder = new LayoutWrappingEncoder<>();
+    encoder.setContext(context);
+    encoder.setLayout(layout);
+    encoder.setCharset(StandardCharsets.UTF_8);
+    encoder.start();
+    return encoder;
+  }
+
   private PatternLayoutEncoder createEncoder(String pattern) {
     PatternLayoutEncoder encoder = new PatternLayoutEncoder();
     encoder.setContext(context);
@@ -217,12 +286,23 @@ public class LogbackTests {
     return encoder;
   }
 
-  private ConsoleAppender<ILoggingEvent> createConsoleAppender(PatternLayoutEncoder encoder) {
+  private ConsoleAppender<ILoggingEvent> createConsoleAppender(Encoder<ILoggingEvent> encoder) {
+    return createConsoleAppender("console", encoder);
+  }
+
+  private ConsoleAppender<ILoggingEvent> createConsoleAppender(String name, Encoder<ILoggingEvent> encoder) {
     ConsoleAppender<ILoggingEvent> appender = new ConsoleAppender<>();
+    appender.setName(name);
     appender.setEncoder(encoder);
     appender.setContext(context);
     appender.start();
     return appender;
+  }
+
+  private Logger getRootLogger(Appender<ILoggingEvent> appender) {
+    Logger logger = context.getLogger(Logger.ROOT_LOGGER_NAME);
+    logger.addAppender(appender);
+    return logger;
   }
 
   private Logger getLogger(ConsoleAppender<ILoggingEvent> appender) {
@@ -232,7 +312,7 @@ public class LogbackTests {
     return logger;
   }
 
-  private void cleanUp(PatternLayoutEncoder encoder, ConsoleAppender<ILoggingEvent> appender, Logger logger) {
+  private void cleanUp(Encoder<ILoggingEvent> encoder, Appender<ILoggingEvent> appender, Logger logger) {
     encoder.stop();
     appender.stop();
     logger.detachAppender(appender);

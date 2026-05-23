@@ -20,12 +20,11 @@ public class ContextSelectorStaticBinderTest {
 
   @Test
   @ResourceLock("logback.contextSelector")
-  void initInstantiatesConfiguredContextSelector() throws Exception {
+  void initUsesDefaultContextSelectorWhenNoSelectorIsConfigured() throws Exception {
     String previousContextSelector = System.getProperty(ClassicConstants.LOGBACK_CONTEXT_SELECTOR);
     LoggerContext loggerContext = new LoggerContext();
     try {
-      System.setProperty(ClassicConstants.LOGBACK_CONTEXT_SELECTOR, DefaultContextSelector.class.getName());
-
+      System.clearProperty(ClassicConstants.LOGBACK_CONTEXT_SELECTOR);
       ContextSelectorStaticBinder binder = new ContextSelectorStaticBinder();
       binder.init(loggerContext, new Object());
 

@@ -16,6 +16,8 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.net.SocketAppender;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.LoggerContextVO;
+import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import org.junit.jupiter.api.Test;
 
@@ -52,7 +54,7 @@ public class SocketReceiverTest {
       try (Socket receiverSocket = receiverServer.accept()) {
         receiverSocket.setSoTimeout(SOCKET_TIMEOUT_MILLIS);
         try (ObjectInputStream inputStream = new ObjectInputStream(receiverSocket.getInputStream())) {
-          remoteLogger.info("message from socket appender");
+          appender.doAppend(createLoggingEvent(remoteLogger, "message from socket appender"));
 
           Object serializedEvent = inputStream.readObject();
           assertThat(serializedEvent).isInstanceOf(ILoggingEvent.class);
@@ -65,5 +67,14 @@ public class SocketReceiverTest {
       appender.stop();
       loggerContext.stop();
     }
+  }
+
+  private static LoggingEvent createLoggingEvent(Logger logger, String message) {
+    return new LoggingEvent(SocketReceiverTest.class.getName(), logger, Level.INFO, message, null, null) {
+      @Override
+      public LoggerContextVO getLoggerContextVO() {
+        return null;
+      }
+    };
   }
 }

@@ -15,6 +15,7 @@ import java.io.ObjectOutputStream;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.LoggerContextVO;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEventVO;
 import ch.qos.logback.classic.util.LogbackMDCAdapter;
@@ -46,7 +47,12 @@ public class LoggingEventVOTest {
       loggerContext.setMDCAdapter(new LogbackMDCAdapter());
       Logger logger = loggerContext.getLogger(LoggingEventVOTest.class);
       LoggingEvent event = new LoggingEvent(LoggingEventVOTest.class.getName(), logger, Level.INFO, message, null,
-          arguments);
+          arguments) {
+        @Override
+        public LoggerContextVO getLoggerContextVO() {
+          return null;
+        }
+      };
       return LoggingEventVO.build(event);
     } finally {
       loggerContext.stop();
