@@ -17,6 +17,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.nio.charset.StandardCharsets;
+import java.security.CodeSigner;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.ServiceLoader;
@@ -180,16 +183,29 @@ public class DelegatingSerializationFilterTest {
 
         @Override
         protected Class<?> findClass(String name) throws ClassNotFoundException {
-            String resourceName = name.replace('.', '/') + ".class";
-
-            try (InputStream inputStream = getParent().getResourceAsStream(resourceName)) {
-                if (inputStream == null) {
-                    throw new ClassNotFoundException(name);
-                }
-                byte[] classBytes = inputStream.readAllBytes();
-                return defineClass(name, classBytes, 0, classBytes.length);
+            try {
+                ClassDefinition classDefinition = readClassDefinition(name);
+                byte[] classBytes = classDefinition.bytes();
+                return defineClass(name, classBytes, 0, classBytes.length, classDefinition.protectionDomain());
             } catch (IOException exception) {
                 throw new ClassNotFoundException(name, exception);
+            }
+        }
+
+        private ClassDefinition readClassDefinition(String className) throws IOException, ClassNotFoundException {
+            String resourceName = className.replace('.', '/') + ".class";
+            URL resource = getParent().getResource(resourceName);
+            if (resource == null) {
+                throw new ClassNotFoundException(className);
+            }
+
+            try (InputStream inputStream = resource.openStream()) {
+                ProtectionDomain protectionDomain = new ProtectionDomain(
+                        new CodeSource(resource, (CodeSigner[]) null),
+                        null,
+                        this,
+                        null);
+                return new ClassDefinition(inputStream.readAllBytes(), protectionDomain);
             }
         }
 
@@ -198,6 +214,9 @@ public class DelegatingSerializationFilterTest {
                     || className.equals(DELEGATING_SERIALIZATION_FILTER_CLASS_NAME)
                     || className.startsWith(DELEGATING_SERIALIZATION_FILTER_CLASS_NAME + "$");
         }
+    }
+
+    private record ClassDefinition(byte[] bytes, ProtectionDomain protectionDomain) {
     }
 
     private static final class ServiceProviderUrlStreamHandler extends URLStreamHandler {
