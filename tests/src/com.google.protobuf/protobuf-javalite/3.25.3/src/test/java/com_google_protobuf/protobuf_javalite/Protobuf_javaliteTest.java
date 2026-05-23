@@ -6,11 +6,17 @@
  */
 package com_google_protobuf.protobuf_javalite;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.google.protobuf.StringValue;
 import org.junit.jupiter.api.Test;
 
-class Protobuf_javaliteTest {
+public class Protobuf_javaliteTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void wrapsAndParsesStringValue() throws Exception {
+        StringValue value = StringValue.of("protobuf-lite");
+        StringValue parsed = StringValue.parseFrom(value.toByteArray());
+
+        assertThat(parsed.getValue()).isEqualTo("protobuf-lite");
     }
 }
