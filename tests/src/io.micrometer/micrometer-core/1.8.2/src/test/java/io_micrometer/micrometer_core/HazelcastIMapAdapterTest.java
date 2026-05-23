@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class HazelcastIMapAdapterTest {
     @Test
-    void bindsHazelcast3IMapMetrics() {
+    void bindsHazelcast3IMapMetricsThroughFallbackPackage() {
         SimpleMeterRegistry registry = new SimpleMeterRegistry();
         IMap<Object, Object> cache = createIMap("hazelcast-cache");
 
