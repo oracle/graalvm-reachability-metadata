@@ -9,6 +9,13 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+Provider<String> nativeImageTempDirectory = providers.provider {
+    File sharedMemoryRoot = file("/dev/shm")
+    if (sharedMemoryRoot.isDirectory() && sharedMemoryRoot.canWrite()) {
+        return new File(sharedMemoryRoot, "graalvm-reachability-metadata/org.mongodb.morphia/morphia/${libraryVersion}").absolutePath
+    }
+    return layout.buildDirectory.dir("native/nativeTestCompile/tmp").get().asFile.absolutePath
+}
 
 dependencies {
     testImplementation("org.mongodb.morphia:morphia:$libraryVersion") {
@@ -20,6 +27,16 @@ dependencies {
 
 tasks.withType(Test).configureEach {
     jvmArgs "--add-opens=java.base/java.lang=ALL-UNNAMED"
+}
+
+tasks.named("nativeTestCompile") {
+    doFirst {
+        File tempDirectory = file(nativeImageTempDirectory.get())
+        delete(tempDirectory)
+        if (!tempDirectory.isDirectory() && !tempDirectory.mkdirs()) {
+            throw new GradleException("Failed to create native-image temp directory: ${tempDirectory.absolutePath}")
+        }
+    }
 }
 
 graalvmNative {
@@ -34,6 +51,7 @@ graalvmNative {
     binaries {
         all {
             buildArgs.add("--add-opens=java.base/java.lang=ALL-UNNAMED")
+            buildArgs.add("-H:TempDirectory=${nativeImageTempDirectory.get()}")
         }
     }
 }
