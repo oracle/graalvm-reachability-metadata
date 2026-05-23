@@ -10,6 +10,7 @@ import static com.mongodb.client.model.ValidationAction.WARN;
 import static com.mongodb.client.model.ValidationLevel.MODERATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoNamespace;
 import com.mongodb.ReadConcern;
@@ -42,6 +43,7 @@ import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.WriteModel;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -57,9 +59,12 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
+import sun.misc.Unsafe;
 
 @SuppressWarnings({"deprecation", "removal"})
 public class AnnotationBuilderTest {
+    private static final Unsafe UNSAFE = unsafe();
+
     @Test
     void validationBuilderReadsDefaultAnnotationMembersAndOverridesSelectedValues() {
         ValidationBuilder builder = new ValidationBuilder()
@@ -75,7 +80,7 @@ public class AnnotationBuilderTest {
 
     @Test
     void ensureIndexesMigratesDeprecatedIndexAnnotationIntoIndexOptions() {
-        RecordingMongoClient client = new RecordingMongoClient("annotation_builder_test");
+        RecordingMongoClient client = newRecordingMongoClient("annotation_builder_test");
         try {
             Morphia morphia = new Morphia().map(DeprecatedIndexEntity.class);
             Datastore datastore = morphia.createDatastore(client, "annotation_builder_test");
@@ -111,12 +116,28 @@ public class AnnotationBuilderTest {
         }
     }
 
-    private static final class RecordingMongoClient extends MongoClient {
-        private final RecordingMongoDatabase database;
-
-        private RecordingMongoClient(String databaseName) {
-            this.database = new RecordingMongoDatabase(databaseName);
+    private static RecordingMongoClient newRecordingMongoClient(String databaseName) {
+        try {
+            RecordingMongoClient client = (RecordingMongoClient) UNSAFE.allocateInstance(RecordingMongoClient.class);
+            client.database = new RecordingMongoDatabase(databaseName);
+            return client;
+        } catch (InstantiationException exception) {
+            throw new IllegalStateException("Failed to allocate RecordingMongoClient", exception);
         }
+    }
+
+    private static Unsafe unsafe() {
+        try {
+            Field field = Unsafe.class.getDeclaredField("theUnsafe");
+            field.setAccessible(true);
+            return (Unsafe) field.get(null);
+        } catch (ReflectiveOperationException exception) {
+            throw new ExceptionInInitializerError(exception);
+        }
+    }
+
+    private static final class RecordingMongoClient extends MongoClient {
+        private RecordingMongoDatabase database;
 
         @Override
         public MongoDatabase getDatabase(String databaseName) {
@@ -125,8 +146,18 @@ public class AnnotationBuilderTest {
         }
 
         @Override
+        public DB getDB(String databaseName) {
+            assertThat(databaseName).isEqualTo(database.name);
+            return null;
+        }
+
+        @Override
         public WriteConcern getWriteConcern() {
             return WriteConcern.ACKNOWLEDGED;
+        }
+
+        @Override
+        public void close() {
         }
     }
 

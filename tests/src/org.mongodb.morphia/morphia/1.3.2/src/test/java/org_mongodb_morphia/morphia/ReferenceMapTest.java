@@ -8,7 +8,6 @@ package org_mongodb_morphia.morphia;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Map;
 import org.junit.jupiter.api.Test;
 import relocated.morphia.org.apache.commons.collections.ReferenceMap;
 
@@ -16,7 +15,7 @@ public class ReferenceMapTest {
     @Test
     @SuppressWarnings("unchecked")
     void managesEntriesUsingHardReferences() {
-        Map<String, String> map = new ReferenceMap(ReferenceMap.HARD, ReferenceMap.HARD);
+        ReferenceMap map = new ReferenceMap(ReferenceMap.HARD, ReferenceMap.HARD);
 
         assertThat(map.put("alpha", "one")).isNull();
         assertThat(map.put("beta", "two")).isNull();
@@ -28,7 +27,9 @@ public class ReferenceMapTest {
         assertThat(map.keySet()).containsExactlyInAnyOrder("alpha", "beta");
         assertThat(map.values()).containsExactlyInAnyOrder("uno", "two");
         assertThat(map.remove("beta")).isEqualTo("two");
-        assertThat(map).containsOnly(Map.entry("alpha", "uno"));
+        assertThat(map.size()).isEqualTo(1);
+        assertThat(map.get("alpha")).isEqualTo("uno");
+        assertThat(map.containsKey("alpha")).isTrue();
 
         map.clear();
 
