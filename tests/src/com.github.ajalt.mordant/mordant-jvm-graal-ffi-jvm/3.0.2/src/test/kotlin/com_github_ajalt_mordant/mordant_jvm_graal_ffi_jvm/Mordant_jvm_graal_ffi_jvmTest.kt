@@ -7,6 +7,7 @@
 package com_github_ajalt_mordant.mordant_jvm_graal_ffi_jvm
 
 import com.github.ajalt.mordant.rendering.Size
+import com.github.ajalt.mordant.terminal.PrintRequest
 import com.github.ajalt.mordant.terminal.StandardTerminalInterface
 import com.github.ajalt.mordant.terminal.TerminalInfo
 import com.github.ajalt.mordant.terminal.TerminalInterface
@@ -14,6 +15,9 @@ import com.github.ajalt.mordant.terminal.TerminalInterfaceProvider
 import com.github.ajalt.mordant.terminal.terminalinterface.nativeimage.TerminalInterfaceProviderNativeImage
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.io.ByteArrayOutputStream
+import java.io.PrintStream
+import java.nio.charset.StandardCharsets
 import java.util.ServiceLoader
 
 public class TerminalInterfaceProviderNativeImageTest {
@@ -34,6 +38,48 @@ public class TerminalInterfaceProviderNativeImageTest {
 
         assertThat(providers).isNotEmpty()
         assertThat(graalProviders).hasSize(1)
+    }
+
+    @Test
+    fun terminalInterfaceCompletesPrintRequestsToSelectedStreams(): Unit {
+        val terminalInterface: TerminalInterface? = TerminalInterfaceProviderNativeImage().load()
+
+        if (terminalInterface == null) {
+            assertThat(terminalInterface === null).isTrue()
+        } else {
+            val stdoutBuffer = ByteArrayOutputStream()
+            val stderrBuffer = ByteArrayOutputStream()
+            val originalOut = System.out
+            val originalErr = System.err
+
+            try {
+                val stdoutStream = PrintStream(stdoutBuffer, true, StandardCharsets.UTF_8)
+                val stderrStream = PrintStream(stderrBuffer, true, StandardCharsets.UTF_8)
+                System.setOut(stdoutStream)
+                System.setErr(stderrStream)
+
+                terminalInterface.completePrintRequest(
+                    PrintRequest(
+                        text = "standard output",
+                        trailingLinebreak = false,
+                        stderr = false,
+                    ),
+                )
+                terminalInterface.completePrintRequest(
+                    PrintRequest(text = "standard error", trailingLinebreak = true, stderr = true),
+                )
+
+                stdoutStream.flush()
+                stderrStream.flush()
+            } finally {
+                System.setOut(originalOut)
+                System.setErr(originalErr)
+            }
+
+            assertThat(stdoutBuffer.toString(StandardCharsets.UTF_8)).isEqualTo("standard output")
+            assertThat(stderrBuffer.toString(StandardCharsets.UTF_8))
+                .isEqualTo("standard error${System.lineSeparator()}")
+        }
     }
 
     @Test
