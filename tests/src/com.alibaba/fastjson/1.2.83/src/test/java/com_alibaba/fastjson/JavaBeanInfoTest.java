@@ -15,6 +15,9 @@ import com.alibaba.fastjson.annotation.JSONPOJOBuilder;
 import com.alibaba.fastjson.annotation.JSONType;
 import com.alibaba.fastjson.parser.ParserConfig;
 import com.alibaba.fastjson.util.JavaBeanInfo;
+import java.lang.reflect.Constructor;
+import java.util.Collections;
+import kotlin.KotlinNullPointerException;
 import kotlin.Pair;
 import org.junit.jupiter.api.Test;
 
@@ -59,6 +62,19 @@ public class JavaBeanInfoTest {
         assertThat(beanInfo.kotlin).isTrue();
         assertThat(beanInfo.creatorConstructor).isNotNull();
         assertThat(beanInfo.creatorConstructorParameters).contains("first", "second");
+    }
+
+    @Test
+    void constructorStoresKotlinDefaultConstructorWhenCreatorConstructorIsPresent() throws NoSuchMethodException {
+        Constructor<KotlinNullPointerException> defaultConstructor = KotlinNullPointerException.class.getConstructor();
+        Constructor<KotlinNullPointerException> creatorConstructor = KotlinNullPointerException.class.getConstructor(
+                String.class);
+
+        JavaBeanInfo beanInfo = new JavaBeanInfo(KotlinNullPointerException.class, null, defaultConstructor,
+                creatorConstructor, null, null, null, Collections.emptyList());
+
+        assertThat(beanInfo.kotlin).isTrue();
+        assertThat(beanInfo.kotlinDefaultConstructor).isEqualTo(defaultConstructor);
     }
 
     private static ParserConfig noAsmConfig() {
