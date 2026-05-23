@@ -6,11 +6,29 @@
  */
 package com_github_ajalt_mordant.mordant_jvm_graal_ffi_jvm
 
+import com.github.ajalt.mordant.terminal.TerminalInterfaceProvider
+import com.github.ajalt.mordant.terminal.terminalinterface.nativeimage.TerminalInterfaceProviderNativeImage
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.util.ServiceLoader
 
-class Mordant_jvm_graal_ffi_jvmTest {
+public class TerminalInterfaceProviderNativeImageTest {
     @Test
-    fun test() {
-        println("This is just a placeholder, implement your test")
+    fun providerImplementsMordantTerminalInterfaceProvider(): Unit {
+        val provider = TerminalInterfaceProviderNativeImage()
+
+        assertThat(provider).isInstanceOf(TerminalInterfaceProvider::class.java)
+    }
+
+    @Test
+    fun serviceLoaderDiscoversGraalNativeTerminalProvider(): Unit {
+        val providers: List<TerminalInterfaceProvider> = ServiceLoader
+            .load(TerminalInterfaceProvider::class.java)
+            .toList()
+        val graalProviders: List<TerminalInterfaceProviderNativeImage> =
+            providers.filterIsInstance<TerminalInterfaceProviderNativeImage>()
+
+        assertThat(providers).isNotEmpty()
+        assertThat(graalProviders).hasSize(1)
     }
 }
