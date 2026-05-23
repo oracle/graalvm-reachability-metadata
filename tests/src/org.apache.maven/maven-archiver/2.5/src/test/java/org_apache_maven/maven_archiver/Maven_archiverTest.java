@@ -239,6 +239,48 @@ public class Maven_archiverTest {
     }
 
     @Test
+    void createArchiveMergesSuppliedManifestFileWithGeneratedEntries() throws Exception {
+        MavenProject project = newProject("org.example", "manifest-file-app", "1.0.0");
+        Path manifestFile = tempDir.resolve("MANIFEST.MF");
+        Files.writeString(manifestFile, """
+                Manifest-Version: 1.0
+                X-External: from-file
+
+                Name: docs/readme.txt
+                X-Section: section-value
+
+                """, StandardCharsets.UTF_8);
+
+        MavenArchiveConfiguration archiveConfiguration = new MavenArchiveConfiguration();
+        archiveConfiguration.setAddMavenDescriptor(false);
+        archiveConfiguration.setManifestFile(manifestFile.toFile());
+        archiveConfiguration.getManifest().setMainClass("org.example.ManifestFileMain");
+        archiveConfiguration.addManifestEntry("X-Configured", "from-configuration");
+
+        Path classesDirectory = tempDir.resolve("classes-manifest-file-app");
+        Files.createDirectories(classesDirectory);
+        Files.writeString(classesDirectory.resolve("content.txt"), "content", StandardCharsets.UTF_8);
+
+        MavenArchiver mavenArchiver = new MavenArchiver();
+        mavenArchiver.setArchiver(new JarArchiver());
+        mavenArchiver.getArchiver().addDirectory(classesDirectory.toFile());
+        Files.createDirectories(tempDir.resolve("target"));
+        File archiveFile = tempDir.resolve("target/manifest-file-app.jar").toFile();
+        mavenArchiver.setOutputFile(archiveFile);
+        mavenArchiver.createArchive(project, archiveConfiguration);
+
+        try (JarFile jarFile = new JarFile(archiveFile)) {
+            java.util.jar.Manifest jarManifest = jarFile.getManifest();
+            Attributes attributes = jarManifest.getMainAttributes();
+            assertThat(attributes.getValue("X-External")).isEqualTo("from-file");
+            assertThat(attributes.getValue("X-Configured")).isEqualTo("from-configuration");
+            assertThat(attributes.getValue("Main-Class")).isEqualTo("org.example.ManifestFileMain");
+            assertThat(jarManifest.getAttributes("docs/readme.txt").getValue("X-Section"))
+                    .isEqualTo("section-value");
+        }
+    }
+
+    @Test
     void createArchiveWritesManifestAndMavenDescriptors() throws Exception {
         MavenProject project = newProject("org.example", "archive-app", "2.0.0");
         Path pomFile = tempDir.resolve("pom.xml");
