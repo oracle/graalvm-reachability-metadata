@@ -6,9 +6,6 @@
  */
 package org_keycloak.keycloak_client_common_synced;
 
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
-import java.util.Base64;
 import java.util.Date;
 import javax.security.auth.kerberos.KerberosPrincipal;
 import javax.security.auth.kerberos.KerberosTicket;
@@ -19,42 +16,33 @@ import org.ietf.jgss.GSSName;
 import org.ietf.jgss.Oid;
 import org.junit.jupiter.api.Test;
 import org.keycloak.common.util.Environment;
-import org.keycloak.common.util.KerberosSerializationUtils;
+import org.keycloak.common.util.KerberosJdkProvider;
 import org.keycloak.common.util.KerberosSerializationUtils.KerberosSerializationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class KerberosSerializationUtilsTest {
+public class KerberosJdkProviderInnerSunJDKProviderTest {
     private static final String CLIENT_PRINCIPAL_NAME = "client@EXAMPLE.COM";
     private static final String SERVER_PRINCIPAL_NAME = "krbtgt/EXAMPLE.COM@EXAMPLE.COM";
     private static final long TICKET_LIFETIME_MILLIS = 60_000L;
 
     @Test
-    void handlesCredentialsUsingActiveJdkProvider() {
-        if (Environment.IS_IBM_JAVA) {
-            String serialized = KerberosSerializationUtils.serializeCredential(
-                    createKerberosTicket(),
-                    new UnusedGssCredential());
+    void reportsMissingKerberosTicketWhenGssCredentialDoesNotExposeTicket() {
+        KerberosJdkProvider provider = KerberosJdkProvider.getProvider();
+        GSSCredential gssCredential = new CredentialWithoutKerberosTicket();
 
-            assertThat(serialized).isNotBlank();
-            assertThat(Base64.getMimeDecoder().decode(serialized)).isNotEmpty();
+        if (Environment.IS_IBM_JAVA) {
+            KerberosTicket kerberosTicket = createKerberosTicket();
+
+            KerberosTicket converted = provider.gssCredentialToKerberosTicket(kerberosTicket, gssCredential);
+
+            assertThat(converted).isSameAs(kerberosTicket);
         } else {
-            assertThatThrownBy(() -> KerberosSerializationUtils.serializeCredential(
-                    createKerberosTicket(),
-                    new UnusedGssCredential()))
+            assertThatThrownBy(() -> provider.gssCredentialToKerberosTicket(null, gssCredential))
                     .isInstanceOf(KerberosSerializationException.class)
                     .hasMessageContaining("Not available kerberosTicket in subject credentials");
         }
-    }
-
-    @Test
-    void rejectsSerializedPayloadsThatAreNotKerberosTickets() throws Exception {
-        String serializedPrincipal = serializeForInput(new KerberosPrincipal(CLIENT_PRINCIPAL_NAME));
-
-        assertThatThrownBy(() -> KerberosSerializationUtils.deserializeCredential(serializedPrincipal))
-                .isInstanceOf(KerberosSerializationException.class)
-                .hasMessageContaining("Deserialized object is not KerberosTicket");
     }
 
     private static KerberosTicket createKerberosTicket() {
@@ -78,15 +66,7 @@ public class KerberosSerializationUtilsTest {
                 null);
     }
 
-    private static String serializeForInput(Object value) throws Exception {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream)) {
-            objectOutputStream.writeObject(value);
-        }
-        return Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
-    }
-
-    private static final class UnusedGssCredential implements GSSCredential {
+    private static final class CredentialWithoutKerberosTicket implements GSSCredential {
         @Override
         public void dispose() {
         }
