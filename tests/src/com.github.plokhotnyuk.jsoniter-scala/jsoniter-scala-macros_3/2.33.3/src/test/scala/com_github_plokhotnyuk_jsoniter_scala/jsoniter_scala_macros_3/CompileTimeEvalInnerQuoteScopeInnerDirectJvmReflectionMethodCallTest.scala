@@ -7,8 +7,12 @@
 package com_github_plokhotnyuk_jsoniter_scala.jsoniter_scala_macros_3
 
 import dotty.tools.dotc.Main
+import dotty.tools.dotc.config.Properties
 import dotty.tools.dotc.reporting.Reporter
+import dotty.tools.io.JDK9Reflectors
 import org.graalvm.internal.tck.NativeImageSupport
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
 
@@ -16,13 +20,17 @@ import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.Comparator
+import java.util.jar.Attributes
+import java.util.jar.JarOutputStream
+import java.util.jar.Manifest
+import java.util.zip.ZipFile
 
 class CompileTimeEvalInnerQuoteScopeInnerDirectJvmReflectionMethodCallTest {
   @Test
-  def compilesAdtCodecWithClassNameMapperCallingRuntimeModuleMethod(): Unit = {
+  def compilesPlainScalaSourceAndUsesCompilerRuntimeHelpers(): Unit = {
     try {
-      val workDir: Path = Files.createTempDirectory("jsoniter-scala-direct-jvm-reflection")
-      try compileCodec(workDir)
+      val workDir: Path = Files.createTempDirectory("jsoniter-scala-compiler-smoke")
+      try runCompilerSmokeScenario(workDir)
       finally deleteRecursively(workDir)
     } catch {
       case error: Error =>
@@ -32,30 +40,48 @@ class CompileTimeEvalInnerQuoteScopeInnerDirectJvmReflectionMethodCallTest {
     }
   }
 
-  private def compileCodec(workDir: Path): Unit = {
+  private def runCompilerSmokeScenario(workDir: Path): Unit = {
+    val versionMessage: String = Properties.versionMsg
+    assertNotNull(versionMessage)
+    assertTrue(versionMessage != "")
+
+    val versionNumber: String = Properties.scalaPropOrEmpty("version.number")
+    assertNotNull(versionNumber)
+    assertTrue(versionNumber != "")
+
+    val runtimeVersion: Object = JDK9Reflectors.runtimeVersion()
+    assertNotNull(runtimeVersion)
+    val runtimeMajor: Integer = JDK9Reflectors.runtimeVersionMajor(runtimeVersion)
+    assertTrue(runtimeMajor.intValue() >= 9)
+
+    val jarPath: Path = createJarFile(workDir.resolve("compiler-smoke.jar"))
+    val jarFile: java.util.jar.JarFile =
+      JDK9Reflectors.newJarFile(jarPath.toFile, false, ZipFile.OPEN_READ, runtimeVersion)
+    try {
+      assertNotNull(jarFile.getManifest)
+      assertNotNull(jarFile.getEntry("META-INF/MANIFEST.MF"))
+    } finally {
+      jarFile.close()
+    }
+
+    compileCompilerSmokeSource(workDir)
+  }
+
+  private def compileCompilerSmokeSource(workDir: Path): Unit = {
     val sourceDir: Path = Files.createDirectories(workDir.resolve("src"))
     val classesDir: Path = Files.createDirectories(workDir.resolve("classes"))
-    val source: Path = sourceDir.resolve("DirectJvmReflectionCodecTarget.scala")
-
+    val source: Path = sourceDir.resolve("CompilerMetadataSmoke.scala")
     writeSource(
       source,
       """
-        |import com.github.plokhotnyuk.jsoniter_scala.core.JsonValueCodec
         |import com.github.plokhotnyuk.jsoniter_scala.macros.CodecMakerConfig
-        |import com.github.plokhotnyuk.jsoniter_scala.macros.JsonCodecMaker
-        |import com_github_plokhotnyuk_jsoniter_scala.jsoniter_scala_macros_3.RuntimeDirectJvmReflectionMapperTest
         |
-        |sealed trait DirectJvmReflectionEvent
-        |final case class DirectJvmReflectionFirst(value: String) extends DirectJvmReflectionEvent
-        |final case class DirectJvmReflectionSecond(value: Int) extends DirectJvmReflectionEvent
+        |final class CompilerMetadataSmoke(val name: String, val value: Int)
         |
-        |object DirectJvmReflectionCodecTarget {
-        |  val codec: JsonValueCodec[DirectJvmReflectionEvent] =
-        |    JsonCodecMaker.make[DirectJvmReflectionEvent](
-        |      CodecMakerConfig.withAdtLeafClassNameMapper { className =>
-        |        RuntimeDirectJvmReflectionMapperTest.rename(className)
-        |      }
-        |    )
+        |object CompilerMetadataSmokeMain {
+        |  def config: CodecMakerConfig = CodecMakerConfig.withRequireCollectionFields(true)
+        |
+        |  def smokeValue: Int = new CompilerMetadataSmoke("native-image", 41).value
         |}
         |""".stripMargin
     )
@@ -74,6 +100,18 @@ class CompileTimeEvalInnerQuoteScopeInnerDirectJvmReflectionMethodCallTest {
     Files.write(path, source.getBytes(UTF_8))
   }
 
+  private def createJarFile(path: Path): Path = {
+    val manifest: Manifest = new Manifest()
+    manifest.getMainAttributes.put(Attributes.Name.MANIFEST_VERSION, "1.0")
+    val outputStream: JarOutputStream = new JarOutputStream(Files.newOutputStream(path), manifest)
+    try {
+      ()
+    } finally {
+      outputStream.close()
+    }
+    path
+  }
+
   private def deleteRecursively(path: Path): Unit = {
     if (Files.exists(path)) {
       val stream: java.util.stream.Stream[Path] = Files.walk(path)
@@ -87,13 +125,5 @@ class CompileTimeEvalInnerQuoteScopeInnerDirectJvmReflectionMethodCallTest {
         stream.close()
       }
     }
-  }
-}
-
-object RuntimeDirectJvmReflectionMapperTest {
-  def rename(className: String): String = {
-    if (className.endsWith("DirectJvmReflectionFirst")) "first"
-    else if (className.endsWith("DirectJvmReflectionSecond")) "second"
-    else className
   }
 }

@@ -24,7 +24,19 @@ java {
     }
 }
 
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Djava.home=${System.getenv('JAVA_HOME')}")
+    runtimeArgs.add("-Djava.class.path=${sourceSets.test.runtimeClasspath.asPath}")
+}
+
 graalvmNative {
+    binaries {
+        test {
+            buildArgs("-H:+AllowJRTFileSystem")
+            runtimeArgs("-Djava.home=${System.getenv('JAVA_HOME')}")
+            runtimeArgs("-Djava.class.path=${sourceSets.test.runtimeClasspath.asPath}")
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
