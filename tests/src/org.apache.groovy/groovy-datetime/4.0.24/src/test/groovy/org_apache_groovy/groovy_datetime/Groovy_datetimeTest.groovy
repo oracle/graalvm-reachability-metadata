@@ -20,6 +20,7 @@ import java.time.YearMonth
 import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 
 public class Groovy_datetimeTest {
     @Test
@@ -75,5 +76,39 @@ public class Groovy_datetimeTest {
         assert Year.parse('Year 2024', "'Year' uuuu") == Year.of(2024)
         assert YearMonth.parse('2024-07', 'uuuu-MM') == YearMonth.of(2024, 7)
         assert MonthDay.parse('07/20', 'MM/dd') == MonthDay.of(7, 20)
+    }
+
+    @Test
+    void temporalTypesIterateInclusivelyWithUptoAndDownto() {
+        List<LocalDate> dates = []
+        LocalDate.of(2024, 7, 20).upto(LocalDate.of(2024, 7, 22)) { LocalDate current ->
+            dates << current
+        }
+        assert dates == [
+                LocalDate.of(2024, 7, 20),
+                LocalDate.of(2024, 7, 21),
+                LocalDate.of(2024, 7, 22),
+        ]
+
+        LocalDateTime start = LocalDateTime.of(2024, 7, 20, 10, 0)
+        List<LocalDateTime> dateTimes = []
+        start.upto(start.plusHours(2), ChronoUnit.HOURS) { LocalDateTime current ->
+            dateTimes << current
+        }
+        assert dateTimes == [
+                LocalDateTime.of(2024, 7, 20, 10, 0),
+                LocalDateTime.of(2024, 7, 20, 11, 0),
+                LocalDateTime.of(2024, 7, 20, 12, 0),
+        ]
+
+        List<YearMonth> months = []
+        YearMonth.of(2024, 9).downto(YearMonth.of(2024, 7)) { YearMonth current ->
+            months << current
+        }
+        assert months == [
+                YearMonth.of(2024, 9),
+                YearMonth.of(2024, 8),
+                YearMonth.of(2024, 7),
+        ]
     }
 }
