@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -34,6 +35,7 @@ import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.repository.ArtifactRepositoryPolicy;
 import org.apache.maven.artifact.repository.layout.ArtifactRepositoryLayout;
 import org.apache.maven.artifact.versioning.VersionRange;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Organization;
@@ -122,6 +124,19 @@ public class Maven_archiverTest {
         assertThat(manifestConfiguration.isAddDefaultSpecificationEntries()).isTrue();
         assertThat(manifestConfiguration.getMainClass()).isEqualTo("example.Main");
         assertThat(manifestConfiguration.getPackageName()).isEqualTo("example.package");
+    }
+
+    @Test
+    void manifestCreatedByIncludesMavenVersionFromSession() throws Exception {
+        MavenProject project = newProject("org.example", "session-app", "1.0.0");
+        Properties executionProperties = new Properties();
+        executionProperties.setProperty("maven.version", "test-session-version");
+        MavenSession session = new MavenSession(null, null, null, null, null, Collections.emptyList(),
+                tempDir.toString(), executionProperties, new Date(0L));
+
+        Manifest manifest = new MavenArchiver().getManifest(session, project, new ManifestConfiguration());
+
+        assertThat(mainAttribute(manifest, "Created-By")).isEqualTo("Apache Maven test-session-version");
     }
 
     @Test
