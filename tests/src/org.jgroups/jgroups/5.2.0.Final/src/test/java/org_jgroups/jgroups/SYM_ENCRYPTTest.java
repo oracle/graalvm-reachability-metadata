@@ -6,15 +6,11 @@
  */
 package org_jgroups.jgroups;
 
-import java.io.ByteArrayOutputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.KeyStore;
-
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
+import java.util.Base64;
 
 import org.jgroups.protocols.SYM_ENCRYPT;
 import org.junit.jupiter.api.Test;
@@ -23,7 +19,16 @@ import org.junit.jupiter.api.io.TempDir;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SYM_ENCRYPTTest {
-    private static final String KEYSTORE_RESOURCE = "sym-encrypt-test.jceks";
+    private static final byte[] KEYSTORE_CONTENT = Base64.getMimeDecoder().decode("""
+            MIIBjwIBAzCCATkGCSqGSIb3DQEHAaCCASoEggEmMIIBIjCCAR4GCSqGSIb3DQEHAaCCAQ8EggELMIIBBzCC
+            AQMGCyqGSIb3DQEMCgEFoIGzMIGwBgsqhkiG9w0BDAoBAqCBoASBnTCBmjBmBgkqhkiG9w0BBQ0wWTA4Bgkq
+            hkiG9w0BBQwwKwQUwnyJecKkdFgj1z2xXdwwB4qP+rcCAicQAgEgMAwGCCqGSIb3DQIJBQAwHQYJYIZIAWUD
+            BAEqBBDxnSGLcfCFCGIfHt5cXnu8BDDTvX2ratxrfzSN85ynRBCMa4y749WLhzujLIf8B4m2Phz82HHOErNp
+            iLgycxzb274xPjAZBgkqhkiG9w0BCRQxDB4KAG0AeQBrAGUAeTAhBgkqhkiG9w0BCRUxFAQSVGltZSAxNzc5
+            NDk2OTE3NTE4ME0wMTANBglghkgBZQMEAgEFAAQg1gaLgHqiwM36MJNzZ1czKTdmtGWoW8upJt8PxpACaUYE
+            FHqXTV4Rk78nZo8iN6SmckbpNogRAgInEA==
+            """);
+    private static final String KEYSTORE_RESOURCE = "sym-encrypt-test.p12";
     private static final String ALIAS = "mykey";
     private static final String PASSWORD = "changeit";
 
@@ -32,16 +37,17 @@ public class SYM_ENCRYPTTest {
 
     @Test
     void initializesSecretKeyFromKeystoreResourceOnContextClassLoader() throws Exception {
-        Files.write(temporaryDirectory.resolve(KEYSTORE_RESOURCE), createKeyStore());
+        Files.write(temporaryDirectory.resolve(KEYSTORE_RESOURCE), KEYSTORE_CONTENT);
         URL[] urls = {temporaryDirectory.toUri().toURL()};
         ClassLoader originalLoader = Thread.currentThread().getContextClassLoader();
 
         try (URLClassLoader resourceLoader = new URLClassLoader(urls, originalLoader)) {
             Thread.currentThread().setContextClassLoader(resourceLoader);
-            SYM_ENCRYPT protocol = new SYM_ENCRYPT()
-                    .keystoreName(KEYSTORE_RESOURCE)
-                    .storePassword(PASSWORD)
-                    .alias(ALIAS);
+            ConfigurableSymEncrypt protocol = new ConfigurableSymEncrypt();
+            protocol.keystoreType("PKCS12");
+            protocol.keystoreName(KEYSTORE_RESOURCE);
+            protocol.storePassword(PASSWORD);
+            protocol.alias(ALIAS);
 
             protocol.init();
 
@@ -53,22 +59,10 @@ public class SYM_ENCRYPTTest {
         }
     }
 
-    private static byte[] createKeyStore() throws Exception {
-        char[] password = PASSWORD.toCharArray();
-        KeyStore keyStore = KeyStore.getInstance("JCEKS");
-        keyStore.load(null, password);
-
-        SecretKey secretKey = new SecretKeySpec(new byte[] {
-                0x01, 0x23, 0x45, 0x67,
-                0x11, 0x22, 0x33, 0x44,
-                0x55, 0x66, 0x77, 0x00,
-                0x10, 0x20, 0x30, 0x40
-        }, "AES");
-        keyStore.setEntry(ALIAS, new KeyStore.SecretKeyEntry(secretKey),
-                new KeyStore.PasswordProtection(password));
-
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        keyStore.store(output, password);
-        return output.toByteArray();
+    private static final class ConfigurableSymEncrypt extends SYM_ENCRYPT {
+        private ConfigurableSymEncrypt keystoreType(String keystoreType) {
+            this.keystore_type = keystoreType;
+            return this;
+        }
     }
 }
