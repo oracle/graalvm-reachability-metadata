@@ -225,7 +225,7 @@ public class Api_ldap_modelTest {
         assertThat(add.getEntry().get("objectClass").contains("top", "person")).isTrue();
         assertThat(add.getEntry().get("cn").contains("Jane Doe")).isTrue();
         assertThat(add.getResponseType()).isEqualTo(MessageTypeEnum.ADD_RESPONSE);
-        assertThat(compare.getAssertionValue().getString()).isEqualTo("Jane Doe");
+        assertThat(compare.getAssertionValue().getValue()).isEqualTo("Jane Doe");
         assertThat(compare.getResultResponse().getType()).isEqualTo(MessageTypeEnum.COMPARE_RESPONSE);
         assertThat(delete.getName().getName()).isEqualTo("cn=Obsolete,ou=People,dc=example,dc=com");
         assertThat(delete.getResponseType()).isEqualTo(MessageTypeEnum.DEL_RESPONSE);
