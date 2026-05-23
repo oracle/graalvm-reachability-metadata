@@ -25,12 +25,14 @@ dependencies {
 
 tasks.withType(Test).configureEach {
     jvmArgs "--add-opens=java.base/java.io=ALL-UNNAMED"
+    jvmArgs "--add-exports=java.base/sun.reflect.annotation=ALL-UNNAMED"
 }
 
 graalvmNative {
     binaries {
         test {
             buildArgs.add("--add-opens=java.base/java.io=ALL-UNNAMED")
+            buildArgs.add("--add-exports=java.base/sun.reflect.annotation=ALL-UNNAMED")
         }
     }
 
