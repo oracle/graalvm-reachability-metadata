@@ -11,6 +11,7 @@ import com.hazelcast.monitor.LocalMapStats;
 import com.hazelcast.monitor.NearCacheStats;
 import io.micrometer.core.instrument.binder.cache.HazelcastCacheMetrics;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationHandler;
@@ -23,6 +24,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class HazelcastIMapAdapterTest {
     @Test
     void bindsHazelcast3IMapMetricsThroughFallbackPackage() {
+        Assumptions.assumeFalse(
+                isNativeImageRuntime(),
+                "Micrometer's Hazelcast 3 adapter resolves getName() with a native-image-incompatible method handle"
+        );
+
         SimpleMeterRegistry registry = new SimpleMeterRegistry();
         IMap<Object, Object> cache = createIMap("hazelcast-cache");
 
@@ -170,5 +176,9 @@ public class HazelcastIMapAdapterTest {
             return 0.0d;
         }
         return null;
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 }
