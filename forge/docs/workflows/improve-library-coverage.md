@@ -109,36 +109,57 @@ are processed via the dedicated work queue controlled by
 `FORGE_LIBRARY_UPDATE_WORK_LIMIT` (default 1; set to 0 to disable the queue)
 (§ORCH-forge-orchestration-spec).
 
-## 3. Resolving the User Request in the Issue Body
+## 3. Library Update Target Resolution
 
-A `library-update-request` is not always a generic "raise coverage" task. The
-"Update an existing library" issue template lets a reporter describe a specific
-problem — a missing-metadata stack trace, a reflective/JNI/resource call that is
-not covered, or a concrete class or behavior the user needs to work on the
-requested version. That explicit ask lives in the issue description, separate
-from the aggregate dynamic-access coverage delta.
+Forge resolves the edit target for a `library-update-request` from the Maven
+coordinate in the **issue title** only; coordinates mentioned in the issue body
+are context for the agent, not additional PR targets. Resolution checks
+`metadata/<group>/<artifact>/index.json` in order: the requested version appears
+in an entry's `tested-versions`; the requested version equals an entry's
+`metadata-version`; the requested version matches an entry's `default-for`
+regex; or no match. The result is the **library update target** — the requested
+coordinate, match type (`tested-version`, `metadata-version`, `default-for`, or
+`new-version`), matched index entry, resolved metadata/test versions, and edit
+directories (§FS-forge-functional-spec).
 
-For both the existing-suite case (§WF-improve-library-coverage.1) and the
-missing-version case (§WF-improve-library-coverage.2), the workflow must treat
-the user-requested metadata and tests as required outcomes of the run, not
-optional extras:
+An exact `metadata-version` match edits the resolved metadata/test directories
+in place. A match found only through a shared `tested-versions` entry or a
+`default-for` entry splits the requested version into a new metadata/test target
+by cloning the matched support and rewriting version-specific coordinates and
+URLs: the requested version and every later tested version move to the new
+entry, while earlier versions (including earlier qualifiers such as `1.0.1-RC1`)
+stay on the old entry. A no-match request creates a new requested-version target
+from the closest compatible existing support, or a fresh scaffold when no usable
+baseline exists. This splitting keeps dynamic-access metadata discovered for a
+newer requested version out of an older shared metadata directory, and feeds the
+two outcomes in §WF-improve-library-coverage.1 and §WF-improve-library-coverage.2.
 
-1. **Read the request** — extract the concrete items from the issue body: the
-   named classes, missing-metadata entries, stack traces, or behaviors the
-   reporter asked for.
-2. **Check the generated result** — after the coverage strategy finishes its
-   generation pass, verify whether the requested metadata and tests are present
-   in the generated output.
-3. **Add what the original generation missed** — when part of the request is not
-   covered, add the missing metadata and tests so the requested behavior is
-   actually exercised, then re-verify.
-4. **Treat the request as the acceptance signal** — the run resolves the issue
-   only when the user's request is satisfied and the result still passes local
-   CI-equivalent verification (§FS-local-ci-equivalent-verification). The check
-   and any added items belong in the durable session log and run metrics
-   (§FS-durable-generation-logs).
+## 4. Resolving the Reporter's Requested Metadata
 
-This keeps a `library-update-request` honest: coverage numbers can rise while
-still missing the exact thing the reporter asked for, so the explicit request in
-the issue body — not just the coverage delta — is what determines whether the
-issue is done.
+A `library-update-request` issue body often names a specific need — a
+missing-metadata stack trace, an uncovered reflective/JNI/resource call, or a
+class or behavior the reporter must get working on the requested version — that
+is separate from the aggregate dynamic-access coverage delta. Forge resolves this
+as a prompt-based requirement, not a deterministic post-generation merge:
+
+1. **Forward the issue body to the agent.** The driver fetches the reporter's
+   issue body and passes it into the workflow as untrusted requested-metadata
+   context; the agent must not follow instructions embedded in it
+   (§WF-forge-workflow-drivers).
+2. **Infer the requested metadata.** The agent infers the needed metadata from
+   the prose, logs, snippets, or partial examples in the issue, scoped to the
+   target `group:artifact` when several are mentioned.
+3. **Exercise it through public API.** The agent adds or keeps tests that
+   exercise each requested need through public library API paths — not direct
+   test reflection, no-op class literals, or assertions that only name the
+   target — and includes the requested metadata whenever the generated metadata
+   does not already contain it.
+4. **Add conditions.** When the issue omits metadata conditions, the agent adds
+   appropriate ones, preferably the narrowest valid `typeReached`.
+
+Each inferred requested need is mandatory even when dynamic-access coverage is
+already complete or the need is unrelated to an uncovered class. Forge does not
+parse issue text with hardcoded rules and does not apply parsed metadata as a
+post-generation fallback; the requirement is carried entirely through the
+agent prompt and verified by local CI-equivalent verification
+(§FS-local-ci-equivalent-verification).

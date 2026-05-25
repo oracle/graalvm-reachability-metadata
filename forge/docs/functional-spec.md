@@ -105,6 +105,7 @@ metadata-relevant coverage from broader behavior coverage.
 | **Dynamic-access exhaust report** | Durable coordinate-scoped JSON state for chunked dynamic-access work. It records the coordinate, issue number, class threshold, processed/exhausted/failed classes, and the latest published chunk PR/commit. It is stored in a stable location derived from the target test suite (for example under `tests/src/<group>/<artifact>/<version>/`) so orchestration scripts can find it from the coordinate alone. It does not predefine all chunks; each resume regenerates the current dynamic-access report and filters out exhausted classes. Specified by §WF-dynamic-access-exhaust-report. |
 | **Chunked dynamic-access workflow** | Dynamic-access generation mode for oversized `library-new-request` and `library-update-request` issues. `forge_metadata.py` owns the class threshold decision and passes the current chunk size to the workflow. The workflow processes at most that many uncovered classes, publishes that chunk, then resumes after the chunk PR merges. PR linking rules are in §WF-chunked-dynamic-access-pr-linking. |
 | **Source context** | Read-only files supplied to the agent. Types: `main` (library source), `test` (upstream tests), `documentation` (Javadoc). Selected by the strategy parameter `source-context-types`. |
+| **Library update target** | The metadata and test directories selected for a `library-update-request` coordinate (§WF-improve-library-coverage.3). Resolution records the requested coordinate, match type (`tested-version`, `metadata-version`, `default-for`, or `new-version`), matched index entry, resolved metadata version, resolved test version, and edit directories. |
 
 ## 4. Configuration Contracts
 
@@ -258,6 +259,12 @@ prompt. For Docker-backed tests, local verification must fail if tests create
 Docker images after the `pullAllowedDockerImages` gate, because that indicates
 the local run may have passed by pulling images that CI's disabled-network
 phase would reject.
+
+Local verification must also reject legacy test-only Native Image configuration
+for the coordinate: if uncommitted or changed `META-INF/native-image` test
+configuration files appear under the generated test sources, the run fails
+rather than publishing them, because that config form is no longer accepted and
+the reachability metadata belongs in the coordinate's `metadata/` directory.
 
 Forge must record the exact local verification commands and their outcomes in
 the run metrics and PR description. A task must not open a PR, mark a project

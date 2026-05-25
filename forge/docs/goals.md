@@ -11,9 +11,9 @@ minimize generation cost without weakening quality or reviewability
 # GOAL-maximize-library-coverage: Maximize library coverage
 
 Forge should make supported JVM library coverage as high as practical. It should
-add metadata and tests for unsupported libraries, improve dynamic-access and
-ordinary code coverage for already-supported libraries, and protect existing
-support from regressions or weakened metadata contracts, serving
+add metadata and tests for unsupported libraries, improve coverage for
+already-supported libraries, and preserve and protect the current state of
+shipped metadata against regressions or weakened metadata contracts, serving
 §GOAL-forge-direction.
 
 # GOAL-shorten-issue-to-shipped-metadata: Shorten issue-to-metadata delivery

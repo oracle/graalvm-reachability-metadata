@@ -621,7 +621,12 @@ support iff **all** requirements for its selected engine hold at exit:
    (§FS-local-ci-equivalent-verification).
 8. The scaffold-placeholder quality gate
    (`cleanup_scaffold_placeholder_tests`) leaves no remaining placeholders.
-9. The metrics record validates against the active schema.
+9. The generated-test validity gate (`collect_generated_test_validity_issues`)
+   found no generated test that codifies a known version-specific broken-behavior
+   path (for example asserting an exception the issue describes as a defect);
+   such tests are routed for follow-up instead of being shipped as if the broken
+   behavior were correct.
+10. The metrics record validates against the active schema.
 
 Any deviation produces `RUN_STATUS_FAILURE` and a feature branch reset to the
 scaffold checkpoint.
