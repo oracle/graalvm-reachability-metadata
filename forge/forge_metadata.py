@@ -174,6 +174,7 @@ LABEL_NOT_FOR_NATIVE_IMAGE = "not-for-native-image"
 
 SCRATCH_WORKTREE_DIRNAME = "forge_worktrees"
 SCRATCH_REVIEW_WORKTREE_DIRNAME = "forge_review_worktrees"
+SCRATCH_FINAL_INDEX_VALIDATION_WORKTREE_DIRNAME = "forge_final_index_validation_worktrees"
 SCRATCH_METRICS_DIRNAME = "forge_run_metrics"
 ISSUE_CLAIM_LOCK_DIRNAME = "metadata-forge-issue-claim-locks"
 ISSUE_CLAIM_CACHE_REASON_ASSIGNED = "assigned"
@@ -1865,7 +1866,150 @@ def resolve_pull_request_merge_flag(pr: dict) -> str:
     return "--squash"
 
 
-def merge_pull_request(pr: dict) -> None:
+def is_metadata_index_file_path(path: str) -> bool:
+    """Return True when a repository path is a library index file."""
+    parts = path.split("/")
+    return len(parts) == 4 and parts[0] == "metadata" and parts[3] == "index.json"
+
+
+def get_pull_request_changed_files(pr_number: int) -> list[str]:
+    """Return changed file paths for a pull request."""
+    result = gh(
+        "pr",
+        "diff",
+        str(pr_number),
+        "--repo",
+        REPO,
+        "--name-only",
+        quiet=True,
+    )
+    return [line.strip() for line in result.stdout.splitlines() if line.strip()]
+
+
+def get_pull_request_changed_index_files(pr_number: int) -> list[str]:
+    """Return changed library index files for a pull request."""
+    return [
+        path for path in get_pull_request_changed_files(pr_number)
+        if is_metadata_index_file_path(path)
+    ]
+
+
+def output_tail(output: str | None, max_lines: int = 80) -> str:
+    """Return the final lines from command output."""
+    if not output:
+        return ""
+    return "\n".join(output.strip().splitlines()[-max_lines:])
+
+
+def run_checked_command(
+        command: list[str],
+        cwd: str,
+        error_message: str,
+) -> subprocess.CompletedProcess:
+    """Run a command and report its captured output on failure."""
+    try:
+        return subprocess.run(
+            command,
+            cwd=cwd,
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+        )
+    except subprocess.CalledProcessError as exc:
+        tail = output_tail(exc.stdout)
+        print(f"ERROR: {error_message}" + (f":\n{tail}" if tail else ""), file=sys.stderr)
+        raise
+
+
+def validate_index_files_on_current_master_candidate(
+        pr_number: int,
+        head_ref_oid: str,
+        reachability_metadata_path: str,
+) -> None:
+    """Validate index files after applying the pull request head to current master."""
+    repo_root = get_repo_root()
+    validation_worktrees_root = os.path.join(
+        repo_root,
+        "local_repositories",
+        SCRATCH_FINAL_INDEX_VALIDATION_WORKTREE_DIRNAME,
+    )
+    os.makedirs(validation_worktrees_root, exist_ok=True)
+
+    validation_run_id = f"index-pr-{pr_number}-{uuid.uuid4().hex[:8]}"
+    validation_worktree_path = os.path.join(validation_worktrees_root, validation_run_id)
+
+    fetch_review_base_ref(reachability_metadata_path)
+    create_detached_worktree(
+        reachability_metadata_path,
+        validation_worktree_path,
+        f"origin/{DEFAULT_WORKTREE_BASE_REF}",
+        f"Failed to create final index validation worktree for PR #{pr_number}",
+    )
+    try:
+        run_checked_command(
+            ["git", "fetch", "--quiet", "origin", f"refs/pull/{pr_number}/head"],
+            validation_worktree_path,
+            f"Failed to fetch PR #{pr_number} head for final index validation",
+        )
+        fetched_head = run_checked_command(
+            ["git", "rev-parse", "FETCH_HEAD"],
+            validation_worktree_path,
+            f"Failed to resolve fetched PR #{pr_number} head for final index validation",
+        ).stdout.strip()
+        if fetched_head != head_ref_oid:
+            print(
+                (
+                    f"ERROR: PR #{pr_number} head changed before final index validation: "
+                    f"expected {head_ref_oid}, fetched {fetched_head}."
+                ),
+                file=sys.stderr,
+            )
+            raise RuntimeError(f"Pull request #{pr_number} head changed before final index validation")
+
+        run_checked_command(
+            ["git", "merge", "--no-commit", "--no-ff", "FETCH_HEAD"],
+            validation_worktree_path,
+            (
+                f"Failed to merge PR #{pr_number} into current "
+                f"{DEFAULT_WORKTREE_BASE_REF} for final index validation"
+            ),
+        )
+        print(
+            f"[Validating all index files on current {DEFAULT_WORKTREE_BASE_REF} "
+            f"plus PR #{pr_number}.]"
+        )
+        run_checked_command(
+            ["./gradlew", "validateIndexFiles", "-Pcoordinates=all", "--stacktrace"],
+            validation_worktree_path,
+            f"Final index validation failed for PR #{pr_number}",
+        )
+    finally:
+        remove_worktree(reachability_metadata_path, validation_worktree_path)
+
+
+def validate_pull_request_indexes_before_merge(
+        pr_number: int,
+        head_ref_oid: str,
+        reachability_metadata_path: str,
+) -> None:
+    """Run final-tree index validation for pull requests that change index files."""
+    changed_index_files = get_pull_request_changed_index_files(pr_number)
+    if not changed_index_files:
+        return
+
+    print(
+        f"[PR #{pr_number} changes {len(changed_index_files)} index file(s); "
+        f"running final index validation before merge.]"
+    )
+    validate_index_files_on_current_master_candidate(
+        pr_number,
+        head_ref_oid,
+        reachability_metadata_path,
+    )
+
+
+def merge_pull_request(pr: dict, reachability_metadata_path: str | None = None) -> None:
     """Merge a pull request using the repository's configured merge method."""
     pr_number = pr.get("number")
     head_ref_oid = pr.get("headRefOid")
@@ -1873,6 +2017,10 @@ def merge_pull_request(pr: dict) -> None:
     if not isinstance(pr_number, int) or not isinstance(head_ref_oid, str) or not head_ref_oid:
         print(f"ERROR: Missing merge metadata for pull request #{pr_number}.", file=sys.stderr)
         raise RuntimeError(f"Missing merge metadata for pull request #{pr_number}")
+    if reachability_metadata_path is None:
+        reachability_metadata_path = get_repo_root()
+
+    validate_pull_request_indexes_before_merge(pr_number, head_ref_oid, reachability_metadata_path)
 
     merge_args = [
         "pr",
@@ -1892,7 +2040,10 @@ def merge_pull_request(pr: dict) -> None:
     gh(*merge_args)
 
 
-def reconcile_reviewed_pull_request(pr_number: int) -> bool:
+def reconcile_reviewed_pull_request(
+        pr_number: int,
+        reachability_metadata_path: str | None = None,
+) -> bool:
     """Apply post-review PR follow-up actions based on the latest review state."""
     try:
         pr = get_pull_request_state(pr_number)
@@ -1938,7 +2089,7 @@ def reconcile_reviewed_pull_request(pr_number: int) -> bool:
             print(f"[Skipping merge for PR #{pr_number}: merge gates are not fully passing yet.]")
             return True
 
-        merge_pull_request(pr)
+        merge_pull_request(pr, reachability_metadata_path)
         return True
     except Exception as exc:
         print(
@@ -2206,8 +2357,12 @@ def build_review_prompt(pr_number: int) -> str:
         "source for the pull request's changed files and patch content. "
         "A fresh `origin/master` ref was fetched before checkout, so local `git diff origin/master...HEAD` "
         "may be used for convenience, but if local git output disagrees with `gh pr diff`, trust `gh pr diff`. "
-        "Do not run `gh pr checkout`, `git checkout`, or `git switch`. "
-        "Do not write any files. "
+        "During normal review, do not run `gh pr checkout`, `git checkout`, or `git switch`, and do not write files. "
+        "Exception: if the PR changes `metadata/<group>/<artifact>/index.json` files, run final index validation "
+        "against current `origin/master` before approving. If that validation fails because tested versions are in "
+        "the wrong metadata bucket or duplicated across buckets, use the `fix-index-file-inconsistencies` skill. "
+        "In that exception path, you may check out the PR branch, fix only the required `index.json` files, commit "
+        "the repair, and push it to this PR branch before submitting the GitHub review. "
         "If you find blocking issues, submit a review that requests changes with a concise summary. "
         "If there are no blocking issues, submit an approval review summarizing the check and stating that you found no blocking issues."
     )
@@ -2280,7 +2435,7 @@ def process_pull_requests_with_label(
                 f"Approved after manual follow-up marked this PR as '{LABEL_HUMAN_INTERVENTION_FIXED}'.",
             )
             pr = get_pull_request_state(pr_number)
-            merge_pull_request(pr)
+            merge_pull_request(pr, reachability_metadata_path)
         except Exception as exc:
             print(
                 f"ERROR: Failed to merge human-intervention-fixed PR #{pr_number}: {exc!r}",
@@ -2364,7 +2519,7 @@ def process_pull_requests_with_label(
         ):
             failed_reviews.append(pr_number)
             continue
-        if not reconcile_reviewed_pull_request(pr_number):
+        if not reconcile_reviewed_pull_request(pr_number, reachability_metadata_path):
             failed_reviews.append(pr_number)
 
     if failed_reviews:

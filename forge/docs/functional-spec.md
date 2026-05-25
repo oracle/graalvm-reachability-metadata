@@ -199,6 +199,40 @@ shared repository file changed, the PR must be labeled `human-intervention`
 and the verification metrics and PR description must list the repository-level
 paths that require maintainer review.
 
+### 6.1 PR review and merge safeguards
+
+Forge review queues may merge approved pull requests only after GitHub reports
+that the pull request is mergeable and all status gates are green. For any pull
+request that changes a library index file matching
+`metadata/<group>/<artifact>/index.json`, Forge must run a final local index
+validation against the tree that would be merged into the current
+`master` branch.
+
+The final validation must use a fresh `origin/master`, apply the reviewed pull
+request head without committing it, verify that the fetched head still matches
+the reviewed head SHA, and run:
+
+```bash
+./gradlew validateIndexFiles -Pcoordinates=all --stacktrace
+```
+
+PR review automation must instruct the reviewer to run this final validation
+for index-changing pull requests before approving. If validation fails because
+tested versions are in the wrong metadata-version bucket or duplicated across
+buckets, the reviewer must use the `fix-index-file-inconsistencies` skill to
+repair only the affected `index.json` files, commit the repair, push it to the
+same pull request branch, and rerun full index validation before submitting the
+review. Forge must not add `human-intervention` for these fixable index bucket
+inconsistencies.
+
+Forge also runs the final index validation immediately before merging an
+approved index-changing pull request as a safety net. If the reviewer did not
+repair the pull request and this merge-time validation still fails, Forge must
+not merge the pull request and the review pass may fail. Infrastructure
+failures while preparing the validation candidate, such as fetch failures,
+merge conflicts, or a changed pull request head SHA, remain hard automation
+failures.
+
 ## 7. Failure Semantics
 
 Every workflow records one of these statuses:
