@@ -4,7 +4,7 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 """
-Helper module for validating Metadata Forge metric output, strategy and benchmark configuration files.
+Helper module for validating Forge metric output, strategy and benchmark configuration files.
 Validates a file against the JSON Schema at `schemas/`.
 """
 
@@ -82,7 +82,7 @@ def validate_strategy(file_path: str):
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="schema_validator.py",
-        description="Validate a JSON file against one of Metadata Forge schemas.",
+        description="Validate a JSON file against one of Forge schemas.",
         epilog=(
             "Example:\n"
             "  python3 utility_scripts/schema_validator.py run_metrics_output output/results.json"

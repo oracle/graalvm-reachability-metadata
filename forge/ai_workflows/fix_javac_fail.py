@@ -29,7 +29,11 @@ from ai_workflows.java_fail_workflow import (  # noqa: F401
 
 
 def main(argv=None):
-    """Execute the end-to-end javac-fix workflow for a version bump."""
+    """Execute the end-to-end javac-fix driver for a version bump.
+
+    The javac-failure driver for §WF-java-fail-fix-workflow, following the
+    single-run driver contract (§WF-forge-workflow-drivers).
+    """
     return run_java_fail_workflow(JAVAC_CONFIG, argv)
 
 

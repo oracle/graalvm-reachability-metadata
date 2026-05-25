@@ -19,7 +19,10 @@ def _resolve_library_name(library: str | None) -> str:
 
 
 def build_pi_log_path(action: str, library: str | None, task_type: str | None = None) -> str:
-    """Return a Pi log path under `logs/<library>/<task-type>/`."""
+    """Return a Pi log path under `logs/<library>/<task-type>/`.
+
+    Places Pi logs at the durable location required by §FS-durable-generation-logs.
+    """
     safe_action = _sanitize_log_name(action)
     return build_timestamped_task_log_path(
         task_type or action,

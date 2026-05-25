@@ -1,6 +1,7 @@
 # Functional Specification
 
-This document describes what the **GraalVM Reachability Metadata Repository** does for its users, who those users are, and the functional requirements that the repository, its build infrastructure, and its automation (Metadata Forge) must meet.
+This document describes what the **GraalVM Reachability Metadata Repository** does for its users, who those users are, and the functional requirements that the repository, its build infrastructure, and its automation (Forge) must meet.
+§GOAL-repository-direction
 
 It is intended for agents, contributors, and downstream tooling owners who need a single, behavior-focused description of the system.
 
@@ -19,7 +20,7 @@ Reachability metadata describes reflection, JNI, resource access, serialization,
 | **Application developer** using GraalVM Native Image | Build a native image of an application that depends on third-party libraries without writing reachability metadata by hand; check whether a given library is supported; request support for a missing library. | Consumes metadata indirectly — the GraalVM Gradle/Maven plugin downloads it from this repository at build time. Checks support via `curl … check-library-support.sh \| bash -s "<group>:<artifact>:<version>"` or by browsing [the libraries-and-frameworks page](https://www.graalvm.org/native-image/libraries-and-frameworks/). Requests a new library by filing a [`01_support_new_library`](../.github/ISSUE_TEMPLATE/01_support_new_library.yml) issue, or updates an existing one via [`02_update_existing_library`](../.github/ISSUE_TEMPLATE/02_update_existing_library.yml). |
 | **Community contributor** | Add support for a missing library or update an existing entry to a newer library version. | Files a "library-new-request" or "update existing library" issue; the automation picks it up, optionally guided by custom instructions the contributor supplies. |
 | **Reviewer / Maintainer** of this repo | Sign off on PRs after automated review has enforced licensing, security, and metadata quality rules. | Agents run the review skills under [skills/](../skills/) (e.g. `review-library-new-request`, `review-fixes-javac-fail`, `review-fixes-java-run-fail`, `review-fixes-native-image-run-fail`, `review-library-bulk-update`, `close-new-library-support-pr`) against the [REVIEWING.md](REVIEWING.md) checklist; CI runs the same gates. The reviewer does the final human check before merge. |
-| **Repository automation (Metadata Forge)** | Generate or repair metadata using LLM-driven pipelines. | Per coordinate, the toolkit can: (1) **add support for a new library** — generate a JUnit / Kotlin / Scala test suite, scaffold metadata, and iterate until JVM-mode tests pass and dynamic-access is collected ([`add_new_library_support.py`](../forge/ai_workflows/add_new_library_support.py)); (2) **fix a Java compilation (`javac`) failure** raised by a library version bump ([`fix_javac_fail.py`](../forge/ai_workflows/fix_javac_fail.py)); (3) **fix a JVM-mode (`javaTest`) runtime failure** raised by a version bump ([`fix_java_run_fail.py`](../forge/ai_workflows/fix_java_run_fail.py)); (4) **fix a `native-image` runtime failure** raised by a version bump ([`fix_ni_run.py`](../forge/ai_workflows/fix_ni_run.py)); (5) **improve dynamic-access coverage** of already-supported libraries by targeting uncovered call sites; (6) **post-generation repair** of the metadata produced by a previous run ([`fix_post_generation_pi.py`](../forge/ai_workflows/fix_post_generation_pi.py), [`fix_metadata_codex.py`](../forge/ai_workflows/fix_metadata_codex.py)). Each task runs Gradle tasks against a worktree of this repo, appends a schema-validated metrics record, and — when invoked through [`forge/git_scripts/make_pr_*.py`](../forge/git_scripts/) — opens a PR for human review. See [forge/docs/architecture.md](../forge/docs/architecture.md). |
+| **Repository automation (Forge)** | Generate or repair metadata using LLM-driven pipelines. | Per coordinate, the toolkit can: (1) **add support for a new library** — generate a JUnit / Kotlin / Scala test suite, scaffold metadata, and iterate until JVM-mode tests pass and dynamic-access is collected ([`add_new_library_support.py`](../forge/ai_workflows/add_new_library_support.py)); (2) **fix a Java compilation (`javac`) failure** raised by a library version bump ([`fix_javac_fail.py`](../forge/ai_workflows/fix_javac_fail.py)); (3) **fix a JVM-mode (`javaTest`) runtime failure** raised by a version bump ([`fix_java_run_fail.py`](../forge/ai_workflows/fix_java_run_fail.py)); (4) **fix a `native-image` runtime failure** raised by a version bump ([`fix_ni_run.py`](../forge/ai_workflows/fix_ni_run.py)); (5) **improve dynamic-access coverage** of already-supported libraries by targeting uncovered call sites; (6) **post-generation repair** of the metadata produced by a previous run ([`fix_post_generation_pi.py`](../forge/ai_workflows/fix_post_generation_pi.py), [`fix_metadata_codex.py`](../forge/ai_workflows/fix_metadata_codex.py)). Each task runs Gradle tasks against a worktree of this repo, appends a schema-validated metrics record, and — when invoked through [`forge/git_scripts/make_pr_*.py`](../forge/git_scripts/) — opens a PR for human review. See [forge/docs/functional-spec.md](../forge/docs/functional-spec.md). |
 
 ## 3. Hard Constraints
 
@@ -34,7 +35,7 @@ Two properties make this achievable: the reachability-metadata schema is itself 
 - **HC-3 No `Feature` classes.** Metadata bundles must not ship `org.graalvm.nativeimage.hosted.Feature` implementations or any other artifact that runs arbitrary Java inside the image builder. `Feature`s are a security concern (full filesystem / network / reflective access at build time) and break additivity because their effect is whatever code the author wrote.
 - **HC-4 No untested metadata.** Metadata that has not passed the test gates defined in [§5.2 Tests](#52-tests-fr-t) and [§5.4 CI gates](#54-ci-gates-fr-ci) is not published from this repository, regardless of provenance (human or Forge).
 
-These constraints apply uniformly to human-authored PRs and to Metadata Forge output, and are enforced by `checkMetadataFiles` plus the reviewer skills.
+These constraints apply uniformly to human-authored PRs and to Forge output, and are enforced by `checkMetadataFiles` plus the reviewer skills.
 
 ## 4. What the System Provides
 
@@ -84,7 +85,8 @@ sync with the generated coverage table through the bulk-update PRs created by
 `verify-new-library-version-compatibility.yml`. The same `COVERAGE.md` and the
 badge, graph, and history artifacts are published to the `stats/coverage` branch.
 
-### 4.6 Metadata Forge automation
+### 4.6 Forge automation
+§forge/GOAL-forge-direction
 
 The `forge/` toolkit composes LLM agents (Aider, Codex, Pi) with deterministic Gradle pipelines to:
 1. **Add new library support** — generate a JUnit test suite, scaffold metadata, iterate until JVM-mode tests pass and dynamic-access metadata is collected.
@@ -92,7 +94,7 @@ The `forge/` toolkit composes LLM agents (Aider, Codex, Pi) with deterministic G
 3. **Fix native-image runtime failures** raised by a library version bump.
 4. **Improve coverage** of already-supported libraries by targeting uncovered dynamic-access call sites.
 
-Each Forge run produces a schema-validated metrics record (under `metrics_repo/...`) and, when invoked through `complete_pipelines/` or `git_scripts/make_pr_*.py`, opens a PR ready for human review. See [forge/README.md](../forge/README.md) and [forge/docs/architecture.md](../forge/docs/architecture.md).
+Each Forge run records per-library metrics under `stats/<group>/<artifact>/<version>/execution-metrics.json` and, when invoked through `git_scripts/make_pr_*.py`, opens a PR ready for human review. See [forge/README.md](../forge/README.md) and [forge/docs/functional-spec.md](../forge/docs/functional-spec.md).
 
 #### GitHub label contract
 
@@ -117,6 +119,7 @@ GitHub labels are part of the public triage surface for issues and PRs. Pipeline
 | `GenAI` | PR | PR was produced by generative-AI automation. Generated PR titles also use a `[GenAI]` prefix when created by the corresponding Forge scripts. |
 | `priority` | Issue | Work-queue priority marker. Forge processes matching issues with this label before regular issues in the same pipeline batch; issue triage also adds it to eligible native-build-tools-created support requests. |
 | `high-priority` | Issue | Manual urgency marker for issues that should be handled immediately. |
+| `chunked-dynamic-access` | Issue | Forge split dynamic-access generation for this issue into class-aligned chunks because the uncovered class count exceeded the configured threshold. Normal project status controls whether Forge may claim the next chunk. |
 | `human-intervention` | Issue / PR | Automation could not safely complete the work without manual follow-up, or automated PR review requested changes. |
 | `human-intervention-fixed` | PR | Manual follow-up has fixed a PR previously requiring intervention; review automation may approve and merge it after merge gates pass. |
 
@@ -248,9 +251,10 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 - **FR-NI-1** Local runs default to `current-defaults`.
 - **FR-NI-2** `future-defaults-all` is run only against early-access / `latest` / `dev` GraalVM builds, both locally (via `GVM_TCK_NATIVE_IMAGE_MODE=future-defaults-all`) and in scheduled CI lanes that explicitly opt in via `ci.json`'s `nativeImageModeJavaVersions`.
 
-### 5.6 Metadata Forge (FR-F)
+### 5.6 Forge (FR-F)
 
 Forge's functional requirements are specified in [forge/docs/functional-spec.md](../forge/docs/functional-spec.md).
+§forge/FS-forge-functional-spec
 
 ## 6. Non-Functional Requirements
 
@@ -270,18 +274,109 @@ Forge's functional requirements are specified in [forge/docs/functional-spec.md]
 - Metadata JSON files contributed by a human or generated by Forge.
 - Test sources contributed by a human or generated by Forge.
 - An `index.json` describing metadata versions and tested versions.
-- For Forge: a predefined strategy name selecting agent + workflow + prompts.
+- For Forge: a predefined strategy name selecting workflow engine, agent,
+  model, prompts, and workflow parameters.
 
 ### 7.2 Outputs
 
 - Validated metadata + tests + index.json under `metadata/` and `tests/src/`.
 - Mirrored stats under `stats/`, a generated root `COVERAGE.md`, and aggregated coverage artifacts on `stats/coverage`.
 - Bi-weekly release artifacts consumed by the GraalVM Gradle/Maven plugins.
-- Forge metrics records under `metrics_repo_path` (or `metadata-forge/{script_run_metrics,benchmark_run_metrics}/` in merged-repo mode).
-- GitHub PRs (only when initiated through Forge `complete_pipelines/` or `git_scripts/`).
+- Forge run metrics committed under `stats/<group>/<artifact>/<version>/execution-metrics.json`.
+- GitHub PRs (only when initiated through Forge `git_scripts/`).
 - GitHub issues for new-version compatibility failures, one per `(library, version)`.
 
-## 8. References
+## 8. Library Version Compatibility Automation
+
+### FS-library-version-update-automation: Library version update automation
+§GOAL-repository-direction
+
+The repository must keep its tested-version coverage current as upstream
+libraries release new versions, without a human watching Maven Central. The
+[`verify-new-library-version-compatibility`](../.github/workflows/verify-new-library-version-compatibility.yml)
+GitHub Actions workflow owns this loop. It runs on a schedule (every six hours)
+and on manual `workflow_dispatch`, and performs its mutating steps only on the
+canonical `oracle/graalvm-reachability-metadata` repository. Each run discovers
+newer upstream versions, tests every candidate across the supported environment
+matrix, records the versions that pass as a single bulk-update pull request, and
+files one tracking issue per version that fails. The failure issues are the
+entry point of the Forge repair queue (§forge/FS-forge-functional-spec,
+§forge/ORCH-forge-orchestration-spec); the bulk-update PR is reviewed by the
+`review-library-bulk-update` skill. This section is the behavioral contract for
+that workflow; the run-size limits are stated normatively in FR-CI-5 and the
+recording precondition in FR-T-6, and every label it applies is defined in the
+§4.6 GitHub label contract.
+
+#### 1. Discovery of newer versions
+
+`./gradlew fetchExistingLibrariesWithNewerVersions` lists every already-supported
+library whose newest upstream release is ahead of its highest tested version,
+emitting candidate versions newest-first. Before a candidate enters the run it
+is de-duplicated against open issues: a library whose newest candidate version
+already has an open `[Automation] … fails for <group:artifact:version>` issue is
+skipped, so a known-failing version is not re-tested every six hours.
+`generateNewLibraryVersionCompatibilityMatrix` turns the surviving candidates
+into the CI test matrix, bounded by the per-run library budget and the
+≤ 30-newer-versions-per-library cap (FR-CI-5). When candidates remain, the run
+creates a timestamped working branch `check-new-library-versions/<timestamp>`
+that later steps commit to.
+
+#### 2. Bulk compatibility testing
+
+A matrix job expands every candidate library across the configured GraalVM
+JDK/OS combinations and native-image modes (`ci.json`). For each cell,
+[`run-consecutive-tests.sh`](../.github/workflows/scripts/run-consecutive-tests.sh)
+walks the candidate versions in ascending order and runs the full `test` lane
+per version. On failure it bisects the failing stage in order —
+`compileTestJava` (javac), `javaTest` (JVM run), `nativeTestCompile`
+(native-image build), then `test` again (native-image run, retried) — to
+classify the failure, records the first failing version, and stops walking that
+library (versions are validated consecutively, so a break in compatibility ends
+the chain). Each cell reports the versions that passed plus, if any, the first
+failure with its stage, failing version, reproducer command, runner-log URL, and
+a bounded log tail.
+
+#### 3. Recording newly supported versions
+
+Results from all matrix cells are aggregated. A candidate version counts as
+supported only when it passed in **every** required environment (FR-T-6); the
+supported set is the intersection across cells. For each newly supported version
+the workflow runs
+`./gradlew addTestedVersion -Pcoordinates=<group:artifact:version> --lastSupportedVersion=<previous>`,
+which appends the version to the artifact's `index.json` and refreshes the
+mirrored `stats/` and shared test sources. The updates are committed to the
+working branch (staging only `metadata`, `stats`, and `tests/src`) under a
+fetch-rebase-retry loop so concurrent scheduled runs do not clobber each other.
+When the branch carries changes, the workflow opens one pull request labeled
+`library-bulk-update` (reviewers `kimeta`, `vjovanov`, `jormundur00`; assignee
+`vjovanov`) summarizing the added tested versions per library. This PR records
+already-tested upstream versions and requires no metadata repair, which is what
+distinguishes `library-bulk-update` from the per-version repair PRs.
+
+#### 4. Opening failure tickets
+
+For every `(library, failing version)` pair the workflow files one aggregated
+GitHub issue. The title is `[Automation] <primary failure stage> fails for
+<group:artifact:version>` and the labels are `library-unsupported-version` plus
+the stage-specific `fails-*` label — `fails-javac-compile`, `fails-java-run`,
+`fails-native-image-build`, or `fails-native-image-run` — derived from the stage
+that `run-consecutive-tests.sh` isolated. `fails-native-image-build` issues are
+assigned to a maintainer for follow-up; the other three are the queue that Forge
+claims and resolves into `fixes-*` repair PRs. The body collects one section per
+failing environment (OS, JDK, native-image mode, reproducer command, runner-log
+URL, and the log tail), proportionally truncated to stay within GitHub's issue
+size limit. Issue creation is idempotent: a pair that already has a matching open
+`[Automation] … fails for …` issue is skipped, and a pair that the latest
+`origin/master` already supports is treated as a stale failure and skipped.
+
+#### 5. Stale-issue hygiene
+
+After recording results, the workflow closes superseded automation issues. When
+a full release of a base version is now handled, older pre-release issues
+(`alpha`, `beta`, `rc`, milestone, etc.) for the same library are closed as
+`not planned`, so the queue reflects only versions that still need attention.
+
+## 9. References
 
 - [README.md](../README.md) — quick lookup, contributing entry points.
 - [CONTRIBUTING.md](CONTRIBUTING.md) — how to add or update metadata.
@@ -290,5 +385,5 @@ Forge's functional requirements are specified in [forge/docs/functional-spec.md]
 - [CI.md](CI.md) — workflow inventory and triggers.
 - [CollectingMetadata.md](CollectingMetadata.md) — using the Native Image Agent to collect metadata.
 - [SECURITY.md](SECURITY.md) — vulnerability disclosure.
-- [forge/README.md](../forge/README.md) — Metadata Forge user manual.
-- [forge/docs/architecture.md](../forge/docs/architecture.md) — Forge architecture and contracts.
+- [forge/README.md](../forge/README.md) — Forge user manual.
+- [forge/docs/functional-spec.md](../forge/docs/functional-spec.md) — Forge functional requirements and workflow contracts.

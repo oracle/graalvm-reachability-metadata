@@ -3,6 +3,13 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+"""Typed access to Gradle dynamic-access coverage reports.
+
+The iterative engine (§WF-dynamic-access-iterative-strategy) depends on these
+parsed reports to select the next uncovered class, compute per-class coverage
+deltas, and format call sites for the targeted prompts of its per-class loop.
+"""
+
 import json
 import os
 from dataclasses import dataclass
@@ -43,6 +50,13 @@ class DynamicAccessClass:
 
 @dataclass(frozen=True)
 class DynamicAccessCoverageReport:
+    """Current dynamic-access coverage state for one coordinate.
+
+    The iterative engine consumes this state class-by-class and skips exhausted
+    classes rather than retrying already-processed dynamic-access surface
+    (§WF-dynamic-access-iterative-strategy).
+    """
+
     coordinate: str
     has_dynamic_access: bool
     total_calls: int
@@ -78,6 +92,12 @@ def load_dynamic_access_coverage_report(
         report_path: str,
         source_context_files: list[str] | None = None,
 ) -> DynamicAccessCoverageReport:
+    """Load the Gradle JSON report into typed coverage objects.
+
+    Source files are resolved against prepared read-only source context so the
+    per-class prompt can carry class-specific implementation context
+    (§WF-dynamic-access-iterative-strategy).
+    """
     if not os.path.isfile(report_path):
         raise FileNotFoundError(report_path)
 
@@ -124,7 +144,11 @@ def compute_class_delta(
         current_report: DynamicAccessCoverageReport,
         class_name: str,
 ) -> DynamicAccessClassDelta:
-    """Compare two reports for one class to find what changed between iterations."""
+    """Compare two reports for one class to find what changed between iterations.
+
+    The per-class prompt uses this delta to focus the next attempt on newly
+    covered and still-uncovered call sites (§WF-dynamic-access-iterative-strategy).
+    """
     previous_class = None if previous_report is None else previous_report.get_class(class_name)
     current_class = current_report.get_class(class_name)
 

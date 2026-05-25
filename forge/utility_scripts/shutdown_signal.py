@@ -69,7 +69,7 @@ def request_shutdown(branch_name: str | None = None) -> str:
     if signal_dir:
         os.makedirs(signal_dir, exist_ok=True)
     with open(signal_path, "w", encoding="utf-8") as signal_file:
-        signal_file.write(f"Metadata Forge shutdown requested at {time.strftime('%Y-%m-%d %H:%M:%S %Z')}\n")
+        signal_file.write(f"Forge shutdown requested at {time.strftime('%Y-%m-%d %H:%M:%S %Z')}\n")
     return signal_path
 
 

@@ -74,7 +74,10 @@ class Agent(ABC):
             task_type: str = "session",
             library: str | None = None,
     ) -> str:
-        """Create a stable per-session log path under the task log directory."""
+        """Create a stable per-session log path under the task log directory.
+
+        Durable per-session logs are required by §FS-durable-generation-logs.
+        """
         logs_dir = resolve_task_log_dir(task_type, library)
         file_descriptor, log_path = tempfile.mkstemp(
             prefix=f"{agent_name}-session-",

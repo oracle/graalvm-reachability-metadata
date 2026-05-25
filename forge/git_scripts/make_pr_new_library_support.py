@@ -278,7 +278,14 @@ def build_pull_request_body(
         local_ci_verification=None,
         dynamic_access_evidence: DynamicAccessMetadataEvidence | None = None,
 ):
-    """Build the PR body with metrics, strategy name, and optional stats."""
+    """Build the PR body with metrics, strategy name, stats, and issue linkage.
+
+    Chunked dynamic-access parts use ``Refs`` until the final part may close the
+    backing issue (§WF-chunked-dynamic-access-pr-linking), following the chunked
+    linking contract (§GIT-chunked-linking); the body records the run's tracked
+    parameters (§GIT-pr-body) so verification and intervention context stay
+    visible to reviewers.
+    """
     input_tokens_used = metrics.get("input_tokens_used", 0)
     output_tokens_used = metrics.get("output_tokens_used", 0)
     cached_input_tokens_used = metrics.get("cached_input_tokens_used", 0)
@@ -344,7 +351,12 @@ def stage_and_commit(
         metrics_repo_path: str | None = None,
         include_in_repo_metrics: bool = False,
 ):
-    """Stage the expected files/directories and commit with the required message."""
+    """Stage the expected new-library paths and commit with the required message.
+
+    Publication scripts stage the workflow-specific expected paths instead of a
+    generic repository-wide add, keeping the path boundary explicit
+    (§GIT-expected-paths).
+    """
     candidate_paths = [
         str(os.path.join("tests", "src", group, artifact, library_version)),
         str(os.path.join("metadata", group, artifact, "index.json")),
@@ -387,7 +399,12 @@ def create_pull_request(
         is_final_large_library_part=True,
         series_id=None,
 ):
-    """Create a GitHub pull request for the current branch, linking to the matching issue."""
+    """Create a GitHub pull request for the current branch and matching issue.
+
+    Links the PR to its issue per §GIT-issue-linking and applies the
+    workflow PR label, optional large-library part label, reviewer list, and
+    human-intervention visibility.
+    """
     if shutil.which("gh") is None:
         print("gh CLI not found. Skipping PR creation.")
         return
@@ -551,7 +568,12 @@ def push_current_branch_to_origin(
         include_in_repo_metrics=False,
         large_library_part=None,
 ):
-    """Create and push a feature branch, returning branch and coordinates."""
+    """Create, locally verify, and push a feature branch for PR publication.
+
+    Local CI-equivalent verification (§FS-local-ci-equivalent-verification) is
+    required before pushing the branch that will back a PR — the precondition
+    for PR eligibility (§GIT-pr-eligibility).
+    """
     group, artifact, library_version = parse_coordinate_parts(coordinates)
 
     branch_suffix = f"add-lib-support-{group}-{artifact}-{library_version}"
@@ -601,7 +623,11 @@ def update_large_library_state_after_publish(
         pr_number: int | None,
         final_part: bool,
 ) -> None:
-    """Record the published branch/commit in the large-library progress artifact."""
+    """Record the published branch/commit in the large-library progress artifact.
+
+    The next chunk resumes only after this published state is present on the
+    base branch (§WF-dynamic-access-exhaust-report).
+    """
     if not state_path:
         return
     state = LargeLibraryProgressState.load(state_path)

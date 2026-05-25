@@ -13,6 +13,12 @@ Usage:
     [--strategy-name "basic_iterative"] \
     [--benchmark-mode] \
     [-v]
+
+New-library support is the single-run workflow driver for new-library issues
+(§AR-forge-workflow-boundary). It resolves repository paths, selects the
+predefined strategy bundle, prepares source context, creates the scaffold
+checkpoint, runs the selected strategy — by default the dynamic-access workflow
+(§WF-dynamic-access-workflow) — finalizes metadata, and writes validated metrics.
 """
 
 import subprocess
@@ -304,7 +310,13 @@ def init_agent(
         model_name=DEFAULT_MODEL_NAME,
         persistent_instructions: str | None = None,
 ):
-    """Initialize the configured agent implementation."""
+    """Initialize the agent selected by the predefined strategy bundle.
+
+    Workflow drivers bind the backend, model, MCPs, prompt context, and persistent
+    instructions named by the bundle (§STRAT-forge-predefined-strategy-contract);
+    strategy code owns the iteration loop on the far side of that boundary
+    (§AR-forge-strategy-agent-boundary).
+    """
     strategy_agent = strategy.get("agent")
     if not strategy_agent:
         print("ERROR: Strategy is missing required field: agent", file=sys.stderr)
@@ -403,6 +415,15 @@ def _should_create_failure_run_metrics(
 
 
 def main(argv=None):
+    """Run one new-library workflow from setup through metrics publication.
+
+    The single-run driver (§WF-forge-workflow-drivers,
+    §AR-forge-workflow-boundary) that performs setup and finalization around the
+    strategy: scaffold, source-context materialization, checkpoint capture,
+    strategy execution, metadata finalization, placeholder cleanup, and
+    schema-validated metrics. The default strategy runs the dynamic-access
+    workflow (§WF-dynamic-access-workflow).
+    """
     (
         library,
         package,

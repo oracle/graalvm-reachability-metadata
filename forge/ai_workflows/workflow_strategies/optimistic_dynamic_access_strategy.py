@@ -24,7 +24,10 @@ DEFAULT_MAX_NATIVE_TEST_VERIFICATION_ITERATIONS = 100
 
 @WorkflowStrategy.register("optimistic_dynamic_access")
 class OptimisticDynamicAccessStrategy(WorkflowStrategy):
-    """Bulk dynamic-access coverage strategy that shows the full report to the agent."""
+    """Bulk dynamic-access coverage strategy that shows the full report to the agent.
+
+    Implements the bulk engine of §WF-dynamic-access-bulk-strategy.
+    """
 
     REQUIRED_PROMPTS = ["optimistic-dynamic-access-iteration"]
     REQUIRED_PARAMS = ["max-optimistic-iterations", "max-test-iterations"]

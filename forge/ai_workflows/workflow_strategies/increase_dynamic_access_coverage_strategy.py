@@ -14,7 +14,10 @@ from ai_workflows.workflow_strategies.workflow_strategy import (
 
 @WorkflowStrategy.register("increase_dynamic_access_coverage")
 class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
-    """Composite strategy that runs a primary workflow then improves dynamic-access coverage."""
+    """Composite strategy that runs a primary workflow then improves dynamic-access coverage.
+
+    Implements the composite engine of §WF-dynamic-access-composite-strategy.
+    """
 
     REQUIRED_PROMPTS = []
     REQUIRED_PARAMS = []

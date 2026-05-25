@@ -3,7 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""Workflow strategy implementations for Metadata Forge workflows."""
+"""Workflow strategy implementations for Forge workflows."""
 from ai_workflows.workflow_strategies.workflow_strategy import WorkflowStrategy
 from ai_workflows.workflow_strategies.basic_iterative_strategy import BasicIterativeStrategy
 from ai_workflows.workflow_strategies.dynamic_access_iterative_strategy import DynamicAccessIterativeStrategy

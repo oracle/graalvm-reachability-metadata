@@ -3,6 +3,15 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+"""Durable progress state for chunked dynamic-access issue runs.
+
+This is the exhaust report of §WF-dynamic-access-exhaust-report: it stores only
+the information needed to resume safely after a chunk PR merges — processed
+classes, current part, coverage totals, and the latest published PR/commit
+metadata that the chunk PR linking contract (§WF-chunked-dynamic-access-pr-linking)
+relies on.
+"""
+
 import glob
 import json
 import os
@@ -69,7 +78,12 @@ def resolve_workflow_progress_state(
         large_library_series: bool,
         resume_artifact: str | None = None,
 ) -> tuple["LargeLibraryProgressState | None", str | None]:
-    """Resolve the progress state used by a workflow invocation."""
+    """Resolve the progress state used by a workflow invocation.
+
+    Resume state is derived from the coordinate/issue storage location unless
+    orchestration supplies an explicit artifact for continuation
+    (§WF-dynamic-access-exhaust-report).
+    """
     if resume_artifact:
         state = LargeLibraryProgressState.load(resume_artifact)
         return state, state.default_path(metrics_repo_root)
@@ -103,6 +117,13 @@ def copy_progress_artifacts(source_metrics_root: str, destination_metrics_root: 
 
 @dataclass
 class LargeLibraryProgressState:
+    """Minimal resumable state for one large-library dynamic-access series.
+
+    Deliberately not a precomputed chunk manifest: each resumed run regenerates
+    the current dynamic-access report and filters out these recorded class sets
+    (§WF-dynamic-access-exhaust-report).
+    """
+
     schema_version: int
     coordinate: str
     issue_number: int | None
@@ -248,14 +269,22 @@ class LargeLibraryProgressState:
         self.total_calls = int(total_calls)
 
     def record_published_pr(self, branch: str, commit: str, pr_number: int | None) -> None:
-        """Record the branch, commit, and optional PR number for the latest published part."""
+        """Record the branch, commit, and optional PR number for the latest published part.
+
+        Continuation checks use this publication marker before another chunk is
+        allowed to resume (§WF-dynamic-access-exhaust-report).
+        """
         self.last_published_branch = branch
         self.last_published_commit = commit
         if pr_number is not None:
             self.created_pull_requests = _append_unique_int(self.created_pull_requests, pr_number)
 
     def advance_to_next_part(self) -> None:
-        """Advance state to the next serial PR part."""
+        """Advance state to the next serial PR part.
+
+        Non-final chunk PRs preserve the issue for later parts instead of
+        closing it (§WF-chunked-dynamic-access-pr-linking).
+        """
         self.part += 1
 
 

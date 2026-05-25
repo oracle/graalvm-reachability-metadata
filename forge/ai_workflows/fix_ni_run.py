@@ -94,7 +94,11 @@ def create_or_switch_branch(reachability_metadata_path: str, branch: str) -> Non
 
 
 def main(argv=None) -> int:
-    """Run the Native Image fix workflow."""
+    """Run the Native Image fix driver.
+
+    The single-run driver (§WF-forge-workflow-drivers) for
+    §WF-native-image-run-fix-workflow.
+    """
     args = build_parser().parse_args(sys.argv[1:] if argv is None else argv)
 
     reachability_metadata_path, _ = resolve_repo_roots(

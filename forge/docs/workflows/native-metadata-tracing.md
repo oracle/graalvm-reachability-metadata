@@ -1,14 +1,35 @@
-# Native Test Verification — Specification
+# WF-native-metadata-tracing: Native metadata tracing specification
 
-> Uses the Gradle native-tracing task contract from
-> [Native metadata exploration](native-metadata-exploration.md), introduced in
+Native metadata tracing is part of the Forge workflow system
+(§WF-forge-workflow-system).
+
+Metadata production for a coordinate begins with an *approximation*. The JVM
+`native-image-agent` (run via `generateMetadata --agentAllowedPackages=fromJar`)
+and any agent-authored metadata only record the reflection, resource, proxy, and
+serialization accesses observed while the test suite runs on HotSpot. Two
+classes of access slip past them — accesses the suite never exercised on
+HotSpot, and accesses whose reachability only differs under closed-world native
+compilation. Those gaps surface as `nativeTest` failures even after
+`generateMetadata` reports success: **the agent can fail to produce the metadata
+the native image actually needs.**
+
+This spec defines how Forge closes those gaps with *runtime truth* instead of
+more inference. It runs a real native image with metadata tracing enabled,
+records what the execution actually touches, and re-supplies it until the binary
+stops missing metadata. The full recovery process is ordered JVM-agent → native
+tracing → Codex, driven by the native test verification gate
+(§WF-native-test-verification-gate). The Gradle task contract behind the tracing
+mechanism is specified in §WF-native-trace-gradle-tasks; the reporter/tracer
+relationship the loop depends on — and what to do when it breaks — is specified
+in §WF-native-tracing-reporter-divergence.
+
+> The Gradle native-tracing task contract (§WF-native-trace-gradle-tasks) was
+> introduced in
 > [oracle/graalvm-reachability-metadata#3379](https://github.com/oracle/graalvm-reachability-metadata/pull/3379).
->
-> **See also:** [Dynamic-access workflow](dynamic-access-workflow.md) ·
-> [Java fail-fix workflow](fix-java-run-fail.md) ·
-> [Workflow strategies & interventions](workflow-strategies.md).
 
 ## 1. Purpose
+
+### WF-native-test-verification-gate: Native test verification gate
 
 The verification gate ensures that the test binary passes on Native Image
 for a given coordinate. The ordered recovery contract is:
@@ -40,10 +61,45 @@ for a given coordinate. The ordered recovery contract is:
    codex. Codex is the final recovery step — the only failures that bypass
    it are failures of the post-success trace merge or final durable merge,
    which are infrastructure problems codex cannot repair and therefore
-   terminate as `FAILED` directly (see §4 gate semantics).
+   terminate as `FAILED` directly (see §5 loop semantics).
 
 Pi is **not** invoked. Removing failing tests would mask exactly the code
 issues that must surface to the coding agent.
+
+### Why JVM-agent first, then exact-metadata tracing
+
+The JVM `native-image-agent` produces only a *first approximation* of the
+metadata a coordinate needs: it records the reflection, resource, proxy, and
+serialization accesses it observes while the test suite runs on HotSpot. Two
+classes of access slip past it — accesses the test suite never exercised on
+HotSpot, and accesses whose reachability only differs under closed-world native
+compilation. These are the agent's **gaps**, and they surface as `nativeTest`
+failures even after `generateMetadata` reported success.
+
+The gate closes those gaps with runtime truth rather than more inference, using
+two native-image flags:
+
+- `--exact-reachability-metadata` makes the native image treat any access that
+  is **not** backed by supplied metadata as a hard miss instead of silently
+  registering it. With `-H:MissingRegistrationReportingMode=Exit`, the binary
+  exits `ExitStatus.MISSING_METADATA` (172) and prints the exact missing entry
+  the instant it hits an unregistered access.
+- The same `runNativeTraceImage` execution that detects the miss also records
+  it: the missing entry is written into that cycle's trace directory as a
+  ground-truth metadata entry (§WF-native-trace-gradle-tasks). Feeding that
+  directory back through `metadataConfigDirs` makes the next build aware of the
+  previously-missed access.
+
+Iterating this — observe a miss (172), record it, rebuild with it supplied —
+walks the metadata from the JVM agent's approximation to the exact set the
+native image actually requires. Exit `0` means no access missed: every gap the
+JVM agent (or agent-authored metadata) left behind has been filled by
+runtime-observed truth. Only when this exact-metadata loop *still* cannot make
+the binary pass does the gate hand the residual failure to the coding agent
+(Codex) — a remaining failure is then evidence of a code or test defect, not a
+metadata gap. The reporter and tracer that make the observe-record-rebuild cycle
+work are separate components whose agreement the loop relies on
+(§WF-native-tracing-reporter-divergence).
 
 The gate is the per-class success criterion for the dynamic-access workflow
 and a reusable terminal gate for any workflow whose acceptance contract is
@@ -54,18 +110,55 @@ Native Image must always work. A gate result of `FAILED` is therefore a hard
 error: the calling workflow must return `RUN_STATUS_FAILURE` and reset the
 branch to its checkpoint.
 
-## 2. Inputs
+## 2. Reporter and tracer
+
+### WF-native-tracing-reporter-divergence: Reporter and tracer are separate components
+
+Under the tracing build flags (§WF-native-trace-gradle-tasks), two
+*independent* GraalVM Native Image components cooperate on each
+`runNativeTraceImage` cycle:
+
+- the **missing-registration reporter** (`--exact-reachability-metadata`,
+  `-H:MissingRegistrationReportingMode=Exit`) detects an access that is not
+  backed by supplied metadata, prints the exact missing entry, and exits the
+  binary with `ExitStatus.MISSING_METADATA` (172);
+- the **metadata tracer** (`-H:+MetadataTracingSupport`) writes the accesses the
+  execution observes into the trace directory named by `-PtraceMetadataPath`.
+
+**Invariant.** Every entry the reporter prints as missing in a cycle must be
+written by that same cycle's tracer into its trace directory. When this holds,
+appending the trace dir to the next build's `metadataConfigDirs` supplies the
+missing entry, the following cycle gets past it, and the loop converges on the
+exact set the native image requires.
+
+**Divergence is the fallback trigger.** Because the reporter and the tracer are
+separate components, they can disagree: the reporter exits `172` for an entry
+`X`, yet the tracer does not record `X` in the trace directory. The cycle then
+adds no new metadata, the loop cannot make progress on its own, and the gate
+falls back to Codex for the current coordinate — this is exactly the
+`172`-without-new-metadata route in §WF-native-test-verification-gate.
+
+**Divergence is a Native Image defect, not a library metadata gap.** A reporter
+entry that tracing fails to capture is a bug in GraalVM Native Image tracing:
+the run already proved the access happens and named it, so tracing should have
+recorded it. When the gate detects this case it must, in addition to falling
+back to Codex so the current run still makes progress, open a ticket against
+GraalVM Native Image to fix tracing. The ticket must carry the coordinate, the
+missing entry the reporter printed, the trace directory that omitted it, and the
+failing `runNativeTraceImage` log, so the divergence is reproducible upstream.
+
+## 3. Inputs
 
 | Input | Source | Notes |
 | --- | --- | --- |
 | Coordinate `group:artifact:version` | Caller | Identifies the test module. |
 | Reachability repo path | Caller | Working directory for Gradle. |
-| Output directory | Caller | Absolute staging root for this gate invocation. The caller picks a path namespaced per (library, class) for the dynamic-access caller, or per coordinate for non-class-scoped callers — same convention as [native-metadata-exploration.md §4](native-metadata-exploration.md#4-output). The gate writes JVM-agent metadata to `<output_dir>/agent`, merged trace metadata to `<output_dir>/trace`, and writes durable repository metadata only after the final native-image-utils merge succeeds. |
+| Output directory | Caller | Absolute staging root for this gate invocation. The caller picks a path namespaced per (library, class) for the dynamic-access caller, or per coordinate for non-class-scoped callers. The gate writes JVM-agent metadata to `<output_dir>/agent`, merged trace metadata to `<output_dir>/trace`, and writes durable repository metadata only after the final native-image-utils merge succeeds. |
 | Condition packages | `condition_packages` argument to `verify_native_test_passes` | Default `[group]`. Passed to the binary at run time as `-XX:TraceMetadataConditionPackages=...`. |
 | Outer budget | Strategy parameter `max-native-test-verification-iterations` | Default **100**. In practice convergence is expected within a handful of cycles; the high default is a soft cap, not a target. Each cycle rebuilds `nativeTestCompile`, so the wall-clock cost is dominated by native-image build time. |
 | Per-cycle timeout | `cycle_timeout_seconds` argument | Default 30 minutes. Caps the preflight `./gradlew test` invocation and each `runNativeTraceImage` invocation; on timeout the step is treated as a non-zero exit and routed to codex. |
 
-## 3. Outputs
+## 4. Outputs
 
 `NativeTestVerificationResult` carries:
 
@@ -91,7 +184,7 @@ branch to its checkpoint.
   log_path}` entries (zero or one entry; codex is invoked at most once
   per gate invocation).
 
-## 4. Loop
+## 5. Loop
 
 ```mermaid
 flowchart TD
@@ -146,8 +239,8 @@ Gate semantics:
   property is omitted only when no staged agent metadata and no accepted
   trace dirs exist. The resulting binary is built with `-H:+MetadataTracingSupport`,
   `--exact-reachability-metadata`, and
-  `-H:MissingRegistrationReportingMode=Exit` (see
-  [native-metadata-exploration.md §7.2](native-metadata-exploration.md#72-runnativetraceimage)).
+  `-H:MissingRegistrationReportingMode=Exit` (see the `runNativeTraceImage`
+  contract, §WF-native-trace-gradle-tasks).
   The same execution writes a trace dir **and** returns an
   exact-metadata-aware exit code.
 - **Exit-code routing**:
@@ -160,8 +253,10 @@ Gate semantics:
     least one missing access; appending it to `config_dirs` makes the
     next cycle's build see that metadata. If the current `172` cycle
     produces no new canonical metadata entries compared with accepted
-    trace dirs, tracing has stalled; the gate prints the accumulated
-    progress, prints the failure-log tail, and routes to codex.
+    trace dirs, tracing has stalled: the reporter flagged a miss the tracer
+    did not record (§WF-native-tracing-reporter-divergence). The gate prints
+    the accumulated progress, prints the failure-log tail, opens a Native
+    Image tracing ticket, and routes to codex.
   - any other non-zero → the test or library code is broken in a way
     that more metadata cannot fix. Codex finishes it: codex is invoked
     once, and the gate returns based on codex's exit code. The gate does
@@ -171,9 +266,9 @@ Gate semantics:
   and validates its own work; the gate does not second-guess by re-
   verifying. This avoids the gate getting stuck in a codex/verify ping-
   pong on a real code defect.
-- **Pi is not used.** Pi's role in `codex_then_pi` is to remove failing
-  tests when codex cannot recover — exactly the wrong move when the
-  failure is a real code/test bug we want surfaced.
+- **Pi is not used.** Pi's role in the post-generation recovery lane is to
+  remove failing tests when codex cannot recover — exactly the wrong move when
+  the failure is a real code/test bug we want surfaced.
 - **Codex after trace failure.** `metadata-gap-exhausted`, stalled
   metadata progress, trace timeouts, and non-172 trace failures all route
   to codex with a reproduction command that includes the accepted trace
@@ -189,7 +284,7 @@ Gate semantics:
   the current design, but the contract preserves the dirs in the result
   for diagnostics.)
 - **Hard fail.** If codex does not converge, the gate returns `FAILED` and
-  the calling workflow aborts; see §6.
+  the calling workflow aborts; see §9.
 - **Final merge failures are terminal without codex.** After the gate has
   enough staged metadata to pass, it performs one durable native-image-utils
   merge. The inputs are existing durable metadata when present,
@@ -201,13 +296,109 @@ Gate semantics:
   infrastructure problems (Gradle merge task, filesystem write, malformed
   metadata input) downstream of a successful validation path, and codex
   cannot repair the metadata pipeline itself. The calling workflow handles
-  them like any other `FAILED` (§6). This is the only carve-out from the
+  them like any other `FAILED` (§9). This is the only carve-out from the
   "only codex failure may FAIL" invariant — every other failure mode
   (JVM-agent failure, `gradlew test` failure before `nativeTest`, `172`
   with no usable / no new metadata, non-`0`/`172` trace cycle exit, budget
   exhaustion) routes through codex first.
 
-## 5. Reusable Implementation Surface
+## 6. Native tracing Gradle task contract
+
+### WF-native-trace-gradle-tasks: Native tracing Gradle task contract
+
+The tracing mechanism shells out **only** to `./gradlew`; it must never invoke
+`native-image` or `native-image-utils` directly. The key insight is that
+**rebuilding inside the loop matters**: metadata collected by an earlier pass
+unlocks code paths that only later image builds reach, so each cycle rebuilds
+the trace image with all previously accepted trace dirs supplied through
+`-PmetadataConfigDirs`. The reachability repo must provide three tasks; their
+internal implementation (which native-image flags they pass, where they put the
+resulting binary, etc.) is a Gradle-side concern.
+
+#### `nativeTraceImage`
+
+Builds the test module's native image with metadata-tracing support enabled.
+
+| Property | Required | Meaning |
+| --- | --- | --- |
+| `-Pcoordinates=<group:artifact:version>` | yes | Identifies the test module to build. |
+| `-PmetadataConfigDirs=<dir1,dir2,...>` | no | Comma-separated absolute paths translated to `-H:ConfigurationFileDirectories=...`. Omitted on the first cycle. |
+
+Behavior:
+
+- The task adds `-H:+UnlockExperimentalVMOptions
+  -H:+MetadataTracingSupport -H:-UnlockExperimentalVMOptions` (or the
+  equivalent supported invocation) to the native-image build.
+- The task produces a binary at a path the next task can locate using only
+  `-Pcoordinates=...` (i.e., the path is derivable from the coordinates; the
+  caller does not pass the binary path back in).
+- A non-zero task exit code is a build failure.
+
+#### `runNativeTraceImage`
+
+Runs the binary produced by `nativeTraceImage` once, capturing traced metadata
+to a caller-specified directory.
+
+| Property | Required | Meaning |
+| --- | --- | --- |
+| `-Pcoordinates=<group:artifact:version>` | yes | Same coordinates used to build. |
+| `-PtraceMetadataPath=<absolute path>` | yes | Becomes `-XX:TraceMetadata=path=...`. Must be a fresh per-cycle directory. |
+| `-PtraceMetadataConditionPackages=<pkg1,pkg2,...>` | yes | Becomes `-XX:TraceMetadataConditionPackages=...`. |
+| `-PmetadataConfigDirs=<dir1,dir2,...>` | no | Comma-separated absolute paths of the staged agent dir and prior accepted trace dirs; translated to `-H:ConfigurationFileDirectories=...` so the rebuild sees what tracing has already collected. Omitted only when no staged agent metadata and no accepted trace dirs exist. |
+
+Build-flag behavior:
+
+- The task adds `-H:+UnlockExperimentalVMOptions
+  -H:+MetadataTracingSupport -H:-UnlockExperimentalVMOptions` so the binary's
+  **tracer** writes traced metadata at runtime.
+- The task **also** adds `--exact-reachability-metadata` and
+  `-H:MissingRegistrationReportingMode=Exit`. These make the **reporter** exit
+  the binary with `ExitStatus.MISSING_METADATA` (172) when an access misses the
+  metadata supplied via `-PmetadataConfigDirs`, instead of throwing. The gate
+  routes on this exit code (§WF-native-test-verification-gate).
+
+Runtime behavior:
+
+- The task always invokes the binary the same way. There are no
+  caller-supplied program arguments.
+- **The tracer must record whatever the reporter reports missing.** When the
+  missing-registration reporter prints a missing dynamic-access entry to
+  stdout/stderr, the same `runNativeTraceImage` invocation must add the
+  equivalent entry to the trace directory passed by `-PtraceMetadataPath`. The
+  metadata kind, condition package, and target identity reported to the user
+  must match the entry later consumed by `mergeNativeTraceMetadata`; otherwise
+  the trace loop has not produced a trustworthy runtime-observed signal. A
+  reporter/tracer divergence here is a Native Image defect and is handled per
+  §WF-native-tracing-reporter-divergence.
+- The Exec uses `ignoreExitValue=true`, so the binary's exit code does not fail
+  the Gradle invocation. The gate recovers the actual binary exit code from the
+  captured Gradle log (Gradle prints `... finished with non-zero exit value N`
+  for any non-zero exit).
+
+#### `mergeNativeTraceMetadata`
+
+Wraps `native-image-utils generate`. It is the **only** point at which
+`native-image-utils` is invoked.
+
+| Property | Required | Meaning |
+| --- | --- | --- |
+| `-PinputDirs=<dir1,dir2,...>` | yes | Absolute paths of every accepted trace directory. |
+| `-PoutputDir=<absolute path>` | yes | Output directory; pre-existing contents are replaced. |
+
+#### General requirements
+
+- `gh` / `gradle` toolchain configuration (GraalVM home, Java home, native
+  image binary, `native-image-utils` location) is the reachability repo's
+  responsibility. The gate does not export, override, or check any toolchain
+  environment variables beyond what Gradle already requires.
+- All tasks must accept being invoked with `--no-daemon` and must be idempotent
+  across invocations on the same coordinate (i.e., a rerun must be possible
+  after the gate exits, regardless of status).
+
+Concrete Gradle wiring is out of scope for this spec but is a prerequisite for
+implementation.
+
+## 7. Reusable Implementation Surface
 
 ```text
 utility_scripts/native_test_verification.py
@@ -238,7 +429,8 @@ The module composes existing helpers and owns no domain logic of its own:
 - `./gradlew runNativeTraceImage -Pcoordinates=...
   -PtraceMetadataPath=<runs_dir>/cycle-<i>
   -PtraceMetadataConditionPackages=<packages>
-  -PmetadataConfigDirs=<agent dir,accepted trace dirs>` — fallback trace-cycle execution.
+  -PmetadataConfigDirs=<agent dir,accepted trace dirs>` — fallback trace-cycle
+  execution (§WF-native-trace-gradle-tasks).
 - `./gradlew mergeNativeTraceMetadata -PinputDirs=...
   -PoutputDir=<output_dir>/trace` — trace-dir merge on trace-backed
   `PASSED`.
@@ -249,27 +441,23 @@ The module composes existing helpers and owns no domain logic of its own:
   metadata plus native tracing fail to produce passing native tests. Pi is
   **not** invoked.
 
-The standalone trace-loop driver in
-[`utility_scripts/native_metadata_exploration.py`](native-metadata-exploration.md)
-is **not** used by this gate; that module remains for callers (e.g. the
-`native_trace_collect` post-generation intervention) that want a
-deterministic trace-only loop without verification.
-
 This module must not depend on any workflow strategy or post-generation
 intervention.
 
-## 6. Callers
+## 8. Callers
+
+### WF-native-test-verification-callers: Native test verification callers
 
 | Caller | Where in flow | Output-dir convention |
 | --- | --- | --- |
-| `dynamic_access_iterative` per-class loop ([dynamic-access-workflow.md §6.2 / §6.4](dynamic-access-workflow.md)) | After every class with a coverage gain (Resolved or PartialCommit) | `tests/src/<group>/<artifact>/<version>/build/natively-collected/<class-key>/` |
-| `fix_java_run_fail` native-mode path ([fix-java-run-fail.md](fix-java-run-fail.md)) | After the agent's final edit, as the success gate | `tests/src/<group>/<artifact>/<version>/build/natively-collected/_global_/` |
+| `dynamic_access_iterative` per-class loop | After every class with a coverage gain (Resolved or PartialCommit) (§WF-dynamic-access-workflow) | `tests/src/<group>/<artifact>/<version>/build/natively-collected/<class-key>/` |
+| `fix_java_run_fail` native-mode path | After the agent's final edit, as the success gate (§WF-java-fail-fix-workflow) | `tests/src/<group>/<artifact>/<version>/build/natively-collected/_global_/` |
 
 The dynamic-access caller invokes the gate per class; the fix-native-run
 caller invokes it once per workflow run. Both treat `FAILED` as a hard
 workflow failure.
 
-## 7. Acceptance Criteria
+## 9. Acceptance Criteria
 
 A `verify_native_test_passes(...)` invocation is correct iff:
 
@@ -304,8 +492,10 @@ A `verify_native_test_passes(...)` invocation is correct iff:
    - `172` with new trace metadata entries → append
      `runs_dir/cycle-<i>` to the running config dirs and continue to the
      next outer cycle. Codex is **not** invoked.
-   - `172` with no new trace metadata entries → print the accumulated
-     progress and failure-log tail, then invoke codex.
+   - `172` with no new trace metadata entries → a reporter/tracer
+     divergence (§WF-native-tracing-reporter-divergence): print the
+     accumulated progress and failure-log tail, open a Native Image
+     tracing ticket, then invoke codex.
    - any other non-zero → invoke `run_codex_metadata_fix` once and
      return based on its exit code: `PASSED_WITH_INTERVENTION` on codex
      success, `FAILED` on codex failure. The gate does not re-run

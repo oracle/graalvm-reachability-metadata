@@ -374,7 +374,10 @@ class PiAgent(Agent):
         return [f"{prefix}{line}" for line in text.splitlines()]
 
     def _build_generation_log_path(self) -> str:
-        """Build a Pi generation log path for the current library."""
+        """Build a Pi generation log path for the current library.
+
+        Locates the durable generation log required by §FS-durable-generation-logs.
+        """
         return build_pi_log_path("generation", self._library, task_type=self._task_type)
 
     def _set_session_log_path(self, log_path: str) -> None:
@@ -391,6 +394,9 @@ class PiAgent(Agent):
         self._set_session_log_path(self._build_generation_log_path())
 
     def _write_turn_log(self, session_path: str | None, prompt: str, result: PromptResult) -> None:
+        """Append one Pi generation turn to the durable session log
+        (§FS-durable-generation-logs).
+        """
         with open(self._session_log_path, "a", encoding="utf-8") as log_file:
             log_file.write("=" * 80)
             log_file.write("\n")
@@ -405,6 +411,9 @@ class PiAgent(Agent):
             log_file.write("\n")
 
     def _write_failure_log(self, session_path: str | None, prompt: str, exc: PiRpcError) -> None:
+        """Append one failed Pi generation turn to the durable session log
+        (§FS-durable-generation-logs).
+        """
         with open(self._session_log_path, "a", encoding="utf-8") as log_file:
             log_file.write("=" * 80)
             log_file.write("\n")

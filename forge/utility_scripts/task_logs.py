@@ -46,7 +46,10 @@ def display_log_path(log_path: str) -> str:
 
 
 def resolve_task_log_dir(task_type: str, library: str | None) -> str:
-    """Return `logs/<library>/<task-type>/`, creating it when needed."""
+    """Return `logs/<library>/<task-type>/`, creating it when needed.
+
+    This is the durable per-library log layout of §FS-durable-generation-logs.
+    """
     log_dir = os.path.join(
         resolve_logs_root(),
         sanitize_library_log_segment(library),
@@ -70,7 +73,11 @@ def build_timestamped_task_log_path(
         file_prefix: str,
         suffix: str = ".log",
 ) -> str:
-    """Return a timestamped log path under `logs/<library>/<task-type>/`."""
+    """Return a timestamped log path under `logs/<library>/<task-type>/`.
+
+    Timestamping keeps successive runs as distinct durable logs
+    (§FS-durable-generation-logs).
+    """
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H-%M-%S-%fZ")
     safe_prefix = sanitize_log_segment(file_prefix)
     safe_suffix = suffix if suffix.startswith(".") else f".{suffix}"

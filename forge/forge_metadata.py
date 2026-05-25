@@ -8,6 +8,11 @@ Fetches open issues from the graalvm-reachability-metadata project board,
 claims them via optimistic locking (set-assignee + wait + verify),
 runs the matching pipeline, and updates the project item status.
 
+This module is the Forge control-plane dispatcher (§AR-forge-control-plane): it
+owns queue selection, issue claiming, isolated worktree setup, workflow routing,
+publication handoff, follow-up labeling, and cleanup, implementing the
+orchestration contract in §ORCH-forge-orchestration-spec.
+
 Usage:
   python forge-metadata.py --label <label> [--limit N] [--offset N|--random-offset]
       [--strategy-name <name>] [--reachability-metadata-path <path>]
@@ -3601,7 +3606,13 @@ def apply_failed_run_follow_up(
 
 
 def append_large_library_workflow_args(pipeline_argv: list[str], claimed_issue: ClaimedIssue) -> None:
-    """Append issue context and large-library chunking configuration."""
+    """Append issue context and concrete chunk limits for oversized dynamic-access runs.
+
+    The dispatcher (§AR-forge-control-plane) computes the issue-scoped chunking
+    context and passes only execution flags to the workflow driver, so the
+    chunk limits stay consistent with the exhaust report
+    (§WF-dynamic-access-exhaust-report).
+    """
     issue_number = claimed_issue.issue["number"]
     pipeline_argv.extend(["--issue-number", str(issue_number)])
     if (
@@ -3623,7 +3634,13 @@ def invoke_pipeline(
         strategy_name: str | None,
         keep_tests_without_dynamic_access: bool,
 ) -> bool:
-    """Run the matching workflow for the claimed issue in its isolated worktree."""
+    """Run the matching workflow driver in the claimed issue's worktree.
+
+    Label-based routing stays in the dispatcher (§AR-forge-control-plane);
+    workflow drivers then own the run end to end
+    (§AR-forge-workflow-boundary), receiving resolved coordinates, paths,
+    strategy names, and chunk context.
+    """
     issue_number = claimed_issue.issue["number"]
     require_claimed_issue_worktree(claimed_issue, "workflow execution")
 
@@ -4328,7 +4345,13 @@ def claim_issue_for_processing(
         large_library_resume_artifact_override: str | None = None,
         take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
 ) -> Optional[ClaimedIssue]:
-    """Claim an issue and prepare its isolated execution workspace."""
+    """Claim an issue and prepare its isolated execution workspace.
+
+    Claiming, assignment validation, and worktree creation are orchestration
+    responsibilities, not strategy logic (§AR-forge-control-plane); resume-artifact
+    transfer carries the exhaust report forward between chunks
+    (§WF-dynamic-access-exhaust-report).
+    """
     if not refresh_issue_payload_for_claim(issue, label, authenticated_user):
         return None
 
@@ -4489,7 +4512,12 @@ def build_large_library_pr_args(
         large_library_state_path: str | None,
         workflow_status: str | None,
 ) -> list[str]:
-    """Build part-aware PR flags for an active large-library series."""
+    """Build part-aware PR flags for an active large-library series.
+
+    Non-final chunks publish with continuation state and must not close the
+    backing issue, per the chunk PR linking contract
+    (§WF-chunked-dynamic-access-pr-linking, §GIT-issue-linking).
+    """
     if large_library_state is None:
         return []
     args = [
@@ -4522,7 +4550,12 @@ def apply_large_library_completion_follow_up(claimed_issue: ClaimedIssue) -> Non
 def finalize_successful_issue(
         claimed_issue: ClaimedIssue,
 ) -> None:
-    """Create the PR for a successful isolated workflow run."""
+    """Create the PR for a successful isolated workflow run.
+
+    Publication is delegated to workflow-specific git scripts only after the
+    workflow records a PR-eligible status (§GIT-pr-eligibility), keeping
+    generation and publication separate (§AR-forge-verification-publication-boundary).
+    """
     require_claimed_issue_worktree(claimed_issue, "successful finalization")
     large_library_state_path = find_progress_state_path(
         claimed_issue.scratch_metrics_repo_path,
