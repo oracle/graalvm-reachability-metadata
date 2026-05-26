@@ -11,7 +11,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.postgresql.PGConnection;
-import org.postgresql.util.PGobject;
+import org.postgresql.util.PGInterval;
 
 import java.io.File;
 import java.io.IOException;
@@ -70,13 +70,13 @@ public class PgConnectionTest {
     @Test
     void registersCustomDataTypesFromConnectionPropertiesAndPublicApi() throws Exception {
         Properties properties = new Properties();
-        properties.setProperty("datatype.pg_connection_custom", PgConnectionCustomPgObject.class.getName());
+        properties.setProperty("datatype.pg_connection_custom", PGInterval.class.getName());
 
         try (Connection connection = openConnection(properties)) {
             assertThat(connection.isClosed()).isFalse();
 
             PGConnection pgConnection = connection.unwrap(PGConnection.class);
-            pgConnection.addDataType("pg_connection_custom_api", PgConnectionCustomPgObject.class.getName());
+            pgConnection.addDataType("pg_connection_custom_api", PGInterval.class.getName());
         }
     }
 
@@ -92,8 +92,4 @@ public class PgConnectionTest {
                     .isInstanceOf(SQLException.class);
         }
     }
-}
-
-class PgConnectionCustomPgObject extends PGobject {
-    private static final long serialVersionUID = 1L;
 }
