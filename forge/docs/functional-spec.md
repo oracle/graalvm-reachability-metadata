@@ -359,7 +359,8 @@ continue, per §FS-human-intervention-policy. A PR labeled
 `human-intervention-fixed` is the explicit maintainer signal that manual
 follow-up has been completed; review automation may then dismiss stale
 requested-changes reviews, approve, and merge only after normal merge gates
-pass.
+pass, including the index validation safeguard for index-changing pull requests
+(§FS-index-validation-safeguard).
 
 Automated review may add or request the `human-intervention` PR label only when
 the applicable label-specific review rules say the result cannot be handled by
