@@ -77,3 +77,45 @@
 
 ## Releases and Packaging
 - Package artifacts: ./gradlew package
+
+## Grounding with grund (v2)
+
+This project uses [`grund`](https://github.com/vjovanov/grund): every spec, goal, decision, and end-to-end test has a stable ID `<KIND>-<slug>[.<section>]`, cited with the marker `§`. Root repository IDs use `KIND ∈ {GRUND, GOAL, FS, SKILL}`; Forge has its own `forge` namespace with `KIND ∈ {GRUND, GOAL, AR, FS, DW, STRAT, ORCH, GIT, WF, E2E, BENCH, ROADMAP}`. For example, `FS-user-login.3.1` is only a shape illustration, not a real ID in this repo. Type `$$` in a grund-aware editor and it becomes `§`. Bare ID-shaped tokens are ignored — `[reference] strict = true` is set in `.agents/grund.toml`, so only `§`-prefixed citations are checked.
+
+### Grounding from a citation
+
+A `§<ID>` is a pointer to a fact, not a file path. Resolve it with `grund` and climb only as far as needed:
+
+- `grund <ID>` — the lead (heading-less, cut at the first child section). The cheap first read for a bare `§<ID>` citation.
+- `grund <ID> --toc` — the lead plus the nested section map. Use to choose which subsection to fetch next.
+- `grund <ID> --full` — the entire body. Escalate to this when narrower reads aren't enough.
+- `grund <ID> --brief` — heading + first paragraph only.
+- `grund refs <ID>` — every site that cites the ID; add `--summary` for one line per file. Run before renaming or moving a declaration.
+- `grund list` / `grund list --kind FS,AR` — discover IDs if you get lost
+- Cross-namespace citations use `§forge/<ID>`; for example, root repository docs cite Forge goals as `§forge/GOAL-forge-direction`.
+
+### Project map
+
+- [GRUND](docs/grund.md): Why: repository motivation
+- [GOAL](docs/goals.md): Where: repository direction and outcomes
+- [FS](docs): Repository functional behavior and contributor-facing requirements
+- [SKILL](skills): Agent review and automation skills
+
+Workspace members:
+
+- `forge` → [forge/AGENTS.md](forge/AGENTS.md): Forge namespace. Local Forge citations use `§<ID>` inside `forge/`; repository docs cite Forge facts with `§forge/<ID>`.
+
+### Declarations and citations
+
+Declarations are heading lines `# FS-user-login: …` in markdown. In a code doc-comment (Rustdoc, Javadoc, JSDoc, Python docstring, Go `//`, …) drop the `#` — write `/// FS-user-login: …` directly. Numbered headings inside a declaration are citable sections: use depth-matching headings (`## 1. …`, `### 1.1 …`, etc.) so `§<ID>.1` / `§<ID>.1.1` resolve; mismatched heading depth is a `grund check` error. Plain headings or bold labels are fine for non-citable local structure. One doc-comment may declare multiple IDs (e.g. an `AR-` and an `FS-` on the same class) — each gets its own body. An inline source declaration is reachable from the configured kind home via a one-line stub: `# <ID>: [<path>](<path>)`.
+
+### Rules
+
+- **Spec first.** For behavior or design changes, write or update the most-specific spec point before code.
+- **Document by component when complexity warrants it.** A complex component, such as a module, service, workflow family, script family, or large behavior-owning file, may have its own functional spec and architecture following the same behavior/requirements vs how split.
+- **Do not over-nest simple components.** If a component only needs one architecture explanation and has no separate behavioral contract, keep it as a single architecture declaration/file rather than creating a subdirectory.
+- **Grund and goals are namespace-local top-level docs.** Repository motivation and direction live in `docs/grund.md` and `docs/goals.md`; Forge motivation and direction live in `forge/docs/grund.md` and `forge/docs/goals.md`.
+- **Cite as you write.** Place `§<ID>` at the point a claim or behavior is made — on the doc-comment for a whole behavior, inline beside the clause it enforces.
+- **Inline citation style.** Inline notes: ≤ 1 line preferred, hard cap 3 lines; ≤ 100 columns.
+- **Always cite the most-specific point.**
+- **Citations climb to reasons (grund.md).** Goals cite reasons, specs cite goals; architecture cites specs; code and executable tests cite specs.

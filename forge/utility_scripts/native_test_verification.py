@@ -12,7 +12,8 @@ generation fails or when native testing still fails after that metadata exists.
 Codex is the terminal repair path when the fallback cannot converge. Pi is not
 invoked.
 
-See ``forge/docs/native-test-verification.md`` for the full contract.
+This module implements the gate of §WF-native-test-verification-gate; see
+``forge/docs/workflows/native-metadata-tracing.md`` for the full contract.
 """
 
 from __future__ import annotations
@@ -96,7 +97,10 @@ def verify_native_test_passes(
 ) -> NativeTestVerificationResult:
     """Try JVM-agent metadata first, then use native tracing as fallback.
 
-    See ``forge/docs/native-test-verification.md`` for the full contract.
+    The public entry for §WF-native-test-verification-gate: it stages agent and
+    trace metadata outside durable repository metadata, finalizes only after a
+    passing validation path, and invokes Codex at most once as the terminal
+    repair step.
     """
     require_complete_reachability_repo(reachability_repo_path)
     if max_iterations < 1:
@@ -141,6 +145,12 @@ def verify_native_test_passes(
             reproduction_command: str,
             iterations_used: int,
     ) -> NativeTestVerificationResult:
+        """Run Codex as the terminal recovery path for gate failures.
+
+        Per §WF-native-test-verification-gate, the gate preserves accepted
+        metadata dirs and pins the same GraalVM environment that produced the
+        failed native command.
+        """
         log_stage(
             _GATE_STAGE,
             f"{stage}: {reason}; routing to codex (terminal)",
@@ -364,7 +374,11 @@ def _run_generate_metadata(
         log_path: str,
         env: dict[str, str],
 ) -> int:
-    """Run JVM-agent metadata generation for the coordinate into a staging dir."""
+    """Run JVM-agent metadata generation for the coordinate into a staging dir.
+
+    Always the gate's first metadata action, before any native tracing
+    (§WF-native-test-verification-gate).
+    """
     cmd = [
         "./gradlew",
         "generateMetadata",
@@ -535,6 +549,10 @@ def _run_native_trace_image(
         env: dict[str, str] | None = None,
 ) -> tuple[int, int | None]:
     """Run ``runNativeTraceImage`` and surface the binary's exit code.
+
+    Drives the ``runNativeTraceImage`` task per its contract
+    (§WF-native-trace-gradle-tasks) and recovers the exact-metadata-aware exit
+    code the gate routes on (§WF-native-test-verification-gate).
 
     Returns ``(gradle_rc, binary_rc)``. ``binary_rc`` is read from the
     sentinel file written by the Gradle task (``-PexitFile=<path>``); the

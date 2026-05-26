@@ -37,7 +37,12 @@ DEFAULT_NATIVE_TEST_VERIFICATION_BATCH_SIZE = 5
 
 @WorkflowStrategy.register("dynamic_access_iterative")
 class DynamicAccessIterativeStrategy(WorkflowStrategy):
-    """Iterative add-new-library workflow guided by dynamic-access coverage."""
+    """Iterative strategy guided by per-class dynamic-access coverage.
+
+    This is the engine behind §WF-dynamic-access-iterative-strategy: it owns
+    fallback selection, uncovered-class prompting, coverage deltas, per-class
+    checkpointing, native-test gate batching, and chunk-ready returns.
+    """
 
     PROGRESS_DIVIDER = "=" * 83
 
@@ -96,6 +101,12 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         )
 
     def run(self, agent, checkpoint_commit_hash):
+        """Run one dynamic-access generation attempt.
+
+        Basic fallback is allowed only before dynamic-access guidance is
+        available; once the class loop begins, report loss and gate failure are
+        hard workflow failures, per §WF-dynamic-access-fallback-and-failure.
+        """
         initial_report = self._generate_dynamic_access_report()
         if self._should_fallback_to_basic_flow(initial_report):
             self._print_dynamic_access_message(
@@ -197,6 +208,13 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         return False, prompt_iterations
 
     def _run_dynamic_access_phase(self, agent, current_report=None) -> tuple[bool, int]:
+        """Drive the per-class dynamic-access loop for one strategy phase.
+
+        This is the per-class loop of §WF-dynamic-access-iterative-strategy:
+        each selected class gets bounded prompt/test attempts, coverage-gain
+        commits advance the class checkpoint, and exhausted classes are not
+        retried in the same phase.
+        """
         if current_report is None:
             current_report = self._generate_dynamic_access_report()
         if self._should_fallback_to_basic_flow(current_report):
@@ -547,7 +565,13 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             pending_classes: list[str],
             class_name: str,
     ) -> bool:
-        """Queue one committed class step for the next native-test verification batch."""
+        """Queue one committed class step for the next native-test verification batch.
+
+        Implements the dynamic-access caller half of
+        §WF-native-test-verification-callers: the gate runs after a configured
+        batch of coverage-gain commits, and any remaining batch is flushed
+        before returning.
+        """
         pending_classes.append(class_name)
         self._print_dynamic_access_detail(
             "native-test gate: queued class={class_name} pending={pending}/{batch_size}".format(
@@ -567,7 +591,12 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             pending_classes: list[str],
             reason: str,
     ) -> tuple[bool, str | None]:
-        """Run and clear the pending native-test gate batch when any classes are queued."""
+        """Run and clear the pending native-test gate batch when any classes are queued.
+
+        A `FAILED` result from the gate (§WF-native-test-verification-gate)
+        aborts the workflow: partial coverage with broken native tests is not a
+        PR-eligible state.
+        """
         if not pending_classes:
             return True, None
         gate_label = self._native_test_verification_batch_label(pending_classes)
@@ -593,7 +622,12 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         )
 
     def _run_native_test_verification_gate(self, class_name: str) -> bool:
-        """Run the per-class native-test verification gate; return True if PASSED."""
+        """Run the per-class native-test verification gate; return True if PASSED.
+
+        The gate (§WF-native-test-verification-gate) is the dynamic-access
+        success criterion for committed class progress; it writes durable
+        metadata only after verification passes.
+        """
         output_dir = per_class_output_dir(
             self.reachability_repo_path, self.group, self.artifact, self.test_version, class_name,
         )
@@ -623,7 +657,12 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         return True
 
     def _refresh_report_after_gate(self, class_name: str):
-        """Regenerate the dynamic-access report after the gate to reflect new coverage."""
+        """Regenerate the dynamic-access report after the gate to reflect new coverage.
+
+        Gate-supplied metadata can change which call sites remain uncovered for
+        the next class prompt — the post-gate report refresh required by the
+        per-class loop (§WF-dynamic-access-iterative-strategy).
+        """
         refreshed = self._generate_dynamic_access_report(indent_level=2)
         if refreshed is None:
             self._print_dynamic_access_detail(
@@ -633,7 +672,12 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         return refreshed
 
     def _save_large_library_progress(self, current_report) -> None:
-        """Persist resumable large-library state, when enabled."""
+        """Persist resumable large-library state, when enabled.
+
+        Writes the durable exhaust report (§WF-dynamic-access-exhaust-report):
+        intentionally minimal and coordinate-derived, so a later chunk resumes
+        by regenerating the current report.
+        """
         if self.large_library_progress_state is None or self.large_library_progress_state_path is None:
             return
         self.large_library_progress_state.update_coverage(
@@ -643,7 +687,12 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         self.large_library_progress_state.save(self.large_library_progress_state_path)
 
     def _maybe_activate_large_library_series(self, current_report: DynamicAccessCoverageReport) -> None:
-        """Start resumable chunking when the first dynamic-access report is too large."""
+        """Start resumable chunking when the first dynamic-access report is too large.
+
+        Oversized dynamic-access surfaces are split at a class boundary into the
+        reviewable PR parts described by §WF-chunked-dynamic-access-pr-linking,
+        backed by the durable exhaust report (§WF-dynamic-access-exhaust-report).
+        """
         if self.large_library_progress_state is not None:
             return
         if self.large_library_metrics_repo_root is None:
@@ -715,7 +764,12 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             processed_classes_this_part: int,
             initial_part_covered_calls: int,
     ) -> bool:
-        """Return True when the current large-library part reached its configured boundary."""
+        """Return True when the current large-library part reached its configured boundary.
+
+        A class is never split across chunks (§WF-dynamic-access-exhaust-report):
+        the strategy stops only after the selected class has been completed,
+        skipped, exhausted, or failed.
+        """
         if self.large_library_progress_state is None:
             return False
         if current_report.next_uncovered_class(exhausted_classes) is None:
@@ -855,6 +909,12 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         )
 
     def _generate_dynamic_access_report(self, indent_level: int = 0):
+        """Generate and load the dynamic-access report used as strategy guidance.
+
+        Missing guidance at the start allows fallback, but report loss after
+        entering the class loop is a hard failure
+        (§WF-dynamic-access-fallback-and-failure).
+        """
         current_status = self._current_dynamic_access_status()
         self._print_dynamic_access_detail(
             "report: refreshing {library} (previous report: {status})".format(

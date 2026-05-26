@@ -204,6 +204,9 @@ class CodexAgent(Agent):
         )
 
     def _write_turn_log(self, thread_id: str | None, prompt: str, output: str) -> None:
+        """Append one prompt/response generation turn to the durable session log
+        (§FS-durable-generation-logs).
+        """
         with open(self._session_log_path, "a", encoding="utf-8") as log_file:
             log_file.write(f"Thread ID:{thread_id or 'unknown'}\n")
             log_file.write(f"Persistent instructions: {self._persistent_instruction_status()}\n")

@@ -1,12 +1,12 @@
-# Developing Metadata Forge
+# Developing Forge
 
 This document describes how to set up a local environment and run the key developer workflows in this repository. It is concise by design and complements the main README.
 
 ### Overview
 
-This repo contains Python scripts and AI-powered pipelines to automate maintenance of the oracle/graalvm-reachability-metadata repository:
+This repo contains Python scripts and AI-powered pipelines to automate maintenance of the oracle/graalvm-reachability-metadata repository (§FS-forge-issue-resolution-goal):
 
-Repo layout:
+Repo layout (§AR-forge-architecture):
 - ai_workflows/ — Orchestrated AI workflows.
 - git_scripts/ — Git/GitHub automation helpers.
 - complete_pipelines/ — End-to-end wrappers that run an AI workflow and then open a PR.
@@ -14,7 +14,7 @@ Repo layout:
 
 ### Repository mode
 
-Forge is located inside `graalvm-reachability-metadata/forge`. The parent checkout is the default reachability repository, and successful run metrics are written under `stats/<group>/<artifact>/<version>/execution-metrics.json`. Top-level automation still creates one detached metadata-repo worktree per issue run; the run's pending metrics root is the same worktree's `forge/` directory.
+Forge is located inside `graalvm-reachability-metadata/forge`. The parent checkout is the default reachability repository, and successful run metrics are written under `stats/<group>/<artifact>/<version>/execution-metrics.json`. Top-level automation still creates one detached metadata-repo worktree per issue run; the run's pending metrics root is the same worktree's `forge/` directory (§WF-forge-workflow-drivers, §FS-durable-generation-logs).
 
 ### Prerequisites
 
@@ -29,10 +29,11 @@ Forge is located inside `graalvm-reachability-metadata/forge`. The parent checko
   export PYTHONPATH=$PWD
   ```
 - Git and GitHub CLI (`gh`) configured if you plan to use _git_scripts/_ to open PRs.
-- For style checking in this repository, install the development dependencies from the requirements.txt:
+- For style checking in this repository, install the development dependencies from the requirements.txt (§FS-local-ci-equivalent-verification):
   ```console
   pip install -r requirements.txt
   ```
+
 Tip: Use --help on any script for detailed usage and flags.
 
 ### Fix javac test failures for a new library version
@@ -42,7 +43,7 @@ Script: `ai_workflows/fix_javac_fail.py`
 Purpose:
 - Create/update the versioned test module in reachability-metadata.
 - Run Gradle tests and, if native test fails, collect metadata and re-run.
-- Keep the test meaningful (do not trivialize), while adapting to the new library version.
+- Keep the test meaningful (do not trivialize), while adapting to the new library version (§WF-java-fail-fix-workflow).
 
 Usage:
 ```bash
@@ -79,7 +80,7 @@ Options:
 
 Notes:
 - Runs Gradle tasks inside the reachability-metadata repo (`./gradlew ...`).
-- On success, writes metrics into `stats/<group>/<artifact>/<version>/execution-metrics.json`.
+- On success, writes metrics into `stats/<group>/<artifact>/<version>/execution-metrics.json` (§FS-durable-generation-logs).
 
 ### Add support for a new library
 
@@ -89,7 +90,7 @@ Purpose:
 - Iteratively generate a meaningful, cohesive JUnit test suite for library using AI.
 - Keep indices up to date and create the versioned metadata directory.
 - Generates metadata for the new library.
-- Script results are written in `output/results.json`.
+- Script results are written in `output/results.json` (§WF-dynamic-access-workflow, §WF-forge-workflow-drivers).
 
 Usage:
 ```bash
@@ -125,7 +126,7 @@ Options:
 
 Notes:
 - Runs Gradle tasks inside the reachability-metadata repo (`./gradlew ...`).
-- On success, writes metrics into `<metrics_repo_path>/new_library_support/results.json`.
+- On success, writes metrics into `<metrics_repo_path>/new_library_support/results.json` (§FS-durable-generation-logs).
 
 ### Open a PR with the fixes
 
@@ -153,7 +154,7 @@ python3 git_scripts/make_pr_javac_fix.py \
 
 Requirements:
 - gh CLI must be installed and authenticated (gh auth login).
-- Run after the fix_javac_fail.py workflow has produced a successful result and metrics.
+- Run after the fix_javac_fail.py workflow has produced a successful result and metrics (§GIT-forge-publication).
 
 ### Open a PR for new library support
 
@@ -179,7 +180,7 @@ python3 git_scripts/make_pr_new_library_support.py \
 
 Requirements:
 - gh CLI must be installed and authenticated (gh auth login).
-- Run after the add_new_library_support.py workflow has produced a successful result and metrics written under `<metrics_repo_root>/new_library_support/results.json`.
+- Run after the add_new_library_support.py workflow has produced a successful result and metrics written under `<metrics_repo_root>/new_library_support/results.json` (§GIT-forge-publication).
 
 ### Pipeline: Fix javac test failures + PR creation
 
@@ -218,7 +219,7 @@ python3 complete_pipelines/add_new_library_support_create_pr.py \
 
 ### Benchmark runner
 
-Script: `benchmarks/benchmark_runner.py`
+Script: `benchmarks/benchmark_runner.py` (§BENCH-forge-generation-benchmarking)
 
 Description:
 - Run `ai_workflows/add_new_library_support.py` for a predefined set of libraries.
@@ -265,7 +266,7 @@ These are invoked automatically by scripts in the `ai_workflows/`, but can be ru
 
 ### Agent session logs
 
-Agents are registered via `Agent.register(...)` and selected per-strategy through the `agent` field in `strategies/predefined_strategies.json`. Supported agents:
+Agents are registered via `Agent.register(...)` and selected per-strategy through the `agent` field in `strategies/predefined_strategies.json`; see [docs/agent.md](docs/agent.md) for the agent API and Pi adapter architecture. Supported agents:
 
 - `pi` — default for the shipped strategies. Driven through `pi --mode rpc` by `PiAgent` (`ai_workflows/agents/pi_agent.py`). Per-turn transcripts are written to `logs/pi-<action>-<library>-<timestamp>.log` in this repository (see `utility_scripts/pi_logs.py`). Pi session files are stored under Pi's default session directory (`--session-dir` may override it via `PiRpcClient`). Select with strategy entries whose `agent` is `"pi"`; set `"provider": "openrouter"` to route through OpenRouter.
 - `codex` — driven through `codex` by `CodexAgent`. Codex threads act as durable session identities.
@@ -475,7 +476,8 @@ python3 complete_pipelines/add_new_library_support_create_pr.py \
   [-v]
 ```
 
-For the detailed function-level notes and sequence diagram, see `docs/dynamic-access-strategy.md`.
+For the detailed behavior, implementation entry points, and sequence diagrams,
+see `docs/workflows/dynamic-access.md`.
 
 ### Quick reference
 

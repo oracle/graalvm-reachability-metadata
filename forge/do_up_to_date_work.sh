@@ -200,7 +200,7 @@ request_stop() {
     local scope="$2"
 
     mkdir -p -- "$(dirname -- "$target_file")"
-    printf 'Metadata Forge shutdown requested at %(%Y-%m-%d %H:%M:%S %Z)T\n' -1 > "$target_file"
+    printf 'Forge shutdown requested at %(%Y-%m-%d %H:%M:%S %Z)T\n' -1 > "$target_file"
     log "Requested ${scope} Forge do-work loops to stop via ${target_file}."
 }
 

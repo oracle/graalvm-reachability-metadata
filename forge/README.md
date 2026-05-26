@@ -1,12 +1,14 @@
-# Metadata Forge
+# Forge
 
-Metadata Forge automates reachability-metadata maintenance for community
+Forge automates reachability-metadata maintenance for community
 libraries: generating new library support, fixing version-bump failures,
 reviewing generated PRs, and recording run metrics.
+§FS-forge-issue-resolution-goal
 
 This directory lives inside the `graalvm-reachability-metadata` checkout. The
 reachability repository is the parent directory (`..`) and Forge metrics are
 stored under this directory.
+§FS-durable-generation-logs
 
 ## Primary Entry Point
 
@@ -14,9 +16,10 @@ Use `do-work.sh` for unattended operation. It is a stable wrapper that forwards
 all arguments to `do_up_to_date_work.sh`; the up-to-date worker owns argument
 parsing, self-updates, queue processing, sleeping, and re-execing the latest
 script before the next cycle.
+§DW-do-work-loop
 
 ```console
-./do-work.sh [options] [metadata-forge-branch]
+./do-work.sh [options] [forge-branch]
 ```
 
 Common options:
@@ -54,10 +57,12 @@ The same limits can be controlled with environment variables such as
 `FORGE_NI_RUN_WORK_LIMIT`, `FORGE_PARALLELISM`, `FORGE_REVIEW_LIMIT`,
 `FORGE_BULK_UPDATE_REVIEW_LIMIT`, and `DO_WORK_SLEEP_SECONDS`. Set
 `FORGE_DO_WORK_STOP_FILE` to override the shared stop marker path.
+§DW-do-work-loop
 
 ## Setup
 
 Run commands from this directory unless a command says otherwise.
+§AR-forge-workflow-boundary
 
 ```console
 python3 -m venv .venv
@@ -71,21 +76,25 @@ Required local tools depend on the work queue being processed:
 - `pi` for Pi-agent strategies and automated style recovery.
 - `codex` for Codex-agent strategies and metadata fixups.
 - GraalVM available through `GRAALVM_HOME` or `JAVA_HOME`.
+§STRAT-forge-predefined-strategy-contract
 
 Local Forge automation must run without `sudo`. Local CI verification fails
 fast instead of prompting for an administrator password if a command or script
 would require elevated privileges.
+§FS-local-ci-equivalent-verification
 
 Forge scopes `GRADLE_USER_HOME` per reachability-repo worktree so parallel
 workers do not share Gradle daemons, but reuses one shared Gradle wrapper
 distribution cache under the system temp directory. Set
 `FORGE_GRADLE_DISTRIBUTIONS_HOME` to override that cache location, or
 `FORGE_GRADLE_USER_HOME` to override the full Gradle user home.
+§AR-forge-workflow-boundary
 
 ## Manual Workflows
 
 The top-level worker delegates to these lower-level entry points. Use them
 directly when debugging a single task or reproducing a failure.
+§WF-forge-workflow-drivers
 
 ```console
 python3 forge_metadata.py --help
@@ -97,12 +106,14 @@ python3 ai_workflows/fix_ni_run.py --coordinates <group:artifact:oldVersion> --n
 
 Strategies are declared in `strategies/predefined_strategies.json`. Prompt text
 lives in `prompt_templates/`. Persisted output contracts live in `schemas/`.
+§STRAT-workflow-strategy-registry
 
 ## Repository Layout
 
 ```console
 forge/
 ├─ ai_workflows/
+├─ benchmarks/
 ├─ git_scripts/
 ├─ utility_scripts/
 ├─ docs/
@@ -115,10 +126,12 @@ forge/
 - `do-work.sh`: stable wrapper around `do_up_to_date_work.sh`.
 - `do_up_to_date_work.sh`: long-running up-to-date worker and queue processor.
 - `ai_workflows/`: workflow entry points and strategy implementations.
+- `benchmarks/`: generation benchmark suites and runner. §BENCH-forge-generation-benchmarking
 - `git_scripts/`: branch, commit, PR, and review helpers.
 - `utility_scripts/`: shared support code.
 - `docs/`: design notes, workflow specifications, and testing guidance.
+§AR-forge-architecture
 
 See `DEVELOPING.md` for command-level workflow details,
-`docs/overview.md` for the functional specification, and
+`docs/functional-spec.md` for the functional specification, and
 `docs/architecture.md` for the architecture overview.

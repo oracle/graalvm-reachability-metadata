@@ -1,0 +1,61 @@
+grund_config_version = 1
+project_name = "root"
+
+[workspace]
+members = ["forge"]
+include_root = true
+
+[reference]
+marker = "§"
+trigger = "$$"
+strict = true
+require_grounding = false
+inline_style = "citation-with-note" # citation-with-note | citation-only
+inline_note_suggested_lines = 1
+inline_note_max_lines = 3
+inline_note_max_columns = 100
+warn_on_suggested = false
+
+[id]
+format = "{kind}-{slug}" # placeholders: {kind} required; use {number}, {slug}, or both
+section_separator = "."
+section_heading_levels = "strict" # strict | warn | loose
+number_pattern = "\\d+"
+slug_pattern = "[a-z0-9][a-z0-9-]*"
+
+[[kinds]]
+prefix = "GRUND"
+file = "docs/grund.md"
+title = "Why: repository motivation"
+
+[[kinds]]
+prefix = "GOAL"
+file = "docs/goals.md"
+title = "Where: repository direction and outcomes"
+
+[[kinds]]
+prefix = "FS"
+folder = "docs"
+title = "Repository functional behavior and contributor-facing requirements"
+
+[[kinds]]
+prefix = "SKILL"
+folder = "skills"
+title = "Agent review and automation skills"
+
+[scan]
+include = ["AGENTS.md", "README.md", "COVERAGE.md", "docs", "skills", ".github/workflows"]
+exclude = ["target", "node_modules", ".git", "dist", "build", ".venv", ".gradle", "out", "metadata", "stats", "tests", "forge/.venv", "forge/**/__pycache__"]
+extensions = ["md", "html", "yml", "yaml"]
+comment_prefixes = ["//", "#", "/*", "*", "<!--"]
+docstring_python = false
+respect_gitignore = true
+
+[output]
+format = "text" # text | json
+color = "auto" # auto | always | never
+relative_paths = true
+
+[fmt.cross_refs]
+enabled = false
+anchor_format = "github" # github | gitlab | mkdocs | pandoc | none

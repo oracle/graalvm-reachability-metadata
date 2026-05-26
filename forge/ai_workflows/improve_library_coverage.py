@@ -783,6 +783,11 @@ def format_issue_requested_metadata_context(context: str) -> str:
 
 
 def main(argv=None) -> int:
+    """Run one library-update coverage workflow from setup through metrics.
+
+    The single-run driver (§WF-forge-workflow-drivers) for
+    §WF-improve-library-coverage.
+    """
     (
         group,
         artifact,

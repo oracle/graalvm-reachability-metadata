@@ -3,6 +3,15 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+"""Source-context preparation for Forge workflow drivers.
+
+Predefined strategies choose source-context types
+(§STRAT-forge-predefined-strategy-contract); workflow drivers use this module to
+materialize those artifacts as the read-only files the dynamic-access strategies
+read class source from (§WF-dynamic-access-strategy-family) before the strategy
+starts.
+"""
+
 import json
 import os
 import shutil
@@ -109,6 +118,12 @@ class TestSourceLayout:
 
 
 def normalize_source_context_types(raw_value: Any) -> list[str]:
+    """Normalize and validate the strategy's requested source-context types.
+
+    Source context is selected by predefined strategy parameters
+    (§STRAT-predefined-strategy-parameter-families); this utility enforces the
+    supported type set.
+    """
     if raw_value is None:
         return []
     if isinstance(raw_value, str):
@@ -134,6 +149,12 @@ def normalize_source_context_types(raw_value: Any) -> list[str]:
 
 
 def populate_artifact_urls(reachability_repo_path: str, coordinate: str, agent_command: str = DEFAULT_POPULATE_AGENT_COMMAND) -> None:
+    """Populate artifact URLs in ``index.json`` before source-context download.
+
+    Satisfies the dynamic-access setup precondition that source/test/docs URLs
+    be available before the agent receives read-only context
+    (§WF-dynamic-access-workflow).
+    """
     require_complete_reachability_repo(reachability_repo_path)
     log_path = build_task_log_path("populate-artifact-urls", coordinate, "populate_artifact_urls.log")
     log_path_display = display_log_path(log_path)
@@ -205,6 +226,12 @@ def prepare_source_contexts(
         coordinate: str,
         source_context_types: list[str],
 ) -> PreparedSourceContext:
+    """Download and extract requested read-only source artifacts.
+
+    Workflow drivers prepare this context once (§AR-forge-workflow-boundary)
+    so dynamic-access strategies can pass class-targeted source files to the
+    agent without owning download policy (§WF-dynamic-access-strategy-family).
+    """
     index_entry = load_index_entry(reachability_repo_path, coordinate)
     _, _, requested_version = _coordinate_parts(coordinate)
     metadata_version = index_entry.get("metadata-version")

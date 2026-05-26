@@ -37,7 +37,9 @@ import java.util.regex.Pattern;
  * {@code [label]: target} links, and fails the build if any link points to a
  * missing repository path. External URLs ({@code http://}, {@code https://},
  * {@code mailto:}, etc.) are intentionally skipped — only repository-local
- * targets are checked.
+ * targets are checked. Content inside fenced code blocks and inline code spans
+ * is blanked before parsing, so link-like placeholders shown as code (for
+ * example {@code [<path>](<path>)}) are not mistaken for real links.
  */
 public abstract class CheckDocLinksTask extends DefaultTask {
 
@@ -78,7 +80,7 @@ public abstract class CheckDocLinksTask extends DefaultTask {
         List<String> errors = new ArrayList<>();
         List<Path> markdownFiles = collectMarkdownFiles(repoRoot);
         for (Path markdownFile : markdownFiles) {
-            String content = stripCodeFences(Files.readString(markdownFile));
+            String content = stripInlineCode(stripCodeFences(Files.readString(markdownFile)));
             checkLinksInContent(repoRoot, markdownFile, content, INLINE_LINK, errors);
             checkLinksInContent(repoRoot, markdownFile, content, REFERENCE_LINK, errors);
         }
@@ -128,6 +130,67 @@ public abstract class CheckDocLinksTask extends DefaultTask {
             out.append(inFence ? "" : line).append('\n');
         }
         return out.toString();
+    }
+
+    /**
+     * Blanks the contents of inline code spans (delimited by matching runs of
+     * backticks) while preserving newlines, so link-like placeholders written
+     * as code are not parsed as links. Character offsets are preserved by
+     * replacing span characters with spaces, keeping link line numbers accurate.
+     */
+    private static String stripInlineCode(String content) {
+        StringBuilder out = new StringBuilder(content.length());
+        int length = content.length();
+        int index = 0;
+        while (index < length) {
+            char current = content.charAt(index);
+            if (current != '`') {
+                out.append(current);
+                index++;
+                continue;
+            }
+            int openStart = index;
+            int runLength = 0;
+            while (index < length && content.charAt(index) == '`') {
+                runLength++;
+                index++;
+            }
+            int closeEnd = findClosingBacktickRun(content, index, runLength);
+            if (closeEnd < 0) {
+                out.append(content, openStart, index);
+                continue;
+            }
+            for (int position = openStart; position < closeEnd; position++) {
+                char spanChar = content.charAt(position);
+                out.append(spanChar == '\n' ? '\n' : ' ');
+            }
+            index = closeEnd;
+        }
+        return out.toString();
+    }
+
+    /**
+     * Returns the index just past a closing backtick run of exactly
+     * {@code runLength} backticks starting at or after {@code from}, or
+     * {@code -1} when the code span is never closed.
+     */
+    private static int findClosingBacktickRun(String content, int from, int runLength) {
+        int length = content.length();
+        int index = from;
+        while (index < length) {
+            if (content.charAt(index) != '`') {
+                index++;
+                continue;
+            }
+            int closeStart = index;
+            while (index < length && content.charAt(index) == '`') {
+                index++;
+            }
+            if (index - closeStart == runLength) {
+                return index;
+            }
+        }
+        return -1;
     }
 
     private void checkLinksInContent(

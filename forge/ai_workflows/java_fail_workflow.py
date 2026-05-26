@@ -438,7 +438,12 @@ def write_fix_metrics(config: JavaFailWorkflowConfig, run_metrics, metrics_repo_
 
 
 def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
-    """Execute the end-to-end java-fail fix workflow for a version bump."""
+    """Execute the shared java-fail driver implementation for a version bump.
+
+    The shared implementation of §WF-java-fail-fix-workflow that both the javac
+    and java-run drivers delegate to, structured as the single-run
+    driver boundary (§WF-forge-workflow-drivers).
+    """
     (
         group,
         artifact,

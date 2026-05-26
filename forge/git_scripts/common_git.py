@@ -77,7 +77,7 @@ def format_forge_revision_section() -> str:
     branch, commit_hash = get_forge_revision_info()
     monitored_branch = os.environ.get("FORGE_MONITORED_BRANCH") or branch
     return (
-        "### Metadata Forge\n\n"
+        "### Forge\n\n"
         f"- Forge monitored branch: `{monitored_branch}`\n"
         f"- Forge branch: `{branch}`\n"
         f"- Forge commit hash: `{commit_hash}`\n"

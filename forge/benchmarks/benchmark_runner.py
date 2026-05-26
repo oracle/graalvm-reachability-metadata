@@ -4,7 +4,7 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 """
-Script for benchmarking the AI workflows.
+Script for benchmarking the AI workflows (§BENCH-forge-generation-benchmarking).
 Cleans up existing tests/metadata in the reachability-metadata repo for the provided coordinates and
 runs ai_workflows/add_new_library_support.py per library in the benchmark suite with the selected strategy and logs the metrics.
 

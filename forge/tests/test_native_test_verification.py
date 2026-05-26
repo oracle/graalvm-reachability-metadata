@@ -28,7 +28,6 @@ from unittest.mock import patch
 _FORGE_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(_FORGE_ROOT))
 
-from utility_scripts import native_metadata_exploration as nme  # noqa: E402
 from utility_scripts import native_test_verification as ntv  # noqa: E402
 
 
@@ -146,12 +145,12 @@ class CollectEntriesTests(unittest.TestCase):
     def test_identical_runs_produce_identical_sets(self) -> None:
         a = self._make_run({"reachability-metadata.json": {"reflection": [{"type": "Foo"}]}})
         b = self._make_run({"reachability-metadata.json": {"reflection": [{"type": "Foo"}]}})
-        self.assertEqual(nme._collect_entries(a), nme._collect_entries(b))
+        self.assertEqual(ntv._metadata_entries(a), ntv._metadata_entries(b))
 
     def test_added_entry_changes_set(self) -> None:
         a = self._make_run({"m.json": {"reflection": [{"type": "Foo"}]}})
         b = self._make_run({"m.json": {"reflection": [{"type": "Foo"}, {"type": "Bar"}]}})
-        added = nme._collect_entries(b) - nme._collect_entries(a)
+        added = ntv._metadata_entries(b) - ntv._metadata_entries(a)
         self.assertTrue(added, "adding a reflection entry must yield delta")
 
     def test_non_json_files_use_stable_hash(self) -> None:
@@ -159,12 +158,12 @@ class CollectEntriesTests(unittest.TestCase):
         # string — guarding against hash() salting.
         a = self._make_run({"opaque.bin": b"\x00\x01\x02"})
         b = self._make_run({"opaque.bin": b"\x00\x01\x02"})
-        self.assertEqual(nme._collect_entries(a), nme._collect_entries(b))
+        self.assertEqual(ntv._metadata_entries(a), ntv._metadata_entries(b))
 
     def test_different_opaque_bytes_diverge(self) -> None:
         a = self._make_run({"opaque.bin": b"AAA"})
         b = self._make_run({"opaque.bin": b"BBB"})
-        self.assertNotEqual(nme._collect_entries(a), nme._collect_entries(b))
+        self.assertNotEqual(ntv._metadata_entries(a), ntv._metadata_entries(b))
 
 
 class MetadataAggregationTests(unittest.TestCase):

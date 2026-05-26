@@ -1,353 +1,190 @@
-# Metadata Forge — Architecture
+# AR-forge-architecture: Forge architecture
 
-> **See also:** [Functional specification](functional-spec.md)
+This document describes the high-level implementation shape of Forge:
+which component owns each phase of the issue resolution defined in
+§FS-forge-issue-resolution-goal, where extensibility lives, and which
+boundaries keep generated work reviewable. The behavior Forge must satisfy is
+defined by §FS-forge-functional-spec; this file records the implementation
+structure chosen to satisfy it, with the workflow catalog in
+§FS-forge-workflow-spec-catalog as the behavior surface.
 
-This document describes **how** Metadata Forge runs. The
-[functional spec](functional-spec.md) covers **what** it does and the contracts
-it must satisfy. Components are grouped by responsibility; each is described
-once and referenced from the diagrams.
+## Architecture Map
 
-## 1. Component Layout
-
-```text
-forge/
-├─ do-work.sh                  # Stable wrapper
-├─ do_up_to_date_work.sh       # Up-to-date worker loop
-├─ forge_metadata.py           # Top-level dispatcher (issues, PRs, reviews)
-├─ ai_workflows/
-│  ├─ add_new_library_support.py   # Entry: new-library generation
-│  ├─ improve_library_coverage.py  # Entry: library-update coverage
-│  ├─ fix_javac_fail.py            # Entry: fix Java compile failures
-│  ├─ fix_java_run_fail.py         # Entry: fix JVM runtime failures
-│  ├─ fix_ni_run.py                # Entry: fix native-image runtime failures
-│  ├─ fix_metadata_codex.py        # Post-gen: Codex metadata repair
-│  ├─ fix_post_generation_pi.py    # Post-gen: Pi intervention fallback
-│  ├─ agents/                      # Pluggable LLM agents (pi, codex)
-│  └─ workflow_strategies/         # Pluggable control loops
-├─ git_scripts/                # Branch/commit/PR + GitHub helpers
-├─ utility_scripts/            # Shared support modules (paths, metrics, …)
-├─ strategies/
-│  └─ predefined_strategies.json   # Named agent + workflow + prompts bundles
-├─ prompt_templates/           # Loaded by strategies at runtime
-├─ schemas/                    # JSON schemas for run metrics
-└─ docs/                       # Specifications and this document
-```
-
-## 2. High-Level Architecture
-
-```mermaid
-flowchart TB
-    subgraph Drivers["Drivers"]
-        DoWork["do-work.sh<br/>(stable wrapper)"]
-        DoCycle["do_up_to_date_work.sh<br/>(worker loop)"]
-        Dispatcher["forge_metadata.py<br/>(dispatcher)"]
-    end
-
-    subgraph Workflows["AI Workflows (entry scripts)"]
-        AddNew["add_new_library_support"]
-        Improve["improve_library_coverage"]
-        FixJavac["fix_javac_fail"]
-        FixJavaRun["fix_java_run_fail"]
-        FixNI["fix_ni_run"]
-    end
-
-    subgraph Strategies["Workflow Strategies"]
-        Basic["basic_iterative"]
-        Dyn["dynamic_access_iterative"]
-        Opt["optimistic_dynamic_access"]
-        Inc["increase_dynamic_access_coverage"]
-        JFix["javac_iterative / java_run_iterative"]
-    end
-
-    subgraph Agents["Agents"]
-        Pi["pi (PiAgent + RPC)"]
-        Codex["codex (CodexAgent + AppServer)"]
-    end
-
-    subgraph PostGen["PostGenerationIntervention (registry)"]
-        IntNoop["noop"]
-        IntCodex["codex_then_pi (default)<br/>fix_metadata_codex → fix_post_generation_pi"]
-        IntTrace["native_trace_collect<br/>native_metadata_exploration → codex"]
-    end
-
-    subgraph ReviewPRs["PR Review Queues (by label)"]
-        RvNew["library-new-request"]
-        RvJavac["fixes-javac-fail"]
-        RvJavaRun["fixes-java-run-fail"]
-        RvNI["fixes-native-image-run-fail"]
-        RvBulk["library-bulk-update"]
-    end
-
-    subgraph Shared["Shared Utilities"]
-        Paths["repo_path_resolver"]
-        Setup["workflow_setup<br/>(GraalVM, validation)"]
-        SrcCtx["source_context"]
-        StratLoad["strategy_loader"]
-        DynRpt["dynamic_access_report"]
-        Metrics["metrics_writer + schema_validator"]
-        Quality["test_quality_checks + style_checks"]
-        Final["library_finalization"]
-        Stage["stage_logger / task_logs"]
-    end
-
-    subgraph External["External Systems"]
-        Repo[("Reachability repo<br/>Gradle")]
-        GH[("GitHub<br/>issues, PRs, projects")]
-        MetricsStore[("Metrics store<br/>stats/.../execution-metrics.json")]
-    end
-
-    DoWork --> DoCycle --> Dispatcher
-    Dispatcher -->|claim issue + label| GH
-    Dispatcher --> AddNew
-    Dispatcher --> Improve
-    Dispatcher --> FixJavac
-    Dispatcher --> FixJavaRun
-    Dispatcher --> FixNI
-    Dispatcher --> ReviewPRs
-    ReviewPRs -->|submit review| GH
-
-    AddNew --> Strategies
-    Improve --> Inc
-    FixJavac --> JFix
-    FixJavaRun --> JFix
-    FixNI --> Strategies
-
-    Strategies --> Agents
-    Strategies --> Repo
-    Strategies --> DynRpt
-    Strategies -->|dispatch by name<br/>per strategy config| PostGen
-
-    Workflows --> Shared
-    PostGen --> Repo
-
-    Workflows -->|validated record| Metrics
-    Metrics --> MetricsStore
-
-    Dispatcher --> GitScripts["git_scripts/make_pr_*.py"]
-    GitScripts --> GH
-```
-
-Key invariants (unchanged from the functional spec):
-
-- Agents **never** invoke Gradle directly. Strategies issue build/test
-  commands through `agent.run_test_command(...)` and analyze the combined
-  output.
-- Generated changes must live under the per-library directory
-  `tests/src/<group>/<artifact>/<version>` in the reachability repo, plus the
-  library's `metadata/<group>/<artifact>/index.json`.
-- Every successful run writes a metrics record validated against
-  [schemas/](../schemas/) before any PR is opened.
-
-## 3. Components
-
-### 3.1 Drivers
-
-- **[do-work.sh](../do-work.sh)** — fixed bootstrap wrapper. It is not changed
-  for behavior updates; it forwards `argv` unchanged to
-  `do_up_to_date_work.sh`, where the selected branch and every other option are
-  parsed.
-- **[do_up_to_date_work.sh](../do_up_to_date_work.sh)** — long-running
-  up-to-date worker. Parses arguments, updates the Forge checkout, runs one
-  configured work cycle, sleeps `DO_WORK_SLEEP_SECONDS`, honors the shared
-  stop marker at `~/.metadata-forge-stop` plus branch-scoped markers beside
-  it, and re-execs the latest script before the next cycle.
-- **[forge_metadata.py](../forge_metadata.py)** — dispatcher. Fetches GitHub
-  issues by label, claims them via optimistic locking (assignee + verify),
-  creates an isolated worktree, routes the claim to the matching workflow
-  entry script, and afterwards either opens a PR or preserves failed work and
-  posts a human-intervention comment. Also runs the PR review queues.
-
-### 3.2 AI Workflow Entry Scripts
-
-Each script is a thin orchestrator over the shared utilities and a workflow
-strategy. They share a common skeleton: resolve paths and GraalVM, scaffold
-the per-library directory, prepare source contexts, load the strategy, run
-it, optionally apply post-generation intervention, validate and write
-metrics.
-
-| Script | GitHub label | Workflow concern |
-| --- | --- | --- |
-| [add_new_library_support.py](../ai_workflows/add_new_library_support.py) | `library-new-request` | Generate tests + metadata for an unsupported library. |
-| [improve_library_coverage.py](../ai_workflows/improve_library_coverage.py) | `library-update-request` | Resolve an existing-library update target, clone/split support when needed, then generate tests + metadata to improve coverage for the requested coordinate. |
-| [fix_javac_fail.py](../ai_workflows/fix_javac_fail.py) | `fixes-javac-fail` | Repair test sources that no longer compile. |
-| [fix_java_run_fail.py](../ai_workflows/fix_java_run_fail.py) | `fixes-java-run-fail` | Repair JVM runtime test failures. |
-| [fix_ni_run.py](../ai_workflows/fix_ni_run.py) | `fixes-native-image-run-fail` | Refresh metadata for `nativeTest` failures. |
-
-### 3.3 Agents
-
-Agents implement the [`Agent`](../ai_workflows/agents/agent.py) base
-interface (`send_prompt`, `run_test_command`, `fork`, context management,
-token tracking) and self-register via `@Agent.register("name")`.
-
-- **[`pi`](../ai_workflows/agents/pi_agent.py)** — uses
-  [`PiRpcClient`](../ai_workflows/agents/pi_rpc_client.py) over JSON-RPC.
-- **[`codex`](../ai_workflows/agents/codex_agent.py)** — uses
-  [`CodexAppServerClient`](../ai_workflows/agents/codex_app_server.py) over
-  HTTP.
-
-A predefined strategy names the agent it requires; the entry script
-instantiates it through the registry.
-
-Strategies may also declare `persistent-instructions`, a rendered template
-for durable workflow rules. The agent adapters map it to their backend-specific
-persistent layer: Pi launches RPC with `--append-system-prompt`, Codex CLI
-passes `developer_instructions` through `codex exec -c`, and Codex app-server
-thread lifecycle calls include `developer_instructions` in the thread config.
-Session logs record whether persistent instructions were configured without
-printing the instruction text.
-
-### 3.4 Workflow Strategies
-
-> Detailed reference: [Workflow strategies](workflow-strategies.md) — base
-> class contract, per-strategy loop semantics, predefined-strategy bundles,
-> and how to add a new one.
-
-Strategies inherit from
-[`WorkflowStrategy`](../ai_workflows/workflow_strategies/workflow_strategy.py)
-and self-register via `@WorkflowStrategy.register("name")`. The base class
-validates required prompts/parameters and exposes the post-generation
-intervention hook.
-
-| Name | Implementation | Role |
-| --- | --- | --- |
-| `basic_iterative` | [basic_iterative_strategy.py](../ai_workflows/workflow_strategies/basic_iterative_strategy.py) | Run-test → on failure, send error to agent → loop until pass or max iterations. |
-| `dynamic_access_iterative` | [dynamic_access_iterative_strategy.py](../ai_workflows/workflow_strategies/dynamic_access_iterative_strategy.py) | Coverage-driven loop using the dynamic-access report; targets uncovered call sites. |
-| `optimistic_dynamic_access` | [optimistic_dynamic_access_strategy.py](../ai_workflows/workflow_strategies/optimistic_dynamic_access_strategy.py) | Variant of dynamic-access that primes coverage from source analysis. |
-| `increase_dynamic_access_coverage` | [increase_dynamic_access_coverage_strategy.py](../ai_workflows/workflow_strategies/increase_dynamic_access_coverage_strategy.py) | Composite: chain a primary workflow with a coverage-improvement phase. |
-| `javac_iterative`, `java_run_iterative` | [java_fix_iterative_strategy.py](../ai_workflows/workflow_strategies/java_fix_iterative_strategy.py) | Specializations of a shared base for compile vs. runtime fixes. |
-
-### 3.5 Post-Generation Interventions
-
-> Detailed reference: [workflow-strategies.md §5](workflow-strategies.md#5-post-generation-interventions) ·
-> Trace-loop spec: [native-metadata-exploration.md](native-metadata-exploration.md).
-
-`PostGenerationIntervention` is a separate plug-in registry from
-`WorkflowStrategy`. The base class `_run_test_with_retry` dispatches to the
-intervention named in each predefined strategy's
-`post-generation-intervention` block. Default: `codex_then_pi` (preserves
-historical behaviour). Concrete interventions:
-
-| Name | Implementation | Role |
-| --- | --- | --- |
-| `codex_then_pi` | wraps [`fix_metadata_codex`](../ai_workflows/fix_metadata_codex.py) and [`fix_post_generation_pi`](../ai_workflows/fix_post_generation_pi.py) | Run Codex on missing metadata; if tests still fail, run Pi to remove failing tests and emit an intervention report. Yields `SUCCESS_WITH_INTERVENTION_STATUS` on the Pi path. |
-| `native_trace_collect` | wraps `utility_scripts/native_metadata_exploration.py` plus the codex/pi cascade | Build with `MetadataTracingSupport`, run, merge, optionally verify with `--exact-reachability-metadata`, then route the result (every status, including `BUILD_FAILED`) into Codex with the trace dir as context, falling back to Pi. |
-| `noop` | — | Skip recovery; treat any test failure as hard failure. |
-
-The intervention contract (`InterventionContext` → `InterventionResult`)
-and concrete sub-step semantics are documented in
-[workflow-strategies.md §5.1](workflow-strategies.md#51-interface). The
-shared trace-loop primitive used by `native_trace_collect` is fully
-specified in [native-metadata-exploration.md](native-metadata-exploration.md)
-— including the convergence rule, status enum, Gradle task surface, and the
-codex hand-off contract for non-`SUCCESS` outcomes.
-
-### 3.6 Shared Utilities (`utility_scripts/`)
-
-| Module | Role |
+| ID | Concern |
 | --- | --- |
-| `repo_path_resolver` | Resolve and validate Forge, reachability, and metrics repo paths. |
-| `workflow_setup` | Resolve `GRAALVM_HOME`/`JAVA_HOME`, validate environment, drive metadata fixup orchestration. |
-| `source_context` | Fetch library source / tests / docs JARs and prepare read-only context for the agent. |
-| `strategy_loader` | Load named entries from `predefined_strategies.json` and substitute prompt template variables. |
-| `dynamic_access_report` | Parse `dynamic-access-coverage.json`, compute deltas, format prompts. |
-| `library_finalization` | Run final Gradle metadata-collection and validation tasks. |
-| `metrics_writer` | Assemble the per-run record (tokens, iterations, coverage, timestamps). |
-| `schema_validator` | Validate metrics against [schemas/](../schemas/). |
-| `test_quality_checks` | Detect/remove scaffold-only placeholder tests. |
-| `style_checks` | Style and lint guards. |
-| `library_stats` | Test LOC, artifact counts, and other per-library statistics. |
-| `stage_logger`, `task_logs`, `pi_logs` | Stage transitions and per-task log paths. |
-| `count_native_image_config_entries`, `count_reachability_entries` | Count metadata entries (legacy and current formats). |
-| `jacoco_parser` | Parse JaCoCo coverage reports. |
+| §AR-forge-architecture | overview of Forge implementation boundaries |
+| §DW-do-work-loop | worker bootstrap, self-update, stop markers, and cycle scheduling |
+| §ORCH-forge-orchestration-spec | orchestration scripts: GitHub queue claiming, worktree setup, workflow dispatch, publication handoff, and issue/project bookkeeping |
+| §GIT-forge-publication | git-scripts publication: staging, commit, PR body, labels, and issue linking |
+| §WF-forge-workflow-system | behavioral contract for the workflow layer |
+| §WF-forge-workflow-architecture | implementation split for workflow drivers, strategy configuration, workflow engines, utilities, and publication handoff |
+| §WF-forge-workflow-drivers | behavioral contract for deterministic workflow drivers |
+| §STRAT-forge-predefined-strategy-contract | behavioral contract for named strategy configuration bundles |
+| §AR-forge-control-plane | how the worker loop, dispatcher, GitHub queues, and worktrees compose |
+| §AR-forge-workflow-boundary | how workflow drivers turn a claimed issue into an isolated workflow run |
+| §AR-forge-strategy-agent-boundary | how strategy configuration, workflow engines, agents, and post-generation interventions are separated |
+| §AR-forge-verification-publication-boundary | why PR creation is a publication step after verification, not part of generation |
+| §AR-forge-extension-points | where new issue queues, strategies, agents, and PR types plug in |
+| §STRAT-workflow-strategy-registry | strategy registry and predefined strategy wiring |
+| §WF-forge-workflow-engine | workflow engines as state-machine-like run executors |
+| §WF-forge-workflow-strategy-config | predefined strategy bundles as workflow run configuration |
 
-### 3.7 Git Scripts (`git_scripts/`)
+## AR-forge-control-plane: Worker loop and dispatcher own queue control
 
-- **[common_git.py](../git_scripts/common_git.py)** — GitHub API helpers:
-  fetch issues/PRs, optimistic-lock claim, comments, labels, branch names,
-  `gh` auth checks.
-- **`make_pr_*.py`** — one per workflow
-  ([new_library_support](../git_scripts/make_pr_new_library_support.py),
-  [javac_fix](../git_scripts/make_pr_javac_fix.py),
-  [java_run_fix](../git_scripts/make_pr_java_run_fix.py),
-  [ni_run_fix](../git_scripts/make_pr_ni_run_fix.py)). Each stages changes,
-  commits with metrics embedded in the message, and opens a PR with a
-  formatted description.
+Forge is shaped as a small control plane around independent workflow entry
+scripts, serving §FS-forge-issue-resolution-goal. `do-work.sh` is the stable
+shell entrypoint. It forwards arguments to `do_up_to_date_work.sh`, which keeps
+the local Forge checkout up to date, honors stop files, applies worker limits,
+and invokes `forge_metadata.py` for one work cycle, as described in
+§DW-do-work-loop. The dispatcher owns GitHub queue scanning, issue claiming,
+worktree creation, workflow routing, review queues, project status updates, and
+cleanup; its behavior and implementation are specified in
+§ORCH-forge-orchestration-spec. PR publication is delegated to the
+git-scripts component (§GIT-forge-publication) after the dispatcher
+observes a PR-eligible status; the dispatched workflows themselves are defined
+separately, in §WF-forge-workflow-system and §WF-forge-workflow-architecture.
 
-### 3.8 Configuration & Templates
+The dispatcher routes issue work by issue labels, not by PR labels:
 
-- **[strategies/predefined_strategies.json](../strategies/predefined_strategies.json)**
-  is the central wiring file. Each entry binds an agent + workflow strategy +
-  model + prompt template paths + parameters into a name passed via
-  `--strategy-name`.
-- **[prompt_templates/](../prompt_templates/)** holds the templates loaded by
-  `strategy_loader` (initial scaffold, post-pass refinement, post-fail
-  recovery, dynamic-access iteration, javac/java-run failure prompts).
-- **[schemas/](../schemas/)** holds the JSON Schemas for run metrics and
-  benchmark records.
+| Issue label | Workflow driver | Successful PR label |
+| --- | --- | --- |
+| `library-new-request` | `ai_workflows/add_new_library_support.py` | `library-new-request` |
+| `library-update-request` | `ai_workflows/improve_library_coverage.py` | `library-update-request` |
+| `fails-javac-compile` | `ai_workflows/fix_javac_fail.py` | `fixes-javac-fail` |
+| `fails-java-run` | `ai_workflows/fix_java_run_fail.py` | `fixes-java-run-fail` |
+| `fails-native-image-run` | `ai_workflows/fix_ni_run.py` | `fixes-native-image-run-fail` |
 
-## 4. Top-Level Run Sequence (`library-new-request`)
+The control plane treats a claimed issue as exclusive work. Claiming,
+assignment checks, worktree creation, and final unassignment all belong in
+`forge_metadata.py` and the GitHub helper layer rather than in individual
+workflow engines. Workflow drivers should receive already-resolved
+coordinates, paths, and strategy names; they should not reimplement queue
+policy.
 
 ```mermaid
-sequenceDiagram
-    autonumber
-    participant U as User / CI
-    participant Wrapper as do-work.sh
-    participant Worker as do_up_to_date_work.sh
-    participant Disp as forge_metadata.py
-    participant GH as GitHub
-    participant Entry as add_new_library_support.py
-    participant Util as workflow_setup / source_context
-    participant Strat as Workflow strategy
-    participant Agent as Registered agent
-    participant Repo as Reachability repo (Gradle)
-    participant Post as Post-gen intervention
-    participant Met as Metrics store
-    participant PR as git_scripts/make_pr_*
+flowchart LR
+    Wrapper["do-work.sh"]
+    Worker["do_up_to_date_work.sh"]
+    Dispatcher["forge_metadata.py"]
+    GitHub[("GitHub issues / PRs / project")]
+    Worktree[("isolated reachability worktree")]
+    Entry["workflow driver"]
+    PR["git_scripts/make_pr_*.py"]
 
-    U->>Wrapper: ./do-work.sh
-    Wrapper->>Worker: exec do_up_to_date_work.sh "$@"
-    Worker->>Disp: forge_metadata.py
-    Disp->>GH: Fetch issues, claim by label
-    Disp->>Entry: Invoke with --coordinates, --strategy-name
-    Entry->>Util: Resolve paths, GraalVM/Java home
-    Entry->>Repo: Create branch, run scaffold task
-    Entry->>Util: prepare_source_contexts(...)
-    Entry->>Strat: Instantiate from predefined_strategies.json
-    Entry->>Agent: Initialize via Agent.get_class(name)
-    Entry->>Strat: run(agent, checkpoint_commit_hash)
-    loop iteration
-        Strat->>Agent: send_prompt / run_test_command
-        Agent->>Repo: Edit files; Strat triggers Gradle
-    end
-    alt strategy declares post-generation intervention
-        Strat->>Post: Codex metadata fix
-        opt Codex did not converge
-            Post->>Post: Pi removes failing tests
-        end
-    end
-    Strat-->>Entry: status, iteration counts
-    Entry->>Met: Validated run-metrics record
-    alt success / success-with-intervention
-        Disp->>PR: make_pr_new_library_support
-        PR->>GH: Commit + open PR
-        Disp->>GH: Project status → Done, unassign
-    else failure
-        Disp->>GH: Push preserve branch + human-intervention comment
-        Disp->>GH: Project status → Todo, unassign
-    end
-    Entry-->>U: Exit 0 (success or success-with-intervention) / 1 (failure)
+    Wrapper --> Worker --> Dispatcher
+    Dispatcher -->|scan + claim label| GitHub
+    Dispatcher -->|create| Worktree
+    Dispatcher -->|invoke| Entry
+    Entry -->|status + metrics| Dispatcher
+    Dispatcher -->|PR-eligible status| PR
+    PR --> GitHub
+    Dispatcher -->|failure / review bookkeeping| GitHub
 ```
 
-## 5. Extension Points
+## AR-forge-workflow-boundary: Workflow drivers compose setup, workflow engine, and metrics
 
-- **Add an agent**: implement `Agent`, decorate with
-  `@Agent.register("name")`, reference it in a `predefined_strategies.json`
-  entry.
-- **Add a workflow strategy**: subclass `WorkflowStrategy`, decorate with
-  `@WorkflowStrategy.register("name")`, declare required prompts/parameters.
-- **Add a workflow type**: add an entry script under `ai_workflows/`, wire a
-  matching `make_pr_*.py`, and register the label routing in
-  `forge_metadata.py`.
-- **Add a predefined strategy**: append an entry to
-  `strategies/predefined_strategies.json` referencing existing agent +
-  workflow names and prompt templates.
+Workflow drivers are single-run boundaries, as defined by
+§WF-forge-workflow-drivers. They translate a claimed issue into one isolated
+run by resolving repository
+paths, pinning the GraalVM environment, creating or checking out the feature
+branch, preparing source context and required directories, loading the named
+predefined strategy, running the selected workflow engine, finalizing metadata,
+and writing schema-validated metrics.
+
+The workflow driver owns run setup and finalization; the workflow engine owns
+the state-machine-like issue-resolution process described in
+§WF-forge-workflow-architecture. The predefined strategy supplies configuration:
+which workflow engine, agent backend, model, prompt set, and workflow
+parameters are used for the run. This keeps every workflow aligned with the
+same repository, metrics, and local verification contracts
+(§FS-local-ci-equivalent-verification) while letting operators select different
+service profiles through configuration.
+
+The reachability repository must be present as a complete checkout or worktree
+for every generated artifact. Forge does not run Gradle-backed testing,
+dynamic-access reporting, metadata generation, or native tracing inside copied
+per-library fragments. That architecture keeps generated tests, metadata,
+Gradle build logic, stats, and Forge logs in one filesystem context.
+
+## AR-forge-strategy-agent-boundary: Strategies configure workflows, agents edit code
+
+Registered workflow implementations own the generation loop. The codebase
+currently names their base class `WorkflowStrategy`, but architecturally those
+classes are workflow engines: they decide which prompt to send next, which
+Gradle command to run, how to interpret output, when to reset to a checkpoint,
+and which terminal status to return. Agents own only the editing and
+command-execution interface exposed by `Agent`: prompts, context management,
+token accounting, and test-command execution.
+
+This boundary lets a predefined strategy bind a workflow engine, agent, model,
+prompt-template set, workflow parameters, MCPs, and optional persistent
+instructions without changing the workflow driver or the workflow implementation.
+The workflow driver loads that bundle from `strategies/predefined_strategies.json`;
+it does not hard-code model-specific behavior.
+
+Post-generation recovery is built into the workflow base class, not a pluggable
+registry and not selected per strategy. When the post-iteration `./gradlew test`
+still fails during finalization, the base class runs a fixed Codex-then-Pi lane:
+a Codex metadata fix first, then Pi removing the offending failing tests as a
+last resort (see the post-generation intervention glossary in
+§FS-forge-functional-spec).
+
+Dynamic-access and native-test behavior stay in workflow specs, not in this
+architecture file. The architecture only fixes the boundaries: workflow engines
+call shared utilities for dynamic-access reports, and native test verification
+is a reusable gate (§WF-native-test-verification-gate) that drives native
+tracing and Codex recovery through the Gradle task contract in
+§WF-native-trace-gradle-tasks. The concrete agent API and Pi adapter are
+documented in §AR-agent-api, and the
+strategy bundles that bind these pieces live in the strategy registry
+(§STRAT-forge-predefined-strategy-contract, §STRAT-workflow-strategy-registry).
+
+## AR-forge-verification-publication-boundary: Git scripts publish verified work
+
+Forge separates generation from publication. A workflow may edit tests,
+metadata, index files, stats, metrics, and logs while it runs, but PR creation
+is delegated to `git_scripts/make_pr_*.py` only after the dispatcher observes a
+PR-eligible status, as required by §FS-local-ci-equivalent-verification and
+§GIT-forge-publication. The publication script
+stages the expected paths, writes a commit message with metrics context, opens
+the pull request, applies the workflow-specific PR label, and links the result
+back to the issue.
+
+This boundary is especially important for chunked dynamic-access work. A
+non-final chunk publishes a reviewable PR that references the issue and carries
+the exhaust-report state needed by the next run, as specified in
+§WF-dynamic-access-exhaust-report. The final chunk is the only one allowed to
+close the issue. The publication layer must preserve that issue linking
+contract instead of treating every successful chunk as a completed issue
+(§WF-chunked-dynamic-access-pr-linking).
+
+Shared repository edits are allowed only when local verification proves they
+are necessary, and they must be surfaced in metrics and PR text for maintainer
+review. Publication is therefore not a blind `git add .`; it is the point where
+workflow-specific expected paths, labels, metrics, and human-intervention flags
+become visible to reviewers.
+
+## AR-forge-extension-points: New behavior plugs into one boundary at a time
+
+Forge extension points are intentionally narrow:
+
+- Add an issue queue by adding a label route in `forge_metadata.py` (see
+  §ORCH-forge-orchestration-spec), a workflow driver under `ai_workflows/`, and
+  a matching git script under `git_scripts/` (see
+  §GIT-forge-publication).
+- Add a workflow engine by subclassing the current `WorkflowStrategy` base
+  class, registering it, documenting the workflow behavior, and adding
+  predefined strategy entries that select it.
+- Add or swap an editor backend by implementing `Agent` (see §AR-agent-api) and
+  referencing it from predefined strategies.
+- Change post-generation recovery by editing the shared Codex-then-Pi lane in
+  the workflow base class (`_run_test_with_retry`); it is built in rather than a
+  per-strategy plug-in, so recovery changes apply to every workflow at once.
+- Add a prompt shape by adding a template and binding it through
+  `strategies/predefined_strategies.json`.
+
+New extensions should cite the workflow or functional spec that explains why
+the behavior exists before adding architecture. Architecture declarations record
+where a behavior lives in the implementation; workflow specs record the
+operational contract; functional specs record the user-visible reason (see
+§FS-forge-issue-resolution-goal).
