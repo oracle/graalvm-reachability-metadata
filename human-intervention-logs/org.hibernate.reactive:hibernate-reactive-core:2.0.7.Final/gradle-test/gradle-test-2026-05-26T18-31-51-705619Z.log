@@ -1,0 +1,354 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.hibernate.reactive:hibernate-reactive-core:2.0.7.Final
+Command: `/home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7612-7cf7b8d1/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 19 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources UP-TO-DATE
+> Task :testClasses UP-TO-DATE
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by io.netty.util.internal.PlatformDependent0$4 (file:/tmp/metadata-forge-gradle/ef058eab3ba2ab41/caches/modules-2/files-2.1/io.netty/netty-common/4.1.100.Final/847f942381145de23f21c836d05b0677474271d3/netty-common-4.1.100.Final.jar)
+WARNING: Please consider reporting this to the maintainers of class io.netty.util.internal.PlatformDependent0$4
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+
+> Task :test
+
+ReactiveEntityBatchLoaderArrayParamTest > initializationError FAILED
+    org.hibernate.service.spi.ServiceException: Unable to create requested service [org.hibernate.engine.jdbc.env.spi.JdbcEnvironment] due to: java.lang.ExceptionInInitializerError
+        at app//org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:277)
+        at app//org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:239)
+        at app//org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:216)
+        at app//org.hibernate.reactive.provider.impl.ReactiveTypeContributor.dialect(ReactiveTypeContributor.java:100)
+        at app//org.hibernate.reactive.provider.impl.ReactiveTypeContributor.registerReactiveChanges(ReactiveTypeContributor.java:74)
+        at app//org.hibernate.reactive.provider.impl.ReactiveTypeContributor.contribute(ReactiveTypeContributor.java:69)
+        at app//org.hibernate.boot.internal.MetadataBuilderImpl.applyTypes(MetadataBuilderImpl.java:296)
+        at java.base@25.0.3/java.lang.Iterable.forEach(Iterable.java:75)
+        at java.base@25.0.3/java.util.Collections$UnmodifiableCollection.forEach(Collections.java:1118)
+        at app//org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.applyTypeContributors(EntityManagerFactoryBuilderImpl.java:1355)
+        at app//org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.applyMetamodelBuilderSettings(EntityManagerFactoryBuilderImpl.java:1336)
+        at app//org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.<init>(EntityManagerFactoryBuilderImpl.java:275)
+        at app//org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.<init>(EntityManagerFactoryBuilderImpl.java:193)
+        at app//org.hibernate.reactive.provider.impl.ReactiveEntityManagerFactoryBuilder.<init>(ReactiveEntityManagerFactoryBuilder.java:33)
+        at app//org.hibernate.reactive.provider.ReactivePersistenceProvider.getEntityManagerFactoryBuilder(ReactivePersistenceProvider.java:145)
+        at app//org.hibernate.reactive.provider.ReactivePersistenceProvider.getEntityManagerFactoryBuilderOrNull(ReactivePersistenceProvider.java:95)
+        at app//org.hibernate.reactive.provider.ReactivePersistenceProvider.createEntityManagerFactory(ReactivePersistenceProvider.java:47)
+        at app//jakarta.persistence.Persistence.createEntityManagerFactory(Persistence.java:80)
+        at app//org_hibernate_reactive.hibernate_reactive_core.ReactiveEntityBatchLoaderArrayParamTest.init(ReactiveEntityBatchLoaderArrayParamTest.java:72)
+
+        Caused by:
+        java.util.concurrent.CompletionException: java.lang.ExceptionInInitializerError
+            at java.base/java.util.concurrent.CompletableFuture.wrapInCompletionException(CompletableFuture.java:323)
+            at java.base/java.util.concurrent.CompletableFuture.encodeThrowable(CompletableFuture.java:359)
+            at java.base/java.util.concurrent.CompletableFuture.completeThrowable(CompletableFuture.java:364)
+            at java.base/java.util.concurrent.CompletableFuture.uniHandle(CompletableFuture.java:957)
+            at java.base/java.util.concurrent.CompletableFuture$UniHandle.tryFire(CompletableFuture.java:932)
+            at java.base/java.util.concurrent.CompletableFuture.postComplete(CompletableFuture.java:531)
+            at java.base/java.util.concurrent.CompletableFuture.completeExceptionally(CompletableFuture.java:2221)
+            at io.vertx.core.Future.lambda$toCompletionStage$3(Future.java:583)
+            at io.vertx.core.impl.future.FutureImpl$4.onFailure(FutureImpl.java:188)
+            at io.vertx.core.impl.future.FutureBase.emitFailure(FutureBase.java:81)
+            at io.vertx.core.impl.future.FutureImpl.tryFail(FutureImpl.java:265)
+            at io.vertx.core.impl.future.PromiseImpl.tryFail(PromiseImpl.java:23)
+            at io.vertx.sqlclient.impl.QueryResultBuilder.tryFail(QueryResultBuilder.java:94)
+            at io.vertx.core.Promise.fail(Promise.java:89)
+            at io.vertx.core.Promise.handle(Promise.java:53)
+            at io.vertx.core.Promise.handle(Promise.java:29)
+            at io.vertx.core.impl.future.FutureImpl$4.onFailure(FutureImpl.java:188)
+            at io.vertx.core.impl.future.FutureBase.lambda$emitFailure$1(FutureBase.java:75)
+            at io.vertx.core.impl.ContextImpl.execute(ContextImpl.java:305)
+            at io.vertx.core.impl.ContextImpl.execute(ContextImpl.java:295)
+            at io.vertx.core.impl.future.FutureBase.emitFailure(FutureBase.java:72)
+            at io.vertx.core.impl.future.FutureImpl.tryFail(FutureImpl.java:265)
+            at io.vertx.core.impl.future.PromiseImpl.tryFail(PromiseImpl.java:23)
+            at io.vertx.core.impl.future.PromiseImpl.onFailure(PromiseImpl.java:54)
+            at io.vertx.core.impl.future.PromiseImpl.handle(PromiseImpl.java:43)
+            at io.vertx.core.impl.future.PromiseImpl.handle(PromiseImpl.java:23)
+            at io.vertx.sqlclient.impl.command.CommandResponse.fire(CommandResponse.java:46)
+            at io.vertx.sqlclient.impl.SocketConnectionBase.handleMessage(SocketConnectionBase.java:324)
+            at io.vertx.pgclient.impl.PgSocketConnection.handleMessage(PgSocketConnection.java:114)
+            at io.vertx.sqlclient.impl.SocketConnectionBase.lambda$init$0(SocketConnectionBase.java:137)
+            at io.vertx.core.impl.ContextImpl.emit(ContextImpl.java:335)
+            at io.vertx.core.impl.ContextImpl.emit(ContextImpl.java:328)
+            at io.vertx.core.net.impl.NetSocketImpl.handleMessage(NetSocketImpl.java:378)
+            at io.vertx.core.net.impl.ConnectionBase.read(ConnectionBase.java:159)
+            at io.vertx.core.net.impl.VertxHandler.channelRead(VertxHandler.java:153)
+            at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:442)
+            at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+            at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+            at io.vertx.pgclient.impl.codec.PgCodec.fail(PgCodec.java:87)
+            at io.vertx.pgclient.impl.codec.PgCodec.fail(PgCodec.java:79)
+            at io.vertx.pgclient.impl.codec.PgCodec.exceptionCaught(PgCodec.java:69)
+            at io.netty.channel.AbstractChannelHandlerContext.invokeExceptionCaught(AbstractChannelHandlerContext.java:346)
+            at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:447)
+            at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+            at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+            at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+            at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
+            at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+            at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+            at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
+            at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+            at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+            at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+            at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+            at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+            at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+            at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+            at java.base/java.lang.Thread.run(Thread.java:1474)
+
+            Caused by:
+            java.lang.ExceptionInInitializerError
+                at io.vertx.pgclient.impl.codec.RowResultDecoder.decodeRow(RowResultDecoder.java:45)
+                at io.vertx.sqlclient.impl.RowDecoder.handleRow(RowDecoder.java:52)
+                at io.vertx.pgclient.impl.codec.PgDecoder.decodeDataRow(PgDecoder.java:209)
+                at io.vertx.pgclient.impl.codec.PgDecoder.channelRead(PgDecoder.java:111)
+                at io.netty.channel.CombinedChannelDuplexHandler.channelRead(CombinedChannelDuplexHandler.java:251)
+                at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:442)
+                ... 15 more
+
+                Caused by:
+                java.time.format.DateTimeParseException: Text '4714-11-24 00:00:00 BC' could not be parsed at index 20
+                    at java.base/java.time.format.DateTimeFormatter.parseResolved0(DateTimeFormatter.java:2108)
+                    at java.base/java.time.format.DateTimeFormatter.parse(DateTimeFormatter.java:2010)
+                    at java.base/java.time.LocalDateTime.parse(LocalDateTime.java:496)
+                    at io.vertx.pgclient.impl.codec.DataTypeCodec.<clinit>(DataTypeCodec.java:1077)
+                    ... 21 more
+
+ReactiveMultiIdEntityLoaderArrayParamTest > initializationError FAILED
+    org.hibernate.service.spi.ServiceException: Unable to create requested service [org.hibernate.engine.jdbc.env.spi.JdbcEnvironment] due to: java.lang.NoClassDefFoundError: Could not initialize class io.vertx.pgclient.impl.codec.DataTypeCodec
+        at app//org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:277)
+        at app//org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:239)
+        at app//org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:216)
+        at app//org.hibernate.reactive.provider.impl.ReactiveTypeContributor.dialect(ReactiveTypeContributor.java:100)
+        at app//org.hibernate.reactive.provider.impl.ReactiveTypeContributor.registerReactiveChanges(ReactiveTypeContributor.java:74)
+        at app//org.hibernate.reactive.provider.impl.ReactiveTypeContributor.contribute(ReactiveTypeContributor.java:69)
+        at app//org.hibernate.boot.internal.MetadataBuilderImpl.applyTypes(MetadataBuilderImpl.java:296)
+        at java.base@25.0.3/java.lang.Iterable.forEach(Iterable.java:75)
+        at java.base@25.0.3/java.util.Collections$UnmodifiableCollection.forEach(Collections.java:1118)
+        at app//org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.applyTypeContributors(EntityManagerFactoryBuilderImpl.java:1355)
+        at app//org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.applyMetamodelBuilderSettings(EntityManagerFactoryBuilderImpl.java:1336)
+        at app//org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.<init>(EntityManagerFactoryBuilderImpl.java:275)
+        at app//org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.<init>(EntityManagerFactoryBuilderImpl.java:193)
+        at app//org.hibernate.reactive.provider.impl.ReactiveEntityManagerFactoryBuilder.<init>(ReactiveEntityManagerFactoryBuilder.java:33)
+        at app//org.hibernate.reactive.provider.ReactivePersistenceProvider.getEntityManagerFactoryBuilder(ReactivePersistenceProvider.java:145)
+        at app//org.hibernate.reactive.provider.ReactivePersistenceProvider.getEntityManagerFactoryBuilderOrNull(ReactivePersistenceProvider.java:95)
+        at app//org.hibernate.reactive.provider.ReactivePersistenceProvider.createEntityManagerFactory(ReactivePersistenceProvider.java:47)
+        at app//jakarta.persistence.Persistence.createEntityManagerFactory(Persistence.java:80)
+        at app//org_hibernate_reactive.hibernate_reactive_core.ReactiveMultiIdEntityLoaderArrayParamTest.init(ReactiveMultiIdEntityLoaderArrayParamTest.java:72)
+
+        Caused by:
+        java.util.concurrent.CompletionException: java.lang.NoClassDefFoundError: Could not initialize class io.vertx.pgclient.impl.codec.DataTypeCodec
+            at java.base/java.util.concurrent.CompletableFuture.wrapInCompletionException(CompletableFuture.java:323)
+            at java.base/java.util.concurrent.CompletableFuture.encodeThrowable(CompletableFuture.java:359)
+            at java.base/java.util.concurrent.CompletableFuture.completeThrowable(CompletableFuture.java:364)
+            at java.base/java.util.concurrent.CompletableFuture.uniHandle(CompletableFuture.java:957)
+            at java.base/java.util.concurrent.CompletableFuture$UniHandle.tryFire(CompletableFuture.java:932)
+            at java.base/java.util.concurrent.CompletableFuture.postComplete(CompletableFuture.java:531)
+            at java.base/java.util.concurrent.CompletableFuture.completeExceptionally(CompletableFuture.java:2221)
+            at io.vertx.core.Future.lambda$toCompletionStage$3(Future.java:583)
+            at io.vertx.core.impl.future.FutureImpl$4.onFailure(FutureImpl.java:188)
+            at io.vertx.core.impl.future.FutureBase.emitFailure(FutureBase.java:81)
+            at io.vertx.core.impl.future.FutureImpl.tryFail(FutureImpl.java:265)
+            at io.vertx.core.impl.future.PromiseImpl.tryFail(PromiseImpl.java:23)
+            at io.vertx.sqlclient.impl.QueryResultBuilder.tryFail(QueryResultBuilder.java:94)
+            at io.vertx.core.Promise.fail(Promise.java:89)
+            at io.vertx.core.Promise.handle(Promise.java:53)
+            at io.vertx.core.Promise.handle(Promise.java:29)
+            at io.vertx.core.impl.future.FutureImpl$4.onFailure(FutureImpl.java:188)
+            at io.vertx.core.impl.future.FutureBase.lambda$emitFailure$1(FutureBase.java:75)
+            at io.vertx.core.impl.ContextImpl.execute(ContextImpl.java:305)
+            at io.vertx.core.impl.ContextImpl.execute(ContextImpl.java:295)
+            at io.vertx.core.impl.future.FutureBase.emitFailure(FutureBase.java:72)
+            at io.vertx.core.impl.future.FutureImpl.tryFail(FutureImpl.java:265)
+            at io.vertx.core.impl.future.PromiseImpl.tryFail(PromiseImpl.java:23)
+            at io.vertx.core.impl.future.PromiseImpl.onFailure(PromiseImpl.java:54)
+            at io.vertx.core.impl.future.PromiseImpl.handle(PromiseImpl.java:43)
+            at io.vertx.core.impl.future.PromiseImpl.handle(PromiseImpl.java:23)
+            at io.vertx.sqlclient.impl.command.CommandResponse.fire(CommandResponse.java:46)
+            at io.vertx.sqlclient.impl.SocketConnectionBase.handleMessage(SocketConnectionBase.java:324)
+            at io.vertx.pgclient.impl.PgSocketConnection.handleMessage(PgSocketConnection.java:114)
+            at io.vertx.sqlclient.impl.SocketConnectionBase.lambda$init$0(SocketConnectionBase.java:137)
+            at io.vertx.core.impl.ContextImpl.emit(ContextImpl.java:335)
+            at io.vertx.core.impl.ContextImpl.emit(ContextImpl.java:328)
+            at io.vertx.core.net.impl.NetSocketImpl.handleMessage(NetSocketImpl.java:378)
+            at io.vertx.core.net.impl.ConnectionBase.read(ConnectionBase.java:159)
+            at io.vertx.core.net.impl.VertxHandler.channelRead(VertxHandler.java:153)
+            at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:442)
+            at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+            at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+            at io.vertx.pgclient.impl.codec.PgCodec.fail(PgCodec.java:87)
+            at io.vertx.pgclient.impl.codec.PgCodec.fail(PgCodec.java:79)
+            at io.vertx.pgclient.impl.codec.PgCodec.exceptionCaught(PgCodec.java:69)
+            at io.netty.channel.AbstractChannelHandlerContext.invokeExceptionCaught(AbstractChannelHandlerContext.java:346)
+            at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:447)
+            at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+            at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412)
+            at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+            at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440)
+            at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420)
+            at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+            at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
+            at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788)
+            at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724)
+            at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650)
+            at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562)
+            at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+            at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+            at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+            at java.base/java.lang.Thread.run(Thread.java:1474)
+
+            Caused by:
+            java.lang.NoClassDefFoundError: Could not initialize class io.vertx.pgclient.impl.codec.DataTypeCodec
+                at io.vertx.pgclient.impl.codec.RowResultDecoder.decodeRow(RowResultDecoder.java:45)
+                at io.vertx.sqlclient.impl.RowDecoder.handleRow(RowDecoder.java:52)
+                at io.vertx.pgclient.impl.codec.PgDecoder.decodeDataRow(PgDecoder.java:209)
+                at io.vertx.pgclient.impl.codec.PgDecoder.channelRead(PgDecoder.java:111)
+                at io.netty.channel.CombinedChannelDuplexHandler.channelRead(CombinedChannelDuplexHandler.java:251)
+                at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:442)
+                ... 15 more
+
+                Caused by:
+                java.lang.ExceptionInInitializerError: Exception java.time.format.DateTimeParseException: Text '4714-11-24 00:00:00 BC' could not be parsed at index 20 [in thread "vert.x-eventloop-thread-0"]
+                    at java.base/java.time.format.DateTimeFormatter.parseResolved0(DateTimeFormatter.java:2108)
+                    at java.base/java.time.format.DateTimeFormatter.parse(DateTimeFormatter.java:2010)
+                    at java.base/java.time.LocalDateTime.parse(LocalDateTime.java:496)
+                    at io.vertx.pgclient.impl.codec.DataTypeCodec.<clinit>(DataTypeCodec.java:1077)
+                    ... 21 more
+
+WARNING: IPv4 forwarding is disabled. Networking will not work.
+[Entrypoint] MySQL Docker Image 9.6.0-1.2.24-server
+[Entrypoint] No password option specified for new database.
+[Entrypoint]   A random onetime password will be generated.
+2026-05-26T18:31:59.088016Z 0 [System] [MY-015017] [Server] MySQL Server Initialization - start.
+[Entrypoint] Initializing database
+2026-05-26T18:31:59.088775Z 0 [System] [MY-013169] [Server] /usr/sbin/mysqld (mysqld 9.6.0) initializing of server in progress as process 17
+2026-05-26T18:31:59.093221Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2026-05-26T18:31:59.260625Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2026-05-26T18:31:59.839047Z 6 [Warning] [MY-010453] [Server] root@localhost is created with an empty password ! Please consider switching off the --initialize-insecure option.
+2026-05-26T18:32:01.940145Z 0 [System] [MY-015018] [Server] MySQL Server Initialization - end.
+[Entrypoint] Database initialized
+2026-05-26T18:32:01.981150Z 0 [System] [MY-015015] [Server] MySQL Server - start.
+2026-05-26T18:32:02.204011Z 0 [System] [MY-010116] [Server] /usr/sbin/mysqld (mysqld 9.6.0) starting as process 63
+2026-05-26T18:32:02.204021Z 0 [System] [MY-015590] [Server] MySQL Server has access to 24 logical CPUs.
+2026-05-26T18:32:02.204033Z 0 [System] [MY-015590] [Server] MySQL Server has access to 100583563264 bytes of physical memory.
+2026-05-26T18:32:02.224435Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2026-05-26T18:32:02.367336Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2026-05-26T18:32:02.556731Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.
+2026-05-26T18:32:02.556749Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported for this channel.
+2026-05-26T18:32:02.569852Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '9.6.0'  socket: '/var/lib/mysql/mysql.sock'  port: 0  MySQL Community Server - GPL.
+2026-05-26T18:32:02.569915Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Socket: /var/run/mysqld/mysqlx.sock
+Warning: Unable to load '/usr/share/zoneinfo/iso3166.tab' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/leap-seconds.list' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/leapseconds' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/tzdata.zi' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/zone.tab' as time zone. Skipping it.
+Warning: Unable to load '/usr/share/zoneinfo/zone1970.tab' as time zone. Skipping it.
+[Entrypoint] GENERATED ROOT PASSWORD: H8TLOL@,#2oDbFd6Q8R=0J=UE2?^l8%8
+
+2026-05-26T18:32:02.992809Z 15 [System] [MY-013172] [Server] Received SHUTDOWN from user root. Shutting down mysqld (Version: 9.6.0).
+[Entrypoint] ignoring /docker-entrypoint-initdb.d/*
+
+2026-05-26T18:32:04.039688Z 0 [System] [MY-010910] [Server] /usr/sbin/mysqld: Shutdown complete (mysqld 9.6.0)  MySQL Community Server - GPL.
+2026-05-26T18:32:04.039697Z 0 [System] [MY-015016] [Server] MySQL Server - end.
+[Entrypoint] Server shut down
+[Entrypoint] Setting root user as expired. Password will need to be changed before database can be used.
+
+[Entrypoint] MySQL init process done. Ready for start up.
+
+[Entrypoint] Starting MySQL 9.6.0-1.2.24-server
+2026-05-26T18:32:05.018297Z 0 [System] [MY-015015] [Server] MySQL Server - start.
+2026-05-26T18:32:05.234768Z 0 [System] [MY-010116] [Server] /usr/sbin/mysqld (mysqld 9.6.0) starting as process 1
+2026-05-26T18:32:05.234777Z 0 [System] [MY-015590] [Server] MySQL Server has access to 24 logical CPUs.
+2026-05-26T18:32:05.234788Z 0 [System] [MY-015590] [Server] MySQL Server has access to 100583563264 bytes of physical memory.
+2026-05-26T18:32:05.239101Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2026-05-26T18:32:05.385641Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2026-05-26T18:32:05.488514Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.
+2026-05-26T18:32:05.488527Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported for this channel.
+2026-05-26T18:32:05.505115Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '9.6.0'  socket: '/var/lib/mysql/mysql.sock'  port: 3306  MySQL Community Server - GPL.
+2026-05-26T18:32:05.505114Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '::' port: 33060, socket: /var/run/mysqld/mysqlx.sock
+2026-05-26T18:32:07.205461Z 0 [System] [MY-013172] [Server] Received SHUTDOWN from user <via user signal>. Shutting down mysqld (Version: 9.6.0).
+2026-05-26T18:32:07.990825Z 0 [System] [MY-010910] [Server] /usr/sbin/mysqld: Shutdown complete (mysqld 9.6.0)  MySQL Community Server - GPL.
+2026-05-26T18:32:07.990833Z 0 [System] [MY-015016] [Server] MySQL Server - end.
+
+
+6 tests completed, 2 failed
+
+> Task :test FAILED
+FAILURE: Build failed with an exception.
+
+
+* What went wrong:
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7612-7cf7b8d1/tests/src/org.hibernate.reactive/hibernate-reactive-core/2.0.7.Final/build/reports/problems/problems-report.html
+Execution failed for task ':test'.
+
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7612-7cf7b8d1/tests/src/org.hibernate.reactive/hibernate-reactive-core/2.0.7.Final/build/reports/tests/test/index.html
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+
+* Try:
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+BUILD FAILED in 16s
+15 actionable tasks: 2 executed, 13 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge10/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7612-7cf7b8d1/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.hibernate.reactive:hibernate-reactive-core:2.0.7.Final failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 17s
+9 actionable tasks: 1 executed, 8 up-to-date
