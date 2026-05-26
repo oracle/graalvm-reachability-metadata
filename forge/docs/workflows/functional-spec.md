@@ -11,7 +11,9 @@ state-machine-like workflow engine selected and parameterized by a predefined
 strategy bundle.
 
 The workflow spec set covers workflow drivers (§WF-forge-workflow-drivers),
-dynamic-access generation (§WF-dynamic-access-workflow), Java failure repair
+new library support (§WF-add-new-library-support, with its basic-iterative
+fallback §WF-basic-iterative), dynamic-access generation
+(§WF-dynamic-access-workflow), Java failure repair
 (§WF-java-fail-fix-workflow), native-image run repair
 (§WF-native-image-run-fix-workflow), native metadata tracing and verification
 (§WF-native-metadata-tracing), dynamic-access coverage improvement

@@ -8,31 +8,24 @@ service of §GOAL-maximize-library-coverage and
 
 ### FS-forge-issue-resolution-goal: Forge issue resolution goal
 
-The `forge/` directory exists to automate the end-to-end resolution of supported
-GitHub issue queues in the
+The `forge/` directory automates the end-to-end resolution of supported GitHub
+issue queues in the
 [`oracle/graalvm-reachability-metadata`](https://github.com/oracle/graalvm-reachability-metadata)
-repository (hereafter "the reachability repo"). A supported issue starts from a
-work label such as `library-new-request`, `library-update-request`,
-`fails-javac-compile`, `fails-java-run`, or `fails-native-image-run`.
+repository (hereafter "the reachability repo"), so its supported-library surface
+can grow faster than maintainers can investigate each request by hand
+(§GRUND-forge-motivation). For a claimed issue, Forge composes LLM-based
+code-generation agents with the reachability repo's own build, test,
+metadata-generation, and reporting pipelines to generate or repair the library
+tests and GraalVM reachability metadata the issue needs. A successful run
+produces a locally verified pull request with metrics and enough context for
+maintainer review; review and repository CI remain the final merge boundary.
+This shortens the path described in §GOAL-shorten-issue-to-shipped-metadata.
 
-Every `fails-*` queue originates from a failed version update, not from a human
-report. The reachability repo's scheduled library version compatibility
-automation bulk-tests newer upstream versions of already-supported libraries; it
-records the versions that pass in a single `library-bulk-update` PR and files one
-`fails-*` tracking issue per `(library, version)` whose update failed, labeled by
-the stage that broke (`fails-javac-compile`, `fails-java-run`,
-`fails-native-image-build`, or `fails-native-image-run`). Forge claims those
-issues; it never opens them. The producer's contract is the reachability repo's
-[Library version update automation](../../docs/FUNCTIONAL_SPEC.md#fs-library-version-update-automation-library-version-update-automation)
-(root-namespace ID `FS-library-version-update-automation`).
-
-For those issues, Forge composes LLM-based code-generation agents with
-the reachability repo's own build, test, metadata-generation, and reporting
-pipelines to generate or repair the library tests and GraalVM reachability
-metadata needed to satisfy the issue. A successful automated run produces a
-locally verified pull request with metrics and enough context for maintainer
-review; review and repository CI remain the final merge boundary. This
-shortens the path described in §GOAL-shorten-issue-to-shipped-metadata.
+A supported issue starts from a work label such as `library-new-request`,
+`library-update-request`, `fails-javac-compile`, `fails-java-run`, or
+`fails-native-image-run`. Section 2 (Scope) enumerates the queues Forge
+resolves, and its "Origin of the `fails-*` queues" subsection records where the
+`fails-*` work comes from.
 
 ## 2. Scope
 
@@ -64,6 +57,18 @@ Successful fixes use the matching PR labels (`library-new-request`,
 
 Out of scope: anything that does not produce reachability metadata or its
 supporting tests for the reachability repo.
+
+### Origin of the `fails-*` queues
+
+Every `fails-*` queue originates from a failed version update, not from a human
+report. The reachability repo's scheduled library version compatibility
+automation bulk-tests newer upstream versions of already-supported libraries; it
+records the versions that pass in a single `library-bulk-update` PR and files one
+`fails-*` tracking issue per `(library, version)` whose update failed, labeled by
+the stage that broke (`fails-javac-compile`, `fails-java-run`,
+`fails-native-image-build`, or `fails-native-image-run`). Forge claims those
+issues; it never opens them. The producer's contract is the reachability repo's
+Library version update automation (§root/FS-library-version-update-automation).
 
 ### FS-forge-code-coverage-improvement: Code coverage improvement
 
@@ -438,17 +443,26 @@ completed, skipped, exhausted, or failed in earlier chunks
 
 ## FS-forge-workflow-spec-catalog: Workflow specifications
 
-Forge workflow contracts (§WF-forge-workflow-system) are split by behavior:
-dynamic-access generation (§WF-dynamic-access-workflow), native metadata
-tracing and verification (§WF-native-metadata-tracing, gated by
-§WF-native-test-verification-gate), Java failure repair
-(§WF-java-fail-fix-workflow), native-image run repair
-(§WF-native-image-run-fix-workflow), dynamic-access coverage improvement
-(§WF-improve-library-coverage), and planned code coverage improvement
-(§WF-code-coverage-improvement). Each is bound to a named configuration bundle
-defined by §STRAT-forge-predefined-strategy-contract.
+The whole workflow system contract is §WF-forge-workflow-system. Each supported
+queue (Scope, section 2) is entered by a deterministic workflow driver
+(§WF-forge-workflow-drivers) that prepares one run and delegates to the workflow
+engine governed by a workflow spec. The driver scripts and the workflow specs
+they run:
 
-- (Future) Basic iterative workflow.
+| Queue | Driver script | Workflow spec |
+| --- | --- | --- |
+| `library-new-request` | `add_new_library_support.py` | new library support (§WF-add-new-library-support), which runs dynamic-access generation plus native metadata tracing and verification |
+| `library-update-request` | `improve_library_coverage.py`, or the missing-version router | dynamic-access coverage improvement (§WF-improve-library-coverage) |
+| `fails-javac-compile` | `fix_javac_fail.py` | Java failure repair (§WF-java-fail-fix-workflow) |
+| `fails-java-run` | `fix_java_run_fail.py` | Java failure repair (§WF-java-fail-fix-workflow) |
+| `fails-native-image-run` | `fix_ni_run.py` | native-image run repair (§WF-native-image-run-fix-workflow) |
+| code coverage improvement (planned) | — | code coverage improvement (§WF-code-coverage-improvement) |
+
+Each engine is bound to a named configuration bundle defined by
+§STRAT-forge-predefined-strategy-contract. The `basic_iterative` engine is not a
+separate queue: it is the most basic workflow and the fallback the dynamic-access
+workflow delegates to when a library turns out to have no dynamic access
+(§WF-basic-iterative).
 
 Forge E2E testing is a top-level functional test contract because it validates
 the whole issue-processing process through `forge_metadata.py`, not one workflow
