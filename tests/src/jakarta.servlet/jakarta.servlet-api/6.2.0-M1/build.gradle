@@ -10,7 +10,22 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+repositories {
+    exclusiveContent {
+        forRepository {
+            mavenCentral {
+                metadataSources {
+                    artifact()
+                }
+            }
+        }
+        filter {
+            includeGroup "jakarta.servlet"
+        }
+    }
+}
+
 dependencies {
-    testImplementation "jakarta.servlet:jakarta.servlet-api:$libraryVersion"
+    testImplementation "jakarta.servlet:jakarta.servlet-api:$libraryVersion@jar"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }

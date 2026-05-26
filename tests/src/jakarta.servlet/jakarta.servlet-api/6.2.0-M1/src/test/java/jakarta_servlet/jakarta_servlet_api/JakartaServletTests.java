@@ -16,25 +16,25 @@ import jakarta.servlet.http.HttpServlet;
 import org.junit.jupiter.api.Test;
 
 
-class JakartaServletTests {
+public class JakartaServletTests {
     @Test
     void instantiateServlet() {
         new CustomServlet();
     }
 
-  @Test
-  void instantiateHttpServlet() {
-    new CustomHttpServlet();
-  }
+    @Test
+    void instantiateHttpServlet() {
+        new CustomHttpServlet();
+    }
 
-  static class CustomServlet extends GenericServlet {
-    @Override
-    public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
+    static class CustomServlet extends GenericServlet {
+        @Override
+        public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
+
+        }
+    }
+
+    static class CustomHttpServlet extends HttpServlet {
 
     }
-  }
-
-  static class CustomHttpServlet extends HttpServlet {
-
-  }
 }
