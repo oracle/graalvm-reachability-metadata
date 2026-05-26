@@ -79,6 +79,9 @@ public class PGPooledConnectionInnerConnectionHandlerTest {
         PooledConnection pooledConnection = dataSource.getPooledConnection();
         try {
             try (Connection connection = pooledConnection.getConnection()) {
+                assertThat(connection.toString()).contains("Pooled connection wrapping physical connection");
+                assertThat(connection.equals(connection)).isTrue();
+                assertThat(connection.hashCode()).isEqualTo(System.identityHashCode(connection));
                 assertThat(connection.getAutoCommit()).isTrue();
 
                 try (Statement statement = connection.createStatement()) {
