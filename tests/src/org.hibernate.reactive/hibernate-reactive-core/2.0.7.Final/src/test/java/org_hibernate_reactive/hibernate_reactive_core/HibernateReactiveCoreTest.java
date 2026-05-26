@@ -38,7 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hibernate.reactive.stage.Stage.SessionFactory;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class HibernateReactiveCoreTest {
+public class HibernateReactiveCoreTest {
 
     private static final Logger logger = LoggerFactory.getLogger("HibernateReactiveCoreTest");
 
