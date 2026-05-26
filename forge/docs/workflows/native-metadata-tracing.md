@@ -141,11 +141,15 @@ falls back to Codex for the current coordinate — this is exactly the
 **Divergence is a Native Image defect, not a library metadata gap.** A reporter
 entry that tracing fails to capture is a bug in GraalVM Native Image tracing:
 the run already proved the access happens and named it, so tracing should have
-recorded it. When the gate detects this case it must, in addition to falling
-back to Codex so the current run still makes progress, open a ticket against
-GraalVM Native Image to fix tracing. The ticket must carry the coordinate, the
-missing entry the reporter printed, the trace directory that omitted it, and the
-failing `runNativeTraceImage` log, so the divergence is reproducible upstream.
+recorded it. When the gate detects this case it falls back to Codex so the
+current run still makes progress, and logs the divergence diagnostics — the
+coordinate, the missing entry the reporter printed, the trace directory that
+omitted it, and the failing `runNativeTraceImage` log — so the defect is
+reproducible upstream.
+
+*Future work.* Automatically filing the upstream GraalVM Native Image ticket
+from these diagnostics is not yet implemented; today the divergence is only
+logged and routed to Codex.
 
 ## 3. Inputs
 

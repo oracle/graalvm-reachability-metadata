@@ -13,7 +13,7 @@ Codex is the terminal repair path when the fallback cannot converge. Pi is not
 invoked.
 
 This module implements the gate of §WF-native-test-verification-gate; see
-``forge/docs/workflows/native-test-verification.md`` for the full contract.
+``forge/docs/workflows/native-metadata-tracing.md`` for the full contract.
 """
 
 from __future__ import annotations

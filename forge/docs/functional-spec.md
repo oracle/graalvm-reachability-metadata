@@ -199,8 +199,12 @@ this functional spec.
   generation attempt, deterministic Gradle command, metadata fixup, native
   trace cycle, and local verification gate that contributes to the run, as
   required by §FS-durable-generation-logs.
-- **Generated tests + metadata + index.json** committed on the feature branch
-  `ai/add-lib-support-<group>-<artifact>-<version>` in the reachability repo.
+- **Generated tests + metadata + index.json** committed on a per-run feature
+  branch in the reachability repo, named `ai/<authenticated-login>/<suffix>`
+  where `<suffix>` is workflow-specific and encodes the coordinate (e.g.
+  `add-lib-support-<group>-<artifact>-<version>` for new-library support,
+  `improve-coverage-…`, `fix-javac-…`, `fix-java-run-…`,
+  `fix-native-image-run-…`, `not-for-native-image-…`).
 - **Pull request** (only when invoked through `git_scripts/make_pr_*.py`).
 
 ### FS-forge-run-metrics: Per-run metrics record
