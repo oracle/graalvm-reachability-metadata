@@ -30,7 +30,7 @@ The interface is deliberately narrow:
 This API keeps workflow behavior out of backend adapters. A new backend
 (plugging in through §AR-forge-extension-points) should implement the registry
 key, the prompt/session methods, token counters, and test-command bridge, then
-be selected through strategy data (§AR-forge-workflow-strategy-config) instead
+be selected through strategy data (§WF-forge-workflow-strategy-config) instead
 of changing workflow drivers or workflow engines.
 
 ## 2. Pi Implementation
@@ -67,7 +67,7 @@ session.
 `PiAgent.run_test_command` delegates Gradle execution to the
 [shared test runner](../utility_scripts/gradle_test_runner.py) instead of
 asking Pi to choose shell behavior. That preserves the architecture: the
-workflow engine chooses the gate (§AR-forge-workflow-engine), deterministic
+workflow engine chooses the gate (§WF-forge-workflow-engine), deterministic
 utilities run it, and the agent receives diagnostics for the next edit cycle,
 keeping the strategy/agent boundary intact (§AR-forge-strategy-agent-boundary).
 

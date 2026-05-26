@@ -27,17 +27,17 @@ name. The top-level package name stays `ai_workflows`; its contents move into:
   unit of work (§WF-forge-workflow-drivers).
 - `ai_workflows/core/` — the core workflow objects: the registered workflow
   engines and shared workflow orchestration that own run state
-  (§AR-forge-workflow-engine); this is today's `ai_workflows/workflow_strategies/`.
+  (§WF-forge-workflow-engine); this is today's `ai_workflows/workflow_strategies/`.
 - `ai_workflows/agents/` — unchanged; the backend-neutral agent integrations
   (§AR-agent-api).
 
 This is a structural refactor with no behavior change: it must not alter
 workflow contracts, driver responsibilities, or the strategy-agent boundary
-(§AR-forge-workflow-system). Implementation moves the modules, updates imports
+(§WF-forge-workflow-architecture). Implementation moves the modules, updates imports
 and the workflow-engine registration in `__init__.py`, and updates the path
 references in code and in the remaining docs (README.md, AGENTS.md,
 DEVELOPING.md, and workflow specs) to match the canonical layout already
-described by §WF-forge-workflow-drivers and §AR-forge-workflow-engine.
+described by §WF-forge-workflow-drivers and §WF-forge-workflow-engine.
 
 # ROADMAP-forge-fixture-backed-e2e: Fixture-backed E2E mode
 
@@ -145,7 +145,7 @@ using GraalVM PGO runtime profiles, while dynamic-access workflows target
 metadata-relevant calls (§FS-forge-code-coverage-improvement).
 
 The implementation needs a driver mode, a registered workflow engine
-(§AR-code-coverage-improvement), a PGO profile collector, an API inventory
+(§WF-code-coverage-improvement-architecture), a PGO profile collector, an API inventory
 builder, target selection and durable target-state format, metrics schema
 support, and a publication path. Generated tests must live in a separate code
 coverage suite with separate metrics and review evidence, not in the

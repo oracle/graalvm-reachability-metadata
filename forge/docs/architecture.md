@@ -17,7 +17,7 @@ structure chosen to satisfy it, with the workflow catalog in
 | §ORCH-forge-orchestration-spec | orchestration scripts: GitHub queue claiming, worktree setup, workflow dispatch, publication handoff, and issue/project bookkeeping |
 | §GIT-forge-publication | git-scripts publication: staging, commit, PR body, labels, and issue linking |
 | §WF-forge-workflow-system | behavioral contract for the workflow layer |
-| §AR-forge-workflow-system | implementation split for workflow drivers, strategy configuration, workflow engines, utilities, and publication handoff |
+| §WF-forge-workflow-architecture | implementation split for workflow drivers, strategy configuration, workflow engines, utilities, and publication handoff |
 | §WF-forge-workflow-drivers | behavioral contract for deterministic workflow drivers |
 | §STRAT-forge-predefined-strategy-contract | behavioral contract for named strategy configuration bundles |
 | §AR-forge-control-plane | how the worker loop, dispatcher, GitHub queues, and worktrees compose |
@@ -26,8 +26,8 @@ structure chosen to satisfy it, with the workflow catalog in
 | §AR-forge-verification-publication-boundary | why PR creation is a publication step after verification, not part of generation |
 | §AR-forge-extension-points | where new issue queues, strategies, agents, and PR types plug in |
 | §STRAT-workflow-strategy-registry | strategy registry and predefined strategy wiring |
-| §AR-forge-workflow-engine | workflow engines as state-machine-like run executors |
-| §AR-forge-workflow-strategy-config | predefined strategy bundles as workflow run configuration |
+| §WF-forge-workflow-engine | workflow engines as state-machine-like run executors |
+| §WF-forge-workflow-strategy-config | predefined strategy bundles as workflow run configuration |
 
 ## AR-forge-control-plane: Worker loop and dispatcher own queue control
 
@@ -42,7 +42,7 @@ cleanup; its behavior and implementation are specified in
 §ORCH-forge-orchestration-spec. PR publication is delegated to the
 git-scripts component (§GIT-forge-publication) after the dispatcher
 observes a PR-eligible status; the dispatched workflows themselves are defined
-separately, in §WF-forge-workflow-system and §AR-forge-workflow-system.
+separately, in §WF-forge-workflow-system and §WF-forge-workflow-architecture.
 
 The dispatcher routes issue work by issue labels, not by PR labels:
 
@@ -93,7 +93,7 @@ and writing schema-validated metrics.
 
 The workflow driver owns run setup and finalization; the workflow engine owns
 the state-machine-like issue-resolution process described in
-§AR-forge-workflow-system. The predefined strategy supplies configuration:
+§WF-forge-workflow-architecture. The predefined strategy supplies configuration:
 which workflow engine, agent backend, model, prompt set, and workflow
 parameters are used for the run. This keeps every workflow aligned with the
 same repository, metrics, and local verification contracts

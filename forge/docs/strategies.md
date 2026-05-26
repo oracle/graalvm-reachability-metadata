@@ -59,7 +59,7 @@ agent, resolves the registered workflow engine named by `workflow`, and
 passes the prompt and parameter maps into that implementation. The loader owns
 configuration selection; workflow architecture owns how the selected workflow
 engine uses the configuration (see §AR-forge-workflow-boundary and
-§AR-forge-workflow-system), including the dynamic-access strategy family
+§WF-forge-workflow-architecture), including the dynamic-access strategy family
 defined in §WF-dynamic-access-strategy-family that shares this loader.
 
 ```mermaid
@@ -147,6 +147,6 @@ Changing a strategy means changing a predefined configuration entry
 be expressed by selecting an existing registered workflow, prompt set,
 parameters, agent, model, MCP list, or persistent instructions. New behavior
 belongs in the workflow
-architecture first (§AR-forge-workflow-system); the strategy configuration
+architecture first (§WF-forge-workflow-architecture); the strategy configuration
 should only expose it as a named bundle after the workflow contract and
 implementation boundary are clear (§AR-forge-extension-points).

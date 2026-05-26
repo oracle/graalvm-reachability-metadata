@@ -22,7 +22,7 @@ home, so the prefix tells you which file to open.
 | `GRUND` | [grund.md](grund.md) | Why Forge exists — the motivation everything else climbs back to. |
 | `GOAL` | [goals.md](goals.md) | Where Forge is headed — direction and measurable outcomes. |
 | `FS` | [functional-spec.md](functional-spec.md) | What Forge must do — contributor-facing functional behavior. |
-| `AR` | [architecture.md](architecture.md), [agent.md](agent.md), [workflows/architecture.md](workflows/architecture.md) | How Forge is structured — boundaries, components, extension points. |
+| `AR` | [architecture.md](architecture.md), [agent.md](agent.md) | How Forge is structured — boundaries, components, extension points. |
 | `DW` | [do-work.md](do-work.md) | The unattended do-work loop architecture. |
 | `STRAT` | [strategies.md](strategies.md) | Predefined strategy configuration architecture. |
 | `ORCH` | [orchestration-scripts.md](orchestration-scripts.md) | Orchestration script behavior and architecture. |
@@ -53,24 +53,23 @@ its IDs in that one file.
 
 ### The `workflows/` subtree
 
-[workflows/](workflows/) holds the workflow specifications (`WF`) together with
-the workflow-system architecture (`AR`):
+[workflows/](workflows/) is the `WF` home: every ID in this subtree — including
+the workflow-system and per-workflow architecture — uses the `WF` prefix. The
+shared overview file carries both the behavioral contract and the architecture;
+each individual workflow is one file:
 
-- [workflows/functional-spec.md](workflows/functional-spec.md) — `WF-forge-workflow-system`: shared workflow behavior.
-- [workflows/architecture.md](workflows/architecture.md) — `AR-forge-workflow-system`: engines and strategy configuration.
+- [workflows/architecture.md](workflows/architecture.md) — `WF-forge-workflow-system` and `WF-forge-workflow-architecture`: shared workflow behavior, engines, and strategy configuration.
 - [workflows/workflow-drivers.md](workflows/workflow-drivers.md) — `WF-forge-workflow-drivers`.
 - [workflows/dynamic-access.md](workflows/dynamic-access.md) — `WF-dynamic-access-workflow`.
 - [workflows/improve-library-coverage.md](workflows/improve-library-coverage.md) — `WF-improve-library-coverage`.
 - [workflows/java-fail-fix.md](workflows/java-fail-fix.md) — `WF-java-fail-fix-workflow`.
 - [workflows/native-image-run-fix.md](workflows/native-image-run-fix.md) — `WF-native-image-run-fix-workflow`.
 - [workflows/native-metadata-tracing.md](workflows/native-metadata-tracing.md) — `WF-native-metadata-tracing`.
+- [workflows/code-coverage-improvement.md](workflows/code-coverage-improvement.md) — `WF-code-coverage-improvement` and `WF-code-coverage-improvement-architecture`: planned code coverage workflow, behavior and architecture in one file.
 
-When a workflow is complex enough to need both a behavioral contract and its own
-structure, it gets a subfolder with a split spec, as in
-[workflows/code-coverage-improvement/](workflows/code-coverage-improvement/):
-
-- [.../functional-spec.md](workflows/code-coverage-improvement/functional-spec.md) — `WF-code-coverage-improvement`: what it does.
-- [.../architecture.md](workflows/code-coverage-improvement/architecture.md) — `AR-code-coverage-improvement`: how it is built.
+A workflow file may declare both its behavioral contract and its own
+architecture; both use the `WF` prefix, as the shared overview and the planned
+code coverage workflow above do.
 
 ## Grund tags in the documentation
 

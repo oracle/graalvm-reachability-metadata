@@ -16,7 +16,7 @@ they invoke live under `ai_workflows/core/`.) They are used for four things:
 3. Delegate issue-resolution behavior to the selected workflow engine. An
    workflow driver may perform setup and finalization, but it must not embed a
    competing workflow state machine for prompting, retrying, fallback, or
-   terminal status selection (§AR-forge-workflow-engine).
+   terminal status selection (§WF-forge-workflow-engine).
 4. Finalize the run after the workflow engine returns: run required metadata or
    quality gates owned by the driver, write schema-validated metrics, and
    return a terminal status to orchestration. PR publication remains outside
