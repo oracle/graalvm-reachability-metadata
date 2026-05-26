@@ -11,6 +11,14 @@ Skills are loaded by symlinking the desired skill directory into the matching re
 Fixes missing GraalVM reachability metadata for a library specified by coordinates. 
 It runs the target tests, identifies missing metadata entries from the error output, and adds them to the correct section of `reachability-metadata.json`. This process repeats until all required metadata is available and the tests pass.
 
+### `fix-index-file-inconsistencies`
+
+Fixes PR review failures where final `validateIndexFiles` against current
+`master` fails because `index.json` tested versions are in the wrong
+metadata-version bucket, duplicated across buckets, or stale after another
+index-changing PR landed first. The reviewer repairs the PR branch, validates,
+commits, and pushes the corrected index files.
+
 ### `review-library-bulk-update`
 
 Reviews automated pull requests with the `library-bulk-update` label.

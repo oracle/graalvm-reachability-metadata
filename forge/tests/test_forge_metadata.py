@@ -1568,7 +1568,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
             "https://github.com/oracle/graalvm-reachability-metadata/pull/100",
             None,
         )
-        reconcile_reviewed_pull_request.assert_called_once_with(100)
+        reconcile_reviewed_pull_request.assert_called_once_with(100, "/tmp/reachability")
 
 
 class IssueClaimCacheTests(unittest.TestCase):
@@ -2365,6 +2365,92 @@ class InterruptHandlingTests(unittest.TestCase):
 
 
 class PullRequestReviewTests(unittest.TestCase):
+    def test_merge_pull_request_validates_index_candidate_before_merge(self) -> None:
+        pr = {
+            "number": 3513,
+            "url": "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
+            "headRefOid": "abc123",
+        }
+
+        with patch.object(
+                forge_metadata,
+                "get_pull_request_changed_index_files",
+                return_value=["metadata/org.example/demo/index.json"],
+        ), patch.object(
+                forge_metadata,
+                "validate_index_files_on_current_master_candidate",
+        ) as validate_candidate, patch.object(forge_metadata, "gh") as gh:
+            forge_metadata.merge_pull_request(pr, "/repo")
+
+        validate_candidate.assert_called_once_with(3513, "abc123", "/repo")
+        gh.assert_called_once_with(
+            "pr",
+            "merge",
+            "3513",
+            "--repo",
+            forge_metadata.REPO,
+            "--match-head-commit",
+            "abc123",
+            "--squash",
+        )
+
+    def test_merge_pull_request_skips_index_validation_when_index_unchanged(self) -> None:
+        pr = {
+            "number": 3513,
+            "url": "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
+            "headRefOid": "abc123",
+        }
+
+        with patch.object(
+                forge_metadata,
+                "get_pull_request_changed_index_files",
+                return_value=[],
+        ), patch.object(
+                forge_metadata,
+                "validate_index_files_on_current_master_candidate",
+        ) as validate_candidate, patch.object(forge_metadata, "gh") as gh:
+            forge_metadata.merge_pull_request(pr, "/repo")
+
+        validate_candidate.assert_not_called()
+        gh.assert_called_once()
+
+    def test_merge_pull_request_stops_when_final_index_validation_fails(self) -> None:
+        pr = {
+            "number": 3513,
+            "url": "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
+            "headRefOid": "abc123",
+        }
+
+        with patch.object(
+                forge_metadata,
+                "get_pull_request_changed_index_files",
+                return_value=["metadata/org.example/demo/index.json"],
+        ), patch.object(
+                forge_metadata,
+                "validate_index_files_on_current_master_candidate",
+                side_effect=RuntimeError("invalid index"),
+        ), patch.object(forge_metadata, "gh") as gh:
+            with self.assertRaises(RuntimeError):
+                forge_metadata.merge_pull_request(pr, "/repo")
+
+        gh.assert_not_called()
+
+    def test_get_pull_request_changed_index_files_filters_library_indexes(self) -> None:
+        with patch.object(
+                forge_metadata,
+                "get_pull_request_changed_files",
+                return_value=[
+                    "metadata/org.example/demo/index.json",
+                    "metadata/schemas/metadata-library-index-schema-v2.1.0.json",
+                    "tests/src/org.example/demo/1.0.0/build.gradle",
+                    "metadata/org.example/demo/1.0.0/reachability-metadata.json",
+                ],
+        ):
+            self.assertEqual(
+                forge_metadata.get_pull_request_changed_index_files(3513),
+                ["metadata/org.example/demo/index.json"],
+            )
+
     def test_reconcile_approved_pr_with_failed_ci_reruns_failed_jobs_without_merging(self) -> None:
         pr = {
             "number": 3513,
@@ -2473,6 +2559,9 @@ class PullRequestReviewTests(unittest.TestCase):
         self.assertIn("authoritative", prompt)
         self.assertIn("if local git output disagrees with `gh pr diff`, trust `gh pr diff`", prompt)
         self.assertIn("A fresh `origin/master` ref was fetched before checkout", prompt)
+        self.assertIn("fix-index-file-inconsistencies", prompt)
+        self.assertIn("you may check out the PR branch", prompt)
+        self.assertIn("commit the repair, and push it to this PR branch", prompt)
 
 
 if __name__ == "__main__":
