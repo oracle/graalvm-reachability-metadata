@@ -31,4 +31,30 @@
             <property name="hibernate.show_sql" value="false"/>
         </properties>
     </persistence-unit>
+
+    <persistence-unit name="mysql-standard-multiload">
+        <provider>org.hibernate.reactive.provider.ReactivePersistenceProvider</provider>
+
+        <class>org_hibernate_reactive.hibernate_reactive_core.entity.BatchAuthor</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+        <properties>
+            <property name="hibernate.connection.pool_size" value="2"/>
+            <property name="hibernate.hbm2ddl.auto" value="create-drop" />
+            <property name="hibernate.show_sql" value="false"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="postgres-entity-array-param-batch">
+        <provider>org.hibernate.reactive.provider.ReactivePersistenceProvider</provider>
+
+        <class>org_hibernate_reactive.hibernate_reactive_core.entity.BatchAuthor</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+        <properties>
+            <property name="hibernate.connection.pool_size" value="1"/>
+            <property name="hibernate.hbm2ddl.auto" value="none" />
+            <property name="hibernate.show_sql" value="false"/>
+        </properties>
+    </persistence-unit>
 </persistence>
