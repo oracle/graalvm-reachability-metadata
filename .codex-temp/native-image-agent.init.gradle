@@ -1,0 +1,7 @@
+allprojects {
+    tasks.withType(Test).configureEach {
+        jvmArgs(
+                "-agentlib:native-image-agent=config-output-dir=${buildDir}/manual-agent-output"
+        )
+    }
+}

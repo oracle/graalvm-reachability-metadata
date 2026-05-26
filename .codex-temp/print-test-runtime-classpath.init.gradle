@@ -1,0 +1,9 @@
+allprojects {
+    afterEvaluate { project ->
+        project.tasks.register("printTestRuntimeClasspath") {
+            doLast {
+                println project.sourceSets.test.runtimeClasspath.asPath
+            }
+        }
+    }
+}
