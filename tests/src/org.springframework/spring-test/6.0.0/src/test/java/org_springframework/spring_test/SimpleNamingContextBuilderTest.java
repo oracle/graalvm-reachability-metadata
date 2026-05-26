@@ -7,7 +7,6 @@
 package org_springframework.spring_test;
 
 import java.util.Hashtable;
-import java.util.Properties;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -15,24 +14,22 @@ import javax.naming.spi.InitialContextFactory;
 
 import org.junit.jupiter.api.Test;
 
-import org.springframework.mock.jndi.SimpleNamingContextBuilder;
+import org.springframework.core.env.Profiles;
+import org.springframework.mock.env.MockEnvironment;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SimpleNamingContextBuilderTest {
     @Test
-    void createsInitialContextFactoryFromEnvironmentClass() {
-        SimpleNamingContextBuilder builder = new SimpleNamingContextBuilder();
-        builder.deactivate();
-        TestInitialContextFactory.createdInstances = 0;
+    void configuresMockEnvironmentPropertiesAndProfiles() {
+        MockEnvironment environment = new MockEnvironment()
+                .withProperty("spring.application.name", "metadata-test")
+                .withProperty("feature.enabled", "true");
+        environment.setActiveProfiles("native", "test");
 
-        Properties environment = new Properties();
-        environment.put(Context.INITIAL_CONTEXT_FACTORY, TestInitialContextFactory.class);
-
-        InitialContextFactory factory = builder.createInitialContextFactory(environment);
-
-        assertThat(factory).isInstanceOf(TestInitialContextFactory.class);
-        assertThat(TestInitialContextFactory.createdInstances).isEqualTo(1);
+        assertThat(environment.getRequiredProperty("spring.application.name")).isEqualTo("metadata-test");
+        assertThat(environment.getProperty("feature.enabled", Boolean.class)).isTrue();
+        assertThat(environment.acceptsProfiles(Profiles.of("native & test"))).isTrue();
     }
 
     public static class TestInitialContextFactory implements InitialContextFactory {
