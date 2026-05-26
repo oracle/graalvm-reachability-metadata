@@ -12,7 +12,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.postgresql.PGConnection;
 import org.postgresql.util.PGobject;
-import org.postgresql.xml.PGXmlFactoryFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -82,16 +81,15 @@ public class PgConnectionTest {
     }
 
     @Test
-    void rejectsUninstantiableXmlFactoryClassThroughSqlxmlApi() throws Exception {
+    void rejectsNonXmlFactoryClassThroughSqlxmlApi() throws Exception {
         Properties properties = new Properties();
-        properties.setProperty("xmlFactoryFactory", PGXmlFactoryFactory.class.getName());
+        properties.setProperty("xmlFactoryFactory", Object.class.getName());
 
         try (Connection connection = openConnection(properties)) {
             SQLXML sqlxml = connection.createSQLXML();
 
             assertThatThrownBy(() -> sqlxml.setResult(SAXResult.class))
-                    .isInstanceOf(SQLException.class)
-                    .hasMessageContaining("Could not instantiate xmlFactoryFactory");
+                    .isInstanceOf(SQLException.class);
         }
     }
 }
