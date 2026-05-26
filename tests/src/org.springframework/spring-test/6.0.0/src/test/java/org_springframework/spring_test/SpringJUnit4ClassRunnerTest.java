@@ -6,10 +6,12 @@
  */
 package org_springframework.spring_test;
 
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 
+import org.springframework.core.NativeDetector;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,6 +19,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SpringJUnit4ClassRunnerTest {
     @Test
     void constructsRunnerForJUnit4TestClass() throws Exception {
+        Assumptions.assumeFalse(NativeDetector.inNativeImage(),
+                "Spring TestContext AOT initializers are not generated in native-image runtime tests");
+
         SpringJUnit4ClassRunner runner = new SpringJUnit4ClassRunner(SpringBackedJUnit4TestCase.class);
 
         Description description = runner.getDescription();

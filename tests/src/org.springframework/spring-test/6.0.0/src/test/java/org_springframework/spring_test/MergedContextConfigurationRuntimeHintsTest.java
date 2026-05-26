@@ -11,12 +11,14 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.io.TempDir;
 
 import org.springframework.aot.generate.FileSystemGeneratedFiles;
 import org.springframework.aot.hint.ResourcePatternHint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.NativeDetector;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.aot.TestContextAotGenerator;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -26,6 +28,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MergedContextConfigurationRuntimeHintsTest {
     @Test
     void registersClasspathWebApplicationResourceBasePath(@TempDir Path generatedFilesPath) {
+        Assumptions.assumeFalse(NativeDetector.inNativeImage(),
+                "Spring AOT processing is not available during native-image runtime tests");
+
         TestContextAotGenerator generator = new TestContextAotGenerator(
                 new FileSystemGeneratedFiles(generatedFilesPath));
 
