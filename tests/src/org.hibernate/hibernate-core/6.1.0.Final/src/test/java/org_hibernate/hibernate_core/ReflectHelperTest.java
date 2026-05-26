@@ -55,11 +55,11 @@ public class ReflectHelperTest {
 
     @Test
     public void findGetterMethodChecksGetAndIsVariants() {
-        Method getOnlyGetter = ReflectHelper.findGetterMethod(GetOnlyBean.class, "name");
-        assertThat(getOnlyGetter.getName()).isEqualTo("getName");
+        Method getVariantGetter = ReflectHelper.findGetterMethod(GetVariantBean.class, "name");
+        assertThat(getVariantGetter.getName()).isEqualTo("getName");
 
-        Method isOnlyGetter = ReflectHelper.findGetterMethod(IsOnlyBean.class, "enabled");
-        assertThat(isOnlyGetter.getName()).isEqualTo("isEnabled");
+        Method isVariantGetter = ReflectHelper.findGetterMethod(IsVariantBean.class, "enabled");
+        assertThat(isVariantGetter.getName()).isEqualTo("isEnabled");
     }
 
     private static <T> T withContextClassLoader(
@@ -80,13 +80,21 @@ public class ReflectHelperTest {
         T get() throws Exception;
     }
 
-    public static class GetOnlyBean {
+    public static class GetVariantBean {
         public String getName() {
             return "hibernate";
         }
+
+        public static String isName() {
+            return "ignored";
+        }
     }
 
-    public static class IsOnlyBean {
+    public static class IsVariantBean {
+        public static boolean getEnabled() {
+            return false;
+        }
+
         public boolean isEnabled() {
             return true;
         }
