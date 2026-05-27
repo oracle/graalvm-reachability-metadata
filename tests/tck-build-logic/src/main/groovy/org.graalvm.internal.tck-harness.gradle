@@ -151,25 +151,25 @@ if (CoordinateUtils.isFractionalBatch(coordinateFilter)) {
 matchingCoordinates = matchingCoordinates.findAll { !it.startsWith("samples:") }
 
 
-// gradle checkstyle -Pcoordinates=<maven-coordinates>
+// gradle checkstyle -Pcoordinates=<maven-coordinates>  §TCK-test-harness.2
 tasks.register("checkstyle", CheckstyleInvocationTask.class) { task ->
     task.setDescription("Runs checkstyle on all subprojects")
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
 }
 
-// gradle compileTestJava -Pcoordinates=<maven-coordinates>
+// gradle compileTestJava -Pcoordinates=<maven-coordinates>  §TCK-test-harness.3
 tasks.register("compileTestJava", CompileTestJavaInvocationTask.class) { task ->
     task.setDescription("Compiles sources (javac) for all subprojects")
     task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
 }
 
-// gradle javaTest -Pcoordinates=<maven-coordinates>
+// gradle javaTest -Pcoordinates=<maven-coordinates>  §TCK-test-harness.3
 tasks.register("javaTest", JavaTestInvocationTask.class) { task ->
     task.setDescription("Runs JVM tests (Gradle 'test') for all subprojects")
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
 }
 
-// gradle nativeTestCompile -Pcoordinates=<maven-coordinates>
+// gradle nativeTestCompile -Pcoordinates=<maven-coordinates>  §TCK-test-harness.3
 tasks.register("nativeTestCompile", NativeTestCompileInvocationTask.class) { task ->
     task.setDescription("Compiles native tests (nativeTestCompile) for all subprojects")
     task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
@@ -186,7 +186,7 @@ tasks.register("nativeTraceImage", NativeTraceImageInvocationTask.class) { task 
     }
 }
 
-// gradle runNativeTraceImage -Pcoordinates=<maven-coordinates> -PtraceMetadataPath=<path> [-PtraceMetadataConditionPackages=<pkg1,pkg2,...>]
+// gradle runNativeTraceImage -Pcoordinates=<maven-coordinates> -PtraceMetadataPath=<path> [-PtraceMetadataConditionPackages=<pkg1,pkg2,...>]  §TCK-test-harness.4
 tasks.register("runNativeTraceImage", RunNativeTraceImageInvocationTask.class) { task ->
     task.setDescription("Runs trace-enabled native tests once for matching coordinates")
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
@@ -198,6 +198,7 @@ tasks.register("runNativeTraceImage", RunNativeTraceImageInvocationTask.class) {
     }
 }
 
+// §TCK-test-harness.4
 tasks.register("mergeNativeTraceMetadata", Exec) { Exec task ->
     task.setDescription("Merges runtime metadata trace output directories with native-image-utils generate")
     task.setGroup(METADATA_GROUP)
@@ -212,13 +213,13 @@ tasks.register("mergeNativeTraceMetadata", Exec) { Exec task ->
     }
 }
 
-// gradle jacocoTestReport -Pcoordinates=<maven-coordinates>
+// gradle jacocoTestReport -Pcoordinates=<maven-coordinates>  §TCK-test-harness.8
 tasks.register("jacocoTestReport", JacocoTestReportInvocationTask.class) { task ->
     task.setDescription("Generates JaCoCo coverage reports for all subprojects (runs tests first)")
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
 }
 
-// gradle clean -Pcoordinates=<maven-coordinates>
+// gradle clean -Pcoordinates=<maven-coordinates>  §TCK-test-harness.3
 if (tasks.findByName("clean") == null) {
     tasks.register("clean", CleanInvocationTask.class) { t ->
         t.setDescription("Cleans all matching subprojects")
@@ -261,6 +262,7 @@ tasks.named("check").configure {
     dependsOn("checkstyle")
 }
 
+// §TCK-test-harness.1
 tasks.register("listCoordinates", DefaultTask) { task ->
     task.setDescription("Lists all matching GAV coordinates (one per line) honoring -Pcoordinates filter; use -PstrictCoordinates=true for strict matching")
     task.setGroup(METADATA_GROUP)
@@ -290,21 +292,25 @@ tasks.register("listCoordinates", DefaultTask) { task ->
     }
 }
 
+// §TCK-test-harness.1
 tasks.register("populateArtifactURLs", PopulateArtifactURLs.class) { task ->
     task.setDescription("Uses a coding agent command to fill source-code-url, repository-url, test-code-url, documentation-url, description, and language in matching metadata index entries.")
     task.setGroup(METADATA_GROUP)
 }
 
+// §TCK-test-harness.1
 tasks.register("discoverArtifactMetadata", DiscoverArtifactMetadata.class) { task ->
     task.setDescription("Uses a coding agent command to discover artifact metadata for a single coordinate and stores it under build/.")
     task.setGroup(METADATA_GROUP)
 }
 
+// §TCK-test-harness.1
 tasks.register("listLibraryJars", ListLibraryJarsInvocationTask.class) { task ->
     task.setDescription("Lists resolved tested-library JARs for matching coordinates (one per line)")
     task.setGroup(METADATA_GROUP)
 }
 
+// §TCK-test-harness.4
 tasks.register("generateDynamicAccessReport", GenerateDynamicAccessReportInvocationTask.class) { task ->
     task.setDescription("Builds native tests and prints generated dynamic-access JSON report files for matching coordinates")
     task.setGroup(METADATA_GROUP)
@@ -320,6 +326,7 @@ tasks.register("generateLibraryStats", GenerateLibraryStatsTask.class) { task ->
     task.setGroup(METADATA_GROUP)
 }
 
+// §TCK-test-harness.8
 tasks.register("generateReadmeBadgeSummary", GenerateReadmeBadgeSummaryTask.class) { task ->
     task.setDescription("Generates current README metrics data, coverage Markdown, and updates README metrics history")
     task.setGroup(METADATA_GROUP)
@@ -336,18 +343,19 @@ tasks.register("checkDocLinks", CheckDocLinksTask.class) { task ->
     task.getRepoRoot().set(tck.repoRoot)
 }
 
+// §TCK-test-harness.8
 tasks.register("analyzeExternalLibraryDynamicAccess", AnalyzeExternalLibraryDynamicAccessTask.class) { task ->
     task.setDescription("Resolves an external Maven coordinate and reports preserve/track dynamic-access totals")
     task.setGroup(METADATA_GROUP)
 }
 
-// gradle generateDependencyGraph -Pcoordinates=<maven-coordinates>
+// gradle generateDependencyGraph -Pcoordinates=<maven-coordinates>  §TCK-test-harness.8
 tasks.register("generateDependencyGraph", GenerateDependencyGraphTask.class) { task ->
     task.setDescription("Prints deps.dev dependency graph for matching coordinates")
     task.setGroup(METADATA_GROUP)
 }
 
-// gradle diff -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+// gradle diff -PbaseCommit=<base-commit> -PnewCommit=<new-commit>  §TCK-test-harness.1
 Provider<Task> diff = tasks.register("diff", DefaultTask) { task ->
     task.setDescription("Tests GraalVM Reflection Metadata that was changed between 'baseCommit' and 'newCommit'")
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
@@ -494,7 +502,7 @@ List<Map<String, Object>> changedMetadataTestEntries(
     entries
 }
 
-// gradle generateMatrixMatchingCoordinates -Pcoordinates=<maven-coordinates>
+// gradle generateMatrixMatchingCoordinates -Pcoordinates=<maven-coordinates>  §TCK-test-harness.7
 Provider<Task> generateMatrixMatchingCoordinates = tasks.register("generateMatrixMatchingCoordinates", DefaultTask) { task ->
     task.setDescription("Returns matrix definition populated with all matching coordinates")
     task.setGroup(METADATA_GROUP)
@@ -514,7 +522,7 @@ Provider<Task> generateMatrixMatchingCoordinates = tasks.register("generateMatri
     }
 }
 
-// gradle generateMatrixBatchedCoordinates [-Pbatches=<n>]
+// gradle generateMatrixBatchedCoordinates [-Pbatches=<n>]  §TCK-test-harness.7
 Provider<Task> generateMatrixBatchedCoordinates = tasks.register("generateMatrixBatchedCoordinates", DefaultTask) { task ->
     task.setDescription("Returns matrix definition populated with fractional batch coordinates (k/n)")
     task.setGroup(METADATA_GROUP)
@@ -533,7 +541,7 @@ Provider<Task> generateMatrixBatchedCoordinates = tasks.register("generateMatrix
     }
 }
 
-// gradle generateChangedCoordinatesMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+// gradle generateChangedCoordinatesMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>  §TCK-test-harness.7
 Provider<Task> generateChangedCoordinatesMatrix = tasks.register("generateChangedCoordinatesMatrix", DefaultTask) { task ->
     task.setDescription("Returns matrix definition populated with coordinates of changed libraries")
     task.setGroup(METADATA_GROUP)
@@ -561,7 +569,7 @@ Provider<Task> generateChangedCoordinatesMatrix = tasks.register("generateChange
     }
 }
 
-// gradle generateChangedMetadataTestMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+// gradle generateChangedMetadataTestMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>  §TCK-test-harness.7
 Provider<Task> generateChangedMetadataTestMatrix = tasks.register("generateChangedMetadataTestMatrix", DefaultTask) { task ->
     task.setDescription("Returns matrix definition populated with changed coordinates and batched tested versions from metadata index files")
     task.setGroup(METADATA_GROUP)
@@ -592,7 +600,7 @@ Provider<Task> generateChangedMetadataTestMatrix = tasks.register("generateChang
     }
 }
 
-// gradle generateChangedCoordinatesOnlyMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+// gradle generateChangedCoordinatesOnlyMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>  §TCK-test-harness.7
 Provider<Task> generateChangedCoordinatesOnlyMatrix = tasks.register("generateChangedCoordinatesOnlyMatrix", DefaultTask) { task ->
     task.setDescription("Returns a coordinate-only matrix definition populated with changed coordinates")
     task.setGroup(METADATA_GROUP)
@@ -613,7 +621,7 @@ Provider<Task> generateChangedCoordinatesOnlyMatrix = tasks.register("generateCh
     }
 }
 
-// gradle generateChangedIndexFileCoordinatesList -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+// gradle generateChangedIndexFileCoordinatesList -PbaseCommit=<base-commit> -PnewCommit=<new-commit>  §TCK-test-harness.7
 tasks.register("generateChangedIndexFileCoordinatesList", DefaultTask) { task ->
     task.setDescription("Returns a list of changed coordinates for validation based on git diff")
     task.setGroup(METADATA_GROUP)
@@ -639,7 +647,7 @@ tasks.register("generateChangedIndexFileCoordinatesList", DefaultTask) { task ->
     }
 }
 
-// gradle generateInfrastructureChangedCoordinatesMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+// gradle generateInfrastructureChangedCoordinatesMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>  §TCK-test-harness.7
 Provider<Task> generateInfrastructureChangedCoordinatesMatrix = tasks.register("generateInfrastructureChangedCoordinatesMatrix", DefaultTask) { task ->
     task.setDescription("Returns matrix definition populated with pre-selected coordinates when test infrastructure has changed")
     task.setGroup(METADATA_GROUP)
@@ -684,12 +692,14 @@ Provider<Task> generateInfrastructureChangedCoordinatesMatrix = tasks.register("
 }
 
 // new library version updaters tasks
+// §TCK-test-harness.7
 tasks.register("fetchExistingLibrariesWithNewerVersions", FetchExistingLibrariesWithNewerVersionsTask.class) { task ->
     task.setGroup(METADATA_GROUP)
     task.setDescription("Returns list of all libraries coordinates")
     task.setAllLibraryCoordinates(matchingCoordinates)
 }
 
+// §TCK-test-harness.7
 tasks.register("generateNewLibraryVersionCompatibilityMatrix", DefaultTask) { task ->
     task.setDescription("Returns matrix definition populated with newer library versions and CI environments")
     task.setGroup(METADATA_GROUP)
@@ -735,6 +745,7 @@ tasks.register("scaffold", ScaffoldTask.class) { task ->
     task.finalizedBy("spotlessApply")
 }
 
+// §TCK-test-harness.5
 tasks.register("contribute", ContributionTask.class) { task ->
     task.setDescription("Generates metadata and prepares pull request for contibuting on metadata repository based on provided tests.")
     task.setGroup(METADATA_GROUP)
@@ -752,13 +763,13 @@ tasks.register("splitTestOnlyMetadata", SplitTestOnlyMetadataTask.class) { task 
     task.setGroup(METADATA_GROUP)
 }
 
-// gradle fixTestNIRun -PtestLibraryCoordinates=<maven-coordinates> -PnewLibraryVersion=<library version which needs fix>
+// gradle fixTestNIRun -PtestLibraryCoordinates=<maven-coordinates> -PnewLibraryVersion=<library version which needs fix>  §TCK-test-harness.5
 tasks.register("fixTestNativeImageRun", FixTestNativeImageRun.class) { task ->
     task.setDescription("Fix test that fails Native Image run for new library version.")
     task.setGroup(METADATA_GROUP)
 }
 
-// gradle addLibraryAsLatestMetadataIndexJson -Pcoordinates=<maven-coordinates> [-PtestVersion=<version>]
+// gradle addLibraryAsLatestMetadataIndexJson -Pcoordinates=<maven-coordinates> [-PtestVersion=<version>]  §TCK-test-harness.5
 tasks.register("addLibraryAsLatestMetadataIndexJson", DefaultTask) { task ->
     task.setDescription("Marks given coordinates as latest in metadata/group/artifact/index.json")
     task.setGroup(METADATA_GROUP)
@@ -773,7 +784,7 @@ tasks.register("addLibraryAsLatestMetadataIndexJson", DefaultTask) { task ->
     }
 }
 
-// gradle addLibraryMetadataIndexJson -Pcoordinates=<maven-coordinates> [-PtestVersion=<version>]
+// gradle addLibraryMetadataIndexJson -Pcoordinates=<maven-coordinates> [-PtestVersion=<version>]  §TCK-test-harness.5
 tasks.register("addLibraryMetadataIndexJson", DefaultTask) { task ->
     task.setDescription("Adds given coordinates to metadata/group/artifact/index.json without changing the latest entry")
     task.setGroup(METADATA_GROUP)
@@ -788,7 +799,7 @@ tasks.register("addLibraryMetadataIndexJson", DefaultTask) { task ->
     }
 }
 
-// gradle extractLibraryTestParams -Pcoordinates=<group:artifact[:version]>
+// gradle extractLibraryTestParams -Pcoordinates=<group:artifact[:version]>  §TCK-test-harness.5
 tasks.register("extractLibraryTestParams", DefaultTask) { task ->
     task.setDescription("Extracts TEST_PATH, LATEST_VERSION and TEST_COORDINATES for given coordinates (group:artifact[:version]). Writes them into GITHUB_ENV.")
     task.setGroup(METADATA_GROUP)
@@ -857,7 +868,7 @@ tasks.register("extractLibraryTestParams", DefaultTask) { task ->
     }
 }
 
-// gradle generateAffectedSpringTestMatrix -PbaseCommit=<base> -PnewCommit=<head> -PspringAotBranch=<branch> -PspringAotPath=/path/to/spring-aot-smoke-tests
+// gradle generateAffectedSpringTestMatrix -PbaseCommit=<base> -PnewCommit=<head> -PspringAotBranch=<branch> -PspringAotPath=/path/to/spring-aot-smoke-tests  §TCK-test-harness.7
 //
 // Generates a GitHub Actions matrix for 'spring-aot-smoke-tests' impacted by metadata changes:
 // 1. Identifies changed Group:Artifacts via git diff between commits.
