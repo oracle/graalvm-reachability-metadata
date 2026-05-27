@@ -53,7 +53,7 @@ Before submitting a pull request, please [open a ticket](https://github.com/orac
 
 ### Further Information
 
-1. Continuous integration is described in [CI.md](docs/CI.md).
+1. Continuous integration is described in [ci.md](docs/ci.md).
 2. Pull request review guidelines are in [REVIEWING.md](docs/REVIEWING.md).
 3. Development workflow is described in [DEVELOPING.md](docs/DEVELOPING.md).
 
