@@ -4,6 +4,9 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+# Consecutive compatibility runner used by new-version CI. §CI-shared-scripts.
+# It classifies the first failing stage for §CI-verify-new-library-version-compatibility.
+
 set -u
 
 TIMEOUT="5m"

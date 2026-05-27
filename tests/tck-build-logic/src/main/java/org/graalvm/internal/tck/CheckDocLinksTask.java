@@ -40,6 +40,8 @@ import java.util.regex.Pattern;
  * targets are checked. Content inside fenced code blocks and inline code spans
  * is blanked before parsing, so link-like placeholders shown as code (for
  * example {@code [<path>](<path>)}) are not mistaken for real links.
+ * <p>
+ * Implements §TCK-test-harness.2 — the {@code checkDocLinks} gate.
  */
 public abstract class CheckDocLinksTask extends DefaultTask {
 

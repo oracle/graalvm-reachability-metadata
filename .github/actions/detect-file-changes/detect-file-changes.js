@@ -1,4 +1,5 @@
 // Lightweight in-repository file-change filter for GitHub pull request workflows.
+// §CI-detect-file-changes.
 //
 // It performs the following:
 //   1. Reads a YAML-like input containing glob patterns with support for:

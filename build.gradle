@@ -107,7 +107,7 @@ spotless {
     }
 }
 
-// gradle package
+// gradle package  §TCK-test-harness.8
 tasks.register('package', Zip) { task ->
     String outputFileName = "graalvm-reachability-metadata-${project.version}.zip"
     task.setDescription("Packages current repository to 'build/${outputFileName}'")
@@ -125,6 +125,7 @@ tasks.register('test') { t ->
 
 // Apply the harness after creating the 'test' aggregator to avoid missing property,
 // and without applying the 'java' plugin to avoid task name conflicts.
+// Harness layer of the two-layer build. §AR-build-infrastructure §TCK-test-harness
 apply plugin: "org.graalvm.internal.tck-harness"
 
 tasks.named("check").configure {
@@ -184,6 +185,7 @@ void printTestInfraReproducer(String gradleCmd, String coordinate, int paralleli
     ).each { println(it) }
 }
 
+// Infrastructure end-to-end test for a single coordinate: §E2E-infrastructure-tests.
 tasks.register('testInfra') { t ->
     t.group = "verification"
     t.setDescription("""Runs clean and pullAllowedDockerImages, then runs (${testInfraCommands('', '').collect { it.name }.join(', ')}) concurrently with isolated logs for a single coordinate.
@@ -257,6 +259,7 @@ tasks.register('testInfra') { t ->
     }
 }
 
+// Full infra end-to-end entry point (coordinate + 1/64 shard). §E2E-infrastructure-tests
 tasks.register('testAllInfra') { t ->
     t.group = "verification"
     t.setDescription("Determines one artifact coordinate via generateInfrastructureChangedCoordinatesMatrix (or uses -Pcoordinate/-Pcoordinates if provided), then runs testInfra for that coordinate and also for 1/64. Options: -Pparallelism to control concurrency.")

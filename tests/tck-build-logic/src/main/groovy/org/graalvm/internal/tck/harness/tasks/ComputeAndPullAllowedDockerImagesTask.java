@@ -42,6 +42,8 @@ import java.util.*;
  * - -Pcoordinates=<filter> (preferred)
  * - --coordinates=<filter>
  * The filter can be <code>group:artifact:version</code> or a fractional batch in the form <code>k/n</code> (e.g., 1/16), or 'all'.
+ * <p>
+ * Implements §TCK-test-harness.6 — the {@code pullAllowedDockerImages} task.
  */
 public abstract class ComputeAndPullAllowedDockerImagesTask extends DefaultTask {
 

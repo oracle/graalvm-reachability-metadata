@@ -4,6 +4,8 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+# Triaged Spring AOT native test runner. §CI-shared-scripts; §CI-test-affected-spring-aot.
+
 set -euo pipefail
 
 if [ $# -ne 3 ]; then

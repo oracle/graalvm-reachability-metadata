@@ -55,10 +55,10 @@ Check for the following critical actions:
 
 ## Metadata
 All metadata files **must** be covered by the tests. Every metadata file should:
-* have `typeReachable` in all entries (so it won't bloat image size with things that will be registered unconditionally)
+* have a `condition.typeReached` in all entries (so it won't bloat image size with things that will be registered unconditionally)
 * contain only metadata entries needed for the library that is the subject of the PR
 * not have entries that describes classes that serve only for tests 
 
 There are various tools that could help checking the content of all json files we are collecting.
 To run these checks automatically, the artifact-level index file at `metadata/<groupId>/<artifactId>/index.json` must include `allowed-packages` properly set ([see this](CONTRIBUTING.md#metadata-structure)).
-If this field is properly configured, our GitHub workflows will automatically check `typeReachable` and origin of all entries in all config files.
+If this field is properly configured, our GitHub workflows will automatically check `typeReached` and origin of all entries in all metadata files.

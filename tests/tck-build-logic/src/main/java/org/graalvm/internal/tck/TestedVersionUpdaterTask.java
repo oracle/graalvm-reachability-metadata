@@ -48,6 +48,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+/**
+ * Implements §TCK-test-harness.5 — the {@code addTestedVersion} authoring helper that records a
+ * newly passing version in {@code index.json} and refreshes mirrored stats and shared test sources,
+ * used by the compatibility workflow (§FS-repository-functional-spec.9).
+ */
 @SuppressWarnings("unused")
 public abstract class TestedVersionUpdaterTask extends DefaultTask {
     private static final String VERSION_PLACEHOLDER = "$version$";

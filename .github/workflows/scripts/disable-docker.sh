@@ -4,6 +4,9 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+# CI Docker isolation helper for metadata tests. §CI-shared-scripts.
+# Enforces the no-network test invariant in §FS-repository-functional-spec.5.3.
+
 # Purpose:
 #   Make Docker unable to access the network during tests by:
 #     1) Enabling the discard service on localhost:9 (TCP/UDP) via inetd to accept and immediately discard traffic.

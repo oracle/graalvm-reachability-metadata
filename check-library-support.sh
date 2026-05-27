@@ -4,6 +4,10 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+# User-facing support lookup: check tested versions in the published index.
+# §FS-repository-functional-spec.8.1.
+# Index semantics come from §FS-repository-functional-spec.4.7.
+
 set -euo pipefail
 
 if [ "$#" -ne 1 ]; then

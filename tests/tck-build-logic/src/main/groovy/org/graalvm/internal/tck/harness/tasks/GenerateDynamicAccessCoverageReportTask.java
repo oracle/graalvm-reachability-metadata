@@ -49,6 +49,8 @@ import java.util.List;
  * }</pre>
  *
  * <p>The JSON payload is emitted from {@link LibraryStatsModels.DynamicAccessCoverageReport}.
+ *
+ * <p>Implements §TCK-test-harness.8 — the {@code generateDynamicAccessCoverageReport} task.
  */
 @SuppressWarnings("unused")
 public abstract class GenerateDynamicAccessCoverageReportTask extends AbstractLibraryStatsTask {
