@@ -27,7 +27,7 @@ the repository's scheduled library version compatibility automation, which tests
 newer upstream versions, records the passing ones in a `library-bulk-update` PR,
 and files one labeled tracking issue per failing `(library, version)` pair —
 the contract for that producer is the repository functional spec's
-[Library version update automation](../../docs/FUNCTIONAL_SPEC.md#fs-library-version-update-automation-library-version-update-automation)
+[Library version update automation](../../docs/functional-spec.md#fs-library-version-update-automation-library-version-update-automation)
 (root-namespace ID `FS-library-version-update-automation`).
 
 Orchestration must claim exactly one issue per workflow run, dispatch the
