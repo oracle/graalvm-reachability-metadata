@@ -2,11 +2,12 @@
 
 Forge should provide coverage-positive automation for the
 graalvm-reachability-metadata repository (§GRUND-forge-motivation).
-Its direction is measured by three primary outcomes: maximize practical JVM
+Its direction is measured by four primary outcomes: maximize practical JVM
 library coverage (§GOAL-maximize-library-coverage), shorten the path from opened
 issue to shipped metadata (§GOAL-shorten-issue-to-shipped-metadata), and
 minimize generation cost without weakening quality or reviewability
-(§GOAL-minimize-generation-cost).
+(§GOAL-minimize-generation-cost), and turn recurring failures into better
+automation (§GOAL-improve-automation-first).
 
 # GOAL-maximize-library-coverage: Maximize library coverage
 
@@ -31,3 +32,11 @@ coverage, and reviewability. It should use the least tokens and compute needed
 for the task, prefer lightweight agents such as Pi when sufficient, measure cost
 explicitly, and clear stale agent context between independent steps or runs,
 serving §GOAL-forge-direction.
+
+# GOAL-improve-automation-first: Improve automation before one-off fixes
+
+When Forge encounters a problem, maintainers should first look for an
+improvement to the automation logic, workflow algorithms, prompts, strategies,
+or deterministic harness support that would solve the class of problems. Direct
+manual fixes to one library are reserved for high-priority issues that the
+automation cannot safely resolve yet, serving §GOAL-forge-direction.

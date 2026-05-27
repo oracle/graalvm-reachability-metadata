@@ -30,10 +30,10 @@ Application developers consume this repository indirectly: native-build-tools re
 
 Two properties make this achievable: the reachability-metadata schema is itself additive (every entry is gated on `typeReached`), and `native-image` defaults to runtime initialization when no build-time directives are supplied. The hard constraints below preserve that additivity — they are not editorial scope choices but direct consequences of the invariant.
 
-- **HC-1 No build-time-initialization tweaks.** Metadata bundles must not ship `native-image.properties` or any other directive that moves class `<clinit>` execution into the image builder. Build-time initialization captures state from a non-user environment into the image and breaks additivity. Every library is runtime-initialized by default.
-- **HC-2 No library patching.** No substitutions, bytecode rewrites, or shaded forks of upstream libraries. Patching ships a different version than the one the user resolved through Maven Central, is invisible at the dependency-resolution layer, and is unstable across upstream releases.
-- **HC-3 No `Feature` classes.** Metadata bundles must not ship `org.graalvm.nativeimage.hosted.Feature` implementations or any other artifact that runs arbitrary Java inside the image builder. `Feature`s are a security concern (full filesystem / network / reflective access at build time) and break additivity because their effect is whatever code the author wrote.
-- **HC-4 No untested metadata.** Metadata that has not passed the test gates defined in [§5.2 Tests](#52-tests) and [§5.3 CI gates](#53-ci-gates) is not published from this repository, regardless of provenance (human or Forge).
+- **No build-time-initialization tweaks.** Metadata bundles must not ship `native-image.properties` or any other directive that moves class `<clinit>` execution into the image builder. Build-time initialization captures state from a non-user environment into the image and breaks additivity. Every library is runtime-initialized by default.
+- **No library patching.** No substitutions, bytecode rewrites, or shaded forks of upstream libraries. Patching ships a different version than the one the user resolved through Maven Central, is invisible at the dependency-resolution layer, and is unstable across upstream releases.
+- **No `Feature` classes.** Metadata bundles must not ship `org.graalvm.nativeimage.hosted.Feature` implementations or any other artifact that runs arbitrary Java inside the image builder. `Feature`s are a security concern (full filesystem / network / reflective access at build time) and break additivity because their effect is whatever code the author wrote.
+- **No untested metadata.** Metadata that has not passed the test gates defined in [§5.2 Tests](#52-tests) and [§5.3 CI gates](#53-ci-gates) is not published from this repository, regardless of provenance (human or Forge).
 
 These constraints apply uniformly to human-authored PRs and to Forge output, and are enforced by `checkMetadataFiles` plus the reviewer skills.
 
@@ -311,22 +311,26 @@ every dependency in your build and passes it to `native-image` (§4.7). Concrete
 
 ### 8.2 Contributor — add or update metadata
 
-Work always begins from an issue, never a hand-edited metadata file (§3, HC-4).
-A typical loop, all driven through the test harness (§TCK-test-harness):
+Work begins from an issue and normally stays inside the Forge-controlled
+automation path, not a hand-edited metadata file (§3, §5.2,
+§forge/GOAL-improve-automation-first). Contributors guide the process by filing
+or refining the issue, supplying reproduction details or custom instructions,
+running Forge workflows, and reviewing the generated PR evidence. When Forge
+hits a recurring or systematic problem, the preferred fix is to improve the
+workflow logic, prompts, strategy, or deterministic harness support so the next
+similar issue is handled automatically, rather than patching only the one
+coordinate that exposed the gap (§forge/GOAL-improve-automation-first).
 
-1. `./gradlew scaffold -Pcoordinates=<group:artifact:version>` to create the test
-   project and metadata skeleton, then write tests that fail without the metadata
-   (§FS-repository-functional-spec.5.2) under `tests/src/` (§TESTS-suite).
-2. Collect metadata with the Native Image Agent (`nativeTraceImage` /
-   `CollectingMetadata.md`) or `generateMetadata`, keeping every entry conditional
-   on `typeReached` inside `allowed-packages` (§FS-repository-functional-spec.5.1).
-3. Validate and test locally for that one coordinate:
-   `./gradlew pullAllowedDockerImages checkMetadataFiles test -Pcoordinates=<group:artifact:version>`.
-4. Open a PR. CI re-runs the same gates as the authority (§4.3,
-   §CI-repository-ci); local runs are best-effort.
+Direct human edits to metadata or tests are reserved for high-priority work that
+the automation cannot safely resolve yet. Those edits are still bound by the
+same additivity constraints (§3), test requirements (§5.2), metadata rules
+(§5.1), and CI gates (§4.3, §CI-repository-ci) as Forge output. The usual local
+verification is coordinate-scoped:
+`./gradlew pullAllowedDockerImages checkMetadataFiles test -Pcoordinates=<group:artifact:version>`.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the full walkthrough and
-[DEVELOPING.md](DEVELOPING.md) for the complete task reference.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full walkthrough,
+[DEVELOPING.md](DEVELOPING.md) for the complete task reference, and the Forge
+entry points in §8.4.
 
 ### 8.3 Reviewer / maintainer — sign off
 

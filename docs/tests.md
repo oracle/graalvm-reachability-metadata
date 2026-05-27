@@ -3,11 +3,11 @@
 [`tests/`](../tests) is what justifies every byte of shipped metadata. A
 metadata entry exists only because a test exercises the dynamic access it
 registers and would fail without it (§GOAL-tested-metadata); this suite holds
-those tests and the build logic that runs them. The behavioral requirements for
-tests are normative in §FS-repository-functional-spec.5.2; this document
-describes the suite's purpose and layout.
+those tests. The behavioral requirements for tests are normative in
+§FS-repository-functional-spec.5.2; this document describes the test-project
+contract.
 
-## 1. Layout
+## 1. Coordinate test projects
 
 - [`tests/src/<groupId>/<artifactId>/<version>/`](../tests/src) — one
   self-contained Gradle test project per coordinate, unless an `index.json`
@@ -15,22 +15,16 @@ describes the suite's purpose and layout.
   exercises the library's reachable surface through its public API, declares any
   Docker images it needs in `required-docker-images.txt`, and is the unit the
   harness runs on the JVM and on `native-image`.
-- `tests/src/<groupId>/<artifactId>/<version>/src/test/resources/META-INF/native-image/reachability-metadata.json`
+- `src/test/resources/META-INF/native-image/reachability-metadata.json`
   — when present, the test-only reachability metadata that
   `splitTestOnlyMetadata` carved out of the shipped library metadata so the test
   image can reach its own helper types without those entries reaching consumers
   (§METADATA-suite, §FS-repository-functional-spec.5.1).
-- [`tests/tck-build-logic/`](../tests/tck-build-logic) — the included Gradle
-  build that publishes the TCK convention plugins and scaffold templates
-  (§AR-build-infrastructure). This is the harness's build logic, not library
-  tests.
-- [`tests/tck-test-support/`](../tests/tck-test-support) — the
-  `NativeImageSupport` helper library test code uses to assert native-image
-  behavior.
-- [`tests/src/AGENTS.md`](../tests/src/AGENTS.md) — the contract for agents
-  authoring tests (assert against standard Java exceptions, not
-  `GradleException`; `build.gradle` edits restricted to `--add-opens` /
-  `--add-exports` under `graalvmNative`).
+- `build.gradle` may add test dependencies and, when there is no better public
+  API path, restrict Native Image configuration edits to `--add-opens` /
+  `--add-exports` under `graalvmNative`.
+- Test assertions use standard Java or library exceptions, not Gradle-only
+  failure types such as `GradleException`.
 
 ## 2. What a good test must do
 
