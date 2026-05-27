@@ -11,6 +11,8 @@ import java.util.List;
 
 /**
  * Task that builds trace-enabled native test images on matching subprojects.
+ * <p>
+ * Implements §TCK-test-harness.4 — the {@code nativeTraceImage} tracing task.
  */
 @SuppressWarnings("unused")
 public abstract class NativeTraceImageInvocationTask extends AllCoordinatesExecTask {

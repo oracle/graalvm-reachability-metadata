@@ -19,6 +19,8 @@ import java.util.Objects;
 /**
  * Task that is used to start subproject tests for matching coordinates.
  * Coordinate resolution is unified and handled by the base class.
+ * <p>
+ * Implements §TCK-test-harness.3 — the full {@code test}/{@code tckTest} lane.
  */
 @SuppressWarnings("unused")
 public abstract class TestInvocationTask extends AllCoordinatesExecTask {

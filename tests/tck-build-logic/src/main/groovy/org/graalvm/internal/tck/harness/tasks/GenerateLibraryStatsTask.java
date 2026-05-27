@@ -19,6 +19,8 @@ import java.util.Set;
 
 /**
  * Generates library stats and stores them in per-metadata-version stats files.
+ * <p>
+ * Implements §TCK-test-harness.8 — the {@code generateLibraryStats} reporting task.
  */
 @SuppressWarnings("unused")
 public abstract class GenerateLibraryStatsTask extends AbstractLibraryStatsTask {

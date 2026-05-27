@@ -45,6 +45,8 @@ import java.util.regex.Pattern;
  * - -Pcoordinates=<filter> (preferred, supports space-separated lists for CI)
  * - --coordinates=<filter>
  * The filter can be <code>group:artifact[:version]</code>, a fractional batch <code>k/n</code> (e.g., 1/16), or 'all'.
+ * <p>
+ * Implements §TCK-test-harness.2 — the {@code validateIndexFiles} validation gate (§METADATA-suite).
  */
 public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
 

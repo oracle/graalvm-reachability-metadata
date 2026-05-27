@@ -25,6 +25,8 @@ import java.util.stream.Collectors;
 
 /**
  * Generates metadata for the given library coordinates and, if packages list is provided, creates a new user-code-filter.json.
+ * <p>
+ * Implements §TCK-test-harness.5 — the {@code generateMetadata} authoring helper.
  */
 public abstract class GenerateMetadataTask extends DefaultTask {
     private static final String GRADLEW = "gradlew";

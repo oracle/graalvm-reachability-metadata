@@ -10,6 +10,9 @@ import org.gradle.api.tasks.TaskAction;
 
 /**
  * Validates committed mirrored library stats files.
+ * <p>
+ * Implements §TCK-test-harness.2 — the {@code validateLibraryStats} gate, including the Forge
+ * run records (§forge/FS-forge-run-metrics).
  */
 @SuppressWarnings("unused")
 public abstract class ValidateLibraryStatsTask extends AbstractLibraryStatsTask {
