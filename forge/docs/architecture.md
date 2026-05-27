@@ -48,11 +48,11 @@ The dispatcher routes issue work by issue labels, not by PR labels:
 
 | Issue label | Workflow driver | Successful PR label |
 | --- | --- | --- |
-| `library-new-request` | `ai_workflows/add_new_library_support.py` | `library-new-request` |
-| `library-update-request` | `ai_workflows/improve_library_coverage.py` | `library-update-request` |
-| `fails-javac-compile` | `ai_workflows/fix_javac_fail.py` | `fixes-javac-fail` |
-| `fails-java-run` | `ai_workflows/fix_java_run_fail.py` | `fixes-java-run-fail` |
-| `fails-native-image-run` | `ai_workflows/fix_ni_run.py` | `fixes-native-image-run-fail` |
+| `library-new-request` | `ai_workflows/drivers/add_new_library_support.py` | `library-new-request` |
+| `library-update-request` | `ai_workflows/drivers/improve_library_coverage.py` | `library-update-request` |
+| `fails-javac-compile` | `ai_workflows/drivers/fix_javac_fail.py` | `fixes-javac-fail` |
+| `fails-java-run` | `ai_workflows/drivers/fix_java_run_fail.py` | `fixes-java-run-fail` |
+| `fails-native-image-run` | `ai_workflows/drivers/fix_ni_run.py` | `fixes-native-image-run-fail` |
 
 The control plane treats a claimed issue as exclusive work. Claiming,
 assignment checks, worktree creation, and final unassignment all belong in
@@ -169,7 +169,7 @@ become visible to reviewers.
 Forge extension points are intentionally narrow:
 
 - Add an issue queue by adding a label route in `forge_metadata.py` (see
-  §ORCH-forge-orchestration-spec), a workflow driver under `ai_workflows/`, and
+  §ORCH-forge-orchestration-spec), a workflow driver under `ai_workflows/drivers/`, and
   a matching git script under `git_scripts/` (see
   §GIT-forge-publication).
 - Add a workflow engine by subclassing the current `WorkflowStrategy` base

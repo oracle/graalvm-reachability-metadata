@@ -10,7 +10,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from ai_workflows.improve_library_coverage import (
+from ai_workflows.drivers.improve_library_coverage import (
     format_issue_requested_metadata_context,
     format_resolved_edit_scope_context,
     prepare_library_update_target,
@@ -527,7 +527,7 @@ class LibraryUpdateTargetTests(unittest.TestCase):
             def fail_scaffold(command, **kwargs):  # type: ignore[no-untyped-def]
                 raise subprocess.CalledProcessError(17, command)
 
-            with patch("ai_workflows.improve_library_coverage.subprocess.run", side_effect=fail_scaffold):
+            with patch("ai_workflows.drivers.improve_library_coverage.subprocess.run", side_effect=fail_scaffold):
                 with self.assertRaisesRegex(
                         RuntimeError,
                         "Failed to scaffold library-update target org.example:demo:9.9.9",
@@ -557,9 +557,9 @@ class LibraryUpdateTargetTests(unittest.TestCase):
                     os.remove(generated_stats)
                 return subprocess.CompletedProcess(command, 0)
 
-            with patch("ai_workflows.improve_library_coverage.subprocess.run", side_effect=fake_run), \
+            with patch("ai_workflows.drivers.improve_library_coverage.subprocess.run", side_effect=fake_run), \
                     patch(
-                        "ai_workflows.improve_library_coverage.subprocess.check_output",
+                        "ai_workflows.drivers.improve_library_coverage.subprocess.check_output",
                         return_value="checkpoint\n",
                     ):
                 ending_commit = reset_failed_library_update_worktree(repo, "checkpoint", target)

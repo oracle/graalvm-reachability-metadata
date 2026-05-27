@@ -17,7 +17,7 @@ that is not represented in the repository yet (§WF-dynamic-access-workflow).
 ### Entry point
 
 ```console
-python3 ai_workflows/improve_library_coverage.py \
+python3 ai_workflows/drivers/improve_library_coverage.py \
   --coordinates <group:artifact:version> \
   [--strategy-name NAME] \
   [--reachability-metadata-path /path/to/graalvm-reachability-metadata] \
@@ -90,9 +90,9 @@ All branches of this case end in coverage improvement for the requested
 version. The difference is which driver owns the prerequisite work before
 coverage starts:
 
-- `ai_workflows/fix_javac_fail.py` for compilation failures.
-- `ai_workflows/fix_java_run_fail.py` for JVM runtime failures.
-- `ai_workflows/improve_library_coverage.py` when the requested version is
+- `ai_workflows/drivers/fix_javac_fail.py` for compilation failures.
+- `ai_workflows/drivers/fix_java_run_fail.py` for JVM runtime failures.
+- `ai_workflows/drivers/improve_library_coverage.py` when the requested version is
   already compatible with the latest supported test suite.
 
 ### PR creation

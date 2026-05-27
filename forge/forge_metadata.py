@@ -41,25 +41,26 @@ from dataclasses import dataclass
 from typing import Optional
 from urllib.parse import quote
 
-from ai_workflows.add_new_library_support import (
+import ai_workflows.core  # noqa: F401 - triggers strategy registration
+from ai_workflows.drivers.add_new_library_support import (
     DEFAULT_MODEL_NAME,
     init_agent as init_workflow_agent,
     list_all_files,
     main as run_add_new_library_support_workflow,
 )
-from ai_workflows.fix_javac_fail import (
+from ai_workflows.drivers.fix_javac_fail import (
     main as run_fix_javac_workflow,
 )
-from ai_workflows.fix_java_run_fail import (
+from ai_workflows.drivers.fix_java_run_fail import (
     main as run_fix_java_run_workflow,
 )
-from ai_workflows.fix_ni_run import (
+from ai_workflows.drivers.fix_ni_run import (
     main as run_fix_ni_run_workflow,
 )
-from ai_workflows.improve_library_coverage import (
+from ai_workflows.drivers.improve_library_coverage import (
     main as run_improve_library_coverage_workflow,
 )
-from ai_workflows.workflow_strategies.workflow_strategy import RUN_STATUS_CHUNK_READY, RUN_STATUS_FAILURE
+from ai_workflows.core.workflow_strategy import RUN_STATUS_CHUNK_READY, RUN_STATUS_FAILURE
 from git_scripts.common_git import (
     GITHUB_TRANSIENT_RETRY_ATTEMPTS,
     GitHubRateLimitExceeded,
@@ -82,6 +83,7 @@ from git_scripts.make_pr_not_for_native_image import main as run_make_pr_not_for
 from git_scripts.make_pr_ni_run_fix import main as run_make_pr_ni_run_fix
 from git_scripts.make_pr_improve_coverage import main as run_make_pr_improve_coverage
 from utility_scripts.dynamic_access_report import load_dynamic_access_coverage_report
+from utility_scripts.fixture_github import FixtureGitHubState, load_fixture_github_state
 from utility_scripts.library_stats import resolve_stats_file_path
 from utility_scripts.large_library_progress import (
     LABEL_LARGE_LIBRARY_BLOCKED,
@@ -176,6 +178,7 @@ LABEL_PRIORITY = "priority"
 LABEL_HUMAN_INTERVENTION = "human-intervention"
 LABEL_HUMAN_INTERVENTION_FIXED = "human-intervention-fixed"
 LABEL_NOT_FOR_NATIVE_IMAGE = "not-for-native-image"
+FIXTURE_AUTHENTICATED_USER = "fixture-runner"
 
 SCRATCH_WORKTREE_DIRNAME = "forge_worktrees"
 SCRATCH_REVIEW_WORKTREE_DIRNAME = "forge_review_worktrees"
@@ -469,12 +472,15 @@ PIPELINE_LABELS = {LABEL_LIBRARY_NEW, LABEL_LIBRARY_UPDATE, LABEL_JAVAC_FAIL, LA
 
 def get_issue_by_number(issue_number: int) -> tuple[dict, str]:
     """Fetch a single issue by number and determine its pipeline label."""
-    data = gh_json(
-        "issue", "view",
-        str(issue_number),
-        "--repo", REPO,
-        "--json", "number,title,url,labels,assignees",
-    )
+    if is_fixture_testing_enabled():
+        data = require_fixture_github_state().get_issue_by_number(issue_number)
+    else:
+        data = gh_json(
+            "issue", "view",
+            str(issue_number),
+            "--repo", REPO,
+            "--json", "number,title,url,labels,assignees",
+        )
     for label in data.get("labels", []):
         label_name = label.get("name") if isinstance(label, dict) else None
         if label_name in PIPELINE_LABELS:
@@ -490,6 +496,8 @@ def get_issue_by_number(issue_number: int) -> tuple[dict, str]:
 
 def get_issue_claim_payload(issue_number: int) -> dict:
     """Fetch mutable issue state immediately before claim decisions."""
+    if is_fixture_testing_enabled():
+        return require_fixture_github_state().get_issue_claim_payload(issue_number)
     return gh_json(
         "issue", "view",
         str(issue_number),
@@ -500,6 +508,8 @@ def get_issue_claim_payload(issue_number: int) -> dict:
 
 def get_issue_body(issue_number: int) -> str:
     """Fetch an issue body only for workflows that explicitly need reporter context."""
+    if is_fixture_testing_enabled():
+        return require_fixture_github_state().get_issue_body(issue_number)
     data = gh_json(
         "issue", "view",
         str(issue_number),
@@ -555,6 +565,14 @@ def search_issues_with_label(
     """Fetch open issues that carry the given label using GitHub search pagination."""
     if limit <= 0:
         return []
+    if is_fixture_testing_enabled():
+        return require_fixture_github_state().list_open_issues_by_label(
+            label,
+            limit=limit,
+            offset=offset,
+            extra_labels=extra_labels,
+            excluded_labels=[LABEL_NOT_FOR_NATIVE_IMAGE],
+        )
     if offset >= GITHUB_SEARCH_MAX_RESULTS:
         return []
     limit = min(limit, GITHUB_SEARCH_MAX_RESULTS - offset)
@@ -612,6 +630,12 @@ def get_issue_search_page(query: str, page: int, per_page: int) -> list[dict]:
 
 def count_issues_with_label(label: str, extra_labels: list[str] | None = None) -> int:
     """Return GitHub's count of open issues carrying the given label set."""
+    if is_fixture_testing_enabled():
+        return require_fixture_github_state().count_open_issues_by_label(
+            label,
+            extra_labels=extra_labels,
+            excluded_labels=[LABEL_NOT_FOR_NATIVE_IMAGE],
+        )
     query = build_issue_search_query(label, extra_labels)
     return get_issue_search_count(query)
 
@@ -1355,6 +1379,23 @@ def get_open_issues_blocked_by_issue_counts(
     if minimum_count <= 0 or chunk_size <= 0:
         return {}
 
+    if is_fixture_testing_enabled():
+        fixture_state = require_fixture_github_state()
+        unique_issue_numbers = list(dict.fromkeys(issue_numbers))
+        counts = {issue_number: 0 for issue_number in unique_issue_numbers}
+        counted_issue_numbers = set(unique_issue_numbers)
+        for fixture_issue_number in fixture_state.issue_numbers:
+            issue_payload = fixture_state.get_issue_claim_payload(fixture_issue_number)
+            if str(issue_payload.get("state", "")).upper() != "OPEN":
+                continue
+            blocker_issue_numbers = fixture_state.get_open_blocking_issue_numbers(fixture_issue_number)
+            for blocker_issue_number in blocker_issue_numbers:
+                if blocker_issue_number not in counted_issue_numbers:
+                    continue
+                if counts[blocker_issue_number] < minimum_count:
+                    counts[blocker_issue_number] += 1
+        return counts
+
     owner, repo_name = REPO.split("/")
     unique_issue_numbers = list(dict.fromkeys(issue_numbers))
     counts = {issue_number: 0 for issue_number in unique_issue_numbers}
@@ -1515,12 +1556,15 @@ def get_project_item_state(issue_number: int) -> tuple[str | None, str | None]:
     Fetch the project item ID and current Status field value for an issue via GraphQL.
     Returns (item ID, status option name), or (None, None) if not found.
     """
-    item_id, status = get_issue_project_item_status(
-        REPO,
-        PROJECT_NUMBER,
-        issue_number,
-        STATUS_FIELD_NAME,
-    )
+    if is_fixture_testing_enabled():
+        item_id, status = require_fixture_github_state().get_project_item_state(issue_number)
+    else:
+        item_id, status = get_issue_project_item_status(
+            REPO,
+            PROJECT_NUMBER,
+            issue_number,
+            STATUS_FIELD_NAME,
+        )
     if item_id:
         print()
         status_text = status if status is not None else "unknown"
@@ -1549,6 +1593,8 @@ def get_item_status(item_id: str):
     Query the current Status field value of a project item via GraphQL.
     Returns the status option name (e.g. "Todo") or None.
     """
+    if is_fixture_testing_enabled():
+        return require_fixture_github_state().get_item_status(item_id)
     query = """
     query($item: ID!) {
       node(id: $item) {
@@ -1637,10 +1683,42 @@ ensured_issue_labels: set[str] = set()
 held_issue_claim_lock_numbers: set[int] = set()
 held_issue_claim_lock_guard = threading.Lock()
 preservation_failed_worktree_paths: set[str] = set()
+fixture_github_state: FixtureGitHubState | None = None
 
 
 CLAIM_BACKOFF_MIN = 5  # Minimum seconds to wait before verifying claim
 CLAIM_BACKOFF_MAX = 10  # Maximum seconds to wait before verifying claim
+
+
+def configure_fixture_testing(
+        fixture_paths: list[str] | None = None,
+        fixture_state: FixtureGitHubState | None = None,
+) -> FixtureGitHubState:
+    """Configure the dispatcher to use local fixture GitHub state."""
+    global fixture_github_state
+    if fixture_state is not None and fixture_paths is not None:
+        raise ValueError("Pass either fixture_paths or fixture_state, not both")
+    fixture_github_state = fixture_state or load_fixture_github_state(fixture_paths)
+    return fixture_github_state
+
+
+def is_fixture_testing_enabled() -> bool:
+    """Return True when GitHub helper calls should use fixture state."""
+    return fixture_github_state is not None
+
+
+def require_fixture_github_state() -> FixtureGitHubState:
+    """Return configured fixture GitHub state or fail with a dispatcher error."""
+    if fixture_github_state is None:
+        raise RuntimeError("Fixture GitHub state is not configured")
+    return fixture_github_state
+
+
+def claim_backoff_seconds() -> float:
+    """Return the claim verification delay for live or fixture GitHub state."""
+    if is_fixture_testing_enabled():
+        return 0.0
+    return random.uniform(CLAIM_BACKOFF_MIN, CLAIM_BACKOFF_MAX)
 
 
 def get_authenticated_user() -> str:
@@ -1653,6 +1731,10 @@ def resolve_authenticated_user(authenticated_user: str | None = None) -> str:
     """Resolve and log the authenticated GitHub username when remote work needs it."""
     if authenticated_user is not None:
         return authenticated_user
+    if is_fixture_testing_enabled():
+        print()
+        log_stage("github-auth", f"Fixture authenticated as: {FIXTURE_AUTHENTICATED_USER}")
+        return FIXTURE_AUTHENTICATED_USER
     ensure_gh_authenticated()
     resolved_user = get_authenticated_user()
     print()
@@ -2537,6 +2619,9 @@ def process_pull_requests_with_label(
 
 def set_issue_assignee(issue_number: int, username: str):
     """Set a single assignee to an issue."""
+    if is_fixture_testing_enabled():
+        require_fixture_github_state().set_issue_assignee(issue_number, username)
+        return
     gh(
         "api",
         "--method",
@@ -2549,6 +2634,9 @@ def set_issue_assignee(issue_number: int, username: str):
 
 def clear_issue_assignees(issue_number: int):
     """Remove all assignees from an issue."""
+    if is_fixture_testing_enabled():
+        require_fixture_github_state().clear_issue_assignees(issue_number)
+        return
     gh(
         "api",
         "--method",
@@ -2563,6 +2651,8 @@ def clear_issue_assignees(issue_number: int):
 
 def get_issue_assignees(issue_number: int) -> list[str]:
     """Return the list of assignee logins for an issue."""
+    if is_fixture_testing_enabled():
+        return require_fixture_github_state().get_issue_assignees(issue_number)
     data = gh_json(
         "issue",
         "view",
@@ -2657,6 +2747,9 @@ def set_item_status(item_id: str, status: str) -> None:
     """
     print()
     log_stage("project-status", f"Setting project item {item_id} -> {status}")
+    if is_fixture_testing_enabled():
+        require_fixture_github_state().set_item_status(item_id, status)
+        return
     project_node_id, field_id, option_ids = get_cached_field_info()
     option_id = option_ids.get(status)
     run_github_command_with_retries(
@@ -3224,6 +3317,9 @@ def ensure_repo_label_exists(label_name: str, color: str, description: str) -> N
     """Ensure a repository label exists before applying it to an issue or pull request."""
     if label_name in ensured_issue_labels:
         return
+    if is_fixture_testing_enabled():
+        ensured_issue_labels.add(label_name)
+        return
 
     encoded_label = quote(label_name, safe="")
     label_lookup = gh("api", f"/repos/{REPO}/labels/{encoded_label}", check=False)
@@ -3259,6 +3355,13 @@ def ensure_repo_label_exists(label_name: str, color: str, description: str) -> N
 
 def post_issue_comment(issue_number: int, body: str) -> None:
     """Post a comment to a GitHub issue."""
+    if is_fixture_testing_enabled():
+        require_fixture_github_state().post_issue_comment(
+            issue_number,
+            body,
+            FIXTURE_AUTHENTICATED_USER,
+        )
+        return
     gh(
         "issue",
         "comment",
@@ -3297,6 +3400,9 @@ def add_issue_label(issue_number: int, label_name: str) -> None:
         label_color,
         label_description,
     )
+    if is_fixture_testing_enabled():
+        require_fixture_github_state().add_issue_label(issue_number, label_name)
+        return
     gh(
         "issue",
         "edit",
@@ -3310,6 +3416,9 @@ def add_issue_label(issue_number: int, label_name: str) -> None:
 
 def remove_issue_label(issue_number: int, label_name: str) -> None:
     """Remove a label from a GitHub issue if it is present."""
+    if is_fixture_testing_enabled():
+        require_fixture_github_state().remove_issue_label(issue_number, label_name)
+        return
     result = gh(
         "issue",
         "edit",
@@ -4815,6 +4924,8 @@ def process_claimed_issue_lifecycle(
 
 def get_open_blocking_issue_numbers(issue_number: int) -> list[int]:
     """Return the numbers of currently open issues that block the given issue."""
+    if is_fixture_testing_enabled():
+        return require_fixture_github_state().get_open_blocking_issue_numbers(issue_number)
     owner, repo_name = REPO.split("/")
     open_blockers: list[int] = []
     cursor: str | None = None
@@ -5121,6 +5232,21 @@ def get_issue_claim_preflights(
         chunk_size: int = ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE,
 ) -> dict[int, IssueClaimPreflight]:
     """Fetch claim preflight state for issue candidates with chunked GraphQL calls."""
+    if is_fixture_testing_enabled():
+        fixture_state = require_fixture_github_state()
+        preflights: dict[int, IssueClaimPreflight] = {}
+        for issue_number in list(dict.fromkeys(issue_numbers)):
+            item_id, project_status = fixture_state.get_project_item_state(issue_number)
+            preflights[issue_number] = IssueClaimPreflight(
+                issue_number=issue_number,
+                item_id=item_id,
+                project_status=project_status,
+                assignees=tuple(fixture_state.get_issue_assignees(issue_number)),
+                open_blockers=tuple(fixture_state.get_open_blocking_issue_numbers(issue_number)),
+                complete=True,
+            )
+        return preflights
+
     owner, repo_name = REPO.split("/")
     preflights: dict[int, IssueClaimPreflight] = {}
     issue_numbers = list(dict.fromkeys(issue_numbers))
@@ -5382,8 +5508,8 @@ def try_claim_issue_with_local_lock(
         log_stage("issue-claim", f"Setting issue #{number} assignee to {authenticated_user}")
         set_issue_assignee(number, authenticated_user)
 
-        # Random wait so concurrent runners' SETs have time to land
-        backoff = random.uniform(CLAIM_BACKOFF_MIN, CLAIM_BACKOFF_MAX)
+        # Live claims wait for GitHub propagation; fixture claims remain deterministic.
+        backoff = claim_backoff_seconds()
         print()
         log_stage("issue-claim", f"Waiting {backoff:.1f}s before verifying claim on issue #{number}")
         time.sleep(backoff)

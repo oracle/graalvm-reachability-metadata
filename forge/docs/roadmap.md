@@ -27,7 +27,8 @@ name. The top-level package name stays `ai_workflows`; its contents move into:
   unit of work (§WF-forge-workflow-drivers).
 - `ai_workflows/core/` — the core workflow objects: the registered workflow
   engines and shared workflow orchestration that own run state
-  (§WF-forge-workflow-engine); this is today's `ai_workflows/workflow_strategies/`.
+  (§WF-forge-workflow-engine). `ai_workflows/workflow_strategies/` remains only
+  as a compatibility import layer during the migration.
 - `ai_workflows/agents/` — unchanged; the backend-neutral agent integrations
   (§AR-agent-api).
 

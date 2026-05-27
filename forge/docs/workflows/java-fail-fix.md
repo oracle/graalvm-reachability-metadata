@@ -40,11 +40,11 @@ simplify a test to triviality just to make it pass
 | Docs path | `--docs-path` (extra read-only agent context) | no |
 | Claimed issue label | `fails-javac-compile` or `fails-java-run` routed by `forge_metadata.py` | yes for issue-driven runs |
 
-The preferred CLI is `ai_workflows/fix_java_fails.py`
+The preferred CLI is `ai_workflows/drivers/fix_java_fails.py`
 (§WF-forge-workflow-drivers), with a required mutually exclusive mode flag:
 
 ```console
-python3 ai_workflows/fix_java_fails.py \
+python3 ai_workflows/drivers/fix_java_fails.py \
   --javac \
   --coordinates <group:artifact:oldVersion> \
   --new-version <newVersion> \
@@ -56,7 +56,7 @@ python3 ai_workflows/fix_java_fails.py \
 ```
 
 ```console
-python3 ai_workflows/fix_java_fails.py \
+python3 ai_workflows/drivers/fix_java_fails.py \
   --java-run \
   --coordinates <group:artifact:oldVersion> \
   --new-version <newVersion> \
@@ -72,11 +72,11 @@ Mode defaults:
 - `--javac`: `javac_iterative_with_coverage_sources_pi_gpt-5.4`
 - `--java-run`: `java_run_iterative_with_coverage_sources_pi_gpt-5.4`
 
-The mode-specific compatibility entry points `ai_workflows/fix_javac_fail.py`
-and `ai_workflows/fix_java_run_fail.py` remain so existing automation paths keep
-working, but new usage should point at `fix_java_fails.py`. The issue-driven
-path is dispatched by `forge_metadata.py` after the issue is claimed and an
-isolated worktree is prepared by the workflow driver
+The mode-specific entry points `ai_workflows/drivers/fix_javac_fail.py` and
+`ai_workflows/drivers/fix_java_run_fail.py` remain for focused mode invocation,
+but new shared Java-fail usage should point at `fix_java_fails.py`. The
+issue-driven path is dispatched by `forge_metadata.py` after the issue is
+claimed and an isolated worktree is prepared by the workflow driver
 (§ORCH-forge-orchestration-spec, §WF-forge-workflow-drivers).
 
 ## 3. Workflow
@@ -197,16 +197,17 @@ keeps the two workflows behaviorally aligned
 
 ### Shared orchestration
 
-The common Java-fail orchestration lives in `ai_workflows/java_fail_workflow.py`.
-It owns CLI parser construction for the mode-specific compatibility scripts,
+The common Java-fail orchestration lives in
+`ai_workflows/drivers/java_fail_workflow.py`.
+It owns CLI parser construction for the mode-specific entry scripts,
 repository and metrics path resolution, the versioned test-project
 copy/preparation, metadata index and version-directory setup, source-context
 preparation, strategy and agent initialization, and success finalization,
 rollback, and metrics writing. Mode-specific wrappers provide only a
-`JavaFailWorkflowConfig` (§WF-forge-workflow-drivers). The compatibility entry
-point `ai_workflows/fix_java_run_fail.py` delegates to it with runtime-fix
-configuration (`task_type="fix-java-run-fail"`), and `fix_java_fails.py
---java-run` delegates to that same implementation.
+`JavaFailWorkflowConfig` (§WF-forge-workflow-drivers). The mode-specific entry
+point `ai_workflows/drivers/fix_java_run_fail.py` delegates to it with
+runtime-fix configuration (`task_type="fix-java-run-fail"`), and
+`fix_java_fails.py --java-run` delegates to that same implementation.
 
 ### Prompt template
 

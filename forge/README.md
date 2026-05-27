@@ -98,10 +98,13 @@ directly when debugging a single task or reproducing a failure.
 
 ```console
 python3 forge_metadata.py --help
-python3 ai_workflows/add_new_library_support.py --coordinates <group:artifact:version>
-python3 ai_workflows/fix_javac_fail.py --coordinates <group:artifact:oldVersion> --new-version <newVersion>
-python3 ai_workflows/fix_java_run_fail.py --coordinates <group:artifact:oldVersion> --new-version <newVersion>
-python3 ai_workflows/fix_ni_run.py --coordinates <group:artifact:oldVersion> --new-version <newVersion>
+python3 ai_workflows/drivers/add_new_library_support.py --coordinates <group:artifact:version>
+python3 ai_workflows/drivers/improve_library_coverage.py --coordinates <group:artifact:version>
+python3 ai_workflows/drivers/fix_java_fails.py --javac --coordinates <group:artifact:oldVersion> --new-version <newVersion>
+python3 ai_workflows/drivers/fix_java_fails.py --java-run --coordinates <group:artifact:oldVersion> --new-version <newVersion>
+python3 ai_workflows/drivers/fix_javac_fail.py --coordinates <group:artifact:oldVersion> --new-version <newVersion>
+python3 ai_workflows/drivers/fix_java_run_fail.py --coordinates <group:artifact:oldVersion> --new-version <newVersion>
+python3 ai_workflows/drivers/fix_ni_run.py --coordinates <group:artifact:oldVersion> --new-version <newVersion>
 ```
 
 Strategies are declared in `strategies/predefined_strategies.json`. Prompt text
@@ -113,6 +116,9 @@ lives in `prompt_templates/`. Persisted output contracts live in `schemas/`.
 ```console
 forge/
 ├─ ai_workflows/
+│  ├─ drivers/
+│  ├─ core/
+│  └─ agents/
 ├─ benchmarks/
 ├─ git_scripts/
 ├─ utility_scripts/
@@ -125,7 +131,9 @@ forge/
 - `forge_metadata.py`: top-level issue and PR automation dispatcher.
 - `do-work.sh`: stable wrapper around `do_up_to_date_work.sh`.
 - `do_up_to_date_work.sh`: long-running up-to-date worker and queue processor.
-- `ai_workflows/`: workflow entry points and strategy implementations.
+- `ai_workflows/drivers/`: deterministic workflow entry points.
+- `ai_workflows/core/`: registered workflow engines and shared orchestration.
+- `ai_workflows/agents/`: backend-neutral agent adapters.
 - `benchmarks/`: generation benchmark suites and runner. §BENCH-forge-generation-benchmarking
 - `git_scripts/`: branch, commit, PR, and review helpers.
 - `utility_scripts/`: shared support code.

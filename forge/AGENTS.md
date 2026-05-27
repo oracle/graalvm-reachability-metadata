@@ -38,8 +38,8 @@ Agents MUST read and strictly adhere to the following before making any changes:
 
 ### Module Map
 - `forge_metadata.py`: control-plane dispatcher that claims GitHub issues, dispatches the matching workflow driver, and updates project status. Do not pile shared workflow logic here. §AR-forge-control-plane
-- `ai_workflows/`: workflow drivers for major automation flows such as new-library support, javac fixes, and native-image-run fixes. Put deterministic setup, working-directory preparation, branch/context setup, and metrics finalization here; do not make Codex decide this plumbing during generated runs. §WF-forge-workflow-drivers
-- `ai_workflows/workflow_strategies/`: reusable workflow engine implementations. Put iteration logic, workflow decision-making, and prompt sequencing here. §WF-forge-workflow-engine
+- `ai_workflows/drivers/`: workflow drivers for major automation flows such as new-library support, javac fixes, and native-image-run fixes. Put deterministic setup, working-directory preparation, branch/context setup, and metrics finalization here; do not make Codex decide this plumbing during generated runs. §WF-forge-workflow-drivers
+- `ai_workflows/core/`: reusable workflow engine implementations. Put iteration logic, workflow decision-making, and prompt sequencing here. §WF-forge-workflow-engine
 - `ai_workflows/agents/`: agent integrations and transport adapters. Put agent specific session, prompt, fork, and logging behavior here, not in workflow scripts. §AR-forge-strategy-agent-boundary
 - `git_scripts/`: Git and GitHub automation for commits, branches, PR creation, and stats formatting. Shared GitHub or git helpers belong in `git_scripts/common_git.py`. §GIT-forge-publication
 - `utility_scripts/`: shared support code used across workflows and pipelines. Check here first before adding helper logic anywhere else. §WF-forge-workflow-architecture
