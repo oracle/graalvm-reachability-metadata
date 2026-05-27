@@ -80,7 +80,7 @@
 
 ## Grounding with grund (v2)
 
-This project uses [`grund`](https://github.com/vjovanov/grund): every spec, goal, decision, and end-to-end test has a stable ID `<KIND>-<slug>[.<section>]`, cited with the marker `§`. Root repository IDs use `KIND ∈ {GRUND, GOAL, FS, SKILL}`; Forge has its own `forge` namespace with `KIND ∈ {GRUND, GOAL, AR, FS, DW, STRAT, ORCH, GIT, WF, E2E, BENCH, ROADMAP}`. For example, `FS-user-login.3.1` is only a shape illustration, not a real ID in this repo. Type `$$` in a grund-aware editor and it becomes `§`. Bare ID-shaped tokens are ignored — `[reference] strict = true` is set in `.agents/grund.toml`, so only `§`-prefixed citations are checked.
+This project uses [`grund`](https://github.com/vjovanov/grund): every spec, goal, decision, and end-to-end test has a stable ID `<KIND>-<slug>[.<section>]`, cited with the marker `§`. Root repository IDs use `KIND ∈ {GRUND, GOAL, FS, AR, TCK, E2E, CI, METADATA, TESTS, SKILL}`; Forge has its own `forge` namespace with `KIND ∈ {GRUND, GOAL, AR, FS, DW, STRAT, ORCH, GIT, WF, E2E, BENCH, ROADMAP}`. For example, `FS-user-login.3.1` is only a shape illustration, not a real ID in this repo. Type `$$` in a grund-aware editor and it becomes `§`. Bare ID-shaped tokens are ignored — `[reference] strict = true` is set in `.agents/grund.toml`, so only `§`-prefixed citations are checked.
 
 ### Grounding from a citation
 
@@ -97,9 +97,17 @@ A `§<ID>` is a pointer to a fact, not a file path. Resolve it with `grund` and 
 ### Project map
 
 - [GRUND](docs/grund.md): Why: repository motivation
-- [GOAL](docs/goals.md): Where: repository direction and outcomes
+- [GOAL](docs/goals.md): Where: repository outcome goals
 - [FS](docs): Repository functional behavior and contributor-facing requirements
+- [AR](docs): Repository architecture and build infrastructure
+- [TCK](docs/tck.md): Test harness task groups
+- [E2E](docs/e2e.md): Infrastructure end-to-end tests (testInfra/testAllInfra)
+- [CI](docs/ci.md): Recurring CI workflows and composite actions
+- [METADATA](docs/metadata.md): The shipped `metadata/` suite
+- [TESTS](docs/tests.md): The `tests/` suite that justifies the metadata
 - [SKILL](skills): Agent review and automation skills
+
+Start from [docs/README.md](docs/README.md) for the documentation index.
 
 Workspace members:
 
