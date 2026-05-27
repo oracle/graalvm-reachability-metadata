@@ -9,11 +9,11 @@ import subprocess
 import tempfile
 import unittest
 
-from ai_workflows.add_new_library_support import (
+from ai_workflows.drivers.add_new_library_support import (
     resolve_add_new_library_support_metrics_json,
     write_add_new_library_support_metrics,
 )
-from ai_workflows.java_fail_workflow import JAVAC_CONFIG, resolve_fix_metrics_json, write_fix_metrics
+from ai_workflows.drivers.java_fail_workflow import JAVAC_CONFIG, resolve_fix_metrics_json, write_fix_metrics
 from utility_scripts.library_stats import load_library_stats_entry, resolve_stats_file_path
 from utility_scripts.metrics_writer import (
     append_execution_metrics,

@@ -18,7 +18,7 @@ from unittest.mock import patch
 _FORGE_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(_FORGE_ROOT))
 
-from ai_workflows.fix_metadata_codex import run_codex_metadata_fix  # noqa: E402
+from ai_workflows.core.fix_metadata_codex import run_codex_metadata_fix  # noqa: E402
 
 
 class FixMetadataCodexTests(unittest.TestCase):
@@ -51,7 +51,7 @@ class FixMetadataCodexTests(unittest.TestCase):
             return subprocess.CompletedProcess(cmd, 0)
 
         with patch.dict(os.environ, {"GRAALVM_HOME": self.graalvm_home, "JAVA_HOME": "/other-jdk"}, clear=True), \
-                patch("ai_workflows.fix_metadata_codex.subprocess.run", side_effect=fake_run):
+                patch("ai_workflows.core.fix_metadata_codex.subprocess.run", side_effect=fake_run):
             rc, _log_path, timed_out = run_codex_metadata_fix(self.repo, "g:a:1.0")
 
         self.assertEqual(rc, 0)
@@ -81,7 +81,7 @@ class FixMetadataCodexTests(unittest.TestCase):
                 return subprocess.CompletedProcess(cmd, 0, stdout="native-image pinned\n")
             return subprocess.CompletedProcess(cmd, 0)
 
-        with patch("ai_workflows.fix_metadata_codex.subprocess.run", side_effect=fake_run):
+        with patch("ai_workflows.core.fix_metadata_codex.subprocess.run", side_effect=fake_run):
             rc, _log_path, timed_out = run_codex_metadata_fix(
                 self.repo,
                 "g:a:1.0",

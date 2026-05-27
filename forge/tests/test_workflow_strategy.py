@@ -10,7 +10,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from ai_workflows.workflow_strategies.workflow_strategy import RUN_STATUS_SUCCESS, WorkflowStrategy
+from ai_workflows.core.workflow_strategy import RUN_STATUS_SUCCESS, WorkflowStrategy
 
 
 class _TestWorkflowStrategy(WorkflowStrategy):
@@ -72,7 +72,7 @@ class WorkflowStrategyTests(unittest.TestCase):
                     return subprocess.CompletedProcess(command, 0)
                 return subprocess.CompletedProcess(command, 0)
 
-            with patch("ai_workflows.workflow_strategies.workflow_strategy.subprocess.run", side_effect=fake_run):
+            with patch("ai_workflows.core.workflow_strategy.subprocess.run", side_effect=fake_run):
                 self.assertTrue(strategy._commit_library_iteration())
 
         git_add = calls[0]
@@ -124,10 +124,10 @@ class WorkflowStrategyTests(unittest.TestCase):
                     side_effect=lambda library: tested_libraries.append(library) or RUN_STATUS_SUCCESS,
                 ), \
                 patch.object(strategy, "_commit_library_iteration", return_value=True), \
-                patch("ai_workflows.workflow_strategies.workflow_strategy.run_library_finalization",
+                patch("ai_workflows.core.workflow_strategy.run_library_finalization",
                       side_effect=fake_finalization), \
                 patch(
-                    "ai_workflows.workflow_strategies.workflow_strategy.subprocess.check_output",
+                    "ai_workflows.core.workflow_strategy.subprocess.check_output",
                     return_value="checkpoint\n",
                 ):
             status, checkpoint = strategy._finalize_successful_iteration()

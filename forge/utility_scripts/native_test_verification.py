@@ -27,7 +27,7 @@ import subprocess
 import tempfile
 from dataclasses import dataclass, field
 
-from ai_workflows.fix_metadata_codex import run_codex_metadata_fix
+from ai_workflows.core.fix_metadata_codex import run_codex_metadata_fix
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.metadata_index import resolve_metadata_version
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo

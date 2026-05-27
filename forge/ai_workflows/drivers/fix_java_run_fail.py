@@ -4,10 +4,10 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 """
-Compatibility entry point for the java-run fix workflow.
+Canonical entry point for the java-run fix workflow.
 
 Usage:
-  python3 ai_workflows/fix_java_run_fail.py \
+  python3 ai_workflows/drivers/fix_java_run_fail.py \
     --coordinates group:artifact:oldVersion \
     --new-version newVersion \
     [--strategy-name "java_run_iterative_with_coverage_sources_pi_gpt-5.5"] \
@@ -17,9 +17,13 @@ Usage:
     [-v]
 """
 
+import os
 import sys
 
-from ai_workflows.java_fail_workflow import JAVA_RUN_CONFIG, run_java_fail_workflow
+if __package__ in (None, ""):
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
+from ai_workflows.drivers.java_fail_workflow import JAVA_RUN_CONFIG, run_java_fail_workflow
 
 
 def main(argv=None):

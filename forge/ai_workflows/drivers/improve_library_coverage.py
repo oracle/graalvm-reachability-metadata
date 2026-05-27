@@ -9,7 +9,7 @@ This operates on an already-passing test suite and
 focuses solely on generating new tests to improve dynamic-access coverage.
 
 Usage:
-  python3 ai_workflows/improve_library_coverage.py \
+  python3 ai_workflows/drivers/improve_library_coverage.py \
     --coordinates group:artifact:version \
     [--reachability-metadata-path /path/to/graalvm-reachability-metadata] \
     [--metrics-repo-path /path/to/metrics-storage] \
@@ -29,10 +29,13 @@ import sys
 import tempfile
 from typing import Any, Callable
 
+if __package__ in (None, ""):
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
 import ai_workflows.agents  # noqa: F401 - triggers agent registration
-import ai_workflows.workflow_strategies  # noqa: F401 — triggers strategy registration
+import ai_workflows.core  # noqa: F401 - triggers strategy registration
 from ai_workflows.agents import Agent
-from ai_workflows.workflow_strategies.workflow_strategy import (
+from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_FAILURE,
     RUN_STATUS_CHUNK_READY,
     RUN_STATUS_SUCCESS,
@@ -903,7 +906,7 @@ def main(argv=None) -> int:
 
     source_context_types = normalize_source_context_types(strategy.get("parameters", {}).get("source-context-types"))
     prepared_source_context = prepare_source_contexts(
-        repo_root=os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        repo_root=os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
         reachability_repo_path=reachability_repo_path,
         coordinate=library,
         source_context_types=source_context_types,

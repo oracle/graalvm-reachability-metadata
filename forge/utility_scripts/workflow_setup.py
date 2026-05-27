@@ -7,7 +7,7 @@ import os
 import subprocess
 import sys
 
-from ai_workflows.fix_metadata_codex import run_codex_metadata_fix
+from ai_workflows.core.fix_metadata_codex import run_codex_metadata_fix
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.library_finalization import run_library_finalization
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo

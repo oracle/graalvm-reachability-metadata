@@ -5,8 +5,8 @@
 
 import unittest
 
-from ai_workflows.add_new_library_support import _should_create_failure_run_metrics
-from ai_workflows.workflow_strategies.workflow_strategy import (
+from ai_workflows.drivers.add_new_library_support import _should_create_failure_run_metrics
+from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_CHUNK_READY,
     RUN_STATUS_FAILURE,
     RUN_STATUS_SUCCESS,

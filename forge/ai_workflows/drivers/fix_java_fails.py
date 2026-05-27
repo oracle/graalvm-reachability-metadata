@@ -7,13 +7,13 @@
 Unified entry point for Java fail fix workflows.
 
 Usage:
-  python3 ai_workflows/fix_java_fails.py --javac \
+  python3 ai_workflows/drivers/fix_java_fails.py --javac \
     --coordinates group:artifact:oldVersion \
     --new-version newVersion \
     [--strategy-name NAME] [--reachability-metadata-path PATH] \
     [--metrics-repo-path PATH] [--docs-path PATH] [-v]
 
-  python3 ai_workflows/fix_java_fails.py --java-run \
+  python3 ai_workflows/drivers/fix_java_fails.py --java-run \
     --coordinates group:artifact:oldVersion \
     --new-version newVersion \
     [--strategy-name NAME] [--reachability-metadata-path PATH] \
@@ -21,7 +21,11 @@ Usage:
 """
 
 import argparse
+import os
 import sys
+
+if __package__ in (None, ""):
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 DEFAULT_JAVAC_STRATEGY = "javac_iterative_with_coverage_sources_pi_gpt-5.5"
 DEFAULT_JAVA_RUN_STRATEGY = "java_run_iterative_with_coverage_sources_pi_gpt-5.5"
@@ -112,7 +116,7 @@ def main(argv=None):
     following the single-run driver contract (§WF-forge-workflow-drivers).
     """
     flags = build_parser().parse_args(argv if argv is not None else sys.argv[1:])
-    from ai_workflows.java_fail_workflow import JAVAC_CONFIG, JAVA_RUN_CONFIG, run_java_fail_workflow
+    from ai_workflows.drivers.java_fail_workflow import JAVAC_CONFIG, JAVA_RUN_CONFIG, run_java_fail_workflow
 
     config = JAVAC_CONFIG if flags.javac else JAVA_RUN_CONFIG
     return run_java_fail_workflow(config, _workflow_argv(flags))

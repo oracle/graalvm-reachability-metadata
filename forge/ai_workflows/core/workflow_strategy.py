@@ -11,8 +11,8 @@ import subprocess
 import sys
 from typing import Callable
 
-from ai_workflows.fix_metadata_codex import run_codex_metadata_fix
-from ai_workflows.fix_post_generation_pi import (
+from ai_workflows.core.fix_metadata_codex import run_codex_metadata_fix
+from ai_workflows.core.fix_post_generation_pi import (
     DEFAULT_MAX_TEST_OUTPUT_CHARS,
     DEFAULT_PI_TIMEOUT_SECONDS,
     POST_GENERATION_STAGE_METADATA_FIX_FAILED,

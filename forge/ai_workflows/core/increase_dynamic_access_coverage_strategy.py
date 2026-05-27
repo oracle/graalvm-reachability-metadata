@@ -3,8 +3,8 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-from ai_workflows.workflow_strategies.dynamic_access_iterative_strategy import DynamicAccessIterativeStrategy
-from ai_workflows.workflow_strategies.workflow_strategy import (
+from ai_workflows.core.dynamic_access_iterative_strategy import DynamicAccessIterativeStrategy
+from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_CHUNK_READY,
     RUN_STATUS_FAILURE,
     RUN_STATUS_SUCCESS,
