@@ -67,9 +67,10 @@ writing one.
   (§FS-repository-functional-spec.6). Each individual test completes in under
   60 seconds, using bounded waits and closing every client, server, and executor
   it opens.
-- **Keep test code original.** Third-party test code is rejected; upstream test
-  sources may be used only as behavioral examples and documentation only as API
-  guidance. Review policy details live in [REVIEWING.md](REVIEWING.md).
+- **Keep test code original.** Do not copy upstream or other third-party test
+  sources into this repository. Upstream tests may be used only as behavioral
+  examples, and documentation only as API guidance. Review policy details live
+  in [REVIEWING.md](REVIEWING.md).
 
 ## 3. How the suite is exercised
 

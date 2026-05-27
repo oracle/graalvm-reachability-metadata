@@ -1,5 +1,6 @@
 // Opens or reuses GitHub issues for unsupported dependencies discovered in a deps.dev
 // expansion and wires them together with GitHub "blocked by" relationships.
+// §CI-shared-scripts; invoked by §CI-triage-new-issues.
 //
 // It performs the following:
 //   1. Loads the raw dependency graph from `DEPS_GRAPH_JSON`

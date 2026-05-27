@@ -302,6 +302,7 @@ every dependency in your build and passes it to `native-image` (§4.7). Concrete
   `curl -sSL …/check-library-support.sh | bash -s "<group>:<artifact>:<version>"`,
   or browse the [libraries-and-frameworks page](https://www.graalvm.org/native-image/libraries-and-frameworks/),
   which is derived from `metadata/library-and-framework-list.json` (§METADATA-suite).
+  The script checks the published `index.json` tested-version contract (§4.7).
 - **Request a missing library.** File a
   [`01_support_new_library`](../.github/ISSUE_TEMPLATE/01_support_new_library.yml)
   issue, or `02_update_existing_library` to extend an existing entry.

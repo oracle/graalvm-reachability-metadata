@@ -4,6 +4,8 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+# CI Docker isolation cleanup helper. §CI-shared-scripts.
+
 set -euo pipefail
 
 # Undo the Docker proxy drop-in installed by disable-docker.sh so a local Forge
