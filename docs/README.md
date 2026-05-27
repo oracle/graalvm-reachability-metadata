@@ -65,7 +65,64 @@ the functional spec rather than carrying grund IDs:
 [REVIEWING.md](REVIEWING.md), [SECURITY.md](SECURITY.md), and
 [CollectingMetadata.md](CollectingMetadata.md).
 
-## Reading a citation
+## Grund tags in the documentation
+
+### IDs
+
+Every grounded fact has a stable ID of the form `<KIND>-<slug>[.<section>]`:
+
+- `<KIND>` is one of the prefixes above and selects the home file or folder.
+- `<slug>` is a stable lowercase-kebab name; it does not change when the prose
+  around it is edited.
+- `.<section>` optionally points at a numbered subsection inside a declaration
+  (`.1`, `.2.1`, ...).
+
+For example, `GOAL-tested-metadata` names a repository goal, and
+`FS-repository-functional-spec.5.2` points at the test requirements subsection
+of the functional spec.
+
+### Declarations
+
+A *declaration* defines an ID. In Markdown it is a heading whose text starts
+with the ID, followed by the body that states the fact:
+
+```
+# GOAL-<slug>: <one-line title>
+
+Body that states the fact.
+
+## 1. <citable subsection>
+## 2. <another citable subsection>
+```
+
+Numbered headings inside a declaration (`## 1.`, `### 1.1`) are citable as
+`<ID>.1` / `<ID>.1.1`; their heading depth must match the number depth. Plain
+headings are fine for non-citable local structure. In source code the same
+declaration is written in a doc-comment with the leading `#` dropped (for
+example a `/// <ID>: ...` or `# <ID>: ...` comment), and a one-line stub in the
+kind home links to it.
+
+### Citations
+
+A *citation* references a declared fact, written with the `§` marker (type `$$`
+in a grund-aware editor to get `§`). Place it where the claim is made:
+
+- In docs and prose, after the sentence it supports:
+  `§GOAL-tested-metadata`.
+- Inline in source code, on the line the rule applies to.
+- Across namespaces with an alias prefix: from the repository root cite Forge
+  facts as `§forge/<ID>`, and Forge docs cite root facts as `§root/<ID>`.
+
+Citations climb toward reasons: goals cite the motivation in [grund.md](grund.md),
+specs cite goals, architecture cites specs, and code and tests cite specs.
+Always cite the most specific point that supports the claim, and keep inline
+notes short (≤ 1 line preferred, ≤ 100 columns).
+
+Only `§`-prefixed tokens are checked — `[reference] strict = true` in
+[../.agents/grund.toml](../.agents/grund.toml) — so a bare ID-shaped word in
+prose is ignored.
+
+### Reading a citation
 
 A `§<ID>` is a pointer to a fact, not a file path. Resolve it with the `grund`
 CLI and read only as far as you need:
