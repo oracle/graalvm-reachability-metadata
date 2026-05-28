@@ -1,0 +1,38 @@
+number: 9102
+title: "Improve coverage for commons-net:commons-net:3.13.0"
+state: OPEN
+labels:
+  - library-update-request
+assignees: []
+project:
+  number: 30
+  item_id: fixture-project-item-9102
+  status: Todo
+blocked_by: []
+body: |
+  Please improve dynamic-access coverage for
+  `commons-net:commons-net:3.13.0`.
+
+  The existing tests cover core FTP parsing, but the current dynamic-access
+  report still leaves protocol parser construction paths under-exercised. A
+  useful update should cover `DefaultFTPFileEntryParserFactory` selecting a
+  parser and parsing a representative UNIX directory listing entry.
+
+  Requested coordinate:
+  `commons-net:commons-net:3.13.0`
+comments:
+  - author: fixture-reporter
+    created_at: "2026-05-27T22:55:03Z"
+    body: |
+      Fixture issue for demonstrating `library-update-request` routing and
+      claim behavior against an already supported, small Apache Commons module.
+expected_side_effects:
+  - action: set-assignee
+    username: fixture-runner
+  - action: set-project-status
+    status: In Progress
+  - action: publication-handoff
+    script_name: git_scripts/make_pr_improve_coverage.py
+    issue_label: library-update-request
+    result_label: library-update-request
+    coordinates: commons-net:commons-net:3.13.0

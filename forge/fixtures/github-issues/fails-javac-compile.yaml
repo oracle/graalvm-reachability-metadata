@@ -1,0 +1,38 @@
+number: 9103
+title: "Fix javac failure for org.jsoup:jsoup:1.22.2"
+state: OPEN
+labels:
+  - fails-javac-compile
+assignees: []
+project:
+  number: 30
+  item_id: fixture-project-item-9103
+  status: Todo
+blocked_by: []
+body: |
+  The scheduled compatibility update for `org.jsoup:jsoup:1.22.2` failed while
+  running:
+
+  `./gradlew compileTestJava -Pcoordinates=org.jsoup:jsoup:1.22.2`
+
+  Please update the existing jsoup tests so they compile against the requested
+  version without dropping meaningful parser, selector, DOM manipulation, and
+  cleaner coverage.
+comments:
+  - author: fixture-reporter
+    created_at: "2026-05-27T22:55:13Z"
+    body: |
+      Fixture issue for demonstrating `fails-javac-compile` routing and claim
+      behavior. The dispatcher resolves the current metadata version from the
+      existing `org.jsoup:jsoup` index and treats `1.22.2` as the requested
+      update version.
+expected_side_effects:
+  - action: set-assignee
+    username: fixture-runner
+  - action: set-project-status
+    status: In Progress
+  - action: publication-handoff
+    script_name: git_scripts/make_pr_javac_fix.py
+    issue_label: fails-javac-compile
+    result_label: fixes-javac-fail
+    new_version: "1.22.2"

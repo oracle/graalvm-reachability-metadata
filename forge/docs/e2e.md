@@ -42,6 +42,25 @@ project, label, comment, assignment, and publication effects in local run
 output instead of assigning real issues, changing real project items, pushing
 branches, or opening pull requests.
 
+The bundled fixture scenarios live in `fixtures/github-issues/`. The primary
+runnable fixture is issue `9101`, a `library-new-request` scenario for
+`org.apache.commons:commons-csv:1.11.0`; run it from `forge/` with:
+
+```bash
+python3 forge_metadata.py \
+  --fixture-testing \
+  --issue-number 9101 \
+  --strategy-name dynamic_access_main_sources_pi_gpt-5.5 \
+  --reachability-metadata-path .. \
+  --keep-tests-without-dynamic-access
+```
+
+The persisted fixture E2E report is written under
+`script_run_metrics/fixture-e2e/issue-<number>-<run-id>/fixture-e2e-report.json`.
+Fixture mode records issue, project, comment, label, assignment, and dry-run
+publication effects locally in that report; it does not mutate live GitHub
+state. §E2E-forge-workflow-testing.2 §E2E-forge-workflow-testing.9
+
 The primary fixture scenario is the new/update library dynamic-access path:
 
 1. `library-new-request` is the main exhibited path because it exercises issue
@@ -51,9 +70,12 @@ The primary fixture scenario is the new/update library dynamic-access path:
    be used when the requested test is specifically about improving existing
    library coverage or chunked continuation.
 
-Additional fixture scenarios should cover each supported issue label and
-expected driver: `library-new-request`, `library-update-request`,
-`fails-javac-compile`, `fails-java-run`, and `fails-native-image-run`.
+Additional fixture scenarios cover each supported issue label and expected
+driver: `library-new-request`, `library-update-request`, `fails-javac-compile`,
+`fails-java-run`, and `fails-native-image-run`. The non-primary fixtures are
+intended to make routing, current-version resolution, and claim behavior
+demonstrable for those labels; the primary `9101` fixture remains the default
+dynamic-access acceptance target. §E2E-forge-workflow-testing.5
 
 For a fixture issue:
 
@@ -73,7 +95,7 @@ A mocked issue YAML should look like a small GitHub issue plus project state:
 
 ```yaml
 number: 9101
-title: "Support for org.example:example-lib:1.0.0"
+title: "Add support for org.apache.commons:commons-csv:1.11.0"
 state: OPEN
 labels:
   - library-new-request
@@ -83,13 +105,22 @@ project:
   item_id: fixture-project-item-9101
   status: Todo
 blocked_by: []
+body: |
+  Please add metadata and tests for
+  `org.apache.commons:commons-csv:1.11.0`.
 comments:
   - author: fixture-author
-    body: "Please add metadata for org.example:example-lib:1.0.0."
+    body: "Please cover CSVFormat, CSVParser, and CSVPrinter."
 expected_side_effects:
-  - set-assignee
-  - set-project-status
-  - publication-handoff
+  - action: set-assignee
+    username: fixture-runner
+  - action: set-project-status
+    status: In Progress
+  - action: publication-handoff
+    script_name: git_scripts/make_pr_new_library_support.py
+    issue_label: library-new-request
+    result_label: library-new-request
+    coordinates: org.apache.commons:commons-csv:1.11.0
 ```
 
 For fixture queue scanning, use `--run-work-queues` only when the user

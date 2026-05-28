@@ -1,0 +1,36 @@
+number: 9104
+title: "Fix JVM test failure for commons-codec:commons-codec:1.22.0"
+state: OPEN
+labels:
+  - fails-java-run
+assignees: []
+project:
+  number: 30
+  item_id: fixture-project-item-9104
+  status: Todo
+blocked_by: []
+body: |
+  The scheduled compatibility update for `commons-codec:commons-codec:1.22.0`
+  compiled, but failed while running:
+
+  `./gradlew javaTest -Pcoordinates=commons-codec:commons-codec:1.22.0`
+
+  Please repair the existing Commons Codec tests for the new version while
+  preserving real coverage for encoders, decoders, digest helpers, and
+  streaming behavior.
+comments:
+  - author: fixture-reporter
+    created_at: "2026-05-27T22:55:23Z"
+    body: |
+      Fixture issue for demonstrating `fails-java-run` routing and claim
+      behavior with a stable, already supported Apache Commons artifact.
+expected_side_effects:
+  - action: set-assignee
+    username: fixture-runner
+  - action: set-project-status
+    status: In Progress
+  - action: publication-handoff
+    script_name: git_scripts/make_pr_java_run_fix.py
+    issue_label: fails-java-run
+    result_label: fixes-java-run-fail
+    new_version: "1.22.0"
