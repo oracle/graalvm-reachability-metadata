@@ -1,0 +1,43 @@
+# Primary fixture-backed E2E scenario. `org.apache.commons:commons-csv:1.11.0`
+# is a real Maven Central artifact with source JARs and was absent from
+# `metadata/` and `tests/src/` when this fixture was added.
+number: 9101
+title: "Add support for org.apache.commons:commons-csv:1.11.0"
+state: OPEN
+labels:
+  - library-new-request
+assignees: []
+project:
+  number: 30
+  item_id: fixture-project-item-9101
+  status: Todo
+blocked_by: []
+body: |
+  Please add GraalVM reachability metadata and a meaningful test suite for
+  `org.apache.commons:commons-csv:1.11.0`.
+
+  The library is Apache Commons CSV. A useful test should cover parsing records,
+  header lookup, CSVFormat configuration, and writing records with CSVPrinter.
+  The requested run should use the dynamic-access workflow so the report records
+  whether the generated tests exercise any dynamic-access call sites.
+
+  Maven coordinate:
+  `org.apache.commons:commons-csv:1.11.0`
+comments:
+  - author: fixture-reporter
+    created_at: "2026-05-27T22:54:53Z"
+    body: |
+      This is intended as the runnable fixture-backed E2E issue for the
+      dynamic-access path. Keep generated tests if no dynamic-access call sites
+      are found so the fixture still verifies routing, metrics, and publication
+      handoff.
+expected_side_effects:
+  - action: set-assignee
+    username: fixture-runner
+  - action: set-project-status
+    status: In Progress
+  - action: publication-handoff
+    script_name: git_scripts/make_pr_new_library_support.py
+    issue_label: library-new-request
+    result_label: library-new-request
+    coordinates: org.apache.commons:commons-csv:1.11.0
