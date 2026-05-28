@@ -27,9 +27,9 @@ import subprocess
 import tempfile
 from dataclasses import dataclass, field
 
-from ai_workflows.fix_metadata_codex import run_codex_metadata_fix
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.metadata_index import resolve_metadata_version
+from utility_scripts.native_gate_codex_diagnostics import NativeGateCodexDiagnostics
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.task_logs import (
@@ -87,6 +87,29 @@ class NativeTestVerificationResult:
 DEFAULT_CYCLE_TIMEOUT_SECONDS = 30 * 60
 
 
+def run_codex_metadata_fix(
+        reachability_metadata_path: str,
+        coordinates: str,
+        reproduction_command: str | None = None,
+        graalvm_home: str | None = None,
+        base_env: dict[str, str] | None = None,
+        native_gate_diagnostics: NativeGateCodexDiagnostics | None = None,
+) -> tuple[int, str, bool]:
+    """Lazy Codex entry wrapper used by tests and the native gate."""
+    from ai_workflows.fix_metadata_codex import (
+        run_codex_metadata_fix as run_codex_metadata_fix_impl,
+    )
+
+    return run_codex_metadata_fix_impl(
+        reachability_metadata_path=reachability_metadata_path,
+        coordinates=coordinates,
+        reproduction_command=reproduction_command,
+        graalvm_home=graalvm_home,
+        base_env=base_env,
+        native_gate_diagnostics=native_gate_diagnostics,
+    )
+
+
 def verify_native_test_passes(
         reachability_repo_path: str,
         coordinate: str,
@@ -94,6 +117,7 @@ def verify_native_test_passes(
         condition_packages: list[str] | None = None,
         max_iterations: int = 100,
         cycle_timeout_seconds: int = DEFAULT_CYCLE_TIMEOUT_SECONDS,
+        base_env: dict[str, str] | None = None,
 ) -> NativeTestVerificationResult:
     """Try JVM-agent metadata first, then use native tracing as fallback.
 
@@ -107,7 +131,7 @@ def verify_native_test_passes(
         raise ValueError("max_iterations must be >= 1")
     if not os.path.isabs(output_dir):
         raise ValueError("output_dir must be an absolute path")
-    command_env = gradle_command_environment(reachability_repo_path)
+    command_env = gradle_command_environment(reachability_repo_path, base_env)
     required_graalvm_home = command_env.get("GRAALVM_HOME")
 
     runs_dir = os.path.normpath(os.path.join(output_dir, "..", "runs"))
@@ -162,6 +186,14 @@ def verify_native_test_passes(
             reproduction_command=reproduction_command,
             graalvm_home=required_graalvm_home,
             base_env=command_env,
+            native_gate_diagnostics=NativeGateCodexDiagnostics(
+                coordinate=coordinate,
+                reproduction_command=reproduction_command,
+                staged_agent_dir=agent_metadata_dir,
+                staged_trace_dir=_existing_path_or_none(trace_metadata_dir),
+                accepted_trace_run_dirs=list(accepted_run_dirs),
+                last_log_path=last_log_path,
+            ),
         )
         intervention_records.append(
             InterventionRecord(
@@ -422,6 +454,10 @@ def _existing_metadata_dirs(paths: list[str]) -> list[str]:
         for path in paths
         if os.path.isfile(os.path.join(path, _AGGREGATED_METADATA_FILE_NAME))
     ]
+
+
+def _existing_path_or_none(path: str) -> str | None:
+    return path if os.path.exists(path) else None
 
 
 def _run_logged_gradle_command(

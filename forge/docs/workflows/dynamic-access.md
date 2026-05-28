@@ -481,22 +481,37 @@ flowchart TD
 flowchart LR
     GenMD[generateMetadata<br/>--agentAllowedPackages=fromJar] --> Test{./gradlew test passes?}
     Test -- yes --> Finalize[run_library_finalization + commit]
-    Test -- no --> Codex[run_codex_metadata_fix]
+    Test -- no --> FailedTask{first failed Gradle task}
+    FailedTask -- "before nativeTest" --> Codex[run_codex_metadata_fix]
     Codex --> Retest{./gradlew test passes?}
     Retest -- yes --> Finalize
     Retest -- no --> Pi[run_pi_post_generation_fix]
     Pi --> Rerun{./gradlew test passes?}
     Rerun -- yes --> Finalize
     Rerun -- no --> Fail([RUN_STATUS_FAILURE])
+    FailedTask -- nativeTest --> Gate[native test verification gate<br/>same coordinate + GraalVM mode]
+    Gate -- PASSED --> Finalize
+    Gate -- PASSED_WITH_INTERVENTION --> Finalize
+    Gate -- FAILED --> Fail
 ```
 
-Finalization regenerates metadata, then runs the post-generation test lane
-`_run_test_with_retry`: a failing `./gradlew test` triggers Codex metadata
-fixup, and if Codex cannot recover, Pi removes the offending tests as a last
-resort before the run fails. Native tracing is **not** part of finalization —
-it runs earlier, in the per-class native test verification gate (§6.4,
-§WF-native-test-verification-gate), which is where missing reachability
-metadata is collected from a real native run.
+Finalization regenerates metadata, then runs `./gradlew test` for each selected
+GraalVM finalization mode. If the post-generation test fails, finalization first
+classifies the failed Gradle task. Failures before `nativeTest` continue through
+the existing post-generation lane: Codex metadata fixup runs first, and if
+Codex cannot recover, Pi removes the offending tests as a last resort before
+the run fails.
+
+A post-generation failure at `nativeTest` does **not** enter the direct
+Codex-then-Pi lane. It invokes the native test verification gate for the same
+coordinate and the same pinned GraalVM mode that produced the failed
+finalization test (§WF-native-test-verification-gate). The gate owns the
+ordered recovery flow: JVM-agent metadata in a finalization staging directory,
+native tracing when Native Image still fails, and Codex as the terminal
+residual-failure repair step. Pi is not part of this native finalization path.
+This finalization split implements §ROADMAP-forge-native-finalization for
+§WF-dynamic-access-workflow while preserving the native tracing and Codex
+handoff contract in §WF-native-metadata-tracing.
 
 The `--keep-tests-without-dynamic-access` flag is the only mechanism for
 producing a successful run when no class achieved coverage gain. It is
@@ -580,7 +595,7 @@ that chunk and how many uncovered classes remain.
 | `ai_workflows/workflow_strategies/workflow_strategy.py` | Shared prompt rendering and workflow-engine base behavior. |
 | `utility_scripts/source_context.py` | `populate_artifact_urls`, `normalize_source_context_types`, `prepare_source_contexts`, `resolve_test_source_layout`, index lookup, artifact download, and extraction. |
 | `utility_scripts/dynamic_access_report.py` | `load_dynamic_access_coverage_report`, `compute_class_delta`, `format_call_sites`, `format_full_report`. |
-| `utility_scripts/native_test_verification.py` | `verify_native_test_passes` — the native-test gate invoked for each configured batch of classes with coverage gain; it runs JVM-agent metadata first, native tracing only as fallback, and Codex last (§WF-native-test-verification-gate, §WF-native-metadata-tracing). |
+| `utility_scripts/native_test_verification.py` | `verify_native_test_passes` — the native-test gate invoked for each configured batch of classes with coverage gain and for finalization `nativeTest` failures; it runs JVM-agent metadata first, native tracing only as fallback, and Codex last (§WF-native-test-verification-gate, §WF-native-metadata-tracing). |
 | `prompt_templates/dynamic_access/dynamic-access-iteration.md` | Per-class prompt template. |
 | `prompt_templates/dynamic_access/optimistic-dynamic-access-iteration*.md` | Full-report bulk prompt templates for new-library and library-update runs. |
 | Reachability-repo Gradle tasks | `scaffold`, `populateArtifactURLs`, `generateDynamicAccessCoverageReport`, `test`, `nativeTest`, `generateMetadata`, `generateLibraryStats`. |
@@ -603,10 +618,15 @@ support iff **all** requirements for its selected engine hold at exit:
    returned success before any dynamic-access coverage phase started. If the
    primary failed, the composite result is that primary failure and no
    dynamic-access coverage phase is required.
-5. `_finalize_successful_iteration` (or, in benchmark mode, `generateMetadata`
-   followed by a commit) returns success. In `_finalize_successful_iteration`,
-   a failing post-generation `./gradlew test` is repaired by Codex metadata
-   fixup and, if needed, Pi before finalization commits (§6.6).
+5. `_finalize_successful_iteration` returns success for non-benchmark runs.
+   In `_finalize_successful_iteration`, a failing post-generation
+   `./gradlew test` before `nativeTest` is repaired by Codex metadata fixup and,
+   if needed, Pi before finalization commits. A failing post-generation
+   `nativeTest` is repaired only through the native test verification gate for
+   the same coordinate and GraalVM mode; Pi is not invoked for that path (§6.6,
+   §WF-native-test-verification-gate, §WF-native-metadata-tracing). Benchmark
+   mode remains separate and succeeds when `generateMetadata` followed by its
+   benchmark commit succeeds.
 6. After each configured batch of per-class iterations that committed a
    coverage gain (Resolved or PartialCommit), and once more for any final
    partial batch, the native test verification gate was invoked and returned

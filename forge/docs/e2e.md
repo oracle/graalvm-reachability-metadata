@@ -55,6 +55,19 @@ Additional fixture scenarios should cover each supported issue label and
 expected driver: `library-new-request`, `library-update-request`,
 `fails-javac-compile`, `fails-java-run`, and `fails-native-image-run`.
 
+Fixture reports also summarize `native_gate_finalizations` from pending metrics
+and durable `execution-metrics.json` when dynamic-access finalization reaches
+the native test verification gate. The report includes the finalization
+coordinate, GraalVM mode, gate status, iterations used, `pi_invoked`, and path
+evidence for the gate output directory, staged agent and trace metadata
+directories, accepted trace run directories, the last native or trace log, and
+the Codex log when Codex ran. The current fixture YAMLs exercise real issue
+shapes, but they do not provide a cheap deterministic way to force a
+dynamic-access finalization `nativeTest` failure without a long full workflow
+run or a brittle injected failure. Capture that residual native-gate evidence
+with a focused local reproduction or controlled fixture-mode dry run unless a
+human explicitly authorizes full Forge E2E. §E2E-forge-workflow-testing.5
+
 For a fixture issue:
 
 ```bash

@@ -219,6 +219,16 @@ consumed by the PR step; they are not a durable output. Benchmark-mode runs
 instead record durable, schema-validated metrics under
 `benchmarks/benchmark_results/` (§BENCH-forge-generation-benchmarking.4).
 
+Run metrics support one optional top-level `native_gate_finalizations` array
+for dynamic-access finalization runs that enter the native test verification
+gate. Each record must be schema-valid and identify the finalization
+coordinate, GraalVM mode, gate status, iterations used, gate output directory,
+staged agent metadata directory, staged trace metadata directory when present,
+accepted trace run directories, the last native or trace log, the Codex log
+when Codex ran, and `pi_invoked: false`. This field is durable maintainer
+evidence and must remain present in committed `execution-metrics.json` entries
+when recorded. §ROADMAP-forge-native-finalization
+
 ### FS-durable-generation-logs: Durable generation and session logs
 
 Every Forge session and generation step must be logged and saved to a stable

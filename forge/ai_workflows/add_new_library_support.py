@@ -37,6 +37,7 @@ from ai_workflows.workflow_strategies.workflow_strategy import (
     SUCCESS_WITH_INTERVENTION_STATUS,
 )
 from ai_workflows.workflow_strategies.workflow_strategy import WorkflowStrategy
+from ai_workflows.workflow_finalization import finalize_dynamic_access_driver_status
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists
 from utility_scripts import metrics_writer
 from utility_scripts.gradle_environment import gradle_command_environment
@@ -633,11 +634,11 @@ def main(argv=None):
             elif not strategy_obj._commit_library_iteration():
                 workflow_status = RUN_STATUS_FAILURE
         else:
-            finalize_status, _ = strategy_obj._finalize_successful_iteration(base_commit=checkpoint_commit_hash)
-            if finalize_status in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS} and workflow_status == RUN_STATUS_CHUNK_READY:
-                workflow_status = RUN_STATUS_CHUNK_READY
-            else:
-                workflow_status = finalize_status
+            workflow_status = finalize_dynamic_access_driver_status(
+                strategy_obj,
+                workflow_status,
+                checkpoint_commit_hash,
+            )
 
     ending_commit_hash = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
     if workflow_status == RUN_STATUS_SUCCESS:
@@ -667,6 +668,7 @@ def main(argv=None):
             strategy_name=strategy_name,
             starting_commit=checkpoint_commit_hash,
             ending_commit=ending_commit_hash,
+            native_gate_finalizations=strategy_obj.native_gate_finalizations,
         )
     else:
         run_metrics = metrics_writer.create_run_metrics_output_json(
@@ -683,6 +685,7 @@ def main(argv=None):
             starting_commit=checkpoint_commit_hash,
             ending_commit=ending_commit_hash,
             post_generation_intervention=strategy_obj.post_generation_intervention,
+            native_gate_finalizations=strategy_obj.native_gate_finalizations,
         )
 
     metrics_json = resolve_add_new_library_support_metrics_json(

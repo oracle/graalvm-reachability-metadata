@@ -39,6 +39,7 @@ from ai_workflows.workflow_strategies.workflow_strategy import (
     SUCCESS_WITH_INTERVENTION_STATUS,
     WorkflowStrategy,
 )
+from ai_workflows.workflow_finalization import finalize_dynamic_access_driver_status
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists, ensure_gh_authenticated, load_library_stats
 from utility_scripts import metrics_writer
 from utility_scripts.issue_requested_metadata import (
@@ -977,11 +978,11 @@ def main(argv=None) -> int:
     workflow_status, iterations = run_result[0], run_result[1]
 
     if workflow_status in {RUN_STATUS_SUCCESS, RUN_STATUS_CHUNK_READY}:
-        finalize_status, _ = strategy_obj._finalize_successful_iteration(base_commit=checkpoint_commit)
-        if finalize_status in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS} and workflow_status == RUN_STATUS_CHUNK_READY:
-            workflow_status = RUN_STATUS_CHUNK_READY
-        else:
-            workflow_status = finalize_status
+        workflow_status = finalize_dynamic_access_driver_status(
+            strategy_obj,
+            workflow_status,
+            checkpoint_commit,
+        )
 
     ending_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
 
@@ -1002,6 +1003,7 @@ def main(argv=None) -> int:
             strategy_name=strategy_name,
             starting_commit=checkpoint_commit,
             ending_commit=ending_commit,
+            native_gate_finalizations=strategy_obj.native_gate_finalizations,
         )
     else:
         if workflow_status == SUCCESS_WITH_INTERVENTION_STATUS:
@@ -1022,6 +1024,7 @@ def main(argv=None) -> int:
             starting_commit=checkpoint_commit,
             ending_commit=ending_commit,
             post_generation_intervention=strategy_obj.post_generation_intervention,
+            native_gate_finalizations=strategy_obj.native_gate_finalizations,
         )
 
     write_library_update_target_sidecar(metrics_repo_root, update_target)

@@ -28,15 +28,24 @@ from utility_scripts.metadata_index import (
     resolve_metadata_version,
     resolve_test_version,
 )
+from utility_scripts.native_test_verification import (
+    STATUS_FAILED as NATIVE_TEST_GATE_FAILED,
+    STATUS_PASSED as NATIVE_TEST_GATE_PASSED,
+    STATUS_PASSED_WITH_INTERVENTION as NATIVE_TEST_GATE_PASSED_WITH_INTERVENTION,
+    NativeTestVerificationResult,
+    verify_native_test_passes,
+)
 from utility_scripts.issue_requested_metadata import NO_REPORTER_METADATA_CONTEXT
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.strategy_loader import load_persistent_instructions, load_prompt_template
+from utility_scripts.task_logs import sanitize_log_segment
 
 RUN_STATUS_SUCCESS = "success"
 RUN_STATUS_FAILURE = "failure"
 SUCCESS_WITH_INTERVENTION_STATUS = "success_with_intervention"
 RUN_STATUS_CHUNK_READY = "chunk_ready"
+POST_GENERATION_STAGE_NATIVE_TEST_GATE = "native-test-finalization-gate"
 
 class WorkflowStrategy(ABC):
     """Base class for workflow strategy implementations.
@@ -111,6 +120,7 @@ class WorkflowStrategy(ABC):
         self.parameters = self.strategy_obj.get("parameters", {})
         self.persistent_instructions = load_persistent_instructions(self.strategy_obj, **self.context)
         self.post_generation_intervention: dict | None = None
+        self.native_gate_finalizations: list[dict] = []
         self._validate_required_prompts()
         self._validate_required_params()
 
@@ -188,9 +198,7 @@ class WorkflowStrategy(ABC):
 
     def _run_test_with_retry(self, library: str) -> str:
         """Run Gradle tests for a library and classify post-generation failures."""
-        self.post_generation_intervention = None
         test_cmd = f"./gradlew test -Pcoordinates={library}"
-        repo_path = getattr(self, "reachability_repo_path", os.getcwd())
         final_status = RUN_STATUS_SUCCESS
 
         def run_lane(
@@ -198,65 +206,38 @@ class WorkflowStrategy(ABC):
                 command_runner: Callable[[], str],
                 reproduction_command: str,
                 command_env: dict[str, str] | None,
+                mode_key: str,
         ) -> str:
             log_stage("post-generation-test", f"Running {stage_name} for {library}")
             test_output = command_runner()
-            if self._get_first_failed_task(test_output) is None:
+            failed_task = self._get_first_failed_task(test_output)
+            if failed_task is None:
                 log_stage("post-generation-test", f"{stage_name} passed for {library}")
                 return RUN_STATUS_SUCCESS
 
-            log_stage("metadata-fix", f"Running metadata fix workflow for {library} after {stage_name} failure")
-            codex_env = gradle_command_environment(repo_path, command_env)
-            codex_rc, codex_log_path, codex_timed_out = run_codex_metadata_fix(
-                repo_path,
-                library,
+            if failed_task == "nativeTest":
+                return self._run_finalization_native_test_gate(
+                    library=library,
+                    mode_key=mode_key,
+                    reproduction_command=reproduction_command,
+                    command_env=command_env,
+                )
+
+            return self._run_post_generation_repair_lane(
+                library=library,
+                stage_name=stage_name,
+                command_runner=command_runner,
                 reproduction_command=reproduction_command,
-                graalvm_home=codex_env.get("GRAALVM_HOME"),
-                base_env=command_env,
+                command_env=command_env,
+                test_output=test_output,
             )
-            recovery_test_output = test_output
-            if not codex_timed_out and codex_rc == 0:
-                recovery_test_output = command_runner()
-                if self._get_first_failed_task(recovery_test_output) is None:
-                    log_stage("post-generation-test", f"{stage_name} passed for {library} after metadata fix")
-                    return RUN_STATUS_SUCCESS
-
-            log_stage("post-generation-fix", f"Running pi post generation fix for {library} after {stage_name} failure")
-            pi_rc, intervention_path, pi_timed_out = run_pi_post_generation_fix(
-                reachability_metadata_path=repo_path,
-                coordinates=library,
-                codex_log_path=codex_log_path,
-                test_output=recovery_test_output,
-                model_name=self.model_name,
-                timeout_seconds=self._parameter_int("post-generation-timeout-seconds", DEFAULT_PI_TIMEOUT_SECONDS),
-                max_test_output_chars=self._parameter_int(
-                    "post-generation-test-output-chars",
-                    DEFAULT_MAX_TEST_OUTPUT_CHARS,
-                ),
-            )
-            if pi_timed_out or pi_rc != 0:
-                return RUN_STATUS_FAILURE
-
-            rerun_output = command_runner()
-            if self._get_first_failed_task(rerun_output) is not None:
-                return RUN_STATUS_FAILURE
-
-            with open(intervention_path, "r", encoding="utf-8") as intervention_file:
-                intervention_markdown = intervention_file.read().strip()
-
-            if self.post_generation_intervention is None:
-                self.post_generation_intervention = {
-                    "stage": POST_GENERATION_STAGE_METADATA_FIX_FAILED,
-                    "intervention_file": os.path.relpath(intervention_path, repo_path),
-                    "analysis_markdown": intervention_markdown,
-                }
-            return SUCCESS_WITH_INTERVENTION_STATUS
 
         regular_status = run_lane(
             "current-defaults latest GRAALVM test",
             lambda: self._run_command_with_env(test_cmd),
             test_cmd,
             None,
+            "current-defaults",
         )
         if regular_status == RUN_STATUS_FAILURE:
             return RUN_STATUS_FAILURE
@@ -270,6 +251,7 @@ class WorkflowStrategy(ABC):
             lambda: self._run_command_with_env(test_cmd, future_defaults_env),
             f"GVM_TCK_NATIVE_IMAGE_MODE=future-defaults-all {test_cmd}",
             future_defaults_env,
+            "future-defaults-all",
         )
         if future_defaults_status == RUN_STATUS_FAILURE:
             return RUN_STATUS_FAILURE
@@ -279,6 +261,256 @@ class WorkflowStrategy(ABC):
         # Full CI-matrix GraalVM coverage, including GRAALVM_HOME_25_0, runs in
         # local CI verification after generation.
         return final_status
+
+    def _run_post_generation_repair_lane(
+            self,
+            library: str,
+            stage_name: str,
+            command_runner: Callable[[], str],
+            reproduction_command: str,
+            command_env: dict[str, str] | None,
+            test_output: str,
+    ) -> str:
+        """Run the existing Codex-then-Pi recovery lane for non-native failures."""
+        repo_path = getattr(self, "reachability_repo_path", os.getcwd())
+
+        log_stage("metadata-fix", f"Running metadata fix workflow for {library} after {stage_name} failure")
+        codex_env = gradle_command_environment(repo_path, command_env)
+        codex_rc, codex_log_path, codex_timed_out = run_codex_metadata_fix(
+            repo_path,
+            library,
+            reproduction_command=reproduction_command,
+            graalvm_home=codex_env.get("GRAALVM_HOME"),
+            base_env=command_env,
+        )
+        recovery_test_output = test_output
+        if not codex_timed_out and codex_rc == 0:
+            recovery_test_output = command_runner()
+            if self._get_first_failed_task(recovery_test_output) is None:
+                log_stage("post-generation-test", f"{stage_name} passed for {library} after metadata fix")
+                return RUN_STATUS_SUCCESS
+
+        log_stage("post-generation-fix", f"Running pi post generation fix for {library} after {stage_name} failure")
+        pi_rc, intervention_path, pi_timed_out = run_pi_post_generation_fix(
+            reachability_metadata_path=repo_path,
+            coordinates=library,
+            codex_log_path=codex_log_path,
+            test_output=recovery_test_output,
+            model_name=self.model_name,
+            timeout_seconds=self._parameter_int("post-generation-timeout-seconds", DEFAULT_PI_TIMEOUT_SECONDS),
+            max_test_output_chars=self._parameter_int(
+                "post-generation-test-output-chars",
+                DEFAULT_MAX_TEST_OUTPUT_CHARS,
+            ),
+        )
+        if pi_timed_out or pi_rc != 0:
+            return RUN_STATUS_FAILURE
+
+        rerun_output = command_runner()
+        if self._get_first_failed_task(rerun_output) is not None:
+            return RUN_STATUS_FAILURE
+
+        with open(intervention_path, "r", encoding="utf-8") as intervention_file:
+            intervention_markdown = intervention_file.read().strip()
+
+        if self.post_generation_intervention is None:
+            self.post_generation_intervention = {
+                "stage": POST_GENERATION_STAGE_METADATA_FIX_FAILED,
+                "intervention_file": os.path.relpath(intervention_path, repo_path),
+                "analysis_markdown": intervention_markdown,
+            }
+        return SUCCESS_WITH_INTERVENTION_STATUS
+
+    def _run_finalization_native_test_gate(
+            self,
+            library: str,
+            mode_key: str,
+            reproduction_command: str,
+            command_env: dict[str, str] | None,
+    ) -> str:
+        """Route post-finalization nativeTest failures through the native gate."""
+        output_dir = self._finalization_native_test_output_dir(library, mode_key)
+        if output_dir is None:
+            return RUN_STATUS_FAILURE
+
+        log_stage(
+            "native-test-verify",
+            f"Running finalization native-test gate for {library} mode={mode_key} output_dir={output_dir}",
+        )
+        result = verify_native_test_passes(
+            reachability_repo_path=self.reachability_repo_path,
+            coordinate=library,
+            output_dir=output_dir,
+            max_iterations=self._parameter_int("max-native-test-verification-iterations", 100),
+            base_env=command_env,
+        )
+        self._record_native_gate_finalization(library, mode_key, result)
+        if result.status == NATIVE_TEST_GATE_PASSED:
+            log_stage("native-test-verify", f"finalization native-test gate passed for {library} mode={mode_key}")
+            return RUN_STATUS_SUCCESS
+        if result.status == NATIVE_TEST_GATE_PASSED_WITH_INTERVENTION:
+            log_stage(
+                "native-test-verify",
+                f"finalization native-test gate passed with intervention for {library} mode={mode_key}",
+            )
+            self._record_native_gate_intervention(library, mode_key, reproduction_command, result)
+            return SUCCESS_WITH_INTERVENTION_STATUS
+        if result.status == NATIVE_TEST_GATE_FAILED:
+            log_stage("native-test-verify", f"finalization native-test gate failed for {library} mode={mode_key}")
+            return RUN_STATUS_FAILURE
+
+        print(f"ERROR: Unknown native-test gate status: {result.status}", file=sys.stderr)
+        return RUN_STATUS_FAILURE
+
+    def _record_native_gate_finalization(
+            self,
+            library: str,
+            mode_key: str,
+            result: NativeTestVerificationResult,
+    ) -> None:
+        """Record structured native-gate finalization evidence for run metrics."""
+        repo_path = self.reachability_repo_path
+        staged_agent_dir = os.path.join(result.output_dir, "agent")
+        staged_trace_dir = os.path.join(result.output_dir, "trace")
+        codex_log_path = self._native_gate_codex_log_path(result)
+        record = {
+            "coordinate": library,
+            "graalvm_mode": mode_key,
+            "gate_status": result.status,
+            "iterations_used": result.iterations_used,
+            "output_dir": self._display_path(result.output_dir, repo_path),
+            "staged_agent_metadata_dir": self._display_path(staged_agent_dir, repo_path),
+            "staged_trace_metadata_dir": (
+                self._display_path(staged_trace_dir, repo_path)
+                if os.path.exists(staged_trace_dir)
+                else None
+            ),
+            "accepted_trace_run_dirs": [
+                self._display_path(path, repo_path) or path
+                for path in result.accepted_run_dirs
+            ],
+            "last_native_or_trace_log_path": self._display_path(result.last_native_test_log_path, repo_path),
+            "codex_intervention_log_path": self._display_path(codex_log_path, repo_path),
+            "pi_invoked": False,
+        }
+        self.native_gate_finalizations.append(record)
+
+    def _finalization_native_test_output_dir(self, library: str, mode_key: str) -> str | None:
+        """Return the stable finalization native-gate output directory."""
+        try:
+            group, artifact, library_version = coordinate_parts(library)
+        except SystemExit:
+            return None
+        if library_version is None:
+            print(f"ERROR: Finalization native-test gate requires versioned coordinates: {library}", file=sys.stderr)
+            return None
+
+        test_version = str(resolve_test_version(self.reachability_repo_path, group, artifact, library_version))
+        return os.path.join(
+            self.reachability_repo_path,
+            "tests",
+            "src",
+            group,
+            artifact,
+            test_version,
+            "build",
+            "natively-collected",
+            "finalization",
+            sanitize_log_segment(mode_key),
+            sanitize_log_segment(library),
+        )
+
+    def _record_native_gate_intervention(
+            self,
+            library: str,
+            mode_key: str,
+            reproduction_command: str,
+            result: NativeTestVerificationResult,
+    ) -> None:
+        """Record native-gate Codex convergence in the existing intervention shape."""
+        repo_path = self.reachability_repo_path
+        codex_log_path = self._native_gate_codex_log_path(result)
+        codex_log_display = self._display_path(codex_log_path, repo_path) or "unknown"
+        analysis_markdown = self._native_gate_intervention_markdown(
+            library=library,
+            mode_key=mode_key,
+            reproduction_command=reproduction_command,
+            result=result,
+            codex_log_path=codex_log_path,
+        )
+
+        if self.post_generation_intervention is None:
+            self.post_generation_intervention = {
+                "stage": POST_GENERATION_STAGE_NATIVE_TEST_GATE,
+                "intervention_file": codex_log_display,
+                "analysis_markdown": analysis_markdown,
+            }
+            return
+
+        existing_analysis = str(self.post_generation_intervention.get("analysis_markdown", "")).strip()
+        combined_analysis = "\n\n".join(part for part in [existing_analysis, analysis_markdown] if part)
+        self.post_generation_intervention["analysis_markdown"] = combined_analysis
+
+    @staticmethod
+    def _native_gate_codex_log_path(result: NativeTestVerificationResult) -> str | None:
+        for record in result.intervention_records:
+            if record.kind == "codex":
+                return record.log_path
+        return None
+
+    def _native_gate_intervention_markdown(
+            self,
+            library: str,
+            mode_key: str,
+            reproduction_command: str,
+            result: NativeTestVerificationResult,
+            codex_log_path: str | None,
+    ) -> str:
+        repo_path = self.reachability_repo_path
+        staged_agent_dir = os.path.join(result.output_dir, "agent")
+        staged_trace_dir = os.path.join(result.output_dir, "trace")
+        accepted_trace_dirs = [
+            self._display_path(path, repo_path) or path
+            for path in result.accepted_run_dirs
+        ]
+        accepted_trace_dirs_markdown = (
+            "\n".join(f"  - `{path}`" for path in accepted_trace_dirs)
+            if accepted_trace_dirs
+            else "  - `(none)`"
+        )
+        if os.path.exists(staged_trace_dir):
+            staged_trace_value = self._display_path(staged_trace_dir, repo_path)
+        else:
+            staged_trace_value = "(none)"
+        return "\n".join([
+            "Native test verification gate converged during dynamic-access finalization.",
+            "",
+            f"- Coordinate: `{library}`",
+            f"- Mode: `{mode_key}`",
+            f"- Reproduction command: `{reproduction_command}`",
+            f"- Gate output directory: `{self._display_path(result.output_dir, repo_path)}`",
+            f"- Staged agent metadata directory: `{self._display_path(staged_agent_dir, repo_path)}`",
+            f"- Staged trace metadata directory: `{staged_trace_value}`",
+            "- Accepted trace run directories:",
+            accepted_trace_dirs_markdown,
+            f"- Last native log: `{self._display_path(result.last_native_test_log_path, repo_path) or '(none)'}`",
+            f"- Native gate Codex log: `{self._display_path(codex_log_path, repo_path) or '(none)'}`",
+        ])
+
+    @staticmethod
+    def _display_path(path: str | None, base_path: str) -> str | None:
+        if path is None:
+            return None
+        if os.path.isabs(path):
+            absolute_path = os.path.abspath(path)
+            absolute_base_path = os.path.abspath(base_path)
+            try:
+                if os.path.commonpath([absolute_path, absolute_base_path]) == absolute_base_path:
+                    return os.path.relpath(absolute_path, absolute_base_path)
+            except ValueError:
+                pass
+            return absolute_path
+        return path
 
     def _finalization_libraries(self) -> list[str]:
         """Return requested and resolved metadata coordinates that must stay valid."""
@@ -437,6 +669,8 @@ class WorkflowStrategy(ABC):
         log_stage("generate-metadata", f"Running generateMetadata for {self.library}")
         self._run_command(f"./gradlew generateMetadata -Pcoordinates={self.library} --agentAllowedPackages=fromJar")
         final_status = RUN_STATUS_SUCCESS
+        self.post_generation_intervention = None
+        self.native_gate_finalizations = []
         finalization_libraries = self._finalization_libraries()
         for library in finalization_libraries:
             test_retry_status = self._run_test_with_retry(library)

@@ -282,6 +282,14 @@ Gate semantics:
   Codex must fail instead of reproducing or verifying with a different
   GraalVM installation. `FAILED` is returned only when codex does not
   converge.
+- **Codex handoff payload.** When the gate invokes codex, including when a
+  dynamic-access finalization caller reached the gate from a post-generation
+  `nativeTest` failure, the handoff must include the coordinate, reproduction
+  command, staged `<output_dir>/agent`, staged `<output_dir>/trace` when
+  present, accepted trace run directories, the failing native-image log path or
+  bounded failing-log tail, and the pinned `GRAALVM_HOME`, `JAVA_HOME`, and
+  `native-image --version` details. This payload only describes the existing
+  terminal codex step; it does not add another recovery branch.
 - **Codex keeps prior config_dirs.** Codex's fixes are additive; the gate
   does not discard `config_dirs` before codex runs. (Codex returns
   terminally so the question of carrying state across codex is moot for
@@ -418,8 +426,12 @@ def verify_native_test_passes(
     condition_packages: list[str] | None = None,
     max_iterations: int = 100,
     cycle_timeout_seconds: int = 30 * 60,
+    base_env: dict[str, str] | None = None,
 ) -> NativeTestVerificationResult: ...
 ```
+
+Callers that reproduce a mode-specific failure pass the same base environment
+through `base_env`; the gate layers its Gradle environment normalization on top.
 
 The module composes existing helpers and owns no domain logic of its own:
 
@@ -455,11 +467,13 @@ intervention.
 | Caller | Where in flow | Output-dir convention |
 | --- | --- | --- |
 | `dynamic_access_iterative` per-class loop | After every class with a coverage gain (Resolved or PartialCommit) (§WF-dynamic-access-workflow) | `tests/src/<group>/<artifact>/<version>/build/natively-collected/<class-key>/` |
+| Dynamic-access finalization | After successful dynamic-access finalization regenerates metadata and the post-generation `./gradlew test` fails at `nativeTest` (§WF-dynamic-access-workflow, §ROADMAP-forge-native-finalization) | `tests/src/<group>/<artifact>/<version>/build/natively-collected/finalization/<mode-key>/<coordinate-key>/` |
 | `fix_java_run_fail` native-mode path | After the agent's final edit, as the success gate (§WF-java-fail-fix-workflow) | `tests/src/<group>/<artifact>/<version>/build/natively-collected/_global_/` |
 
-The dynamic-access caller invokes the gate per class; the fix-native-run
-caller invokes it once per workflow run. Both treat `FAILED` as a hard
-workflow failure.
+The dynamic-access per-class caller invokes the gate per class, the
+dynamic-access finalization caller invokes it only for post-generation
+`nativeTest` failures, and the fix-native-run caller invokes it once per
+workflow run. All callers treat `FAILED` as a hard workflow failure.
 
 ## 9. Acceptance Criteria
 

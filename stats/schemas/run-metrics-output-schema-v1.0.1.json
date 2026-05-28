@@ -153,6 +153,96 @@
         }
       }
     },
+    "nativeGateFinalization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "coordinate",
+        "graalvm_mode",
+        "gate_status",
+        "iterations_used",
+        "output_dir",
+        "staged_agent_metadata_dir",
+        "staged_trace_metadata_dir",
+        "accepted_trace_run_dirs",
+        "last_native_or_trace_log_path",
+        "codex_intervention_log_path",
+        "pi_invoked"
+      ],
+      "properties": {
+        "coordinate": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[^:]+$",
+          "description": "Finalization coordinate verified by the native test gate."
+        },
+        "graalvm_mode": {
+          "type": "string",
+          "minLength": 1,
+          "description": "GraalVM mode lane used by finalization, such as current-defaults or future-defaults-all."
+        },
+        "gate_status": {
+          "type": "string",
+          "enum": [
+            "PASSED",
+            "PASSED_WITH_INTERVENTION",
+            "FAILED"
+          ],
+          "description": "Terminal native test verification gate status."
+        },
+        "iterations_used": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of native trace iterations consumed by the gate."
+        },
+        "output_dir": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Gate output directory, repository-relative when it is inside the reachability worktree."
+        },
+        "staged_agent_metadata_dir": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Staged JVM-agent metadata directory."
+        },
+        "staged_trace_metadata_dir": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "description": "Staged native-trace metadata directory when native tracing produced one."
+        },
+        "accepted_trace_run_dirs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Accepted native trace run directories."
+        },
+        "last_native_or_trace_log_path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "description": "Last native test or trace log path observed by the gate."
+        },
+        "codex_intervention_log_path": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "description": "Codex intervention log path when the gate routed to Codex."
+        },
+        "pi_invoked": {
+          "type": "boolean",
+          "const": false,
+          "description": "Native-gate finalization never invokes Pi."
+        }
+      }
+    },
     "runMetrics": {
       "type": "object",
       "additionalProperties": false,
@@ -240,6 +330,13 @@
               "description": "Markdown explanation generated for the post-generation failure."
             }
           }
+        },
+        "native_gate_finalizations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/nativeGateFinalization"
+          },
+          "description": "Structured native test verification gate evidence captured during dynamic-access finalization."
         },
         "stats": {
           "$ref": "#/definitions/statsSnapshot",
