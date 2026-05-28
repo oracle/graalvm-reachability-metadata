@@ -77,6 +77,40 @@ intended to make routing, current-version resolution, and claim behavior
 demonstrable for those labels; the primary `9101` fixture remains the default
 dynamic-access acceptance target. §E2E-forge-workflow-testing.5
 
+Issues `9107`, `9108`, and `9109` are focused missing-version router fixtures
+for the `library-update-request` queue. They request real supported artifact
+versions that are absent from the local index and should route as follows:
+`9107` (`org.apache.commons:commons-lang3:3.19.0`) to `compatible`,
+`9108` (`commons-net:commons-net:3.14.0`) to `javac-failure`, and `9109`
+(`org.glassfish.grizzly:grizzly-framework:2.3.6`) to `java-run-failure`. Run
+one router fixture from `forge/` with:
+
+```bash
+python3 forge_metadata.py \
+  --fixture-testing \
+  --issue-number <9107|9108|9109> \
+  --strategy-name library_update_pi_gpt-5.5 \
+  --reachability-metadata-path ..
+```
+
+Fixture mode requires `--strategy-name` for the claimed issue. Routed
+`javac-failure` and `java-run-failure` drivers still use their Java-fail
+defaults unless `FORGE_JAVAC_STRATEGY_NAME` or
+`FORGE_JAVA_RUN_STRATEGY_NAME` is set. Inspect
+`script_run_metrics/fixture-e2e/issue-<number>-<run-id>/fixture-e2e-report.json`
+for `library_update_route`, `routed_driver`,
+`preserved_report_artifacts.library_update_route_sidecar`,
+`preserved_report_artifacts.library_update_route_logs`,
+`library_update_route_sidecar_json`, `dry_run_publication_handoff`, and
+`boundary_verification.issue_routing.library_update_route`. These fields show
+the selected route, selected baseline coordinate, ordered `compileTestJava` and
+`javaTest` probe evidence, selected driver, preserved route logs, and dry-run
+publication script/label. The fixture also evaluates
+`expected_report_assertions`; failed assertions are listed in
+`report_assertion_comparison` and make the trust assessment suspicious.
+§E2E-forge-workflow-testing.2 §E2E-forge-workflow-testing.5
+
+
 For a fixture issue:
 
 ```bash
@@ -89,7 +123,10 @@ python3 forge_metadata.py \
 ```
 
 `--fixture-testing` selects the local fixture backend. `--issue-number` names
-the mocked issue number from the YAML fixture that is being tested.
+the mocked issue number from the YAML fixture that is being tested. Fixture
+mode records assignment, project status, labels/comments, failed-work
+preservation, and publication handoff locally. It does not assign live issues,
+move live project items, push branches, or open pull requests.
 
 A mocked issue YAML should look like a small GitHub issue plus project state:
 
@@ -180,8 +217,10 @@ The verification steps apply to both E2E modes: hermetic fixture E2E
 
 1. **Issue routing** — the issue had the expected queue label, was claimable,
    and routed to the expected workflow driver:
-   `add_new_library_support.py` for `library-new-request` or
-   `improve_library_coverage.py` for `library-update-request`.
+   `add_new_library_support.py` for `library-new-request`,
+   `improve_library_coverage.py` for an existing-version
+   `library-update-request`, or the missing-version route selected under
+   `library_update_route` for a router fixture.
 2. **Setup** — Forge created or selected the expected worktree/branch, resolved
    the reachability repo and metrics root, normalized the GraalVM environment,
    loaded the requested predefined strategy, and completed the issue-specific

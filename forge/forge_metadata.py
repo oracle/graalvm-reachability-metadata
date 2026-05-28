@@ -41,7 +41,7 @@ import time
 import traceback
 import uuid
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any, Optional
 from urllib.parse import quote
 
@@ -98,10 +98,20 @@ from utility_scripts.large_library_progress import (
     copy_progress_artifacts,
     find_progress_state_path,
 )
+from utility_scripts.library_update_compatibility_probe import (
+    ROUTE_COMPATIBLE,
+    ROUTE_JAVA_RUN_FAILURE,
+    ROUTE_JAVAC_FAILURE,
+    ROUTE_SETUP_FAILURE,
+    probe_missing_version_compatibility,
+)
 from utility_scripts.metadata_index import (
+    MATCH_NEW_VERSION,
+    LibraryUpdateTarget,
     coordinate_parts as metadata_coordinate_parts,
     get_not_for_native_image_marker,
     is_not_for_native_image,
+    resolve_library_update_target,
     resolve_metadata_version,
     resolve_test_dir,
 )
@@ -215,6 +225,7 @@ FIXTURE_E2E_REPORT_FILENAME = "fixture-e2e-report.json"
 ADD_NEW_LIBRARY_METRICS_FILE = "add_new_library_support.json"
 FIX_JAVAC_METRICS_FILE = "fix_javac_fail.json"
 FIX_JAVA_RUN_METRICS_FILE = "fix_java_run_fail.json"
+LOCAL_CI_VERIFICATION_METRICS_KEY = "local_ci_verification"
 LOW_DYNAMIC_ACCESS_COVERAGE_RATIO = 0.10
 HUMAN_INTERVENTION_LABEL_COLOR = "B60205"
 HUMAN_INTERVENTION_LABEL_DESCRIPTION = (
@@ -234,6 +245,10 @@ LARGE_LIBRARY_PART_LABEL_DESCRIPTION = "Pull request is one part of a large-libr
 
 
 DEFAULT_REVIEW_MODEL = "gpt-5.4"
+DEFAULT_NEW_LIBRARY_STRATEGY_NAME = "basic_iterative_pi_gpt-5.4"
+DEFAULT_LIBRARY_UPDATE_STRATEGY_NAME = "library_update_pi_gpt-5.5"
+DEFAULT_JAVAC_STRATEGY_NAME = "javac_iterative_with_coverage_sources_pi_gpt-5.5"
+DEFAULT_JAVA_RUN_STRATEGY_NAME = "java_run_iterative_with_coverage_sources_pi_gpt-5.5"
 DEFAULT_WORK_QUEUE_STRATEGY_NAME = "dynamic_access_main_sources_pi_gpt-5.5"
 CODEX_REVIEW_TIMEOUT_SECONDS = 1800
 DEFAULT_WORKTREE_BASE_REF = "master"
@@ -309,10 +324,48 @@ class CachedIssueClaimSkip:
 
 
 @dataclass(frozen=True)
+class LibraryUpdateRouteLifecycle:
+    """Dispatcher-owned record for a missing-version library-update route."""
+
+    requested_coordinate: str
+    requested_version: str | None
+    selected_route: str
+    selected_baseline_coordinate: str | None
+    selected_driver_name: str | None
+    selected_driver_script: str | None
+    route_sidecar_json_path: str | None
+    route_log_paths: tuple[str, ...]
+    pending_metrics_file_path: str | None = None
+    durable_metrics_file_path: str | None = None
+    publication_script: str | None = None
+    publication_label: str | None = None
+    setup_error: str | None = None
+
+    def to_json(self) -> dict:
+        return {
+            "requested_coordinate": self.requested_coordinate,
+            "requested_version": self.requested_version,
+            "selected_route": self.selected_route,
+            "selected_baseline_coordinate": self.selected_baseline_coordinate,
+            "selected_driver_name": self.selected_driver_name,
+            "selected_driver_script": self.selected_driver_script,
+            "route_sidecar_json_path": self.route_sidecar_json_path,
+            "route_log_paths": list(self.route_log_paths),
+            "pending_metrics_file_path": self.pending_metrics_file_path,
+            "durable_metrics_file_path": self.durable_metrics_file_path,
+            "publication_script": self.publication_script,
+            "publication_label": self.publication_label,
+            "setup_error": self.setup_error,
+        }
+
+
+@dataclass(frozen=True)
 class WorkflowRunResult:
     claimed_issue: ClaimedIssue
     success: bool
     started_at: float | None = None
+    routed_driver: "WorkflowDriverInvocation | None" = None
+    library_update_route: LibraryUpdateRouteLifecycle | None = None
 
 
 @dataclass(frozen=True)
@@ -431,6 +484,19 @@ class WorkflowDriverInvocation:
 
 
 @dataclass(frozen=True)
+class RoutedWorkflowDriverInvocation:
+    invocation: WorkflowDriverInvocation | None
+    library_update_route: LibraryUpdateRouteLifecycle | None = None
+
+
+@dataclass(frozen=True)
+class WorkflowExecutionOutcome:
+    success: bool
+    routed_driver: WorkflowDriverInvocation | None = None
+    library_update_route: LibraryUpdateRouteLifecycle | None = None
+
+
+@dataclass(frozen=True)
 class FixtureE2EReportContext:
     issue_number: int
     fixture_path: str
@@ -443,7 +509,8 @@ class FixtureE2EReportContext:
     model: str
     workflow_engine: str
     command_used: dict
-    routed_driver: WorkflowDriverInvocation
+    routed_driver: WorkflowDriverInvocation | None
+    library_update_route: LibraryUpdateRouteLifecycle | None
     keep_tests_without_dynamic_access: bool
 
 
@@ -2768,7 +2835,6 @@ def clear_issue_assignees(issue_number: int):
     )
 
 
-
 def get_issue_assignees(issue_number: int) -> list[str]:
     """Return the list of assignee logins for an issue."""
     if is_fixture_testing_enabled():
@@ -2956,6 +3022,7 @@ def _load_dynamic_access_snapshot_from_report(claimed_issue: ClaimedIssue) -> Dy
 def resolve_human_intervention_candidate(
         claimed_issue: ClaimedIssue,
         workflow_success: bool = True,
+        library_update_route: LibraryUpdateRouteLifecycle | None = None,
 ) -> HumanInterventionCandidate | None:
     """Return follow-up data when an issue run needs human intervention."""
     if claimed_issue.label not in {LABEL_LIBRARY_NEW, LABEL_LIBRARY_UPDATE}:
@@ -2969,6 +3036,31 @@ def resolve_human_intervention_candidate(
         )
 
     run_metrics = _load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
+    if route_uses_java_failure_publication(library_update_route):
+        if workflow_success:
+            if not isinstance(run_metrics, dict):
+                return None
+            route_strategy_name = run_metrics.get("strategy_name")
+            route_strategy = load_strategy_by_name(route_strategy_name)
+            if route_strategy is None or route_strategy.get("workflow") != "dynamic_access_iterative":
+                return None
+        strategy_name = None
+        workflow_status = RUN_STATUS_FAILURE
+        if isinstance(run_metrics, dict):
+            strategy_name = run_metrics.get("strategy_name")
+            workflow_status = str(run_metrics.get("status") or RUN_STATUS_FAILURE)
+        if workflow_success:
+            # Fall through to the ordinary low dynamic-access check only when
+            # the actual run metrics prove a dynamic-access workflow result.
+            pass
+        else:
+            return HumanInterventionCandidate(
+                strategy_name=strategy_name,
+                workflow_status=workflow_status,
+                coverage=None,
+                reason="job_failed",
+            )
+
     if not workflow_success:
         strategy_name = None
         workflow_status = RUN_STATUS_FAILURE
@@ -3209,6 +3301,7 @@ def build_fixture_e2e_report_context(
             strategy_name,
             keep_tests_without_dynamic_access,
         ),
+        library_update_route=None,
         keep_tests_without_dynamic_access=keep_tests_without_dynamic_access,
     )
 
@@ -3263,6 +3356,116 @@ def _json_file_status(path: str, schema: str | None = None) -> dict:
             "error": f"{type(exc).__name__}: {exc}",
         }
     return status
+
+
+def _load_json_file_if_present(path: str | None) -> Any | None:
+    """Load JSON evidence when it exists, returning None for missing or malformed files."""
+    if path is None or not os.path.isfile(path):
+        return None
+    try:
+        with open(path, "r", encoding="utf-8") as json_file:
+            return json.load(json_file)
+    except Exception:
+        return None
+
+
+def _copy_fixture_report_artifact(source_path: str | None, report_dir: str, filename: str) -> dict:
+    """Copy an inspectable fixture artifact into the durable report directory."""
+    evidence: dict[str, Any] = {
+        "source_path": source_path,
+        "path": None,
+        "copied": False,
+        "exists": False,
+    }
+    if source_path is None or not os.path.isfile(source_path):
+        return evidence
+
+    os.makedirs(report_dir, exist_ok=True)
+    destination_path = os.path.join(report_dir, filename)
+    shutil.copy2(source_path, destination_path)
+    evidence.update({
+        "path": destination_path,
+        "copied": True,
+        "exists": os.path.isfile(destination_path),
+    })
+    return evidence
+
+
+def _replace_json_value(data: Any, old_value: str, new_value: str) -> None:
+    """Replace matching string values in nested JSON-like evidence in place."""
+    if isinstance(data, dict):
+        for key, value in data.items():
+            if value == old_value:
+                data[key] = new_value
+            else:
+                _replace_json_value(value, old_value, new_value)
+    elif isinstance(data, list):
+        for value in data:
+            _replace_json_value(value, old_value, new_value)
+
+
+def preserve_fixture_report_artifacts(
+        context: FixtureE2EReportContext,
+        claimed_issue: ClaimedIssue,
+        metrics_evidence: dict,
+        library_update_route_evidence: dict | None = None,
+) -> dict:
+    """Preserve metrics and route files so fixture reports survive workspace cleanup."""
+    artifacts: dict[str, dict] = {
+        "pending_metrics": _copy_fixture_report_artifact(
+            metrics_evidence.get("pending_metrics", {}).get("path"),
+            context.report_dir,
+            PENDING_METRICS_FILENAME,
+        ),
+        "durable_metrics": _copy_fixture_report_artifact(
+            metrics_evidence.get("durable_metrics", {}).get("path"),
+            context.report_dir,
+            "execution-metrics.json",
+        ),
+    }
+
+    if isinstance(library_update_route_evidence, dict):
+        sidecar_path = library_update_route_evidence.get("route_sidecar_json_path")
+        artifacts["library_update_route_sidecar"] = _copy_fixture_report_artifact(
+            sidecar_path if isinstance(sidecar_path, str) else None,
+            context.report_dir,
+            "library-update-route-result.json",
+        )
+        route_log_artifacts: list[dict] = []
+        route_log_paths = library_update_route_evidence.get("route_log_paths")
+        if isinstance(route_log_paths, list):
+            for index, route_log_path in enumerate(route_log_paths, start=1):
+                if not isinstance(route_log_path, str):
+                    continue
+                route_log_artifacts.append(_copy_fixture_report_artifact(
+                    route_log_path,
+                    context.report_dir,
+                    f"library-update-route-{index}-{os.path.basename(route_log_path)}",
+                ))
+        artifacts["library_update_route_logs"] = {
+            "logs": route_log_artifacts,
+        }
+        for artifact in [artifacts["library_update_route_sidecar"], *route_log_artifacts]:
+            source_path = artifact.get("source_path")
+            preserved_path = artifact.get("path")
+            if artifact.get("copied") and source_path and preserved_path:
+                _replace_json_value(library_update_route_evidence, source_path, preserved_path)
+
+    for artifact_name, status_key in (
+        ("pending_metrics", "pending_metrics"),
+        ("durable_metrics", "durable_metrics"),
+    ):
+        artifact = artifacts[artifact_name]
+        source_path = artifact.get("source_path")
+        preserved_path = artifact.get("path")
+        if artifact.get("copied") and source_path and preserved_path:
+            status = metrics_evidence.get(status_key)
+            if isinstance(status, dict):
+                status["source_path"] = source_path
+                status["path"] = preserved_path
+            _replace_json_value(metrics_evidence, source_path, preserved_path)
+
+    return artifacts
 
 
 def _path_evidence(kind: str, path: str, repo_root: str | None = None) -> dict:
@@ -3431,6 +3634,7 @@ def build_fixture_boundary_verification(
                 for action in ("set-assignee", "set-project-status")
             ),
             "routed_driver": report.get("routed_driver"),
+            "library_update_route": report.get("library_update_route"),
         },
         "setup": {
             "worktree_path": claimed_issue.worktree_path,
@@ -3471,6 +3675,9 @@ def build_fixture_trust_assessment(
 
     if not _side_effect_comparison_passed(report):
         suspicious_behavior.append("fixture side effects did not match expected_side_effects")
+    report_assertions = report.get("report_assertion_comparison")
+    if isinstance(report_assertions, dict) and not report_assertions.get("passed"):
+        suspicious_behavior.append("fixture report assertions did not match expected_report_assertions")
     if lifecycle_result == "success" and not publication_handoffs:
         suspicious_behavior.append("successful fixture run did not record a dry-run publication handoff")
     if lifecycle_result != "success" and not failure_preservations:
@@ -3503,16 +3710,42 @@ def write_fixture_e2e_report(
         claimed_issue: ClaimedIssue,
         lifecycle_result: str,
         started_at: float | None,
+        run_result: WorkflowRunResult | None = None,
 ) -> str:
     """Write the persisted fixture-backed E2E evidence report."""
     fixture_state = require_fixture_github_state()
     metrics_evidence = collect_fixture_metrics_evidence(claimed_issue)
+    routed_driver = (
+        run_result.routed_driver
+        if run_result is not None
+        else context.routed_driver
+    )
+    library_update_route = (
+        run_result.library_update_route
+        if run_result is not None
+        else context.library_update_route
+    )
+    library_update_route_evidence = (
+        library_update_route.to_json() if library_update_route is not None else None
+    )
+    os.makedirs(context.report_dir, exist_ok=True)
+    preserved_artifacts = preserve_fixture_report_artifacts(
+        context,
+        claimed_issue,
+        metrics_evidence,
+        library_update_route_evidence,
+    )
     generated_artifacts: list[dict] = []
     generated_artifacts_error = None
     try:
         generated_artifacts = collect_fixture_generated_artifact_evidence(claimed_issue)
     except Exception as exc:
         generated_artifacts_error = f"{type(exc).__name__}: {exc}"
+    preserved_route_sidecar_json = _load_json_file_if_present(
+        preserved_artifacts
+        .get("library_update_route_sidecar", {})
+        .get("path")
+    )
 
     report = fixture_state.build_report(context.issue_number)
     report.update({
@@ -3524,7 +3757,8 @@ def write_fixture_e2e_report(
         "strategy_name": context.strategy_name,
         "model": context.model,
         "command_used": context.command_used,
-        "routed_driver": context.routed_driver.to_json(),
+        "routed_driver": routed_driver.to_json() if routed_driver is not None else None,
+        "library_update_route": library_update_route_evidence,
         "workflow_engine": context.workflow_engine,
         "run_id": context.run_id,
         "lifecycle_result": lifecycle_result,
@@ -3542,6 +3776,8 @@ def write_fixture_e2e_report(
             for log_path in collect_issue_log_paths(claimed_issue, started_at)
         ],
         "metrics_paths": metrics_evidence,
+        "preserved_report_artifacts": preserved_artifacts,
+        "library_update_route_sidecar_json": preserved_route_sidecar_json,
         "generated_artifacts": generated_artifacts,
         "generated_artifacts_error": generated_artifacts_error,
         "dry_run_publication_handoff": _fixture_side_effect_details(report, "publication-handoff"),
@@ -3553,13 +3789,16 @@ def write_fixture_e2e_report(
         lifecycle_result,
         metrics_evidence,
     )
+    report["report_assertion_comparison"] = fixture_state.compare_expected_report_assertions(
+        context.issue_number,
+        report,
+    )
     report["trust_assessment"] = build_fixture_trust_assessment(
         report,
         lifecycle_result,
         metrics_evidence,
     )
 
-    os.makedirs(context.report_dir, exist_ok=True)
     with open(context.report_path, "w", encoding="utf-8") as report_file:
         json.dump(report, report_file, indent=2, sort_keys=True)
         report_file.write("\n")
@@ -3571,6 +3810,7 @@ def write_fixture_e2e_report_best_effort(
         claimed_issue: ClaimedIssue,
         lifecycle_result: str,
         started_at: float | None,
+        run_result: WorkflowRunResult | None = None,
 ) -> None:
     """Write fixture E2E evidence without masking the workflow result."""
     if context is None:
@@ -3581,6 +3821,7 @@ def write_fixture_e2e_report_best_effort(
             claimed_issue,
             lifecycle_result,
             started_at,
+            run_result,
         )
         log_stage("fixture-report", f"Wrote fixture E2E report: {report_path}")
     except Exception as exc:
@@ -3627,12 +3868,31 @@ def _format_log_path_list(log_paths: list[str]) -> str:
     return "\n".join(f"- {display_log_path(log_path)}" for log_path in log_paths)
 
 
+def _format_library_update_route_summary(
+        library_update_route: LibraryUpdateRouteLifecycle | None,
+) -> str:
+    """Format route evidence for analysis prompts and deterministic comments."""
+    if library_update_route is None:
+        return "- Library-update route: not applicable"
+    sidecar = library_update_route.route_sidecar_json_path or "not recorded"
+    logs = ", ".join(library_update_route.route_log_paths) or "none"
+    return (
+        f"- Library-update route: {library_update_route.selected_route}\n"
+        f"- Requested coordinate: {library_update_route.requested_coordinate}\n"
+        f"- Selected baseline coordinate: {library_update_route.selected_baseline_coordinate or 'none'}\n"
+        f"- Selected driver: {library_update_route.selected_driver_name or 'none'}\n"
+        f"- Route sidecar: {display_log_path(sidecar)}\n"
+        f"- Route logs: {logs}"
+    )
+
+
 def _build_failed_generation_analysis_prompt(
         claimed_issue: ClaimedIssue,
         candidate: HumanInterventionCandidate,
         log_paths: list[str],
         run_metrics: dict | None,
         preservation_result: FailurePreservationResult | None = None,
+        library_update_route: LibraryUpdateRouteLifecycle | None = None,
 ) -> str:
     """Create a Codex prompt that asks for the exact failure-analysis issue comment."""
     coverage_details = "- Dynamic-access coverage: unavailable"
@@ -3659,6 +3919,7 @@ def _build_failed_generation_analysis_prompt(
         f"- Pipeline label: {claimed_issue.label}\n"
         f"- Workflow status: {candidate.workflow_status}\n"
         f"- Human-intervention reason: {candidate.reason}\n"
+        f"{_format_library_update_route_summary(library_update_route)}\n"
         f"{coverage_details}\n\n"
         "Preserved work:\n"
         f"{preserved_work_details}\n\n"
@@ -3690,6 +3951,7 @@ def _build_failed_generation_fallback_comment(
         candidate: HumanInterventionCandidate,
         log_paths: list[str],
         preservation_result: FailurePreservationResult | None = None,
+        library_update_route: LibraryUpdateRouteLifecycle | None = None,
 ) -> str:
     """Build a deterministic failed-generation comment when Codex analysis fails."""
     logs_section = _format_log_path_list(log_paths)
@@ -3706,6 +3968,8 @@ def _build_failed_generation_fallback_comment(
         f"workflow status `{candidate.workflow_status}`. The automation could not produce a PR-ready update, "
         "so this issue needs manual follow-up. Any work left in the failed run has been preserved.\n\n"
         f"{preserved_work_section}\n\n"
+        "Route evidence:\n"
+        f"{_format_library_update_route_summary(library_update_route)}\n\n"
         "Relevant logs:\n"
         f"{logs_section}\n\n"
         "Recommended manual follow-up:\n"
@@ -3736,16 +4000,19 @@ def run_codex_failed_generation_analysis(
         candidate: HumanInterventionCandidate,
         started_at: float | None,
         preservation_result: FailurePreservationResult | None = None,
+        library_update_route: LibraryUpdateRouteLifecycle | None = None,
 ) -> str:
     """Use Codex to analyze a failed library-generation run and write an issue comment."""
     run_metrics = _load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
     log_paths = collect_issue_log_paths(claimed_issue, started_at)
+    log_paths.extend(library_update_route_evidence_paths(library_update_route))
     if not claimed_issue_worktree_is_valid(claimed_issue, "failed-run analysis"):
         return _build_failed_generation_fallback_comment(
             claimed_issue,
             candidate,
             log_paths,
             preservation_result,
+            library_update_route,
         )
     prompt = _build_failed_generation_analysis_prompt(
         claimed_issue,
@@ -3753,6 +4020,7 @@ def run_codex_failed_generation_analysis(
         log_paths,
         run_metrics,
         preservation_result,
+        library_update_route,
     )
     log_path = get_codex_failure_analysis_log_path(
         claimed_issue.issue["number"],
@@ -3796,6 +4064,7 @@ def run_codex_failed_generation_analysis(
             candidate,
             log_paths,
             preservation_result,
+            library_update_route,
         )
 
     comment_body = extract_codex_final_message(log_path)
@@ -3816,6 +4085,7 @@ def run_codex_failed_generation_analysis(
         candidate,
         log_paths,
         preservation_result,
+        library_update_route,
     )
 
 
@@ -3824,6 +4094,7 @@ def run_human_intervention_analysis(
         candidate: HumanInterventionCandidate,
         started_at: float | None = None,
         preservation_result: FailurePreservationResult | None = None,
+        library_update_route: LibraryUpdateRouteLifecycle | None = None,
 ) -> str:
     """Run a separate agent pass that writes the issue comment for human follow-up."""
     if candidate.reason in {"test_generation_failed", "job_failed"}:
@@ -3832,6 +4103,7 @@ def run_human_intervention_analysis(
             candidate,
             started_at,
             preservation_result,
+            library_update_route,
         )
 
     strategy = load_strategy_by_name(candidate.strategy_name)
@@ -4082,7 +4354,63 @@ def copy_library_logs_to_preserved_worktree(claimed_issue: ClaimedIssue) -> str 
     return logs_destination_relpath
 
 
-def preserve_failed_work_branch(claimed_issue: ClaimedIssue) -> FailurePreservationResult:
+def library_update_route_evidence_paths(
+        library_update_route: LibraryUpdateRouteLifecycle | None,
+) -> list[str]:
+    """Return existing sidecar/log evidence paths for a missing-version route."""
+    if library_update_route is None:
+        return []
+    paths = [
+        library_update_route.route_sidecar_json_path,
+        *library_update_route.route_log_paths,
+    ]
+    seen: set[str] = set()
+    existing_paths: list[str] = []
+    for path in paths:
+        if not path or path in seen or not os.path.isfile(path):
+            continue
+        seen.add(path)
+        existing_paths.append(path)
+    return existing_paths
+
+
+def copy_library_update_route_evidence_to_preserved_worktree(
+        claimed_issue: ClaimedIssue,
+        library_update_route: LibraryUpdateRouteLifecycle | None,
+        logs_destination_relpath: str | None,
+) -> str | None:
+    """Copy router sidecar/log evidence into the preserved work branch."""
+    evidence_paths = library_update_route_evidence_paths(library_update_route)
+    if not evidence_paths:
+        return logs_destination_relpath
+
+    safe_library_name = sanitize_library_log_segment(claimed_issue.issue_coordinates)
+    destination_relpath = logs_destination_relpath or os.path.join(
+        HUMAN_INTERVENTION_LOGS_DIRNAME,
+        safe_library_name,
+    )
+    destination_dir = os.path.join(
+        claimed_issue.worktree_path,
+        destination_relpath,
+        "library-update-router",
+    )
+    os.makedirs(destination_dir, exist_ok=True)
+    for path in evidence_paths:
+        shutil.copy2(path, os.path.join(destination_dir, os.path.basename(path)))
+    log_stage(
+        "preserve-failed-work",
+        (
+            f"Copied library-update router evidence for {claimed_issue.issue_coordinates} "
+            f"to {os.path.join(destination_relpath, 'library-update-router')}"
+        ),
+    )
+    return destination_relpath
+
+
+def preserve_failed_work_branch(
+        claimed_issue: ClaimedIssue,
+        library_update_route: LibraryUpdateRouteLifecycle | None = None,
+) -> FailurePreservationResult:
     """Commit and push the failed run worktree so it survives workspace cleanup."""
     branch_name = build_failure_preservation_branch_name(claimed_issue)
     repo_path = require_claimed_issue_worktree(claimed_issue, "failure preservation")
@@ -4092,6 +4420,11 @@ def preserve_failed_work_branch(claimed_issue: ClaimedIssue) -> FailurePreservat
     log_stage("preserve-failed-work", f"Preserving failed work for issue #{issue_number} on branch {branch_name}")
     subprocess.run(["git", "switch", "-C", branch_name], cwd=repo_path, env=git_env, check=True)
     logs_destination_relpath = copy_library_logs_to_preserved_worktree(claimed_issue)
+    logs_destination_relpath = copy_library_update_route_evidence_to_preserved_worktree(
+        claimed_issue,
+        library_update_route,
+        logs_destination_relpath,
+    )
     subprocess.run(["git", "add", "-A"], cwd=repo_path, env=git_env, check=True)
     if logs_destination_relpath is not None:
         subprocess.run(["git", "add", "-f", "--", logs_destination_relpath], cwd=repo_path, env=git_env, check=True)
@@ -4124,7 +4457,10 @@ def preserve_failed_work_branch(claimed_issue: ClaimedIssue) -> FailurePreservat
     )
 
 
-def build_fixture_failure_preservation_result(claimed_issue: ClaimedIssue) -> FailurePreservationResult:
+def build_fixture_failure_preservation_result(
+        claimed_issue: ClaimedIssue,
+        library_update_route: LibraryUpdateRouteLifecycle | None = None,
+) -> FailurePreservationResult:
     """Record the preservation branch that fixture mode would have pushed."""
     issue_number = claimed_issue.issue["number"]
     branch_name = build_failure_preservation_branch_name(claimed_issue)
@@ -4132,6 +4468,11 @@ def build_fixture_failure_preservation_result(claimed_issue: ClaimedIssue) -> Fa
     logs_destination_relpath = None
     if os.path.isdir(worktree_path):
         logs_destination_relpath = copy_library_logs_to_preserved_worktree(claimed_issue)
+        logs_destination_relpath = copy_library_update_route_evidence_to_preserved_worktree(
+            claimed_issue,
+            library_update_route,
+            logs_destination_relpath,
+        )
     else:
         log_stage(
             "preserve-failed-work",
@@ -4155,6 +4496,7 @@ def build_fixture_failure_preservation_result(claimed_issue: ClaimedIssue) -> Fa
 def refresh_preserved_branch_logs(
         claimed_issue: ClaimedIssue,
         preservation_result: FailurePreservationResult | None,
+        library_update_route: LibraryUpdateRouteLifecycle | None = None,
 ) -> None:
     """Refresh library logs on an already pushed human-intervention branch."""
     if preservation_result is None:
@@ -4174,6 +4516,11 @@ def refresh_preserved_branch_logs(
     issue_number = claimed_issue.issue["number"]
     subprocess.run(["git", "switch", preservation_result.branch_name], cwd=repo_path, env=git_env, check=True)
     logs_destination_relpath = copy_library_logs_to_preserved_worktree(claimed_issue)
+    logs_destination_relpath = copy_library_update_route_evidence_to_preserved_worktree(
+        claimed_issue,
+        library_update_route,
+        logs_destination_relpath,
+    )
     if logs_destination_relpath is None:
         return
 
@@ -4242,12 +4589,17 @@ def maybe_apply_human_intervention_follow_up(
         workflow_success: bool = True,
         started_at: float | None = None,
         preservation_result: FailurePreservationResult | None = None,
+        library_update_route: LibraryUpdateRouteLifecycle | None = None,
 ) -> bool:
     """Post a human-intervention comment and label when an issue run needs follow-up."""
     if is_user_interrupt_requested():
         return False
 
-    candidate = resolve_human_intervention_candidate(claimed_issue, workflow_success)
+    candidate = resolve_human_intervention_candidate(
+        claimed_issue,
+        workflow_success,
+        library_update_route,
+    )
     if candidate is None:
         return False
 
@@ -4257,6 +4609,7 @@ def maybe_apply_human_intervention_follow_up(
             candidate,
             started_at,
             preservation_result,
+            library_update_route,
         )
         comment_body = ensure_preserved_branch_link_in_comment(comment_body, preservation_result)
     except Exception as exc:
@@ -4276,12 +4629,17 @@ def apply_failed_run_follow_up(
         claimed_issue: ClaimedIssue,
         started_at: float | None = None,
         preservation_result: FailurePreservationResult | None = None,
+        library_update_route: LibraryUpdateRouteLifecycle | None = None,
 ) -> None:
     """Run Codex failure analysis and post the failed-run follow-up comment."""
     if is_user_interrupt_requested():
         raise KeyboardInterrupt
 
-    candidate = resolve_human_intervention_candidate(claimed_issue, workflow_success=False)
+    candidate = resolve_human_intervention_candidate(
+        claimed_issue,
+        workflow_success=False,
+        library_update_route=library_update_route,
+    )
     if candidate is None:
         candidate = HumanInterventionCandidate(
             strategy_name=None,
@@ -4296,6 +4654,7 @@ def apply_failed_run_follow_up(
             candidate,
             started_at,
             preservation_result,
+            library_update_route,
         )
         comment_body = ensure_preserved_branch_link_in_comment(comment_body, preservation_result)
     except Exception as exc:
@@ -4332,6 +4691,238 @@ def append_large_library_workflow_args(pipeline_argv: list[str], claimed_issue: 
     chunk_call_limit = os.environ.get("FORGE_LARGE_LIBRARY_CHUNK_CALL_LIMIT")
     if chunk_call_limit:
         pipeline_argv.extend(["--chunk-call-limit", chunk_call_limit])
+
+
+def build_improve_library_coverage_invocation(
+        claimed_issue: ClaimedIssue,
+        strategy_name: str | None,
+) -> WorkflowDriverInvocation:
+    """Build the ordinary improve-coverage driver invocation for a library update."""
+    issue_number = claimed_issue.issue["number"]
+    pipeline_argv = [
+        "--coordinates", claimed_issue.issue_coordinates,
+        "--reachability-metadata-path", claimed_issue.worktree_path,
+        "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+    ]
+    issue_requested_metadata_context = extract_issue_requested_metadata_context(
+        get_issue_body(issue_number)
+    )
+    if issue_requested_metadata_context:
+        pipeline_argv.extend([
+            "--issue-requested-metadata-context",
+            issue_requested_metadata_context,
+        ])
+    if strategy_name:
+        pipeline_argv.extend(["--strategy-name", strategy_name])
+    append_large_library_workflow_args(pipeline_argv, claimed_issue)
+    return WorkflowDriverInvocation(
+        driver_name="improve_library_coverage",
+        script_name="ai_workflows/drivers/improve_library_coverage.py",
+        runner_name="run_improve_library_coverage_workflow",
+        runner=run_improve_library_coverage_workflow,
+        argv=pipeline_argv,
+        issue_number=issue_number,
+        issue_label=claimed_issue.label,
+        coordinates=claimed_issue.issue_coordinates,
+        current_coordinates=claimed_issue.current_coordinates,
+        new_version=claimed_issue.new_version,
+        log_stage_name="improve-coverage-workflow",
+        log_message=(
+            f"Invoking improve_library_coverage workflow for issue #{issue_number}: "
+            f"{claimed_issue.issue_coordinates}"
+        ),
+        failure_name="improve_library_coverage",
+    )
+
+
+def resolve_claimed_library_update_target(claimed_issue: ClaimedIssue) -> LibraryUpdateTarget:
+    """Resolve the requested library-update coordinate against the metadata index."""
+    group, artifact, requested_version = metadata_coordinate_parts(
+        claimed_issue.issue_coordinates
+    )
+    if not requested_version:
+        raise ValueError(
+            "library-update-request coordinates must include a requested version: "
+            f"{claimed_issue.issue_coordinates}"
+        )
+    return resolve_library_update_target(
+        claimed_issue.worktree_path,
+        group,
+        artifact,
+        requested_version,
+    )
+
+
+def get_route_result_path_summary(route_result: dict[str, Any]) -> str:
+    """Return concise sidecar/log path evidence for router diagnostics."""
+    sidecar_json_path = route_result.get("sidecar_json_path") or "not recorded"
+    log_paths = route_result.get("log_paths")
+    if isinstance(log_paths, list) and log_paths:
+        log_path_summary = ", ".join(str(path) for path in log_paths)
+        return f"sidecar={sidecar_json_path}; logs={log_path_summary}"
+    return f"sidecar={sidecar_json_path}"
+
+
+def print_library_update_router_setup_failure(
+        requested_coordinate: str,
+        route_result: dict[str, Any],
+        reason: str,
+) -> None:
+    """Print an actionable setup failure for the missing-version router."""
+    setup_error = route_result.get("setup_error")
+    setup_detail = f"; setup_error={setup_error}" if setup_error else ""
+    print(
+        (
+            "ERROR: library-update-request compatibility routing failed for "
+            f"{requested_coordinate}: {reason}{setup_detail}. "
+            f"Inspect {get_route_result_path_summary(route_result)}."
+        ),
+        file=sys.stderr,
+    )
+
+
+def library_update_route_publication_fields(route_name: str) -> tuple[str | None, str | None]:
+    """Return the PR script and label selected for a missing-version route."""
+    if route_name == ROUTE_COMPATIBLE:
+        return "git_scripts/make_pr_improve_coverage.py", LABEL_PR_LIBRARY_UPDATE
+    if route_name == ROUTE_JAVAC_FAILURE:
+        return "git_scripts/make_pr_javac_fix.py", LABEL_PR_JAVAC_FIX
+    if route_name == ROUTE_JAVA_RUN_FAILURE:
+        return "git_scripts/make_pr_java_run_fix.py", LABEL_PR_JAVA_RUN_FIX
+    return None, None
+
+
+def build_library_update_route_lifecycle(
+        claimed_issue: ClaimedIssue,
+        route_result: dict[str, Any],
+        invocation: WorkflowDriverInvocation | None = None,
+) -> LibraryUpdateRouteLifecycle:
+    """Build the dispatcher lifecycle record for a missing-version route."""
+    _group, _artifact, requested_version = metadata_coordinate_parts(
+        claimed_issue.issue_coordinates
+    )
+    selected_route = str(route_result.get("selected_route") or ROUTE_SETUP_FAILURE)
+    route_log_paths = route_result.get("log_paths")
+    publication_script, publication_label = library_update_route_publication_fields(selected_route)
+    return LibraryUpdateRouteLifecycle(
+        requested_coordinate=str(
+            route_result.get("requested_coordinate") or claimed_issue.issue_coordinates
+        ),
+        requested_version=requested_version,
+        selected_route=selected_route,
+        selected_baseline_coordinate=(
+            route_result.get("selected_baseline_coordinate")
+            if isinstance(route_result.get("selected_baseline_coordinate"), str)
+            else None
+        ),
+        selected_driver_name=invocation.driver_name if invocation is not None else None,
+        selected_driver_script=invocation.script_name if invocation is not None else None,
+        route_sidecar_json_path=(
+            route_result.get("sidecar_json_path")
+            if isinstance(route_result.get("sidecar_json_path"), str)
+            else None
+        ),
+        route_log_paths=tuple(str(path) for path in route_log_paths)
+        if isinstance(route_log_paths, list)
+        else (),
+        publication_script=publication_script,
+        publication_label=publication_label,
+        setup_error=(
+            route_result.get("setup_error")
+            if isinstance(route_result.get("setup_error"), str)
+            else None
+        ),
+    )
+
+
+def enrich_library_update_route_metrics(
+        route: LibraryUpdateRouteLifecycle | None,
+        claimed_issue: ClaimedIssue,
+) -> LibraryUpdateRouteLifecycle | None:
+    """Attach actual pending and durable metrics paths to the route lifecycle."""
+    if route is None:
+        return None
+
+    pending_metrics_path = os.path.join(
+        claimed_issue.scratch_metrics_repo_path,
+        PENDING_METRICS_FILENAME,
+    )
+    pending_metrics_file_path = pending_metrics_path if os.path.isfile(pending_metrics_path) else None
+    durable_metrics_file_path = None
+    run_metrics = _load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
+    if isinstance(run_metrics, dict):
+        try:
+            durable_metrics_path = execution_metrics_path(claimed_issue.worktree_path, run_metrics)
+            if os.path.isfile(durable_metrics_path):
+                durable_metrics_file_path = durable_metrics_path
+        except Exception:
+            durable_metrics_file_path = None
+
+    return replace(
+        route,
+        pending_metrics_file_path=pending_metrics_file_path,
+        durable_metrics_file_path=durable_metrics_file_path,
+    )
+
+
+def build_library_update_java_failure_invocation(
+        claimed_issue: ClaimedIssue,
+        route_name: str,
+        selected_baseline_coordinate: str,
+        requested_version: str,
+        route_result: dict[str, Any],
+) -> WorkflowDriverInvocation:
+    """Build the javac/java-run driver invocation selected by the router."""
+    issue_number = claimed_issue.issue["number"]
+    if route_name == ROUTE_JAVAC_FAILURE:
+        driver_name = "fix_javac_fail"
+        script_name = "ai_workflows/drivers/fix_javac_fail.py"
+        runner_name = "run_fix_javac_workflow"
+        runner = run_fix_javac_workflow
+        strategy_env_var = "FORGE_JAVAC_STRATEGY_NAME"
+        log_stage_name = "javac-fix-workflow"
+        failure_name = "fix_javac"
+    elif route_name == ROUTE_JAVA_RUN_FAILURE:
+        driver_name = "fix_java_run_fail"
+        script_name = "ai_workflows/drivers/fix_java_run_fail.py"
+        runner_name = "run_fix_java_run_workflow"
+        runner = run_fix_java_run_workflow
+        strategy_env_var = "FORGE_JAVA_RUN_STRATEGY_NAME"
+        log_stage_name = "java-run-fix-workflow"
+        failure_name = "fix_java_run"
+    else:
+        raise ValueError(f"Unsupported library-update router route: {route_name}")
+
+    pipeline_argv = [
+        "--coordinates", selected_baseline_coordinate,
+        "--new-version", requested_version,
+        "--reachability-metadata-path", claimed_issue.worktree_path,
+        "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+    ]
+    route_strategy_name = os.environ.get(strategy_env_var) or None
+    if route_strategy_name:
+        pipeline_argv.extend(["--strategy-name", route_strategy_name])
+
+    return WorkflowDriverInvocation(
+        driver_name=driver_name,
+        script_name=script_name,
+        runner_name=runner_name,
+        runner=runner,
+        argv=pipeline_argv,
+        issue_number=issue_number,
+        issue_label=claimed_issue.label,
+        coordinates=None,
+        current_coordinates=selected_baseline_coordinate,
+        new_version=requested_version,
+        log_stage_name=log_stage_name,
+        log_message=(
+            f"Invoking {driver_name} workflow for issue #{issue_number} via "
+            f"library-update router route={route_name}: "
+            f"{selected_baseline_coordinate} -> {requested_version}; "
+            f"{get_route_result_path_summary(route_result)}"
+        ),
+        failure_name=failure_name,
+    )
 
 
 def build_workflow_driver_invocation(
@@ -4453,58 +5044,144 @@ def build_workflow_driver_invocation(
         )
 
     elif claimed_issue.label == LABEL_LIBRARY_UPDATE:
-        pipeline_argv = [
-            "--coordinates", claimed_issue.issue_coordinates,
-            "--reachability-metadata-path", claimed_issue.worktree_path,
-            "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
-        ]
-        issue_requested_metadata_context = extract_issue_requested_metadata_context(get_issue_body(issue_number))
-        if issue_requested_metadata_context:
-            pipeline_argv.extend(["--issue-requested-metadata-context", issue_requested_metadata_context])
-        if strategy_name:
-            pipeline_argv.extend(["--strategy-name", strategy_name])
-        append_large_library_workflow_args(pipeline_argv, claimed_issue)
-        return WorkflowDriverInvocation(
-            driver_name="improve_library_coverage",
-            script_name="ai_workflows/drivers/improve_library_coverage.py",
-            runner_name="run_improve_library_coverage_workflow",
-            runner=run_improve_library_coverage_workflow,
-            argv=pipeline_argv,
-            issue_number=issue_number,
-            issue_label=claimed_issue.label,
-            coordinates=claimed_issue.issue_coordinates,
-            current_coordinates=claimed_issue.current_coordinates,
-            new_version=claimed_issue.new_version,
-            log_stage_name="improve-coverage-workflow",
-            log_message=(
-                f"Invoking improve_library_coverage workflow for issue #{issue_number}: "
-                f"{claimed_issue.issue_coordinates}"
-            ),
-            failure_name="improve_library_coverage",
+        return build_improve_library_coverage_invocation(
+            claimed_issue,
+            strategy_name,
         )
 
     raise ValueError(f"Unknown label '{claimed_issue.label}'")
 
 
-def invoke_pipeline(
+def build_routed_library_update_invocation(
         claimed_issue: ClaimedIssue,
         strategy_name: str | None,
-        keep_tests_without_dynamic_access: bool,
-) -> bool:
-    """Run the matching workflow driver in the claimed issue's worktree.
+) -> RoutedWorkflowDriverInvocation:
+    """Resolve and route a library-update-request before workflow dispatch."""
+    target = resolve_claimed_library_update_target(claimed_issue)
+    issue_number = claimed_issue.issue["number"]
+    if target.match_type != MATCH_NEW_VERSION:
+        log_stage(
+            "library-update-router",
+            (
+                f"Issue #{issue_number} uses existing library-update target "
+                f"match_type={target.match_type}; dispatching improve_library_coverage "
+                f"for {claimed_issue.issue_coordinates}"
+            ),
+        )
+        return RoutedWorkflowDriverInvocation(
+            invocation=build_improve_library_coverage_invocation(
+                claimed_issue,
+                strategy_name,
+            ),
+        )
 
-    Label-based routing stays in the dispatcher (§AR-forge-control-plane);
-    workflow drivers then own the run end to end
-    (§AR-forge-workflow-boundary), receiving resolved coordinates, paths,
-    strategy names, and chunk context.
-    """
-    require_claimed_issue_worktree(claimed_issue, "workflow execution")
-    invocation = build_workflow_driver_invocation(
-        claimed_issue,
-        strategy_name,
-        keep_tests_without_dynamic_access,
+    route_result = probe_missing_version_compatibility(
+        claimed_issue.worktree_path,
+        claimed_issue.scratch_metrics_repo_path,
+        claimed_issue.issue_coordinates,
+        issue_number=issue_number,
+    )
+    route_name = route_result.get("selected_route")
+    log_stage(
+        "library-update-router",
+        (
+            f"Issue #{issue_number} missing requested version "
+            f"{claimed_issue.issue_coordinates}; selected route={route_name}; "
+            f"selected_driver={library_update_route_driver_name(str(route_name))}; "
+            f"baseline={route_result.get('selected_baseline_coordinate') or 'none'}; "
+            f"{get_route_result_path_summary(route_result)}"
+        ),
     )
 
+    if route_name == ROUTE_SETUP_FAILURE:
+        print_library_update_router_setup_failure(
+            claimed_issue.issue_coordinates,
+            route_result,
+            "the compatibility probe selected setup-failure",
+        )
+        return RoutedWorkflowDriverInvocation(
+            invocation=None,
+            library_update_route=build_library_update_route_lifecycle(
+                claimed_issue,
+                route_result,
+            ),
+        )
+
+    if route_name == ROUTE_COMPATIBLE:
+        invocation = build_improve_library_coverage_invocation(
+            claimed_issue,
+            strategy_name,
+        )
+        return RoutedWorkflowDriverInvocation(
+            invocation=invocation,
+            library_update_route=build_library_update_route_lifecycle(
+                claimed_issue,
+                route_result,
+                invocation,
+            ),
+        )
+
+    if route_name not in {ROUTE_JAVAC_FAILURE, ROUTE_JAVA_RUN_FAILURE}:
+        print_library_update_router_setup_failure(
+            claimed_issue.issue_coordinates,
+            route_result,
+            f"unknown router route {route_name!r}",
+        )
+        return RoutedWorkflowDriverInvocation(
+            invocation=None,
+            library_update_route=build_library_update_route_lifecycle(
+                claimed_issue,
+                route_result,
+            ),
+        )
+
+    selected_baseline_coordinate = route_result.get("selected_baseline_coordinate")
+    if not isinstance(selected_baseline_coordinate, str) or not selected_baseline_coordinate:
+        print_library_update_router_setup_failure(
+            claimed_issue.issue_coordinates,
+            route_result,
+            f"route {route_name} did not provide selected_baseline_coordinate",
+        )
+        return RoutedWorkflowDriverInvocation(
+            invocation=None,
+            library_update_route=build_library_update_route_lifecycle(
+                claimed_issue,
+                route_result,
+            ),
+        )
+
+    invocation = build_library_update_java_failure_invocation(
+        claimed_issue,
+        str(route_name),
+        selected_baseline_coordinate,
+        target.resolved_test_version,
+        route_result,
+    )
+    return RoutedWorkflowDriverInvocation(
+        invocation=invocation,
+        library_update_route=build_library_update_route_lifecycle(
+            claimed_issue,
+            route_result,
+            invocation,
+        ),
+    )
+
+
+def library_update_route_driver_name(route_name: str) -> str:
+    """Return the selected driver name for route log evidence."""
+    if route_name == ROUTE_JAVAC_FAILURE:
+        return "fix_javac_fail"
+    if route_name == ROUTE_JAVA_RUN_FAILURE:
+        return "fix_java_run_fail"
+    if route_name == ROUTE_COMPATIBLE:
+        return "improve_library_coverage"
+    if route_name == ROUTE_SETUP_FAILURE:
+        return "none"
+    return "unknown"
+
+
+def run_workflow_driver_invocation(invocation: WorkflowDriverInvocation) -> bool:
+    """Run a workflow driver invocation with dispatcher-owned result handling."""
     print()
     log_stage(invocation.log_stage_name, invocation.log_message)
     rc = invocation.runner(invocation.argv)
@@ -4524,6 +5201,52 @@ def invoke_pipeline(
     print()
     log_stage("pipeline", f"Pipeline succeeded for issue #{invocation.issue_number}")
     return True
+
+
+def invoke_pipeline(
+        claimed_issue: ClaimedIssue,
+        strategy_name: str | None,
+        keep_tests_without_dynamic_access: bool,
+) -> WorkflowExecutionOutcome:
+    """Run the matching workflow driver in the claimed issue's worktree.
+
+    Label-based routing stays in the dispatcher (§AR-forge-control-plane);
+    workflow drivers then own the run end to end
+    (§AR-forge-workflow-boundary), receiving resolved coordinates, paths,
+    strategy names, and chunk context.
+    """
+    require_claimed_issue_worktree(claimed_issue, "workflow execution")
+    if claimed_issue.label == LABEL_LIBRARY_UPDATE:
+        routed_invocation = build_routed_library_update_invocation(
+            claimed_issue,
+            strategy_name,
+        )
+        invocation = routed_invocation.invocation
+        if invocation is None:
+            return WorkflowExecutionOutcome(
+                success=False,
+                routed_driver=None,
+                library_update_route=routed_invocation.library_update_route,
+            )
+        success = run_workflow_driver_invocation(invocation)
+        return WorkflowExecutionOutcome(
+            success=success,
+            routed_driver=invocation,
+            library_update_route=enrich_library_update_route_metrics(
+                routed_invocation.library_update_route,
+                claimed_issue,
+            ),
+        )
+
+    invocation = build_workflow_driver_invocation(
+        claimed_issue,
+        strategy_name,
+        keep_tests_without_dynamic_access,
+    )
+    return WorkflowExecutionOutcome(
+        success=run_workflow_driver_invocation(invocation),
+        routed_driver=invocation,
+    )
 
 
 def validate_parallelism(value: str) -> int:
@@ -5181,9 +5904,11 @@ def run_claimed_issue(
 ) -> WorkflowRunResult:
     """Execute the claimed issue workflow inside its isolated worktree."""
     started_at = time.time()
+    active_claimed_issue = claimed_issue
+    outcome = WorkflowExecutionOutcome(success=False)
     try:
-        success = invoke_pipeline(
-            claimed_issue,
+        outcome = invoke_pipeline(
+            active_claimed_issue,
             strategy_name,
             keep_tests_without_dynamic_access,
         )
@@ -5194,14 +5919,19 @@ def run_claimed_issue(
         if is_user_interrupt_requested():
             raise KeyboardInterrupt from exc
         print(
-            f"ERROR: Issue #{claimed_issue.issue['number']} workflow raised an exception: {exc!r}",
+            f"ERROR: Issue #{active_claimed_issue.issue['number']} workflow raised an exception: {exc!r}",
             file=sys.stderr,
         )
         traceback.print_exc()
-        success = False
     if is_user_interrupt_requested():
         raise KeyboardInterrupt
-    return WorkflowRunResult(claimed_issue=claimed_issue, success=success, started_at=started_at)
+    return WorkflowRunResult(
+        claimed_issue=active_claimed_issue,
+        success=outcome.success,
+        started_at=started_at,
+        routed_driver=outcome.routed_driver,
+        library_update_route=outcome.library_update_route,
+    )
 
 
 def revert_issue_claim(item_id: str, issue_number: int, reason: str) -> None:
@@ -5287,6 +6017,31 @@ def build_large_library_pr_args(
     return args
 
 
+def route_uses_java_failure_publication(route: LibraryUpdateRouteLifecycle | None) -> bool:
+    """Return True when a library-update route selected a Java fail-fix lane."""
+    return route is not None and route.selected_route in {
+        ROUTE_JAVAC_FAILURE,
+        ROUTE_JAVA_RUN_FAILURE,
+    }
+
+
+def publication_allows_large_library_args(
+        claimed_issue: ClaimedIssue,
+        route: LibraryUpdateRouteLifecycle | None,
+) -> bool:
+    """Return whether publication should include dynamic-access chunk metadata."""
+    if claimed_issue.label == LABEL_LIBRARY_NEW:
+        return True
+    if claimed_issue.label != LABEL_LIBRARY_UPDATE:
+        return False
+    if route is None:
+        return True
+    return (
+        route.selected_route == ROUTE_COMPATIBLE
+        and route.selected_driver_name == "improve_library_coverage"
+    )
+
+
 def _require_publication_value(value: str | None, field_name: str, claimed_issue: ClaimedIssue) -> str:
     if value is None:
         raise ValueError(
@@ -5295,7 +6050,10 @@ def _require_publication_value(value: str | None, field_name: str, claimed_issue
     return value
 
 
-def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff:
+def build_publication_handoff(
+        claimed_issue: ClaimedIssue,
+        library_update_route: LibraryUpdateRouteLifecycle | None = None,
+) -> PublicationHandoff:
     """Build the live-or-fixture PR publication handoff.
 
     The dispatcher makes the routing decision once, then either executes the
@@ -5304,16 +6062,27 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
     """
     require_claimed_issue_worktree(claimed_issue, "successful finalization")
     issue_number = claimed_issue.issue["number"]
-    large_library_state_path = find_progress_state_path(
-        claimed_issue.scratch_metrics_repo_path,
-        issue_number,
-    )
-    large_library_state = LargeLibraryProgressState.load(large_library_state_path) if large_library_state_path else None
-    if large_library_state is not None:
-        ensure_large_library_labels_exist_if_needed(claimed_issue)
     run_metrics = _load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
     workflow_status = None if run_metrics is None else run_metrics.get("status")
     issue_number_args = ["--issue-number", str(issue_number)]
+    include_large_library_args = publication_allows_large_library_args(
+        claimed_issue,
+        library_update_route,
+    )
+    large_library_state_path = None
+    large_library_state = None
+    if include_large_library_args:
+        large_library_state_path = find_progress_state_path(
+            claimed_issue.scratch_metrics_repo_path,
+            issue_number,
+        )
+        large_library_state = (
+            LargeLibraryProgressState.load(large_library_state_path)
+            if large_library_state_path
+            else None
+        )
+        if large_library_state is not None:
+            ensure_large_library_labels_exist_if_needed(claimed_issue)
     large_library_pr_args = build_large_library_pr_args(
         claimed_issue,
         large_library_state,
@@ -5330,6 +6099,8 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
     argv: list[str]
     result_label: str
     coordinates: str | None = claimed_issue.issue_coordinates
+    current_coordinates: str | None = claimed_issue.current_coordinates
+    new_version: str | None = claimed_issue.new_version
     not_for_native_image = False
 
     if claimed_issue.label == LABEL_LIBRARY_NEW:
@@ -5416,17 +6187,74 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
     elif claimed_issue.label == LABEL_LIBRARY_UPDATE:
-        script_name = "git_scripts/make_pr_improve_coverage.py"
-        runner_name = "run_make_pr_improve_coverage"
-        runner = run_make_pr_improve_coverage
-        result_label = LABEL_PR_LIBRARY_UPDATE
-        argv = [
-            "--coordinates", claimed_issue.issue_coordinates,
-            *issue_number_args,
-            "--reachability-metadata-path", claimed_issue.worktree_path,
-            "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
-            *large_library_pr_args,
-        ]
+        if library_update_route is not None and library_update_route.selected_route == ROUTE_JAVAC_FAILURE:
+            script_name = "git_scripts/make_pr_javac_fix.py"
+            runner_name = "run_make_pr_javac_fix"
+            runner = run_make_pr_javac_fix
+            result_label = LABEL_PR_JAVAC_FIX
+            current_coordinates = _require_publication_value(
+                library_update_route.selected_baseline_coordinate,
+                "selected_baseline_coordinate",
+                claimed_issue,
+            )
+            new_version = _require_publication_value(
+                library_update_route.requested_version,
+                "requested_version",
+                claimed_issue,
+            )
+            coordinates = None
+            argv = [
+                "--coordinates", current_coordinates,
+                "--new-version", new_version,
+                "--issue-number", str(issue_number),
+                "--reachability-metadata-path", claimed_issue.worktree_path,
+                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+            ]
+        elif library_update_route is not None and library_update_route.selected_route == ROUTE_JAVA_RUN_FAILURE:
+            script_name = "git_scripts/make_pr_java_run_fix.py"
+            runner_name = "run_make_pr_java_run_fix"
+            runner = run_make_pr_java_run_fix
+            result_label = LABEL_PR_JAVA_RUN_FIX
+            current_coordinates = _require_publication_value(
+                library_update_route.selected_baseline_coordinate,
+                "selected_baseline_coordinate",
+                claimed_issue,
+            )
+            new_version = _require_publication_value(
+                library_update_route.requested_version,
+                "requested_version",
+                claimed_issue,
+            )
+            coordinates = None
+            argv = [
+                "--coordinates", current_coordinates,
+                "--new-version", new_version,
+                "--issue-number", str(issue_number),
+                "--reachability-metadata-path", claimed_issue.worktree_path,
+                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+            ]
+        elif library_update_route is not None and library_update_route.selected_route != ROUTE_COMPATIBLE:
+            raise ValueError(
+                "Unsupported library-update route for successful publication: "
+                f"{library_update_route.selected_route}"
+            )
+        else:
+            script_name = "git_scripts/make_pr_improve_coverage.py"
+            runner_name = "run_make_pr_improve_coverage"
+            runner = run_make_pr_improve_coverage
+            result_label = LABEL_PR_LIBRARY_UPDATE
+            coordinates = (
+                library_update_route.requested_coordinate
+                if library_update_route is not None
+                else claimed_issue.issue_coordinates
+            )
+            argv = [
+                "--coordinates", coordinates,
+                *issue_number_args,
+                "--reachability-metadata-path", claimed_issue.worktree_path,
+                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+                *large_library_pr_args,
+            ]
     else:
         raise ValueError(f"Unknown label '{claimed_issue.label}'")
 
@@ -5439,8 +6267,8 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
         issue_label=claimed_issue.label,
         result_label=result_label,
         coordinates=coordinates,
-        current_coordinates=claimed_issue.current_coordinates,
-        new_version=claimed_issue.new_version,
+        current_coordinates=current_coordinates,
+        new_version=new_version,
         worktree_path=claimed_issue.worktree_path,
         scratch_metrics_path=claimed_issue.scratch_metrics_repo_path,
         workflow_status=workflow_status,
@@ -5453,8 +6281,13 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
     )
 
 
-def apply_large_library_completion_follow_up(claimed_issue: ClaimedIssue) -> None:
+def apply_large_library_completion_follow_up(
+        claimed_issue: ClaimedIssue,
+        library_update_route: LibraryUpdateRouteLifecycle | None = None,
+) -> None:
     """Apply issue labels after a large-library part was published."""
+    if not publication_allows_large_library_args(claimed_issue, library_update_route):
+        return
     run_metrics = _load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
     workflow_status = None if run_metrics is None else run_metrics.get("status")
     state_path = find_progress_state_path(claimed_issue.scratch_metrics_repo_path, claimed_issue.issue["number"])
@@ -5472,6 +6305,7 @@ def apply_large_library_completion_follow_up(claimed_issue: ClaimedIssue) -> Non
 
 def finalize_successful_issue(
         claimed_issue: ClaimedIssue,
+        library_update_route: LibraryUpdateRouteLifecycle | None = None,
 ) -> None:
     """Create the PR for a successful isolated workflow run.
 
@@ -5480,7 +6314,7 @@ def finalize_successful_issue(
     generation and publication separate (§AR-forge-verification-publication-boundary).
     """
     if is_fixture_testing_enabled():
-        handoff = build_publication_handoff(claimed_issue)
+        handoff = build_publication_handoff(claimed_issue, library_update_route)
         require_fixture_github_state().record_publication_handoff(
             handoff.issue_number,
             handoff.to_json(),
@@ -5494,14 +6328,20 @@ def finalize_successful_issue(
         )
         return
 
-    handoff = build_publication_handoff(claimed_issue)
+    handoff = build_publication_handoff(claimed_issue, library_update_route)
     handoff.runner(handoff.argv)
 
 
-def preserve_failed_work_for_follow_up(claimed_issue: ClaimedIssue) -> FailurePreservationResult | None:
+def preserve_failed_work_for_follow_up(
+        claimed_issue: ClaimedIssue,
+        library_update_route: LibraryUpdateRouteLifecycle | None = None,
+) -> FailurePreservationResult | None:
     """Push failed work to a branch for human follow-up."""
     if is_fixture_testing_enabled():
-        preservation_result = build_fixture_failure_preservation_result(claimed_issue)
+        preservation_result = build_fixture_failure_preservation_result(
+            claimed_issue,
+            library_update_route,
+        )
         preservation_failed_worktree_paths.add(claimed_issue.worktree_path)
         require_fixture_github_state().record_failure_preservation(
             claimed_issue.issue["number"],
@@ -5516,7 +6356,7 @@ def preserve_failed_work_for_follow_up(claimed_issue: ClaimedIssue) -> FailurePr
         )
         return preservation_result
     try:
-        return preserve_failed_work_branch(claimed_issue)
+        return preserve_failed_work_branch(claimed_issue, library_update_route)
     except Exception as exc:
         preservation_failed_worktree_paths.add(claimed_issue.worktree_path)
         print(
@@ -5534,20 +6374,29 @@ def handle_failed_claimed_issue(
         claimed_issue: ClaimedIssue,
         reason: str,
         started_at: float | None = None,
+        library_update_route: LibraryUpdateRouteLifecycle | None = None,
 ) -> None:
     """Preserve failed work, run Codex analysis, apply follow-up, and revert the claim."""
     if is_user_interrupt_requested():
         raise KeyboardInterrupt
-    preservation_result = preserve_failed_work_for_follow_up(claimed_issue)
+    preservation_result = preserve_failed_work_for_follow_up(
+        claimed_issue,
+        library_update_route,
+    )
     if is_user_interrupt_requested():
         raise KeyboardInterrupt
     apply_failed_run_follow_up(
         claimed_issue,
         started_at=started_at,
         preservation_result=preservation_result,
+        library_update_route=library_update_route,
     )
     try:
-        refresh_preserved_branch_logs(claimed_issue, preservation_result)
+        refresh_preserved_branch_logs(
+            claimed_issue,
+            preservation_result,
+            library_update_route,
+        )
     except Exception as exc:
         print(
             f"ERROR: Failed to refresh preserved logs for issue #{claimed_issue.issue['number']}: {exc!r}",
@@ -5560,6 +6409,7 @@ def handle_failed_claimed_issue(
 def handle_completed_run(run_result: WorkflowRunResult) -> bool:
     """Finalize a completed workflow run and return the final handled result."""
     claimed_issue = run_result.claimed_issue
+    library_update_route = run_result.library_update_route
     try:
         if is_user_interrupt_requested():
             raise KeyboardInterrupt
@@ -5568,10 +6418,11 @@ def handle_completed_run(run_result: WorkflowRunResult) -> bool:
                 claimed_issue,
                 "workflow failure",
                 started_at=run_result.started_at,
+                library_update_route=library_update_route,
             )
             return False
         try:
-            finalize_successful_issue(claimed_issue)
+            finalize_successful_issue(claimed_issue, library_update_route)
         except Exception as exc:
             print(
                 f"ERROR: Issue #{claimed_issue.issue['number']} finalization raised an exception: {exc!r}",
@@ -5582,13 +6433,15 @@ def handle_completed_run(run_result: WorkflowRunResult) -> bool:
                 claimed_issue,
                 "finalization failure",
                 started_at=run_result.started_at,
+                library_update_route=library_update_route,
             )
             return False
-        apply_large_library_completion_follow_up(claimed_issue)
+        apply_large_library_completion_follow_up(claimed_issue, library_update_route)
         maybe_apply_human_intervention_follow_up(
             claimed_issue,
             workflow_success=True,
             started_at=run_result.started_at,
+            library_update_route=library_update_route,
         )
         return True
     except KeyboardInterrupt:
@@ -5614,12 +6467,15 @@ def process_claimed_issue_lifecycle(
     lifecycle_completed = False
     lifecycle_result = "started"
     started_at = time.time()
+    active_claimed_issue = claimed_issue
+    run_result: WorkflowRunResult | None = None
     try:
         run_result = run_claimed_issue(
             claimed_issue,
             strategy_name,
             keep_tests_without_dynamic_access,
         )
+        active_claimed_issue = run_result.claimed_issue
         if is_user_interrupt_requested():
             raise KeyboardInterrupt
         handled = handle_completed_run(run_result)
@@ -5629,7 +6485,7 @@ def process_claimed_issue_lifecycle(
             log_success_banner(
                 append_fixture_report_path(
                     format_issue_result_message(
-                        claimed_issue,
+                        active_claimed_issue,
                         "Workflow finished, follow-up completed, and the issue was finalized.",
                     ),
                     fixture_report_context,
@@ -5640,7 +6496,7 @@ def process_claimed_issue_lifecycle(
             log_failure_banner(
                 append_fixture_report_path(
                     format_issue_result_message(
-                        claimed_issue,
+                        active_claimed_issue,
                         (
                             "Workflow failed; failure follow-up was attempted. Check prior errors "
                             "for follow-up and claim status."
@@ -5656,20 +6512,25 @@ def process_claimed_issue_lifecycle(
             if is_interrupt_exception(exc) or is_user_interrupt_requested():
                 lifecycle_result = "interrupted"
                 mark_user_interrupt_requested()
-                revert_claimed_issue(claimed_issue, "Ctrl+C interrupt")
+                revert_claimed_issue(active_claimed_issue, "Ctrl+C interrupt")
                 raise
             else:
                 lifecycle_result = f"unhandled-lifecycle-failure:{type(exc).__name__}"
                 try:
                     handle_failed_claimed_issue(
-                        claimed_issue,
+                        active_claimed_issue,
                         f"unhandled lifecycle failure ({type(exc).__name__})",
                         started_at=started_at,
+                        library_update_route=(
+                            run_result.library_update_route
+                            if run_result is not None
+                            else None
+                        ),
                     )
                     log_failure_banner(
                         append_fixture_report_path(
                             format_issue_result_message(
-                                claimed_issue,
+                                active_claimed_issue,
                                 (
                                     "Workflow failed with an unhandled lifecycle error; failure follow-up "
                                     "was attempted and the issue claim was reverted."
@@ -5682,22 +6543,23 @@ def process_claimed_issue_lifecycle(
                 except KeyboardInterrupt:
                     lifecycle_result = "interrupted"
                     mark_user_interrupt_requested()
-                    revert_claimed_issue(claimed_issue, "Ctrl+C interrupt")
+                    revert_claimed_issue(active_claimed_issue, "Ctrl+C interrupt")
                     raise
                 return False
         raise
     finally:
         write_fixture_e2e_report_best_effort(
             fixture_report_context,
-            claimed_issue,
+            active_claimed_issue,
             lifecycle_result,
             started_at,
+            run_result,
         )
         try:
-            cleanup_issue_workspace(claimed_issue, canonical_metrics_repo_path)
+            cleanup_issue_workspace(active_claimed_issue, canonical_metrics_repo_path)
         except Exception as exc:
             print(
-                f"ERROR: Failed to clean up workspaces for issue #{claimed_issue.issue['number']}: {exc!r}",
+                f"ERROR: Failed to clean up workspaces for issue #{active_claimed_issue.issue['number']}: {exc!r}",
                 file=sys.stderr,
             )
             traceback.print_exc()

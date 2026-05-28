@@ -57,6 +57,7 @@ Python code or shared utility code:
 - Create the configured agent with editable files limited to the target test
   tree and build file, plus read-only docs and source-context files.
 
+
 ## 2. Issue-specific preparation
 
 ### `library-new-request`
@@ -145,7 +146,9 @@ that already exists in the repository (§WF-improve-library-coverage.1).
 
 #### Missing requested-version test suite
 
-Driver: selected after a compatibility probe.
+Driver: selected after a compatibility probe. The missing-version router is
+deterministic dispatcher support backed by shared utility modules; it is not a
+workflow engine and does not introduce a new workflow driver.
 
 Preparation:
 
@@ -155,19 +158,35 @@ Preparation:
 - Prepare the latest supported test suite so it runs against the requested
   version, preserving the latest supported version as the baseline.
 - Run a compatibility probe against the requested version.
-- If Java compilation fails, dispatch `ai_workflows/drivers/fix_javac_fail.py`;
-  that driver owns the version-copy preparation, javac repair, and composite
-  coverage phase.
-- If compilation passes but the JVM test run fails, dispatch
-  `ai_workflows/drivers/fix_java_run_fail.py`; that driver owns runtime repair
-  and the java-run composite coverage phase.
-- If compilation and JVM tests pass, dispatch
-  `ai_workflows/drivers/improve_library_coverage.py` for the requested version
+- For `javac-failure`, hand off with:
+  ```console
+  ai_workflows/drivers/fix_javac_fail.py \
+    --coordinates group:artifact:<latest-supported-test-version> \
+    --new-version <requested-version>
+  ```
+  That canonical driver owns version-copy preparation, javac repair, and the
+  composite coverage phase (§WF-java-fail-fix-workflow).
+- For `java-run-failure`, hand off with:
+  ```console
+  ai_workflows/drivers/fix_java_run_fail.py \
+    --coordinates group:artifact:<latest-supported-test-version> \
+    --new-version <requested-version>
+  ```
+  That canonical driver owns runtime repair and the java-run composite coverage
+  phase (§WF-java-fail-fix-workflow).
+- For `compatible`, hand off with:
+  ```console
+  ai_workflows/drivers/improve_library_coverage.py \
+    --coordinates group:artifact:<requested-version>
+  ```
   because the latest test suite is compatible.
+- For `setup-failure`, fail with route evidence so diagnostics show why no
+  downstream driver was selected.
 
-The selected driver must own its normal setup after the probe; the
-`library-update-request` router must not duplicate javac-fix, java-run-fix, or
-coverage workflow setup logic (§WF-improve-library-coverage.2).
+The selected canonical driver under `ai_workflows/drivers/` owns its normal
+setup after routing; the `library-update-request` router must not duplicate
+javac-fix, java-run-fix, or coverage workflow setup logic
+(§WF-improve-library-coverage.2).
 
 ### `fails-javac-compile`
 

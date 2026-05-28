@@ -78,6 +78,7 @@ class FixtureIssue:
     blockers: list[int]
     comments: list[FixtureComment]
     expected_side_effects: list[Any]
+    expected_report_assertions: list[Any]
     fixture_path: str
     url: str
 
@@ -121,6 +122,7 @@ class FixtureIssue:
             "blockers": list(self.blockers),
             "comments": [comment.to_json() for comment in self.comments],
             "expected_side_effects": _json_clone(self.expected_side_effects),
+            "expected_report_assertions": _json_clone(self.expected_report_assertions),
             "fixture_path": self.fixture_path,
         }
 
@@ -392,6 +394,23 @@ class FixtureGitHubState:
             "issues": issue_reports,
         }
 
+    def compare_expected_report_assertions(
+            self,
+            issue_number: int,
+            report: JsonObject,
+    ) -> JsonObject:
+        """Compare report-field assertions from one fixture against the final report."""
+        issue = self._issue(issue_number)
+        assertion_results = [
+            _compare_report_assertion(assertion, report)
+            for assertion in issue.expected_report_assertions
+        ]
+        return {
+            "passed": all(result["passed"] for result in assertion_results),
+            "expected_count": len(issue.expected_report_assertions),
+            "assertions": assertion_results,
+        }
+
     def build_report(self, issue_number: int | None = None, extra: JsonObject | None = None) -> JsonObject:
         issue_numbers = [issue_number] if issue_number is not None else self.issue_numbers
         issues = [self._issue(number).to_json() for number in issue_numbers]
@@ -526,6 +545,10 @@ def normalize_fixture_issue(raw_issue: JsonObject, fixture_path: str) -> Fixture
         _optional_list(issue, "expected_side_effects", context, default=[]),
         context,
     )
+    expected_report_assertions = _normalize_expected_report_assertions(
+        _optional_list(issue, "expected_report_assertions", context, default=[]),
+        context,
+    )
     url = _optional_str(issue, "url", context, default=f"fixture://github-issues/{number}")
 
     return FixtureIssue(
@@ -541,6 +564,7 @@ def normalize_fixture_issue(raw_issue: JsonObject, fixture_path: str) -> Fixture
         blockers=blockers,
         comments=comments,
         expected_side_effects=expected_side_effects,
+        expected_report_assertions=expected_report_assertions,
         fixture_path=os.path.abspath(fixture_path),
         url=url,
     )
@@ -668,6 +692,27 @@ def _normalize_expected_side_effects(raw_expected: list[Any], context: str) -> l
     return expected
 
 
+def _normalize_expected_report_assertions(raw_expected: list[Any], context: str) -> list[Any]:
+    expected: list[Any] = []
+    allowed_ops = {"equals", "exists", "absent", "contains"}
+    for index, raw_entry in enumerate(raw_expected):
+        entry_context = f"{context}:expected_report_assertions[{index}]"
+        entry = _require_mapping(raw_entry, entry_context)
+        normalized = _json_clone(entry)
+        op = normalized.get("op")
+        if not isinstance(op, str) or op not in allowed_ops:
+            raise FixtureValidationError(
+                f"{entry_context}: `op` must be one of {sorted(allowed_ops)}"
+            )
+        path = normalized.get("path")
+        if not isinstance(path, str) or not path:
+            raise FixtureValidationError(f"{entry_context}: `path` must be a non-empty string")
+        if op in {"equals", "contains"} and "value" not in normalized:
+            raise FixtureValidationError(f"{entry_context}: `{op}` requires `value`")
+        expected.append(normalized)
+    return expected
+
+
 def _compare_issue_side_effects(expected: list[Any], actual: list[JsonObject]) -> JsonObject:
     missing_expected: list[Any] = []
     matched_expected: list[JsonObject] = []
@@ -735,6 +780,82 @@ def _find_matching_side_effect_index(
         if isinstance(expected_details, dict) and _mapping_contains(actual_details, expected_details):
             return index
     return None
+
+
+_MISSING = object()
+
+
+def _compare_report_assertion(assertion: Any, report: JsonObject) -> JsonObject:
+    if not isinstance(assertion, dict):
+        return {
+            "passed": False,
+            "assertion": _json_clone(assertion),
+            "actual": None,
+            "reason": "assertion is not an object",
+        }
+
+    op = assertion.get("op")
+    path = assertion.get("path")
+    actual = _resolve_report_path(report, path) if isinstance(path, str) else _MISSING
+    expected = assertion.get("value")
+
+    if op == "equals":
+        passed = actual is not _MISSING and actual == expected
+        reason = None if passed else "resolved value did not equal expected value"
+    elif op == "exists":
+        passed = actual is not _MISSING
+        reason = None if passed else "report path was absent"
+    elif op == "absent":
+        passed = actual is _MISSING
+        reason = None if passed else "report path was present"
+    elif op == "contains":
+        passed = actual is not _MISSING and _report_value_contains(actual, expected)
+        reason = None if passed else "resolved value did not contain expected value"
+    else:
+        passed = False
+        reason = f"unsupported assertion op: {op}"
+
+    result: JsonObject = {
+        "passed": passed,
+        "assertion": _json_clone(assertion),
+        "actual": None if actual is _MISSING else _json_clone(actual),
+    }
+    if reason is not None:
+        result["reason"] = reason
+    return result
+
+
+def _resolve_report_path(report: Any, path: str) -> Any:
+    current = report
+    for segment in path.split("."):
+        if isinstance(current, dict):
+            if segment not in current:
+                return _MISSING
+            current = current[segment]
+            continue
+        if isinstance(current, list):
+            try:
+                index = int(segment)
+            except ValueError:
+                return _MISSING
+            if index < 0 or index >= len(current):
+                return _MISSING
+            current = current[index]
+            continue
+        return _MISSING
+    return current
+
+
+def _report_value_contains(actual: Any, expected: Any) -> bool:
+    if isinstance(expected, dict):
+        return _mapping_contains(actual, expected)
+    if isinstance(expected, list):
+        if not isinstance(actual, list):
+            return False
+        return all(expected_item in actual for expected_item in expected)
+    if isinstance(actual, list):
+        return expected in actual
+    return actual == expected
 
 
 def _mapping_contains(actual: Any, expected: JsonObject) -> bool:

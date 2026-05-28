@@ -217,8 +217,18 @@ def latest_metadata_version(repo_path: str, group: str, artifact: str) -> str | 
 
 def is_newer_parseable_metadata_version(candidate_version: str, current_version: str) -> bool:
     """Return true when both versions are parseable and candidate is newer."""
-    comparison = _compare_parseable_metadata_versions(candidate_version, current_version)
+    comparison = compare_parseable_metadata_versions(candidate_version, current_version)
     return comparison is not None and comparison > 0
+
+
+def is_parseable_metadata_version(version: str) -> bool:
+    """Return true when the version can be compared by metadata-version ordering."""
+    return _parse_metadata_version(version) is not None
+
+
+def compare_parseable_metadata_versions(first_version: str, second_version: str) -> int | None:
+    """Compare parseable metadata versions, returning None when either is unsupported."""
+    return _compare_parseable_metadata_versions(first_version, second_version)
 
 
 def is_newer_than_latest_metadata_version(

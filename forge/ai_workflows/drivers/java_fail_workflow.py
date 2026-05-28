@@ -36,6 +36,7 @@ from utility_scripts.source_context import (
     resolve_test_source_layout,
 )
 from utility_scripts.strategy_loader import require_strategy_by_name
+from utility_scripts.versioned_test_project import prepare_versioned_test_project
 from utility_scripts.workflow_setup import resolve_graalvm_java_home, validate_repo_paths
 
 DEFAULT_MODEL_NAME = "oca/gpt5"
@@ -197,11 +198,6 @@ def resolve_fix_metrics_json(
     return os.path.join(metrics_repo_dir, config.metrics_filename)
 
 
-def _same_filesystem_path(first_path: str, second_path: str) -> bool:
-    """Return True when two paths resolve to the same filesystem location."""
-    return os.path.normcase(os.path.realpath(first_path)) == os.path.normcase(os.path.realpath(second_path))
-
-
 def copy_and_prepare_project_dir(
         group: str,
         artifact: str,
@@ -209,24 +205,18 @@ def copy_and_prepare_project_dir(
         updated_library_version: str,
 ) -> None:
     """Copy versioned test project directory and update version references."""
-    src_dir = os.path.join("tests", "src", group, artifact, library_version)
-    dst_dir = os.path.join("tests", "src", group, artifact, updated_library_version)
-    if not os.path.isdir(src_dir):
-        raise FileNotFoundError(f"Missing source test project directory: {src_dir}")
-
-    if _same_filesystem_path(src_dir, dst_dir):
-        print(f"[project-prep] Source and destination test project are the same: {dst_dir}")
-    else:
-        os.makedirs(dst_dir, exist_ok=True)
-        shutil.copytree(src_dir, dst_dir, dirs_exist_ok=True)
-
-    gradle_properties_path = os.path.join(dst_dir, "gradle.properties")
-    if os.path.isfile(gradle_properties_path):
-        with open(gradle_properties_path, "r", encoding="utf-8") as file:
-            gradle_props_content = file.read()
-        gradle_props_content_updated = gradle_props_content.replace(library_version, updated_library_version)
-        with open(gradle_properties_path, "w", encoding="utf-8") as file:
-            file.write(gradle_props_content_updated)
+    prepare_versioned_test_project(
+        os.getcwd(),
+        group,
+        artifact,
+        library_version,
+        updated_library_version,
+        replace_existing=False,
+        rewrite_project_files=False,
+        normalize_gradle_properties=True,
+        gradle_property_old_versions=(library_version,),
+        log_prefix="[project-prep]",
+    )
 
 
 def run_gradle_task(task: str, coordinates: str) -> None:

@@ -64,36 +64,41 @@ This case applies when the repository already supports the requested
 suite in the repository.
 
 Forge must first resolve the latest supported test version for the artifact and
-probe the requested version with that latest test suite. The probe determines
+probe the requested version with that latest test suite. The compatibility
+probe runs in a disposable complete reachability-repo context derived from the
+claimed worktree; it must not leave copied tests, metadata, stats, index edits,
+branches, or commits in the claimed workflow worktree. The probe determines
 which driver owns the rest of the work:
 
 1. **Latest-suite preparation** — copy or otherwise prepare the latest
-   supported test suite so it runs against the requested version, preserving the
-   previous version as the baseline.
-2. **Compatibility probe** — run the requested version with the latest test
-   suite before selecting the repair or coverage path.
-3. **Javac failure** — if the probe fails at Java compilation, dispatch the
-   javac-fix driver for the previous version and requested version. That
-   driver owns project copying, metadata-index updates, javac repair, and
-   the composite coverage phase (§WF-java-fail-fix-workflow).
-4. **Java runtime failure** — if compilation succeeds but the JVM test run
-   fails, dispatch the java-run fix driver with the java-run composite
-   strategy. That driver owns runtime repair and the composite coverage
-   phase (§WF-java-fail-fix-workflow).
-5. **Compatible version** — if compilation and JVM tests both pass, the
-   requested version is compatible with the latest test suite. Forge should add
-   or select the requested version's test project and run the regular
-   improve-coverage workflow for that requested version
-   (§WF-improve-library-coverage.1).
+   supported test suite in the disposable probe repo so it runs against the
+   requested version, preserving the latest supported version as the baseline.
+2. **Compatibility probe** — run `compileTestJava` for the requested coordinate
+   before `javaTest`; `javaTest` must run only after compilation succeeds.
+3. **`javac-failure`** — if `compileTestJava` fails, dispatch the javac-fix
+   driver for the latest supported version and requested version. That driver
+   owns project copying, metadata-index updates, javac repair, and the
+   composite coverage phase (§WF-java-fail-fix-workflow).
+4. **`java-run-failure`** — if compilation succeeds but `javaTest` fails,
+   dispatch the java-run fix driver with the java-run composite strategy. That
+   driver owns runtime repair and the composite coverage phase
+   (§WF-java-fail-fix-workflow).
+5. **`compatible`** — if compilation and JVM tests both pass, the requested
+   version is compatible with the latest test suite. Forge should add or select
+   the requested version's test project and run the regular improve-coverage
+   workflow for that requested version (§WF-improve-library-coverage.1).
+6. **`setup-failure`** — if the probe cannot resolve a usable supported
+   baseline, create its disposable repo context, or prepare a runnable probe
+   suite, fail the route with evidence for diagnostics.
 
-All branches of this case end in coverage improvement for the requested
-version. The difference is which driver owns the prerequisite work before
-coverage starts:
+All successful non-setup routes in this case end in coverage improvement for
+the requested version. The difference is which driver owns the prerequisite
+work before coverage starts:
 
-- `ai_workflows/drivers/fix_javac_fail.py` for compilation failures.
-- `ai_workflows/drivers/fix_java_run_fail.py` for JVM runtime failures.
+- `ai_workflows/drivers/fix_javac_fail.py` for `javac-failure`.
+- `ai_workflows/drivers/fix_java_run_fail.py` for `java-run-failure`.
 - `ai_workflows/drivers/improve_library_coverage.py` when the requested version is
-  already compatible with the latest supported test suite.
+  already `compatible` with the latest supported test suite.
 
 ### PR creation
 

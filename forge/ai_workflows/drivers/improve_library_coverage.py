@@ -68,6 +68,11 @@ from utility_scripts.source_context import (
 )
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.strategy_loader import require_strategy_by_name
+from utility_scripts.versioned_test_project import (
+    copy_directory_replace,
+    prepare_versioned_test_project,
+    rewrite_text_files,
+)
 from utility_scripts.workflow_setup import resolve_graalvm_java_home, validate_repo_paths
 
 DEFAULT_MODEL_NAME = "oca/gpt-5.5"
@@ -348,113 +353,6 @@ def select_clone_baseline_entry(
     return None
 
 
-def _copytree_replace(destination: str, source: str) -> None:
-    if os.path.abspath(destination) == os.path.abspath(source):
-        return
-    if os.path.exists(destination):
-        shutil.rmtree(destination)
-    shutil.copytree(source, destination)
-
-
-def _safe_version_pattern(version: str) -> re.Pattern:
-    """Match a standalone version token without touching longer version-like strings."""
-    return re.compile(rf"(?<![A-Za-z0-9_.-]){re.escape(version)}(?![A-Za-z0-9_.-])")
-
-
-def _allows_bare_version_rewrite(path: str) -> bool:
-    """Return whether bare version tokens may be rewritten in this cloned file."""
-    file_name = os.path.basename(path)
-    if file_name == "gradle.properties":
-        return True
-    return os.path.splitext(file_name)[1] in {
-        ".groovy",
-        ".java",
-        ".json",
-        ".kt",
-        ".properties",
-        ".xml",
-        ".yaml",
-        ".yml",
-    }
-
-
-def _rewrite_text_files(root_dir: str, replacements: list[tuple[str, str]], allow_bare_versions: bool = False) -> None:
-    if not os.path.isdir(root_dir):
-        return
-    literal_replacements = [
-        (old_value, new_value)
-        for old_value, new_value in replacements
-        if old_value and ":" in old_value
-    ]
-    version_replacements = [
-        (_safe_version_pattern(old_value), new_value)
-        for old_value, new_value in replacements
-        if old_value and ":" not in old_value
-    ]
-    for current_root, _, file_names in os.walk(root_dir):
-        for file_name in file_names:
-            path = os.path.join(current_root, file_name)
-            try:
-                with open(path, "r", encoding="utf-8") as file:
-                    original = file.read()
-            except UnicodeDecodeError:
-                continue
-            updated = original
-            for old_value, new_value in literal_replacements:
-                updated = updated.replace(old_value, new_value)
-            if allow_bare_versions and _allows_bare_version_rewrite(path):
-                for pattern, new_value in version_replacements:
-                    updated = pattern.sub(new_value, updated)
-            if updated != original:
-                with open(path, "w", encoding="utf-8") as file:
-                    file.write(updated)
-
-
-def _rewrite_cloned_gradle_properties(
-        test_dir: str,
-        group: str,
-        artifact: str,
-        requested_version: str,
-) -> None:
-    """Update scaffold-owned Gradle properties after cloning a test project."""
-    gradle_properties_path = os.path.join(test_dir, "gradle.properties")
-    if not os.path.isfile(gradle_properties_path):
-        return
-
-    expected_values = {
-        "library.coordinates": f"{group}:{artifact}:{requested_version}",
-        "library.version": requested_version,
-        "metadata.dir": f"{group}/{artifact}/{requested_version}/",
-    }
-    with open(gradle_properties_path, "r", encoding="utf-8") as properties_file:
-        lines = properties_file.readlines()
-
-    updated_lines: list[str] = []
-    for line in lines:
-        line_ending = "\n" if line.endswith("\n") else ""
-        content = line[:-1] if line_ending else line
-        stripped = content.lstrip()
-        if not stripped or stripped.startswith("#"):
-            updated_lines.append(line)
-            continue
-        key_separator = "=" if "=" in stripped else ":" if ":" in stripped else None
-        if key_separator is None:
-            updated_lines.append(line)
-            continue
-        key = stripped.split(key_separator, 1)[0].strip()
-        if key not in expected_values:
-            updated_lines.append(line)
-            continue
-        indent = content[:len(content) - len(stripped)]
-        updated_lines.append(f"{indent}{key} = {expected_values[key]}{line_ending}")
-
-    updated_content = "".join(updated_lines)
-    original_content = "".join(lines)
-    if updated_content != original_content:
-        with open(gradle_properties_path, "w", encoding="utf-8") as properties_file:
-            properties_file.write(updated_content)
-
-
 def _replace_version_in_value(value: Any, old_versions: set[str], new_version: str) -> Any:
     if isinstance(value, str):
         updated = value
@@ -551,16 +449,14 @@ def clone_library_update_support(
     baseline_metadata_version = str(baseline_entry["metadata-version"])
     baseline_test_version = _entry_test_version(baseline_entry)
     target_metadata_dir = os.path.join(repo_path, "metadata", group, artifact, requested_version)
-    target_test_dir = os.path.join(repo_path, "tests", "src", group, artifact, requested_version)
     baseline_metadata_dir = os.path.join(repo_path, "metadata", group, artifact, baseline_metadata_version)
     baseline_test_dir = os.path.join(repo_path, "tests", "src", group, artifact, baseline_test_version)
-    _copytree_replace(target_metadata_dir, baseline_metadata_dir)
-    _copytree_replace(target_test_dir, baseline_test_dir)
+    copy_directory_replace(target_metadata_dir, baseline_metadata_dir)
 
     baseline_stats_dir = os.path.join(stats_artifact_dir(repo_path, group, artifact), baseline_metadata_version)
     target_stats_dir = os.path.join(stats_artifact_dir(repo_path, group, artifact), requested_version)
     if os.path.isdir(baseline_stats_dir):
-        _copytree_replace(target_stats_dir, baseline_stats_dir)
+        copy_directory_replace(target_stats_dir, baseline_stats_dir)
 
     replacements = [
         (f"{group}:{artifact}:{baseline_metadata_version}", f"{group}:{artifact}:{requested_version}"),
@@ -568,10 +464,21 @@ def clone_library_update_support(
         (baseline_metadata_version, requested_version),
         (baseline_test_version, requested_version),
     ]
-    _rewrite_text_files(target_metadata_dir, replacements, allow_bare_versions=True)
-    _rewrite_text_files(target_test_dir, replacements)
-    _rewrite_cloned_gradle_properties(target_test_dir, group, artifact, requested_version)
-    _rewrite_text_files(target_stats_dir, replacements, allow_bare_versions=True)
+    prepare_versioned_test_project(
+        repo_path,
+        group,
+        artifact,
+        baseline_test_version,
+        requested_version,
+        source_test_dir=baseline_test_dir,
+        replace_existing=True,
+        rewrite_project_files=True,
+        replacements=replacements,
+        allow_bare_versions=False,
+        normalize_gradle_properties=True,
+    )
+    rewrite_text_files(target_metadata_dir, replacements, allow_bare_versions=True)
+    rewrite_text_files(target_stats_dir, replacements, allow_bare_versions=True)
 
     entries = load_index_entries(repo_path, group, artifact) or []
     moved_tested_versions = _tested_versions_for_split_entry(baseline_entry, requested_version)

@@ -49,10 +49,18 @@ The dispatcher routes issue work by issue labels, not by PR labels:
 | Issue label | Workflow driver | Successful PR label |
 | --- | --- | --- |
 | `library-new-request` | `ai_workflows/drivers/add_new_library_support.py` | `library-new-request` |
-| `library-update-request` | `ai_workflows/drivers/improve_library_coverage.py` | `library-update-request` |
+| `library-update-request` | coverage driver or router | route-selected, see below |
 | `fails-javac-compile` | `ai_workflows/drivers/fix_javac_fail.py` | `fixes-javac-fail` |
 | `fails-java-run` | `ai_workflows/drivers/fix_java_run_fail.py` | `fixes-java-run-fail` |
 | `fails-native-image-run` | `ai_workflows/drivers/fix_ni_run.py` | `fixes-native-image-run-fail` |
+
+For `library-update-request`, queue ownership does not change when the requested
+version is missing. `forge_metadata.py` keeps the original issue claimed and
+owns its bookkeeping, but the missing-version router selects the downstream
+driver and publication lane required by the route: `compatible` publishes as
+`library-update-request`, `javac-failure` publishes as `fixes-javac-fail`, and
+`java-run-failure` publishes as `fixes-java-run-fail`
+(§ROADMAP-forge-missing-version-router).
 
 The control plane treats a claimed issue as exclusive work. Claiming,
 assignment checks, worktree creation, and final unassignment all belong in
@@ -157,6 +165,16 @@ the exhaust-report state needed by the next run, as specified in
 close the issue. The publication layer must preserve that issue linking
 contract instead of treating every successful chunk as a completed issue
 (§WF-chunked-dynamic-access-pr-linking).
+
+It is also route-aware for missing requested-version `library-update-request`
+runs. Existing requested-version work still publishes through
+`git_scripts/make_pr_improve_coverage.py`; missing-version runs publish through
+the selected downstream route: `git_scripts/make_pr_improve_coverage.py` for
+`compatible`, `git_scripts/make_pr_javac_fix.py` for `javac-failure`, and
+`git_scripts/make_pr_java_run_fix.py` for `java-run-failure`. The original
+`library-update-request` issue remains the claimed issue and bookkeeping owner
+even when publication uses a Java fail-fix PR lane
+(§ROADMAP-forge-missing-version-router).
 
 Shared repository edits are allowed only when local verification proves they
 are necessary, and they must be surfaced in metrics and PR text for maintainer

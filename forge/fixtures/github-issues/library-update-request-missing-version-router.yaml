@@ -1,0 +1,252 @@
+# Missing-version `library-update-request` router fixtures. Each requested
+# coordinate is a real artifact version absent from the local metadata index,
+# confirmed with `MATCH_NEW_VERSION` resolution and the isolated compatibility
+# probe before this fixture was added.
+issues:
+  - number: 9107
+    title: "Improve coverage for org.apache.commons:commons-lang3:3.19.0"
+    state: OPEN
+    labels:
+      - library-update-request
+    assignees: []
+    project:
+      number: 30
+      item_id: fixture-project-item-9107
+      status: Todo
+    blocked_by: []
+    body: |
+      Please improve dynamic-access coverage for
+      `org.apache.commons:commons-lang3:3.19.0`.
+
+      This is a missing tested-version update for an already supported Apache
+      Commons artifact. The compatibility probe should compile and run the
+      copied baseline suite successfully, then route to the ordinary coverage
+      improvement driver.
+
+      Requested coordinate:
+      `org.apache.commons:commons-lang3:3.19.0`
+    comments:
+      - author: fixture-reporter
+        created_at: "2026-05-28T10:10:00Z"
+        body: |
+          Fixture issue for the missing-version router `compatible` branch.
+          The isolated probe selected `compatible` with baseline
+          `org.apache.commons:commons-lang3:3.11`.
+    expected_side_effects:
+      - action: set-assignee
+        username: fixture-runner
+      - action: set-project-status
+        status: In Progress
+      - action: publication-handoff
+        script_name: git_scripts/make_pr_improve_coverage.py
+        issue_label: library-update-request
+        result_label: library-update-request
+        coordinates: org.apache.commons:commons-lang3:3.19.0
+    expected_report_assertions:
+      - op: equals
+        path: library_update_route.selected_route
+        value: compatible
+      - op: equals
+        path: library_update_route.selected_driver_name
+        value: improve_library_coverage
+      - op: equals
+        path: routed_driver.script_name
+        value: ai_workflows/drivers/improve_library_coverage.py
+      - op: equals
+        path: preserved_report_artifacts.library_update_route_sidecar.exists
+        value: true
+      - op: equals
+        path: library_update_route_sidecar_json.command_records.0.command_args
+        value:
+          - ./gradlew
+          - compileTestJava
+          - -Pcoordinates=org.apache.commons:commons-lang3:3.19.0
+      - op: equals
+        path: library_update_route_sidecar_json.command_records.0.exit_code
+        value: 0
+      - op: equals
+        path: library_update_route_sidecar_json.command_records.1.command_args
+        value:
+          - ./gradlew
+          - javaTest
+          - -Pcoordinates=org.apache.commons:commons-lang3:3.19.0
+      - op: equals
+        path: library_update_route_sidecar_json.command_records.1.exit_code
+        value: 0
+      - op: equals
+        path: dry_run_publication_handoff.0.script_name
+        value: git_scripts/make_pr_improve_coverage.py
+      - op: equals
+        path: dry_run_publication_handoff.0.result_label
+        value: library-update-request
+      - op: equals
+        path: dry_run_publication_handoff.0.coordinates
+        value: org.apache.commons:commons-lang3:3.19.0
+
+  - number: 9108
+    title: "Improve coverage for commons-net:commons-net:3.14.0"
+    state: OPEN
+    labels:
+      - library-update-request
+    assignees: []
+    project:
+      number: 30
+      item_id: fixture-project-item-9108
+      status: Todo
+    blocked_by: []
+    body: |
+      Please improve dynamic-access coverage for
+      `commons-net:commons-net:3.14.0`.
+
+      This is a missing tested-version update for an already supported Apache
+      Commons artifact. The compatibility probe should fail during
+      `compileTestJava` before attempting `javaTest`, then route to the javac
+      repair driver for the selected baseline suite.
+
+      Requested coordinate:
+      `commons-net:commons-net:3.14.0`
+    comments:
+      - author: fixture-reporter
+        created_at: "2026-05-28T10:11:00Z"
+        body: |
+          Fixture issue for the missing-version router `javac-failure` branch.
+          The isolated probe selected baseline `commons-net:commons-net:3.1`
+          and failed the compile probe for the requested version.
+    expected_side_effects:
+      - action: set-assignee
+        username: fixture-runner
+      - action: set-project-status
+        status: In Progress
+      - action: publication-handoff
+        script_name: git_scripts/make_pr_javac_fix.py
+        issue_label: library-update-request
+        result_label: fixes-javac-fail
+        current_coordinates: commons-net:commons-net:3.1
+        new_version: 3.14.0
+    expected_report_assertions:
+      - op: equals
+        path: library_update_route.selected_route
+        value: javac-failure
+      - op: equals
+        path: library_update_route.selected_driver_name
+        value: fix_javac_fail
+      - op: equals
+        path: routed_driver.script_name
+        value: ai_workflows/drivers/fix_javac_fail.py
+      - op: equals
+        path: library_update_route.selected_baseline_coordinate
+        value: commons-net:commons-net:3.1
+      - op: equals
+        path: preserved_report_artifacts.library_update_route_sidecar.exists
+        value: true
+      - op: equals
+        path: library_update_route_sidecar_json.command_records.0.command_args
+        value:
+          - ./gradlew
+          - compileTestJava
+          - -Pcoordinates=commons-net:commons-net:3.14.0
+      - op: equals
+        path: library_update_route_sidecar_json.command_records.0.exit_code
+        value: 1
+      - op: absent
+        path: library_update_route_sidecar_json.command_records.1
+      - op: equals
+        path: dry_run_publication_handoff.0.script_name
+        value: git_scripts/make_pr_javac_fix.py
+      - op: equals
+        path: dry_run_publication_handoff.0.result_label
+        value: fixes-javac-fail
+      - op: equals
+        path: dry_run_publication_handoff.0.current_coordinates
+        value: commons-net:commons-net:3.1
+      - op: equals
+        path: dry_run_publication_handoff.0.new_version
+        value: 3.14.0
+
+  - number: 9109
+    title: "Improve coverage for org.glassfish.grizzly:grizzly-framework:2.3.6"
+    state: OPEN
+    labels:
+      - library-update-request
+    assignees: []
+    project:
+      number: 30
+      item_id: fixture-project-item-9109
+      status: Todo
+    blocked_by: []
+    body: |
+      Please improve dynamic-access coverage for
+      `org.glassfish.grizzly:grizzly-framework:2.3.6`.
+
+      This is a missing tested-version update for an already supported Grizzly
+      artifact. The compatibility probe should compile the copied baseline
+      suite, then fail during `javaTest` and route to the JVM runtime repair
+      driver.
+
+      Requested coordinate:
+      `org.glassfish.grizzly:grizzly-framework:2.3.6`
+    comments:
+      - author: fixture-reporter
+        created_at: "2026-05-28T10:12:00Z"
+        body: |
+          Fixture issue for the missing-version router `java-run-failure`
+          branch. The isolated probe selected baseline
+          `org.glassfish.grizzly:grizzly-framework:2.1.2`, compiled
+          successfully, then failed `javaTest`.
+    expected_side_effects:
+      - action: set-assignee
+        username: fixture-runner
+      - action: set-project-status
+        status: In Progress
+      - action: publication-handoff
+        script_name: git_scripts/make_pr_java_run_fix.py
+        issue_label: library-update-request
+        result_label: fixes-java-run-fail
+        current_coordinates: org.glassfish.grizzly:grizzly-framework:2.1.2
+        new_version: 2.3.6
+    expected_report_assertions:
+      - op: equals
+        path: library_update_route.selected_route
+        value: java-run-failure
+      - op: equals
+        path: library_update_route.selected_driver_name
+        value: fix_java_run_fail
+      - op: equals
+        path: routed_driver.script_name
+        value: ai_workflows/drivers/fix_java_run_fail.py
+      - op: equals
+        path: library_update_route.selected_baseline_coordinate
+        value: org.glassfish.grizzly:grizzly-framework:2.1.2
+      - op: equals
+        path: preserved_report_artifacts.library_update_route_sidecar.exists
+        value: true
+      - op: equals
+        path: library_update_route_sidecar_json.command_records.0.command_args
+        value:
+          - ./gradlew
+          - compileTestJava
+          - -Pcoordinates=org.glassfish.grizzly:grizzly-framework:2.3.6
+      - op: equals
+        path: library_update_route_sidecar_json.command_records.0.exit_code
+        value: 0
+      - op: equals
+        path: library_update_route_sidecar_json.command_records.1.command_args
+        value:
+          - ./gradlew
+          - javaTest
+          - -Pcoordinates=org.glassfish.grizzly:grizzly-framework:2.3.6
+      - op: equals
+        path: library_update_route_sidecar_json.command_records.1.exit_code
+        value: 1
+      - op: equals
+        path: dry_run_publication_handoff.0.script_name
+        value: git_scripts/make_pr_java_run_fix.py
+      - op: equals
+        path: dry_run_publication_handoff.0.result_label
+        value: fixes-java-run-fail
+      - op: equals
+        path: dry_run_publication_handoff.0.current_coordinates
+        value: org.glassfish.grizzly:grizzly-framework:2.1.2
+      - op: equals
+        path: dry_run_publication_handoff.0.new_version
+        value: 2.3.6
