@@ -21,24 +21,25 @@ this spec.
 ## 2. Hermetic Fixture E2E
 
 The default E2E mode is a fixture-backed run. It uses local YAML files under
-`forge/fixtures/github-issues/` to imitate GitHub issues, labels, assignees,
-project items, blockers, comments, and expected side effects. The fixture issue
-does not need to exist on GitHub. Fixture mode must not mutate live GitHub
-state.
+`forge/fixtures/github-issues/` to imitate GitHub issue payloads, labels,
+comments, and expected side effects. The fixture issue does not need to exist on
+GitHub. Fixture mode must not mutate live GitHub state.
 
 A fixture-backed E2E still runs through `forge_metadata.py` and must exercise
 the real control-plane responsibilities:
 
 - GitHub issue lookup through the fixture backend.
 - Label-based routing.
-- Claiming and project-status checks in fixture state.
+- Direct construction of the claimed issue from the fixture payload, bypassing
+  live GitHub claim mechanics such as assignee races, project-status checks, and
+  blocker/preflight queries.
 - Isolated worktree and metrics path setup.
 - Dispatch to the matching workflow driver.
 - Workflow engine execution through the configured strategy.
 - Local verification, metrics writing, and dry-run publication handoff.
 
 Fixture GitHub mode implies dry-run publication. It must record the issue,
-project, label, comment, assignment, and publication effects in local run
+label, comment, failure-preservation, and publication effects in local run
 output instead of assigning real issues, changing real project items, pushing
 branches, or opening pull requests.
 
@@ -57,14 +58,15 @@ python3 forge_metadata.py \
 
 The persisted fixture E2E report is written under
 `script_run_metrics/fixture-e2e/issue-<number>-<run-id>/fixture-e2e-report.json`.
-Fixture mode records issue, project, comment, label, assignment, and dry-run
-publication effects locally in that report; it does not mutate live GitHub
-state. §E2E-forge-workflow-testing.2 §E2E-forge-workflow-testing.9
+Fixture mode records issue, comment, label, failure-preservation, and dry-run
+publication effects locally in that report; it does not mutate live GitHub state
+or simulate GitHub claim/project-board races. §E2E-forge-workflow-testing.2
+§E2E-forge-workflow-testing.9
 
 The primary fixture scenario is the new/update library dynamic-access path:
 
 1. `library-new-request` is the main exhibited path because it exercises issue
-   claiming, new test scaffolding, source-context preparation, dynamic-access
+   routing, new test scaffolding, source-context preparation, dynamic-access
    generation, metadata generation, metrics, and publication readiness.
 2. `library-update-request` is the paired coverage-improvement path and should
    be used when the requested test is specifically about improving existing
@@ -73,9 +75,9 @@ The primary fixture scenario is the new/update library dynamic-access path:
 Additional fixture scenarios cover each supported issue label and expected
 driver: `library-new-request`, `library-update-request`, `fails-javac-compile`,
 `fails-java-run`, and `fails-native-image-run`. The non-primary fixtures are
-intended to make routing, current-version resolution, and claim behavior
-demonstrable for those labels; the primary `9101` fixture remains the default
-dynamic-access acceptance target. §E2E-forge-workflow-testing.5
+intended to make routing and current-version resolution demonstrable for those
+labels; the primary `9101` fixture remains the default dynamic-access acceptance
+target. §E2E-forge-workflow-testing.5
 
 For a fixture issue:
 
@@ -112,10 +114,6 @@ comments:
   - author: fixture-author
     body: "Please cover CSVFormat, CSVParser, and CSVPrinter."
 expected_side_effects:
-  - action: set-assignee
-    username: fixture-runner
-  - action: set-project-status
-    status: In Progress
   - action: publication-handoff
     script_name: git_scripts/make_pr_new_library_support.py
     issue_label: library-new-request
@@ -123,9 +121,8 @@ expected_side_effects:
     coordinates: org.apache.commons:commons-csv:1.11.0
 ```
 
-For fixture queue scanning, use `--run-work-queues` only when the user
-explicitly asks to exercise queue scanning. The queue must come from fixture
-state and must not use random offsets.
+Fixture mode is an exact single-issue run. Queue scanning remains a live GitHub
+concern and must not be combined with `--fixture-testing`.
 
 ## 3. Live GitHub Smoke E2E
 
@@ -159,7 +156,7 @@ python3 forge_metadata.py \
 For live GitHub E2E, `<issue>` must be the exact GitHub issue number explicitly
 requested by the user.
 
-The test must use the real control-plane responsibilities:
+Live GitHub E2E must use the real control-plane responsibilities:
 
 - GitHub issue lookup and label routing.
 - Claiming and project-status checks.
@@ -178,8 +175,9 @@ The verification steps apply to both E2E modes: hermetic fixture E2E
 (§E2E-forge-workflow-testing.2) and live GitHub smoke E2E
 (§E2E-forge-workflow-testing.3).
 
-1. **Issue routing** — the issue had the expected queue label, was claimable,
-   and routed to the expected workflow driver:
+1. **Issue routing** — the issue had the expected queue label and routed to the
+   expected workflow driver. In live GitHub mode, also verify that the issue was
+   claimable:
    `add_new_library_support.py` for `library-new-request` or
    `improve_library_coverage.py` for `library-update-request`.
 2. **Setup** — Forge created or selected the expected worktree/branch, resolved
@@ -245,8 +243,9 @@ An E2E test fails if any of these happen:
 - It used random live issue selection, random offsets, or live queue scanning
   for a pass/fail E2E test.
 - It used only unit-test mocks, toy coordinates, or synthetic repositories.
-- Issue claiming, routing, setup, workflow execution, verification, metrics, or
-  publication handoff could not be verified.
+- Routing, setup, workflow execution, verification, metrics, or publication
+  handoff could not be verified. In live GitHub mode, issue claiming must also
+  be verified.
 - Generated tests are trivial, broken, misleading, or achieved success by
   weakening the test.
 - Agent, metadata-fix, native tracing, or verification logs show drift,

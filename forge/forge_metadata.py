@@ -86,6 +86,7 @@ from git_scripts.make_pr_not_for_native_image import main as run_make_pr_not_for
 from git_scripts.make_pr_ni_run_fix import main as run_make_pr_ni_run_fix
 from git_scripts.make_pr_improve_coverage import main as run_make_pr_improve_coverage
 from utility_scripts.dynamic_access_report import load_dynamic_access_coverage_report
+from utility_scripts.fixture_github import FixtureGitHubState, load_fixture_github_state
 from utility_scripts.library_stats import resolve_stats_file_path
 from utility_scripts.large_library_progress import (
     LABEL_LARGE_LIBRARY_BLOCKED,
@@ -181,6 +182,7 @@ LABEL_PRIORITY = "priority"
 LABEL_HUMAN_INTERVENTION = "human-intervention"
 LABEL_HUMAN_INTERVENTION_FIXED = "human-intervention-fixed"
 LABEL_NOT_FOR_NATIVE_IMAGE = "not-for-native-image"
+FIXTURE_AUTHENTICATED_USER = "fixture-runner"
 
 SCRATCH_WORKTREE_DIRNAME = "forge_worktrees"
 SCRATCH_REVIEW_WORKTREE_DIRNAME = "forge_review_worktrees"
@@ -585,12 +587,15 @@ PIPELINE_LABELS = {LABEL_LIBRARY_NEW, LABEL_LIBRARY_UPDATE, LABEL_JAVAC_FAIL, LA
 
 def get_issue_by_number(issue_number: int) -> tuple[dict, str]:
     """Fetch a single issue by number and determine its pipeline label."""
-    data = gh_json(
-        "issue", "view",
-        str(issue_number),
-        "--repo", REPO,
-        "--json", "number,title,url,labels,assignees",
-    )
+    if is_fixture_testing_enabled():
+        data = require_fixture_github_state().get_issue_by_number(issue_number)
+    else:
+        data = gh_json(
+            "issue", "view",
+            str(issue_number),
+            "--repo", REPO,
+            "--json", "number,title,url,labels,assignees",
+        )
     for label in data.get("labels", []):
         label_name = label.get("name") if isinstance(label, dict) else None
         if label_name in PIPELINE_LABELS:
@@ -616,6 +621,8 @@ def get_issue_claim_payload(issue_number: int) -> dict:
 
 def get_issue_body(issue_number: int) -> str:
     """Fetch an issue body only for workflows that explicitly need reporter context."""
+    if is_fixture_testing_enabled():
+        return require_fixture_github_state().get_issue_body(issue_number)
     data = gh_json(
         "issue", "view",
         str(issue_number),
@@ -1755,10 +1762,35 @@ ensured_issue_labels: set[str] = set()
 held_issue_claim_lock_numbers: set[int] = set()
 held_issue_claim_lock_guard = threading.Lock()
 preservation_failed_worktree_paths: set[str] = set()
+fixture_github_state: FixtureGitHubState | None = None
 
 
 CLAIM_BACKOFF_MIN = 5  # Minimum seconds to wait before verifying claim
 CLAIM_BACKOFF_MAX = 10  # Maximum seconds to wait before verifying claim
+
+
+def configure_fixture_testing(
+        fixture_paths: list[str] | None = None,
+        fixture_state: FixtureGitHubState | None = None,
+) -> FixtureGitHubState:
+    """Configure the dispatcher to use local fixture GitHub state."""
+    global fixture_github_state
+    if fixture_state is not None and fixture_paths is not None:
+        raise ValueError("Pass either fixture_paths or fixture_state, not both")
+    fixture_github_state = fixture_state or load_fixture_github_state(fixture_paths)
+    return fixture_github_state
+
+
+def is_fixture_testing_enabled() -> bool:
+    """Return True when GitHub helper calls should use fixture state."""
+    return fixture_github_state is not None
+
+
+def require_fixture_github_state() -> FixtureGitHubState:
+    """Return configured fixture GitHub state or fail with a dispatcher error."""
+    if fixture_github_state is None:
+        raise RuntimeError("Fixture GitHub state is not configured")
+    return fixture_github_state
 
 
 def get_authenticated_user() -> str:
@@ -1773,6 +1805,10 @@ def resolve_authenticated_user(authenticated_user: str | None = None) -> str:
     """Resolve and log the authenticated GitHub username when remote work needs it."""
     if authenticated_user is not None:
         return authenticated_user
+    if is_fixture_testing_enabled():
+        print()
+        log_stage("github-auth", f"Fixture authenticated as: {FIXTURE_AUTHENTICATED_USER}")
+        return FIXTURE_AUTHENTICATED_USER
     ensure_gh_authenticated()
     resolved_user = get_authenticated_user()
     print()
@@ -3333,10 +3369,7 @@ def build_fixture_boundary_verification(
     return {
         "issue_routing": {
             "queue_label": claimed_issue.label,
-            "claim_side_effects_present": all(
-                action in side_effect_actions
-                for action in ("set-assignee", "set-project-status")
-            ),
+            "fixture_claim_bypassed": True,
             "routed_driver": report.get("routed_driver"),
         },
         "setup": {
@@ -3776,6 +3809,9 @@ def ensure_repo_label_exists(label_name: str, color: str, description: str) -> N
     """Ensure a repository label exists before applying it to an issue or pull request."""
     if label_name in ensured_issue_labels:
         return
+    if is_fixture_testing_enabled():
+        ensured_issue_labels.add(label_name)
+        return
 
     encoded_label = quote(label_name, safe="")
     label_lookup = gh("api", f"/repos/{REPO}/labels/{encoded_label}", check=False)
@@ -3811,6 +3847,13 @@ def ensure_repo_label_exists(label_name: str, color: str, description: str) -> N
 
 def post_issue_comment(issue_number: int, body: str) -> None:
     """Post a comment to a GitHub issue."""
+    if is_fixture_testing_enabled():
+        require_fixture_github_state().post_issue_comment(
+            issue_number,
+            body,
+            FIXTURE_AUTHENTICATED_USER,
+        )
+        return
     gh(
         "issue",
         "comment",
@@ -3849,6 +3892,9 @@ def add_issue_label(issue_number: int, label_name: str) -> None:
         label_color,
         label_description,
     )
+    if is_fixture_testing_enabled():
+        require_fixture_github_state().add_issue_label(issue_number, label_name)
+        return
     gh(
         "issue",
         "edit",
@@ -3862,6 +3908,9 @@ def add_issue_label(issue_number: int, label_name: str) -> None:
 
 def remove_issue_label(issue_number: int, label_name: str) -> None:
     """Remove a label from a GitHub issue if it is present."""
+    if is_fixture_testing_enabled():
+        require_fixture_github_state().remove_issue_label(issue_number, label_name)
+        return
     result = gh(
         "issue",
         "edit",
@@ -5065,6 +5114,58 @@ def claim_issue_for_processing(
     )
 
 
+def build_fixture_claimed_issue(
+        issue: dict,
+        label: str,
+        base_reachability_metadata_path: str,
+        canonical_metrics_repo_path: str,
+) -> Optional[ClaimedIssue]:
+    """Prepare a fixture issue without simulating GitHub claim mechanics.
+
+    §E2E-forge-workflow-testing.2
+    """
+    if not is_fixture_testing_enabled():
+        raise RuntimeError("Fixture issue preparation requires fixture testing mode")
+
+    claim_metadata = build_claim_metadata(issue, label, base_reachability_metadata_path)
+    if claim_metadata is None:
+        return None
+
+    issue_number = issue["number"]
+    try:
+        item_id = require_fixture_github_state().get_issue_project_item_id(issue_number)
+    except Exception:
+        item_id = f"fixture-project-item-{issue_number}"
+
+    try:
+        worktree_path, scratch_metrics_repo_path = create_issue_workspace(
+            base_reachability_metadata_path,
+            canonical_metrics_repo_path,
+            issue_number,
+        )
+    except BaseException as exc:
+        if isinstance(exc, Exception):
+            print(
+                f"ERROR: Failed to prepare fixture workspace for issue #{issue_number}: {exc!r}",
+                file=sys.stderr,
+            )
+            return None
+        raise
+
+    issue_coordinates, current_coordinates, new_version = claim_metadata
+    return ClaimedIssue(
+        issue=issue,
+        label=label,
+        item_id=item_id,
+        base_reachability_metadata_path=base_reachability_metadata_path,
+        worktree_path=worktree_path,
+        scratch_metrics_repo_path=scratch_metrics_repo_path,
+        issue_coordinates=issue_coordinates,
+        current_coordinates=current_coordinates,
+        new_version=new_version,
+    )
+
+
 def run_claimed_issue(
         claimed_issue: ClaimedIssue,
         strategy_name: str | None,
@@ -5097,6 +5198,13 @@ def run_claimed_issue(
 
 def revert_issue_claim(item_id: str, issue_number: int, reason: str) -> None:
     """Reset an issue claim back to Todo and clear all assignment, with verification."""
+    if is_fixture_testing_enabled():
+        log_stage(
+            "issue-revert",
+            f"Fixture mode: no GitHub claim was created for issue #{issue_number}; skipping claim revert.",
+        )
+        return
+
     print(f"\n[issue-revert] Reverting issue #{issue_number} claim because {reason}", file=sys.stderr)
     revert_errors: list[Exception] = []
     print(f"[issue-revert] Reverting issue #{issue_number}: setting project item {item_id} -> {STATUS_TODO}", file=sys.stderr)
@@ -6163,7 +6271,7 @@ def try_claim_issue_with_local_lock(
         log_stage("issue-claim", f"Setting issue #{number} assignee to {authenticated_user}")
         set_issue_assignee(number, authenticated_user)
 
-        # Random wait so concurrent runners' SETs have time to land
+        # Random wait so concurrent runners' SETs have time to land.
         backoff = random.uniform(CLAIM_BACKOFF_MIN, CLAIM_BACKOFF_MAX)
         print()
         log_stage("issue-claim", f"Waiting {backoff:.1f}s before verifying claim on issue #{number}")
@@ -6691,6 +6799,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     if args.fixture_testing:
         if args.issue_number is None:
             parser.error("--fixture-testing can only be used with --issue-number")
+        if args.run_work_queues:
+            parser.error("--fixture-testing cannot be combined with --run-work-queues")
+        if args.review_pr is not None:
+            parser.error("--fixture-testing cannot be combined with --review-pr")
+        if args.continue_large_library_artifact is not None:
+            parser.error("--fixture-testing cannot be combined with --continue-large-library-artifact")
         if not args.strategy_name:
             parser.error("--fixture-testing requires --strategy-name")
         if args.offset != 0:
@@ -6705,7 +6819,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 
 def log_fixture_testing_selection(issue_number: int, label: str, strategy_name: str) -> None:
-    """Log fixture-backed E2E routing before the issue claim mutates fixture state."""
+    """Log fixture-backed E2E routing before workflow execution starts."""
     fixture_state = require_fixture_github_state()
     strategy = require_strategy_by_name(strategy_name)
     fixture_path = fixture_state.get_issue_fixture_path(issue_number)
@@ -6733,7 +6847,7 @@ def process_single_issue(
         authenticated_user: str,
         take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
 ) -> bool:
-    """Fetch, claim, and process a single issue by number."""
+    """Fetch and process a single issue by number, claiming only in live GitHub mode."""
     validate_issue_processing_environment()
 
     issue, label = get_issue_by_number(issue_number)
@@ -6744,19 +6858,28 @@ def process_single_issue(
             raise RuntimeError("Fixture testing requires an explicit strategy name")
         log_fixture_testing_selection(issue_number, label, strategy_name)
 
-    claim_kwargs: dict[str, bool] = {}
-    if not take_blocked_issues:
-        claim_kwargs["take_blocked_issues"] = False
-    claimed_issue = claim_issue_for_processing(
-        issue,
-        label,
-        base_reachability_metadata_path,
-        canonical_metrics_repo_path,
-        authenticated_user,
-        **claim_kwargs,
-    )
+    if is_fixture_testing_enabled():
+        claimed_issue = build_fixture_claimed_issue(
+            issue,
+            label,
+            base_reachability_metadata_path,
+            canonical_metrics_repo_path,
+        )
+    else:
+        claim_kwargs: dict[str, bool] = {}
+        if not take_blocked_issues:
+            claim_kwargs["take_blocked_issues"] = False
+        claimed_issue = claim_issue_for_processing(
+            issue,
+            label,
+            base_reachability_metadata_path,
+            canonical_metrics_repo_path,
+            authenticated_user,
+            **claim_kwargs,
+        )
     if not claimed_issue:
-        log_failure_banner(f"Could not claim issue #{issue_number}.", file=sys.stderr)
+        action = "prepare fixture issue" if is_fixture_testing_enabled() else "claim issue"
+        log_failure_banner(f"Could not {action} #{issue_number}.", file=sys.stderr)
         sys.exit(1)
 
     fixture_report_context = None
