@@ -21,7 +21,7 @@ this spec.
 ## 2. Hermetic Fixture E2E
 
 The default E2E mode is a fixture-backed run. It uses local YAML files under
-`forge/fixtures/github-issues/` to imitate GitHub issue payloads, labels,
+`forge/fixture_github_issues/` to imitate GitHub issue payloads, labels,
 comments, and expected side effects. The fixture issue does not need to exist on
 GitHub. Fixture mode must not mutate live GitHub state.
 
@@ -43,7 +43,7 @@ label, comment, failure-preservation, and publication effects in local run
 output instead of assigning real issues, changing real project items, pushing
 branches, or opening pull requests.
 
-The bundled fixture scenarios live in `fixtures/github-issues/`. The primary
+The bundled fixture scenarios live in `fixture_github_issues/`. The primary
 runnable fixture is issue `9101`, a `library-new-request` scenario for
 `org.apache.commons:commons-csv:1.11.0`; run it from `forge/` with:
 
@@ -57,7 +57,8 @@ python3 forge_metadata.py \
 ```
 
 The persisted fixture E2E report is written under
-`script_run_metrics/fixture-e2e/issue-<number>-<run-id>/fixture-e2e-report.json`.
+`fixture-e2e/issue-<number>-<run-id>/fixture-e2e-report.json` in the Forge
+directory.
 Fixture mode records issue, comment, label, failure-preservation, and dry-run
 publication effects locally in that report; it does not mutate live GitHub state
 or simulate GitHub claim/project-board races. §E2E-forge-workflow-testing.2

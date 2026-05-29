@@ -416,7 +416,7 @@ class FixtureGitHubState:
             issue_number: int | None = None,
             extra: JsonObject | None = None,
     ) -> str:
-        """Write persistent fixture state under `<metrics_repo>/script_run_metrics/fixture-e2e/`."""
+        """Write persistent fixture state under `<forge>/fixture-e2e/`."""
         report_dir = fixture_report_dir(metrics_repo_path, issue_number)
         os.makedirs(report_dir, exist_ok=True)
         report_path = os.path.join(report_dir, FIXTURE_REPORT_FILENAME)
@@ -471,8 +471,7 @@ def default_fixture_dir() -> str:
     return os.path.abspath(os.path.join(
         os.path.dirname(__file__),
         os.pardir,
-        "fixtures",
-        "github-issues",
+        "fixture_github_issues",
     ))
 
 
@@ -526,7 +525,7 @@ def normalize_fixture_issue(raw_issue: JsonObject, fixture_path: str) -> Fixture
         _optional_list(issue, "expected_side_effects", context, default=[]),
         context,
     )
-    url = _optional_str(issue, "url", context, default=f"fixture://github-issues/{number}")
+    url = _optional_str(issue, "url", context, default=f"fixture://fixture_github_issues/{number}")
 
     return FixtureIssue(
         number=number,
@@ -546,12 +545,12 @@ def normalize_fixture_issue(raw_issue: JsonObject, fixture_path: str) -> Fixture
     )
 
 
-def fixture_report_dir(metrics_repo_path: str, issue_number: int | None = None) -> str:
+def fixture_report_dir(_metrics_repo_path: str, issue_number: int | None = None) -> str:
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H-%M-%S-%fZ")
     issue_segment = f"issue-{issue_number}" if issue_number is not None else "all-issues"
+    forge_root = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
     return os.path.join(
-        os.path.abspath(metrics_repo_path),
-        "script_run_metrics",
+        forge_root,
         FIXTURE_REPORT_DIR,
         f"{issue_segment}-{timestamp}",
     )

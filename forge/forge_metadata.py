@@ -3130,8 +3130,7 @@ def build_fixture_e2e_report_context(
     issue_number = claimed_issue.issue["number"]
     run_id = os.path.basename(os.path.abspath(claimed_issue.worktree_path))
     report_dir = os.path.join(
-        os.path.abspath(canonical_metrics_repo_path),
-        SCRIPT_RUN_METRICS_DIR,
+        get_repo_root(),
         FIXTURE_E2E_REPORT_DIR,
         f"issue-{issue_number}-{run_id}",
     )
