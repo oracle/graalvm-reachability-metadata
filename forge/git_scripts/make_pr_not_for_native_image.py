@@ -100,17 +100,48 @@ def create_pull_request(
         print("gh CLI not found. Skipping PR creation.")
         return
 
-    group, artifact, _version = parse_coordinate_parts(coordinates)
-    marker = get_not_for_native_image_marker(repo_path, group, artifact)
-    if marker is None:
-        raise ValueError(f"Missing not-for-native-image marker for {group}:{artifact}")
-
     origin_owner = get_origin_owner(cwd=repo_path)
     view = gh("pr", "view", "--repo", REPO, "--head", f"{origin_owner}:{branch}", check=False)
     if view.returncode == 0:
         print(f"Pull request already exists for branch {branch}.")
         return
 
+    title, body, local_ci_metrics = build_pull_request_preview(
+        coordinates=coordinates,
+        repo_path=repo_path,
+        local_ci_verification=local_ci_verification,
+        issue_number=issue_number,
+    )
+
+    cmd = [
+        "gh", "pr", "create",
+        "--repo", REPO,
+        "--title", title,
+        "--body", body,
+        "--base", BASE_BRANCH,
+        "--head", f"{origin_owner}:{branch}",
+        "--label", "GenAI",
+        "--label", "library-new-request",
+        "--label", "not-for-native-image",
+    ]
+    if local_ci_requires_human_intervention(local_ci_metrics):
+        cmd.extend(["--label", HUMAN_INTERVENTION_LABEL])
+    for reviewer in REVIEWERS:
+        cmd.extend(["--reviewer", reviewer])
+    gh(*cmd[1:])
+
+
+def build_pull_request_preview(
+        coordinates: str,
+        repo_path: str,
+        local_ci_verification: LocalCIVerificationResult | None = None,
+        issue_number: int | None = None,
+) -> tuple[str, str, dict | None]:
+    """Build the PR title/body without creating a GitHub pull request."""
+    group, artifact, _version = parse_coordinate_parts(coordinates)
+    marker = get_not_for_native_image_marker(repo_path, group, artifact)
+    if marker is None:
+        raise ValueError(f"Missing not-for-native-image marker for {group}:{artifact}")
     issue_no = issue_number if issue_number is not None else find_issue_for_coordinates(coordinates, REPO)
     title = f"[GenAI] Mark {group}:{artifact} as not for Native Image"
     body = f"""
@@ -129,23 +160,7 @@ Reason:
     body += "\n" + format_forge_revision_section()
     local_ci_metrics = None if local_ci_verification is None else local_ci_verification.to_metrics()
     body += format_local_ci_verification_pr_section(local_ci_metrics)
-
-    cmd = [
-        "gh", "pr", "create",
-        "--repo", REPO,
-        "--title", title,
-        "--body", body,
-        "--base", BASE_BRANCH,
-        "--head", f"{origin_owner}:{branch}",
-        "--label", "GenAI",
-        "--label", "library-new-request",
-        "--label", "not-for-native-image",
-    ]
-    if local_ci_requires_human_intervention(local_ci_metrics):
-        cmd.extend(["--label", HUMAN_INTERVENTION_LABEL])
-    for reviewer in REVIEWERS:
-        cmd.extend(["--reviewer", reviewer])
-    gh(*cmd[1:])
+    return title, body, local_ci_metrics
 
 
 def main(argv=None) -> None:

@@ -80,12 +80,31 @@ from git_scripts.common_git import (
     run_github_json_with_retries,
     run_github_with_retries,
 )
-from git_scripts.make_pr_javac_fix import main as run_make_pr_javac_fix
-from git_scripts.make_pr_java_run_fix import main as run_make_pr_java_run_fix
-from git_scripts.make_pr_new_library_support import main as run_make_pr_new_library_support
-from git_scripts.make_pr_not_for_native_image import main as run_make_pr_not_for_native_image
-from git_scripts.make_pr_ni_run_fix import main as run_make_pr_ni_run_fix
-from git_scripts.make_pr_improve_coverage import main as run_make_pr_improve_coverage
+from git_scripts.make_pr_javac_fix import (
+    build_pull_request_preview as build_javac_fix_pull_request_preview,
+    main as run_make_pr_javac_fix,
+)
+from git_scripts.make_pr_java_run_fix import (
+    build_pull_request_preview as build_java_run_fix_pull_request_preview,
+    main as run_make_pr_java_run_fix,
+)
+from git_scripts.make_pr_new_library_support import (
+    build_pull_request_preview as build_new_library_pull_request_preview,
+    main as run_make_pr_new_library_support,
+)
+from git_scripts.make_pr_not_for_native_image import (
+    build_pull_request_preview as build_not_for_native_image_pull_request_preview,
+    main as run_make_pr_not_for_native_image,
+)
+from git_scripts.make_pr_ni_run_fix import (
+    build_pull_request_preview as build_ni_run_fix_pull_request_preview,
+    main as run_make_pr_ni_run_fix,
+)
+from git_scripts.make_pr_improve_coverage import (
+    build_pull_request_preview as build_improve_coverage_pull_request_preview,
+    load_baseline_snapshot,
+    main as run_make_pr_improve_coverage,
+)
 from utility_scripts.dynamic_access_report import load_dynamic_access_coverage_report
 from utility_scripts.fixture_github import FixtureGitHubState, load_fixture_github_state
 from utility_scripts.library_stats import resolve_stats_file_path
@@ -4103,11 +4122,18 @@ def invoke_pipeline(
     print()
     log_stage(invocation.log_stage_name, invocation.log_message)
     if is_fixture_testing_enabled():
+        display_argv, issue_context = list(invocation.argv), None
+        if "--issue-requested-metadata-context" in display_argv:
+            context_flag_index = display_argv.index("--issue-requested-metadata-context")
+            issue_context = display_argv[context_flag_index + 1]
+            del display_argv[context_flag_index:context_flag_index + 2]
+        if issue_context:
+            log_stage("workflow-driver", f"Issue body/context passed to workflow:\n{issue_context}")
         log_stage(
             "workflow-driver",
             (
                 f"Fixture mode invoking {invocation.script_name}: "
-                f"{' '.join(shlex.quote(argument) for argument in invocation.argv)}"
+                f"{' '.join(shlex.quote(argument) for argument in display_argv)}"
             ),
         )
     rc = invocation.runner(invocation.argv)
@@ -5168,96 +5194,101 @@ def _publication_new_coordinates(handoff: PublicationHandoff) -> str | None:
     return f"{group}:{artifact}:{handoff.new_version}"
 
 
-def _display_model_and_agent(strategy_name: str | None) -> tuple[str, str]:
-    if not strategy_name:
-        return "unknown", "unknown"
-    strategy = load_strategy_by_name(strategy_name) or {}
-    model = str(strategy.get("model") or "unknown")
-    if model.startswith("oca/"):
-        model = model[len("oca/"):]
-    agent = str(strategy.get("agent") or "unknown")
-    return model, agent
+def _build_fixture_pull_request_preview(handoff: PublicationHandoff) -> tuple[str, str]:
+    """Build fixture publication text with the same builders used by live PR creation.
+
+    §GIT-pr-preview-builders
+    """
+    new_coordinates = _publication_new_coordinates(handoff)
+    if handoff.not_for_native_image and new_coordinates:
+        title, body, _local_ci_metrics = build_not_for_native_image_pull_request_preview(
+            coordinates=new_coordinates,
+            repo_path=handoff.worktree_path,
+            issue_number=handoff.issue_number,
+        )
+        return title, body
+
+    if handoff.issue_label == LABEL_LIBRARY_NEW and new_coordinates:
+        title, body, _matched = build_new_library_pull_request_preview(
+            coordinates=new_coordinates,
+            metrics_repo_root=handoff.scratch_metrics_path,
+            repo_path=handoff.worktree_path,
+            issue_number=handoff.issue_number,
+            large_library_part=handoff.large_library_part,
+            is_final_large_library_part=handoff.large_library_final is not False,
+            series_id=handoff.large_library_series_id,
+        )
+        return title, body
+
+    if handoff.issue_label == LABEL_LIBRARY_UPDATE and new_coordinates:
+        group, artifact, version = metadata_coordinate_parts(new_coordinates)
+        title, body, _matched = build_improve_coverage_pull_request_preview(
+            coordinates=new_coordinates,
+            metrics_repo_root=handoff.scratch_metrics_path,
+            repo_path=handoff.worktree_path,
+            group=group,
+            artifact=artifact,
+            version=version,
+            baseline_snapshot=load_baseline_snapshot(handoff.worktree_path, group, artifact, version),
+            issue_number=handoff.issue_number,
+            large_library_part=handoff.large_library_part,
+            is_final_large_library_part=handoff.large_library_final is not False,
+            series_id=handoff.large_library_series_id,
+        )
+        return title, body
+
+    if handoff.current_coordinates and new_coordinates:
+        group, artifact, old_version = metadata_coordinate_parts(handoff.current_coordinates)
+        _new_group, _new_artifact, new_version = metadata_coordinate_parts(new_coordinates)
+        if handoff.issue_label == LABEL_JAVAC_FAIL:
+            title, body, _metrics_entry = build_javac_fix_pull_request_preview(
+                old_coordinates=handoff.current_coordinates,
+                new_coordinates=new_coordinates,
+                group=group,
+                artifact=artifact,
+                old_version=old_version,
+                new_version=new_version,
+                metrics_repo_root=handoff.scratch_metrics_path,
+                repo_path=handoff.worktree_path,
+                issue_number=handoff.issue_number,
+            )
+            return title, body
+        if handoff.issue_label == LABEL_JAVA_RUN_FAIL:
+            title, body, _metrics_entry = build_java_run_fix_pull_request_preview(
+                old_coordinates=handoff.current_coordinates,
+                new_coordinates=new_coordinates,
+                group=group,
+                artifact=artifact,
+                old_version=old_version,
+                new_version=new_version,
+                metrics_repo_root=handoff.scratch_metrics_path,
+                repo_path=handoff.worktree_path,
+                issue_number=handoff.issue_number,
+            )
+            return title, body
+        if handoff.issue_label == LABEL_NI_RUN_FAIL:
+            title, body, _local_ci_human_intervention, _severe_metadata_drop = (
+                build_ni_run_fix_pull_request_preview(
+                    old_coordinates=handoff.current_coordinates,
+                    new_coordinates=new_coordinates,
+                    group=group,
+                    artifact=artifact,
+                    repo_path=handoff.worktree_path,
+                    issue_number=handoff.issue_number,
+                )
+            )
+            return title, body
+
+    raise ValueError(
+        f"Cannot build fixture publication preview for issue #{handoff.issue_number} "
+        f"with label {handoff.issue_label!r}."
+    )
 
 
 def build_fixture_publication_markdown(handoff: PublicationHandoff) -> str:
     """Build the Markdown publication handoff artifact for fixture dry-runs."""
-    metrics_entry = read_pending_metrics(handoff.scratch_metrics_path) or {}
-    metrics = metrics_entry.get("metrics", {})
-    if not isinstance(metrics, dict):
-        metrics = {}
-    strategy_name = str(metrics_entry.get("strategy_name") or "unknown")
-    model_display_name, agent_name = _display_model_and_agent(strategy_name)
-    new_coordinates = _publication_new_coordinates(handoff)
-    issue_reference = f"Fixes: #{handoff.issue_number}"
-    if handoff.large_library_part is not None and handoff.large_library_final is False:
-        issue_reference = f"Refs: #{handoff.issue_number}"
-
-    if handoff.not_for_native_image and new_coordinates:
-        group, artifact, _version = metadata_coordinate_parts(new_coordinates)
-        title = f"[GenAI] Mark {group}:{artifact} as not for Native Image"
-        opening = f"This PR marks `{group}:{artifact}` as not supported for Native Image."
-    elif handoff.issue_label == LABEL_LIBRARY_NEW and new_coordinates:
-        title = f"[GenAI] Add support for {new_coordinates} using {model_display_name}"
-        opening = f"This PR introduces tests and metadata for `{new_coordinates}`."
-    elif handoff.issue_label == LABEL_LIBRARY_UPDATE and new_coordinates:
-        title = f"[GenAI] Improve coverage for {new_coordinates} using {model_display_name}"
-        opening = f"This PR improves dynamic-access coverage for `{new_coordinates}`."
-    elif handoff.issue_label == LABEL_JAVAC_FAIL and new_coordinates:
-        title = f"[GenAI] Test fix for {new_coordinates} using {model_display_name}"
-        opening = (
-            f"This PR provides test fixes and metadata for `{new_coordinates}`, "
-            "addressing Java compilation failures in the updated library version."
-        )
-    elif handoff.issue_label == LABEL_JAVA_RUN_FAIL and new_coordinates:
-        title = f"[GenAI] Test fix for {new_coordinates} using {model_display_name}"
-        opening = (
-            f"This PR provides test fixes and metadata for `{new_coordinates}`, "
-            "addressing Java runtime test failures in the updated library version."
-        )
-    elif handoff.issue_label == LABEL_NI_RUN_FAIL and new_coordinates:
-        title = f"[Automation] Generated metadata for {new_coordinates}"
-        opening = (
-            f"This PR provides metadata for `{new_coordinates}`, addressing "
-            "Native Image runtime failures in the updated library version."
-        )
-    else:
-        title = f"[Fixture] Publication handoff for issue #{handoff.issue_number}"
-        opening = "This PR body could not be specialized for the fixture issue label."
-
-    if handoff.large_library_part is not None:
-        title = f"{title} (part {handoff.large_library_part})"
-
     command = ["python3", handoff.script_name, *handoff.argv]
-    metric_lines = [
-        f"- Strategy: `{strategy_name}`",
-        f"- Agent: `{agent_name}`",
-        f"- Model: `{model_display_name}`",
-        f"- Workflow status: `{handoff.workflow_status or metrics_entry.get('status') or 'unknown'}`",
-        f"- Input tokens: {metrics.get('input_tokens_used', 0)}",
-        f"- Cached input tokens: {metrics.get('cached_input_tokens_used', 0) or 0}",
-        f"- Output tokens: {metrics.get('output_tokens_used', 0)}",
-        f"- Metadata entries: {metrics.get('metadata_entries', 0)}",
-        f"- Iterations: {metrics.get('iterations', 0)}",
-        f"- Library coverage percentage: {metrics.get('code_coverage_percent', 0)}",
-    ]
-    if handoff.current_coordinates:
-        metric_lines.append(f"- Current coordinates: `{handoff.current_coordinates}`")
-    if new_coordinates:
-        metric_lines.append(f"- Published coordinates: `{new_coordinates}`")
-    if handoff.large_library_part is not None:
-        metric_lines.append(f"- Large-library series: `{handoff.large_library_series_id or 'unknown'}`")
-        metric_lines.append(f"- Large-library final part: `{handoff.large_library_final}`")
-
-    body = "\n".join([
-        "## What does this PR do?",
-        "",
-        issue_reference,
-        "",
-        opening,
-        "",
-        "Summary:",
-        *metric_lines,
-    ])
+    title, body = _build_fixture_pull_request_preview(handoff)
 
     return "\n".join([
         "# Fixture Publication Handoff",
@@ -6613,8 +6644,6 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
             parser.error("--fixture-testing cannot be combined with --review-pr")
         if args.continue_large_library_artifact is not None:
             parser.error("--fixture-testing cannot be combined with --continue-large-library-artifact")
-        if not args.strategy_name:
-            parser.error("--fixture-testing requires --strategy-name")
         if args.offset != 0:
             parser.error("--fixture-testing cannot be combined with --offset")
         if args.random_offset is not None:
@@ -6626,13 +6655,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     return args
 
 
-def log_fixture_testing_selection(issue_number: int, label: str, strategy_name: str) -> None:
+def log_fixture_testing_selection(issue_number: int, label: str, strategy_name: str | None) -> None:
     """Log fixture-backed E2E routing before workflow execution starts."""
     fixture_state = require_fixture_github_state()
-    strategy = require_strategy_by_name(strategy_name)
     fixture_path = fixture_state.get_issue_fixture_path(issue_number)
-    strategy_model = strategy.get("model") or "unknown"
-    workflow_engine = strategy.get("workflow") or "unknown"
+    strategy_override = f", strategy_override={strategy_name}" if strategy_name else ""
 
     print()
     log_stage(
@@ -6640,8 +6667,7 @@ def log_fixture_testing_selection(issue_number: int, label: str, strategy_name: 
         (
             "Selected fixture-backed issue run: "
             f"mode=fixture-testing, issue=#{issue_number}, fixture={fixture_path}, "
-            f"queue_label={label}, strategy={strategy_name}, model={strategy_model}, "
-            f"workflow_engine={workflow_engine}"
+            f"queue_label={label}{strategy_override}"
         ),
     )
 
@@ -6662,8 +6688,6 @@ def process_single_issue(
     print()
     log_stage("issue-scan", f"Issue #{issue_number} matched pipeline label: {label}")
     if is_fixture_testing_enabled():
-        if strategy_name is None:
-            raise RuntimeError("Fixture testing requires an explicit strategy name")
         log_fixture_testing_selection(issue_number, label, strategy_name)
 
     if is_fixture_testing_enabled():

@@ -169,10 +169,15 @@ Summary:
     return body
 
 
-def load_and_remove_baseline_snapshot(repo_path: str, group: str, artifact: str, version: str) -> dict | None:
-    """Load baseline snapshot written by improve_library_coverage.py and delete the file."""
+def baseline_snapshot_path(repo_path: str, group: str, artifact: str, version: str) -> str:
+    """Return the baseline snapshot path written by improve_library_coverage.py."""
     test_version = resolve_test_version(repo_path, group, artifact, version)
-    baseline_path = os.path.join(repo_path, "tests", "src", group, artifact, test_version, BASELINE_STATS_FILENAME)
+    return os.path.join(repo_path, "tests", "src", group, artifact, test_version, BASELINE_STATS_FILENAME)
+
+
+def load_baseline_snapshot(repo_path: str, group: str, artifact: str, version: str) -> dict | None:
+    """Load baseline snapshot written by improve_library_coverage.py."""
+    baseline_path = baseline_snapshot_path(repo_path, group, artifact, version)
     if not os.path.isfile(baseline_path):
         return None
     try:
@@ -180,6 +185,15 @@ def load_and_remove_baseline_snapshot(repo_path: str, group: str, artifact: str,
             snapshot = json.load(f)
     except (OSError, json.JSONDecodeError):
         snapshot = None
+    return snapshot
+
+
+def load_and_remove_baseline_snapshot(repo_path: str, group: str, artifact: str, version: str) -> dict | None:
+    """Load baseline snapshot written by improve_library_coverage.py and delete the file."""
+    baseline_path = baseline_snapshot_path(repo_path, group, artifact, version)
+    snapshot = load_baseline_snapshot(repo_path, group, artifact, version)
+    if not os.path.isfile(baseline_path):
+        return snapshot
     os.remove(baseline_path)
     return snapshot
 
@@ -334,44 +348,17 @@ def create_pull_request(
         print(f"Pull request already exists for branch {branch}.")
         return
 
-    issue_no = issue_number if issue_number is not None else find_issue_common(coordinates, REPO)
-
-    matched = read_pending_metrics(metrics_repo_root)
-    metrics = matched.get("metrics", {})
-    strategy_name = matched.get("strategy_name", "")
-    model_display_name = get_model_display_name(strategy_name)
-    agent_name = get_agent_name(strategy_name)
-    title = f"[GenAI] Improve coverage for {coordinates} using {model_display_name}"
-    if large_library_part is not None:
-        title = f"{title} (part {large_library_part})"
-
-    baseline_stats = baseline_snapshot.get("stats") if baseline_snapshot else None
-    baseline_metadata_entries = baseline_snapshot.get("metadata_entries") if baseline_snapshot else None
-    baseline_test_only_entries = baseline_snapshot.get("test_only_metadata_entries") if baseline_snapshot else None
-
-    library_stats = load_library_stats(repo_path, coordinates)
-    current_metadata_entries = count_metadata_entries(repo_path, group, artifact, version)
-    current_test_only_entries = count_test_only_metadata_entries(repo_path, group, artifact, version)
-
-    body = build_pull_request_body(
-        issue_no=issue_no,
+    title, body, matched = build_pull_request_preview(
         coordinates=coordinates,
-        model_display_name=model_display_name,
-        agent_name=agent_name,
-        strategy_name=strategy_name,
-        metrics=metrics,
-        baseline_stats=baseline_stats,
-        library_stats=library_stats,
-        baseline_metadata_entries=baseline_metadata_entries,
-        current_metadata_entries=current_metadata_entries,
-        baseline_test_only_entries=baseline_test_only_entries,
-        current_test_only_entries=current_test_only_entries,
-        post_generation_intervention=matched.get("post_generation_intervention"),
-        library_update_target=load_library_update_target_sidecar(metrics_repo_root),
-        local_ci_verification=matched.get(LOCAL_CI_VERIFICATION_KEY),
-        is_large_library_part=large_library_part is not None,
-        is_final_large_library_part=is_final_large_library_part,
+        metrics_repo_root=metrics_repo_root,
+        repo_path=repo_path,
+        group=group,
+        artifact=artifact,
+        version=version,
+        baseline_snapshot=baseline_snapshot,
+        issue_number=issue_number,
         large_library_part=large_library_part,
+        is_final_large_library_part=is_final_large_library_part,
         series_id=series_id,
     )
 
@@ -394,6 +381,53 @@ def create_pull_request(
             cmd.extend(["--reviewer", r])
     result = gh(*cmd[1:])
     return _parse_pr_number(result.stdout)
+
+
+def build_pull_request_preview(
+        coordinates: str,
+        metrics_repo_root: str,
+        repo_path: str,
+        group: str,
+        artifact: str,
+        version: str,
+        baseline_snapshot: dict | None = None,
+        issue_number: int | None = None,
+        large_library_part: int | None = None,
+        is_final_large_library_part: bool = True,
+        series_id: str | None = None,
+) -> tuple[str, str, dict]:
+    """Build the PR title/body without creating a GitHub pull request."""
+    issue_no = issue_number if issue_number is not None else find_issue_common(coordinates, REPO)
+    matched = read_pending_metrics(metrics_repo_root)
+    metrics = matched.get("metrics", {})
+    strategy_name = matched.get("strategy_name", "")
+    model_display_name = get_model_display_name(strategy_name)
+    agent_name = get_agent_name(strategy_name)
+    title = f"[GenAI] Improve coverage for {coordinates} using {model_display_name}"
+    if large_library_part is not None:
+        title = f"{title} (part {large_library_part})"
+    body = build_pull_request_body(
+        issue_no=issue_no,
+        coordinates=coordinates,
+        model_display_name=model_display_name,
+        agent_name=agent_name,
+        strategy_name=strategy_name,
+        metrics=metrics,
+        baseline_stats=baseline_snapshot.get("stats") if baseline_snapshot else None,
+        library_stats=load_library_stats(repo_path, coordinates),
+        baseline_metadata_entries=baseline_snapshot.get("metadata_entries") if baseline_snapshot else None,
+        current_metadata_entries=count_metadata_entries(repo_path, group, artifact, version),
+        baseline_test_only_entries=baseline_snapshot.get("test_only_metadata_entries") if baseline_snapshot else None,
+        current_test_only_entries=count_test_only_metadata_entries(repo_path, group, artifact, version),
+        post_generation_intervention=matched.get("post_generation_intervention"),
+        library_update_target=load_library_update_target_sidecar(metrics_repo_root),
+        local_ci_verification=matched.get(LOCAL_CI_VERIFICATION_KEY),
+        is_large_library_part=large_library_part is not None,
+        is_final_large_library_part=is_final_large_library_part,
+        large_library_part=large_library_part,
+        series_id=series_id,
+    )
+    return title, body, matched
 
 
 def build_parser() -> argparse.ArgumentParser:

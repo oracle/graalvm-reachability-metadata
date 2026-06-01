@@ -26,7 +26,10 @@ comments, blockers, and project state. The fixture issue does not need to exist
 on GitHub. Fixture mode must not mutate live GitHub state.
 
 A fixture-backed E2E still runs through `forge_metadata.py` and must exercise
-the real control-plane responsibilities:
+the real control-plane responsibilities. The fixture-specific behavior is
+limited to fetching the issue from local fixture state and suppressing live PR
+publication; routing, workflow-driver invocation, verification, metrics, and
+cleanup stay on the same modular path as normal issue processing:
 
 - GitHub issue lookup through the fixture backend.
 - Label-based routing.
@@ -39,10 +42,17 @@ the real control-plane responsibilities:
 - Local verification, metrics writing, and dry-run publication handoff.
 
 Fixture GitHub mode implies dry-run publication. It must record the issue,
-label and strategy selection, isolated worktree setup, fixture masking,
-workflow driver invocation, workflow result, dry-run publication or preservation
-handoff, and cleanup in local run output instead of assigning real issues,
-changing real project items, pushing branches, or opening pull requests.
+label and any explicit strategy override, isolated worktree setup, fixture
+masking, workflow driver invocation, workflow result, dry-run publication or
+preservation handoff, and cleanup in local run output. It must not fork a
+second implementation of orchestration or workflow behavior: fixture-only code
+may replace issue fetch/state with local fixture data and replace publish/push
+side effects with local artifacts, but the workflow drivers and git-script PR
+body builders remain the source of truth. It does not assign real issues,
+change real project items, push branches, or open pull requests.
+`--strategy-name` is optional in fixture mode just as it is for normal
+single-issue processing; when omitted, Forge routes the issue without passing a
+strategy override and lets the selected workflow driver apply its default.
 
 The bundled fixture scenarios live in `fixture_github_issues/`. The primary
 runnable fixture is issue `9101`, a `library-new-request` scenario for
@@ -60,10 +70,11 @@ python3 forge_metadata.py \
 Fixture mode writes its evidence under
 `forge/fixture-e2e/issue-<number>/<run-timestamp>/`. The directory contains
 `run.log`, a complete merged stdout/stderr log for the fixture command, and
-`publication.md` when a successful run reaches dry-run PR publication. It does
-not write a separate JSON E2E report, mutate live GitHub state, or simulate
-GitHub claim/project-board races. §E2E-forge-workflow-testing.2
-§E2E-forge-workflow-testing.9
+`publication.md` when a successful run reaches dry-run PR publication.
+`publication.md` must be built from the same git-script PR title/body builder
+that live publication uses (§GIT-pr-preview-builders). Fixture mode does not
+write a separate JSON E2E report, mutate live GitHub state, or simulate GitHub
+claim/project-board races. §E2E-forge-workflow-testing.2 §E2E-forge-workflow-testing.9
 
 The fixture run is a hard failure when the selected fixture issue cannot be
 loaded/resolved, or when the workflow lifecycle exits incoherently. Routing,

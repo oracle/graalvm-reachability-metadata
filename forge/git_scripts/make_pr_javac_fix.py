@@ -167,80 +167,18 @@ def create_pull_request(
 
     assert_no_dynamic_access_category_regressions(repo_path, old_coordinates, new_coordinates)
 
-    issue_no = issue_number if issue_number is not None else find_issue_common(new_coordinates, REPO)
-    metrics_entry = load_fix_javac_metrics(
-        metrics_repo_root=metrics_repo_root,
+    title, body, metrics_entry = build_pull_request_preview(
         old_coordinates=old_coordinates,
         new_coordinates=new_coordinates,
+        group=group,
+        artifact=artifact,
+        old_version=old_version,
+        new_version=new_version,
+        metrics_repo_root=metrics_repo_root,
+        repo_path=repo_path,
+        issue_number=issue_number,
     )
-    metrics = metrics_entry.get("metrics", {})
 
-    strategy_name = metrics_entry.get("strategy_name", "")
-    model_display_name = get_model_display_name(strategy_name)
-    agent_name = get_agent_name(strategy_name)
-    title = f"[GenAI] Test fix for {new_coordinates} using {model_display_name}"
-
-    input_tokens_used = int(metrics.get("input_tokens_used", 0))
-    cached_input_tokens_used = int(metrics.get("cached_input_tokens_used", 0) or 0)
-    output_tokens_used = int(metrics.get("output_tokens_used", 0))
-    entries_found = int(metrics.get("metadata_entries", 0))
-    test_only_metadata_entries = int(metrics.get("test_only_metadata_entries", 0) or 0)
-    iterations = int(metrics.get("iterations", 0))
-    code_coverage_percent = metrics.get("code_coverage_percent", 0)
-    previous_library_metadata_entries = int(metrics.get("previous_library_metadata_entries", 0))
-    previous_library_test_only_metadata_entries = int(metrics.get("previous_library_test_only_metadata_entries", 0) or 0)
-    previous_library_coverage_percent = metrics.get("previous_library_coverage_percent", 0)
-    test_only_metadata_entries_line = ""
-    if test_only_metadata_entries > 0:
-        test_only_metadata_entries_line = f"- Test-only metadata entries: {test_only_metadata_entries}\n"
-    previous_test_only_metadata_entries_line = ""
-    if previous_library_test_only_metadata_entries > 0:
-        previous_test_only_metadata_entries_line = (
-            f"- Previous library version test-only metadata entries: {previous_library_test_only_metadata_entries}\n"
-        )
-
-    diff_text = generate_diff_text(group, artifact, old_version, new_version, repo_path)
-    stats_section = format_stats_diff(repo_path, old_coordinates, new_coordinates)
-
-    # Create PR body
-    body = f"""## What does this PR do?
-
-Fixes: #{issue_no}
-
-This PR provides test fixes and new metadata for {new_coordinates}, addressing compile java failures caused by changes in the updated library version.
-
-Summary:
-- Strategy: {strategy_name}
-- Agent: {agent_name}
-- Model: {model_display_name}
-- Input tokens: {input_tokens_used}
-- Cached input tokens: {cached_input_tokens_used}
-- Output tokens: {output_tokens_used}
-- Metadata entries: {entries_found}
-{test_only_metadata_entries_line}\
-- Iterations: {iterations}
-- Library coverage percentage: {code_coverage_percent}
-- Previous library version metadata entries: {previous_library_metadata_entries}
-{previous_test_only_metadata_entries_line}\
-- Previous library version coverage percentage: {previous_library_coverage_percent}
-
-{format_forge_revision_section()}
-{stats_section}
-**Comparison between existing test version and AI-Generated update**
-
-```diff
-{diff_text}
-```
-"""
-    post_generation_intervention = metrics_entry.get("post_generation_intervention")
-    if post_generation_intervention:
-        body += (
-            "\n### Post-Generation Intervention\n\n"
-            f"- Stage: `{post_generation_intervention.get('stage', 'unknown')}`\n\n"
-            f"- Intervention file: `{post_generation_intervention.get('intervention_file', 'unknown')}`\n\n"
-            f"{str(post_generation_intervention.get('analysis_markdown', '')).strip()}\n"
-        )
-    body += format_local_ci_verification_pr_section(metrics_entry.get(LOCAL_CI_VERIFICATION_KEY))
     cmd = [
         "gh",
         "pr",
@@ -266,6 +204,80 @@ Summary:
         for reviewer in REVIEWERS:
             cmd.extend(["--reviewer", reviewer])
     gh(*cmd[1:])
+
+
+def build_pull_request_preview(
+        old_coordinates: str,
+        new_coordinates: str,
+        group: str,
+        artifact: str,
+        old_version: str,
+        new_version: str,
+        metrics_repo_root: str,
+        repo_path: str,
+        issue_number: int | None = None,
+) -> tuple[str, str, dict]:
+    """Build the PR title/body without creating a GitHub pull request."""
+    issue_no = issue_number if issue_number is not None else find_issue_common(new_coordinates, REPO)
+    metrics_entry = load_fix_javac_metrics(
+        metrics_repo_root=metrics_repo_root,
+        old_coordinates=old_coordinates,
+        new_coordinates=new_coordinates,
+    )
+    metrics = metrics_entry.get("metrics", {})
+    strategy_name = metrics_entry.get("strategy_name", "")
+    model_display_name = get_model_display_name(strategy_name)
+    agent_name = get_agent_name(strategy_name)
+    title = f"[GenAI] Test fix for {new_coordinates} using {model_display_name}"
+    test_only_metadata_entries = int(metrics.get("test_only_metadata_entries", 0) or 0)
+    previous_library_test_only_metadata_entries = int(metrics.get("previous_library_test_only_metadata_entries", 0) or 0)
+    test_only_metadata_entries_line = ""
+    if test_only_metadata_entries > 0:
+        test_only_metadata_entries_line = f"- Test-only metadata entries: {test_only_metadata_entries}\n"
+    previous_test_only_metadata_entries_line = ""
+    if previous_library_test_only_metadata_entries > 0:
+        previous_test_only_metadata_entries_line = (
+            f"- Previous library version test-only metadata entries: {previous_library_test_only_metadata_entries}\n"
+        )
+    body = f"""## What does this PR do?
+
+Fixes: #{issue_no}
+
+This PR provides test fixes and new metadata for {new_coordinates}, addressing compile java failures caused by changes in the updated library version.
+
+Summary:
+- Strategy: {strategy_name}
+- Agent: {agent_name}
+- Model: {model_display_name}
+- Input tokens: {int(metrics.get("input_tokens_used", 0))}
+- Cached input tokens: {int(metrics.get("cached_input_tokens_used", 0) or 0)}
+- Output tokens: {int(metrics.get("output_tokens_used", 0))}
+- Metadata entries: {int(metrics.get("metadata_entries", 0))}
+{test_only_metadata_entries_line}\
+- Iterations: {int(metrics.get("iterations", 0))}
+- Library coverage percentage: {metrics.get("code_coverage_percent", 0)}
+- Previous library version metadata entries: {int(metrics.get("previous_library_metadata_entries", 0))}
+{previous_test_only_metadata_entries_line}\
+- Previous library version coverage percentage: {metrics.get("previous_library_coverage_percent", 0)}
+
+{format_forge_revision_section()}
+{format_stats_diff(repo_path, old_coordinates, new_coordinates)}
+**Comparison between existing test version and AI-Generated update**
+
+```diff
+{generate_diff_text(group, artifact, old_version, new_version, repo_path)}
+```
+"""
+    post_generation_intervention = metrics_entry.get("post_generation_intervention")
+    if post_generation_intervention:
+        body += (
+            "\n### Post-Generation Intervention\n\n"
+            f"- Stage: `{post_generation_intervention.get('stage', 'unknown')}`\n\n"
+            f"- Intervention file: `{post_generation_intervention.get('intervention_file', 'unknown')}`\n\n"
+            f"{str(post_generation_intervention.get('analysis_markdown', '')).strip()}\n"
+        )
+    body += format_local_ci_verification_pr_section(metrics_entry.get(LOCAL_CI_VERIFICATION_KEY))
+    return title, body, metrics_entry
 
 
 
