@@ -1,8 +1,10 @@
-# Primary fixture-backed E2E scenario. `org.apache.commons:commons-csv:1.11.0`
-# is a real Maven Central artifact with source JARs and was absent from
-# `metadata/` and `tests/src/` when this fixture was added.
+# Primary fixture-backed E2E scenario. Fixture setup masks the existing
+# `ch.qos.logback:logback-core:1.1.3` metadata, tests, and stats in the
+# isolated worktree so the library-new-request flow regenerates a real
+# dynamic-access-heavy library. The local generated dynamic-access report for
+# this version has 35 call sites.
 number: 9101
-title: "Add support for org.apache.commons:commons-csv:1.11.0"
+title: "Add support for ch.qos.logback:logback-core:1.1.3"
 state: OPEN
 labels:
   - library-new-request
@@ -14,15 +16,16 @@ project:
 blocked_by: []
 body: |
   Please add GraalVM reachability metadata and a meaningful test suite for
-  `org.apache.commons:commons-csv:1.11.0`.
+  `ch.qos.logback:logback-core:1.1.3`.
 
-  The library is Apache Commons CSV. A useful test should cover parsing records,
-  header lookup, CSVFormat configuration, and writing records with CSVPrinter.
-  The requested run should use the dynamic-access workflow so the report records
-  whether the generated tests exercise any dynamic-access call sites.
+  The library is Logback Core. A useful test should cover appenders, encoders,
+  rolling policies, filters, status handling, and resource loading. The
+  requested run should use the dynamic-access workflow; the existing baseline
+  for this version has 35 dynamic-access call sites in the generated
+  dynamic-access report.
 
   Maven coordinate:
-  `org.apache.commons:commons-csv:1.11.0`
+  `ch.qos.logback:logback-core:1.1.3`
 comments:
   - author: fixture-reporter
     created_at: "2026-05-27T22:54:53Z"
@@ -31,9 +34,3 @@ comments:
       dynamic-access path. Keep generated tests if no dynamic-access call sites
       are found so the fixture still verifies routing, metrics, and publication
       handoff.
-expected_side_effects:
-  - action: publication-handoff
-    script_name: git_scripts/make_pr_new_library_support.py
-    issue_label: library-new-request
-    result_label: library-new-request
-    coordinates: org.apache.commons:commons-csv:1.11.0

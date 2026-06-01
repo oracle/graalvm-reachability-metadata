@@ -13,7 +13,10 @@ from __future__ import annotations
 
 import json
 import os
-from dataclasses import dataclass, field
+import re
+import shutil
+import sys
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any
 
@@ -23,10 +26,11 @@ except ImportError:  # pragma: no cover - exercised only when the dependency is 
     yaml = None
 
 
-FIXTURE_REPORT_DIR = "fixture-e2e"
-FIXTURE_REPORT_FILENAME = "fixture-state-report.json"
 ALLOWED_ISSUE_STATES = {"OPEN", "CLOSED"}
 ALLOWED_PROJECT_STATUSES = {"Todo", "In Progress", "Done"}
+LABEL_LIBRARY_NEW = "library-new-request"
+LABEL_JAVAC_FAIL = "fails-javac-compile"
+LABEL_JAVA_RUN_FAIL = "fails-java-run"
 
 JsonObject = dict[str, Any]
 
@@ -77,7 +81,6 @@ class FixtureIssue:
     project_status: str
     blockers: list[int]
     comments: list[FixtureComment]
-    expected_side_effects: list[Any]
     fixture_path: str
     url: str
 
@@ -120,24 +123,7 @@ class FixtureIssue:
             },
             "blockers": list(self.blockers),
             "comments": [comment.to_json() for comment in self.comments],
-            "expected_side_effects": _json_clone(self.expected_side_effects),
             "fixture_path": self.fixture_path,
-        }
-
-
-@dataclass
-class FixtureSideEffect:
-    timestamp: str
-    issue_number: int
-    action: str
-    details: JsonObject = field(default_factory=dict)
-
-    def to_json(self) -> JsonObject:
-        return {
-            "timestamp": self.timestamp,
-            "issue_number": self.issue_number,
-            "action": self.action,
-            "details": _json_clone(self.details),
         }
 
 
@@ -148,7 +134,6 @@ class FixtureGitHubState:
         self._issues: dict[int, FixtureIssue] = {}
         self._issue_order: list[int] = []
         self._item_to_issue_number: dict[str, int] = {}
-        self.side_effects: list[FixtureSideEffect] = []
 
         for issue in issues:
             if issue.number in self._issues:
@@ -230,26 +215,14 @@ class FixtureGitHubState:
         issue = self._issue(issue_number)
         if label_name in issue.labels:
             return
-        previous_labels = list(issue.labels)
         issue.labels.append(label_name)
-        self.record_side_effect(
-            issue_number,
-            "add-label",
-            {"label": label_name, "previous_labels": previous_labels, "labels": list(issue.labels)},
-        )
 
     def remove_issue_label(self, issue_number: int, label_name: str) -> None:
         _require_non_empty_text(label_name, "label_name")
         issue = self._issue(issue_number)
         if label_name not in issue.labels:
             return
-        previous_labels = list(issue.labels)
         issue.labels = [label for label in issue.labels if label != label_name]
-        self.record_side_effect(
-            issue_number,
-            "remove-label",
-            {"label": label_name, "previous_labels": previous_labels, "labels": list(issue.labels)},
-        )
 
     def get_issue_assignees(self, issue_number: int) -> list[str]:
         return list(self._issue(issue_number).assignees)
@@ -257,29 +230,13 @@ class FixtureGitHubState:
     def set_issue_assignee(self, issue_number: int, username: str) -> None:
         _require_non_empty_text(username, "username")
         issue = self._issue(issue_number)
-        previous_assignees = list(issue.assignees)
         issue.assignees = [username]
-        self.record_side_effect(
-            issue_number,
-            "set-assignee",
-            {
-                "username": username,
-                "previous_assignees": previous_assignees,
-                "assignees": list(issue.assignees),
-            },
-        )
 
     def clear_issue_assignees(self, issue_number: int) -> None:
         issue = self._issue(issue_number)
         if not issue.assignees:
             return
-        previous_assignees = list(issue.assignees)
         issue.assignees = []
-        self.record_side_effect(
-            issue_number,
-            "clear-assignees",
-            {"previous_assignees": previous_assignees, "assignees": []},
-        )
 
     def get_issue_comments(self, issue_number: int) -> list[JsonObject]:
         return [comment.to_github_payload() for comment in self._issue(issue_number).comments]
@@ -290,11 +247,6 @@ class FixtureGitHubState:
         issue = self._issue(issue_number)
         comment = FixtureComment(author=author, body=body, created_at=_utc_timestamp())
         issue.comments.append(comment)
-        self.record_side_effect(
-            issue_number,
-            "post-comment",
-            {"author": author, "body": body, "comment_count": len(issue.comments)},
-        )
 
     def get_project_item_state(self, issue_number: int) -> tuple[str, str]:
         issue = self._issue(issue_number)
@@ -307,13 +259,7 @@ class FixtureGitHubState:
     def set_item_status(self, item_id: str, status: str) -> None:
         _validate_project_status(status, item_id)
         issue = self._issue_by_item_id(item_id)
-        previous_status = issue.project_status
         issue.project_status = status
-        self.record_side_effect(
-            issue.number,
-            "set-project-status",
-            {"item_id": item_id, "previous_status": previous_status, "status": status},
-        )
 
     def set_project_status(self, issue_number: int, status: str) -> None:
         issue = self._issue(issue_number)
@@ -324,13 +270,7 @@ class FixtureGitHubState:
 
     def set_open_blocking_issue_numbers(self, issue_number: int, blockers: list[int]) -> None:
         issue = self._issue(issue_number)
-        previous_blockers = list(issue.blockers)
         issue.blockers = _normalize_blocker_numbers(blockers, f"issue #{issue_number} blockers")
-        self.record_side_effect(
-            issue_number,
-            "set-blockers",
-            {"previous_blockers": previous_blockers, "blockers": list(issue.blockers)},
-        )
 
     def add_open_blocker(self, issue_number: int, blocker_issue_number: int) -> None:
         if not _is_int(blocker_issue_number):
@@ -339,11 +279,6 @@ class FixtureGitHubState:
         if blocker_issue_number in issue.blockers:
             return
         issue.blockers.append(blocker_issue_number)
-        self.record_side_effect(
-            issue_number,
-            "add-blocker",
-            {"blocker": blocker_issue_number, "blockers": list(issue.blockers)},
-        )
 
     def remove_open_blocker(self, issue_number: int, blocker_issue_number: int) -> None:
         if not _is_int(blocker_issue_number):
@@ -352,78 +287,23 @@ class FixtureGitHubState:
         if blocker_issue_number not in issue.blockers:
             return
         issue.blockers = [blocker for blocker in issue.blockers if blocker != blocker_issue_number]
-        self.record_side_effect(
-            issue_number,
-            "remove-blocker",
-            {"blocker": blocker_issue_number, "blockers": list(issue.blockers)},
-        )
 
-    def record_publication_handoff(self, issue_number: int, details: JsonObject) -> None:
-        self.record_side_effect(issue_number, "publication-handoff", details)
-
-    def record_failure_preservation(self, issue_number: int, details: JsonObject) -> None:
-        self.record_side_effect(issue_number, "failure-preservation", details)
-
-    def record_side_effect(self, issue_number: int, action: str, details: JsonObject | None = None) -> None:
-        self._issue(issue_number)
-        _require_non_empty_text(action, "action")
-        self.side_effects.append(FixtureSideEffect(
-            timestamp=_utc_timestamp(),
-            issue_number=issue_number,
-            action=action,
-            details=_json_clone(details or {}),
-        ))
-
-    def compare_expected_side_effects(self, issue_number: int | None = None) -> JsonObject:
-        """Compare recorded side effects with each fixture's expected effects."""
-        issue_numbers = [issue_number] if issue_number is not None else self.issue_numbers
-        issue_reports: JsonObject = {}
-        passed = True
-
-        for current_issue_number in issue_numbers:
-            issue = self._issue(current_issue_number)
-            actual = self._side_effects_for_issue(current_issue_number)
-            report = _compare_issue_side_effects(issue.expected_side_effects, actual)
-            issue_reports[str(current_issue_number)] = report
-            passed = passed and bool(report["passed"])
-
-        return {
-            "passed": passed,
-            "issues": issue_reports,
-        }
-
-    def build_report(self, issue_number: int | None = None, extra: JsonObject | None = None) -> JsonObject:
-        issue_numbers = [issue_number] if issue_number is not None else self.issue_numbers
-        issues = [self._issue(number).to_json() for number in issue_numbers]
-        side_effects = [
-            side_effect.to_json()
-            for side_effect in self.side_effects
-            if issue_number is None or side_effect.issue_number == issue_number
-        ]
-        return {
-            "mode": "fixture-backed E2E",
-            "generated_at": _utc_timestamp(),
-            "issue_numbers": issue_numbers,
-            "issues": issues,
-            "side_effects": side_effects,
-            "side_effect_comparison": self.compare_expected_side_effects(issue_number),
-            "extra": _json_clone(extra or {}),
-        }
-
-    def write_report(
-            self,
-            metrics_repo_path: str,
-            issue_number: int | None = None,
-            extra: JsonObject | None = None,
-    ) -> str:
-        """Write persistent fixture state under `<forge>/fixture-e2e/`."""
-        report_dir = fixture_report_dir(metrics_repo_path, issue_number)
-        os.makedirs(report_dir, exist_ok=True)
-        report_path = os.path.join(report_dir, FIXTURE_REPORT_FILENAME)
-        with open(report_path, "w", encoding="utf-8") as report_file:
-            json.dump(self.build_report(issue_number, extra), report_file, indent=2, sort_keys=True)
-            report_file.write("\n")
-        return report_path
+    def prepare_issue_worktree(self, issue_number: int, label: str, worktree_path: str) -> None:
+        """Apply fixture-only repository masking inside an isolated issue worktree."""
+        issue = self._issue(issue_number)
+        if label not in issue.labels:
+            raise FixtureValidationError(
+                f"Fixture issue #{issue.number} was run as `{label}`, but its labels are "
+                f"{sorted(issue.labels)}"
+            )
+        if label == LABEL_LIBRARY_NEW:
+            self._prepare_new_library_worktree(issue, label, worktree_path)
+        elif label in {LABEL_JAVAC_FAIL, LABEL_JAVA_RUN_FAIL}:
+            self._prepare_java_failure_worktree(issue, label, worktree_path)
+        else:
+            _log_fixture_setup(
+                f"Fixture issue #{issue.number}: no issue-specific workspace cleanup requested."
+            )
 
     def _iter_open_issues(self) -> list[FixtureIssue]:
         return [
@@ -444,12 +324,117 @@ class FixtureGitHubState:
             raise FixtureIssueNotFoundError(f"Unknown fixture project item id: {item_id}")
         return self._issue(issue_number)
 
-    def _side_effects_for_issue(self, issue_number: int) -> list[JsonObject]:
-        return [
-            side_effect.to_json()
-            for side_effect in self.side_effects
-            if side_effect.issue_number == issue_number
+    def _prepare_new_library_worktree(
+            self,
+            issue: FixtureIssue,
+            label: str,
+            worktree_path: str,
+    ) -> None:
+        coordinate = _extract_coordinate_parts(issue.title)
+        if coordinate is None:
+            raise FixtureValidationError(
+                f"Fixture issue #{issue.number} has no Maven coordinates in the title"
+            )
+        group, artifact, version = coordinate
+        requested_coordinates = f"{group}:{artifact}:{version}"
+        index_json_path = os.path.join(worktree_path, "metadata", group, artifact, "index.json")
+        if not os.path.isfile(index_json_path):
+            _log_fixture_setup(
+                f"Fixture issue #{issue.number}: no existing metadata index to clean for "
+                f"{requested_coordinates}."
+            )
+            return
+
+        index_entries = _load_index_entries(index_json_path)
+        removed_entries = [
+            dict(entry)
+            for entry in index_entries
+            if isinstance(entry, dict) and _index_entry_matches_version(entry, version)
         ]
+        if not removed_entries:
+            _log_fixture_setup(
+                f"Fixture issue #{issue.number}: no existing index entry to clean for "
+                f"{requested_coordinates}."
+            )
+            return
+
+        remaining_entries = [
+            entry
+            for entry in index_entries
+            if isinstance(entry, dict) and not _index_entry_matches_version(entry, version)
+        ]
+        _write_index_entries(index_json_path, remaining_entries)
+
+        cleaned_paths = _clean_version_paths(worktree_path, group, artifact, version)
+        _log_fixture_setup(
+            f"Fixture issue #{issue.number}: cleaned existing {requested_coordinates} "
+            "from the isolated worktree for library-new-request. "
+            f"Index={_repo_relative_path(index_json_path, worktree_path)}, "
+            f"version paths={_format_cleaned_path_summary(cleaned_paths)}."
+        )
+
+    def _prepare_java_failure_worktree(
+            self,
+            issue: FixtureIssue,
+            label: str,
+            worktree_path: str,
+    ) -> None:
+        coordinate = _extract_coordinate_parts(issue.title)
+        if coordinate is None:
+            raise FixtureValidationError(
+                f"Fixture issue #{issue.number} has no Maven coordinates in the title"
+        )
+        group, artifact, new_version = coordinate
+        requested_coordinates = f"{group}:{artifact}:{new_version}"
+        previous_coordinates = _previous_issue_coordinates(issue, group, artifact, new_version)
+        if previous_coordinates is None:
+            raise FixtureValidationError(
+                f"Fixture issue #{issue.number} must include a reproducer with the previous "
+                f"{group}:{artifact} coordinate."
+            )
+        _, _, previous_version = _split_maven_coordinate(previous_coordinates)
+
+        index_json_path = os.path.join(worktree_path, "metadata", group, artifact, "index.json")
+        if not os.path.isfile(index_json_path):
+            raise FixtureValidationError(
+                f"Fixture issue #{issue.number} is missing metadata index: {index_json_path}"
+            )
+        index_entries = _load_index_entries(index_json_path)
+        remaining_entries = [
+            entry
+            for entry in index_entries
+            if isinstance(entry, dict) and not _index_entry_matches_version(entry, new_version)
+        ]
+        if len(remaining_entries) == len(index_entries):
+            raise FixtureValidationError(
+                f"Fixture issue #{issue.number} could not find index entry for "
+                f"requested version {new_version}"
+            )
+
+        previous_entry: JsonObject | None = None
+        for entry in remaining_entries:
+            if isinstance(entry, dict) and _index_entry_matches_version(entry, previous_version):
+                previous_entry = entry
+                break
+        if previous_entry is None:
+            raise FixtureValidationError(
+                f"Fixture issue #{issue.number} could not find previous index entry for "
+                f"{previous_coordinates}"
+            )
+
+        for entry in remaining_entries:
+            if isinstance(entry, dict):
+                entry.pop("latest", None)
+        previous_entry["latest"] = True
+        _write_index_entries(index_json_path, remaining_entries)
+
+        cleaned_paths = _clean_version_paths(worktree_path, group, artifact, new_version)
+        _log_fixture_setup(
+            f"Fixture issue #{issue.number}: cleaned requested version {requested_coordinates} "
+            f"from the isolated worktree; latest now resolves to {previous_coordinates}. "
+            f"Index={_repo_relative_path(index_json_path, worktree_path)}, "
+            f"version paths={_format_cleaned_path_summary(cleaned_paths)}."
+        )
 
 
 def load_fixture_github_state(fixture_paths: list[str] | None = None) -> FixtureGitHubState:
@@ -465,6 +450,106 @@ def load_fixture_github_state(fixture_paths: list[str] | None = None) -> Fixture
     if not issues:
         raise FixtureValidationError("No GitHub issue fixtures were loaded")
     return FixtureGitHubState(issues)
+
+
+def _extract_coordinate_parts(title: str) -> tuple[str, str, str] | None:
+    match = re.search(r"([\w.\-]+):([\w.\-]+):([\w.\-]+)", title)
+    if match is None:
+        return None
+    return match.group(1), match.group(2), match.group(3)
+
+
+def _split_maven_coordinate(coordinate: str) -> tuple[str, str, str]:
+    parts = coordinate.split(":")
+    if len(parts) != 3 or any(not part for part in parts):
+        raise FixtureValidationError(f"Invalid Maven coordinate: {coordinate}")
+    return parts[0], parts[1], parts[2]
+
+
+def _previous_issue_coordinates(
+        issue: FixtureIssue,
+        group: str,
+        artifact: str,
+        new_version: str,
+) -> str | None:
+    coordinate_pattern = re.compile(
+        r"-Pcoordinates="
+        + re.escape(f"{group}:{artifact}:")
+        + r"([^\s`]+)"
+    )
+    for match in coordinate_pattern.finditer(issue.body):
+        previous_version = match.group(1).strip()
+        if previous_version and previous_version != new_version:
+            return f"{group}:{artifact}:{previous_version}"
+    return None
+
+
+def _load_index_entries(index_json_path: str) -> list[Any]:
+    with open(index_json_path, "r", encoding="utf-8") as index_file:
+        index_entries = json.load(index_file)
+    if not isinstance(index_entries, list):
+        raise FixtureValidationError(f"Fixture metadata index is not a list: {index_json_path}")
+    return index_entries
+
+
+def _write_index_entries(index_json_path: str, index_entries: list[Any]) -> None:
+    with open(index_json_path, "w", encoding="utf-8") as index_file:
+        json.dump(index_entries, index_file, indent=2)
+        index_file.write("\n")
+
+
+def _index_entry_matches_version(entry: JsonObject, version: str) -> bool:
+    metadata_version = entry.get("metadata-version")
+    if metadata_version == version:
+        return True
+    tested_versions = entry.get("tested-versions")
+    return isinstance(tested_versions, list) and version in tested_versions
+
+
+def _clean_version_paths(
+        worktree_path: str,
+        group: str,
+        artifact: str,
+        version: str,
+) -> list[JsonObject]:
+    cleaned_paths: list[JsonObject] = []
+    for path in (
+        os.path.join(worktree_path, "metadata", group, artifact, version),
+        os.path.join(worktree_path, "tests", "src", group, artifact, version),
+        os.path.join(worktree_path, "stats", group, artifact, version),
+    ):
+        path_evidence: JsonObject = {
+            "path": path,
+            "relative_path": _repo_relative_path(path, worktree_path),
+            "existed": os.path.exists(path),
+            "type": "missing",
+        }
+        if os.path.isdir(path):
+            path_evidence["type"] = "directory"
+            shutil.rmtree(path)
+        elif os.path.exists(path):
+            path_evidence["type"] = "file"
+            os.remove(path)
+        path_evidence["exists_after_cleanup"] = os.path.exists(path)
+        cleaned_paths.append(path_evidence)
+    return cleaned_paths
+
+
+def _format_cleaned_path_summary(cleaned_paths: list[JsonObject]) -> str:
+    cleaned = [
+        str(path.get("relative_path"))
+        for path in cleaned_paths
+        if path.get("existed") is True and path.get("exists_after_cleanup") is False
+    ]
+    return ", ".join(cleaned) if cleaned else "none"
+
+
+def _repo_relative_path(path: str, repo_path: str) -> str:
+    return os.path.relpath(os.path.abspath(path), os.path.abspath(repo_path))
+
+
+def _log_fixture_setup(message: str) -> None:
+    print(f"[fixture-setup] {message}", file=sys.stderr)
 
 
 def default_fixture_dir() -> str:
@@ -521,10 +606,6 @@ def normalize_fixture_issue(raw_issue: JsonObject, fixture_path: str) -> Fixture
     project_number, project_item_id, project_status = _normalize_project(issue, context)
     blockers = _normalize_blockers(issue, context)
     comments = _normalize_comments(_optional_list(issue, "comments", context, default=[]), context)
-    expected_side_effects = _normalize_expected_side_effects(
-        _optional_list(issue, "expected_side_effects", context, default=[]),
-        context,
-    )
     url = _optional_str(issue, "url", context, default=f"fixture://fixture_github_issues/{number}")
 
     return FixtureIssue(
@@ -539,20 +620,8 @@ def normalize_fixture_issue(raw_issue: JsonObject, fixture_path: str) -> Fixture
         project_status=project_status,
         blockers=blockers,
         comments=comments,
-        expected_side_effects=expected_side_effects,
         fixture_path=os.path.abspath(fixture_path),
         url=url,
-    )
-
-
-def fixture_report_dir(_metrics_repo_path: str, issue_number: int | None = None) -> str:
-    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H-%M-%S-%fZ")
-    issue_segment = f"issue-{issue_number}" if issue_number is not None else "all-issues"
-    forge_root = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-    return os.path.join(
-        forge_root,
-        FIXTURE_REPORT_DIR,
-        f"{issue_segment}-{timestamp}",
     )
 
 
@@ -648,109 +717,6 @@ def _normalize_comments(raw_comments: list[Any], context: str) -> list[FixtureCo
     return comments
 
 
-def _normalize_expected_side_effects(raw_expected: list[Any], context: str) -> list[Any]:
-    expected: list[Any] = []
-    for index, raw_entry in enumerate(raw_expected):
-        entry_context = f"{context}:expected_side_effects[{index}]"
-        if isinstance(raw_entry, str) and raw_entry:
-            expected.append(raw_entry)
-            continue
-        entry = _require_mapping(raw_entry, entry_context)
-        action = _require_str(entry, "action", entry_context)
-        normalized = _json_clone(entry)
-        normalized["action"] = action
-        if "issue_number" in normalized and not _is_int(normalized["issue_number"]):
-            raise FixtureValidationError(f"{entry_context}: issue_number must be an integer")
-        if "details" in normalized and not isinstance(normalized["details"], dict):
-            raise FixtureValidationError(f"{entry_context}: details must be an object")
-        expected.append(normalized)
-    return expected
-
-
-def _compare_issue_side_effects(expected: list[Any], actual: list[JsonObject]) -> JsonObject:
-    missing_expected: list[Any] = []
-    matched_expected: list[JsonObject] = []
-    matched_actual_indexes: set[int] = set()
-
-    for expected_entry in expected:
-        matched_index = _find_matching_side_effect_index(expected_entry, actual, matched_actual_indexes)
-        if matched_index is None:
-            missing_expected.append(_json_clone(expected_entry))
-            continue
-        matched_actual_indexes.add(matched_index)
-        matched_expected.append({
-            "expected": _json_clone(expected_entry),
-            "actual": _json_clone(actual[matched_index]),
-        })
-
-    unexpected_actual = [
-        _json_clone(effect)
-        for index, effect in enumerate(actual)
-        if index not in matched_actual_indexes
-    ]
-
-    return {
-        "passed": not missing_expected and not unexpected_actual,
-        "expected_count": len(expected),
-        "actual_count": len(actual),
-        "matched_expected": matched_expected,
-        "missing_expected": missing_expected,
-        "unexpected_actual": unexpected_actual,
-    }
-
-
-def _find_matching_side_effect_index(
-        expected_entry: Any,
-        actual: list[JsonObject],
-        consumed_indexes: set[int],
-) -> int | None:
-    if isinstance(expected_entry, str):
-        return next(
-            (
-                index
-                for index, effect in enumerate(actual)
-                if index not in consumed_indexes and effect.get("action") == expected_entry
-            ),
-            None,
-        )
-    if not isinstance(expected_entry, dict):
-        return None
-
-    expected_action = expected_entry.get("action")
-    expected_issue_number = expected_entry.get("issue_number")
-    expected_details = dict(expected_entry.get("details", {}))
-    for key, value in expected_entry.items():
-        if key not in {"action", "issue_number", "details"}:
-            expected_details[key] = value
-
-    for index, effect in enumerate(actual):
-        if index in consumed_indexes:
-            continue
-        if effect.get("action") != expected_action:
-            continue
-        if expected_issue_number is not None and effect.get("issue_number") != expected_issue_number:
-            continue
-        actual_details = effect.get("details", {})
-        if isinstance(expected_details, dict) and _mapping_contains(actual_details, expected_details):
-            return index
-    return None
-
-
-def _mapping_contains(actual: Any, expected: JsonObject) -> bool:
-    if not isinstance(actual, dict):
-        return False
-    for key, expected_value in expected.items():
-        if key not in actual:
-            return False
-        actual_value = actual[key]
-        if isinstance(expected_value, dict):
-            if not _mapping_contains(actual_value, expected_value):
-                return False
-        elif actual_value != expected_value:
-            return False
-    return True
-
-
 def _issue_has_all_labels(issue: FixtureIssue, labels: list[str]) -> bool:
     return all(label in issue.labels for label in labels)
 
@@ -834,7 +800,3 @@ def _is_yaml_path(path: str) -> bool:
 
 def _utc_timestamp() -> str:
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
-
-
-def _json_clone(value: Any) -> Any:
-    return json.loads(json.dumps(value, default=str))

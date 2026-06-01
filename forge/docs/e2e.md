@@ -22,8 +22,8 @@ this spec.
 
 The default E2E mode is a fixture-backed run. It uses local YAML files under
 `forge/fixture_github_issues/` to imitate GitHub issue payloads, labels,
-comments, and expected side effects. The fixture issue does not need to exist on
-GitHub. Fixture mode must not mutate live GitHub state.
+comments, blockers, and project state. The fixture issue does not need to exist
+on GitHub. Fixture mode must not mutate live GitHub state.
 
 A fixture-backed E2E still runs through `forge_metadata.py` and must exercise
 the real control-plane responsibilities:
@@ -39,13 +39,14 @@ the real control-plane responsibilities:
 - Local verification, metrics writing, and dry-run publication handoff.
 
 Fixture GitHub mode implies dry-run publication. It must record the issue,
-label, comment, failure-preservation, and publication effects in local run
-output instead of assigning real issues, changing real project items, pushing
-branches, or opening pull requests.
+label and strategy selection, isolated worktree setup, fixture masking,
+workflow driver invocation, workflow result, dry-run publication or preservation
+handoff, and cleanup in local run output instead of assigning real issues,
+changing real project items, pushing branches, or opening pull requests.
 
 The bundled fixture scenarios live in `fixture_github_issues/`. The primary
 runnable fixture is issue `9101`, a `library-new-request` scenario for
-`org.apache.commons:commons-csv:1.11.0`; run it from `forge/` with:
+`ch.qos.logback:logback-core:1.1.3`; run it from `forge/` with:
 
 ```bash
 python3 forge_metadata.py \
@@ -56,13 +57,21 @@ python3 forge_metadata.py \
   --keep-tests-without-dynamic-access
 ```
 
-The persisted fixture E2E report is written under
-`fixture-e2e/issue-<number>-<run-id>/fixture-e2e-report.json` in the Forge
-directory.
-Fixture mode records issue, comment, label, failure-preservation, and dry-run
-publication effects locally in that report; it does not mutate live GitHub state
-or simulate GitHub claim/project-board races. §E2E-forge-workflow-testing.2
+Fixture mode writes its evidence under
+`forge/fixture-e2e/issue-<number>/<run-timestamp>/`. The directory contains
+`run.log`, a complete merged stdout/stderr log for the fixture command, and
+`publication.md` when a successful run reaches dry-run PR publication. It does
+not write a separate JSON E2E report, mutate live GitHub state, or simulate
+GitHub claim/project-board races. §E2E-forge-workflow-testing.2
 §E2E-forge-workflow-testing.9
+
+The fixture run is a hard failure when the selected fixture issue cannot be
+loaded/resolved, or when the workflow lifecycle exits incoherently. Routing,
+masking, worktree setup, driver invocation, handoff, and cleanup must be logged
+for agent or human inspection, but they are not a separate side-effect oracle.
+After every fixture run, a human or agent must inspect the generated run
+artifacts, especially `run.log` and any `publication.md`, before treating the
+E2E result as accepted.
 
 The primary fixture scenario is the new/update library dynamic-access path:
 
@@ -79,6 +88,20 @@ driver: `library-new-request`, `library-update-request`, `fails-javac-compile`,
 intended to make routing and current-version resolution demonstrable for those
 labels; the primary `9101` fixture remains the default dynamic-access acceptance
 target. §E2E-forge-workflow-testing.5
+
+For `library-new-request` fixtures that use an already-supported dynamic-access
+library, fixture setup removes the requested version entry and version-scoped
+metadata, tests, and stats from the isolated worktree before workflow routing.
+The primary `9101` fixture uses Logback Core because its existing generated
+dynamic-access report has 35 call sites. Live metadata is not changed. Cleanup
+is fixture infrastructure and is logged during setup.
+
+For `fails-javac-compile` and `fails-java-run` fixtures, the issue body must
+come from a real closed failure issue shape and include the original reproducer
+with the previous `-Pcoordinates=group:artifact:version`. Fixture setup removes
+the requested version entry from the isolated worktree index and marks that
+previous version as `latest` before resolving current coordinates. Live metadata
+is not changed.
 
 For a fixture issue:
 
@@ -98,7 +121,7 @@ A mocked issue YAML should look like a small GitHub issue plus project state:
 
 ```yaml
 number: 9101
-title: "Add support for org.apache.commons:commons-csv:1.11.0"
+title: "Add support for ch.qos.logback:logback-core:1.1.3"
 state: OPEN
 labels:
   - library-new-request
@@ -110,16 +133,10 @@ project:
 blocked_by: []
 body: |
   Please add metadata and tests for
-  `org.apache.commons:commons-csv:1.11.0`.
+  `ch.qos.logback:logback-core:1.1.3`.
 comments:
   - author: fixture-author
-    body: "Please cover CSVFormat, CSVParser, and CSVPrinter."
-expected_side_effects:
-  - action: publication-handoff
-    script_name: git_scripts/make_pr_new_library_support.py
-    issue_label: library-new-request
-    result_label: library-new-request
-    coordinates: org.apache.commons:commons-csv:1.11.0
+    body: "Please cover appenders, encoders, rolling policies, and filters."
 ```
 
 Fixture mode is an exact single-issue run. Queue scanning remains a live GitHub
@@ -261,7 +278,7 @@ When the E2E test finishes, report:
   and command used.
 - The routed driver and workflow engine.
 - The observed result at each boundary in §5.
-- Links or paths to the important logs, metrics, generated tests, metadata, and
-  PR or branch.
+- Links or paths to the fixture artifact directory, `run.log`, metrics,
+  generated tests, metadata, and `publication.md` or preserved branch.
 - Any suspicious behavior, residual risk, or reason the result should not be
   trusted.

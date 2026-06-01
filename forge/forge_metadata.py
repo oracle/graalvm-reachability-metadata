@@ -42,6 +42,7 @@ import traceback
 import uuid
 from collections.abc import Callable
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Any, Optional
 from urllib.parse import quote
 
@@ -104,7 +105,7 @@ from utility_scripts.metadata_index import (
     resolve_metadata_version,
     resolve_test_dir,
 )
-from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME, execution_metrics_path, read_pending_metrics
+from utility_scripts.metrics_writer import read_pending_metrics
 from utility_scripts.repo_path_resolver import (
     git_env_limited_to_repo_root,
     get_forge_subdir_name,
@@ -114,7 +115,6 @@ from utility_scripts.repo_path_resolver import (
 )
 from utility_scripts.stage_logger import log_failure_banner, log_stage, log_success_banner
 from utility_scripts.shutdown_signal import get_active_shutdown_signal_path, is_shutdown_requested
-from utility_scripts.schema_validator import validate_run_metrics
 from utility_scripts.strategy_loader import load_strategy_by_name, require_strategy_by_name
 from utility_scripts.task_logs import (
     build_task_log_path,
@@ -150,6 +150,9 @@ ISSUE_SEARCH_CACHE_FILENAME = "issue-search-cache-v1.json"
 ISSUE_SEARCH_CACHE_LOCK_FILENAME = "issue-search-cache-v1.lock"
 DEFAULT_ISSUE_SEARCH_CACHE_TTL_SECONDS = 10 * 60
 GITHUB_RATE_LIMIT_EXIT_CODE = 75
+FIXTURE_E2E_LOG_DIRNAME = "fixture-e2e"
+FIXTURE_RUN_LOG_FILENAME = "run.log"
+FIXTURE_PUBLICATION_FILENAME = "publication.md"
 REVIEW_PERIOD_SUFFIX_SECONDS = {
     "s": 1,
     "m": 60,
@@ -209,8 +212,6 @@ ISSUE_CLAIM_CACHE_REASONS = {
 }
 HUMAN_INTERVENTION_LOGS_DIRNAME = "human-intervention-logs"
 SCRIPT_RUN_METRICS_DIR = "script_run_metrics"
-FIXTURE_E2E_REPORT_DIR = "fixture-e2e"
-FIXTURE_E2E_REPORT_FILENAME = "fixture-e2e-report.json"
 ADD_NEW_LIBRARY_METRICS_FILE = "add_new_library_support.json"
 FIX_JAVAC_METRICS_FILE = "fix_javac_fail.json"
 FIX_JAVA_RUN_METRICS_FILE = "fix_java_run_fail.json"
@@ -427,23 +428,6 @@ class WorkflowDriverInvocation:
             "current_coordinates": self.current_coordinates,
             "new_version": self.new_version,
         }
-
-
-@dataclass(frozen=True)
-class FixtureE2EReportContext:
-    issue_number: int
-    fixture_path: str
-    canonical_metrics_repo_path: str
-    report_dir: str
-    report_path: str
-    run_id: str
-    queue_label: str
-    strategy_name: str
-    model: str
-    workflow_engine: str
-    command_used: dict
-    routed_driver: WorkflowDriverInvocation
-    keep_tests_without_dynamic_access: bool
 
 
 def mark_user_interrupt_requested(reason: str = INTERRUPT_REASON_CTRL_C) -> None:
@@ -1763,10 +1747,106 @@ held_issue_claim_lock_numbers: set[int] = set()
 held_issue_claim_lock_guard = threading.Lock()
 preservation_failed_worktree_paths: set[str] = set()
 fixture_github_state: FixtureGitHubState | None = None
+fixture_run_artifact_dir: str | None = None
 
 
 CLAIM_BACKOFF_MIN = 5  # Minimum seconds to wait before verifying claim
 CLAIM_BACKOFF_MAX = 10  # Maximum seconds to wait before verifying claim
+
+
+class FixtureRunLogTee:
+    """Mirror process stdout/stderr, including child process output, into one log file."""
+
+    def __init__(self, log_path: str) -> None:
+        self.log_path = log_path
+        self._log_file = open(log_path, "ab", buffering=0)
+        self._lock = threading.Lock()
+        self._original_stdout_fd = os.dup(1)
+        self._original_stderr_fd = os.dup(2)
+        self._stdout_read_fd, self._stdout_write_fd = os.pipe()
+        self._stderr_read_fd, self._stderr_write_fd = os.pipe()
+        self._threads: list[threading.Thread] = []
+        self._closed = False
+
+    def start(self) -> None:
+        sys.stdout.flush()
+        sys.stderr.flush()
+        self._threads = [
+            threading.Thread(
+                target=self._copy_stream,
+                args=(self._stdout_read_fd, self._original_stdout_fd),
+                daemon=True,
+            ),
+            threading.Thread(
+                target=self._copy_stream,
+                args=(self._stderr_read_fd, self._original_stderr_fd),
+                daemon=True,
+            ),
+        ]
+        for thread in self._threads:
+            thread.start()
+        os.dup2(self._stdout_write_fd, 1)
+        os.dup2(self._stderr_write_fd, 2)
+        os.close(self._stdout_write_fd)
+        os.close(self._stderr_write_fd)
+
+    def close(self) -> None:
+        if self._closed:
+            return
+        self._closed = True
+        sys.stdout.flush()
+        sys.stderr.flush()
+        os.dup2(self._original_stdout_fd, 1)
+        os.dup2(self._original_stderr_fd, 2)
+        for thread in self._threads:
+            thread.join(timeout=5)
+        os.close(self._original_stdout_fd)
+        os.close(self._original_stderr_fd)
+        self._log_file.close()
+
+    def _copy_stream(self, read_fd: int, target_fd: int) -> None:
+        try:
+            while True:
+                chunk = os.read(read_fd, 65536)
+                if not chunk:
+                    break
+                os.write(target_fd, chunk)
+                with self._lock:
+                    self._log_file.write(chunk)
+        finally:
+            os.close(read_fd)
+
+
+def _fixture_run_timestamp() -> str:
+    return datetime.now().astimezone().strftime("%Y%m%d-%H%M%S-%f%z")
+
+
+def start_fixture_run_log(issue_number: int) -> FixtureRunLogTee:
+    """Create a fixture artifact directory and tee the current process into `run.log`."""
+    global fixture_run_artifact_dir
+    run_dir = os.path.join(
+        get_repo_root(),
+        FIXTURE_E2E_LOG_DIRNAME,
+        f"issue-{issue_number}",
+        _fixture_run_timestamp(),
+    )
+    os.makedirs(run_dir, exist_ok=False)
+    fixture_run_artifact_dir = run_dir
+    tee = FixtureRunLogTee(os.path.join(run_dir, FIXTURE_RUN_LOG_FILENAME))
+    tee.start()
+    log_stage("fixture-log", f"Writing fixture run artifacts to {run_dir}")
+    log_stage("fixture-log", f"Complete fixture run log: {tee.log_path}")
+    log_stage(
+        "fixture-log",
+        f"Fixture command: {' '.join(shlex.quote(argument) for argument in [sys.executable, *sys.argv])}",
+    )
+    return tee
+
+
+def require_fixture_run_artifact_dir() -> str:
+    if fixture_run_artifact_dir is None:
+        raise RuntimeError("Fixture run artifact directory is not configured")
+    return fixture_run_artifact_dir
 
 
 def configure_fixture_testing(
@@ -3109,434 +3189,6 @@ def collect_issue_log_paths(claimed_issue: ClaimedIssue, started_at: float | Non
     return [path for _, path in candidates[:8]]
 
 
-def build_command_used_evidence() -> dict:
-    """Return the command line that launched this dispatcher run."""
-    argv = [sys.executable, *sys.argv]
-    return {
-        "argv": argv,
-        "display": " ".join(shlex.quote(argument) for argument in argv),
-    }
-
-
-def build_fixture_e2e_report_context(
-        claimed_issue: ClaimedIssue,
-        strategy_name: str,
-        keep_tests_without_dynamic_access: bool,
-        canonical_metrics_repo_path: str,
-) -> FixtureE2EReportContext:
-    """Create the dispatcher-owned fixture E2E report context for one claimed issue."""
-    fixture_state = require_fixture_github_state()
-    strategy = require_strategy_by_name(strategy_name)
-    issue_number = claimed_issue.issue["number"]
-    run_id = os.path.basename(os.path.abspath(claimed_issue.worktree_path))
-    report_dir = os.path.join(
-        get_repo_root(),
-        FIXTURE_E2E_REPORT_DIR,
-        f"issue-{issue_number}-{run_id}",
-    )
-    return FixtureE2EReportContext(
-        issue_number=issue_number,
-        fixture_path=fixture_state.get_issue_fixture_path(issue_number),
-        canonical_metrics_repo_path=os.path.abspath(canonical_metrics_repo_path),
-        report_dir=report_dir,
-        report_path=os.path.join(report_dir, FIXTURE_E2E_REPORT_FILENAME),
-        run_id=run_id,
-        queue_label=claimed_issue.label,
-        strategy_name=strategy_name,
-        model=str(strategy.get("model") or "unknown"),
-        workflow_engine=str(strategy.get("workflow") or "unknown"),
-        command_used=build_command_used_evidence(),
-        routed_driver=build_workflow_driver_invocation(
-            claimed_issue,
-            strategy_name,
-            keep_tests_without_dynamic_access,
-        ),
-        keep_tests_without_dynamic_access=keep_tests_without_dynamic_access,
-    )
-
-
-def _json_file_status(path: str, schema: str | None = None) -> dict:
-    """Return JSON parse and optional schema status for a metrics file."""
-    status: dict[str, Any] = {
-        "path": path,
-        "exists": os.path.isfile(path),
-        "json_status": "missing",
-        "schema_validation": {
-            "status": "not-run",
-            "reason": "file is missing",
-        },
-    }
-    if not status["exists"]:
-        return status
-
-    try:
-        with open(path, "r", encoding="utf-8") as json_file:
-            json.load(json_file)
-        status["json_status"] = "valid"
-    except Exception as exc:
-        status["json_status"] = "invalid"
-        status["json_error"] = f"{type(exc).__name__}: {exc}"
-        status["schema_validation"] = {
-            "status": "not-run",
-            "reason": "JSON parsing failed",
-        }
-        return status
-
-    if schema is None:
-        status["schema_validation"] = {
-            "status": "not-applicable",
-            "reason": "No schema was requested for this file.",
-        }
-        return status
-
-    try:
-        if schema == "run_metrics_output":
-            validate_run_metrics(path)
-        else:
-            raise ValueError(f"Unsupported schema alias: {schema}")
-        status["schema_validation"] = {
-            "status": "passed",
-            "schema": schema,
-        }
-    except Exception as exc:
-        status["schema_validation"] = {
-            "status": "failed",
-            "schema": schema,
-            "error": f"{type(exc).__name__}: {exc}",
-        }
-    return status
-
-
-def _path_evidence(kind: str, path: str, repo_root: str | None = None) -> dict:
-    """Summarize a generated artifact path without copying its contents."""
-    absolute_path = os.path.abspath(path)
-    evidence: dict[str, Any] = {
-        "kind": kind,
-        "path": absolute_path,
-        "exists": os.path.exists(absolute_path),
-    }
-    if repo_root is not None:
-        evidence["relative_path"] = _repo_relative_path(absolute_path, repo_root)
-    if os.path.isfile(absolute_path):
-        evidence["type"] = "file"
-        evidence["size_bytes"] = os.path.getsize(absolute_path)
-    elif os.path.isdir(absolute_path):
-        evidence["type"] = "directory"
-        file_count = 0
-        sample_files: list[str] = []
-        for root, _, file_names in os.walk(absolute_path):
-            for file_name in sorted(file_names):
-                file_count += 1
-                if len(sample_files) < 25:
-                    sample_files.append(os.path.relpath(os.path.join(root, file_name), absolute_path))
-        evidence["file_count"] = file_count
-        evidence["sample_files"] = sample_files
-    else:
-        evidence["type"] = "missing"
-    return evidence
-
-
-def _fixture_artifact_coordinate(claimed_issue: ClaimedIssue) -> tuple[str, str, str]:
-    """Return the coordinate whose generated artifacts should be inspected."""
-    if claimed_issue.current_coordinates and claimed_issue.new_version:
-        group, artifact, _old_version = metadata_coordinate_parts(claimed_issue.current_coordinates)
-        return group, artifact, claimed_issue.new_version
-    group, artifact, version = metadata_coordinate_parts(claimed_issue.issue_coordinates)
-    if version is None:
-        raise ValueError(f"Missing artifact version in {claimed_issue.issue_coordinates}")
-    return group, artifact, version
-
-
-def collect_fixture_generated_artifact_evidence(claimed_issue: ClaimedIssue) -> list[dict]:
-    """Collect paths for generated tests, metadata, stats, and workflow artifacts."""
-    group, artifact, version = _fixture_artifact_coordinate(claimed_issue)
-    try:
-        metadata_version = resolve_metadata_version(claimed_issue.worktree_path, group, artifact, version)
-        test_dir = resolve_test_dir(claimed_issue.worktree_path, group, artifact, version)
-    except Exception:
-        metadata_version = version
-        test_dir = os.path.join(claimed_issue.worktree_path, "tests", "src", group, artifact, version)
-
-    candidate_paths = [
-        ("generated-tests", test_dir),
-        ("metadata-index", os.path.join(claimed_issue.worktree_path, "metadata", group, artifact, "index.json")),
-        ("metadata", os.path.join(claimed_issue.worktree_path, "metadata", group, artifact, metadata_version)),
-        ("stats", os.path.join(claimed_issue.worktree_path, "stats", group, artifact, metadata_version, "stats.json")),
-        ("execution-metrics", os.path.join(
-            claimed_issue.worktree_path,
-            "stats",
-            group,
-            artifact,
-            metadata_version,
-            "execution-metrics.json",
-        )),
-        ("dynamic-access-report", os.path.join(
-            test_dir,
-            "build",
-            "reports",
-            "dynamic-access",
-            "dynamic-access-coverage.json",
-        )),
-    ]
-    large_library_state_path = find_progress_state_path(
-        claimed_issue.scratch_metrics_repo_path,
-        claimed_issue.issue["number"],
-    )
-    if large_library_state_path is not None:
-        candidate_paths.append(("large-library-progress", large_library_state_path))
-
-    seen: set[str] = set()
-    artifacts: list[dict] = []
-    for kind, path in candidate_paths:
-        absolute_path = os.path.abspath(path)
-        if absolute_path in seen:
-            continue
-        seen.add(absolute_path)
-        artifacts.append(_path_evidence(kind, absolute_path, claimed_issue.worktree_path))
-    return artifacts
-
-
-def collect_fixture_metrics_evidence(claimed_issue: ClaimedIssue) -> dict:
-    """Collect pending and durable metrics paths plus schema-validation status."""
-    pending_metrics_path = os.path.join(claimed_issue.scratch_metrics_repo_path, PENDING_METRICS_FILENAME)
-    run_metrics = _load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
-    durable_metrics_path = None
-    if isinstance(run_metrics, dict):
-        try:
-            durable_metrics_path = execution_metrics_path(claimed_issue.worktree_path, run_metrics)
-        except Exception:
-            durable_metrics_path = None
-
-    evidence: dict[str, Any] = {
-        "scratch_metrics_root": claimed_issue.scratch_metrics_repo_path,
-        "pending_metrics": _json_file_status(pending_metrics_path),
-        "run_metrics_available": isinstance(run_metrics, dict),
-    }
-    if isinstance(run_metrics, dict):
-        evidence["run_metrics_summary"] = {
-            "library": run_metrics.get("library"),
-            "strategy_name": run_metrics.get("strategy_name"),
-            "agent": run_metrics.get("agent"),
-            "model": run_metrics.get("model"),
-            "status": run_metrics.get("status"),
-            "timestamp": run_metrics.get("timestamp"),
-        }
-    if durable_metrics_path is not None:
-        evidence["durable_metrics"] = _json_file_status(durable_metrics_path, "run_metrics_output")
-    else:
-        evidence["durable_metrics"] = {
-            "path": None,
-            "exists": False,
-            "schema_validation": {
-                "status": "not-run",
-                "reason": "No pending run metrics were available to resolve the durable metrics path.",
-            },
-        }
-    return evidence
-
-
-def _fixture_side_effect_details(report: dict, action: str) -> list[dict]:
-    """Return details for side effects with the requested action."""
-    side_effects = report.get("side_effects")
-    if not isinstance(side_effects, list):
-        return []
-    return [
-        dict(effect.get("details") or {})
-        for effect in side_effects
-        if isinstance(effect, dict) and effect.get("action") == action
-    ]
-
-
-def _side_effect_comparison_passed(report: dict) -> bool:
-    comparison = report.get("side_effect_comparison")
-    return isinstance(comparison, dict) and bool(comparison.get("passed"))
-
-
-def build_fixture_boundary_verification(
-        report: dict,
-        claimed_issue: ClaimedIssue,
-        lifecycle_result: str,
-        metrics_evidence: dict,
-) -> dict:
-    """Summarize the required E2E boundary evidence from §E2E-forge-workflow-testing.5."""
-    side_effects = report.get("side_effects") if isinstance(report.get("side_effects"), list) else []
-    side_effect_actions = [
-        str(effect.get("action"))
-        for effect in side_effects
-        if isinstance(effect, dict)
-    ]
-    return {
-        "issue_routing": {
-            "queue_label": claimed_issue.label,
-            "fixture_claim_bypassed": True,
-            "routed_driver": report.get("routed_driver"),
-        },
-        "setup": {
-            "worktree_path": claimed_issue.worktree_path,
-            "worktree_present_before_cleanup": os.path.isdir(claimed_issue.worktree_path),
-            "scratch_metrics_root": claimed_issue.scratch_metrics_repo_path,
-            "scratch_metrics_root_present_before_cleanup": os.path.isdir(claimed_issue.scratch_metrics_repo_path),
-            "base_reachability_metadata_path": claimed_issue.base_reachability_metadata_path,
-        },
-        "workflow_execution": {
-            "lifecycle_result": lifecycle_result,
-            "pending_metrics_available": bool(metrics_evidence.get("run_metrics_available")),
-        },
-        "artifacts_and_metrics": {
-            "durable_metrics_schema_validation": (
-                metrics_evidence
-                .get("durable_metrics", {})
-                .get("schema_validation", {})
-            ),
-        },
-        "issue_pr_result": {
-            "publication_handoff_recorded": "publication-handoff" in side_effect_actions,
-            "failure_preservation_recorded": "failure-preservation" in side_effect_actions,
-            "side_effect_comparison_passed": _side_effect_comparison_passed(report),
-        },
-    }
-
-
-def build_fixture_trust_assessment(
-        report: dict,
-        lifecycle_result: str,
-        metrics_evidence: dict,
-) -> dict:
-    """Return suspicious behavior and residual risk evidence for the report."""
-    suspicious_behavior: list[str] = []
-    residual_risk: list[str] = []
-    publication_handoffs = _fixture_side_effect_details(report, "publication-handoff")
-    failure_preservations = _fixture_side_effect_details(report, "failure-preservation")
-
-    if not _side_effect_comparison_passed(report):
-        suspicious_behavior.append("fixture side effects did not match expected_side_effects")
-    if lifecycle_result == "success" and not publication_handoffs:
-        suspicious_behavior.append("successful fixture run did not record a dry-run publication handoff")
-    if lifecycle_result != "success" and not failure_preservations:
-        suspicious_behavior.append("failed fixture run did not record a failure-preservation handoff")
-    durable_schema = (
-        metrics_evidence
-        .get("durable_metrics", {})
-        .get("schema_validation", {})
-        .get("status")
-    )
-    if durable_schema == "failed":
-        suspicious_behavior.append("durable metrics schema validation failed")
-    if report.get("generated_artifacts_error"):
-        suspicious_behavior.append("generated artifact discovery failed")
-
-    if lifecycle_result != "success":
-        residual_risk.append("workflow did not complete successfully; inspect preserved work and logs")
-    if not metrics_evidence.get("run_metrics_available"):
-        residual_risk.append("pending run metrics were not available for this fixture report")
-
-    return {
-        "suspicious_behavior": suspicious_behavior or ["none-observed"],
-        "residual_risk": residual_risk or ["none-observed"],
-        "result_should_not_be_trusted_reasons": suspicious_behavior + residual_risk,
-    }
-
-
-def write_fixture_e2e_report(
-        context: FixtureE2EReportContext,
-        claimed_issue: ClaimedIssue,
-        lifecycle_result: str,
-        started_at: float | None,
-) -> str:
-    """Write the persisted fixture-backed E2E evidence report."""
-    fixture_state = require_fixture_github_state()
-    metrics_evidence = collect_fixture_metrics_evidence(claimed_issue)
-    generated_artifacts: list[dict] = []
-    generated_artifacts_error = None
-    try:
-        generated_artifacts = collect_fixture_generated_artifact_evidence(claimed_issue)
-    except Exception as exc:
-        generated_artifacts_error = f"{type(exc).__name__}: {exc}"
-
-    report = fixture_state.build_report(context.issue_number)
-    report.update({
-        "fixture_e2e_report_version": 1,
-        "mode": "fixture-backed E2E",
-        "issue_number": context.issue_number,
-        "fixture_path": context.fixture_path,
-        "queue_label": context.queue_label,
-        "strategy_name": context.strategy_name,
-        "model": context.model,
-        "command_used": context.command_used,
-        "routed_driver": context.routed_driver.to_json(),
-        "workflow_engine": context.workflow_engine,
-        "run_id": context.run_id,
-        "lifecycle_result": lifecycle_result,
-        "keep_tests_without_dynamic_access": context.keep_tests_without_dynamic_access,
-        "paths": {
-            "report_dir": context.report_dir,
-            "report_path": context.report_path,
-            "worktree": claimed_issue.worktree_path,
-            "scratch_metrics_root": claimed_issue.scratch_metrics_repo_path,
-            "canonical_metrics_root": context.canonical_metrics_repo_path,
-            "logs_root": resolve_logs_root(),
-        },
-        "important_log_paths": [
-            _path_evidence("log", log_path)
-            for log_path in collect_issue_log_paths(claimed_issue, started_at)
-        ],
-        "metrics_paths": metrics_evidence,
-        "generated_artifacts": generated_artifacts,
-        "generated_artifacts_error": generated_artifacts_error,
-        "dry_run_publication_handoff": _fixture_side_effect_details(report, "publication-handoff"),
-        "failure_preservation_handoff": _fixture_side_effect_details(report, "failure-preservation"),
-    })
-    report["boundary_verification"] = build_fixture_boundary_verification(
-        report,
-        claimed_issue,
-        lifecycle_result,
-        metrics_evidence,
-    )
-    report["trust_assessment"] = build_fixture_trust_assessment(
-        report,
-        lifecycle_result,
-        metrics_evidence,
-    )
-
-    os.makedirs(context.report_dir, exist_ok=True)
-    with open(context.report_path, "w", encoding="utf-8") as report_file:
-        json.dump(report, report_file, indent=2, sort_keys=True)
-        report_file.write("\n")
-    return context.report_path
-
-
-def write_fixture_e2e_report_best_effort(
-        context: FixtureE2EReportContext | None,
-        claimed_issue: ClaimedIssue,
-        lifecycle_result: str,
-        started_at: float | None,
-) -> None:
-    """Write fixture E2E evidence without masking the workflow result."""
-    if context is None:
-        return
-    try:
-        report_path = write_fixture_e2e_report(
-            context,
-            claimed_issue,
-            lifecycle_result,
-            started_at,
-        )
-        log_stage("fixture-report", f"Wrote fixture E2E report: {report_path}")
-    except Exception as exc:
-        print(
-            f"ERROR: Fixture E2E report generation failed for issue #{claimed_issue.issue['number']}: {exc!r}",
-            file=sys.stderr,
-        )
-        traceback.print_exc()
-
-
-def append_fixture_report_path(message: str, context: FixtureE2EReportContext | None) -> str:
-    """Add the fixture report path to a console summary when fixture mode is active."""
-    if context is None:
-        return message
-    return f"{message}\nFixture E2E report: {context.report_path}"
-
-
 def _format_failure_metrics_summary(run_metrics: dict | None) -> str:
     """Format relevant failure metrics for a Codex issue-analysis prompt."""
     if not isinstance(run_metrics, dict):
@@ -4446,6 +4098,14 @@ def invoke_pipeline(
 
     print()
     log_stage(invocation.log_stage_name, invocation.log_message)
+    if is_fixture_testing_enabled():
+        log_stage(
+            "workflow-driver",
+            (
+                f"Fixture mode invoking {invocation.script_name}: "
+                f"{' '.join(shlex.quote(argument) for argument in invocation.argv)}"
+            ),
+        )
     rc = invocation.runner(invocation.argv)
     if is_interrupt_exit_code(rc):
         mark_user_interrupt_requested()
@@ -4862,7 +4522,20 @@ def cleanup_issue_workspace(claimed_issue: ClaimedIssue, canonical_metrics_repo_
             file=sys.stderr,
         )
     else:
+        if is_fixture_testing_enabled():
+            log_stage(
+                "fixture-cleanup",
+                (
+                    f"Cleaning isolated fixture worktree for issue #{claimed_issue.issue['number']}: "
+                    f"{claimed_issue.worktree_path}"
+                ),
+            )
         remove_worktree(claimed_issue.base_reachability_metadata_path, claimed_issue.worktree_path)
+        if is_fixture_testing_enabled():
+            log_stage(
+                "fixture-cleanup",
+                f"Cleaned isolated fixture worktree for issue #{claimed_issue.issue['number']}.",
+            )
 
 
 def build_claim_metadata(
@@ -5126,10 +4799,6 @@ def build_fixture_claimed_issue(
     if not is_fixture_testing_enabled():
         raise RuntimeError("Fixture issue preparation requires fixture testing mode")
 
-    claim_metadata = build_claim_metadata(issue, label, base_reachability_metadata_path)
-    if claim_metadata is None:
-        return None
-
     issue_number = issue["number"]
     try:
         item_id = require_fixture_github_state().get_issue_project_item_id(issue_number)
@@ -5142,6 +4811,13 @@ def build_fixture_claimed_issue(
             canonical_metrics_repo_path,
             issue_number,
         )
+        log_stage(
+            "fixture-worktree",
+            (
+                f"Created isolated fixture worktree for issue #{issue_number}: "
+                f"worktree={worktree_path}, metrics={scratch_metrics_repo_path}"
+            ),
+        )
     except BaseException as exc:
         if isinstance(exc, Exception):
             print(
@@ -5150,6 +4826,34 @@ def build_fixture_claimed_issue(
             )
             return None
         raise
+
+    try:
+        require_fixture_github_state().prepare_issue_worktree(issue_number, label, worktree_path)
+        claim_metadata = build_claim_metadata(issue, label, worktree_path)
+    except BaseException as exc:
+        if isinstance(exc, Exception):
+            print(
+                f"ERROR: Failed to prepare fixture issue #{issue_number}: {exc!r}",
+                file=sys.stderr,
+            )
+            try:
+                remove_worktree(base_reachability_metadata_path, worktree_path)
+            except Exception as cleanup_exc:
+                print(
+                    f"ERROR: Failed to clean up fixture worktree {worktree_path}: {cleanup_exc!r}",
+                    file=sys.stderr,
+                )
+            return None
+        raise
+    if claim_metadata is None:
+        try:
+            remove_worktree(base_reachability_metadata_path, worktree_path)
+        except Exception as cleanup_exc:
+            print(
+                f"ERROR: Failed to clean up fixture worktree {worktree_path}: {cleanup_exc!r}",
+                file=sys.stderr,
+            )
+        return None
 
     issue_coordinates, current_coordinates, new_version = claim_metadata
     return ClaimedIssue(
@@ -5451,6 +5155,136 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
     )
 
 
+def _publication_new_coordinates(handoff: PublicationHandoff) -> str | None:
+    if handoff.coordinates:
+        return handoff.coordinates
+    if not handoff.current_coordinates or not handoff.new_version:
+        return None
+    group, artifact, _version = metadata_coordinate_parts(handoff.current_coordinates)
+    return f"{group}:{artifact}:{handoff.new_version}"
+
+
+def _display_model_and_agent(strategy_name: str | None) -> tuple[str, str]:
+    if not strategy_name:
+        return "unknown", "unknown"
+    strategy = load_strategy_by_name(strategy_name) or {}
+    model = str(strategy.get("model") or "unknown")
+    if model.startswith("oca/"):
+        model = model[len("oca/"):]
+    agent = str(strategy.get("agent") or "unknown")
+    return model, agent
+
+
+def build_fixture_publication_markdown(handoff: PublicationHandoff) -> str:
+    """Build the Markdown publication handoff artifact for fixture dry-runs."""
+    metrics_entry = read_pending_metrics(handoff.scratch_metrics_path) or {}
+    metrics = metrics_entry.get("metrics", {})
+    if not isinstance(metrics, dict):
+        metrics = {}
+    strategy_name = str(metrics_entry.get("strategy_name") or "unknown")
+    model_display_name, agent_name = _display_model_and_agent(strategy_name)
+    new_coordinates = _publication_new_coordinates(handoff)
+    issue_reference = f"Fixes: #{handoff.issue_number}"
+    if handoff.large_library_part is not None and handoff.large_library_final is False:
+        issue_reference = f"Refs: #{handoff.issue_number}"
+
+    if handoff.not_for_native_image and new_coordinates:
+        group, artifact, _version = metadata_coordinate_parts(new_coordinates)
+        title = f"[GenAI] Mark {group}:{artifact} as not for Native Image"
+        opening = f"This PR marks `{group}:{artifact}` as not supported for Native Image."
+    elif handoff.issue_label == LABEL_LIBRARY_NEW and new_coordinates:
+        title = f"[GenAI] Add support for {new_coordinates} using {model_display_name}"
+        opening = f"This PR introduces tests and metadata for `{new_coordinates}`."
+    elif handoff.issue_label == LABEL_LIBRARY_UPDATE and new_coordinates:
+        title = f"[GenAI] Improve coverage for {new_coordinates} using {model_display_name}"
+        opening = f"This PR improves dynamic-access coverage for `{new_coordinates}`."
+    elif handoff.issue_label == LABEL_JAVAC_FAIL and new_coordinates:
+        title = f"[GenAI] Test fix for {new_coordinates} using {model_display_name}"
+        opening = (
+            f"This PR provides test fixes and metadata for `{new_coordinates}`, "
+            "addressing Java compilation failures in the updated library version."
+        )
+    elif handoff.issue_label == LABEL_JAVA_RUN_FAIL and new_coordinates:
+        title = f"[GenAI] Test fix for {new_coordinates} using {model_display_name}"
+        opening = (
+            f"This PR provides test fixes and metadata for `{new_coordinates}`, "
+            "addressing Java runtime test failures in the updated library version."
+        )
+    elif handoff.issue_label == LABEL_NI_RUN_FAIL and new_coordinates:
+        title = f"[Automation] Generated metadata for {new_coordinates}"
+        opening = (
+            f"This PR provides metadata for `{new_coordinates}`, addressing "
+            "Native Image runtime failures in the updated library version."
+        )
+    else:
+        title = f"[Fixture] Publication handoff for issue #{handoff.issue_number}"
+        opening = "This PR body could not be specialized for the fixture issue label."
+
+    if handoff.large_library_part is not None:
+        title = f"{title} (part {handoff.large_library_part})"
+
+    command = ["python3", handoff.script_name, *handoff.argv]
+    metric_lines = [
+        f"- Strategy: `{strategy_name}`",
+        f"- Agent: `{agent_name}`",
+        f"- Model: `{model_display_name}`",
+        f"- Workflow status: `{handoff.workflow_status or metrics_entry.get('status') or 'unknown'}`",
+        f"- Input tokens: {metrics.get('input_tokens_used', 0)}",
+        f"- Cached input tokens: {metrics.get('cached_input_tokens_used', 0) or 0}",
+        f"- Output tokens: {metrics.get('output_tokens_used', 0)}",
+        f"- Metadata entries: {metrics.get('metadata_entries', 0)}",
+        f"- Iterations: {metrics.get('iterations', 0)}",
+        f"- Library coverage percentage: {metrics.get('code_coverage_percent', 0)}",
+    ]
+    if handoff.current_coordinates:
+        metric_lines.append(f"- Current coordinates: `{handoff.current_coordinates}`")
+    if new_coordinates:
+        metric_lines.append(f"- Published coordinates: `{new_coordinates}`")
+    if handoff.large_library_part is not None:
+        metric_lines.append(f"- Large-library series: `{handoff.large_library_series_id or 'unknown'}`")
+        metric_lines.append(f"- Large-library final part: `{handoff.large_library_final}`")
+
+    body = "\n".join([
+        "## What does this PR do?",
+        "",
+        issue_reference,
+        "",
+        opening,
+        "",
+        "Summary:",
+        *metric_lines,
+    ])
+
+    return "\n".join([
+        "# Fixture Publication Handoff",
+        "",
+        "Fixture mode did not open a pull request. This file records the PR publication handoff that would run.",
+        "",
+        "## Dry-Run Command",
+        "",
+        "```bash",
+        " ".join(shlex.quote(argument) for argument in command),
+        "```",
+        "",
+        "## Pull Request Title",
+        "",
+        title,
+        "",
+        "## Pull Request Body",
+        "",
+        body,
+        "",
+    ])
+
+
+def write_fixture_publication_handoff(handoff: PublicationHandoff) -> str:
+    """Write the PR title/body handoff into the active fixture artifact directory."""
+    publication_path = os.path.join(require_fixture_run_artifact_dir(), FIXTURE_PUBLICATION_FILENAME)
+    with open(publication_path, "w", encoding="utf-8") as publication_file:
+        publication_file.write(build_fixture_publication_markdown(handoff))
+    return publication_path
+
+
 def apply_large_library_completion_follow_up(claimed_issue: ClaimedIssue) -> None:
     """Apply issue labels after a large-library part was published."""
     run_metrics = _load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
@@ -5479,15 +5313,12 @@ def finalize_successful_issue(
     """
     if is_fixture_testing_enabled():
         handoff = build_publication_handoff(claimed_issue)
-        require_fixture_github_state().record_publication_handoff(
-            handoff.issue_number,
-            handoff.to_json(),
-        )
+        publication_path = write_fixture_publication_handoff(handoff)
         log_stage(
             "publication",
             (
-                f"Fixture mode: recorded dry-run publication handoff for issue "
-                f"#{handoff.issue_number} to {handoff.script_name}."
+                f"Fixture mode: dry-run publication handoff for issue #{handoff.issue_number} "
+                f"to {handoff.script_name}. PR title/body written to {publication_path}."
             ),
         )
         return
@@ -5501,14 +5332,10 @@ def preserve_failed_work_for_follow_up(claimed_issue: ClaimedIssue) -> FailurePr
     if is_fixture_testing_enabled():
         preservation_result = build_fixture_failure_preservation_result(claimed_issue)
         preservation_failed_worktree_paths.add(claimed_issue.worktree_path)
-        require_fixture_github_state().record_failure_preservation(
-            claimed_issue.issue["number"],
-            preservation_result.to_json(),
-        )
         log_stage(
             "preserve-failed-work",
             (
-                f"Fixture mode: recorded dry-run failure preservation branch "
+                f"Fixture mode: dry-run failure preservation handoff for branch "
                 f"{preservation_result.branch_name} for issue #{claimed_issue.issue['number']}."
             ),
         )
@@ -5606,11 +5433,9 @@ def process_claimed_issue_lifecycle(
         strategy_name: str | None,
         keep_tests_without_dynamic_access: bool,
         canonical_metrics_repo_path: str,
-        fixture_report_context: FixtureE2EReportContext | None = None,
 ) -> bool:
     """Run workflow, finalize or revert, and always clean up the claimed issue workspace."""
     lifecycle_completed = False
-    lifecycle_result = "started"
     started_at = time.time()
     try:
         run_result = run_claimed_issue(
@@ -5623,28 +5448,20 @@ def process_claimed_issue_lifecycle(
         handled = handle_completed_run(run_result)
         lifecycle_completed = True
         if handled:
-            lifecycle_result = "success"
             log_success_banner(
-                append_fixture_report_path(
-                    format_issue_result_message(
-                        claimed_issue,
-                        "Workflow finished, follow-up completed, and the issue was finalized.",
-                    ),
-                    fixture_report_context,
+                format_issue_result_message(
+                    claimed_issue,
+                    "Workflow finished, follow-up completed, and the issue was finalized.",
                 )
             )
         else:
-            lifecycle_result = "failure"
             log_failure_banner(
-                append_fixture_report_path(
-                    format_issue_result_message(
-                        claimed_issue,
-                        (
-                            "Workflow failed; failure follow-up was attempted. Check prior errors "
-                            "for follow-up and claim status."
-                        ),
+                format_issue_result_message(
+                    claimed_issue,
+                    (
+                        "Workflow failed; failure follow-up was attempted. Check prior errors "
+                        "for follow-up and claim status."
                     ),
-                    fixture_report_context,
                 ),
                 file=sys.stderr,
             )
@@ -5652,12 +5469,10 @@ def process_claimed_issue_lifecycle(
     except BaseException as exc:
         if not lifecycle_completed:
             if is_interrupt_exception(exc) or is_user_interrupt_requested():
-                lifecycle_result = "interrupted"
                 mark_user_interrupt_requested()
                 revert_claimed_issue(claimed_issue, "Ctrl+C interrupt")
                 raise
             else:
-                lifecycle_result = f"unhandled-lifecycle-failure:{type(exc).__name__}"
                 try:
                     handle_failed_claimed_issue(
                         claimed_issue,
@@ -5665,32 +5480,22 @@ def process_claimed_issue_lifecycle(
                         started_at=started_at,
                     )
                     log_failure_banner(
-                        append_fixture_report_path(
-                            format_issue_result_message(
-                                claimed_issue,
-                                (
-                                    "Workflow failed with an unhandled lifecycle error; failure follow-up "
-                                    "was attempted and the issue claim was reverted."
-                                ),
+                        format_issue_result_message(
+                            claimed_issue,
+                            (
+                                "Workflow failed with an unhandled lifecycle error; failure follow-up "
+                                "was attempted and the issue claim was reverted."
                             ),
-                            fixture_report_context,
                         ),
                         file=sys.stderr,
                     )
                 except KeyboardInterrupt:
-                    lifecycle_result = "interrupted"
                     mark_user_interrupt_requested()
                     revert_claimed_issue(claimed_issue, "Ctrl+C interrupt")
                     raise
                 return False
         raise
     finally:
-        write_fixture_e2e_report_best_effort(
-            fixture_report_context,
-            claimed_issue,
-            lifecycle_result,
-            started_at,
-        )
         try:
             cleanup_issue_workspace(claimed_issue, canonical_metrics_repo_path)
         except Exception as exc:
@@ -6881,23 +6686,11 @@ def process_single_issue(
         log_failure_banner(f"Could not {action} #{issue_number}.", file=sys.stderr)
         sys.exit(1)
 
-    fixture_report_context = None
-    if is_fixture_testing_enabled():
-        if strategy_name is None:
-            raise RuntimeError("Fixture testing requires an explicit strategy name")
-        fixture_report_context = build_fixture_e2e_report_context(
-            claimed_issue,
-            strategy_name,
-            keep_tests_without_dynamic_access,
-            canonical_metrics_repo_path,
-        )
-
     return process_claimed_issue_lifecycle(
         claimed_issue,
         strategy_name,
         keep_tests_without_dynamic_access,
         canonical_metrics_repo_path,
-        fixture_report_context=fixture_report_context,
     )
 
 
@@ -6944,10 +6737,20 @@ def main() -> None:
     previous_sigint_handler = signal.getsignal(signal.SIGINT)
     signal.signal(signal.SIGINT, _handle_sigint)
     args = parse_args()
+    fixture_run_log: FixtureRunLogTee | None = None
+    normal_exit = False
 
     try:
         if args.fixture_testing:
-            configure_fixture_testing()
+            fixture_run_log = start_fixture_run_log(args.issue_number)
+            fixture_state = configure_fixture_testing()
+            log_stage(
+                "fixture-loading",
+                (
+                    f"Loaded {len(fixture_state.issue_numbers)} fixture issue(s); "
+                    f"selected issue #{args.issue_number}."
+                ),
+            )
         if args.clear_issue_caches:
             clear_issue_caches()
             return
@@ -7024,6 +6827,7 @@ def main() -> None:
                 args.parallelism,
                 take_blocked_issues=args.take_blocked_issues,
             )
+        normal_exit = True
     except KeyboardInterrupt:
         if is_shutdown_requested():
             mark_shutdown_requested()
@@ -7041,9 +6845,11 @@ def main() -> None:
         log_failure_banner(f"{exc}. Stop current run and retry after reset.", file=sys.stderr)
         sys.exit(GITHUB_RATE_LIMIT_EXIT_CODE)
     finally:
+        if normal_exit:
+            log_success_banner("Run complete.")
         signal.signal(signal.SIGINT, previous_sigint_handler)
-
-    log_success_banner("Run complete.")
+        if fixture_run_log is not None:
+            fixture_run_log.close()
 
 
 if __name__ == "__main__":
