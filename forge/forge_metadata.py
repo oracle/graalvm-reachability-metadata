@@ -1789,6 +1789,10 @@ class FixtureRunLogTee:
         os.dup2(self._stderr_write_fd, 2)
         os.close(self._stdout_write_fd)
         os.close(self._stderr_write_fd)
+        if hasattr(sys.stdout, "reconfigure"):
+            sys.stdout.reconfigure(line_buffering=True, write_through=True)
+        if hasattr(sys.stderr, "reconfigure"):
+            sys.stderr.reconfigure(line_buffering=True, write_through=True)
 
     def close(self) -> None:
         if self._closed:
