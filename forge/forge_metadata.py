@@ -170,7 +170,7 @@ ISSUE_SEARCH_CACHE_FILENAME = "issue-search-cache-v1.json"
 ISSUE_SEARCH_CACHE_LOCK_FILENAME = "issue-search-cache-v1.lock"
 DEFAULT_ISSUE_SEARCH_CACHE_TTL_SECONDS = 10 * 60
 GITHUB_RATE_LIMIT_EXIT_CODE = 75
-FIXTURE_E2E_LOG_DIRNAME = "fixture-e2e"
+FIXTURE_E2E_LOG_DIRNAME = "fixture-e2e-logs"
 FIXTURE_RUN_LOG_FILENAME = "run.log"
 FIXTURE_PUBLICATION_FILENAME = "publication.md"
 REVIEW_PERIOD_SUFFIX_SECONDS = {
@@ -6867,7 +6867,7 @@ def main() -> None:
     try:
         if args.fixture_testing:
             # Fix one shared run timestamp; each issue's evidence is written under
-            # `fixture-e2e/issue-<number>/<timestamp>/` by `fixture_issue_run_log`.
+            # `fixture-e2e-logs/issue-<number>/<timestamp>/` by `fixture_issue_run_log`.
             get_fixture_run_timestamp()
             fixture_state = configure_fixture_testing()
             if args.issue_number is not None:

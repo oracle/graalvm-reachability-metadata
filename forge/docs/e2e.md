@@ -69,7 +69,7 @@ python3 forge_metadata.py \
 ```
 
 Every fixture run writes each issue's evidence under
-`forge/fixture-e2e/issue-<number>/<run-timestamp>/`, whether the issue was
+`forge/fixture-e2e-logs/issue-<number>/<run-timestamp>/`, whether the issue was
 selected by `--issue-number`, a `--label` queue, or `--run-work-queues`. Issues
 claimed by the same run share one `<run-timestamp>`, so a queue run that
 processes several issues leaves sibling `issue-<number>/<run-timestamp>/`
