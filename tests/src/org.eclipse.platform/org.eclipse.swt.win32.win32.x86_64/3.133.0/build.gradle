@@ -1,14 +1,92 @@
+import org.gradle.api.artifacts.transform.CacheableTransform
+import org.gradle.api.artifacts.transform.InputArtifact
+import org.gradle.api.artifacts.transform.TransformAction
+import org.gradle.api.artifacts.transform.TransformOutputs
+import org.gradle.api.artifacts.transform.TransformParameters
+import org.gradle.api.artifacts.type.ArtifactTypeDefinition
+import org.gradle.api.file.FileSystemLocation
+import org.gradle.api.file.FileCollection
+import org.gradle.api.provider.Provider
+import org.graalvm.buildtools.gradle.tasks.BuildNativeImageTask
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
+
+import java.util.jar.JarEntry
+import java.util.jar.JarFile
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
+
 /*
  * Copyright and related rights waived via CC0
  *
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+@CacheableTransform
+abstract class StripJarSignaturesTransform implements TransformAction<TransformParameters.None> {
+    @InputArtifact
+    @PathSensitive(PathSensitivity.NAME_ONLY)
+    abstract Provider<FileSystemLocation> getInputArtifact()
+
+    @Override
+    void transform(TransformOutputs outputs) {
+        File inputFile = inputArtifact.get().asFile
+        File outputFile = outputs.file(inputFile.name)
+        new JarFile(inputFile).withCloseable { JarFile jarFile ->
+            outputFile.withOutputStream { OutputStream outputStream ->
+                ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream)
+                try {
+                    jarFile.entries().each { JarEntry entry ->
+                        if (!StripJarSignaturesTransform.isJarSignatureEntry(entry.name)) {
+                            StripJarSignaturesTransform.copyEntry(jarFile, entry, zipOutputStream)
+                        }
+                    }
+                } finally {
+                    zipOutputStream.close()
+                }
+            }
+        }
+    }
+
+    private static void copyEntry(JarFile jarFile, JarEntry entry, ZipOutputStream zipOutputStream) {
+        ZipEntry outputEntry = new ZipEntry(entry.name)
+        outputEntry.time = entry.time
+        outputEntry.comment = entry.comment
+        outputEntry.extra = entry.extra
+        if (entry.method == ZipEntry.STORED) {
+            outputEntry.method = ZipEntry.STORED
+            outputEntry.size = entry.size
+            outputEntry.compressedSize = entry.compressedSize
+            outputEntry.crc = entry.crc
+        }
+        zipOutputStream.putNextEntry(outputEntry)
+        if (!entry.isDirectory()) {
+            jarFile.getInputStream(entry).withCloseable { InputStream inputStream ->
+                inputStream.transferTo(zipOutputStream)
+            }
+        }
+        zipOutputStream.closeEntry()
+    }
+
+    private static boolean isJarSignatureEntry(String entryName) {
+        return entryName.startsWith("META-INF/") &&
+                (entryName.endsWith(".SF") || entryName.endsWith(".RSA") || entryName.endsWith(".DSA"))
+    }
+}
+
 plugins {
     id "org.graalvm.internal.tck"
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String unsignedJarType = "unsigned-jar"
+
+dependencies {
+    registerTransform(StripJarSignaturesTransform) {
+        from.attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, ArtifactTypeDefinition.JAR_TYPE)
+        to.attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, unsignedJarType)
+    }
+}
 
 dependencies {
     testImplementation "org.eclipse.platform:org.eclipse.swt.win32.win32.x86_64:$libraryVersion"
@@ -24,4 +102,12 @@ graalvmNative {
             }
         }
     }
+}
+
+tasks.named("nativeTestCompile", BuildNativeImageTask).configure { BuildNativeImageTask task ->
+    FileCollection transformedRuntimeClasspath = configurations.testRuntimeClasspath.incoming.artifactView { view ->
+        view.attributes.attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, unsignedJarType)
+    }.files
+    FileCollection originalNativeImageClasspath = objects.fileCollection().from(task.options.get().classpath)
+    task.options.get().classpath.setFrom(transformedRuntimeClasspath, originalNativeImageClasspath)
 }
