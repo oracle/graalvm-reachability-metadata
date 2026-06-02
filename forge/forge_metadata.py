@@ -1834,16 +1834,68 @@ class FixtureRunLogTee:
         self._log_file.close()
 
     def _copy_stream(self, read_fd: int, target_fd: int) -> None:
+        # The terminal receives every byte unchanged so the live `\r`-updating
+        # status line renders exactly as before. The log file instead stores the
+        # terminal-resolved text: carriage returns overwrite in place, so the many
+        # in-place status frames collapse to the final state of each line.
+        line = bytearray()
+        cursor = 0
         try:
             while True:
                 chunk = os.read(read_fd, 65536)
                 if not chunk:
                     break
                 os.write(target_fd, chunk)
-                with self._lock:
-                    self._log_file.write(chunk)
+                log_bytes, line, cursor = self._resolve_carriage_returns(chunk, line, cursor)
+                if log_bytes:
+                    with self._lock:
+                        self._log_file.write(log_bytes)
         finally:
+            if line:
+                with self._lock:
+                    self._log_file.write(bytes(line))
             os.close(read_fd)
+
+    @staticmethod
+    def _resolve_carriage_returns(
+            chunk: bytes,
+            line: bytearray,
+            cursor: int,
+    ) -> tuple[bytes, bytearray, int]:
+        """Apply terminal `\\r`/`\\n` semantics to `chunk` for the log file.
+
+        Returns the bytes of any completed lines plus the carried-over partial
+        line and cursor. `\\r` resets the cursor to column 0 so later bytes
+        overwrite the current line, mirroring how a terminal displays an in-place
+        status update; `\\n` flushes the resolved line.
+        """
+        if 0x0D not in chunk and cursor == len(line):
+            # Fast path: no carriage returns and nothing pending to overwrite, so
+            # this is plain appending. Emit all complete lines, carry the rest.
+            line += chunk
+            split_at = line.rfind(0x0A)
+            if split_at == -1:
+                return b"", line, len(line)
+            completed = bytes(line[:split_at + 1])
+            remainder = bytearray(line[split_at + 1:])
+            return completed, remainder, len(remainder)
+
+        output = bytearray()
+        for byte in chunk:
+            if byte == 0x0A:  # newline: flush the resolved line
+                output += line
+                output.append(0x0A)
+                line = bytearray()
+                cursor = 0
+            elif byte == 0x0D:  # carriage return: overwrite from column 0
+                cursor = 0
+            elif cursor < len(line):
+                line[cursor] = byte
+                cursor += 1
+            else:
+                line.append(byte)
+                cursor += 1
+        return bytes(output), line, cursor
 
 
 def _fixture_run_timestamp() -> str:
