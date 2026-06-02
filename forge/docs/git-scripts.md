@@ -94,6 +94,18 @@ No generation happened, so the body has no generation metrics. It states why the
 artifact is not a Native Image target, includes any replacement guidance, the
 `Fixes:` issue reference, and the local CI-equivalent verification section.
 
+## GIT-pr-preview-builders: Reusable title and body builders
+
+Each `make_pr_*.py` publisher must expose a non-mutating builder for the PR
+title and body that reads the same metrics and repository evidence used by live
+publication. Live PR creation calls that builder and then performs only the
+GitHub publication step; fixture dry-run publication calls the same builder and
+writes the result to `publication.md` without pushing a branch or opening a
+pull request. Fixture mode may skip the push/PR side effect, but it must not
+duplicate PR title/body construction outside the publisher. This keeps fixture
+publication evidence aligned with real PR text and prevents duplicate PR-body
+logic in orchestration.
+
 ## GIT-issue-linking: Issue linking and labels
 
 Publication owns user-visible GitHub linkage: PR labels, `Fixes:` issue

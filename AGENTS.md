@@ -78,6 +78,14 @@
 ## Releases and Packaging
 - Package artifacts: ./gradlew package
 
+## Forge automation E2E
+- After changing Forge control-plane, workflow, strategy, git-publication, or
+  shared workflow code under `forge/`, run the hermetic fixture Forge E2E
+  (§forge/E2E-forge-workflow-testing) as described in
+  [forge/docs/e2e.md](forge/docs/e2e.md); treat `forge_metadata.py` runs as the
+  source of truth instead of mock-only or direct-driver tests. Live GitHub Forge
+  E2E still requires an explicit user request.
+
 ## Grounding with grund (v2)
 
 This project uses [`grund`](https://github.com/vjovanov/grund): every spec, goal, decision, and end-to-end test has a stable ID `<KIND>-<slug>[.<section>]`, cited with the marker `§`. Root repository IDs use `KIND ∈ {GRUND, GOAL, FS, AR, TCK, E2E, CI, METADATA, TESTS, SKILL}`; Forge has its own `forge` namespace with `KIND ∈ {GRUND, GOAL, AR, FS, DW, STRAT, ORCH, GIT, WF, E2E, BENCH, ROADMAP}`. For example, `FS-user-login.3.1` is only a shape illustration, not a real ID in this repo. Type `$$` in a grund-aware editor and it becomes `§`. Bare ID-shaped tokens are ignored — `[reference] strict = true` is set in `.agents/grund.toml`, so only `§`-prefixed citations are checked.

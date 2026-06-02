@@ -1,19 +1,21 @@
 # ROADMAP-forge-implementation: Forge implementation roadmap
 
-This roadmap lists the first implementation gaps to close in Forge against the
-functional spec (§FS-forge-functional-spec), ordered by delivery priority so a
-low-risk structural cleanup of `ai_workflows/` lands first, then fixture-backed
-end-to-end testing, after which later workflow work can be validated through the
-real orchestration boundary. It serves the overall Forge direction in
-§GOAL-forge-direction.
+This roadmap lists the active implementation gaps to close in Forge against the
+functional spec (§FS-forge-functional-spec), ordered by delivery priority.
+Completed roadmap points stay in this file for citation history. It serves the
+overall Forge direction in §GOAL-forge-direction.
 
 1. Better structure of `ai_workflows/` (§ROADMAP-forge-ai-workflows-structure).
-2. Fixture-backed E2E mode (§ROADMAP-forge-fixture-backed-e2e).
-3. Library-specific preparation preflight (§ROADMAP-forge-library-preflight).
-4. Missing-version library-update router (§ROADMAP-forge-missing-version-router).
-5. Native metadata exploration finalization path (§ROADMAP-forge-native-finalization).
-6. Human-intervention strictness (§ROADMAP-forge-human-intervention-strictness).
-7. Planned code coverage improvement workflow (§ROADMAP-forge-code-coverage-workflow).
+2. Library-specific preparation preflight (§ROADMAP-forge-library-preflight).
+3. Missing-version library-update router (§ROADMAP-forge-missing-version-router).
+4. Native metadata exploration finalization path (§ROADMAP-forge-native-finalization).
+5. Human-intervention strictness (§ROADMAP-forge-human-intervention-strictness).
+6. Planned code coverage improvement workflow (§ROADMAP-forge-code-coverage-workflow).
+
+Completed roadmap points:
+
+- Fixture-backed E2E mode (§ROADMAP-forge-fixture-backed-e2e): completed by PR
+  #7636.
 
 # ROADMAP-forge-ai-workflows-structure: Better structure of ai_workflows
 
@@ -41,27 +43,31 @@ described by §WF-forge-workflow-drivers and §WF-forge-workflow-engine.
 
 # ROADMAP-forge-fixture-backed-e2e: Fixture-backed E2E mode
 
-Priority: second (part of §ROADMAP-forge-implementation).
+Status: Completed by PR #7636.
+
+Priority: completed (part of §ROADMAP-forge-implementation).
 
 Implement hermetic fixture-backed E2E execution through `forge_metadata.py`,
 per the hermetic fixture E2E mode (§E2E-forge-workflow-testing.2).
-The command-line surface must accept `--fixture-testing`, an issue number from
-the local YAML fixtures, a strategy name, a reachability-repo path, and the
-existing dynamic-access preservation flag.
+The command-line surface must accept `--fixture-testing`, one issue number from
+the local YAML fixtures or local fixture queue selection, a strategy name, a
+reachability-repo path, and the existing dynamic-access preservation flag.
 
 The fixture backend must model issues, labels, assignees, project items,
-blockers, comments, and expected side effects without mutating live GitHub
-state. It must still exercise the real control-plane responsibilities defined
-in §ORCH-forge-orchestration-spec: issue lookup, label routing,
-claiming/project-status checks, isolated worktree and metrics setup, workflow
-dispatch, workflow execution, local verification, metrics writing, and dry-run
-publication handoff.
+blockers, comments, and expected side effects as local fixture state without
+mutating live GitHub state. Fixture runs do not simulate live GitHub claiming,
+assignee races, blocker checks, or project-board transitions; they construct the
+same `ClaimedIssue` boundary that live claiming produces, then exercise issue
+lookup, label routing, isolated worktree and metrics setup, workflow dispatch,
+workflow execution, local verification, metrics writing, and dry-run publication
+handoff (§ORCH-forge-orchestration-spec).
 
 Acceptance should be based on boundary evidence, not only process exit code.
-Reports must name the fixture mode, issue number, queue label, strategy, model,
-command, routed driver, workflow engine, logs, metrics
+The fixture run artifacts must make the fixture mode, issue number or queue
+label, strategy, command, routed driver, workflow engine, logs, metrics
 (§E2E-forge-workflow-testing.5), generated artifacts, and any suspicious
-behavior (§E2E-forge-workflow-testing.9).
+behavior reviewable from `run.log` and dry-run publication artifacts
+(§E2E-forge-workflow-testing.9).
 
 # ROADMAP-forge-library-preflight: Library-specific preparation preflight
 

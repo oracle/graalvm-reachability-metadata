@@ -1,0 +1,31 @@
+number: 9104
+title: "Fix JVM test failure for org.eclipse.jetty:jetty-servlet:9.4.20.v20190813"
+state: OPEN
+labels:
+  - fails-java-run
+assignees: []
+project:
+  number: 30
+  item_id: fixture-project-item-9104
+  status: Todo
+blocked_by: []
+body: |
+  Based on real closed issue #7547, fixed by merged PR #7551.
+
+  The scheduled compatibility update for
+  `org.eclipse.jetty:jetty-servlet:9.4.20.v20190813` compiled, but failed while
+  running:
+
+  `env GVM_TCK_LV=9.4.20.v20190813 GVM_TCK_NATIVE_IMAGE_MODE=current-defaults ./gradlew clean javaTest -Pcoordinates=org.eclipse.jetty:jetty-servlet:9.4.8.v20171121`
+
+  Please repair the existing Jetty Servlet tests for the new version while
+  preserving servlet holder, listener, resource, and dynamic-access coverage
+  from the previous `9.4.8.v20171121` test version.
+comments:
+  - author: fixture-reporter
+    created_at: "2026-05-25T07:22:19Z"
+    body: |
+      Fixture issue for demonstrating `fails-java-run` routing from a real
+      historical failure. Fixture setup masks `9.4.20.v20190813` in the
+      isolated worktree and makes `9.4.8.v20171121` the latest entry before
+      resolving current coordinates.

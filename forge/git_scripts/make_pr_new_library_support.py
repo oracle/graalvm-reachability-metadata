@@ -417,37 +417,14 @@ def create_pull_request(
         print(f"Pull request already exists for branch {branch}.")
         return
 
-    issue_no = issue_number if issue_number is not None else find_issue_common(coordinates, REPO)
-
-    # Read evaluations from the pending metrics file
-    matched = read_pending_metrics(metrics_repo_root)
-
-    metrics = matched.get("metrics", {})
-    strategy_name = matched.get("strategy_name", "")
-    model_display_name = get_model_display_name(strategy_name)
-    agent_name = get_agent_name(strategy_name)
-    title = f"[GenAI] Add support for {coordinates} using {model_display_name}"
-    if large_library_part is not None:
-        title = f"{title} (part {large_library_part})"
-
-    library_stats = load_library_stats(repo_path, coordinates)
-    dynamic_access_evidence = load_dynamic_access_metadata_evidence(repo_path, coordinates)
-    body = build_pull_request_body(
-        issue_no=issue_no,
+    title, body, matched = build_pull_request_preview(
         coordinates=coordinates,
-        model_display_name=model_display_name,
-        agent_name=agent_name,
-        strategy_name=strategy_name,
-        run_status=str(matched.get("status") or "unknown"),
-        metrics=metrics,
-        library_stats=library_stats,
-        post_generation_intervention=matched.get("post_generation_intervention"),
-        local_ci_verification=matched.get(LOCAL_CI_VERIFICATION_KEY),
-        is_large_library_part=large_library_part is not None,
-        is_final_large_library_part=is_final_large_library_part,
+        metrics_repo_root=metrics_repo_root,
+        repo_path=repo_path,
+        issue_number=issue_number,
         large_library_part=large_library_part,
+        is_final_large_library_part=is_final_large_library_part,
         series_id=series_id,
-        dynamic_access_evidence=dynamic_access_evidence,
     )
 
     cmd = [
@@ -469,6 +446,45 @@ def create_pull_request(
             cmd.extend(["--reviewer", r])
     result = gh(*cmd[1:])
     return _parse_pr_number(result.stdout)
+
+
+def build_pull_request_preview(
+        coordinates: str,
+        metrics_repo_root: str,
+        repo_path: str,
+        issue_number: int | None = None,
+        large_library_part: int | None = None,
+        is_final_large_library_part: bool = True,
+        series_id: str | None = None,
+) -> tuple[str, str, dict]:
+    """Build the PR title/body without creating a GitHub pull request."""
+    issue_no = issue_number if issue_number is not None else find_issue_common(coordinates, REPO)
+    matched = read_pending_metrics(metrics_repo_root)
+    metrics = matched.get("metrics", {})
+    strategy_name = matched.get("strategy_name", "")
+    model_display_name = get_model_display_name(strategy_name)
+    agent_name = get_agent_name(strategy_name)
+    title = f"[GenAI] Add support for {coordinates} using {model_display_name}"
+    if large_library_part is not None:
+        title = f"{title} (part {large_library_part})"
+    body = build_pull_request_body(
+        issue_no=issue_no,
+        coordinates=coordinates,
+        model_display_name=model_display_name,
+        agent_name=agent_name,
+        strategy_name=strategy_name,
+        run_status=str(matched.get("status") or "unknown"),
+        metrics=metrics,
+        library_stats=load_library_stats(repo_path, coordinates),
+        post_generation_intervention=matched.get("post_generation_intervention"),
+        local_ci_verification=matched.get(LOCAL_CI_VERIFICATION_KEY),
+        is_large_library_part=large_library_part is not None,
+        is_final_large_library_part=is_final_large_library_part,
+        large_library_part=large_library_part,
+        series_id=series_id,
+        dynamic_access_evidence=load_dynamic_access_metadata_evidence(repo_path, coordinates),
+    )
+    return title, body, matched
 
 
 def build_parser():

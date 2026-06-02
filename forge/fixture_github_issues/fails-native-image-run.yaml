@@ -1,0 +1,29 @@
+number: 9105
+title: "Fix native-image runtime failure for com.github.ben-manes.caffeine:caffeine:3.1.8"
+state: OPEN
+labels:
+  - fails-native-image-run
+assignees: []
+project:
+  number: 30
+  item_id: fixture-project-item-9105
+  status: Todo
+blocked_by: []
+body: |
+  The scheduled compatibility update for
+  `com.github.ben-manes.caffeine:caffeine:3.1.8` compiled and passed the JVM
+  tests, but failed while running the Native Image test binary:
+
+  `env GVM_TCK_LV=3.1.8 GVM_TCK_NATIVE_IMAGE_MODE=current-defaults ./gradlew clean nativeTest -Pcoordinates=com.github.ben-manes.caffeine:caffeine:3.1.2`
+
+  Please update the reachability metadata so the native-image runtime test
+  passes for the requested version, preserving the cache, scheduler, and
+  dynamic-access coverage from the previous `3.1.2` test version.
+comments:
+  - author: fixture-reporter
+    created_at: "2026-05-27T22:55:33Z"
+    body: |
+      Fixture issue for demonstrating `fails-native-image-run` routing. Fixture
+      setup masks `3.1.8` in the isolated worktree and makes `3.1.2` the latest
+      entry before resolving current coordinates, so the native-image-run fix
+      regenerates `3.1.8` metadata from the previous baseline.

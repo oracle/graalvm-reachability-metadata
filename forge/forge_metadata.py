@@ -16,18 +16,22 @@ orchestration contract in §ORCH-forge-orchestration-spec.
 Usage:
   python forge-metadata.py --label <label> [--limit N] [--offset N|--random-offset]
       [--strategy-name <name>] [--reachability-metadata-path <path>]
+  python forge-metadata.py --fixture-testing --issue-number <number>
+      --strategy-name <name> [--reachability-metadata-path <path>]
   python forge-metadata.py --review-pr <label> [--limit N]
       [--reachability-metadata-path <path>] [--review-model <model>] [--period <seconds|Nm|Nh|Nd>]
 """
 
 import argparse
 import concurrent.futures
+import contextlib
 import errno
 import hashlib
 import json
 import os
 import random
 import re
+import shlex
 import shutil
 import signal
 import subprocess
@@ -37,8 +41,10 @@ import threading
 import time
 import traceback
 import uuid
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Optional
+from datetime import datetime
+from typing import Any, Optional
 from urllib.parse import quote
 
 from ai_workflows.add_new_library_support import (
@@ -75,13 +81,33 @@ from git_scripts.common_git import (
     run_github_json_with_retries,
     run_github_with_retries,
 )
-from git_scripts.make_pr_javac_fix import main as run_make_pr_javac_fix
-from git_scripts.make_pr_java_run_fix import main as run_make_pr_java_run_fix
-from git_scripts.make_pr_new_library_support import main as run_make_pr_new_library_support
-from git_scripts.make_pr_not_for_native_image import main as run_make_pr_not_for_native_image
-from git_scripts.make_pr_ni_run_fix import main as run_make_pr_ni_run_fix
-from git_scripts.make_pr_improve_coverage import main as run_make_pr_improve_coverage
+from git_scripts.make_pr_javac_fix import (
+    build_pull_request_preview as build_javac_fix_pull_request_preview,
+    main as run_make_pr_javac_fix,
+)
+from git_scripts.make_pr_java_run_fix import (
+    build_pull_request_preview as build_java_run_fix_pull_request_preview,
+    main as run_make_pr_java_run_fix,
+)
+from git_scripts.make_pr_new_library_support import (
+    build_pull_request_preview as build_new_library_pull_request_preview,
+    main as run_make_pr_new_library_support,
+)
+from git_scripts.make_pr_not_for_native_image import (
+    build_pull_request_preview as build_not_for_native_image_pull_request_preview,
+    main as run_make_pr_not_for_native_image,
+)
+from git_scripts.make_pr_ni_run_fix import (
+    build_pull_request_preview as build_ni_run_fix_pull_request_preview,
+    main as run_make_pr_ni_run_fix,
+)
+from git_scripts.make_pr_improve_coverage import (
+    build_pull_request_preview as build_improve_coverage_pull_request_preview,
+    load_baseline_snapshot,
+    main as run_make_pr_improve_coverage,
+)
 from utility_scripts.dynamic_access_report import load_dynamic_access_coverage_report
+from utility_scripts.fixture_github import FixtureGitHubState, load_fixture_github_state
 from utility_scripts.library_stats import resolve_stats_file_path
 from utility_scripts.large_library_progress import (
     LABEL_LARGE_LIBRARY_BLOCKED,
@@ -144,6 +170,9 @@ ISSUE_SEARCH_CACHE_FILENAME = "issue-search-cache-v1.json"
 ISSUE_SEARCH_CACHE_LOCK_FILENAME = "issue-search-cache-v1.lock"
 DEFAULT_ISSUE_SEARCH_CACHE_TTL_SECONDS = 10 * 60
 GITHUB_RATE_LIMIT_EXIT_CODE = 75
+FIXTURE_E2E_LOG_DIRNAME = "fixture-e2e-logs"
+FIXTURE_RUN_LOG_FILENAME = "run.log"
+FIXTURE_PUBLICATION_FILENAME = "publication.md"
 REVIEW_PERIOD_SUFFIX_SECONDS = {
     "s": 1,
     "m": 60,
@@ -176,6 +205,7 @@ LABEL_PRIORITY = "priority"
 LABEL_HUMAN_INTERVENTION = "human-intervention"
 LABEL_HUMAN_INTERVENTION_FIXED = "human-intervention-fixed"
 LABEL_NOT_FOR_NATIVE_IMAGE = "not-for-native-image"
+FIXTURE_AUTHENTICATED_USER = "fixture-runner"
 
 SCRATCH_WORKTREE_DIRNAME = "forge_worktrees"
 SCRATCH_REVIEW_WORKTREE_DIRNAME = "forge_review_worktrees"
@@ -326,6 +356,98 @@ class FailurePreservationResult:
     branch_name: str
     branch_url: str
     committed_changes: bool
+    reviewable_worktree_path: str | None = None
+    scratch_metrics_path: str | None = None
+    copied_logs_destination: str | None = None
+    copied_logs_destination_relpath: str | None = None
+    fixture_mode: bool = False
+
+    def to_json(self) -> dict:
+        return {
+            "branch_name": self.branch_name,
+            "branch_url": self.branch_url,
+            "committed_changes": self.committed_changes,
+            "reviewable_worktree_path": self.reviewable_worktree_path,
+            "scratch_metrics_path": self.scratch_metrics_path,
+            "copied_logs_destination": self.copied_logs_destination,
+            "copied_logs_destination_relpath": self.copied_logs_destination_relpath,
+            "fixture_mode": self.fixture_mode,
+        }
+
+
+@dataclass(frozen=True)
+class PublicationHandoff:
+    script_name: str
+    runner_name: str
+    runner: Callable[[list[str]], None]
+    argv: list[str]
+    issue_number: int
+    issue_label: str
+    result_label: str
+    coordinates: str | None
+    current_coordinates: str | None
+    new_version: str | None
+    worktree_path: str
+    scratch_metrics_path: str
+    workflow_status: str | None
+    large_library_args: list[str]
+    large_library_state_path: str | None
+    large_library_part: int | None
+    large_library_final: bool | None
+    large_library_series_id: str | None
+    not_for_native_image: bool = False
+
+    def to_json(self) -> dict:
+        return {
+            "script_name": self.script_name,
+            "runner_name": self.runner_name,
+            "argv": list(self.argv),
+            "issue_number": self.issue_number,
+            "issue_label": self.issue_label,
+            "result_label": self.result_label,
+            "coordinates": self.coordinates,
+            "current_coordinates": self.current_coordinates,
+            "new_version": self.new_version,
+            "worktree_path": self.worktree_path,
+            "scratch_metrics_path": self.scratch_metrics_path,
+            "workflow_status": self.workflow_status,
+            "large_library_args": list(self.large_library_args),
+            "large_library_state_path": self.large_library_state_path,
+            "large_library_part": self.large_library_part,
+            "large_library_final": self.large_library_final,
+            "large_library_series_id": self.large_library_series_id,
+            "not_for_native_image": self.not_for_native_image,
+        }
+
+
+@dataclass(frozen=True)
+class WorkflowDriverInvocation:
+    driver_name: str
+    script_name: str
+    runner_name: str
+    runner: Callable[[list[str]], int]
+    argv: list[str]
+    issue_number: int
+    issue_label: str
+    coordinates: str | None
+    current_coordinates: str | None
+    new_version: str | None
+    log_stage_name: str
+    log_message: str
+    failure_name: str
+
+    def to_json(self) -> dict:
+        return {
+            "driver_name": self.driver_name,
+            "script_name": self.script_name,
+            "runner_name": self.runner_name,
+            "argv": list(self.argv),
+            "issue_number": self.issue_number,
+            "issue_label": self.issue_label,
+            "coordinates": self.coordinates,
+            "current_coordinates": self.current_coordinates,
+            "new_version": self.new_version,
+        }
 
 
 def mark_user_interrupt_requested(reason: str = INTERRUPT_REASON_CTRL_C) -> None:
@@ -469,12 +591,15 @@ PIPELINE_LABELS = {LABEL_LIBRARY_NEW, LABEL_LIBRARY_UPDATE, LABEL_JAVAC_FAIL, LA
 
 def get_issue_by_number(issue_number: int) -> tuple[dict, str]:
     """Fetch a single issue by number and determine its pipeline label."""
-    data = gh_json(
-        "issue", "view",
-        str(issue_number),
-        "--repo", REPO,
-        "--json", "number,title,url,labels,assignees",
-    )
+    if is_fixture_testing_enabled():
+        data = require_fixture_github_state().get_issue_by_number(issue_number)
+    else:
+        data = gh_json(
+            "issue", "view",
+            str(issue_number),
+            "--repo", REPO,
+            "--json", "number,title,url,labels,assignees",
+        )
     for label in data.get("labels", []):
         label_name = label.get("name") if isinstance(label, dict) else None
         if label_name in PIPELINE_LABELS:
@@ -500,6 +625,8 @@ def get_issue_claim_payload(issue_number: int) -> dict:
 
 def get_issue_body(issue_number: int) -> str:
     """Fetch an issue body only for workflows that explicitly need reporter context."""
+    if is_fixture_testing_enabled():
+        return require_fixture_github_state().get_issue_body(issue_number)
     data = gh_json(
         "issue", "view",
         str(issue_number),
@@ -612,6 +739,8 @@ def get_issue_search_page(query: str, page: int, per_page: int) -> list[dict]:
 
 def count_issues_with_label(label: str, extra_labels: list[str] | None = None) -> int:
     """Return GitHub's count of open issues carrying the given label set."""
+    if is_fixture_testing_enabled():
+        return require_fixture_github_state().count_open_issues_by_label(label, extra_labels)
     query = build_issue_search_query(label, extra_labels)
     return get_issue_search_count(query)
 
@@ -655,6 +784,8 @@ def get_issue_search_count(query: str) -> int:
 
 def get_issues_with_label(label: str, limit: int, offset: int = 0, extra_labels: list[str] | None = None) -> list[dict]:
     """Fetch open issues that carry the given label (and any extra labels)."""
+    if is_fixture_testing_enabled():
+        return require_fixture_github_state().list_open_issues_by_label(label, limit, offset, extra_labels)
     return search_issues_with_label(label, limit, offset, extra_labels)
 
 
@@ -979,6 +1110,8 @@ def try_acquire_issue_claim_lock(issue_number: int) -> LocalIssueClaimLock | Non
 
 def is_issue_claim_cache_enabled() -> bool:
     """Return True when the shared local issue-claim cache is enabled."""
+    if is_fixture_testing_enabled():
+        return False
     return os.environ.get("FORGE_ISSUE_CLAIM_CACHE", "1") != "0"
 
 
@@ -1501,7 +1634,8 @@ def get_prioritized_issues_with_label(
     """Fetch one issue batch and return priority issues first within that batch."""
     regular_issues = get_issues_with_label(label, limit, regular_offset)
     regular_offset += len(regular_issues)
-    try_mark_issues_blocking_many_libraries_as_priority(regular_issues)
+    if not is_fixture_testing_enabled():
+        try_mark_issues_blocking_many_libraries_as_priority(regular_issues)
     sorted_issues = sorted(
         regular_issues,
         key=lambda issue: not issue_has_label(issue, LABEL_PRIORITY),
@@ -1637,14 +1771,216 @@ ensured_issue_labels: set[str] = set()
 held_issue_claim_lock_numbers: set[int] = set()
 held_issue_claim_lock_guard = threading.Lock()
 preservation_failed_worktree_paths: set[str] = set()
+fixture_github_state: FixtureGitHubState | None = None
+fixture_run_timestamp_value: str | None = None
 
 
 CLAIM_BACKOFF_MIN = 5  # Minimum seconds to wait before verifying claim
 CLAIM_BACKOFF_MAX = 10  # Maximum seconds to wait before verifying claim
 
 
+class FixtureRunLogTee:
+    """Mirror process stdout/stderr, including child process output, into one log file."""
+
+    def __init__(self, log_path: str) -> None:
+        self.log_path = log_path
+        self._log_file = open(log_path, "ab", buffering=0)
+        self._lock = threading.Lock()
+        self._original_stdout_fd = os.dup(1)
+        self._original_stderr_fd = os.dup(2)
+        self._stdout_read_fd, self._stdout_write_fd = os.pipe()
+        self._stderr_read_fd, self._stderr_write_fd = os.pipe()
+        self._threads: list[threading.Thread] = []
+        self._closed = False
+
+    def start(self) -> None:
+        sys.stdout.flush()
+        sys.stderr.flush()
+        self._threads = [
+            threading.Thread(
+                target=self._copy_stream,
+                args=(self._stdout_read_fd, self._original_stdout_fd),
+                daemon=True,
+            ),
+            threading.Thread(
+                target=self._copy_stream,
+                args=(self._stderr_read_fd, self._original_stderr_fd),
+                daemon=True,
+            ),
+        ]
+        for thread in self._threads:
+            thread.start()
+        os.dup2(self._stdout_write_fd, 1)
+        os.dup2(self._stderr_write_fd, 2)
+        os.close(self._stdout_write_fd)
+        os.close(self._stderr_write_fd)
+        if hasattr(sys.stdout, "reconfigure"):
+            sys.stdout.reconfigure(line_buffering=True, write_through=True)
+        if hasattr(sys.stderr, "reconfigure"):
+            sys.stderr.reconfigure(line_buffering=True, write_through=True)
+
+    def close(self) -> None:
+        if self._closed:
+            return
+        self._closed = True
+        sys.stdout.flush()
+        sys.stderr.flush()
+        os.dup2(self._original_stdout_fd, 1)
+        os.dup2(self._original_stderr_fd, 2)
+        for thread in self._threads:
+            thread.join(timeout=5)
+        os.close(self._original_stdout_fd)
+        os.close(self._original_stderr_fd)
+        self._log_file.close()
+
+    def _copy_stream(self, read_fd: int, target_fd: int) -> None:
+        # The terminal receives every byte unchanged so the live `\r`-updating
+        # status line renders exactly as before. The log file instead stores the
+        # terminal-resolved text: carriage returns overwrite in place, so the many
+        # in-place status frames collapse to the final state of each line.
+        line = bytearray()
+        cursor = 0
+        try:
+            while True:
+                chunk = os.read(read_fd, 65536)
+                if not chunk:
+                    break
+                os.write(target_fd, chunk)
+                log_bytes, line, cursor = self._resolve_carriage_returns(chunk, line, cursor)
+                if log_bytes:
+                    with self._lock:
+                        self._log_file.write(log_bytes)
+        finally:
+            if line:
+                with self._lock:
+                    self._log_file.write(bytes(line))
+            os.close(read_fd)
+
+    @staticmethod
+    def _resolve_carriage_returns(
+            chunk: bytes,
+            line: bytearray,
+            cursor: int,
+    ) -> tuple[bytes, bytearray, int]:
+        """Apply terminal `\\r`/`\\n` semantics to `chunk` for the log file.
+
+        Returns the bytes of any completed lines plus the carried-over partial
+        line and cursor. `\\r` resets the cursor to column 0 so later bytes
+        overwrite the current line, mirroring how a terminal displays an in-place
+        status update; `\\n` flushes the resolved line.
+        """
+        if 0x0D not in chunk and cursor == len(line):
+            # Fast path: no carriage returns and nothing pending to overwrite, so
+            # this is plain appending. Emit all complete lines, carry the rest.
+            line += chunk
+            split_at = line.rfind(0x0A)
+            if split_at == -1:
+                return b"", line, len(line)
+            completed = bytes(line[:split_at + 1])
+            remainder = bytearray(line[split_at + 1:])
+            return completed, remainder, len(remainder)
+
+        output = bytearray()
+        for byte in chunk:
+            if byte == 0x0A:  # newline: flush the resolved line
+                output += line
+                output.append(0x0A)
+                line = bytearray()
+                cursor = 0
+            elif byte == 0x0D:  # carriage return: overwrite from column 0
+                cursor = 0
+            elif cursor < len(line):
+                line[cursor] = byte
+                cursor += 1
+            else:
+                line.append(byte)
+                cursor += 1
+        return bytes(output), line, cursor
+
+
+def _fixture_run_timestamp() -> str:
+    return datetime.now().astimezone().strftime("%Y%m%d-%H%M%S-%f%z")
+
+
+def get_fixture_run_timestamp() -> str:
+    """Return one stable timestamp shared by every issue processed in this run.
+
+    Issues claimed by the same queue or label run land in sibling
+    `issue-<number>/<timestamp>/` directories so they sort and correlate together.
+    """
+    global fixture_run_timestamp_value
+    if fixture_run_timestamp_value is None:
+        fixture_run_timestamp_value = _fixture_run_timestamp()
+    return fixture_run_timestamp_value
+
+
+def get_fixture_issue_artifact_dir(issue_number: int) -> str:
+    """Return the artifact directory for one fixture issue: `issue-<number>/<timestamp>/`.
+
+    Single-issue, label, and work-queue runs all write each issue's evidence here,
+    alongside any other results for that issue. §E2E-forge-workflow-testing.2
+    """
+    issue_dir = os.path.join(
+        get_repo_root(),
+        FIXTURE_E2E_LOG_DIRNAME,
+        f"issue-{issue_number}",
+        get_fixture_run_timestamp(),
+    )
+    os.makedirs(issue_dir, exist_ok=True)
+    return issue_dir
+
+
+@contextlib.contextmanager
+def fixture_issue_run_log(issue_number: int):
+    """Tee one fixture issue's stdout/stderr into its own `run.log`.
+
+    Fixture issue processing is sequential (parallelism is pinned to 1 in fixture
+    mode), so a single process-wide tee per issue keeps each `run.log` scoped to
+    that issue without interleaving.
+    """
+    issue_dir = get_fixture_issue_artifact_dir(issue_number)
+    tee = FixtureRunLogTee(os.path.join(issue_dir, FIXTURE_RUN_LOG_FILENAME))
+    tee.start()
+    log_stage("fixture-log", f"Writing fixture run artifacts for issue #{issue_number} to {issue_dir}")
+    log_stage("fixture-log", f"Complete fixture run log: {tee.log_path}")
+    log_stage(
+        "fixture-log",
+        f"Fixture command: {' '.join(shlex.quote(argument) for argument in [sys.executable, *sys.argv])}",
+    )
+    try:
+        yield issue_dir
+    finally:
+        tee.close()
+
+
+def configure_fixture_testing(
+        fixture_paths: list[str] | None = None,
+        fixture_state: FixtureGitHubState | None = None,
+) -> FixtureGitHubState:
+    """Configure the dispatcher to use local fixture GitHub state."""
+    global fixture_github_state
+    if fixture_state is not None and fixture_paths is not None:
+        raise ValueError("Pass either fixture_paths or fixture_state, not both")
+    fixture_github_state = fixture_state or load_fixture_github_state(fixture_paths)
+    return fixture_github_state
+
+
+def is_fixture_testing_enabled() -> bool:
+    """Return True when GitHub helper calls should use fixture state."""
+    return fixture_github_state is not None
+
+
+def require_fixture_github_state() -> FixtureGitHubState:
+    """Return configured fixture GitHub state or fail with a dispatcher error."""
+    if fixture_github_state is None:
+        raise RuntimeError("Fixture GitHub state is not configured")
+    return fixture_github_state
+
+
 def get_authenticated_user() -> str:
     """Return the GitHub username of the currently authenticated gh user."""
+    if is_fixture_testing_enabled():
+        return FIXTURE_AUTHENTICATED_USER
     result = run_github_with_retries(gh, ("api", "user", "--jq", ".login"))
     return result.stdout.strip()
 
@@ -1653,6 +1989,10 @@ def resolve_authenticated_user(authenticated_user: str | None = None) -> str:
     """Resolve and log the authenticated GitHub username when remote work needs it."""
     if authenticated_user is not None:
         return authenticated_user
+    if is_fixture_testing_enabled():
+        print()
+        log_stage("github-auth", f"Fixture authenticated as: {FIXTURE_AUTHENTICATED_USER}")
+        return FIXTURE_AUTHENTICATED_USER
     ensure_gh_authenticated()
     resolved_user = get_authenticated_user()
     print()
@@ -3224,6 +3564,9 @@ def ensure_repo_label_exists(label_name: str, color: str, description: str) -> N
     """Ensure a repository label exists before applying it to an issue or pull request."""
     if label_name in ensured_issue_labels:
         return
+    if is_fixture_testing_enabled():
+        ensured_issue_labels.add(label_name)
+        return
 
     encoded_label = quote(label_name, safe="")
     label_lookup = gh("api", f"/repos/{REPO}/labels/{encoded_label}", check=False)
@@ -3259,6 +3602,13 @@ def ensure_repo_label_exists(label_name: str, color: str, description: str) -> N
 
 def post_issue_comment(issue_number: int, body: str) -> None:
     """Post a comment to a GitHub issue."""
+    if is_fixture_testing_enabled():
+        require_fixture_github_state().post_issue_comment(
+            issue_number,
+            body,
+            FIXTURE_AUTHENTICATED_USER,
+        )
+        return
     gh(
         "issue",
         "comment",
@@ -3297,6 +3647,9 @@ def add_issue_label(issue_number: int, label_name: str) -> None:
         label_color,
         label_description,
     )
+    if is_fixture_testing_enabled():
+        require_fixture_github_state().add_issue_label(issue_number, label_name)
+        return
     gh(
         "issue",
         "edit",
@@ -3310,6 +3663,9 @@ def add_issue_label(issue_number: int, label_name: str) -> None:
 
 def remove_issue_label(issue_number: int, label_name: str) -> None:
     """Remove a label from a GitHub issue if it is present."""
+    if is_fixture_testing_enabled():
+        require_fixture_github_state().remove_issue_label(issue_number, label_name)
+        return
     result = gh(
         "issue",
         "edit",
@@ -3453,6 +3809,41 @@ def preserve_failed_work_branch(claimed_issue: ClaimedIssue) -> FailurePreservat
         branch_name=branch_name,
         branch_url=branch_url,
         committed_changes=committed_changes,
+        reviewable_worktree_path=repo_path,
+        scratch_metrics_path=claimed_issue.scratch_metrics_repo_path,
+        copied_logs_destination=None if logs_destination_relpath is None else os.path.join(
+            repo_path,
+            logs_destination_relpath,
+        ),
+        copied_logs_destination_relpath=logs_destination_relpath,
+    )
+
+
+def build_fixture_failure_preservation_result(claimed_issue: ClaimedIssue) -> FailurePreservationResult:
+    """Record the preservation branch that fixture mode would have pushed."""
+    issue_number = claimed_issue.issue["number"]
+    branch_name = build_failure_preservation_branch_name(claimed_issue)
+    worktree_path = os.path.abspath(claimed_issue.worktree_path)
+    logs_destination_relpath = None
+    if os.path.isdir(worktree_path):
+        logs_destination_relpath = copy_library_logs_to_preserved_worktree(claimed_issue)
+    else:
+        log_stage(
+            "preserve-failed-work",
+            f"Fixture mode: worktree for issue #{issue_number} is not present at {worktree_path}.",
+        )
+    return FailurePreservationResult(
+        branch_name=branch_name,
+        branch_url=f"fixture://preserved-work/{issue_number}/{quote(branch_name, safe='')}",
+        committed_changes=False,
+        reviewable_worktree_path=worktree_path,
+        scratch_metrics_path=claimed_issue.scratch_metrics_repo_path,
+        copied_logs_destination=None if logs_destination_relpath is None else os.path.join(
+            worktree_path,
+            logs_destination_relpath,
+        ),
+        copied_logs_destination_relpath=logs_destination_relpath,
+        fixture_mode=True,
     )
 
 
@@ -3462,6 +3853,15 @@ def refresh_preserved_branch_logs(
 ) -> None:
     """Refresh library logs on an already pushed human-intervention branch."""
     if preservation_result is None:
+        return
+    if is_fixture_testing_enabled():
+        log_stage(
+            "preserve-failed-work",
+            (
+                f"Fixture mode: preserved branch log refresh for issue "
+                f"#{claimed_issue.issue['number']} was already recorded locally."
+            ),
+        )
         return
 
     repo_path = require_claimed_issue_worktree(claimed_issue, "preserved log refresh")
@@ -3629,6 +4029,158 @@ def append_large_library_workflow_args(pipeline_argv: list[str], claimed_issue: 
         pipeline_argv.extend(["--chunk-call-limit", chunk_call_limit])
 
 
+def build_workflow_driver_invocation(
+        claimed_issue: ClaimedIssue,
+        strategy_name: str | None,
+        keep_tests_without_dynamic_access: bool,
+) -> WorkflowDriverInvocation:
+    """Build the routed workflow-driver command for a claimed issue."""
+    issue_number = claimed_issue.issue["number"]
+    if claimed_issue.label == LABEL_LIBRARY_NEW:
+        pipeline_argv = [
+            "--coordinates", claimed_issue.issue_coordinates,
+            "--reachability-metadata-path", claimed_issue.worktree_path,
+            "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+        ]
+        if strategy_name:
+            pipeline_argv.extend(["--strategy-name", strategy_name])
+        if keep_tests_without_dynamic_access:
+            pipeline_argv.append("--keep-tests-without-dynamic-access")
+        append_large_library_workflow_args(pipeline_argv, claimed_issue)
+        return WorkflowDriverInvocation(
+            driver_name="add_new_library_support",
+            script_name="add_new_library_support.py",
+            runner_name="run_add_new_library_support_workflow",
+            runner=run_add_new_library_support_workflow,
+            argv=pipeline_argv,
+            issue_number=issue_number,
+            issue_label=claimed_issue.label,
+            coordinates=claimed_issue.issue_coordinates,
+            current_coordinates=claimed_issue.current_coordinates,
+            new_version=claimed_issue.new_version,
+            log_stage_name="new-library-workflow",
+            log_message=(
+                f"Invoking add_new_library_support workflow for issue #{issue_number}: "
+                f"{claimed_issue.issue_coordinates}"
+            ),
+            failure_name="add_new_library_support",
+        )
+
+    elif claimed_issue.label == LABEL_JAVAC_FAIL:
+        pipeline_argv = [
+            "--coordinates", claimed_issue.current_coordinates,
+            "--new-version", claimed_issue.new_version,
+            "--reachability-metadata-path", claimed_issue.worktree_path,
+            "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+        ]
+        if strategy_name:
+            pipeline_argv.extend(["--strategy-name", strategy_name])
+        return WorkflowDriverInvocation(
+            driver_name="fix_javac_fail",
+            script_name="fix_javac_fail.py",
+            runner_name="run_fix_javac_workflow",
+            runner=run_fix_javac_workflow,
+            argv=pipeline_argv,
+            issue_number=issue_number,
+            issue_label=claimed_issue.label,
+            coordinates=None,
+            current_coordinates=claimed_issue.current_coordinates,
+            new_version=claimed_issue.new_version,
+            log_stage_name="javac-fix-workflow",
+            log_message=(
+                f"Invoking fix_javac_fail workflow for issue #{issue_number}: "
+                f"{claimed_issue.current_coordinates} -> {claimed_issue.new_version}"
+            ),
+            failure_name="fix_javac",
+        )
+
+    elif claimed_issue.label == LABEL_JAVA_RUN_FAIL:
+        pipeline_argv = [
+            "--coordinates", claimed_issue.current_coordinates,
+            "--new-version", claimed_issue.new_version,
+            "--reachability-metadata-path", claimed_issue.worktree_path,
+            "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+        ]
+        if strategy_name:
+            pipeline_argv.extend(["--strategy-name", strategy_name])
+        return WorkflowDriverInvocation(
+            driver_name="fix_java_run_fail",
+            script_name="fix_java_run_fail.py",
+            runner_name="run_fix_java_run_workflow",
+            runner=run_fix_java_run_workflow,
+            argv=pipeline_argv,
+            issue_number=issue_number,
+            issue_label=claimed_issue.label,
+            coordinates=None,
+            current_coordinates=claimed_issue.current_coordinates,
+            new_version=claimed_issue.new_version,
+            log_stage_name="java-run-fix-workflow",
+            log_message=(
+                f"Invoking fix_java_run_fail workflow for issue #{issue_number}: "
+                f"{claimed_issue.current_coordinates} -> {claimed_issue.new_version}"
+            ),
+            failure_name="fix_java_run",
+        )
+
+    elif claimed_issue.label == LABEL_NI_RUN_FAIL:
+        pipeline_argv = [
+            "--coordinates", claimed_issue.current_coordinates,
+            "--new-version", claimed_issue.new_version,
+            "--reachability-metadata-path", claimed_issue.worktree_path,
+        ]
+        return WorkflowDriverInvocation(
+            driver_name="fix_ni_run",
+            script_name="fix_ni_run.py",
+            runner_name="run_fix_ni_run_workflow",
+            runner=run_fix_ni_run_workflow,
+            argv=pipeline_argv,
+            issue_number=issue_number,
+            issue_label=claimed_issue.label,
+            coordinates=None,
+            current_coordinates=claimed_issue.current_coordinates,
+            new_version=claimed_issue.new_version,
+            log_stage_name="native-image-fix-workflow",
+            log_message=(
+                f"Invoking fix_ni_run workflow for issue #{issue_number}: "
+                f"{claimed_issue.current_coordinates} -> {claimed_issue.new_version}"
+            ),
+            failure_name="fix_ni_run",
+        )
+
+    elif claimed_issue.label == LABEL_LIBRARY_UPDATE:
+        pipeline_argv = [
+            "--coordinates", claimed_issue.issue_coordinates,
+            "--reachability-metadata-path", claimed_issue.worktree_path,
+            "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+        ]
+        issue_requested_metadata_context = extract_issue_requested_metadata_context(get_issue_body(issue_number))
+        if issue_requested_metadata_context:
+            pipeline_argv.extend(["--issue-requested-metadata-context", issue_requested_metadata_context])
+        if strategy_name:
+            pipeline_argv.extend(["--strategy-name", strategy_name])
+        append_large_library_workflow_args(pipeline_argv, claimed_issue)
+        return WorkflowDriverInvocation(
+            driver_name="improve_library_coverage",
+            script_name="improve_library_coverage.py",
+            runner_name="run_improve_library_coverage_workflow",
+            runner=run_improve_library_coverage_workflow,
+            argv=pipeline_argv,
+            issue_number=issue_number,
+            issue_label=claimed_issue.label,
+            coordinates=claimed_issue.issue_coordinates,
+            current_coordinates=claimed_issue.current_coordinates,
+            new_version=claimed_issue.new_version,
+            log_stage_name="improve-coverage-workflow",
+            log_message=(
+                f"Invoking improve_library_coverage workflow for issue #{issue_number}: "
+                f"{claimed_issue.issue_coordinates}"
+            ),
+            failure_name="improve_library_coverage",
+        )
+
+    raise ValueError(f"Unknown label '{claimed_issue.label}'")
+
+
 def invoke_pipeline(
         claimed_issue: ClaimedIssue,
         strategy_name: str | None,
@@ -3641,142 +4193,46 @@ def invoke_pipeline(
     (§AR-forge-workflow-boundary), receiving resolved coordinates, paths,
     strategy names, and chunk context.
     """
-    issue_number = claimed_issue.issue["number"]
     require_claimed_issue_worktree(claimed_issue, "workflow execution")
+    invocation = build_workflow_driver_invocation(
+        claimed_issue,
+        strategy_name,
+        keep_tests_without_dynamic_access,
+    )
 
-    if claimed_issue.label == LABEL_LIBRARY_NEW:
-        print()
+    print()
+    log_stage(invocation.log_stage_name, invocation.log_message)
+    if is_fixture_testing_enabled():
+        display_argv, issue_context = list(invocation.argv), None
+        if "--issue-requested-metadata-context" in display_argv:
+            context_flag_index = display_argv.index("--issue-requested-metadata-context")
+            issue_context = display_argv[context_flag_index + 1]
+            del display_argv[context_flag_index:context_flag_index + 2]
+        if issue_context:
+            log_stage("workflow-driver", f"Issue body/context passed to workflow:\n{issue_context}")
         log_stage(
-            "new-library-workflow",
-            f"Invoking add_new_library_support workflow for issue #{issue_number}: {claimed_issue.issue_coordinates}",
+            "workflow-driver",
+            (
+                f"Fixture mode invoking {invocation.script_name}: "
+                f"{' '.join(shlex.quote(argument) for argument in display_argv)}"
+            ),
         )
-        pipeline_argv = [
-            "--coordinates", claimed_issue.issue_coordinates,
-            "--reachability-metadata-path", claimed_issue.worktree_path,
-            "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
-        ]
-        if strategy_name:
-            pipeline_argv.extend(["--strategy-name", strategy_name])
-        if keep_tests_without_dynamic_access:
-            pipeline_argv.append("--keep-tests-without-dynamic-access")
-        append_large_library_workflow_args(pipeline_argv, claimed_issue)
-        rc = run_add_new_library_support_workflow(pipeline_argv)
-        if is_interrupt_exit_code(rc):
-            mark_user_interrupt_requested()
-            raise KeyboardInterrupt
-        if rc != 0:
-            print(
-                f"\nERROR: add_new_library_support workflow failed for issue #{issue_number} (exit {rc})",
-                file=sys.stderr,
-            )
-            return False
-
-    elif claimed_issue.label == LABEL_JAVAC_FAIL:
-        log_stage(
-            "javac-fix-workflow",
-            f"Invoking fix_javac_fail workflow for issue #{issue_number}: "
-            f"{claimed_issue.current_coordinates} -> {claimed_issue.new_version}",
+    rc = invocation.runner(invocation.argv)
+    if is_interrupt_exit_code(rc):
+        mark_user_interrupt_requested()
+        raise KeyboardInterrupt
+    if rc != 0:
+        print(
+            (
+                f"ERROR: {invocation.failure_name} workflow failed for issue "
+                f"#{invocation.issue_number} (exit {rc})"
+            ),
+            file=sys.stderr,
         )
-        pipeline_argv = [
-            "--coordinates", claimed_issue.current_coordinates,
-            "--new-version", claimed_issue.new_version,
-            "--reachability-metadata-path", claimed_issue.worktree_path,
-            "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
-        ]
-        if strategy_name:
-            pipeline_argv.extend(["--strategy-name", strategy_name])
-        rc = run_fix_javac_workflow(pipeline_argv)
-        if is_interrupt_exit_code(rc):
-            mark_user_interrupt_requested()
-            raise KeyboardInterrupt
-        if rc != 0:
-            print(
-                f"ERROR: fix_javac workflow failed for issue #{issue_number} (exit {rc})",
-                file=sys.stderr,
-            )
-            return False
-
-    elif claimed_issue.label == LABEL_JAVA_RUN_FAIL:
-        log_stage(
-            "java-run-fix-workflow",
-            f"Invoking fix_java_run_fail workflow for issue #{issue_number}: "
-            f"{claimed_issue.current_coordinates} -> {claimed_issue.new_version}",
-        )
-        pipeline_argv = [
-            "--coordinates", claimed_issue.current_coordinates,
-            "--new-version", claimed_issue.new_version,
-            "--reachability-metadata-path", claimed_issue.worktree_path,
-            "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
-        ]
-        if strategy_name:
-            pipeline_argv.extend(["--strategy-name", strategy_name])
-        rc = run_fix_java_run_workflow(pipeline_argv)
-        if is_interrupt_exit_code(rc):
-            mark_user_interrupt_requested()
-            raise KeyboardInterrupt
-        if rc != 0:
-            print(
-                f"ERROR: fix_java_run workflow failed for issue #{issue_number} (exit {rc})",
-                file=sys.stderr,
-            )
-            return False
-
-    elif claimed_issue.label == LABEL_NI_RUN_FAIL:
-        log_stage(
-            "native-image-fix-workflow",
-            f"Invoking fix_ni_run workflow for issue #{issue_number}: "
-            f"{claimed_issue.current_coordinates} -> {claimed_issue.new_version}",
-        )
-        pipeline_argv = [
-            "--coordinates", claimed_issue.current_coordinates,
-            "--new-version", claimed_issue.new_version,
-            "--reachability-metadata-path", claimed_issue.worktree_path,
-        ]
-        rc = run_fix_ni_run_workflow(pipeline_argv)
-        if is_interrupt_exit_code(rc):
-            mark_user_interrupt_requested()
-            raise KeyboardInterrupt
-        if rc != 0:
-            print(
-                f"ERROR: fix_ni_run workflow failed for issue #{issue_number} (exit {rc})",
-                file=sys.stderr,
-            )
-            return False
-
-    elif claimed_issue.label == LABEL_LIBRARY_UPDATE:
-        log_stage(
-            "improve-coverage-workflow",
-            f"Invoking improve_library_coverage workflow for issue #{issue_number}: "
-            f"{claimed_issue.issue_coordinates}",
-        )
-        pipeline_argv = [
-            "--coordinates", claimed_issue.issue_coordinates,
-            "--reachability-metadata-path", claimed_issue.worktree_path,
-            "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
-        ]
-        issue_requested_metadata_context = extract_issue_requested_metadata_context(get_issue_body(issue_number))
-        if issue_requested_metadata_context:
-            pipeline_argv.extend(["--issue-requested-metadata-context", issue_requested_metadata_context])
-        if strategy_name:
-            pipeline_argv.extend(["--strategy-name", strategy_name])
-        append_large_library_workflow_args(pipeline_argv, claimed_issue)
-        rc = run_improve_library_coverage_workflow(pipeline_argv)
-        if is_interrupt_exit_code(rc):
-            mark_user_interrupt_requested()
-            raise KeyboardInterrupt
-        if rc != 0:
-            print(
-                f"ERROR: improve_library_coverage workflow failed for issue #{issue_number} (exit {rc})",
-                file=sys.stderr,
-            )
-            return False
-
-    else:
-        print(f"ERROR: Unknown label '{claimed_issue.label}'", file=sys.stderr)
         return False
 
     print()
-    log_stage("pipeline", f"Pipeline succeeded for issue #{issue_number}")
+    log_stage("pipeline", f"Pipeline succeeded for issue #{invocation.issue_number}")
     return True
 
 
@@ -4177,7 +4633,20 @@ def cleanup_issue_workspace(claimed_issue: ClaimedIssue, canonical_metrics_repo_
             file=sys.stderr,
         )
     else:
+        if is_fixture_testing_enabled():
+            log_stage(
+                "fixture-cleanup",
+                (
+                    f"Cleaning isolated fixture worktree for issue #{claimed_issue.issue['number']}: "
+                    f"{claimed_issue.worktree_path}"
+                ),
+            )
         remove_worktree(claimed_issue.base_reachability_metadata_path, claimed_issue.worktree_path)
+        if is_fixture_testing_enabled():
+            log_stage(
+                "fixture-cleanup",
+                f"Cleaned isolated fixture worktree for issue #{claimed_issue.issue['number']}.",
+            )
 
 
 def build_claim_metadata(
@@ -4239,6 +4708,15 @@ def verify_large_library_previous_part_merged(state: LargeLibraryProgressState) 
     """Fail fast when continuation is requested before the previous PR merged."""
     if not state.created_pull_requests:
         return
+    if is_fixture_testing_enabled():
+        log_stage(
+            "large-library",
+            (
+                f"Fixture mode: treating previous large-library PR "
+                f"#{state.created_pull_requests[-1]} as merged."
+            ),
+        )
+        return
     previous_pr = state.created_pull_requests[-1]
     result = gh(
         "pr",
@@ -4279,6 +4757,8 @@ def verify_large_library_base_contains_published_commit(
 
 def resolve_large_library_published_base_commit(state: LargeLibraryProgressState) -> str | None:
     """Return the commit that should be present on the continuation base."""
+    if is_fixture_testing_enabled():
+        return state.last_published_commit
     if state.created_pull_requests:
         previous_pr = state.created_pull_requests[-1]
         result = gh(
@@ -4417,6 +4897,89 @@ def claim_issue_for_processing(
     )
 
 
+def build_fixture_claimed_issue(
+        issue: dict,
+        label: str,
+        base_reachability_metadata_path: str,
+        canonical_metrics_repo_path: str,
+) -> Optional[ClaimedIssue]:
+    """Prepare a fixture issue without simulating GitHub claim mechanics.
+
+    §E2E-forge-workflow-testing.2
+    """
+    if not is_fixture_testing_enabled():
+        raise RuntimeError("Fixture issue preparation requires fixture testing mode")
+
+    issue_number = issue["number"]
+    try:
+        item_id = require_fixture_github_state().get_issue_project_item_id(issue_number)
+    except Exception:
+        item_id = f"fixture-project-item-{issue_number}"
+
+    try:
+        worktree_path, scratch_metrics_repo_path = create_issue_workspace(
+            base_reachability_metadata_path,
+            canonical_metrics_repo_path,
+            issue_number,
+        )
+        log_stage(
+            "fixture-worktree",
+            (
+                f"Created isolated fixture worktree for issue #{issue_number}: "
+                f"worktree={worktree_path}, metrics={scratch_metrics_repo_path}"
+            ),
+        )
+    except BaseException as exc:
+        if isinstance(exc, Exception):
+            print(
+                f"ERROR: Failed to prepare fixture workspace for issue #{issue_number}: {exc!r}",
+                file=sys.stderr,
+            )
+            return None
+        raise
+
+    try:
+        require_fixture_github_state().prepare_issue_worktree(issue_number, label, worktree_path)
+        claim_metadata = build_claim_metadata(issue, label, worktree_path)
+    except BaseException as exc:
+        if isinstance(exc, Exception):
+            print(
+                f"ERROR: Failed to prepare fixture issue #{issue_number}: {exc!r}",
+                file=sys.stderr,
+            )
+            try:
+                remove_worktree(base_reachability_metadata_path, worktree_path)
+            except Exception as cleanup_exc:
+                print(
+                    f"ERROR: Failed to clean up fixture worktree {worktree_path}: {cleanup_exc!r}",
+                    file=sys.stderr,
+                )
+            return None
+        raise
+    if claim_metadata is None:
+        try:
+            remove_worktree(base_reachability_metadata_path, worktree_path)
+        except Exception as cleanup_exc:
+            print(
+                f"ERROR: Failed to clean up fixture worktree {worktree_path}: {cleanup_exc!r}",
+                file=sys.stderr,
+            )
+        return None
+
+    issue_coordinates, current_coordinates, new_version = claim_metadata
+    return ClaimedIssue(
+        issue=issue,
+        label=label,
+        item_id=item_id,
+        base_reachability_metadata_path=base_reachability_metadata_path,
+        worktree_path=worktree_path,
+        scratch_metrics_repo_path=scratch_metrics_repo_path,
+        issue_coordinates=issue_coordinates,
+        current_coordinates=current_coordinates,
+        new_version=new_version,
+    )
+
+
 def run_claimed_issue(
         claimed_issue: ClaimedIssue,
         strategy_name: str | None,
@@ -4449,6 +5012,13 @@ def run_claimed_issue(
 
 def revert_issue_claim(item_id: str, issue_number: int, reason: str) -> None:
     """Reset an issue claim back to Todo and clear all assignment, with verification."""
+    if is_fixture_testing_enabled():
+        log_stage(
+            "issue-revert",
+            f"Fixture mode: no GitHub claim was created for issue #{issue_number}; skipping claim revert.",
+        )
+        return
+
     print(f"\n[issue-revert] Reverting issue #{issue_number} claim because {reason}", file=sys.stderr)
     revert_errors: list[Exception] = []
     print(f"[issue-revert] Reverting issue #{issue_number}: setting project item {item_id} -> {STATUS_TODO}", file=sys.stderr)
@@ -4530,6 +5100,310 @@ def build_large_library_pr_args(
     return args
 
 
+def _require_publication_value(value: str | None, field_name: str, claimed_issue: ClaimedIssue) -> str:
+    if value is None:
+        raise ValueError(
+            f"Issue #{claimed_issue.issue['number']} {claimed_issue.label} publication requires {field_name}."
+        )
+    return value
+
+
+def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff:
+    """Build the live-or-fixture PR publication handoff.
+
+    The dispatcher makes the routing decision once, then either executes the
+    matching git script or records a dry-run fixture handoff
+    (§E2E-forge-workflow-testing.2, §AR-forge-verification-publication-boundary).
+    """
+    require_claimed_issue_worktree(claimed_issue, "successful finalization")
+    issue_number = claimed_issue.issue["number"]
+    large_library_state_path = find_progress_state_path(
+        claimed_issue.scratch_metrics_repo_path,
+        issue_number,
+    )
+    large_library_state = LargeLibraryProgressState.load(large_library_state_path) if large_library_state_path else None
+    if large_library_state is not None:
+        ensure_large_library_labels_exist_if_needed(claimed_issue)
+    run_metrics = _load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
+    workflow_status = None if run_metrics is None else run_metrics.get("status")
+    issue_number_args = ["--issue-number", str(issue_number)]
+    large_library_pr_args = build_large_library_pr_args(
+        claimed_issue,
+        large_library_state,
+        large_library_state_path,
+        workflow_status,
+    )
+    large_library_final = None
+    if large_library_state is not None:
+        large_library_final = workflow_status != RUN_STATUS_CHUNK_READY
+
+    script_name: str
+    runner_name: str
+    runner: Callable[[list[str]], None]
+    argv: list[str]
+    result_label: str
+    coordinates: str | None = claimed_issue.issue_coordinates
+    not_for_native_image = False
+
+    if claimed_issue.label == LABEL_LIBRARY_NEW:
+        group, artifact, _version = metadata_coordinate_parts(claimed_issue.issue_coordinates)
+        not_for_native_image = is_not_for_native_image(claimed_issue.worktree_path, group, artifact)
+        if not_for_native_image:
+            script_name = "git_scripts/make_pr_not_for_native_image.py"
+            runner_name = "run_make_pr_not_for_native_image"
+            runner = run_make_pr_not_for_native_image
+            result_label = LABEL_NOT_FOR_NATIVE_IMAGE
+            argv = [
+                "--coordinates", claimed_issue.issue_coordinates,
+                *issue_number_args,
+                "--reachability-metadata-path", claimed_issue.worktree_path,
+                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+            ]
+        else:
+            script_name = "git_scripts/make_pr_new_library_support.py"
+            runner_name = "run_make_pr_new_library_support"
+            runner = run_make_pr_new_library_support
+            result_label = LABEL_LIBRARY_NEW
+            argv = [
+                "--coordinates", claimed_issue.issue_coordinates,
+                *issue_number_args,
+                "--reachability-metadata-path", claimed_issue.worktree_path,
+                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+                *large_library_pr_args,
+            ]
+    elif claimed_issue.label == LABEL_JAVAC_FAIL:
+        script_name = "git_scripts/make_pr_javac_fix.py"
+        runner_name = "run_make_pr_javac_fix"
+        runner = run_make_pr_javac_fix
+        result_label = LABEL_PR_JAVAC_FIX
+        current_coordinates = _require_publication_value(
+            claimed_issue.current_coordinates,
+            "current_coordinates",
+            claimed_issue,
+        )
+        new_version = _require_publication_value(claimed_issue.new_version, "new_version", claimed_issue)
+        coordinates = None
+        argv = [
+            "--coordinates", current_coordinates,
+            "--new-version", new_version,
+            "--issue-number", str(issue_number),
+            "--reachability-metadata-path", claimed_issue.worktree_path,
+            "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+        ]
+    elif claimed_issue.label == LABEL_JAVA_RUN_FAIL:
+        script_name = "git_scripts/make_pr_java_run_fix.py"
+        runner_name = "run_make_pr_java_run_fix"
+        runner = run_make_pr_java_run_fix
+        result_label = LABEL_PR_JAVA_RUN_FIX
+        current_coordinates = _require_publication_value(
+            claimed_issue.current_coordinates,
+            "current_coordinates",
+            claimed_issue,
+        )
+        new_version = _require_publication_value(claimed_issue.new_version, "new_version", claimed_issue)
+        coordinates = None
+        argv = [
+            "--coordinates", current_coordinates,
+            "--new-version", new_version,
+            "--issue-number", str(issue_number),
+            "--reachability-metadata-path", claimed_issue.worktree_path,
+            "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+        ]
+    elif claimed_issue.label == LABEL_NI_RUN_FAIL:
+        script_name = "git_scripts/make_pr_ni_run_fix.py"
+        runner_name = "run_make_pr_ni_run_fix"
+        runner = run_make_pr_ni_run_fix
+        result_label = LABEL_PR_NI_RUN_FIX
+        current_coordinates = _require_publication_value(
+            claimed_issue.current_coordinates,
+            "current_coordinates",
+            claimed_issue,
+        )
+        new_version = _require_publication_value(claimed_issue.new_version, "new_version", claimed_issue)
+        coordinates = None
+        argv = [
+            "--coordinates", current_coordinates,
+            "--new-version", new_version,
+            "--issue-number", str(issue_number),
+            "--reachability-metadata-path", claimed_issue.worktree_path,
+            "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+        ]
+    elif claimed_issue.label == LABEL_LIBRARY_UPDATE:
+        script_name = "git_scripts/make_pr_improve_coverage.py"
+        runner_name = "run_make_pr_improve_coverage"
+        runner = run_make_pr_improve_coverage
+        result_label = LABEL_PR_LIBRARY_UPDATE
+        argv = [
+            "--coordinates", claimed_issue.issue_coordinates,
+            *issue_number_args,
+            "--reachability-metadata-path", claimed_issue.worktree_path,
+            "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+            *large_library_pr_args,
+        ]
+    else:
+        raise ValueError(f"Unknown label '{claimed_issue.label}'")
+
+    return PublicationHandoff(
+        script_name=script_name,
+        runner_name=runner_name,
+        runner=runner,
+        argv=argv,
+        issue_number=issue_number,
+        issue_label=claimed_issue.label,
+        result_label=result_label,
+        coordinates=coordinates,
+        current_coordinates=claimed_issue.current_coordinates,
+        new_version=claimed_issue.new_version,
+        worktree_path=claimed_issue.worktree_path,
+        scratch_metrics_path=claimed_issue.scratch_metrics_repo_path,
+        workflow_status=workflow_status,
+        large_library_args=large_library_pr_args,
+        large_library_state_path=large_library_state_path,
+        large_library_part=None if large_library_state is None else large_library_state.part,
+        large_library_final=large_library_final,
+        large_library_series_id=None if large_library_state is None else large_library_state.series_id,
+        not_for_native_image=not_for_native_image,
+    )
+
+
+def _publication_new_coordinates(handoff: PublicationHandoff) -> str | None:
+    if handoff.coordinates:
+        return handoff.coordinates
+    if not handoff.current_coordinates or not handoff.new_version:
+        return None
+    group, artifact, _version = metadata_coordinate_parts(handoff.current_coordinates)
+    return f"{group}:{artifact}:{handoff.new_version}"
+
+
+def _build_fixture_pull_request_preview(handoff: PublicationHandoff) -> tuple[str, str]:
+    """Build fixture publication text with the same builders used by live PR creation.
+
+    §GIT-pr-preview-builders
+    """
+    new_coordinates = _publication_new_coordinates(handoff)
+    if handoff.not_for_native_image and new_coordinates:
+        title, body, _local_ci_metrics = build_not_for_native_image_pull_request_preview(
+            coordinates=new_coordinates,
+            repo_path=handoff.worktree_path,
+            issue_number=handoff.issue_number,
+        )
+        return title, body
+
+    if handoff.issue_label == LABEL_LIBRARY_NEW and new_coordinates:
+        title, body, _matched = build_new_library_pull_request_preview(
+            coordinates=new_coordinates,
+            metrics_repo_root=handoff.scratch_metrics_path,
+            repo_path=handoff.worktree_path,
+            issue_number=handoff.issue_number,
+            large_library_part=handoff.large_library_part,
+            is_final_large_library_part=handoff.large_library_final is not False,
+            series_id=handoff.large_library_series_id,
+        )
+        return title, body
+
+    if handoff.issue_label == LABEL_LIBRARY_UPDATE and new_coordinates:
+        group, artifact, version = metadata_coordinate_parts(new_coordinates)
+        title, body, _matched = build_improve_coverage_pull_request_preview(
+            coordinates=new_coordinates,
+            metrics_repo_root=handoff.scratch_metrics_path,
+            repo_path=handoff.worktree_path,
+            group=group,
+            artifact=artifact,
+            version=version,
+            baseline_snapshot=load_baseline_snapshot(handoff.worktree_path, group, artifact, version),
+            issue_number=handoff.issue_number,
+            large_library_part=handoff.large_library_part,
+            is_final_large_library_part=handoff.large_library_final is not False,
+            series_id=handoff.large_library_series_id,
+        )
+        return title, body
+
+    if handoff.current_coordinates and new_coordinates:
+        group, artifact, old_version = metadata_coordinate_parts(handoff.current_coordinates)
+        _new_group, _new_artifact, new_version = metadata_coordinate_parts(new_coordinates)
+        if handoff.issue_label == LABEL_JAVAC_FAIL:
+            title, body, _metrics_entry = build_javac_fix_pull_request_preview(
+                old_coordinates=handoff.current_coordinates,
+                new_coordinates=new_coordinates,
+                group=group,
+                artifact=artifact,
+                old_version=old_version,
+                new_version=new_version,
+                metrics_repo_root=handoff.scratch_metrics_path,
+                repo_path=handoff.worktree_path,
+                issue_number=handoff.issue_number,
+            )
+            return title, body
+        if handoff.issue_label == LABEL_JAVA_RUN_FAIL:
+            title, body, _metrics_entry = build_java_run_fix_pull_request_preview(
+                old_coordinates=handoff.current_coordinates,
+                new_coordinates=new_coordinates,
+                group=group,
+                artifact=artifact,
+                old_version=old_version,
+                new_version=new_version,
+                metrics_repo_root=handoff.scratch_metrics_path,
+                repo_path=handoff.worktree_path,
+                issue_number=handoff.issue_number,
+            )
+            return title, body
+        if handoff.issue_label == LABEL_NI_RUN_FAIL:
+            title, body, _local_ci_human_intervention, _severe_metadata_drop = (
+                build_ni_run_fix_pull_request_preview(
+                    old_coordinates=handoff.current_coordinates,
+                    new_coordinates=new_coordinates,
+                    group=group,
+                    artifact=artifact,
+                    repo_path=handoff.worktree_path,
+                    issue_number=handoff.issue_number,
+                )
+            )
+            return title, body
+
+    raise ValueError(
+        f"Cannot build fixture publication preview for issue #{handoff.issue_number} "
+        f"with label {handoff.issue_label!r}."
+    )
+
+
+def build_fixture_publication_markdown(handoff: PublicationHandoff) -> str:
+    """Build the Markdown publication handoff artifact for fixture dry-runs."""
+    command = ["python3", handoff.script_name, *handoff.argv]
+    title, body = _build_fixture_pull_request_preview(handoff)
+
+    return "\n".join([
+        "# Fixture Publication Handoff",
+        "",
+        "Fixture mode did not open a pull request. This file records the PR publication handoff that would run.",
+        "",
+        "## Dry-Run Command",
+        "",
+        "```bash",
+        " ".join(shlex.quote(argument) for argument in command),
+        "```",
+        "",
+        "## Pull Request Title",
+        "",
+        title,
+        "",
+        "## Pull Request Body",
+        "",
+        body,
+        "",
+    ])
+
+
+def write_fixture_publication_handoff(handoff: PublicationHandoff) -> str:
+    """Write the PR title/body handoff into the active fixture artifact directory."""
+    publication_path = os.path.join(
+        get_fixture_issue_artifact_dir(handoff.issue_number),
+        FIXTURE_PUBLICATION_FILENAME,
+    )
+    with open(publication_path, "w", encoding="utf-8") as publication_file:
+        publication_file.write(build_fixture_publication_markdown(handoff))
+    return publication_path
+
+
 def apply_large_library_completion_follow_up(claimed_issue: ClaimedIssue) -> None:
     """Apply issue labels after a large-library part was published."""
     run_metrics = _load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
@@ -4556,100 +5430,35 @@ def finalize_successful_issue(
     workflow records a PR-eligible status (§GIT-pr-eligibility), keeping
     generation and publication separate (§AR-forge-verification-publication-boundary).
     """
-    require_claimed_issue_worktree(claimed_issue, "successful finalization")
-    large_library_state_path = find_progress_state_path(
-        claimed_issue.scratch_metrics_repo_path,
-        claimed_issue.issue["number"],
-    )
-    large_library_state = LargeLibraryProgressState.load(large_library_state_path) if large_library_state_path else None
-    if large_library_state is not None:
-        ensure_large_library_labels_exist_if_needed(claimed_issue)
-    run_metrics = _load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
-    workflow_status = None if run_metrics is None else run_metrics.get("status")
-    issue_number = claimed_issue.issue["number"]
-    issue_number_args = ["--issue-number", str(issue_number)]
-    large_library_pr_args = build_large_library_pr_args(
-        claimed_issue,
-        large_library_state,
-        large_library_state_path,
-        workflow_status,
-    )
-    if claimed_issue.label == LABEL_LIBRARY_NEW:
-        group, artifact, _version = metadata_coordinate_parts(claimed_issue.issue_coordinates)
-        if is_not_for_native_image(claimed_issue.worktree_path, group, artifact):
-            run_make_pr_not_for_native_image(
-                [
-                    "--coordinates", claimed_issue.issue_coordinates,
-                    *issue_number_args,
-                    "--reachability-metadata-path", claimed_issue.worktree_path,
-                    "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
-                ]
-            )
-            return
-        run_make_pr_new_library_support(
-            [
-                "--coordinates", claimed_issue.issue_coordinates,
-                *issue_number_args,
-                "--reachability-metadata-path", claimed_issue.worktree_path,
-                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
-                *large_library_pr_args,
-            ]
+    if is_fixture_testing_enabled():
+        handoff = build_publication_handoff(claimed_issue)
+        publication_path = write_fixture_publication_handoff(handoff)
+        log_stage(
+            "publication",
+            (
+                f"Fixture mode: dry-run publication handoff for issue #{handoff.issue_number} "
+                f"to {handoff.script_name}. PR title/body written to {publication_path}."
+            ),
         )
         return
 
-    if claimed_issue.label == LABEL_JAVAC_FAIL:
-        run_make_pr_javac_fix(
-            [
-                "--coordinates", claimed_issue.current_coordinates,
-                "--new-version", claimed_issue.new_version,
-                "--issue-number", str(issue_number),
-                "--reachability-metadata-path", claimed_issue.worktree_path,
-                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
-            ]
-        )
-        return
-
-    if claimed_issue.label == LABEL_JAVA_RUN_FAIL:
-        run_make_pr_java_run_fix(
-            [
-                "--coordinates", claimed_issue.current_coordinates,
-                "--new-version", claimed_issue.new_version,
-                "--issue-number", str(issue_number),
-                "--reachability-metadata-path", claimed_issue.worktree_path,
-                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
-            ]
-        )
-        return
-
-    if claimed_issue.label == LABEL_NI_RUN_FAIL:
-        run_make_pr_ni_run_fix(
-            [
-                "--coordinates", claimed_issue.current_coordinates,
-                "--new-version", claimed_issue.new_version,
-                "--issue-number", str(issue_number),
-                "--reachability-metadata-path", claimed_issue.worktree_path,
-                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
-            ]
-        )
-        return
-
-    if claimed_issue.label == LABEL_LIBRARY_UPDATE:
-        run_make_pr_improve_coverage(
-            [
-                "--coordinates", claimed_issue.issue_coordinates,
-                *issue_number_args,
-                "--reachability-metadata-path", claimed_issue.worktree_path,
-                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
-                *large_library_pr_args,
-            ]
-        )
-        return
-
-    raise ValueError(f"Unknown label '{claimed_issue.label}'")
+    handoff = build_publication_handoff(claimed_issue)
+    handoff.runner(handoff.argv)
 
 
 def preserve_failed_work_for_follow_up(claimed_issue: ClaimedIssue) -> FailurePreservationResult | None:
     """Push failed work to a branch for human follow-up."""
+    if is_fixture_testing_enabled():
+        preservation_result = build_fixture_failure_preservation_result(claimed_issue)
+        preservation_failed_worktree_paths.add(claimed_issue.worktree_path)
+        log_stage(
+            "preserve-failed-work",
+            (
+                f"Fixture mode: dry-run failure preservation handoff for branch "
+                f"{preservation_result.branch_name} for issue #{claimed_issue.issue['number']}."
+            ),
+        )
+        return preservation_result
     try:
         return preserve_failed_work_branch(claimed_issue)
     except Exception as exc:
@@ -4768,7 +5577,10 @@ def process_claimed_issue_lifecycle(
             log_failure_banner(
                 format_issue_result_message(
                     claimed_issue,
-                    "Workflow failed; failure follow-up was attempted. Check prior errors for follow-up and claim status.",
+                    (
+                        "Workflow failed; failure follow-up was attempted. Check prior errors "
+                        "for follow-up and claim status."
+                    ),
                 ),
                 file=sys.stderr,
             )
@@ -5382,7 +6194,7 @@ def try_claim_issue_with_local_lock(
         log_stage("issue-claim", f"Setting issue #{number} assignee to {authenticated_user}")
         set_issue_assignee(number, authenticated_user)
 
-        # Random wait so concurrent runners' SETs have time to land
+        # Random wait so concurrent runners' SETs have time to land.
         backoff = random.uniform(CLAIM_BACKOFF_MIN, CLAIM_BACKOFF_MAX)
         print()
         log_stage("issue-claim", f"Waiting {backoff:.1f}s before verifying claim on issue #{number}")
@@ -5494,6 +6306,51 @@ def resolve_random_issue_scan_offset(label: str) -> int:
     if searchable_count <= 0:
         return 0
     return random.randrange(searchable_count)
+
+
+def process_fixture_issues_for_label(
+        label: str,
+        limit: int,
+        base_reachability_metadata_path: str,
+        canonical_metrics_repo_path: str,
+        strategy_name: str | None,
+        keep_tests_without_dynamic_access: bool,
+        environment_already_validated: bool = False,
+) -> int:
+    """Run the local fixture issues for one label, sequentially, one `run.log` each.
+
+    Fixture selection is local to the loaded YAML and has no live claim, preflight,
+    or work-queue concurrency to model, so a queue/label run is simply each matching
+    issue processed in turn under its own issue-scoped tee (§E2E-forge-workflow-testing.2).
+    """
+    if not environment_already_validated:
+        validate_issue_processing_environment()
+
+    issues = require_fixture_github_state().list_open_issues_by_label(label, limit)
+    if not issues:
+        print()
+        log_stage("issue-scan", f"No open fixture issues found with label '{label}'")
+        return 0
+
+    processed_count = 0
+    for issue in issues:
+        with fixture_issue_run_log(issue["number"]):
+            claimed_issue = build_fixture_claimed_issue(
+                issue,
+                label,
+                base_reachability_metadata_path,
+                canonical_metrics_repo_path,
+            )
+            if claimed_issue is not None:
+                process_claimed_issue_lifecycle(
+                    claimed_issue,
+                    strategy_name,
+                    keep_tests_without_dynamic_access,
+                    canonical_metrics_repo_path,
+                )
+        if claimed_issue is not None:
+            processed_count += 1
+    return processed_count
 
 
 def process_issues_with_label(
@@ -5624,6 +6481,7 @@ def process_issues_with_label(
                             take_blocked_issues,
                     ):
                         continue
+
                     claim_kwargs: dict[str, bool] = {}
                     if not take_blocked_issues:
                         claim_kwargs["take_blocked_issues"] = False
@@ -5705,7 +6563,7 @@ def process_work_queues(
 ) -> None:
     """Process all configured issue and review queues in one Python process."""
     queue_configs = get_work_queue_configs_from_environment(work_strategy_name_override, random_offset_override)
-    review_queue_configs = get_review_queue_configs_from_environment()
+    review_queue_configs = [] if is_fixture_testing_enabled() else get_review_queue_configs_from_environment()
     validate_work_queue_strategies(queue_configs)
 
     keep_tests_without_dynamic_access = (
@@ -5737,12 +6595,24 @@ def process_work_queues(
             log_stage("work-queue", f"Skipping issue queue '{queue_config.label}' because its limit is 0")
             continue
 
-        authenticated_user = resolve_authenticated_user(authenticated_user)
         print()
         log_stage(
             "work-queue",
             f"Processing up to {queue_config.limit} issue(s) for label '{queue_config.label}'",
         )
+        if is_fixture_testing_enabled():
+            process_fixture_issues_for_label(
+                queue_config.label,
+                queue_config.limit,
+                base_reachability_metadata_path,
+                canonical_metrics_repo_path,
+                queue_config.strategy_name,
+                keep_tests_without_dynamic_access,
+                environment_already_validated=True,
+            )
+            continue
+
+        authenticated_user = resolve_authenticated_user(authenticated_user)
         issue_scan_offset = 0
         if queue_config.random_offset:
             issue_scan_offset = resolve_random_issue_scan_offset(queue_config.label)
@@ -5844,6 +6714,14 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Workflow strategy name to pass to the pipeline. If omitted, the pipeline default is used.",
     )
     parser.add_argument(
+        "--fixture-testing",
+        action="store_true",
+        help=(
+            "Use local GitHub issue fixtures instead of live GitHub. Combine with "
+            "--issue-number, --label/--limit, or --run-work-queues for the E2E run."
+        ),
+    )
+    parser.add_argument(
         "--review-model",
         default=DEFAULT_REVIEW_MODEL,
         help=f"Codex model used for `--review-pr` runs (default: {DEFAULT_REVIEW_MODEL}).",
@@ -5902,11 +6780,37 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     args = parser.parse_args(argv)
     if args.period is not None and args.review_pr is None:
         parser.error("--period can only be used with --review-pr")
+    if args.fixture_testing:
+        if args.review_pr is not None:
+            parser.error("--fixture-testing cannot be combined with --review-pr")
+        if args.continue_large_library_artifact is not None:
+            parser.error("--fixture-testing cannot be combined with --continue-large-library-artifact")
+        if args.offset != 0:
+            parser.error("--fixture-testing cannot be combined with --offset")
+        if args.random_offset is not None:
+            parser.error("--fixture-testing cannot be combined with --random-offset/--no-random-offset")
     if args.random_offset is not None and args.label is None and not args.run_work_queues:
         parser.error("--random-offset/--no-random-offset can only be used with --label or --run-work-queues")
     if args.random_offset is True and args.offset != 0:
         parser.error("--random-offset cannot be combined with --offset")
     return args
+
+
+def log_fixture_testing_selection(issue_number: int, label: str, strategy_name: str | None) -> None:
+    """Log fixture-backed E2E routing before workflow execution starts."""
+    fixture_state = require_fixture_github_state()
+    fixture_path = fixture_state.get_issue_fixture_path(issue_number)
+    strategy_override = f", strategy_override={strategy_name}" if strategy_name else ""
+
+    print()
+    log_stage(
+        "fixture-testing",
+        (
+            "Selected fixture-backed issue run: "
+            f"mode=fixture-testing, issue=#{issue_number}, fixture={fixture_path}, "
+            f"queue_label={label}{strategy_override}"
+        ),
+    )
 
 
 def process_single_issue(
@@ -5918,12 +6822,31 @@ def process_single_issue(
         authenticated_user: str,
         take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
 ) -> bool:
-    """Fetch, claim, and process a single issue by number."""
+    """Fetch and process a single issue by number, claiming only in live GitHub mode."""
     validate_issue_processing_environment()
 
     issue, label = get_issue_by_number(issue_number)
     print()
     log_stage("issue-scan", f"Issue #{issue_number} matched pipeline label: {label}")
+
+    if is_fixture_testing_enabled():
+        with fixture_issue_run_log(issue_number):
+            log_fixture_testing_selection(issue_number, label, strategy_name)
+            claimed_issue = build_fixture_claimed_issue(
+                issue,
+                label,
+                base_reachability_metadata_path,
+                canonical_metrics_repo_path,
+            )
+            if not claimed_issue:
+                log_failure_banner(f"Could not prepare fixture issue #{issue_number}.", file=sys.stderr)
+                sys.exit(1)
+            return process_claimed_issue_lifecycle(
+                claimed_issue,
+                strategy_name,
+                keep_tests_without_dynamic_access,
+                canonical_metrics_repo_path,
+            )
 
     claim_kwargs: dict[str, bool] = {}
     if not take_blocked_issues:
@@ -5991,8 +6914,27 @@ def main() -> None:
     previous_sigint_handler = signal.getsignal(signal.SIGINT)
     signal.signal(signal.SIGINT, _handle_sigint)
     args = parse_args()
+    normal_exit = False
 
     try:
+        if args.fixture_testing:
+            # Fix one shared run timestamp; each issue's evidence is written under
+            # `fixture-e2e-logs/issue-<number>/<timestamp>/` by `fixture_issue_run_log`.
+            get_fixture_run_timestamp()
+            fixture_state = configure_fixture_testing()
+            if args.issue_number is not None:
+                fixture_selection = f"selected issue #{args.issue_number}"
+            elif args.run_work_queues:
+                fixture_selection = "work-queue mode"
+            else:
+                fixture_selection = f"label '{args.label}'"
+            log_stage(
+                "fixture-loading",
+                (
+                    f"Loaded {len(fixture_state.issue_numbers)} fixture issue(s); "
+                    f"{fixture_selection}."
+                ),
+            )
         if args.clear_issue_caches:
             clear_issue_caches()
             return
@@ -6050,6 +6992,15 @@ def main() -> None:
                 authenticated_user,
                 args.take_blocked_issues,
             )
+        elif is_fixture_testing_enabled():
+            process_fixture_issues_for_label(
+                args.label,
+                args.limit,
+                reachability_metadata_path,
+                metrics_repo_path,
+                args.strategy_name,
+                args.keep_tests_without_dynamic_access,
+            )
         else:
             authenticated_user = resolve_authenticated_user()
             issue_scan_offset = args.offset
@@ -6069,6 +7020,7 @@ def main() -> None:
                 args.parallelism,
                 take_blocked_issues=args.take_blocked_issues,
             )
+        normal_exit = True
     except KeyboardInterrupt:
         if is_shutdown_requested():
             mark_shutdown_requested()
@@ -6086,9 +7038,9 @@ def main() -> None:
         log_failure_banner(f"{exc}. Stop current run and retry after reset.", file=sys.stderr)
         sys.exit(GITHUB_RATE_LIMIT_EXIT_CODE)
     finally:
+        if normal_exit:
+            log_success_banner("Run complete.")
         signal.signal(signal.SIGINT, previous_sigint_handler)
-
-    log_success_banner("Run complete.")
 
 
 if __name__ == "__main__":

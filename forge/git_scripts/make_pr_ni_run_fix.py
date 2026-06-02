@@ -149,61 +149,14 @@ def create_pull_request(
         print(f"Pull request already exists for branch {branch}.")
         return
 
-    issue_no = issue_number if issue_number is not None else find_issue_common(new_coordinates, REPO)
-
-    _, _, old_version = parse_coordinate_parts(old_coordinates)
-    _, _, new_version = parse_coordinate_parts(new_coordinates)
-
-    new_entries = count_metadata_entries(repo_path, group, artifact, new_version)
-    previous_entries = count_metadata_entries(repo_path, group, artifact, old_version)
-    new_test_entries = count_test_only_metadata_entries(repo_path, group, artifact, new_version)
-    previous_test_entries = count_test_only_metadata_entries(repo_path, group, artifact, old_version)
-    previous_coverage, _ = collect_version_coverage_metrics(repo_path, group, artifact, old_version)
-    new_coverage, _ = collect_version_coverage_metrics(repo_path, group, artifact, new_version)
-    severe_metadata_drop = is_severe_metadata_drop(previous_entries, new_entries)
-
-    stats_section = format_stats_diff(repo_path, old_coordinates, new_coordinates)
-
-    previous_test_entries_line = ""
-    if previous_test_entries > 0:
-        previous_test_entries_line = (
-            f"- Test-only metadata entries (previous `{old_coordinates}`): {previous_test_entries}\n"
-        )
-    new_test_entries_line = ""
-    if new_test_entries > 0:
-        new_test_entries_line = f"- Test-only metadata entries (new `{new_coordinates}`): {new_test_entries}\n"
-
-    metrics_section = (
-        f"\n\n"
-        f"- Metadata entries (previous `{old_coordinates}`): {previous_entries}\n"
-        f"{previous_test_entries_line}"
-        f"- Metadata entries (new `{new_coordinates}`): {new_entries}\n"
-        f"{new_test_entries_line}"
-        f"- Library coverage (previous): {previous_coverage:.2f}%\n"
-        f"- Library coverage (new): {new_coverage:.2f}%"
-    )
-
-    title = f"[Automation] Generated metadata for {new_coordinates}"
-    body = (
-        f"Fixes: {REPO}#{issue_no}\n\n"
-        f"This PR provides new metadata needed for the {new_coordinates}, "
-        f"addressing Native Image run failures caused by changes in the updated library version."
-        f"{metrics_section}"
-        f"\n\n{format_forge_revision_section()}"
-        f"{stats_section}"
-    )
-    if severe_metadata_drop:
-        body += format_severe_metadata_drop_pr_section(
-            old_coordinates,
-            new_coordinates,
-            previous_entries,
-            new_entries,
-        )
-    if local_ci_verification is not None:
-        body += format_local_ci_verification_pr_section(local_ci_verification.to_metrics())
-
-    local_ci_human_intervention = (
-        local_ci_verification is not None and local_ci_verification.human_intervention_required
+    title, body, local_ci_human_intervention, severe_metadata_drop = build_pull_request_preview(
+        old_coordinates=old_coordinates,
+        new_coordinates=new_coordinates,
+        group=group,
+        artifact=artifact,
+        repo_path=repo_path,
+        local_ci_verification=local_ci_verification,
+        issue_number=issue_number,
     )
     cmd = [
         "gh", "pr", "create",
@@ -219,6 +172,67 @@ def create_pull_request(
     for r in REVIEWERS:
         cmd.extend(["--reviewer", r])
     gh(*cmd[1:])
+
+
+def build_pull_request_preview(
+        old_coordinates: str,
+        new_coordinates: str,
+        group: str,
+        artifact: str,
+        repo_path: str,
+        local_ci_verification: LocalCIVerificationResult | None = None,
+        issue_number: int | None = None,
+) -> tuple[str, str, bool, bool]:
+    """Build the PR title/body without creating a GitHub pull request."""
+    issue_no = issue_number if issue_number is not None else find_issue_common(new_coordinates, REPO)
+    _, _, old_version = parse_coordinate_parts(old_coordinates)
+    _, _, new_version = parse_coordinate_parts(new_coordinates)
+    new_entries = count_metadata_entries(repo_path, group, artifact, new_version)
+    previous_entries = count_metadata_entries(repo_path, group, artifact, old_version)
+    new_test_entries = count_test_only_metadata_entries(repo_path, group, artifact, new_version)
+    previous_test_entries = count_test_only_metadata_entries(repo_path, group, artifact, old_version)
+    previous_coverage, _ = collect_version_coverage_metrics(repo_path, group, artifact, old_version)
+    new_coverage, _ = collect_version_coverage_metrics(repo_path, group, artifact, new_version)
+    severe_metadata_drop = is_severe_metadata_drop(previous_entries, new_entries)
+    previous_test_entries_line = ""
+    if previous_test_entries > 0:
+        previous_test_entries_line = (
+            f"- Test-only metadata entries (previous `{old_coordinates}`): {previous_test_entries}\n"
+        )
+    new_test_entries_line = ""
+    if new_test_entries > 0:
+        new_test_entries_line = f"- Test-only metadata entries (new `{new_coordinates}`): {new_test_entries}\n"
+    metrics_section = (
+        f"\n\n"
+        f"- Metadata entries (previous `{old_coordinates}`): {previous_entries}\n"
+        f"{previous_test_entries_line}"
+        f"- Metadata entries (new `{new_coordinates}`): {new_entries}\n"
+        f"{new_test_entries_line}"
+        f"- Library coverage (previous): {previous_coverage:.2f}%\n"
+        f"- Library coverage (new): {new_coverage:.2f}%"
+    )
+    title = f"[Automation] Generated metadata for {new_coordinates}"
+    body = (
+        f"Fixes: {REPO}#{issue_no}\n\n"
+        f"This PR provides new metadata needed for the {new_coordinates}, "
+        f"addressing Native Image run failures caused by changes in the updated library version."
+        f"{metrics_section}"
+        f"\n\n{format_forge_revision_section()}"
+        f"{format_stats_diff(repo_path, old_coordinates, new_coordinates)}"
+    )
+    if severe_metadata_drop:
+        body += format_severe_metadata_drop_pr_section(
+            old_coordinates,
+            new_coordinates,
+            previous_entries,
+            new_entries,
+        )
+    if local_ci_verification is not None:
+        body += format_local_ci_verification_pr_section(local_ci_verification.to_metrics())
+    local_ci_human_intervention = (
+        local_ci_verification is not None and local_ci_verification.human_intervention_required
+    )
+    return title, body, local_ci_human_intervention, severe_metadata_drop
 
 
 
