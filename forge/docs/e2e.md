@@ -76,8 +76,9 @@ processes several issues leaves sibling `issue-<number>/<run-timestamp>/`
 directories rather than a separate queue-scoped directory. Each issue directory
 contains `run.log`, a complete merged stdout/stderr log scoped to that issue, and
 `publication.md` when the issue reaches dry-run PR publication. Fixture issue
-processing is sequential — parallelism is pinned to 1 in fixture mode — so each
-`run.log` stays scoped to its issue without interleaving.
+processing is sequential — a queue or label run processes its matching fixture
+issues one at a time — so each `run.log` stays scoped to its issue without
+interleaving.
 `publication.md` must be built from the same git-script PR title/body builder
 that live publication uses (§GIT-pr-preview-builders). Fixture mode does not
 write a separate JSON E2E report, mutate live GitHub state, or simulate GitHub

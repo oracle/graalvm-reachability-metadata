@@ -6256,6 +6256,51 @@ def resolve_random_issue_scan_offset(label: str) -> int:
     return random.randrange(searchable_count)
 
 
+def process_fixture_issues_for_label(
+        label: str,
+        limit: int,
+        base_reachability_metadata_path: str,
+        canonical_metrics_repo_path: str,
+        strategy_name: str | None,
+        keep_tests_without_dynamic_access: bool,
+        environment_already_validated: bool = False,
+) -> int:
+    """Run the local fixture issues for one label, sequentially, one `run.log` each.
+
+    Fixture selection is local to the loaded YAML and has no live claim, preflight,
+    or work-queue concurrency to model, so a queue/label run is simply each matching
+    issue processed in turn under its own issue-scoped tee (§E2E-forge-workflow-testing.2).
+    """
+    if not environment_already_validated:
+        validate_issue_processing_environment()
+
+    issues = require_fixture_github_state().list_open_issues_by_label(label, limit)
+    if not issues:
+        print()
+        log_stage("issue-scan", f"No open fixture issues found with label '{label}'")
+        return 0
+
+    processed_count = 0
+    for issue in issues:
+        with fixture_issue_run_log(issue["number"]):
+            claimed_issue = build_fixture_claimed_issue(
+                issue,
+                label,
+                base_reachability_metadata_path,
+                canonical_metrics_repo_path,
+            )
+            if claimed_issue is not None:
+                process_claimed_issue_lifecycle(
+                    claimed_issue,
+                    strategy_name,
+                    keep_tests_without_dynamic_access,
+                    canonical_metrics_repo_path,
+                )
+        if claimed_issue is not None:
+            processed_count += 1
+    return processed_count
+
+
 def process_issues_with_label(
         label: str,
         limit: int,
@@ -6286,11 +6331,6 @@ def process_issues_with_label(
         validate_issue_processing_environment()
 
     authenticated_user = resolve_authenticated_user(authenticated_user)
-
-    # Fixture runs process issues sequentially so each issue's `run.log` tee stays
-    # scoped to that issue without interleaving (§E2E-forge-workflow-testing.2).
-    if is_fixture_testing_enabled():
-        parallelism = 1
 
     processed_count = 0
     scanned_count = 0
@@ -6388,26 +6428,6 @@ def process_issues_with_label(
                             authenticated_user,
                             take_blocked_issues,
                     ):
-                        continue
-                    if is_fixture_testing_enabled():
-                        # Sequential per-issue run: claim, mask, and run the lifecycle
-                        # under one issue-scoped `run.log` instead of the shared pool.
-                        with fixture_issue_run_log(issue["number"]):
-                            claimed_issue = build_fixture_claimed_issue(
-                                issue,
-                                label,
-                                base_reachability_metadata_path,
-                                canonical_metrics_repo_path,
-                            )
-                            if claimed_issue is not None:
-                                process_claimed_issue_lifecycle(
-                                    claimed_issue,
-                                    strategy_name,
-                                    keep_tests_without_dynamic_access,
-                                    canonical_metrics_repo_path,
-                                )
-                        if claimed_issue is not None:
-                            processed_count += 1
                         continue
 
                     claim_kwargs: dict[str, bool] = {}
@@ -6523,12 +6543,24 @@ def process_work_queues(
             log_stage("work-queue", f"Skipping issue queue '{queue_config.label}' because its limit is 0")
             continue
 
-        authenticated_user = resolve_authenticated_user(authenticated_user)
         print()
         log_stage(
             "work-queue",
             f"Processing up to {queue_config.limit} issue(s) for label '{queue_config.label}'",
         )
+        if is_fixture_testing_enabled():
+            process_fixture_issues_for_label(
+                queue_config.label,
+                queue_config.limit,
+                base_reachability_metadata_path,
+                canonical_metrics_repo_path,
+                queue_config.strategy_name,
+                keep_tests_without_dynamic_access,
+                environment_already_validated=True,
+            )
+            continue
+
+        authenticated_user = resolve_authenticated_user(authenticated_user)
         issue_scan_offset = 0
         if queue_config.random_offset:
             issue_scan_offset = resolve_random_issue_scan_offset(queue_config.label)
@@ -6907,6 +6939,15 @@ def main() -> None:
                 args.keep_tests_without_dynamic_access,
                 authenticated_user,
                 args.take_blocked_issues,
+            )
+        elif is_fixture_testing_enabled():
+            process_fixture_issues_for_label(
+                args.label,
+                args.limit,
+                reachability_metadata_path,
+                metrics_repo_path,
+                args.strategy_name,
+                args.keep_tests_without_dynamic_access,
             )
         else:
             authenticated_user = resolve_authenticated_user()
