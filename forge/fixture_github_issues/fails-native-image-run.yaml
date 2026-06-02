@@ -1,5 +1,5 @@
 number: 9105
-title: "Fix native-image runtime failure for org.apache.xbean:xbean-asm9-shaded:4.30"
+title: "Fix native-image runtime failure for com.github.ben-manes.caffeine:caffeine:3.1.8"
 state: OPEN
 labels:
   - fails-native-image-run
@@ -11,18 +11,19 @@ project:
 blocked_by: []
 body: |
   The scheduled compatibility update for
-  `org.apache.xbean:xbean-asm9-shaded:4.30` passed JVM tests but failed while
-  running the Native Image test binary:
+  `com.github.ben-manes.caffeine:caffeine:3.1.8` compiled and passed the JVM
+  tests, but failed while running the Native Image test binary:
 
-  `./gradlew test -Pcoordinates=org.apache.xbean:xbean-asm9-shaded:4.30`
+  `env GVM_TCK_LV=3.1.8 GVM_TCK_NATIVE_IMAGE_MODE=current-defaults ./gradlew clean nativeTest -Pcoordinates=com.github.ben-manes.caffeine:caffeine:3.1.2`
 
-  The failure is in the shaded ASM bytecode analysis path. Please update the
-  reachability metadata so the native-image runtime test can construct and use
-  the required ASM visitor, reader, writer, and analysis classes.
+  Please update the reachability metadata so the native-image runtime test
+  passes for the requested version, preserving the cache, scheduler, and
+  dynamic-access coverage from the previous `3.1.2` test version.
 comments:
   - author: fixture-reporter
     created_at: "2026-05-27T22:55:33Z"
     body: |
-      Fixture issue for demonstrating `fails-native-image-run` routing. The
-      artifact is already represented in metadata, keeping current-version
-      resolution deterministic.
+      Fixture issue for demonstrating `fails-native-image-run` routing. Fixture
+      setup masks `3.1.8` in the isolated worktree and makes `3.1.2` the latest
+      entry before resolving current coordinates, so the native-image-run fix
+      regenerates `3.1.8` metadata from the previous baseline.

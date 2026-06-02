@@ -24,6 +24,7 @@ Usage:
 
 import argparse
 import concurrent.futures
+import contextlib
 import errno
 import hashlib
 import json
@@ -738,6 +739,8 @@ def get_issue_search_page(query: str, page: int, per_page: int) -> list[dict]:
 
 def count_issues_with_label(label: str, extra_labels: list[str] | None = None) -> int:
     """Return GitHub's count of open issues carrying the given label set."""
+    if is_fixture_testing_enabled():
+        return require_fixture_github_state().count_open_issues_by_label(label, extra_labels)
     query = build_issue_search_query(label, extra_labels)
     return get_issue_search_count(query)
 
@@ -781,6 +784,8 @@ def get_issue_search_count(query: str) -> int:
 
 def get_issues_with_label(label: str, limit: int, offset: int = 0, extra_labels: list[str] | None = None) -> list[dict]:
     """Fetch open issues that carry the given label (and any extra labels)."""
+    if is_fixture_testing_enabled():
+        return require_fixture_github_state().list_open_issues_by_label(label, limit, offset, extra_labels)
     return search_issues_with_label(label, limit, offset, extra_labels)
 
 
@@ -1629,7 +1634,8 @@ def get_prioritized_issues_with_label(
     """Fetch one issue batch and return priority issues first within that batch."""
     regular_issues = get_issues_with_label(label, limit, regular_offset)
     regular_offset += len(regular_issues)
-    try_mark_issues_blocking_many_libraries_as_priority(regular_issues)
+    if not is_fixture_testing_enabled():
+        try_mark_issues_blocking_many_libraries_as_priority(regular_issues)
     sorted_issues = sorted(
         regular_issues,
         key=lambda issue: not issue_has_label(issue, LABEL_PRIORITY),
@@ -1766,7 +1772,7 @@ held_issue_claim_lock_numbers: set[int] = set()
 held_issue_claim_lock_guard = threading.Lock()
 preservation_failed_worktree_paths: set[str] = set()
 fixture_github_state: FixtureGitHubState | None = None
-fixture_run_artifact_dir: str | None = None
+fixture_run_timestamp_value: str | None = None
 
 
 CLAIM_BACKOFF_MIN = 5  # Minimum seconds to wait before verifying claim
@@ -1844,32 +1850,55 @@ def _fixture_run_timestamp() -> str:
     return datetime.now().astimezone().strftime("%Y%m%d-%H%M%S-%f%z")
 
 
-def start_fixture_run_log(issue_number: int) -> FixtureRunLogTee:
-    """Create a fixture artifact directory and tee the current process into `run.log`."""
-    global fixture_run_artifact_dir
-    run_dir = os.path.join(
+def get_fixture_run_timestamp() -> str:
+    """Return one stable timestamp shared by every issue processed in this run.
+
+    Issues claimed by the same queue or label run land in sibling
+    `issue-<number>/<timestamp>/` directories so they sort and correlate together.
+    """
+    global fixture_run_timestamp_value
+    if fixture_run_timestamp_value is None:
+        fixture_run_timestamp_value = _fixture_run_timestamp()
+    return fixture_run_timestamp_value
+
+
+def get_fixture_issue_artifact_dir(issue_number: int) -> str:
+    """Return the artifact directory for one fixture issue: `issue-<number>/<timestamp>/`.
+
+    Single-issue, label, and work-queue runs all write each issue's evidence here,
+    alongside any other results for that issue. §E2E-forge-workflow-testing.2
+    """
+    issue_dir = os.path.join(
         get_repo_root(),
         FIXTURE_E2E_LOG_DIRNAME,
         f"issue-{issue_number}",
-        _fixture_run_timestamp(),
+        get_fixture_run_timestamp(),
     )
-    os.makedirs(run_dir, exist_ok=False)
-    fixture_run_artifact_dir = run_dir
-    tee = FixtureRunLogTee(os.path.join(run_dir, FIXTURE_RUN_LOG_FILENAME))
+    os.makedirs(issue_dir, exist_ok=True)
+    return issue_dir
+
+
+@contextlib.contextmanager
+def fixture_issue_run_log(issue_number: int):
+    """Tee one fixture issue's stdout/stderr into its own `run.log`.
+
+    Fixture issue processing is sequential (parallelism is pinned to 1 in fixture
+    mode), so a single process-wide tee per issue keeps each `run.log` scoped to
+    that issue without interleaving.
+    """
+    issue_dir = get_fixture_issue_artifact_dir(issue_number)
+    tee = FixtureRunLogTee(os.path.join(issue_dir, FIXTURE_RUN_LOG_FILENAME))
     tee.start()
-    log_stage("fixture-log", f"Writing fixture run artifacts to {run_dir}")
+    log_stage("fixture-log", f"Writing fixture run artifacts for issue #{issue_number} to {issue_dir}")
     log_stage("fixture-log", f"Complete fixture run log: {tee.log_path}")
     log_stage(
         "fixture-log",
         f"Fixture command: {' '.join(shlex.quote(argument) for argument in [sys.executable, *sys.argv])}",
     )
-    return tee
-
-
-def require_fixture_run_artifact_dir() -> str:
-    if fixture_run_artifact_dir is None:
-        raise RuntimeError("Fixture run artifact directory is not configured")
-    return fixture_run_artifact_dir
+    try:
+        yield issue_dir
+    finally:
+        tee.close()
 
 
 def configure_fixture_testing(
@@ -3968,7 +3997,7 @@ def build_workflow_driver_invocation(
         append_large_library_workflow_args(pipeline_argv, claimed_issue)
         return WorkflowDriverInvocation(
             driver_name="add_new_library_support",
-            script_name="ai_workflows/drivers/add_new_library_support.py",
+            script_name="add_new_library_support.py",
             runner_name="run_add_new_library_support_workflow",
             runner=run_add_new_library_support_workflow,
             argv=pipeline_argv,
@@ -3996,7 +4025,7 @@ def build_workflow_driver_invocation(
             pipeline_argv.extend(["--strategy-name", strategy_name])
         return WorkflowDriverInvocation(
             driver_name="fix_javac_fail",
-            script_name="ai_workflows/drivers/fix_javac_fail.py",
+            script_name="fix_javac_fail.py",
             runner_name="run_fix_javac_workflow",
             runner=run_fix_javac_workflow,
             argv=pipeline_argv,
@@ -4024,7 +4053,7 @@ def build_workflow_driver_invocation(
             pipeline_argv.extend(["--strategy-name", strategy_name])
         return WorkflowDriverInvocation(
             driver_name="fix_java_run_fail",
-            script_name="ai_workflows/drivers/fix_java_run_fail.py",
+            script_name="fix_java_run_fail.py",
             runner_name="run_fix_java_run_workflow",
             runner=run_fix_java_run_workflow,
             argv=pipeline_argv,
@@ -4049,7 +4078,7 @@ def build_workflow_driver_invocation(
         ]
         return WorkflowDriverInvocation(
             driver_name="fix_ni_run",
-            script_name="ai_workflows/drivers/fix_ni_run.py",
+            script_name="fix_ni_run.py",
             runner_name="run_fix_ni_run_workflow",
             runner=run_fix_ni_run_workflow,
             argv=pipeline_argv,
@@ -4080,7 +4109,7 @@ def build_workflow_driver_invocation(
         append_large_library_workflow_args(pipeline_argv, claimed_issue)
         return WorkflowDriverInvocation(
             driver_name="improve_library_coverage",
-            script_name="ai_workflows/drivers/improve_library_coverage.py",
+            script_name="improve_library_coverage.py",
             runner_name="run_improve_library_coverage_workflow",
             runner=run_improve_library_coverage_workflow,
             argv=pipeline_argv,
@@ -5314,7 +5343,10 @@ def build_fixture_publication_markdown(handoff: PublicationHandoff) -> str:
 
 def write_fixture_publication_handoff(handoff: PublicationHandoff) -> str:
     """Write the PR title/body handoff into the active fixture artifact directory."""
-    publication_path = os.path.join(require_fixture_run_artifact_dir(), FIXTURE_PUBLICATION_FILENAME)
+    publication_path = os.path.join(
+        get_fixture_issue_artifact_dir(handoff.issue_number),
+        FIXTURE_PUBLICATION_FILENAME,
+    )
     with open(publication_path, "w", encoding="utf-8") as publication_file:
         publication_file.write(build_fixture_publication_markdown(handoff))
     return publication_path
@@ -6255,6 +6287,11 @@ def process_issues_with_label(
 
     authenticated_user = resolve_authenticated_user(authenticated_user)
 
+    # Fixture runs process issues sequentially so each issue's `run.log` tee stays
+    # scoped to that issue without interleaving (§E2E-forge-workflow-testing.2).
+    if is_fixture_testing_enabled():
+        parallelism = 1
+
     processed_count = 0
     scanned_count = 0
     next_scan_progress_log_count = ISSUE_SCAN_PROGRESS_LOG_INTERVAL
@@ -6352,6 +6389,27 @@ def process_issues_with_label(
                             take_blocked_issues,
                     ):
                         continue
+                    if is_fixture_testing_enabled():
+                        # Sequential per-issue run: claim, mask, and run the lifecycle
+                        # under one issue-scoped `run.log` instead of the shared pool.
+                        with fixture_issue_run_log(issue["number"]):
+                            claimed_issue = build_fixture_claimed_issue(
+                                issue,
+                                label,
+                                base_reachability_metadata_path,
+                                canonical_metrics_repo_path,
+                            )
+                            if claimed_issue is not None:
+                                process_claimed_issue_lifecycle(
+                                    claimed_issue,
+                                    strategy_name,
+                                    keep_tests_without_dynamic_access,
+                                    canonical_metrics_repo_path,
+                                )
+                        if claimed_issue is not None:
+                            processed_count += 1
+                        continue
+
                     claim_kwargs: dict[str, bool] = {}
                     if not take_blocked_issues:
                         claim_kwargs["take_blocked_issues"] = False
@@ -6433,7 +6491,7 @@ def process_work_queues(
 ) -> None:
     """Process all configured issue and review queues in one Python process."""
     queue_configs = get_work_queue_configs_from_environment(work_strategy_name_override, random_offset_override)
-    review_queue_configs = get_review_queue_configs_from_environment()
+    review_queue_configs = [] if is_fixture_testing_enabled() else get_review_queue_configs_from_environment()
     validate_work_queue_strategies(queue_configs)
 
     keep_tests_without_dynamic_access = (
@@ -6574,7 +6632,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--fixture-testing",
         action="store_true",
-        help="Use local GitHub issue fixtures for an exact single-issue E2E run.",
+        help=(
+            "Use local GitHub issue fixtures instead of live GitHub. Combine with "
+            "--issue-number, --label/--limit, or --run-work-queues for the E2E run."
+        ),
     )
     parser.add_argument(
         "--review-model",
@@ -6636,10 +6697,6 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     if args.period is not None and args.review_pr is None:
         parser.error("--period can only be used with --review-pr")
     if args.fixture_testing:
-        if args.issue_number is None:
-            parser.error("--fixture-testing can only be used with --issue-number")
-        if args.run_work_queues:
-            parser.error("--fixture-testing cannot be combined with --run-work-queues")
         if args.review_pr is not None:
             parser.error("--fixture-testing cannot be combined with --review-pr")
         if args.continue_large_library_artifact is not None:
@@ -6687,31 +6744,39 @@ def process_single_issue(
     issue, label = get_issue_by_number(issue_number)
     print()
     log_stage("issue-scan", f"Issue #{issue_number} matched pipeline label: {label}")
-    if is_fixture_testing_enabled():
-        log_fixture_testing_selection(issue_number, label, strategy_name)
 
     if is_fixture_testing_enabled():
-        claimed_issue = build_fixture_claimed_issue(
-            issue,
-            label,
-            base_reachability_metadata_path,
-            canonical_metrics_repo_path,
-        )
-    else:
-        claim_kwargs: dict[str, bool] = {}
-        if not take_blocked_issues:
-            claim_kwargs["take_blocked_issues"] = False
-        claimed_issue = claim_issue_for_processing(
-            issue,
-            label,
-            base_reachability_metadata_path,
-            canonical_metrics_repo_path,
-            authenticated_user,
-            **claim_kwargs,
-        )
+        with fixture_issue_run_log(issue_number):
+            log_fixture_testing_selection(issue_number, label, strategy_name)
+            claimed_issue = build_fixture_claimed_issue(
+                issue,
+                label,
+                base_reachability_metadata_path,
+                canonical_metrics_repo_path,
+            )
+            if not claimed_issue:
+                log_failure_banner(f"Could not prepare fixture issue #{issue_number}.", file=sys.stderr)
+                sys.exit(1)
+            return process_claimed_issue_lifecycle(
+                claimed_issue,
+                strategy_name,
+                keep_tests_without_dynamic_access,
+                canonical_metrics_repo_path,
+            )
+
+    claim_kwargs: dict[str, bool] = {}
+    if not take_blocked_issues:
+        claim_kwargs["take_blocked_issues"] = False
+    claimed_issue = claim_issue_for_processing(
+        issue,
+        label,
+        base_reachability_metadata_path,
+        canonical_metrics_repo_path,
+        authenticated_user,
+        **claim_kwargs,
+    )
     if not claimed_issue:
-        action = "prepare fixture issue" if is_fixture_testing_enabled() else "claim issue"
-        log_failure_banner(f"Could not {action} #{issue_number}.", file=sys.stderr)
+        log_failure_banner(f"Could not claim issue #{issue_number}.", file=sys.stderr)
         sys.exit(1)
 
     return process_claimed_issue_lifecycle(
@@ -6765,18 +6830,25 @@ def main() -> None:
     previous_sigint_handler = signal.getsignal(signal.SIGINT)
     signal.signal(signal.SIGINT, _handle_sigint)
     args = parse_args()
-    fixture_run_log: FixtureRunLogTee | None = None
     normal_exit = False
 
     try:
         if args.fixture_testing:
-            fixture_run_log = start_fixture_run_log(args.issue_number)
+            # Fix one shared run timestamp; each issue's evidence is written under
+            # `fixture-e2e/issue-<number>/<timestamp>/` by `fixture_issue_run_log`.
+            get_fixture_run_timestamp()
             fixture_state = configure_fixture_testing()
+            if args.issue_number is not None:
+                fixture_selection = f"selected issue #{args.issue_number}"
+            elif args.run_work_queues:
+                fixture_selection = "work-queue mode"
+            else:
+                fixture_selection = f"label '{args.label}'"
             log_stage(
                 "fixture-loading",
                 (
                     f"Loaded {len(fixture_state.issue_numbers)} fixture issue(s); "
-                    f"selected issue #{args.issue_number}."
+                    f"{fixture_selection}."
                 ),
             )
         if args.clear_issue_caches:
@@ -6876,8 +6948,6 @@ def main() -> None:
         if normal_exit:
             log_success_banner("Run complete.")
         signal.signal(signal.SIGINT, previous_sigint_handler)
-        if fixture_run_log is not None:
-            fixture_run_log.close()
 
 
 if __name__ == "__main__":

@@ -15,8 +15,6 @@ Agents MUST read and strictly adhere to the following before making any changes:
 - Read README.md and DEVELOPING.md before acting.
 - Before adding code, search the repository to see whether the behavior already exists or belongs in an existing module. Prefer `rg` for code and file discovery.
 - Use the module map below to decide where code belongs before editing.
-- Run Forge E2E tests only when the user explicitly asks. When asked, follow `docs/e2e.md` and treat `forge_metadata.py` runs as the source of truth instead of mock-only or direct-driver tests.
-  §E2E-forge-workflow-testing
 - Follow project style.
 - When making AI-powered scripts, ensure prompts are clear and concise for the LLM.
   §GOAL-forge-direction

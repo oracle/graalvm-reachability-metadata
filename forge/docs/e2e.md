@@ -4,8 +4,9 @@ Forge end-to-end testing validates the whole issue-processing path, not only a
 workflow engine (§WF-forge-workflow-system) or workflow driver. It exercises
 orchestration alongside the workflow layer (§ORCH-forge-orchestration-spec) and
 is expensive: it creates worktrees, runs agents, runs Gradle, writes metrics,
-and reaches issue/PR publication handoff. Agents must run this test only when
-the user explicitly asks for end-to-end testing.
+and reaches issue/PR publication handoff. Agents run hermetic fixture E2E when
+required by [AGENTS.md](../../AGENTS.md), while live GitHub E2E requires an
+explicit user request.
 
 ## 1. Purpose
 
@@ -56,7 +57,7 @@ strategy override and lets the selected workflow driver apply its default.
 
 The bundled fixture scenarios live in `fixture_github_issues/`. The primary
 runnable fixture is issue `9101`, a `library-new-request` scenario for
-`ch.qos.logback:logback-core:1.1.3`; run it from `forge/` with:
+`com.google.http-client:google-http-client:1.42.2`; run it from `forge/` with:
 
 ```bash
 python3 forge_metadata.py \
@@ -67,10 +68,16 @@ python3 forge_metadata.py \
   --keep-tests-without-dynamic-access
 ```
 
-Fixture mode writes its evidence under
-`forge/fixture-e2e/issue-<number>/<run-timestamp>/`. The directory contains
-`run.log`, a complete merged stdout/stderr log for the fixture command, and
-`publication.md` when a successful run reaches dry-run PR publication.
+Every fixture run writes each issue's evidence under
+`forge/fixture-e2e/issue-<number>/<run-timestamp>/`, whether the issue was
+selected by `--issue-number`, a `--label` queue, or `--run-work-queues`. Issues
+claimed by the same run share one `<run-timestamp>`, so a queue run that
+processes several issues leaves sibling `issue-<number>/<run-timestamp>/`
+directories rather than a separate queue-scoped directory. Each issue directory
+contains `run.log`, a complete merged stdout/stderr log scoped to that issue, and
+`publication.md` when the issue reaches dry-run PR publication. Fixture issue
+processing is sequential — parallelism is pinned to 1 in fixture mode — so each
+`run.log` stays scoped to its issue without interleaving.
 `publication.md` must be built from the same git-script PR title/body builder
 that live publication uses (§GIT-pr-preview-builders). Fixture mode does not
 write a separate JSON E2E report, mutate live GitHub state, or simulate GitHub
@@ -103,18 +110,25 @@ target. §E2E-forge-workflow-testing.5
 For `library-new-request` fixtures that use an already-supported dynamic-access
 library, fixture setup removes the requested version entry and version-scoped
 metadata, tests, and stats from the isolated worktree before workflow routing.
-The primary `9101` fixture uses Logback Core because its existing generated
-dynamic-access report has 35 call sites. Live metadata is not changed. Cleanup
-is fixture infrastructure and is logged during setup.
+The primary `9101` fixture uses Google HTTP Client because its existing
+generated dynamic-access report has 17 call sites: large enough to exercise the
+dynamic-access workflow, but small enough for practical fixture runs. Live
+metadata is not changed. Cleanup is fixture infrastructure and is logged during
+setup.
 
-For `fails-javac-compile` and `fails-java-run` fixtures, the issue body must
-come from a real closed failure issue shape and include the original reproducer
-with the previous `-Pcoordinates=group:artifact:version`. Fixture setup removes
-the requested version entry from the isolated worktree index and marks that
-previous version as `latest` before resolving current coordinates. Live metadata
-is not changed.
+For the version-upgrade failure fixtures — `fails-javac-compile`,
+`fails-java-run`, and `fails-native-image-run` — the issue title names the new
+(failing) version and the body includes the original reproducer with the
+previous `-Pcoordinates=group:artifact:version`. Fixture setup removes the
+requested version entry and its version-scoped metadata, tests, and stats from
+the isolated worktree index and marks that previous version as `latest` before
+resolving current coordinates. This recreates the repository state at the moment
+the failure issue was filed: the new version is not yet supported, so
+control-plane resolution derives `current` from the previous `latest` entry and
+`new_version` from the title, and the routed fix driver regenerates the new
+version from that baseline. Live metadata is not changed.
 
-For a fixture issue:
+For one fixture issue:
 
 ```bash
 python3 forge_metadata.py \
@@ -125,14 +139,50 @@ python3 forge_metadata.py \
   [--keep-tests-without-dynamic-access]
 ```
 
+For a fixture label or queue run:
+
+```bash
+python3 forge_metadata.py \
+  --fixture-testing \
+  --label <queue-label> \
+  --limit <count> \
+  --strategy-name <strategy-name> \
+  --reachability-metadata-path <repo> \
+  [--keep-tests-without-dynamic-access]
+```
+
+```bash
+FORGE_JAVAC_WORK_LIMIT=0 \
+FORGE_JAVA_RUN_WORK_LIMIT=1 \
+FORGE_NI_RUN_WORK_LIMIT=0 \
+FORGE_LIBRARY_UPDATE_WORK_LIMIT=0 \
+FORGE_WORK_LABEL=library-new-request \
+FORGE_WORK_LIMIT=1 \
+FORGE_PARALLELISM=1 \
+python3 forge_metadata.py \
+  --fixture-testing \
+  --run-work-queues \
+  --strategy-name <strategy-name> \
+  --reachability-metadata-path <repo> \
+  [--keep-tests-without-dynamic-access]
+```
+
 `--fixture-testing` selects the local fixture backend. `--issue-number` names
-the mocked issue number from the YAML fixture that is being tested.
+one mocked issue number from the YAML fixture. `--label` and `--limit` drive a
+single labeled queue directly, while `--run-work-queues` runs every configured
+queue and reads its labels and per-queue limits from the same `FORGE_*`
+environment as normal issue processing: `FORGE_JAVAC_WORK_LIMIT`,
+`FORGE_JAVA_RUN_WORK_LIMIT`, `FORGE_NI_RUN_WORK_LIMIT`,
+`FORGE_LIBRARY_UPDATE_WORK_LIMIT`, the primary `FORGE_WORK_LABEL` /
+`FORGE_WORK_LIMIT` queue, and `FORGE_PARALLELISM` (a limit of `0` disables that
+queue). All three forms still build claimed issues from fixture state instead of
+live GitHub claims.
 
 A mocked issue YAML should look like a small GitHub issue plus project state:
 
 ```yaml
 number: 9101
-title: "Add support for ch.qos.logback:logback-core:1.1.3"
+title: "Add support for com.google.http-client:google-http-client:1.42.2"
 state: OPEN
 labels:
   - library-new-request
@@ -144,14 +194,14 @@ project:
 blocked_by: []
 body: |
   Please add metadata and tests for
-  `ch.qos.logback:logback-core:1.1.3`.
+  `com.google.http-client:google-http-client:1.42.2`.
 comments:
   - author: fixture-author
-    body: "Please cover appenders, encoders, rolling policies, and filters."
+    body: "Please cover reflective field metadata, data models, and I/O helpers."
 ```
 
-Fixture mode is an exact single-issue run. Queue scanning remains a live GitHub
-concern and must not be combined with `--fixture-testing`.
+Fixture queue scanning is local to the loaded YAML issues. It does not perform
+live GitHub search, live issue claiming, or live project-board mutation.
 
 ## 3. Live GitHub Smoke E2E
 
@@ -225,8 +275,7 @@ The verification steps apply to both E2E modes: hermetic fixture E2E
    (§FS-local-ci-equivalent-verification).
 5. **Issue/PR result** — successful non-final chunks reference the issue,
    final or non-chunk successful runs are publication-ready, failures preserve
-   useful logs/metrics, and project/assignment cleanup matches the
-   orchestration contract.
+   useful logs/metrics, and live GitHub runs verify project/assignment cleanup.
 
 ## 6. Logs and Review
 
@@ -251,7 +300,8 @@ with the failing native-image evidence and the native test verification gate
 
 An E2E test passes only if all of these are true:
 
-- The user explicitly requested an E2E run.
+- The E2E run was required by [AGENTS.md](../../AGENTS.md), or the user explicitly
+  requested it.
 - The test used `forge_metadata.py` as the entry point for the process under
   test.
 - A fixture-backed supported issue scenario was used, or the user explicitly
@@ -266,7 +316,8 @@ An E2E test passes only if all of these are true:
 
 An E2E test fails if any of these happen:
 
-- It was run without an explicit user request for E2E testing.
+- It was run without being required by [AGENTS.md](../../AGENTS.md) or explicitly
+  requested by the user.
 - It bypassed `forge_metadata.py` and called only a workflow driver.
 - It used live GitHub state without an exact user-requested GitHub issue number.
 - It used random live issue selection, random offsets, or live queue scanning

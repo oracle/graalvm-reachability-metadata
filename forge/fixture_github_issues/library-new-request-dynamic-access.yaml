@@ -1,10 +1,11 @@
 # Primary fixture-backed E2E scenario. Fixture setup masks the existing
-# `ch.qos.logback:logback-core:1.1.3` metadata, tests, and stats in the
-# isolated worktree so the library-new-request flow regenerates a real
-# dynamic-access-heavy library. The local generated dynamic-access report for
-# this version has 35 call sites.
+# `com.google.http-client:google-http-client:1.42.2` metadata, tests, and stats
+# in the isolated worktree so the library-new-request flow regenerates a real
+# dynamic-access library. The local generated dynamic-access report for this
+# version has 17 call sites, which keeps fixture runs shorter than the previous
+# Logback Core target while still exercising the dynamic-access path.
 number: 9101
-title: "Add support for ch.qos.logback:logback-core:1.1.3"
+title: "Add support for com.google.http-client:google-http-client:1.42.2"
 state: OPEN
 labels:
   - library-new-request
@@ -16,16 +17,16 @@ project:
 blocked_by: []
 body: |
   Please add GraalVM reachability metadata and a meaningful test suite for
-  `ch.qos.logback:logback-core:1.1.3`.
+  `com.google.http-client:google-http-client:1.42.2`.
 
-  The library is Logback Core. A useful test should cover appenders, encoders,
-  rolling policies, filters, status handling, and resource loading. The
-  requested run should use the dynamic-access workflow; the existing baseline
-  for this version has 35 dynamic-access call sites in the generated
-  dynamic-access report.
+  The library is Google HTTP Client. A useful test should cover reflective
+  field metadata, data model parsing/serialization, type utilities, and I/O
+  helpers. The requested run should use the dynamic-access workflow; the
+  existing baseline for this version has 17 dynamic-access call sites in the
+  generated dynamic-access report.
 
   Maven coordinate:
-  `ch.qos.logback:logback-core:1.1.3`
+  `com.google.http-client:google-http-client:1.42.2`
 comments:
   - author: fixture-reporter
     created_at: "2026-05-27T22:54:53Z"
