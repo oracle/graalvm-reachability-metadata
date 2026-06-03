@@ -35,6 +35,8 @@ import org.springframework.boot.micrometer.metrics.autoconfigure.MeterValue;
 import org.springframework.boot.micrometer.metrics.autoconfigure.MetricsProperties;
 import org.springframework.boot.micrometer.metrics.autoconfigure.PropertiesMeterFilter;
 import org.springframework.boot.micrometer.metrics.autoconfigure.ServiceLevelObjectiveBoundary;
+import org.springframework.boot.micrometer.metrics.autoconfigure.export.datadog.DatadogProperties;
+import org.springframework.boot.micrometer.metrics.autoconfigure.export.properties.PushRegistryPropertiesConfigAdapter;
 import org.springframework.boot.micrometer.metrics.autoconfigure.export.simple.SimpleProperties;
 import org.springframework.boot.micrometer.metrics.autoconfigure.export.simple.SimplePropertiesConfigAdapter;
 import org.springframework.boot.micrometer.metrics.startup.StartupTimeMetricsListener;
@@ -164,6 +166,36 @@ public class SpringBootMicrometerMetricsTest {
     }
 
     @Test
+    void datadogPropertiesExposePushExportAndBackendSettings() {
+        DatadogProperties properties = new DatadogProperties();
+        properties.setStep(Duration.ofSeconds(12));
+        properties.setEnabled(false);
+        properties.setBatchSize(512);
+        properties.setConnectTimeout(Duration.ofMillis(250));
+        properties.setReadTimeout(Duration.ofSeconds(3));
+        properties.setApiKey("test-api-key");
+        properties.setApplicationKey("test-application-key");
+        properties.setDescriptions(false);
+        properties.setHostTag("node");
+        properties.setUri("https://metrics.example.invalid");
+
+        TestDatadogPushConfigAdapter adapter = new TestDatadogPushConfigAdapter(properties);
+
+        assertThat(adapter.prefix()).isEqualTo("management.datadog.metrics.export");
+        assertThat(adapter.get("custom.property")).isNull();
+        assertThat(adapter.step()).isEqualTo(Duration.ofSeconds(12));
+        assertThat(adapter.enabled()).isFalse();
+        assertThat(adapter.batchSize()).isEqualTo(512);
+        assertThat(properties.getConnectTimeout()).isEqualTo(Duration.ofMillis(250));
+        assertThat(properties.getReadTimeout()).isEqualTo(Duration.ofSeconds(3));
+        assertThat(properties.getApiKey()).isEqualTo("test-api-key");
+        assertThat(properties.getApplicationKey()).isEqualTo("test-application-key");
+        assertThat(properties.isDescriptions()).isFalse();
+        assertThat(properties.getHostTag()).isEqualTo("node");
+        assertThat(properties.getUri()).isEqualTo("https://metrics.example.invalid");
+    }
+
+    @Test
     void startupTimeMetricsListenerRegistersStartedAndReadyTimeGauges() {
         SimpleMeterRegistry registry = new SimpleMeterRegistry();
         GenericApplicationContext context = new GenericApplicationContext();
@@ -248,6 +280,20 @@ public class SpringBootMicrometerMetricsTest {
                 .findFirst()
                 .orElseThrow()
                 .getValues();
+    }
+
+    private static final class TestDatadogPushConfigAdapter
+            extends PushRegistryPropertiesConfigAdapter<DatadogProperties> {
+
+        TestDatadogPushConfigAdapter(DatadogProperties properties) {
+            super(properties);
+        }
+
+        @Override
+        public String prefix() {
+            return "management.datadog.metrics.export";
+        }
+
     }
 
 }
