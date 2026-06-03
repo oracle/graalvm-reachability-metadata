@@ -19,7 +19,7 @@ class _TestWorkflowStrategy(WorkflowStrategy):
 
 
 class WorkflowStrategyTests(unittest.TestCase):
-    def test_post_generation_tests_defer_ci_matrix_graalvm_versions_to_final_verification(self) -> None:
+    def test_post_generation_tests_run_latest_and_graalvm_25_current_defaults_lanes(self) -> None:
         strategy = _TestWorkflowStrategy(
             {"model": "test-model"},
             reachability_repo_path="/tmp/reachability",
@@ -32,15 +32,29 @@ class WorkflowStrategyTests(unittest.TestCase):
             return "BUILD SUCCESSFUL"
 
         with patch.object(strategy, "_run_command_with_env", side_effect=run_command), \
-                patch.dict(os.environ, {"GRAALVM_HOME": "/dev/graalvm", "JAVA_HOME": "/dev/graalvm"}, clear=True):
+                patch.dict(
+                    os.environ,
+                    {
+                        "GRAALVM_HOME": "/dev/graalvm",
+                        "JAVA_HOME": "/dev/graalvm",
+                        "GRAALVM_HOME_25_0": "/dev/graalvm-25",
+                    },
+                    clear=True,
+                ):
             status = strategy._run_test_with_retry("org.example:demo:1.0.0")
 
         self.assertEqual(status, RUN_STATUS_SUCCESS)
-        self.assertEqual(len(commands), 2)
+        self.assertEqual(len(commands), 3)
+        # Lane 1: current defaults on the latest GraalVM (ambient environment).
         self.assertIsNone(commands[0][1])
+        # Lane 2: future-defaults on the latest GraalVM.
         self.assertEqual(commands[1][1]["GRAALVM_HOME"], "/dev/graalvm")
         self.assertEqual(commands[1][1]["JAVA_HOME"], "/dev/graalvm")
         self.assertEqual(commands[1][1]["GVM_TCK_NATIVE_IMAGE_MODE"], "future-defaults-all")
+        # Lane 3: current defaults on the GraalVM 25 toolchain.
+        self.assertEqual(commands[2][1]["GRAALVM_HOME"], "/dev/graalvm-25")
+        self.assertEqual(commands[2][1]["JAVA_HOME"], "/dev/graalvm-25")
+        self.assertNotIn("GVM_TCK_NATIVE_IMAGE_MODE", commands[2][1])
 
     def test_commit_library_iteration_stages_resolved_test_version(self) -> None:
         with tempfile.TemporaryDirectory() as repo:

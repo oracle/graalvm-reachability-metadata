@@ -19,6 +19,7 @@ from ai_workflows.core.fix_post_generation_pi import (
     run_pi_post_generation_fix,
 )
 from utility_scripts.library_finalization import run_library_finalization
+from utility_scripts.workflow_setup import build_graalvm_environment
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.gradle_test_runner import run_gradle_test_command
 from utility_scripts.library_stats import stats_artifact_dir
@@ -276,8 +277,29 @@ class WorkflowStrategy(ABC):
         if future_defaults_status == SUCCESS_WITH_INTERVENTION_STATUS:
             final_status = SUCCESS_WITH_INTERVENTION_STATUS
 
-        # Full CI-matrix GraalVM coverage, including GRAALVM_HOME_25_0, runs in
-        # local CI verification after generation.
+        # Generation/finalization tier (§FS-local-ci-equivalent-verification.1):
+        # current-defaults coverage on the GraalVM 25 toolchain runs here, in the
+        # generation lanes with the same metadata/Pi fixers, because the
+        # pre-publication gate (§FS-local-ci-equivalent-verification.2) no longer
+        # reproduces the native test matrix.
+        graalvm_25_home = os.environ.get("GRAALVM_HOME_25_0")
+        if not graalvm_25_home:
+            raise RuntimeError(
+                "Missing required environment variable GRAALVM_HOME_25_0 for the GraalVM 25 current-defaults test lane."
+            )
+        current_defaults_25_env = build_graalvm_environment(graalvm_25_home)
+        current_defaults_25_env.pop("GVM_TCK_NATIVE_IMAGE_MODE", None)
+        current_defaults_25_status = run_lane(
+            "current-defaults GraalVM 25 test",
+            lambda: self._run_command_with_env(test_cmd, current_defaults_25_env),
+            f'GRAALVM_HOME="$GRAALVM_HOME_25_0" JAVA_HOME="$GRAALVM_HOME_25_0" {test_cmd}',
+            current_defaults_25_env,
+        )
+        if current_defaults_25_status == RUN_STATUS_FAILURE:
+            return RUN_STATUS_FAILURE
+        if current_defaults_25_status == SUCCESS_WITH_INTERVENTION_STATUS:
+            final_status = SUCCESS_WITH_INTERVENTION_STATUS
+
         return final_status
 
     def _finalization_libraries(self) -> list[str]:
