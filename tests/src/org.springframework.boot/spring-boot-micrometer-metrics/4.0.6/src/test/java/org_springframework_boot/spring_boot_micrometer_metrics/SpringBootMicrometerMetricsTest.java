@@ -78,8 +78,7 @@ public class SpringBootMicrometerMetricsTest {
             MetricDescriptor usEast = endpoint.metric("orders.processed", List.of("region:us-east"));
             assertThat(measurementValue(usEast, Statistic.COUNT)).isCloseTo(3.0, within(0.001));
             assertThat(usEast.getAvailableTags()).extracting(AvailableTag::getTag).doesNotContain("region");
-        }
-        finally {
+        } finally {
             registry.close();
         }
     }
@@ -92,7 +91,7 @@ public class SpringBootMicrometerMetricsTest {
         properties.getEnable().put("http.server", false);
         properties.getEnable().put("http.server.requests", true);
         properties.getDistribution().getPercentilesHistogram().put("http.server", true);
-        properties.getDistribution().getPercentiles().put("all", new double[] { 0.5, 0.95 });
+        properties.getDistribution().getPercentiles().put("all", new double[] {0.5, 0.95 });
         properties.getDistribution().getSlo().put("http.server.requests", new ServiceLevelObjectiveBoundary[] {
                 ServiceLevelObjectiveBoundary.valueOf("100ms"), ServiceLevelObjectiveBoundary.valueOf("250ms") });
         properties.getDistribution().getMinimumExpectedValue().put("http.server.requests", "10ms");
@@ -226,8 +225,7 @@ public class SpringBootMicrometerMetricsTest {
                     .isGreaterThan(measurementValue(started, Statistic.VALUE));
             assertThat(listener.supportsEventType(ApplicationStartedEvent.class)).isTrue();
             assertThat(listener.supportsEventType(ApplicationReadyEvent.class)).isTrue();
-        }
-        finally {
+        } finally {
             context.close();
             registry.close();
         }
@@ -246,8 +244,7 @@ public class SpringBootMicrometerMetricsTest {
                     .isGreaterThanOrEqualTo(0.0);
             assertThat(registry.get("disk.total").tag("volume", "test-volume").gauge().value())
                     .isGreaterThan(0.0);
-        }
-        finally {
+        } finally {
             registry.close();
             Files.deleteIfExists(directory);
         }
