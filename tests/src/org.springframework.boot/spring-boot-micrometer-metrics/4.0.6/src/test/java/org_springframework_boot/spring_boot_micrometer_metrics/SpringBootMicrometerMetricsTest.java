@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Measurement;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Statistic;
 import io.micrometer.core.instrument.Tags;
@@ -23,6 +24,9 @@ import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 import io.micrometer.core.instrument.simple.CountingMode;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.boot.micrometer.metrics.MaximumAllowableTagsMeterFilter;
 import org.springframework.boot.micrometer.metrics.actuate.endpoint.MetricsEndpoint;
 import org.springframework.boot.micrometer.metrics.actuate.endpoint.MetricsEndpoint.AvailableTag;
@@ -33,7 +37,9 @@ import org.springframework.boot.micrometer.metrics.autoconfigure.PropertiesMeter
 import org.springframework.boot.micrometer.metrics.autoconfigure.ServiceLevelObjectiveBoundary;
 import org.springframework.boot.micrometer.metrics.autoconfigure.export.simple.SimpleProperties;
 import org.springframework.boot.micrometer.metrics.autoconfigure.export.simple.SimplePropertiesConfigAdapter;
+import org.springframework.boot.micrometer.metrics.startup.StartupTimeMetricsListener;
 import org.springframework.boot.micrometer.metrics.system.DiskSpaceMetricsBinder;
+import org.springframework.context.support.GenericApplicationContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
@@ -158,6 +164,44 @@ public class SpringBootMicrometerMetricsTest {
     }
 
     @Test
+    void startupTimeMetricsListenerRegistersStartedAndReadyTimeGauges() {
+        SimpleMeterRegistry registry = new SimpleMeterRegistry();
+        GenericApplicationContext context = new GenericApplicationContext();
+        try {
+            SpringApplication application = new SpringApplication(SpringBootMicrometerMetricsTest.class);
+            application.setMainApplicationClass(SpringBootMicrometerMetricsTest.class);
+            StartupTimeMetricsListener listener = new StartupTimeMetricsListener(registry,
+                    "test.application.started.time", "test.application.ready.time", Tags.of("phase", "test"));
+
+            listener.onApplicationEvent(new ApplicationStartedEvent(application, new String[0], context,
+                    Duration.ofMillis(1250)));
+            listener.onApplicationEvent(new ApplicationReadyEvent(application, new String[0], context,
+                    Duration.ofMillis(2500)));
+
+            Meter started = registry.get("test.application.started.time")
+                    .tag("phase", "test")
+                    .tag("main.application.class", SpringBootMicrometerMetricsTest.class.getName())
+                    .meter();
+            Meter ready = registry.get("test.application.ready.time")
+                    .tag("phase", "test")
+                    .tag("main.application.class", SpringBootMicrometerMetricsTest.class.getName())
+                    .meter();
+            assertThat(started.getId().getDescription()).isEqualTo("Time taken to start the application");
+            assertThat(ready.getId().getDescription())
+                    .isEqualTo("Time taken for the application to be ready to service requests");
+            assertThat(measurementValue(started, Statistic.VALUE)).isGreaterThan(0.0);
+            assertThat(measurementValue(ready, Statistic.VALUE))
+                    .isGreaterThan(measurementValue(started, Statistic.VALUE));
+            assertThat(listener.supportsEventType(ApplicationStartedEvent.class)).isTrue();
+            assertThat(listener.supportsEventType(ApplicationReadyEvent.class)).isTrue();
+        }
+        finally {
+            context.close();
+            registry.close();
+        }
+    }
+
+    @Test
     void diskSpaceBinderRegistersTaggedDiskGaugesForConfiguredPaths() throws IOException {
         Path directory = Files.createTempDirectory("spring-boot-metrics");
         SimpleMeterRegistry registry = new SimpleMeterRegistry();
@@ -187,6 +231,15 @@ public class SpringBootMicrometerMetricsTest {
                 .findFirst()
                 .orElseThrow()
                 .getValue();
+    }
+
+    private static Double measurementValue(Meter meter, Statistic statistic) {
+        for (Measurement measurement : meter.measure()) {
+            if (measurement.getStatistic() == statistic) {
+                return measurement.getValue();
+            }
+        }
+        throw new IllegalStateException("No measurement found for " + statistic);
     }
 
     private static Set<String> valuesForTag(MetricDescriptor descriptor, String tag) {
