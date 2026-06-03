@@ -240,22 +240,25 @@ keeping the loop short as called for by §GOAL-shorten-issue-to-shipped-metadata
 
 ### FS-local-ci-equivalent-verification: Local CI-equivalent verification
 
-Every Forge task must be fully tested locally in the same way it will be
-tested by CI before it is allowed to produce a PR-eligible result. This is a
-hard requirement, not an optimization or best-effort check.
+Every Forge task must pass local verification before it is allowed to produce a
+PR-eligible result. The default local verification mode is a smoke gate for fast
+publication: it validates the generated coordinate's metadata with
+`checkMetadataFiles`, rejects legacy test-only Native Image configuration, and
+runs the cheap repository gates that apply to the PR diff, including
+infrastructure validation, index validation, style checks, stats validation,
+documentation links, and Docker-image vulnerability scanning when allowed-image
+files change.
 
-For the task's affected coordinate set, Forge must run the same validation
-surface that the corresponding CI workflow will run, including metadata
-validation, style checks, compilation, JVM tests, native-image build/run
-tests, Docker image pre-pull requirements, vulnerability checks when Docker
-images change, stats validation, and any workflow-specific gates. The local
-commands, coordinates filter, native-image mode, JDK/GraalVM selection, and
-Docker/image setup must be derived from the same repo configuration that CI
-uses, including `ci.json` and the Gradle task contracts. Where CI exercises more
-than one native-image mode, local verification must too: Forge runs the
-generated tests under both the current GraalVM defaults and the
-`future-defaults-all` native-image mode (selected by `GVM_TCK_NATIVE_IMAGE_MODE`),
-so a regression that only appears under future defaults is caught before a PR.
+Forge must also expose a full local verification mode for operators and
+programmatic callers that need local reproduction of the expensive per-PR CI
+surface. Full mode derives its commands, coordinates filter, native-image mode,
+JDK/GraalVM selection, and Docker/image setup from the same repo configuration
+that CI uses, including `ci.json` and the Gradle task contracts. In full mode
+Forge expands the changed-metadata test matrix, pre-pulls Docker images for
+coordinates that declare them, runs the generated tests under the CI native-image
+mode matrix, and runs Spring AOT smoke verification when metadata changes affect
+Spring AOT projects. The default smoke mode intentionally leaves those expensive
+native and Spring AOT checks to repository CI.
 
 Local verification runs must be non-privileged. Forge must not invoke `sudo`,
 must not run scripts that invoke `sudo`, and must not prompt for an
@@ -275,16 +278,16 @@ configuration files appear under the generated test sources, the run fails
 rather than publishing them, because that config form is no longer accepted and
 the reachability metadata belongs in the coordinate's `metadata/` directory.
 
-Forge must record the exact local verification commands and their outcomes in
-the run metrics and PR description. A task must not open a PR, mark a project
-item `Done`, return `RUN_STATUS_SUCCESS`, return
-`SUCCESS_WITH_INTERVENTION_STATUS`, or return `RUN_STATUS_CHUNK_READY` until
-that local CI-equivalent verification has passed. If Forge cannot reproduce
-the CI-equivalent validation locally, the workflow must return
+Forge must record the selected local verification mode, exact local verification
+commands, and command outcomes in the run metrics and PR description. A task
+must not open a PR, mark a project item `Done`, return `RUN_STATUS_SUCCESS`,
+return `SUCCESS_WITH_INTERVENTION_STATUS`, or return `RUN_STATUS_CHUNK_READY`
+until the selected local verification mode has passed. If Forge cannot complete
+the selected local verification mode, the workflow must return
 `RUN_STATUS_FAILURE` and preserve enough diagnostics for human follow-up.
 
-If local CI-equivalent verification fails, Forge may run a bounded fixup step
-before retrying the full verification. The fixup may repair generated
+If local verification fails, Forge may run a bounded fixup step
+before retrying the selected verification mode. The fixup may repair generated
 library-scoped files or shared repository files when the failure is caused by
 the repository itself. After verification passes, Forge must algorithmically
 compare the final PR diff with the expected library-scoped paths. If any
