@@ -282,12 +282,9 @@ class WorkflowStrategy(ABC):
         # generation lanes with the same metadata/Pi fixers, because the
         # pre-publication gate (§FS-local-ci-equivalent-verification.2) no longer
         # reproduces the native test matrix.
-        graalvm_25_home = os.environ.get("GRAALVM_HOME_25_0")
-        if not graalvm_25_home:
-            raise RuntimeError(
-                "Missing required environment variable GRAALVM_HOME_25_0 for the GraalVM 25 current-defaults test lane."
-            )
-        current_defaults_25_env = build_graalvm_environment(graalvm_25_home)
+        # GRAALVM_HOME_25_0 presence is already preflighted at startup
+        # (forge_metadata POST_GENERATION_GRAALVM_ENV_VAR), so read it directly.
+        current_defaults_25_env = build_graalvm_environment(os.environ["GRAALVM_HOME_25_0"])
         current_defaults_25_env.pop("GVM_TCK_NATIVE_IMAGE_MODE", None)
         current_defaults_25_status = run_lane(
             "current-defaults GraalVM 25 test",

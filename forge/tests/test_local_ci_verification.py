@@ -207,6 +207,40 @@ class LocalCIVerificationTests(unittest.TestCase):
         # are owned by generation/finalization, so only the shared Docker scan runs here.
         self.assertEqual(recorded_gates, ["docker-image-scan"])
 
+    def test_reproduce_full_ci_runs_native_matrix_and_spring_aot(self) -> None:
+        result = LocalCIVerificationResult(status="running", base_commit="base")
+        gradle_tasks: list[str] = []
+
+        def fake_gradle_json_output(repo_path, task_name, base_commit, result_arg, gate, extra_args=None):
+            del repo_path, base_commit, result_arg, gate, extra_args
+            gradle_tasks.append(task_name)
+            return {"include": []}
+
+        changed_files = ["metadata/org.example/demo/1.0.0/reachability-metadata.json"]
+        with patch("utility_scripts.local_ci_verification.changed_files_for_ci", return_value=changed_files), \
+                patch("utility_scripts.local_ci_verification._run_index_validation", return_value=None), \
+                patch("utility_scripts.local_ci_verification._gradle_json_output", side_effect=fake_gradle_json_output), \
+                patch("utility_scripts.local_ci_verification._run_test_matrix_entries", return_value=None) as matrix, \
+                patch("utility_scripts.local_ci_verification._run_spring_aot_verification", return_value=None) as spring:
+            failed = _run_verification_once("/repo", "base", result, reproduce_full_ci=True)
+
+        self.assertIsNone(failed)
+        self.assertIn("generateChangedMetadataTestMatrix", gradle_tasks)
+        matrix.assert_called_once()
+        spring.assert_called_once()
+
+    def test_default_gate_does_not_run_native_matrix(self) -> None:
+        result = LocalCIVerificationResult(status="running", base_commit="base")
+        with patch(
+                "utility_scripts.local_ci_verification.changed_files_for_ci",
+                return_value=["metadata/org.example/demo/1.0.0/reachability-metadata.json"],
+        ), patch("utility_scripts.local_ci_verification._run_index_validation", return_value=None), \
+                patch("utility_scripts.local_ci_verification._run_test_matrix_entries", return_value=None) as matrix:
+            failed = _run_verification_once("/repo", "base", result)
+
+        self.assertIsNone(failed)
+        matrix.assert_not_called()
+
     def test_verification_once_skips_docker_scan_without_allowed_image_changes(self) -> None:
         result = LocalCIVerificationResult(status="running", base_commit="base")
         with patch(

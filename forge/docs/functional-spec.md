@@ -283,15 +283,29 @@ no longer accepted and the reachability metadata belongs in the coordinate's
 #### 2. Pre-publication gate
 
 Before a task may produce a PR-eligible result, Forge must also pass a
-pre-publication gate that runs only the cross-cutting checks a single-library
-generation cannot settle: index-file validation (an aggregate that depends on
-the rebased `master` state), Docker-image vulnerability scanning when
-allowed-image files change, and the human-intervention classification that
-detects changes outside the coordinate's library scope. The gate intentionally
-does not re-run the library-scoped checks that finalization
-(§FS-local-ci-equivalent-verification.1) already established, does not re-run the
-native test matrix owned by the generation lanes, and leaves the expensive
-Spring AOT smoke verification to repository CI.
+pre-publication gate. This tier exists because the generated branch is rebased
+onto the current `master` before publication, and some checks can then fail for
+reasons no single-library generation could have settled: they depend on
+repository state that only exists once the branch sits on top of the latest
+`master`. An index-file bucket that another merged PR has since changed, a newly
+flagged Docker image, or a stray edit outside the coordinate's library scope can
+break the whole PR even though the generated metadata and tests are themselves
+valid. The gate therefore runs exactly the post-rebase, cross-cutting checks:
+index-file validation (`validateIndexFiles`, an aggregate over the rebased
+`master` state), Docker-image vulnerability scanning when allowed-image files
+change, and the human-intervention classification that detects changes outside
+the coordinate's library scope.
+
+The gate intentionally does not re-run the library-scoped checks that
+finalization (§FS-local-ci-equivalent-verification.1) already established, and by
+default it does not re-run the native test matrix or the Spring AOT smoke tests,
+which the generation lanes and repository CI cover. Forge must, however, expose
+an opt-in full-reproduction option (`reproduce_full_ci`) for operators and
+programmatic callers that need to reproduce the expensive per-PR CI surface
+locally: when enabled, the gate additionally expands the changed-metadata native
+test matrix, pre-pulls Docker images for coordinates that declare them, runs the
+generated tests under the CI native-image mode matrix, and runs Spring AOT smoke
+verification when metadata changes affect Spring AOT projects.
 
 If the gate fails, Forge may run a bounded fixup step before retrying it. The
 fixup may repair generated library-scoped files or shared repository files when

@@ -6,14 +6,18 @@
 """Pre-publication verification gate for generated Forge PRs.
 
 Implements the second verification tier of §FS-local-ci-equivalent-verification.2:
-the cross-cutting checks a single-library generation cannot settle on its own.
-Library-scoped verification (metadata, style, stats, and the native test lanes)
-is owned by the generation/finalization tier
-(§FS-local-ci-equivalent-verification.1) and is intentionally not repeated here.
+the post-rebase, cross-cutting checks a single-library generation cannot settle
+on its own. Library-scoped verification (metadata, style, stats, and the native
+test lanes) is owned by the generation/finalization tier
+(§FS-local-ci-equivalent-verification.1) and is not repeated here by default. The
+opt-in `reproduce_full_ci` flag additionally reproduces the expensive per-PR CI
+surface locally — the whole changed-metadata native test matrix and the Spring
+AOT smoke tests.
 """
 
 from __future__ import annotations
 
+import json
 import os
 import re
 import shlex
@@ -23,6 +27,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 from utility_scripts.gradle_environment import gradle_command_environment
+from utility_scripts.metadata_index import resolve_test_version
 from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME, read_pending_metrics, write_pending_metrics
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.task_logs import build_timestamped_task_log_path, display_log_path
@@ -34,7 +39,13 @@ MAX_FIXUP_ATTEMPTS = 2
 CODEX_MODEL_NAME = "oca/gpt-5.4"
 CODEX_TIMEOUT_SECONDS = 1800
 DEFAULT_BASE_BRANCH = "master"
+SPRING_AOT_BRANCH = "main"
+SPRING_AOT_REPO_URL = "https://github.com/spring-projects/spring-aot-smoke-tests.git"
 NO_SUDO_FAILURE_MESSAGE = "ERROR: Local CI verification runs must not invoke sudo."
+UNEXPECTED_DOCKER_IMAGE_FAILURE_MESSAGE = (
+    "ERROR: Local CI verification detected Docker images created during the no-network-equivalent test gate."
+)
+DOCKER_IMAGE_LIST_COMMAND = ["docker", "image", "ls", "--format", "{{.Repository}}:{{.Tag}} {{.ID}}"]
 
 
 @dataclass
@@ -115,13 +126,20 @@ def run_local_ci_verification(
         base_commit: str,
         metrics_repo_path: str | None = None,
         max_fixup_attempts: int = MAX_FIXUP_ATTEMPTS,
+        reproduce_full_ci: bool = False,
 ) -> LocalCIVerificationResult:
-    """Run local verification, fixing and retrying when possible."""
+    """Run local verification, fixing and retrying when possible.
+
+    When `reproduce_full_ci` is set, the pre-publication gate additionally
+    reproduces the per-PR CI surface locally — the whole changed-metadata native
+    test matrix and the Spring AOT smoke tests — instead of leaving those to
+    repository CI (§FS-local-ci-equivalent-verification.2).
+    """
     result = LocalCIVerificationResult(status="running", base_commit=base_commit)
     _log_local_ci(f"Starting local CI verification for {coordinates}")
     for attempt in range(max_fixup_attempts + 1):
         _log_local_ci(f"Verification attempt {attempt + 1}/{max_fixup_attempts + 1}", indent_level=1)
-        failed_command = _run_verification_once(repo_path, base_commit, result)
+        failed_command = _run_verification_once(repo_path, base_commit, result, reproduce_full_ci=reproduce_full_ci)
         if failed_command is None:
             result.status = "success"
             result.final_commit = _git_stdout(repo_path, ["rev-parse", "HEAD"])
@@ -244,6 +262,7 @@ def _run_verification_once(
         repo_path: str,
         base_commit: str,
         result: LocalCIVerificationResult,
+        reproduce_full_ci: bool = False,
 ) -> CommandRecord | None:
     # Pre-publication gate (§FS-local-ci-equivalent-verification.2): run only the
     # cross-cutting checks a single-library generation cannot settle on its own —
@@ -269,7 +288,92 @@ def _run_verification_once(
         if failed is not None:
             return failed
 
+    # Opt-in full local reproduction of the per-PR CI surface the gate otherwise
+    # leaves to repository CI (§FS-local-ci-equivalent-verification.2): the whole
+    # changed-metadata native test matrix and the Spring AOT smoke tests.
+    if reproduce_full_ci:
+        failed = _run_full_ci_reproduction(repo_path, base_commit, changed_files, result)
+        if failed is not None:
+            return failed
+
     return None
+
+
+def _run_full_ci_reproduction(
+        repo_path: str,
+        base_commit: str,
+        changed_files: list[str],
+        result: LocalCIVerificationResult,
+) -> CommandRecord | None:
+    """Reproduce the expensive per-PR CI surface locally: native matrix + Spring AOT."""
+    _log_local_ci("Full CI reproduction: changed-metadata native test matrix and Spring AOT", indent_level=1)
+    try:
+        changed_metadata_matrix = _gradle_json_output(
+            repo_path,
+            "generateChangedMetadataTestMatrix",
+            base_commit,
+            result,
+            "changed-metadata-matrix",
+        )
+    except _GradleOutputFailure as exc:
+        return exc.record
+
+    test_entries = _matrix_entries(changed_metadata_matrix)
+    _log_local_ci(f"Changed-metadata test matrix entries: {len(test_entries)}", indent_level=1)
+    failed = _run_test_matrix_entries(repo_path, test_entries, result)
+    if failed is not None:
+        return failed
+
+    if _should_run_spring_aot_tests(changed_files):
+        failed = _run_spring_aot_verification(repo_path, base_commit, changed_files, result)
+        if failed is not None:
+            return failed
+
+    return None
+
+
+def _run_spring_aot_verification(
+        repo_path: str,
+        base_commit: str,
+        changed_files: list[str],
+        result: LocalCIVerificationResult,
+) -> CommandRecord | None:
+    if not _should_run_spring_aot_tests(changed_files):
+        return None
+
+    _log_local_ci("Running full Spring AOT verification", indent_level=1)
+    with tempfile.TemporaryDirectory(prefix="forge-spring-aot-") as spring_parent:
+        os.symlink(os.path.join(repo_path, "metadata"), os.path.join(spring_parent, "metadata"))
+        spring_path = os.path.join(spring_parent, "spring-aot-smoke-tests")
+        failed = _run_recorded_command(
+            repo_path,
+            "checkout-spring-aot-smoke-tests",
+            ["git", "clone", "--depth", "1", "--branch", SPRING_AOT_BRANCH, SPRING_AOT_REPO_URL, spring_path],
+            result,
+        )
+        if failed is not None:
+            return failed
+
+        try:
+            spring_matrix = _gradle_json_output(
+                repo_path,
+                "generateAffectedSpringTestMatrix",
+                base_commit,
+                result,
+                "affected-spring-aot-matrix",
+                extra_args=[
+                    f"-PspringAotBranch={SPRING_AOT_BRANCH}",
+                    f"-PspringAotPath={spring_path}",
+                ],
+            )
+        except _GradleOutputFailure as exc:
+            return exc.record
+
+        return _run_spring_aot_matrix_entries(repo_path, spring_path, _matrix_entries(spring_matrix), result)
+
+
+def _should_run_spring_aot_tests(changed_files: list[str]) -> bool:
+    return any(path.startswith("metadata/") for path in changed_files)
 
 
 def _run_index_validation(
@@ -648,3 +752,296 @@ def _is_metadata_index_file(path: str) -> bool:
 
 def _should_run_docker_scan(changed_files: list[str]) -> bool:
     return any(path.startswith("tests/tck-build-logic/src/main/resources/allowed-docker-images/") for path in changed_files)
+
+
+def _run_test_matrix_entries(
+        repo_path: str,
+        entries: list[dict],
+        result: LocalCIVerificationResult,
+) -> CommandRecord | None:
+    if not entries:
+        _log_local_ci("Full metadata test matrix is empty", indent_level=1)
+        return None
+
+    pulled_coordinates: set[str] = set()
+    for entry in entries:
+        coordinates = str(entry.get("coordinates") or "").strip()
+        if not coordinates or coordinates in pulled_coordinates:
+            continue
+        if not _coordinate_uses_docker(repo_path, coordinates):
+            continue
+        _log_local_ci(f"Pre-pulling Docker images for {coordinates}", indent_level=1)
+        failed = _run_recorded_command(
+            repo_path,
+            "pull-allowed-docker-images",
+            ["./gradlew", "pullAllowedDockerImages", f"-Pcoordinates={coordinates}"],
+            result,
+        )
+        if failed is not None:
+            return failed
+        pulled_coordinates.add(coordinates)
+
+    for entry in entries:
+        coordinates = str(entry.get("coordinates") or "").strip()
+        versions = entry.get("versions")
+        if not coordinates or not isinstance(versions, list):
+            continue
+        version_text = ", ".join(str(version) for version in versions)
+        _log_local_ci(f"Running full metadata test matrix entry for {coordinates}: {version_text}", indent_level=1)
+        env = _matrix_env(entry)
+        failed = _run_recorded_command(
+            repo_path,
+            "check-metadata-files",
+            ["./gradlew", "checkMetadataFiles", f"-Pcoordinates={coordinates}"],
+            result,
+            env=env,
+        )
+        if failed is not None:
+            return failed
+        failed = _run_recorded_command_without_new_docker_images(
+            repo_path,
+            "run-consecutive-tests",
+            [
+                "bash",
+                "./.github/workflows/scripts/run-consecutive-tests.sh",
+                coordinates,
+                json.dumps([str(version) for version in versions]),
+            ],
+            result,
+            env=env,
+            failure_output_pattern=r"^FAILED",
+        )
+        if failed is not None:
+            return failed
+    return None
+
+
+def _run_spring_aot_matrix_entries(
+        repo_path: str,
+        spring_path: str,
+        entries: list[dict],
+        result: LocalCIVerificationResult,
+) -> CommandRecord | None:
+    _log_local_ci(f"Spring AOT matrix entries: {len(entries)}", indent_level=1)
+    for entry in entries:
+        project = str(entry.get("project") or "").strip()
+        if not project:
+            continue
+        _log_local_ci(f"Running Spring AOT smoke test for {project}", indent_level=1)
+        env = _spring_aot_env(entry)
+        failed = _run_recorded_command(
+            repo_path,
+            "spring-aot-smoke-test",
+            [
+                "bash",
+                ".github/workflows/scripts/run-spring-aot-triaged-test.sh",
+                spring_path,
+                project,
+                "4.1.x",
+            ],
+            result,
+            env=env,
+        )
+        if failed is not None:
+            return failed
+    return None
+
+
+def _gradle_json_output(
+        repo_path: str,
+        task_name: str,
+        base_commit: str,
+        result: LocalCIVerificationResult,
+        gate: str,
+        extra_args: list[str] | None = None,
+) -> dict:
+    output = _gradle_output(repo_path, task_name, base_commit, result, gate, extra_args=extra_args)
+    raw_matrix = output.get("matrix")
+    if raw_matrix is None:
+        return {}
+    try:
+        parsed = json.loads(raw_matrix)
+    except json.JSONDecodeError as exc:
+        raise RuntimeError(f"Failed to parse matrix output from {task_name}: {exc}") from exc
+    return parsed if isinstance(parsed, dict) else {}
+
+
+def _matrix_entries(matrix: dict) -> list[dict]:
+    include = matrix.get("include")
+    if isinstance(include, list):
+        return [entry for entry in include if isinstance(entry, dict)]
+    return []
+
+
+def _matrix_env(entry: dict) -> dict[str, str]:
+    env: dict[str, str] = {}
+    native_image_mode = str(entry.get("nativeImageMode") or "").strip()
+    if native_image_mode:
+        env["GVM_TCK_NATIVE_IMAGE_MODE"] = native_image_mode
+    java_version = str(entry.get("version") or "").strip()
+    graalvm_home = _graalvm_home_for_java_version(java_version)
+    if graalvm_home:
+        env["GRAALVM_HOME"] = graalvm_home
+        env["JAVA_HOME"] = graalvm_home
+    return env
+
+
+def _coordinate_uses_docker(repo_path: str, coordinates: str) -> bool:
+    """Return whether the coordinate declares Docker images for its tests."""
+    required_images_path = _required_docker_images_path(repo_path, coordinates)
+    if required_images_path is None:
+        return False
+    with open(required_images_path, "r", encoding="utf-8") as required_images_file:
+        return any(_is_required_docker_image_line(line) for line in required_images_file)
+
+
+def _required_docker_images_path(repo_path: str, coordinates: str) -> str | None:
+    """Return the Docker declaration path for the coordinate's resolved test version."""
+    group, artifact, _version = parse_coordinate_parts(coordinates)
+    test_version = _resolve_coordinate_test_version(repo_path, coordinates)
+    if test_version is None:
+        return None
+    required_images_path = os.path.join(
+        repo_path,
+        "tests",
+        "src",
+        group,
+        artifact,
+        test_version,
+        "required-docker-images.txt",
+    )
+    if not os.path.isfile(required_images_path):
+        return None
+    return required_images_path
+
+
+def _resolve_coordinate_test_version(repo_path: str, coordinates: str) -> str | None:
+    """Resolve the test-version used by pullAllowedDockerImages for a coordinate."""
+    group, artifact, version = parse_coordinate_parts(coordinates)
+    return resolve_test_version(repo_path, group, artifact, version)
+
+
+def _is_required_docker_image_line(line: str) -> bool:
+    stripped = line.strip()
+    return bool(stripped and not stripped.startswith("#"))
+
+
+def _spring_aot_env(entry: dict) -> dict[str, str]:
+    env: dict[str, str] = {}
+    java_version = str(entry.get("java") or "").strip()
+    graalvm_home = _graalvm_home_for_java_version(java_version)
+    if graalvm_home:
+        env["GRAALVM_HOME"] = graalvm_home
+        env["JAVA_HOME"] = graalvm_home
+    return env
+
+
+def _graalvm_home_for_java_version(java_version: str) -> str | None:
+    if not java_version:
+        return None
+    if java_version == "25":
+        return _required_env("GRAALVM_HOME_25_0")
+    if java_version == "latest-ea":
+        return _required_env("GRAALVM_HOME_LATEST_EA")
+    env_name = "GRAALVM_HOME_" + re.sub(r"[^A-Za-z0-9]", "_", java_version).upper()
+    return _required_env(env_name)
+
+
+def _required_env(name: str) -> str:
+    value = os.environ.get(name)
+    if not value:
+        raise RuntimeError(f"Missing required environment variable {name} for local CI verification.")
+    return value
+
+
+def _run_recorded_command_without_new_docker_images(
+        repo_path: str,
+        gate: str,
+        command: list[str],
+        result: LocalCIVerificationResult,
+        env: dict[str, str] | None = None,
+        failure_output_pattern: str | None = None,
+) -> CommandRecord | None:
+    try:
+        before_images = _docker_image_ids(repo_path)
+    except RuntimeError as exc:
+        output = f"ERROR: Cannot run local CI no-network-equivalent Docker validation. {exc}\n"
+        return _record_synthetic_failure(repo_path, "docker-image-baseline", command, result, env, output)
+
+    failed = _run_recorded_command(
+        repo_path,
+        gate,
+        command,
+        result,
+        env=env,
+        failure_output_pattern=failure_output_pattern,
+    )
+    if failed is not None:
+        return failed
+
+    try:
+        after_images = _docker_image_ids(repo_path)
+    except RuntimeError as exc:
+        output = f"ERROR: Cannot complete local CI no-network-equivalent Docker validation. {exc}\n"
+        return _record_synthetic_failure(repo_path, "docker-image-after-test", command, result, env, output)
+
+    new_images = sorted(after_images - before_images)
+    if not new_images:
+        return None
+
+    output = "\n".join([
+        UNEXPECTED_DOCKER_IMAGE_FAILURE_MESSAGE,
+        "CI disables Docker networking after `pullAllowedDockerImages`; local verification must not pass by pulling images on demand.",
+        "New Docker images:",
+        *[f"- {image}" for image in new_images],
+        "",
+    ])
+    return _record_synthetic_failure(repo_path, "unexpected-docker-image-pull", command, result, env, output)
+
+
+def _docker_image_ids(repo_path: str) -> set[str]:
+    try:
+        completed = subprocess.run(
+            DOCKER_IMAGE_LIST_COMMAND,
+            cwd=repo_path,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            check=False,
+        )
+    except OSError as exc:
+        raise RuntimeError(str(exc)) from exc
+    if completed.returncode != 0:
+        output = (completed.stdout or "").strip()
+        details = f" Output: {output}" if output else ""
+        raise RuntimeError(f"Cannot list Docker images for local CI no-network-equivalent verification.{details}")
+    images: set[str] = set()
+    for line in completed.stdout.splitlines():
+        stripped = line.strip()
+        if stripped and not stripped.startswith("<none>:<none>"):
+            images.add(stripped)
+    return images
+
+
+def _record_synthetic_failure(
+        repo_path: str,
+        gate: str,
+        command: list[str],
+        result: LocalCIVerificationResult,
+        env: dict[str, str] | None,
+        output: str,
+) -> CommandRecord:
+    log_path = build_timestamped_task_log_path("local-ci", gate, Path(command[0]).name)
+    with open(log_path, "w", encoding="utf-8") as log_file:
+        log_file.write(output)
+    record = CommandRecord(
+        gate=gate,
+        command=command,
+        returncode=1,
+        env=dict(env or {}),
+        log_path=display_log_path(log_path),
+        output_excerpt=_tail(output),
+    )
+    result.commands.append(record)
+    _log_local_ci(f"Gate {gate} failed; log: {record.log_path}", indent_level=1)
+    return record
