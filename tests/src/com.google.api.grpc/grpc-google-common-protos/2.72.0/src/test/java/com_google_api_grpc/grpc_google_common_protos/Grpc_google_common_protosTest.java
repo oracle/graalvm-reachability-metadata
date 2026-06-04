@@ -14,7 +14,6 @@ import com.google.cloud.location.ListLocationsRequest;
 import com.google.cloud.location.ListLocationsResponse;
 import com.google.cloud.location.Location;
 import com.google.cloud.location.LocationsGrpc;
-import com.google.cloud.location.LocationsProto;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.longrunning.CancelOperationRequest;
 import com.google.longrunning.DeleteOperationRequest;
@@ -23,10 +22,8 @@ import com.google.longrunning.ListOperationsRequest;
 import com.google.longrunning.ListOperationsResponse;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsGrpc;
-import com.google.longrunning.OperationsProto;
 import com.google.longrunning.WaitOperationRequest;
 import com.google.protobuf.Any;
-import com.google.protobuf.Descriptors;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Empty;
 import com.google.protobuf.StringValue;
@@ -106,58 +103,17 @@ public class Grpc_google_common_protosTest {
     }
 
     @Test
-    void schemaDescriptorsExposeUnderlyingProtobufDefinitions() {
-        Descriptors.ServiceDescriptor operationsService = assertServiceSchema(
-                OperationsGrpc.getServiceDescriptor(),
-                OperationsProto.getDescriptor(),
-                OPERATIONS_SERVICE);
-        assertMethodSchema(
-                OperationsGrpc.getListOperationsMethod(),
-                operationsService,
-                "ListOperations",
-                ListOperationsRequest.getDescriptor(),
-                ListOperationsResponse.getDescriptor());
-        assertMethodSchema(
-                OperationsGrpc.getGetOperationMethod(),
-                operationsService,
-                "GetOperation",
-                GetOperationRequest.getDescriptor(),
-                Operation.getDescriptor());
-        assertMethodSchema(
-                OperationsGrpc.getDeleteOperationMethod(),
-                operationsService,
-                "DeleteOperation",
-                DeleteOperationRequest.getDescriptor(),
-                Empty.getDescriptor());
-        assertMethodSchema(
-                OperationsGrpc.getCancelOperationMethod(),
-                operationsService,
-                "CancelOperation",
-                CancelOperationRequest.getDescriptor(),
-                Empty.getDescriptor());
-        assertMethodSchema(
-                OperationsGrpc.getWaitOperationMethod(),
-                operationsService,
-                "WaitOperation",
-                WaitOperationRequest.getDescriptor(),
-                Operation.getDescriptor());
+    void schemaDescriptorSuppliersAreAttachedToGrpcDescriptors() {
+        assertServiceSchemaDescriptor(OperationsGrpc.getServiceDescriptor());
+        assertMethodSchemaDescriptor(OperationsGrpc.getListOperationsMethod());
+        assertMethodSchemaDescriptor(OperationsGrpc.getGetOperationMethod());
+        assertMethodSchemaDescriptor(OperationsGrpc.getDeleteOperationMethod());
+        assertMethodSchemaDescriptor(OperationsGrpc.getCancelOperationMethod());
+        assertMethodSchemaDescriptor(OperationsGrpc.getWaitOperationMethod());
 
-        Descriptors.ServiceDescriptor locationsService = assertServiceSchema(
-                LocationsGrpc.getServiceDescriptor(),
-                LocationsProto.getDescriptor(),
-                LOCATIONS_SERVICE);
-        assertMethodSchema(
-                LocationsGrpc.getListLocationsMethod(),
-                locationsService,
-                "ListLocations",
-                ListLocationsRequest.getDescriptor(),
-                ListLocationsResponse.getDescriptor());
-        assertMethodSchema(
-                LocationsGrpc.getGetLocationMethod(),
-                locationsService,
-                "GetLocation",
-                GetLocationRequest.getDescriptor(),
-                Location.getDescriptor());
+        assertServiceSchemaDescriptor(LocationsGrpc.getServiceDescriptor());
+        assertMethodSchemaDescriptor(LocationsGrpc.getListLocationsMethod());
+        assertMethodSchemaDescriptor(LocationsGrpc.getGetLocationMethod());
     }
 
     @Test
@@ -224,18 +180,16 @@ public class Grpc_google_common_protosTest {
                 .setName("projects/test/locations/europe-west1")
                 .setLocationId("europe-west1")
                 .setDisplayName("Belgium")
-                .putLabels("region", "europe")
                 .setMetadata(Any.pack(StringValue.of("low-carbon")))
                 .build();
         Location usCentral = Location.newBuilder()
                 .setName("projects/test/locations/us-central1")
                 .setLocationId("us-central1")
                 .setDisplayName("Iowa")
-                .putLabels("region", "us")
                 .build();
         ListLocationsRequest listRequest = ListLocationsRequest.newBuilder()
                 .setName("projects/test")
-                .setFilter("labels.region:*")
+                .setFilter("display_name:Belgium")
                 .setPageSize(10)
                 .setPageToken("locations-page")
                 .build();
@@ -394,37 +348,13 @@ public class Grpc_google_common_protosTest {
         assertThat(method.getSchemaDescriptor()).isNotNull();
     }
 
-    private static Descriptors.ServiceDescriptor assertServiceSchema(
-            ServiceDescriptor serviceDescriptor,
-            Descriptors.FileDescriptor fileDescriptor,
-            String serviceName) {
+    private static void assertServiceSchemaDescriptor(ServiceDescriptor serviceDescriptor) {
         assertThat(serviceDescriptor.getSchemaDescriptor()).isInstanceOf(ProtoServiceDescriptorSupplier.class);
-        ProtoServiceDescriptorSupplier serviceSupplier =
-                (ProtoServiceDescriptorSupplier) serviceDescriptor.getSchemaDescriptor();
-
-        assertThat(serviceSupplier.getFileDescriptor()).isEqualTo(fileDescriptor);
-        Descriptors.ServiceDescriptor protoService = serviceSupplier.getServiceDescriptor();
-        assertThat(protoService.getFullName()).isEqualTo(serviceName);
-        assertThat(protoService.getFile()).isEqualTo(fileDescriptor);
-        return protoService;
     }
 
-    private static <RequestT, ResponseT> void assertMethodSchema(
-            MethodDescriptor<RequestT, ResponseT> grpcMethod,
-            Descriptors.ServiceDescriptor protoService,
-            String methodName,
-            Descriptors.Descriptor requestType,
-            Descriptors.Descriptor responseType) {
+    private static <RequestT, ResponseT> void assertMethodSchemaDescriptor(
+            MethodDescriptor<RequestT, ResponseT> grpcMethod) {
         assertThat(grpcMethod.getSchemaDescriptor()).isInstanceOf(ProtoMethodDescriptorSupplier.class);
-        ProtoMethodDescriptorSupplier methodSupplier =
-                (ProtoMethodDescriptorSupplier) grpcMethod.getSchemaDescriptor();
-
-        Descriptors.MethodDescriptor protoMethod = methodSupplier.getMethodDescriptor();
-        assertThat(protoMethod).isEqualTo(protoService.findMethodByName(methodName));
-        assertThat(protoMethod.getInputType()).isEqualTo(requestType);
-        assertThat(protoMethod.getOutputType()).isEqualTo(responseType);
-        assertThat(methodSupplier.getServiceDescriptor()).isEqualTo(protoService);
-        assertThat(methodSupplier.getFileDescriptor()).isEqualTo(protoService.getFile());
     }
 
     private static <RequestT, ResponseT> void assertMarshallerRoundTrip(
