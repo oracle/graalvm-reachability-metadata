@@ -5,7 +5,7 @@
 
 """
 Usage:
-  python3 ai_workflows/add_new_library_support.py \
+  python3 ai_workflows/drivers/add_new_library_support.py \
     --coordinates group:artifact:version \
     [--reachability-metadata-path /path/to/graalvm-reachability-metadata] \
     [--metrics-repo-path /path/to/metrics-storage] \
@@ -27,16 +27,19 @@ import json
 import os
 import sys
 
+if __package__ in (None, ""):
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
 import ai_workflows.agents  # noqa: F401 - triggers agent registration
-import ai_workflows.workflow_strategies  # noqa: F401 — triggers strategy registration
+import ai_workflows.core  # noqa: F401 - triggers strategy registration
 from ai_workflows.agents import Agent
-from ai_workflows.workflow_strategies.workflow_strategy import (
+from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_FAILURE,
     RUN_STATUS_CHUNK_READY,
     RUN_STATUS_SUCCESS,
     SUCCESS_WITH_INTERVENTION_STATUS,
 )
-from ai_workflows.workflow_strategies.workflow_strategy import WorkflowStrategy
+from ai_workflows.core.workflow_strategy import WorkflowStrategy
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists
 from utility_scripts import metrics_writer
 from utility_scripts.gradle_environment import gradle_command_environment
@@ -71,7 +74,7 @@ class ScaffoldError(RuntimeError):
 
 
 def get_repo_root():
-    return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    return os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 def list_all_files(directory_path):
@@ -94,7 +97,7 @@ def build_parser():
         ),
         epilog=(
             "Example:\n"
-            "  python3 ai_workflows/add_new_library_support.py \\\n"
+            "  python3 ai_workflows/drivers/add_new_library_support.py \\\n"
             "  --coordinates com.example:lib:1.2.3 \\\n"
             "  --reachability-metadata-path /path/to/reachability-metadata \\\n"
             "  --metrics-repo-path /path/to/metrics-storage \\\n"

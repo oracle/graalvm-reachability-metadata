@@ -8,7 +8,10 @@ import os
 import subprocess
 import sys
 
-from ai_workflows.fix_metadata_codex import run_codex_metadata_fix
+if __package__ in (None, ""):
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
+from ai_workflows.core.fix_metadata_codex import run_codex_metadata_fix
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.library_finalization import run_library_finalization
@@ -22,7 +25,7 @@ def build_parser():
         description="Run fixTestNativeImageRun Gradle task for a library version upgrade.",
         epilog=(
             "Example:\n"
-            "  python3 -m ai_workflows.fix_ni_run \\\n"
+            "  python3 ai_workflows/drivers/fix_ni_run.py \\\n"
             "      --coordinates com.example:lib:1.2.3 \\\n"
             "      --new-version 1.2.4 \\\n"
             "      --reachability-metadata-path /path/to/graalvm-reachability-metadata\n"

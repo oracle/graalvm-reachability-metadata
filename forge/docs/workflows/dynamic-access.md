@@ -573,11 +573,11 @@ that chunk and how many uncovered classes remain.
 | Component | Responsibility |
 | --- | --- |
 | `forge_metadata.py` | Issue queue orchestration. For `library-new-request` and `library-update-request`, owns the dynamic-access class threshold, computes the current chunk class count, passes chunk flags to the workflow drivers when needed, and adds the `chunked-dynamic-access` issue label. |
-| `ai_workflows/add_new_library_support.py::main` | Driver setup, branch, scaffold, artifact URL population, source-context preparation, agent init, post-workflow finalization, metrics. |
-| `ai_workflows/workflow_strategies/dynamic_access_iterative_strategy.py` | Iterative per-class engine: fallback selection, class prompting, coverage deltas, class checkpoints, native-test gate batching, chunk-ready returns. |
-| `ai_workflows/workflow_strategies/optimistic_dynamic_access_strategy.py` | Bulk full-report engine: optimistic prompts, broad-pass test repair, report regeneration, commit attempts, global native-test gate. |
-| `ai_workflows/workflow_strategies/increase_dynamic_access_coverage_strategy.py` | Composite engine: optional primary workflow followed by iterative dynamic-access refinement. |
-| `ai_workflows/workflow_strategies/workflow_strategy.py` | Shared prompt rendering and workflow-engine base behavior. |
+| `ai_workflows/drivers/add_new_library_support.py::main` | Driver setup, branch, scaffold, artifact URL population, source-context preparation, agent init, post-workflow finalization, metrics. |
+| `ai_workflows/core/dynamic_access_iterative_strategy.py` | Iterative per-class engine: fallback selection, class prompting, coverage deltas, class checkpoints, native-test gate batching, chunk-ready returns. |
+| `ai_workflows/core/optimistic_dynamic_access_strategy.py` | Bulk full-report engine: optimistic prompts, broad-pass test repair, report regeneration, commit attempts, global native-test gate. |
+| `ai_workflows/core/increase_dynamic_access_coverage_strategy.py` | Composite engine: optional primary workflow followed by iterative dynamic-access refinement. |
+| `ai_workflows/core/workflow_strategy.py` | Shared prompt rendering and workflow-engine base behavior. |
 | `utility_scripts/source_context.py` | `populate_artifact_urls`, `normalize_source_context_types`, `prepare_source_contexts`, `resolve_test_source_layout`, index lookup, artifact download, and extraction. |
 | `utility_scripts/dynamic_access_report.py` | `load_dynamic_access_coverage_report`, `compute_class_delta`, `format_call_sites`, `format_full_report`. |
 | `utility_scripts/native_test_verification.py` | `verify_native_test_passes` — the native-test gate invoked for each configured batch of classes with coverage gain; it runs JVM-agent metadata first, native tracing only as fallback, and Codex last (§WF-native-test-verification-gate, §WF-native-metadata-tracing). |

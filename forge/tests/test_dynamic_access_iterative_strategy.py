@@ -11,9 +11,9 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from ai_workflows.workflow_strategies.increase_dynamic_access_coverage_strategy import IncreaseDynamicAccessCoverageStrategy
-from ai_workflows.workflow_strategies.dynamic_access_iterative_strategy import DynamicAccessIterativeStrategy
-from ai_workflows.workflow_strategies.workflow_strategy import RUN_STATUS_CHUNK_READY, RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS
+from ai_workflows.core.increase_dynamic_access_coverage_strategy import IncreaseDynamicAccessCoverageStrategy
+from ai_workflows.core.dynamic_access_iterative_strategy import DynamicAccessIterativeStrategy
+from ai_workflows.core.workflow_strategy import RUN_STATUS_CHUNK_READY, RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS
 from utility_scripts.dynamic_access_report import DynamicAccessClass, DynamicAccessCoverageReport
 from utility_scripts.large_library_progress import LargeLibraryProgressState, find_progress_state_path
 
@@ -92,7 +92,7 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
                 return subprocess.CompletedProcess(cmd, 0)
 
             with patch(
-                    "ai_workflows.workflow_strategies.dynamic_access_iterative_strategy.subprocess.run",
+                    "ai_workflows.core.dynamic_access_iterative_strategy.subprocess.run",
                     side_effect=fake_run,
             ):
                 strategy._commit_library_metadata("Native metadata for org.example.Demo")
@@ -122,7 +122,7 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
                 return subprocess.CompletedProcess(cmd, 0)
 
             with patch(
-                    "ai_workflows.workflow_strategies.dynamic_access_iterative_strategy.subprocess.run",
+                    "ai_workflows.core.dynamic_access_iterative_strategy.subprocess.run",
                     side_effect=fake_run,
             ):
                 strategy._commit_library_metadata("Native metadata for org.example.Demo")
@@ -216,7 +216,7 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
         with patch.object(strategy, "_render_prompt", return_value="prompt"), \
                 patch.object(strategy, "_commit_test_sources") as commit_tests, \
                 patch(
-                    "ai_workflows.workflow_strategies.dynamic_access_iterative_strategy.subprocess.check_output",
+                    "ai_workflows.core.dynamic_access_iterative_strategy.subprocess.check_output",
                     return_value="checkpoint\n",
                 ):
             phase_ok, iterations = strategy._run_issue_requested_metadata_phase(agent)
@@ -259,7 +259,7 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
                 patch.object(strategy, "_run_native_test_verification_gate", side_effect=_gate), \
                 patch.object(strategy, "_library_test_change_signature", return_value="clean"), \
                 patch(
-                    "ai_workflows.workflow_strategies.dynamic_access_iterative_strategy.subprocess.check_output",
+                    "ai_workflows.core.dynamic_access_iterative_strategy.subprocess.check_output",
                     return_value="checkpoint\n",
                 ):
             phase_ok, iterations = strategy._run_dynamic_access_phase(
@@ -303,7 +303,7 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
                 patch.object(strategy, "_run_native_test_verification_gate", side_effect=_gate), \
                 patch.object(strategy, "_library_test_change_signature", return_value="clean"), \
                 patch(
-                    "ai_workflows.workflow_strategies.dynamic_access_iterative_strategy.subprocess.check_output",
+                    "ai_workflows.core.dynamic_access_iterative_strategy.subprocess.check_output",
                     return_value="checkpoint\n",
                 ):
             phase_ok, iterations = strategy._run_dynamic_access_phase(
@@ -358,7 +358,7 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
                     patch.object(strategy, "_refresh_report_after_gate", return_value=None), \
                     patch.object(strategy, "_library_test_change_signature", return_value="clean"), \
                     patch(
-                        "ai_workflows.workflow_strategies.dynamic_access_iterative_strategy.subprocess.check_output",
+                        "ai_workflows.core.dynamic_access_iterative_strategy.subprocess.check_output",
                         return_value="checkpoint\n",
                     ):
                 phase_ok, iterations = strategy._run_dynamic_access_phase(FakeAgent(), initial_report)
@@ -581,7 +581,7 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
         )
 
         with patch(
-                "ai_workflows.workflow_strategies.increase_dynamic_access_coverage_strategy.DynamicAccessIterativeStrategy",
+                "ai_workflows.core.increase_dynamic_access_coverage_strategy.DynamicAccessIterativeStrategy",
                 ChunkReadyDynamicAccess,
         ):
             self.assertEqual(strategy.run(agent=object()), (RUN_STATUS_CHUNK_READY, 3))
@@ -616,7 +616,7 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
         )
 
         with patch(
-                "ai_workflows.workflow_strategies.increase_dynamic_access_coverage_strategy.DynamicAccessIterativeStrategy",
+                "ai_workflows.core.increase_dynamic_access_coverage_strategy.DynamicAccessIterativeStrategy",
                 ReporterRequestedDynamicAccess,
         ):
             self.assertEqual(strategy.run(agent=object()), (RUN_STATUS_SUCCESS, 1))
@@ -645,7 +645,7 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
         )
 
         with patch(
-                "ai_workflows.workflow_strategies.increase_dynamic_access_coverage_strategy.DynamicAccessIterativeStrategy",
+                "ai_workflows.core.increase_dynamic_access_coverage_strategy.DynamicAccessIterativeStrategy",
                 NoProgressDynamicAccess,
         ):
             self.assertEqual(strategy.run(agent=object()), (RUN_STATUS_FAILURE, 0))

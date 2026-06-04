@@ -1,9 +1,8 @@
 # WF-forge-workflow-drivers: Workflow drivers
 
 Workflow drivers are deterministic scripts under `ai_workflows/drivers/`
-that run one already-selected Forge workflow. (Drivers are being moved into that
-subdirectory by §ROADMAP-forge-ai-workflows-structure; the core workflow objects
-they invoke live under `ai_workflows/core/`.) They are used for four things:
+that run one already-selected Forge workflow. Core workflow engines and shared
+orchestration live under `ai_workflows/core/`. They are used for four things:
 
 1. Translate a claimed issue or explicit CLI invocation into one isolated run:
    resolve repository and metrics paths, normalize the GraalVM/Java
@@ -172,8 +171,8 @@ coverage workflow setup logic (§WF-improve-library-coverage.2).
 
 ### `fails-javac-compile`
 
-Driver: `ai_workflows/drivers/fix_javac_fail.py`, backed by the core workflow
-object `ai_workflows/core/java_fail_workflow.py`.
+Driver: `ai_workflows/drivers/fix_javac_fail.py`, backed by the shared driver
+orchestration in `ai_workflows/drivers/java_fail_workflow.py`.
 
 Preparation:
 
@@ -193,8 +192,8 @@ Preparation:
 
 ### `fails-java-run`
 
-Driver: `ai_workflows/drivers/fix_java_run_fail.py`, backed by the core workflow
-object `ai_workflows/core/java_fail_workflow.py`.
+Driver: `ai_workflows/drivers/fix_java_run_fail.py`, backed by the shared driver
+orchestration in `ai_workflows/drivers/java_fail_workflow.py`.
 
 Preparation:
 

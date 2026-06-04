@@ -6,7 +6,7 @@
 """
 Script for benchmarking the AI workflows (§BENCH-forge-generation-benchmarking).
 Cleans up existing tests/metadata in the reachability-metadata repo for the provided coordinates and
-runs ai_workflows/add_new_library_support.py per library in the benchmark suite with the selected strategy and logs the metrics.
+runs ai_workflows/drivers/add_new_library_support.py per library in the benchmark suite with the selected strategy and logs the metrics.
 
 Usage:
   python3 benchmarks/benchmark_runner.py --benchmark-name benchmark-name \
@@ -67,7 +67,8 @@ def parse_args(argv):
         "--keep-tests-without-dynamic-access",
         action="store_true",
         help=(
-            "Forwarded to add_new_library_support.py. Keeps generated tests for dynamic-access strategies "
+            "Forwarded to ai_workflows/drivers/add_new_library_support.py. "
+            "Keeps generated tests for dynamic-access strategies "
             "even when no dynamic-access coverage is added."
         ),
     )
@@ -202,10 +203,10 @@ def run_workflow_for_coords(coords: str, reachability_metadata_path: str, metric
                             strategy_name: str, verbose: bool, keep_tests_without_dynamic_access: bool,
                             ):
     """
-    Execute ai_workflows/add_new_library_support.py for the given coordinates.
+    Execute ai_workflows/drivers/add_new_library_support.py for the given coordinates.
     On completion, validate that output/results.json exists and is valid JSON (array).
     """
-    cmd = [sys.executable, os.path.join(REPO_ROOT, "ai_workflows", "add_new_library_support.py"), "--coordinates",
+    cmd = [sys.executable, os.path.join(REPO_ROOT, "ai_workflows", "drivers", "add_new_library_support.py"), "--coordinates",
            coords]
     cmd.extend(["--reachability-metadata-path", reachability_metadata_path])
     cmd.extend(["--metrics-repo-path", metrics_repo_path])

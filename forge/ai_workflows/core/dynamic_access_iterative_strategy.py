@@ -6,7 +6,7 @@
 import os
 import subprocess
 
-from ai_workflows.workflow_strategies.workflow_strategy import (
+from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_CHUNK_READY,
     RUN_STATUS_FAILURE,
     RUN_STATUS_SUCCESS,
@@ -131,7 +131,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
 
     def _run_basic_iterative_fallback(self, agent, checkpoint_commit_hash):
         """Instantiate a BasicIterativeStrategy and delegate to it."""
-        from ai_workflows.workflow_strategies.basic_iterative_strategy import BasicIterativeStrategy
+        from ai_workflows.core.basic_iterative_strategy import BasicIterativeStrategy
         fallback_obj = load_strategy_by_name(FALLBACK_STRATEGY_NAME)
         if fallback_obj is None:
             raise ValueError(f"Fallback strategy '{FALLBACK_STRATEGY_NAME}' not found in predefined strategies")

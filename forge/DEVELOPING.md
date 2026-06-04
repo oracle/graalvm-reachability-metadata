@@ -7,10 +7,12 @@ This document describes how to set up a local environment and run the key develo
 This repo contains Python scripts and AI-powered pipelines to automate maintenance of the oracle/graalvm-reachability-metadata repository (§FS-forge-issue-resolution-goal):
 
 Repo layout (§AR-forge-architecture):
-- ai_workflows/ — Orchestrated AI workflows.
-- git_scripts/ — Git/GitHub automation helpers.
-- complete_pipelines/ — End-to-end wrappers that run an AI workflow and then open a PR.
-- utility_scripts/ — Helper scripts for technical and operational tasks.
+- `ai_workflows/drivers/` — Deterministic workflow entry points.
+- `ai_workflows/core/` — Registered workflow engines and shared orchestration.
+- `ai_workflows/agents/` — Backend-neutral agent adapters.
+- `git_scripts/` — Git/GitHub automation helpers.
+- `complete_pipelines/` — End-to-end wrappers that run an AI workflow and then open a PR.
+- `utility_scripts/` — Helper scripts for technical and operational tasks.
 
 ### Repository mode
 
@@ -38,7 +40,7 @@ Tip: Use --help on any script for detailed usage and flags.
 
 ### Fix javac test failures for a new library version
 
-Script: `ai_workflows/fix_javac_fail.py`
+Script: `ai_workflows/drivers/fix_javac_fail.py`
 
 Purpose:
 - Create/update the versioned test module in reachability-metadata.
@@ -47,7 +49,7 @@ Purpose:
 
 Usage:
 ```bash
-python3 ai_workflows/fix_javac_fail.py \
+python3 ai_workflows/drivers/fix_javac_fail.py \
   --coordinates <group:artifact:oldVersion> \
   --new-version <newVersion> \
   [--reachability-metadata-path /path/to/graalvm-reachability-metadata] \
@@ -66,7 +68,7 @@ Where:
 
 Example:
 ```bash
-python3 ai_workflows/fix_javac_fail.py \
+python3 ai_workflows/drivers/fix_javac_fail.py \
   --coordinates org.postgresql:postgresql:42.7.3 \
   --new-version 42.7.4 \
   --reachability-metadata-path /path/to/graalvm-reachability-metadata \
@@ -84,7 +86,7 @@ Notes:
 
 ### Add support for a new library
 
-Script: ai_workflows/add_new_library_support.py_
+Script: `ai_workflows/drivers/add_new_library_support.py`
 
 Purpose:
 - Iteratively generate a meaningful, cohesive JUnit test suite for library using AI.
@@ -94,7 +96,7 @@ Purpose:
 
 Usage:
 ```bash
-python ai_workflows/add_new_library_support.py \
+python3 ai_workflows/drivers/add_new_library_support.py \
   --coordinates <group:artifact:version> \
   [--keep-tests-without-dynamic-access] \
   [--reachability-metadata-path /path/to/graalvm-reachability-metadata] \
@@ -112,7 +114,7 @@ Where:
 
 Example:
 ```bash
-python3 ai_workflows/add_new_library_support.py \
+python3 ai_workflows/drivers/add_new_library_support.py \
   --coordinates org.example:lib:1.2.3 \
   --reachability-metadata-path /path/to/graalvm-reachability-metadata \
   --metrics-repo-path /path/to/metrics-storage \
@@ -222,7 +224,7 @@ python3 complete_pipelines/add_new_library_support_create_pr.py \
 Script: `benchmarks/benchmark_runner.py` (§BENCH-forge-generation-benchmarking)
 
 Description:
-- Run `ai_workflows/add_new_library_support.py` for a predefined set of libraries.
+- Run `ai_workflows/drivers/add_new_library_support.py` for a predefined set of libraries.
 - Cleans up existing tests/metadata in the reachability-metadata repo for provided coordinates
 - Record per-run metrics under the configured metrics repository (in `benchmark_run_metrics/`).
 
@@ -262,7 +264,7 @@ Where:
   python3 utility_scripts/jacoco_parser.py /path/to/jacocoTestReport.xml
   ```
 
-These are invoked automatically by scripts in the `ai_workflows/`, but can be run standalone for diagnostics.
+These are invoked automatically by workflow drivers, but can be run standalone for diagnostics.
 
 ### Agent session logs
 
@@ -390,9 +392,9 @@ If your use case requires a fundamentally different execution flow:
 
 1. **Add a strategy entry** to `strategies/predefined_strategies.json` with the matching workflow, agent, prompts, and parameters.
 
-2. **Create a new strategy class** in `ai_workflows/workflow_strategies/` that inherits from `WorkflowStrategy`:
+2. **Create a new strategy class** in `ai_workflows/core/` that inherits from `WorkflowStrategy`:
    ```python
-   from ai_workflows.workflow_strategies.workflow_strategy import WorkflowStrategy
+   from ai_workflows.core.workflow_strategy import WorkflowStrategy
 
    @WorkflowStrategy.register("my_new_strategy")
    class MyNewStrategy(WorkflowStrategy):
@@ -407,9 +409,9 @@ If your use case requires a fundamentally different execution flow:
    ```
 `register` parameter is the workflow implementation name referenced by the strategy config's `workflow` field.
 
-3. **Register the import** in `ai_workflows/workflow_strategies/__init__.py`:
+3. **Register the import** in `ai_workflows/core/__init__.py`:
    ```python
-   from ai_workflows.workflow_strategies.my_new_strategy import MyNewStrategy
+   from ai_workflows.core.my_new_strategy import MyNewStrategy
    ``` 
    
 Importing the new module in `__init__.py` triggers the `@WorkflowStrategy.register` decorator, which adds the strategy to the internal registry so it can be looked up at run time.
@@ -457,7 +459,7 @@ Composite strategies (run a primary workflow, then refine dynamic-access coverag
 #### Running a dynamic-access strategy
 
 ```bash
-python3 ai_workflows/add_new_library_support.py \
+python3 ai_workflows/drivers/add_new_library_support.py \
   --coordinates <group:artifact:version> \
   --strategy-name dynamic_access_main_sources_pi_gpt-5.4 \
   [--reachability-metadata-path /path/to/graalvm-reachability-metadata] \
@@ -482,20 +484,20 @@ see `docs/workflows/dynamic-access.md`.
 ### Quick reference
 
 - Fix tests for a new version:
-  python3 ai_workflows/fix_javac_fail.py --coordinates <group:artifact:old> --new-version <newVersion> [--reachability-metadata-path <reach-meta-repo>] [--metrics-repo-path <metrics-repo>] [--docs-path <docs>] [--strategy-name NAME]
+  `python3 ai_workflows/drivers/fix_javac_fail.py --coordinates <group:artifact:old> --new-version <newVersion> [--reachability-metadata-path <reach-meta-repo>] [--metrics-repo-path <metrics-repo>] [--docs-path <docs>] [--strategy-name NAME]`
 - Add support for a new library:
-  python3 ai_workflows/add_new_library_support.py --coordinates <group:artifact:version> [--reachability-metadata-path <reach-meta-repo>] [--metrics-repo-path <metrics-repo>] [--docs-path <docs>]
+  `python3 ai_workflows/drivers/add_new_library_support.py --coordinates <group:artifact:version> [--reachability-metadata-path <reach-meta-repo>] [--metrics-repo-path <metrics-repo>] [--docs-path <docs>]`
 - Open PR with metrics:
-  python3 git_scripts/make_pr_javac_fix.py --coordinates <group:artifact:old> --new-version <newVersion> [--reachability-metadata-path <reach-meta-repo>] [--metrics-repo-path <metrics-repo-root>]
+  `python3 git_scripts/make_pr_javac_fix.py --coordinates <group:artifact:old> --new-version <newVersion> [--reachability-metadata-path <reach-meta-repo>] [--metrics-repo-path <metrics-repo-root>]`
 - Open PR for new library support:
-  python3 git_scripts/make_pr_new_library_support.py --coordinates <group:artifact:version> [--reachability-metadata-path <reach-meta-repo>] [--metrics-repo-root <metrics-repo-root>]
+  `python3 git_scripts/make_pr_new_library_support.py --coordinates <group:artifact:version> [--reachability-metadata-path <reach-meta-repo>] [--metrics-repo-root <metrics-repo-root>]`
 - Complete javac fix pipeline:
-  python3 complete_pipelines/fix_javac_create_pr.py --coordinates <group:artifact:old> --new-version <newVersion> [--reachability-metadata-path <reach-meta-repo>] [--metrics-repo-path <metrics-repo>] [--docs-path <docs>] [--strategy-name NAME]
+  `python3 complete_pipelines/fix_javac_create_pr.py --coordinates <group:artifact:old> --new-version <newVersion> [--reachability-metadata-path <reach-meta-repo>] [--metrics-repo-path <metrics-repo>] [--docs-path <docs>] [--strategy-name NAME]`
 - Complete add-new-library pipeline:
-  python3 complete_pipelines/add_new_library_support_create_pr.py --coordinates <coordinates> [--reachability-metadata-path <reach-meta-repo>] [--metrics-repo-path <metrics-repo>] [--docs-path <docs>] [--strategy-name NAME]
+  `python3 complete_pipelines/add_new_library_support_create_pr.py --coordinates <coordinates> [--reachability-metadata-path <reach-meta-repo>] [--metrics-repo-path <metrics-repo>] [--docs-path <docs>] [--strategy-name NAME]`
 - Count reachability entries:
-  python3 utility_scripts/count_reachability_entries.py /path/to/reachability-metadata.json
+  `python3 utility_scripts/count_reachability_entries.py /path/to/reachability-metadata.json`
 - Count legacy native-image config entries:
-  python3 utility_scripts/count_native_image_config_entries.py /path/to/versioned/dir
+  `python3 utility_scripts/count_native_image_config_entries.py /path/to/versioned/dir`
 - Parse JaCoCo XML coverage:
-  python3 utility_scripts/jacoco_parser.py /path/to/jacocoTestReport.xml
+  `python3 utility_scripts/jacoco_parser.py /path/to/jacocoTestReport.xml`

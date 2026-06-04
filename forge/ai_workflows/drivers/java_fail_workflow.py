@@ -11,14 +11,17 @@ import shutil
 import subprocess
 import sys
 
+if __package__ in (None, ""):
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
 import ai_workflows.agents  # noqa: F401 - triggers agent registration
-import ai_workflows.workflow_strategies  # noqa: F401 — triggers strategy registration
+import ai_workflows.core  # noqa: F401 - triggers strategy registration
 from ai_workflows.agents import Agent
-from ai_workflows.workflow_strategies.workflow_strategy import (
+from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_SUCCESS,
     SUCCESS_WITH_INTERVENTION_STATUS,
 )
-from ai_workflows.workflow_strategies.workflow_strategy import WorkflowStrategy
+from ai_workflows.core.workflow_strategy import WorkflowStrategy
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists, ensure_gh_authenticated
 from utility_scripts import metrics_writer
 from utility_scripts.gradle_environment import gradle_command_environment
@@ -493,7 +496,7 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
 
     source_context_types = normalize_source_context_types(strategy.get("parameters", {}).get("source-context-types"))
     prepared_source_context = prepare_source_contexts(
-        repo_root=os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        repo_root=os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
         reachability_repo_path=reachability_repo_path,
         coordinate=updated_library,
         source_context_types=source_context_types,

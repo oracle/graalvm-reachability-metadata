@@ -47,25 +47,26 @@ from datetime import datetime
 from typing import Any, Optional
 from urllib.parse import quote
 
-from ai_workflows.add_new_library_support import (
+import ai_workflows.core  # noqa: F401 - triggers strategy registration
+from ai_workflows.drivers.add_new_library_support import (
     DEFAULT_MODEL_NAME,
     init_agent as init_workflow_agent,
     list_all_files,
     main as run_add_new_library_support_workflow,
 )
-from ai_workflows.fix_javac_fail import (
+from ai_workflows.drivers.fix_javac_fail import (
     main as run_fix_javac_workflow,
 )
-from ai_workflows.fix_java_run_fail import (
+from ai_workflows.drivers.fix_java_run_fail import (
     main as run_fix_java_run_workflow,
 )
-from ai_workflows.fix_ni_run import (
+from ai_workflows.drivers.fix_ni_run import (
     main as run_fix_ni_run_workflow,
 )
-from ai_workflows.improve_library_coverage import (
+from ai_workflows.drivers.improve_library_coverage import (
     main as run_improve_library_coverage_workflow,
 )
-from ai_workflows.workflow_strategies.workflow_strategy import RUN_STATUS_CHUNK_READY, RUN_STATUS_FAILURE
+from ai_workflows.core.workflow_strategy import RUN_STATUS_CHUNK_READY, RUN_STATUS_FAILURE
 from git_scripts.common_git import (
     GITHUB_TRANSIENT_RETRY_ATTEMPTS,
     GitHubRateLimitExceeded,

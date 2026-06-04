@@ -6,7 +6,7 @@
 import os
 import subprocess
 
-from ai_workflows.workflow_strategies.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS, WorkflowStrategy
+from ai_workflows.core.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS, WorkflowStrategy
 from utility_scripts.metadata_index import resolve_test_version
 from utility_scripts.stage_logger import log_stage
 

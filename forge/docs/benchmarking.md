@@ -4,9 +4,10 @@ Forge benchmarking measures generation quality, cost
 (§GOAL-minimize-generation-cost), and coverage (§GOAL-maximize-library-coverage)
 for strategy comparisons. It is mainly for the `library-new-request` flow
 (§FS-forge-issue-resolution-goal): the benchmark runner clears selected library
-tests/metadata, executes `ai_workflows/add_new_library_support.py` in benchmark
-mode exercising the dynamic-access workflow (§WF-dynamic-access-workflow), and
-stores durable per-library results under `benchmark_run_metrics/`
+tests/metadata, executes `ai_workflows/drivers/add_new_library_support.py` in
+benchmark mode exercising the dynamic-access workflow
+(§WF-dynamic-access-workflow), and stores durable per-library results under
+`benchmark_run_metrics/`
 (§FS-durable-generation-logs).
 
 ## 1. Benchmark Scope

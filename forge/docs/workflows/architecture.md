@@ -50,9 +50,7 @@ follows the same split (§WF-code-coverage-improvement-architecture).
 ## WF-forge-workflow-engine: Workflow engines own run state
 
 Registered workflow engines live under `ai_workflows/core/` — the core
-workflow objects of the system. (The implementation is being moved there from
-today's `ai_workflows/workflow_strategies/` by
-§ROADMAP-forge-ai-workflows-structure.) Architecturally they are workflow
+workflow objects of the system. Architecturally they are workflow
 implementations. A workflow engine receives an agent, rendered prompt
 configuration, workflow parameters, repository paths, coordinate context, and
 run metadata. It owns the ordered run state: checkpointing, prompt/command
