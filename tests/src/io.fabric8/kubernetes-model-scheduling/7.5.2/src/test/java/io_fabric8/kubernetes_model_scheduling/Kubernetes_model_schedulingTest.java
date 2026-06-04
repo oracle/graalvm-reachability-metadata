@@ -275,6 +275,68 @@ public class Kubernetes_model_schedulingTest {
     }
 
     @Test
+    void priorityClassListBuilderSupportsPositionalItemOperationsAndPredicateQueries() {
+        PriorityClass low = new PriorityClassBuilder()
+                .withValue(1)
+                .withDescription("Low priority")
+                .withNewMetadata().withName("low").endMetadata()
+                .build();
+        PriorityClass medium = new PriorityClassBuilder()
+                .withValue(50)
+                .withDescription("Medium priority")
+                .withNewMetadata().withName("medium").endMetadata()
+                .build();
+        PriorityClass high = new PriorityClassBuilder()
+                .withValue(100)
+                .withDescription("High priority")
+                .withNewMetadata().withName("high").endMetadata()
+                .build();
+        PriorityClass interactive = new PriorityClassBuilder()
+                .withValue(75)
+                .withDescription("Interactive priority")
+                .withNewMetadata().withName("interactive").endMetadata()
+                .build();
+
+        PriorityClassListBuilder builder = new PriorityClassListBuilder()
+                .withApiVersion("scheduling.k8s.io/v1")
+                .withKind("PriorityClassList")
+                .addToItems(low)
+                .addToItems(high)
+                .addToItems(1, medium);
+
+        assertThat(builder.hasItems()).isTrue();
+        assertThat(builder.hasMatchingItem(item -> item.getValue().equals(50))).isTrue();
+        assertThat(builder.buildFirstItem().getMetadata().getName()).isEqualTo("low");
+        assertThat(builder.buildItem(1).getMetadata().getName()).isEqualTo("medium");
+        assertThat(builder.buildLastItem().getMetadata().getName()).isEqualTo("high");
+        assertThat(builder.buildMatchingItem(item -> item.getValue().equals(100)).getDescription())
+                .isEqualTo("High priority");
+
+        PriorityClassList updated = builder
+                .editFirstItem()
+                    .withDescription("Edited low priority")
+                .endItem()
+                .setNewItemLike(1, interactive)
+                    .withValue(80)
+                    .editOrNewMetadata()
+                        .addToLabels("queue", "interactive")
+                    .endMetadata()
+                .endItem()
+                .editLastItem()
+                    .withPreemptionPolicy("Never")
+                .endItem()
+                .build();
+
+        assertThat(updated.getItems()).extracting(item -> item.getMetadata().getName())
+                .containsExactly("low", "interactive", "high");
+        assertThat(updated.getItems()).extracting(PriorityClass::getDescription)
+                .containsExactly("Edited low priority", "Interactive priority", "High priority");
+        assertThat(updated.getItems().get(1).getValue()).isEqualTo(80);
+        assertThat(updated.getItems().get(1).getMetadata().getLabels()).containsEntry("queue", "interactive");
+        assertThat(updated.getItems().get(2).getPreemptionPolicy()).isEqualTo("Never");
+    }
+
+    @Test
     void v1alpha1PriorityClassModelsSupportConstructorsSettersAndLists() {
         ObjectMeta metadata = new ObjectMetaBuilder()
                 .withName("alpha-priority")
