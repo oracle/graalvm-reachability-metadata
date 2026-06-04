@@ -1,0 +1,192 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.mockito:mockito-core:5.0.0
+Command: `/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-0a3eb1d1/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 16 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :compileKotlin NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources UP-TO-DATE
+> Task :compileTestKotlin
+
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-0a3eb1d1/tests/src/org.mockito/mockito-core/5.0.0/src/test/java/org_mockito/mockito_core/ByteBuddyCrossClassLoaderSerializationSupportInnerCrossClassLoaderSerializationProxyTest.java uses or overrides a deprecated API.
+> Task :compileTestJava
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :testClasses
+
+> Task :test
+
+ByteBuddyCrossClassLoaderSerializationSupportInnerCrossClassLoaderSerializationProxyTest > acrossClassLoaderSerializableMockRoundTripsThroughJavaSerialization() FAILED
+    org.mockito.exceptions.base.MockitoSerializationIssue: 
+    Mockito mock cannot be deserialized to a mock of 'org_mockito.mockito_core.ByteBuddyCrossClassLoaderSerializationSupportInnerCrossClassLoaderSerializationProxyTest.SerializableGreetingService'. The error was :
+      Access to private java.lang.String java.io.ObjectStreamClass.name was denied
+    If you are unsure what is the reason of this exception, feel free to open an issue on GitHub.
+        at java.base@21.0.9/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+        at java.base@21.0.9/java.lang.reflect.Method.invoke(Method.java:580)
+        at java.base@21.0.9/java.io.ObjectStreamClass.invokeReadResolve(ObjectStreamClass.java:1192)
+        at java.base@21.0.9/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2293)
+        at java.base@21.0.9/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1762)
+        at java.base@21.0.9/java.io.ObjectInputStream.readObject(ObjectInputStream.java:540)
+        at java.base@21.0.9/java.io.ObjectInputStream.readObject(ObjectInputStream.java:498)
+        at org_mockito.mockito_core.ByteBuddyCrossClassLoaderSerializationSupportInnerCrossClassLoaderSerializationProxyTest$IsolatedSerializationAccess.roundTrip(ByteBuddyCrossClassLoaderSerializationSupportInnerCrossClassLoaderSerializationProxyTest.java:194)
+        at org_mockito.mockito_core.ByteBuddyCrossClassLoaderSerializationSupportInnerCrossClassLoaderSerializationProxyTest$IsolatedSerializationAccess.call(ByteBuddyCrossClassLoaderSerializationSupportInnerCrossClassLoaderSerializationProxyTest.java:174)
+        at java.base@21.0.9/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+        at java.base@21.0.9/java.lang.reflect.Method.invoke(Method.java:580)
+        at app//org_mockito.mockito_core.ByteBuddyCrossClassLoaderSerializationSupportInnerCrossClassLoaderSerializationProxyTest.roundTripWithByteBuddyMockMaker(ByteBuddyCrossClassLoaderSerializationSupportInnerCrossClassLoaderSerializationProxyTest.java:80)
+        at app//org_mockito.mockito_core.ByteBuddyCrossClassLoaderSerializationSupportInnerCrossClassLoaderSerializationProxyTest.acrossClassLoaderSerializableMockRoundTripsThroughJavaSerialization(ByteBuddyCrossClassLoaderSerializationSupportInnerCrossClassLoaderSerializationProxyTest.java:56)
+
+        Caused by:
+        org.mockito.exceptions.base.MockitoSerializationIssue: Access to private java.lang.String java.io.ObjectStreamClass.name was denied
+            at java.base@21.0.9/java.io.ObjectInputStream.readNonProxyDesc(ObjectInputStream.java:2061)
+            at java.base@21.0.9/java.io.ObjectInputStream.readClassDesc(ObjectInputStream.java:1927)
+            at java.base@21.0.9/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2252)
+            at java.base@21.0.9/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1762)
+            at java.base@21.0.9/java.io.ObjectInputStream.readObject(ObjectInputStream.java:540)
+            at java.base@21.0.9/java.io.ObjectInputStream.readObject(ObjectInputStream.java:498)
+            ... 13 more
+
+            Caused by:
+            java.lang.IllegalAccessException: class org.mockito.internal.util.reflection.ReflectionMemberAccessor cannot access a member of class java.io.ObjectStreamClass (in module java.base) with modifiers "private"
+                at java.base/jdk.internal.reflect.Reflection.newIllegalAccessException(Reflection.java:394)
+                at java.base/java.lang.reflect.AccessibleObject.checkAccess(AccessibleObject.java:714)
+                at java.base/java.lang.reflect.Field.checkAccess(Field.java:1156)
+                at java.base/java.lang.reflect.Field.set(Field.java:833)
+                at org.mockito.internal.util.reflection.ReflectionMemberAccessor.set(ReflectionMemberAccessor.java:76)
+                at org.mockito.internal.creation.bytebuddy.ByteBuddyCrossClassLoaderSerializationSupport$MockitoMockObjectInputStream.hackClassNameToMatchNewlyCreatedClass(ByteBuddyCrossClassLoaderSerializationSupport.java:332)
+                at org.mockito.internal.creation.bytebuddy.ByteBuddyCrossClassLoaderSerializationSupport$MockitoMockObjectInputStream.resolveClass(ByteBuddyCrossClassLoaderSerializationSupport.java:296)
+                at java.base/java.io.ObjectInputStream.readNonProxyDesc(ObjectInputStream.java:2061)
+                at java.base/java.io.ObjectInputStream.readClassDesc(ObjectInputStream.java:1927)
+                at java.base/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2252)
+                at java.base/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1762)
+                at java.base/java.io.ObjectInputStream.readObject(ObjectInputStream.java:540)
+                at java.base/java.io.ObjectInputStream.readObject(ObjectInputStream.java:498)
+                at org.mockito.internal.creation.bytebuddy.ByteBuddyCrossClassLoaderSerializationSupport$CrossClassLoaderSerializationProxy.readResolve(ByteBuddyCrossClassLoaderSerializationSupport.java:209)
+                ... 13 more
+
+ByteBuddyCrossClassLoaderSerializationSupportInnerMockitoMockObjectInputStreamTest > acrossClassLoaderSerializableMockRestoresStubbedValues() FAILED
+    org.mockito.exceptions.base.MockitoSerializationIssue: 
+    Mockito mock cannot be deserialized to a mock of 'org_mockito.mockito_core.ByteBuddyCrossClassLoaderSerializationSupportInnerMockitoMockObjectInputStreamTest.SerializableCounter'. The error was :
+  
+    A Byte Buddy-generated mock cannot be deserialized into a non-Byte Buddy generated mock class
+
+    The mock maker in use was: class org.mockito.internal.creation.proxy.ProxyMockMaker
+    If you are unsure what is the reason of this exception, feel free to open an issue on GitHub.
+        at java.base@21.0.9/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+        at java.base@21.0.9/java.lang.reflect.Method.invoke(Method.java:580)
+        at java.base@21.0.9/java.io.ObjectStreamClass.invokeReadResolve(ObjectStreamClass.java:1192)
+        at java.base@21.0.9/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2293)
+        at java.base@21.0.9/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1762)
+        at java.base@21.0.9/java.io.ObjectInputStream.readObject(ObjectInputStream.java:540)
+        at java.base@21.0.9/java.io.ObjectInputStream.readObject(ObjectInputStream.java:498)
+        at app//org_mockito.mockito_core.ByteBuddyCrossClassLoaderSerializationSupportInnerMockitoMockObjectInputStreamTest.roundTripAcrossClassLoaderSerializableMock(ByteBuddyCrossClassLoaderSerializationSupportInnerMockitoMockObjectInputStreamTest.java:70)
+        at app//org_mockito.mockito_core.ByteBuddyCrossClassLoaderSerializationSupportInnerMockitoMockObjectInputStreamTest.acrossClassLoaderSerializableMockRestoresStubbedValues(ByteBuddyCrossClassLoaderSerializationSupportInnerMockitoMockObjectInputStreamTest.java:32)
+
+        Caused by:
+        org.mockito.exceptions.base.MockitoSerializationIssue: 
+        A Byte Buddy-generated mock cannot be deserialized into a non-Byte Buddy generated mock class
+
+        The mock maker in use was: class org.mockito.internal.creation.proxy.ProxyMockMaker
+            at java.base@21.0.9/java.io.ObjectInputStream.readNonProxyDesc(ObjectInputStream.java:2061)
+            at java.base@21.0.9/java.io.ObjectInputStream.readClassDesc(ObjectInputStream.java:1927)
+            at java.base@21.0.9/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2252)
+            at java.base@21.0.9/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1762)
+            at java.base@21.0.9/java.io.ObjectInputStream.readObject(ObjectInputStream.java:540)
+            at java.base@21.0.9/java.io.ObjectInputStream.readObject(ObjectInputStream.java:498)
+            ... 9 more
+
+            Caused by:
+            java.lang.ClassCastException: class org.mockito.internal.creation.proxy.ProxyMockMaker cannot be cast to class org.mockito.internal.creation.bytebuddy.ClassCreatingMockMaker (org.mockito.internal.creation.proxy.ProxyMockMaker and org.mockito.internal.creation.bytebuddy.ClassCreatingMockMaker are in unnamed module of loader 'app')
+                at org.mockito.internal.creation.bytebuddy.ByteBuddyCrossClassLoaderSerializationSupport$MockitoMockObjectInputStream.resolveClass(ByteBuddyCrossClassLoaderSerializationSupport.java:288)
+                at java.base/java.io.ObjectInputStream.readNonProxyDesc(ObjectInputStream.java:2061)
+                at java.base/java.io.ObjectInputStream.readClassDesc(ObjectInputStream.java:1927)
+                at java.base/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2252)
+                at java.base/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1762)
+                at java.base/java.io.ObjectInputStream.readObject(ObjectInputStream.java:540)
+                at java.base/java.io.ObjectInputStream.readObject(ObjectInputStream.java:498)
+                at org.mockito.internal.creation.bytebuddy.ByteBuddyCrossClassLoaderSerializationSupport$CrossClassLoaderSerializationProxy.readResolve(ByteBuddyCrossClassLoaderSerializationSupport.java:209)
+                ... 9 more
+
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+
+
+14 tests completed, 2 failed
+
+FAILURE: Build failed with an exception.
+> Task :test FAILED
+
+
+* What went wrong:
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-0a3eb1d1/tests/src/org.mockito/mockito-core/5.0.0/build/reports/problems/problems-report.html
+Execution failed for task ':test'.
+
+> There were failing tests. See the report at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-0a3eb1d1/tests/src/org.mockito/mockito-core/5.0.0/build/reports/tests/test/index.html
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+* Try:
+
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+16 actionable tasks: 4 executed, 12 up-to-date
+BUILD FAILED in 19s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-0a3eb1d1/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.mockito:mockito-core:5.0.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 21s
+9 actionable tasks: 1 executed, 8 up-to-date

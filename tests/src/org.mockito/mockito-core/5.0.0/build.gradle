@@ -6,13 +6,35 @@
  */
 plugins {
     id "org.graalvm.internal.tck"
+    id "org.jetbrains.kotlin.jvm" version "2.3.20"
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
     testImplementation "org.mockito:mockito-core:$libraryVersion"
+    testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation 'org.jetbrains.kotlin:kotlin-stdlib:2.3.20'
+}
+
+sourceSets {
+    test {
+        kotlin.srcDir "src/test/java"
+    }
+}
+
+kotlin {
+    jvmToolchain(21)
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "21"
+}
+
+tasks.withType(Test).configureEach {
+    systemProperty "net.bytebuddy.experimental", "true"
+    systemProperty "java.security.manager", "allow"
 }
 graalvmNative {
     agent {

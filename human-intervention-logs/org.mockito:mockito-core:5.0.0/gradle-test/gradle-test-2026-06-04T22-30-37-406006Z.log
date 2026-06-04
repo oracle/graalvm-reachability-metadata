@@ -1,0 +1,153 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.mockito:mockito-core:5.0.0
+Command: `/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-0a3eb1d1/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 26 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :compileKotlin NO-SOURCE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources UP-TO-DATE
+> Task :compileTestKotlin
+> Task :compileTestJava
+> Task :testClasses
+
+> Task :test
+
+ModuleHandlerInnerModuleSystemFoundTest > subclassMockMakerMocksTypeFromNonExportedNamedModule() FAILED
+    org.mockito.exceptions.base.MockitoException: 
+    Mockito cannot mock this class: class sample.hidden.HiddenService.
+
+    Mockito can only mock non-private & non-final classes, but the root cause of this error might be different.
+    Please check the full stacktrace to understand what the issue is.
+    If you're still not sure why you're getting this error, please open an issue on GitHub.
+
+
+    Java               : 21
+    JVM vendor name    : Amazon.com Inc.
+    JVM vendor version : 21.0.9+10-LTS
+    JVM name           : OpenJDK 64-Bit Server VM
+    JVM version        : 21.0.9+10-LTS
+    JVM info           : mixed mode, sharing
+    OS name            : Linux
+    OS version         : 6.17.0-35-generic
+
+
+    Underlying exception : java.lang.IllegalArgumentException: Could not create type
+        at app//org_mockito.mockito_core.ModuleHandlerInnerModuleSystemFoundTest.mockHiddenTypeFromNamedModuleWithExtraInterface(ModuleHandlerInnerModuleSystemFoundTest.java:80)
+        at app//org_mockito.mockito_core.ModuleHandlerInnerModuleSystemFoundTest.subclassMockMakerMocksTypeFromNonExportedNamedModule(ModuleHandlerInnerModuleSystemFoundTest.java:54)
+
+        Caused by:
+        java.lang.IllegalArgumentException: Could not create type
+            at net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:170)
+            at net.bytebuddy.TypeCache$WithInlineExpunction.findOrInsert(TypeCache.java:399)
+            at net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:190)
+            at net.bytebuddy.TypeCache$WithInlineExpunction.findOrInsert(TypeCache.java:410)
+            at org.mockito.internal.creation.bytebuddy.TypeCachingBytecodeGenerator.mockClass(TypeCachingBytecodeGenerator.java:40)
+            at org.mockito.internal.creation.bytebuddy.SubclassByteBuddyMockMaker.createMockType(SubclassByteBuddyMockMaker.java:77)
+            at org.mockito.internal.creation.bytebuddy.SubclassByteBuddyMockMaker.createMock(SubclassByteBuddyMockMaker.java:43)
+            at org.mockito.internal.creation.bytebuddy.ByteBuddyMockMaker.createMock(ByteBuddyMockMaker.java:42)
+            at org.mockito.internal.util.MockUtil.createMock(MockUtil.java:99)
+            at org.mockito.internal.MockitoCore.mock(MockitoCore.java:88)
+            at org.mockito.Mockito.mock(Mockito.java:2037)
+            ... 2 more
+
+            Caused by:
+            java.lang.IllegalAccessError: class sample.hidden.HiddenService$MockitoModuleProbe$bgusse1erf5l91 (in module mockito.test.hidden.module) cannot access class org.mockito.codegen.MockitoTypeCarrier$bgusse1erf5l91 (in unnamed module @0x5bb436a6) because module mockito.test.hidden.module does not read unnamed module @0x5bb436a6
+                at Loader-mockito.test.hidden.module/mockito.test.hidden.module/sample.hidden.HiddenService$MockitoModuleProbe$bgusse1erf5l91.<clinit>(Unknown Source)
+                at java.base/java.lang.Class.forName0(Native Method)
+                at java.base/java.lang.Class.forName(Class.java:536)
+                at java.base/java.lang.Class.forName(Class.java:515)
+                at org.mockito.internal.creation.bytebuddy.ModuleHandler$ModuleSystemFound.adjustModuleGraph(ModuleHandler.java:263)
+                at org.mockito.internal.creation.bytebuddy.SubclassBytecodeGenerator.mockClass(SubclassBytecodeGenerator.java:217)
+                at org.mockito.internal.creation.bytebuddy.TypeCachingBytecodeGenerator.lambda$mockClass$0(TypeCachingBytecodeGenerator.java:47)
+                at net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:168)
+                ... 12 more
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+
+WARNING: A terminally deprecated method in java.lang.System has been called
+WARNING: System::setSecurityManager has been called by org_mockito.mockito_core.MethodHandleProxyTest (file:/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-0a3eb1d1/tests/src/org.mockito/mockito-core/5.0.0/build/classes/java/test/)
+WARNING: Please consider reporting this to the maintainers of org_mockito.mockito_core.MethodHandleProxyTest
+WARNING: System::setSecurityManager will be removed in a future release
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+
+36 tests completed, 1 failed
+
+> Task :test FAILED
+
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-0a3eb1d1/tests/src/org.mockito/mockito-core/5.0.0/build/reports/problems/problems-report.html
+FAILURE: Build failed with an exception.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+
+* What went wrong:
+Execution failed for task ':test'.
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+> There were failing tests. See the report at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-0a3eb1d1/tests/src/org.mockito/mockito-core/5.0.0/build/reports/tests/test/index.html
+
+
+* Try:
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+16 actionable tasks: 4 executed, 12 up-to-date
+
+BUILD FAILED in 20s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-0a3eb1d1/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.mockito:mockito-core:5.0.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 22s
+9 actionable tasks: 1 executed, 8 up-to-date

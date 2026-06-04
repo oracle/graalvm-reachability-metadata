@@ -11,15 +11,16 @@ import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MockitoTest {
-    static {
-        System.setProperty("net.bytebuddy.experimental", "true");
+public class ReturnsMoreEmptyValuesTest {
+    interface ArrayReturningService {
+        String[] names();
     }
 
     @Test
-    void test() {
-        MyService myService = Mockito.mock(MyService.class);
-        Mockito.when(myService.getGreeting()).thenReturn("Hello Mockito");
-        assertThat(myService.getGreeting()).isEqualTo("Hello Mockito");
+    void smartNullsReturnEmptyArrayForUnstubbedArrayMethod() {
+        ArrayReturningService service =
+                Mockito.mock(ArrayReturningService.class, Mockito.RETURNS_SMART_NULLS);
+
+        assertThat(service.names()).isEmpty();
     }
 }

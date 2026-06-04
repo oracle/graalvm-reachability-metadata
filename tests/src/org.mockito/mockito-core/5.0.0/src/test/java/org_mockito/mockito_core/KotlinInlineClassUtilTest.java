@@ -7,19 +7,16 @@
 package org_mockito.mockito_core;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MockitoTest {
+public class KotlinInlineClassUtilTest {
     static {
         System.setProperty("net.bytebuddy.experimental", "true");
     }
 
     @Test
-    void test() {
-        MyService myService = Mockito.mock(MyService.class);
-        Mockito.when(myService.getGreeting()).thenReturn("Hello Mockito");
-        assertThat(myService.getGreeting()).isEqualTo("Hello Mockito");
+    void stubsKotlinInlineClassReturnValue() {
+        assertThat(KotlinInlineClassFixtures.stubInlineGreetingReturn()).isEqualTo("Hello inline class");
     }
 }
