@@ -717,6 +717,47 @@
     "mcps": []
   },
   {
+    "name": "basic_iterative_source_runtime_api_pi_gpt-5.5",
+    "description": "Basic iterative Pi workflow using downloaded main source context and a runtime API recognition table instead of a dynamic-access report.",
+    "agent": "pi",
+    "workflow": "basic_iterative",
+    "model": "oca/gpt-5.5",
+    "prompts": {
+      "initial": "prompt_templates/initial/basic_source_runtime_api_initial.md",
+      "after-successful-iteration": "prompt_templates/after-successful-iteration/basic_source_runtime_api_after_success.md",
+      "after-failed-iteration": "prompt_templates/after-failed-iteration/basic_after_fail.md"
+    },
+    "parameters": {
+      "max-test-iterations": 5,
+      "max-failed-generations": 2,
+      "max-successful-generations": 3,
+      "source-context-types": [
+        "main"
+      ]
+    },
+    "mcps": []
+  },
+  {
+    "name": "neural_dynamic_access_pi_gpt-5.5",
+    "description": "Pi workflow that first generates a frozen source-derived dynamic-access seed from runtime API call sites, then iteratively covers it with JaCoCo correlation.",
+    "agent": "pi",
+    "workflow": "neural_dynamic_access_iterative",
+    "model": "oca/gpt-5.5",
+    "prompts": {
+      "neural-dynamic-access-preprocess": "prompt_templates/dynamic_access/neural-dynamic-access-preprocess.md",
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-iterations": 3,
+      "max-class-test-iterations": 3,
+      "source-context-types": [
+        "main"
+      ]
+    },
+    "mcps": [],
+    "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
+  },
+  {
     "name": "dynamic_access_main_sources_codex_gpt-5.5",
     "description": "Dynamic-access-guided Codex workflow using downloaded main library sources as read-only context. Uses gpt-5.5.",
     "agent": "codex",

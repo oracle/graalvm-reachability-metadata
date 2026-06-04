@@ -12,68 +12,13 @@ from utility_scripts.stage_logger import log_stage
 
 
 """
-    ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-    │                                                    Scaffold                                                             │
-    │   https://github.com/oracle/graalvm-reachability-metadata/blob/master/docs/CONTRIBUTING.md#generate-metadata-and-test   │
-    └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-                                                            │
-                                                            ▼
-                                                ┌──────────────────────┐
-                                                │   Init Agent         │
-                                                └──────────────────────┘
-                                                            │
-                                                            ▼
-                                            ┌───────────────────────────────────┐
-                                            │ Input for agent:                  │
-                                            │   - initial prompt                │
-                                            │   - docs/source of library        │
-                                            │   - test that needs edit          │
-                                            └───────────────────────────────────┘
-                                                            │
-                                                            ▼
-                        ┌──────────────────────────────────────────────────────────────────────────┐
-    ┌──────────────────►│ Looping and testing                                                      │◄─────────────────────────────────────┐
-    │                   └──────────────────────────────────────────────────────────────────────────┘                                      │
-    │                     │                 │                       │                         │                                           │
-    │                     │                 │                       │                         │                                           │
-    │                     ▼                 ▼                       ▼                         ▼                                           │
-    │           ┌────────────────┐  ┌────────────────────┐  ┌──────────────────────┐  ┌───────────────────────────┐                       │
-    │           │ NativeTest     │  │ NativeTest         │  │ compileJava          │  │ test (java runtime)       │                       │
-    │           │ fails          │  │ succeeds           │  │ fails                │  │ fails                     │                       │
-    │           └────────────────┘  └────────────────────┘  └──────────────────────┘  └───────────────────────────┘                       │
-    │                     │                 │                       │                         │                                           │
-    │                     ▼                 │                       └──────────────┬──────────┘                                           │
-    │           ┌──────────────────────┐    │                                      ▼                                                      │
-    │           │ Clear agent context  │    │                         ┌──────────────────────────────┐      NO                            │
-    │           └──────────────────────┘    │                         │     MAX_TEST_ITERATIONS?     │────────────────────────────────────┘
-    │                     │                 │                         │                              │                                    │
-    │                     ▼                 │                         └──────────────┬───────────────┘                                    │
-    │           ┌──────────────────────┐    │                                        │                                                    │
-    │           │ Add checkpoint       │    │                                     YES│                                                    │
-    │           └──────────────────────┘    │                                        ▼                                                    │
-    │                     │                 │                        ┌──────────────────────────────┐                                     │
-    │                     │                 └───────────────────────►│ Return to checkpoint         │                                     │
-    │                     ▼                                          └──────────────────────────────┘                                     │
-    │               NO  ┌──────────────────────────────────────┐                      │                                                   │
-    └───────────────────│      MAX_SUCCESSFUL_GENERATIONS      │                      ▼                                                   │
-                        └──────────────┬───────────────────────┘              ┌────────────────────────────┐    NO                        │
-                                       │                                      │  MAX_FAILED_GENERATIONS?   │──────────────────────────────┘
-                                    YES│                                      └────────┬───────────────────┘
-                                       │                                               │
-                                       └─────────────────────────────┐                 │
-                                                                     │          YES    │
-                                                                     │                 ▼
-                                                                     │        ┌──────────────────────┐
-                                                                     └───────►│ Collect Metadata     │
-                                                                              └──────────────────────┘
-                                                                                       │
-                                                                                       ▼
-                                                                ┌────────────────────────────────────────────────────┐
-                                                                │   Test again to see if the script was successful   │
-                                                                └────────────────────────────────────────────────────┘
-                                                                                       │
-                                                                                       ▼
-                                                                                      END
+Basic iterative test-generation workflow.
+
+The workflow scaffolds a library test project, asks the configured agent to
+generate tests, runs the repository test task, and loops through successful or
+failed iterations until the configured generation limits are reached. Successful
+iterations are finalized by generating metadata and committing the resulting
+library support changes.
 """
 
 

@@ -345,6 +345,16 @@ def _build_benchmark_metrics_entry(run_metrics: dict) -> dict:
     return benchmark_entry
 
 
+def _merge_strategy_extra_metrics(run_metrics: dict, strategy_obj) -> None:
+    """Merge optional strategy-specific metric fields into the standard metrics block."""
+    extra_metrics = getattr(strategy_obj, "extra_metrics", None)
+    if not isinstance(extra_metrics, dict) or not extra_metrics:
+        return
+    metrics = run_metrics.get("metrics")
+    if isinstance(metrics, dict):
+        metrics.update(extra_metrics)
+
+
 def write_add_new_library_support_metrics(run_metrics, metrics_json, is_benchmark_mode, package, artifact,
                                           library_version, metrics_repo_root=None):
     """Write or update add_new_library_support metrics depending on the execution mode."""
@@ -684,6 +694,7 @@ def main(argv=None):
             ending_commit=ending_commit_hash,
             post_generation_intervention=strategy_obj.post_generation_intervention,
         )
+    _merge_strategy_extra_metrics(run_metrics, strategy_obj)
 
     metrics_json = resolve_add_new_library_support_metrics_json(
         run_metrics=run_metrics,

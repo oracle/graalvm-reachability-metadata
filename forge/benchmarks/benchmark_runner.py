@@ -366,7 +366,7 @@ def main(argv: Optional[List[str]] = None):
         check=True,
     )
 
-    subprocess.run(["git", "switch", "master"], check=True)
+    subprocess.run(["git", "switch", "--detach", "master"], check=True)
     # Save current commit hash so we can restore the repository state after the benchmark run.
     original_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
 
