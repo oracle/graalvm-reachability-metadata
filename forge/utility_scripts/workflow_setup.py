@@ -20,6 +20,7 @@ def resolve_graalvm_java_home():
     Logic:
     - If GRAALVM_HOME is set and contains bin/native-image, use it for both GRAALVM_HOME and JAVA_HOME.
     - Else, if JAVA_HOME is set and contains bin/native-image, use it for both GRAALVM_HOME and JAVA_HOME.
+    - Require GRAALVM_HOME_25_0 for the post-generation GraalVM 25 validation lane.
     - Otherwise, print an error and exit(1).
     """
 
@@ -31,12 +32,14 @@ def resolve_graalvm_java_home():
     if graalvm_home_env and has_native_image(graalvm_home_env):
         os.environ["GRAALVM_HOME"] = graalvm_home_env
         os.environ["JAVA_HOME"] = graalvm_home_env
+        require_graalvm_home_env("GRAALVM_HOME_25_0")
         return graalvm_home_env
 
     java_home_env = os.environ.get("JAVA_HOME")
     if java_home_env and has_native_image(java_home_env):
         os.environ["GRAALVM_HOME"] = java_home_env
         os.environ["JAVA_HOME"] = java_home_env
+        require_graalvm_home_env("GRAALVM_HOME_25_0")
         return java_home_env
 
     print(

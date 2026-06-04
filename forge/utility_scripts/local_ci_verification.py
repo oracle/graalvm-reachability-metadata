@@ -669,7 +669,6 @@ def _build_fixup_prompt(coordinates: str, failed_command: CommandRecord) -> str:
         reproduction = " ".join(env_lines + [reproduction])
     return "\n".join([
         "Fix the repository so the local CI-equivalent verification gate passes.",
-        "The fix may update generated library files or shared repository files when the root cause is in the repository.",
         "Keep the change minimal and targeted to the failing gate.",
         "",
         f"Library: {coordinates}",
