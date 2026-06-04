@@ -201,6 +201,80 @@ public class Kubernetes_model_rbacTest {
     }
 
     @Test
+    void matchingPredicatesSelectEditAndRemoveRulesAndSubjects() {
+        RoleBuilder roleBuilder = new RoleBuilder()
+                .withNewMetadata()
+                .withName("curated-access")
+                .withNamespace("team-b")
+                .endMetadata()
+                .addNewRule()
+                .addToApiGroups("")
+                .addToResources("pods")
+                .addToVerbs("get")
+                .endRule()
+                .addNewRule()
+                .addToApiGroups("")
+                .addToResources("secrets")
+                .addToVerbs("get")
+                .endRule()
+                .addNewRule()
+                .addToApiGroups("apps")
+                .addToResources("deployments")
+                .addToVerbs("watch")
+                .endRule();
+
+        assertThat(roleBuilder.hasMatchingRule(rule -> rule.hasMatchingResource("pods"::equals))).isTrue();
+        assertThat(roleBuilder.buildMatchingRule(rule -> rule.hasMatchingResource("pods"::equals)).getVerbs())
+                .containsExactly("get");
+
+        Role role = roleBuilder
+                .editMatchingRule(rule -> rule.hasMatchingResource("pods"::equals))
+                .addToVerbs("list")
+                .endRule()
+                .removeMatchingFromRules(rule -> rule.hasMatchingResource("secrets"::equals))
+                .build();
+
+        RoleBindingBuilder bindingBuilder = new RoleBindingBuilder()
+                .withNewMetadata()
+                .withName("curated-access-binding")
+                .withNamespace("team-b")
+                .endMetadata()
+                .editOrNewRoleRef()
+                .withApiGroup(RBAC_API_GROUP)
+                .withKind("Role")
+                .withName("curated-access")
+                .endRoleRef()
+                .addNewSubject(null, "ServiceAccount", "builder", "team-b")
+                .addNewSubject(RBAC_API_GROUP, "Group", "temporary-reviewers", null)
+                .addNewSubject(null, "User", "carol", null);
+
+        assertThat(bindingBuilder.hasMatchingSubject(subject -> "Group".equals(subject.getKind()))).isTrue();
+        assertThat(bindingBuilder.buildMatchingSubject(subject -> "Group".equals(subject.getKind())).getName())
+                .isEqualTo("temporary-reviewers");
+
+        RoleBinding binding = bindingBuilder
+                .editMatchingSubject(subject -> "ServiceAccount".equals(subject.getKind()))
+                .withName("deployer")
+                .endSubject()
+                .removeMatchingFromSubjects(subject -> "temporary-reviewers".equals(subject.getName()))
+                .build();
+
+        assertThat(role.getRules()).hasSize(2);
+        assertThat(role.getRules()).extracting(rule -> rule.getResources().get(0))
+                .containsExactly("pods", "deployments");
+        assertThat(role.getRules().get(0).getVerbs()).containsExactly("get", "list");
+        assertThat(role.getRules().get(1).getVerbs()).containsExactly("watch");
+
+        assertThat(binding.getRoleRef().getName()).isEqualTo("curated-access");
+        assertThat(binding.getSubjects()).hasSize(2);
+        assertThat(binding.getSubjects()).extracting(Subject::getKind)
+                .containsExactly("ServiceAccount", "User");
+        assertThat(binding.getSubjects().get(0).getName()).isEqualTo("deployer");
+        assertThat(binding.getSubjects().get(0).getNamespace()).isEqualTo("team-b");
+        assertThat(binding.getSubjects().get(1).getName()).isEqualTo("carol");
+    }
+
+    @Test
     void listResourcesPreserveMetadataItemsAndAdditionalProperties() {
         Role readOnlyRole = new RoleBuilder()
                 .withNewMetadata()
