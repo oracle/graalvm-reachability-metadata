@@ -8,6 +8,9 @@ package io_fabric8.kubernetes_model_rbac;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.fabric8.kubernetes.api.model.LabelSelector;
+import io.fabric8.kubernetes.api.model.rbac.AggregationRule;
+import io.fabric8.kubernetes.api.model.rbac.AggregationRuleBuilder;
 import io.fabric8.kubernetes.api.model.rbac.ClusterRole;
 import io.fabric8.kubernetes.api.model.rbac.ClusterRoleBinding;
 import io.fabric8.kubernetes.api.model.rbac.ClusterRoleBindingBuilder;
@@ -122,6 +125,54 @@ public class Kubernetes_model_rbacTest {
         assertThat(clusterRole.getRules().get(1).getApiGroups()).containsExactly("apps");
         assertThat(clusterRole.getRules().get(1).getResources()).containsExactly("deployments", "replicasets");
         assertThat(clusterRole.getRules().get(1).getVerbs()).containsExactly("get", "list");
+    }
+
+    @Test
+    void aggregationRuleBuilderCreatesComplexSelectorsForClusterRoleAggregation() {
+        AggregationRule aggregationRule = new AggregationRuleBuilder()
+                .addNewClusterRoleSelector()
+                .addNewMatchExpression()
+                .withKey("rbac.example/aggregate-to")
+                .withOperator("In")
+                .addToValues("view", "audit")
+                .endMatchExpression()
+                .addNewMatchExpression()
+                .withKey("rbac.example/disabled")
+                .withOperator("DoesNotExist")
+                .endMatchExpression()
+                .endClusterRoleSelector()
+                .build();
+
+        AggregationRule editedRule = aggregationRule.toBuilder()
+                .editFirstClusterRoleSelector()
+                .addNewMatchExpression()
+                .withKey("rbac.example/scope")
+                .withOperator("NotIn")
+                .addToValues("experimental")
+                .endMatchExpression()
+                .endClusterRoleSelector()
+                .build();
+        ClusterRole clusterRole = new ClusterRoleBuilder()
+                .withNewMetadata()
+                .withName("aggregated-complex-selector")
+                .endMetadata()
+                .withAggregationRule(editedRule)
+                .build();
+
+        LabelSelector selector = clusterRole.getAggregationRule().getClusterRoleSelectors().get(0);
+
+        assertThat(clusterRole.getAggregationRule().getClusterRoleSelectors()).hasSize(1);
+        assertThat(selector.getMatchExpressions()).hasSize(3);
+        assertThat(selector.getMatchExpressions().get(0).getKey()).isEqualTo("rbac.example/aggregate-to");
+        assertThat(selector.getMatchExpressions().get(0).getOperator()).isEqualTo("In");
+        assertThat(selector.getMatchExpressions().get(0).getValues()).containsExactly("view", "audit");
+        assertThat(selector.getMatchExpressions().get(1).getKey()).isEqualTo("rbac.example/disabled");
+        assertThat(selector.getMatchExpressions().get(1).getOperator()).isEqualTo("DoesNotExist");
+        assertThat(selector.getMatchExpressions().get(1).getValues()).isEmpty();
+        assertThat(selector.getMatchExpressions().get(2).getKey()).isEqualTo("rbac.example/scope");
+        assertThat(selector.getMatchExpressions().get(2).getOperator()).isEqualTo("NotIn");
+        assertThat(selector.getMatchExpressions().get(2).getValues()).containsExactly("experimental");
+        assertThat(aggregationRule.getClusterRoleSelectors().get(0).getMatchExpressions()).hasSize(2);
     }
 
     @Test
