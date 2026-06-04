@@ -2,9 +2,67 @@
   "reflection" : [
     {
       "condition" : {
+        "typeReached" : "ch.qos.logback.core.model.processor.ImplicitModelHandler"
+      },
+      "type" : "ch.qos.logback.core.ConsoleAppender",
+      "methods" : [
+        {
+          "name" : "setTarget",
+          "parameterTypes" : [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "ch.qos.logback.core.util.OptionHelper"
+      },
+      "type" : "ch.qos.logback.core.ConsoleAppender",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
         "typeReached" : "ch.qos.logback.core.util.Loader"
       },
       "type" : "ch.qos.logback.core.ContextBase"
+    },
+    {
+      "condition" : {
+        "typeReached" : "ch.qos.logback.core.joran.util.PropertySetter"
+      },
+      "type" : "ch.qos.logback.core.OutputStreamAppender",
+      "methods" : [
+        {
+          "name" : "setEncoder",
+          "parameterTypes" : [
+            "ch.qos.logback.core.encoder.Encoder"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "ch.qos.logback.core.model.processor.ImplicitModelHandler"
+      },
+      "type" : "ch.qos.logback.core.encoder.EchoEncoder",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "ch.qos.logback.core.joran.util.PropertySetter"
+      },
+      "type" : "ch.qos.logback.core.encoder.Encoder"
     },
     {
       "condition" : {
@@ -12,6 +70,18 @@
       },
       "type" : "ch.qos.logback.core.model.Model",
       "serializable" : true
+    },
+    {
+      "condition" : {
+        "typeReached" : "ch.qos.logback.core.joran.event.SaxEventRecorder"
+      },
+      "type" : "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
     },
     {
       "condition" : {
@@ -43,6 +113,12 @@
       },
       "type" : "java.lang.String",
       "serializable" : true
+    },
+    {
+      "condition" : {
+        "typeReached" : "ch.qos.logback.core.util.EnvUtil"
+      },
+      "type" : "java.lang.String"
     },
     {
       "condition" : {
@@ -86,9 +162,33 @@
       },
       "type" : "java.util.ArrayList",
       "serializable" : true
+    },
+    {
+      "condition" : {
+        "typeReached" : "ch.qos.logback.core.util.EnvUtil"
+      },
+      "type" : "org.codehaus.janino.ScriptEvaluator"
+    },
+    {
+      "condition" : {
+        "typeReached" : "ch.qos.logback.core.ConsoleAppender"
+      },
+      "type" : "org.fusesource.jansi.AnsiConsole",
+      "methods" : [
+        {
+          "name" : "systemInstall",
+          "parameterTypes" : [ ]
+        }
+      ]
     }
   ],
   "resources" : [
+    {
+      "condition" : {
+        "typeReached" : "ch.qos.logback.core.joran.event.SaxEventRecorder"
+      },
+      "glob" : "META-INF/services/javax.xml.parsers.SAXParserFactory"
+    },
     {
       "condition" : {
         "typeReached" : "ch.qos.logback.core.util.CoreVersionUtil"
