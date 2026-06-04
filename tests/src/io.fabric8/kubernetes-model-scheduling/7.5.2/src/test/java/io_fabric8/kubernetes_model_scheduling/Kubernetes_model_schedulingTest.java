@@ -11,6 +11,7 @@ import io.fabric8.kubernetes.api.model.ListMeta;
 import io.fabric8.kubernetes.api.model.ListMetaBuilder;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
+import io.fabric8.kubernetes.api.model.OwnerReference;
 import io.fabric8.kubernetes.api.model.scheduling.v1.PriorityClass;
 import io.fabric8.kubernetes.api.model.scheduling.v1.PriorityClassBuilder;
 import io.fabric8.kubernetes.api.model.scheduling.v1.PriorityClassList;
@@ -161,6 +162,46 @@ public class Kubernetes_model_schedulingTest {
         assertThat(updated.getItems()).extracting(PriorityClass::getValue).containsExactly(100, 55);
         assertThat(updated.getItems()).extracting(PriorityClass::getDescription)
                 .contains("Adjusted medium priority");
+    }
+
+    @Test
+    void priorityClassHasMetadataHelpersManageResourceIdentityFinalizersAndOwnerReferences() {
+        String finalizer = "scheduling.example.com/cleanup";
+        PriorityClass owner = new PriorityClassBuilder()
+                .withNewMetadata()
+                    .withName("owner-priority")
+                    .withUid("owner-uid")
+                .endMetadata()
+                .build();
+        PriorityClass dependent = new PriorityClassBuilder()
+                .withNewMetadata().withName("dependent-priority").endMetadata()
+                .build();
+
+        assertThat(dependent.getApiVersion()).isEqualTo("scheduling.k8s.io/v1");
+        assertThat(dependent.getKind()).isEqualTo("PriorityClass");
+        assertThat(dependent.getSingular()).isEqualTo("priorityclass");
+        assertThat(dependent.getPlural()).isEqualTo("priorityclasses");
+        assertThat(dependent.getFullResourceName()).isEqualTo("priorityclasses.scheduling.k8s.io");
+
+        assertThat(dependent.addFinalizer(finalizer)).isTrue();
+        assertThat(dependent.addFinalizer(finalizer)).isFalse();
+        assertThat(dependent.hasFinalizer(finalizer)).isTrue();
+        assertThat(dependent.getFinalizers()).containsExactly(finalizer);
+        assertThat(dependent.removeFinalizer(finalizer)).isTrue();
+        assertThat(dependent.hasFinalizer(finalizer)).isFalse();
+
+        OwnerReference ownerReference = dependent.addOwnerReference(owner);
+
+        assertThat(ownerReference.getUid()).isEqualTo("owner-uid");
+        assertThat(ownerReference.getApiVersion()).isEqualTo("scheduling.k8s.io/v1");
+        assertThat(ownerReference.getKind()).isEqualTo("PriorityClass");
+        assertThat(ownerReference.getName()).isEqualTo("owner-priority");
+        assertThat(dependent.hasOwnerReferenceFor(owner)).isTrue();
+        assertThat(dependent.getOwnerReferenceFor("owner-uid")).contains(ownerReference);
+
+        dependent.removeOwnerReference(owner);
+
+        assertThat(dependent.hasOwnerReferenceFor(owner)).isFalse();
     }
 
     @Test
