@@ -22,6 +22,7 @@ import com.google.spanner.v1.BatchCreateSessionsResponse;
 import com.google.spanner.v1.BatchWriteRequest;
 import com.google.spanner.v1.BatchWriteResponse;
 import com.google.spanner.v1.BeginTransactionRequest;
+import com.google.spanner.v1.CacheUpdate;
 import com.google.spanner.v1.CommitRequest;
 import com.google.spanner.v1.CommitResponse;
 import com.google.spanner.v1.CreateSessionRequest;
@@ -29,6 +30,7 @@ import com.google.spanner.v1.DeleteSessionRequest;
 import com.google.spanner.v1.ExecuteBatchDmlRequest;
 import com.google.spanner.v1.ExecuteBatchDmlResponse;
 import com.google.spanner.v1.ExecuteSqlRequest;
+import com.google.spanner.v1.FetchCacheUpdateRequest;
 import com.google.spanner.v1.GetSessionRequest;
 import com.google.spanner.v1.ListSessionsRequest;
 import com.google.spanner.v1.ListSessionsResponse;
@@ -73,7 +75,7 @@ public class Grpc_google_cloud_spanner_v1Test {
         assertThat(descriptor.getName()).isEqualTo(SpannerGrpc.SERVICE_NAME);
         assertThat(boundService.getServiceDescriptor().getName()).isEqualTo(SpannerGrpc.SERVICE_NAME);
         assertThat(descriptor.getSchemaDescriptor()).isNotNull();
-        assertThat(boundService.getMethods()).hasSize(16);
+        assertThat(boundService.getMethods()).hasSize(17);
         assertThat(descriptor.getMethods())
                 .extracting(MethodDescriptor::getFullMethodName)
                 .containsExactlyInAnyOrderElementsOf(expectedFullMethodNames());
@@ -94,6 +96,7 @@ public class Grpc_google_cloud_spanner_v1Test {
         assertUnaryMethod(SpannerGrpc.getPartitionQueryMethod(), "PartitionQuery");
         assertUnaryMethod(SpannerGrpc.getPartitionReadMethod(), "PartitionRead");
         assertServerStreamingMethod(SpannerGrpc.getBatchWriteMethod(), "BatchWrite");
+        assertServerStreamingMethod(SpannerGrpc.getFetchCacheUpdateMethod(), "FetchCacheUpdate");
     }
 
     @Test
@@ -165,6 +168,9 @@ public class Grpc_google_cloud_spanner_v1Test {
             assertThat(toList(stub.batchWrite(BatchWriteRequest.newBuilder().setSession(SESSION).build())))
                     .extracting(BatchWriteResponse::getIndexesList)
                     .containsExactly(List.of(0), List.of(1));
+            assertThat(toList(stub.fetchCacheUpdate(fetchCacheUpdateRequest())))
+                    .extracting(CacheUpdate::getDatabaseId)
+                    .containsExactly(101L, 202L);
         }
     }
 
@@ -178,12 +184,20 @@ public class Grpc_google_cloud_spanner_v1Test {
             assertThat(SpannerGrpc.newBlockingV2Stub(fixture.channel).createSession(request).getName())
                     .isEqualTo(DATABASE + "/sessions/created");
 
+            SpannerGrpc.SpannerStub asyncStub = SpannerGrpc.newStub(fixture.channel);
             RecordingObserver<PartialResultSet> observer = new RecordingObserver<>();
-            SpannerGrpc.newStub(fixture.channel).executeStreamingSql(sqlRequest("async stream"), observer);
+            asyncStub.executeStreamingSql(sqlRequest("async stream"), observer);
 
             assertThat(observer.awaitValues()).extracting(PartialResultSet::getResumeToken)
                     .containsExactly(ByteString.copyFromUtf8("sql-1"), ByteString.copyFromUtf8("sql-2"));
             assertThat(observer.error).isNull();
+
+            RecordingObserver<CacheUpdate> cacheUpdateObserver = new RecordingObserver<>();
+            asyncStub.fetchCacheUpdate(fetchCacheUpdateRequest(), cacheUpdateObserver);
+
+            assertThat(cacheUpdateObserver.awaitValues()).extracting(CacheUpdate::getDatabaseId)
+                    .containsExactly(101L, 202L);
+            assertThat(cacheUpdateObserver.error).isNull();
         }
     }
 
@@ -207,6 +221,11 @@ public class Grpc_google_cloud_spanner_v1Test {
             assertThat(readNext(batchWriteCall).getIndexesList()).containsExactly(0);
             assertThat(readNext(batchWriteCall).getIndexesList()).containsExactly(1);
             assertThat(readNext(batchWriteCall)).isNull();
+
+            BlockingClientCall<?, CacheUpdate> cacheUpdateCall = stub.fetchCacheUpdate(fetchCacheUpdateRequest());
+            assertThat(readNext(cacheUpdateCall).getDatabaseId()).isEqualTo(101L);
+            assertThat(readNext(cacheUpdateCall).getDatabaseId()).isEqualTo(202L);
+            assertThat(readNext(cacheUpdateCall)).isNull();
         }
     }
 
@@ -239,7 +258,8 @@ public class Grpc_google_cloud_spanner_v1Test {
                 fullMethodName("Rollback"),
                 fullMethodName("PartitionQuery"),
                 fullMethodName("PartitionRead"),
-                fullMethodName("BatchWrite"));
+                fullMethodName("BatchWrite"),
+                fullMethodName("FetchCacheUpdate"));
     }
 
     private static void assertUnaryMethod(MethodDescriptor<?, ?> method, String name) {
@@ -286,6 +306,14 @@ public class Grpc_google_cloud_spanner_v1Test {
 
     private static ReadRequest readRequest(String table) {
         return ReadRequest.newBuilder().setSession(SESSION).setTable(table).addColumns("Id").build();
+    }
+
+    private static FetchCacheUpdateRequest fetchCacheUpdateRequest() {
+        return FetchCacheUpdateRequest.newBuilder()
+                .setDatabase(DATABASE)
+                .setMaxRecipeCount(2)
+                .setMaxRangeCount(2)
+                .build();
     }
 
     private static Session session(String name) {
@@ -448,6 +476,14 @@ public class Grpc_google_cloud_spanner_v1Test {
             stream(responseObserver,
                     BatchWriteResponse.newBuilder().addIndexes(0).build(),
                     BatchWriteResponse.newBuilder().addIndexes(1).build());
+        }
+
+        @Override
+        public void fetchCacheUpdate(
+                FetchCacheUpdateRequest request, StreamObserver<CacheUpdate> responseObserver) {
+            stream(responseObserver,
+                    CacheUpdate.newBuilder().setDatabaseId(101L).build(),
+                    CacheUpdate.newBuilder().setDatabaseId(202L).build());
         }
 
         private static PartitionResponse partitionResponse(String transactionId) {
