@@ -1,0 +1,34 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package com_fasterxml_jackson_module.jackson_module_kotlin
+
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
+
+public class ValueClassSerializerStaticJsonValueTest {
+    @Test
+    fun serializesValueClassUsingStaticJsonValueMethod() {
+        val objectMapper: ObjectMapper = newObjectMapper()
+
+        val json: String = objectMapper.writeValueAsString(boxedStaticJsonValueExample("alpha"))
+
+        assertThat(json).isEqualTo("\"json:alpha\"")
+    }
+
+    @Test
+    fun serializesNullWhenStaticJsonValueMethodReturnsNull() {
+        val objectMapper: ObjectMapper = newObjectMapper()
+
+        val json: String = objectMapper.writeValueAsString(boxedStaticJsonValueExample("emit-null"))
+
+        assertThat(json).isEqualTo("null")
+    }
+
+    private fun newObjectMapper(): ObjectMapper = jacksonObjectMapper()
+}
