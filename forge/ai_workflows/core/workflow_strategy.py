@@ -19,7 +19,7 @@ from ai_workflows.core.fix_post_generation_pi import (
     run_pi_post_generation_fix,
 )
 from utility_scripts.library_finalization import run_library_finalization
-from utility_scripts.workflow_setup import build_graalvm_environment
+from utility_scripts.workflow_setup import build_graalvm_environment, require_graalvm_home_env
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.gradle_test_runner import run_gradle_test_command
 from utility_scripts.library_stats import stats_artifact_dir
@@ -282,9 +282,8 @@ class WorkflowStrategy(ABC):
         # generation lanes with the same metadata/Pi fixers, because the
         # pre-publication gate (§FS-local-ci-equivalent-verification.2) no longer
         # reproduces the native test matrix.
-        # GRAALVM_HOME_25_0 presence is already preflighted at startup
-        # (forge_metadata POST_GENERATION_GRAALVM_ENV_VAR), so read it directly.
-        current_defaults_25_env = build_graalvm_environment(os.environ["GRAALVM_HOME_25_0"])
+        graalvm_home_25 = require_graalvm_home_env("GRAALVM_HOME_25_0")
+        current_defaults_25_env = build_graalvm_environment(graalvm_home_25)
         current_defaults_25_env.pop("GVM_TCK_NATIVE_IMAGE_MODE", None)
         current_defaults_25_status = run_lane(
             "current-defaults GraalVM 25 test",
