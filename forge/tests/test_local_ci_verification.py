@@ -20,15 +20,8 @@ from utility_scripts.local_ci_verification import (
     local_ci_requires_human_intervention,
     run_local_ci_verification,
     _github_repo_slug_from_url,
-    _graalvm_home_for_java_version,
-    _run_legacy_test_native_image_config_validation,
-    _run_infrastructure_matrix_entries,
     _run_recorded_command,
-    _run_recorded_command_without_new_docker_images,
-    _run_spring_aot_matrix_entries,
-    _run_test_matrix_entries,
     _run_verification_once,
-    _should_run_spring_aot_tests,
 )
 from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME
 
@@ -189,6 +182,77 @@ class LocalCIVerificationTests(unittest.TestCase):
         self.assertIn("Local CI Verification", section)
         self.assertIn("build.gradle", section)
 
+    def test_verification_once_runs_only_index_and_docker_gates(self) -> None:
+        result = LocalCIVerificationResult(status="running", base_commit="base")
+        recorded_gates: list[str] = []
+
+        def fake_recorded(repo_path, gate, command, result_arg, env=None, failure_output_pattern=None):
+            del repo_path, command, result_arg, env, failure_output_pattern
+            recorded_gates.append(gate)
+            return None
+
+        changed_files = [
+            "metadata/org.example/demo/1.0.0/reachability-metadata.json",
+            "metadata/org.example/demo/index.json",
+            "tests/tck-build-logic/src/main/resources/allowed-docker-images/demo.json",
+        ]
+        with patch("utility_scripts.local_ci_verification.changed_files_for_ci", return_value=changed_files), \
+                patch("utility_scripts.local_ci_verification._run_index_validation", return_value=None) as index_gate, \
+                patch("utility_scripts.local_ci_verification._run_recorded_command", side_effect=fake_recorded):
+            failed = _run_verification_once("/repo", "base", result)
+
+        self.assertIsNone(failed)
+        index_gate.assert_called_once()
+        # The library-scoped gates (checkMetadataFiles, spotless, stats, doc-links)
+        # are owned by generation/finalization, so only the shared Docker scan runs here.
+        self.assertEqual(recorded_gates, ["docker-image-scan"])
+
+    def test_reproduce_full_ci_runs_native_matrix_and_spring_aot(self) -> None:
+        result = LocalCIVerificationResult(status="running", base_commit="base")
+        gradle_tasks: list[str] = []
+
+        def fake_gradle_json_output(repo_path, task_name, base_commit, result_arg, gate, extra_args=None):
+            del repo_path, base_commit, result_arg, gate, extra_args
+            gradle_tasks.append(task_name)
+            return {"include": []}
+
+        changed_files = ["metadata/org.example/demo/1.0.0/reachability-metadata.json"]
+        with patch("utility_scripts.local_ci_verification.changed_files_for_ci", return_value=changed_files), \
+                patch("utility_scripts.local_ci_verification._run_index_validation", return_value=None), \
+                patch("utility_scripts.local_ci_verification._gradle_json_output", side_effect=fake_gradle_json_output), \
+                patch("utility_scripts.local_ci_verification._run_test_matrix_entries", return_value=None) as matrix, \
+                patch("utility_scripts.local_ci_verification._run_spring_aot_verification", return_value=None) as spring:
+            failed = _run_verification_once("/repo", "base", result, reproduce_full_ci=True)
+
+        self.assertIsNone(failed)
+        self.assertIn("generateChangedMetadataTestMatrix", gradle_tasks)
+        matrix.assert_called_once()
+        spring.assert_called_once()
+
+    def test_default_gate_does_not_run_native_matrix(self) -> None:
+        result = LocalCIVerificationResult(status="running", base_commit="base")
+        with patch(
+                "utility_scripts.local_ci_verification.changed_files_for_ci",
+                return_value=["metadata/org.example/demo/1.0.0/reachability-metadata.json"],
+        ), patch("utility_scripts.local_ci_verification._run_index_validation", return_value=None), \
+                patch("utility_scripts.local_ci_verification._run_test_matrix_entries", return_value=None) as matrix:
+            failed = _run_verification_once("/repo", "base", result)
+
+        self.assertIsNone(failed)
+        matrix.assert_not_called()
+
+    def test_verification_once_skips_docker_scan_without_allowed_image_changes(self) -> None:
+        result = LocalCIVerificationResult(status="running", base_commit="base")
+        with patch(
+                "utility_scripts.local_ci_verification.changed_files_for_ci",
+                return_value=["metadata/org.example/demo/1.0.0/reachability-metadata.json"],
+        ), patch("utility_scripts.local_ci_verification._run_index_validation", return_value=None), \
+                patch("utility_scripts.local_ci_verification._run_recorded_command") as recorded:
+            failed = _run_verification_once("/repo", "base", result)
+
+        self.assertIsNone(failed)
+        recorded.assert_not_called()
+
     def test_run_recorded_command_fails_on_ci_failure_output_pattern(self) -> None:
         with tempfile.TemporaryDirectory() as repo_path, tempfile.TemporaryDirectory() as log_path:
             result = LocalCIVerificationResult(status="running", base_commit="base")
@@ -252,190 +316,6 @@ class LocalCIVerificationTests(unittest.TestCase):
         self.assertEqual(captured_env["GRADLE_OPTS"], "-Xmx2g -Dfile.encoding=UTF-8")
         self.assertNotIn("JAVA_OPTS", captured_env)
 
-    def test_test_matrix_skips_docker_networking_for_non_docker_coordinate(self) -> None:
-        result = LocalCIVerificationResult(status="running", base_commit="base")
-        failed_record = CommandRecord(gate="run-consecutive-tests", command=["bash"], returncode=1)
-        gates: list[str] = []
-
-        def fake_run_recorded_command(
-                repo_path: str,
-                gate: str,
-                command: list[str],
-                local_result: LocalCIVerificationResult,
-                env: dict[str, str] | None = None,
-                failure_output_pattern: str | None = None,
-        ) -> CommandRecord | None:
-            gates.append(gate)
-            if gate == "run-consecutive-tests":
-                self.assertEqual(failure_output_pattern, r"^FAILED")
-                return failed_record
-            return None
-
-        with patch("utility_scripts.local_ci_verification._run_recorded_command", side_effect=fake_run_recorded_command), \
-                patch(
-                    "utility_scripts.local_ci_verification._run_recorded_command_without_new_docker_images",
-                    side_effect=fake_run_recorded_command,
-                ):
-            failed = _run_test_matrix_entries(
-                "/repo",
-                [{"coordinates": "org.example:demo:1.0.0", "versions": ["1.0.0"]}],
-                result,
-            )
-
-        self.assertIs(failed, failed_record)
-        self.assertEqual(gates, ["check-metadata-files", "run-consecutive-tests"])
-        self.assertNotIn("disable-docker-networking", gates)
-        self.assertNotIn("restore-docker-networking", gates)
-
-    def test_legacy_test_native_image_config_validation_fails_changed_legacy_file(self) -> None:
-        with tempfile.TemporaryDirectory() as repo_path, tempfile.TemporaryDirectory() as log_path:
-            _git(repo_path, "init")
-            with open(os.path.join(repo_path, "README.md"), "w", encoding="utf-8") as file:
-                file.write("base\n")
-            base = _commit_all(repo_path, "base")
-            legacy_dir = os.path.join(
-                repo_path,
-                "tests",
-                "src",
-                "org.example",
-                "demo",
-                "1.0.0",
-                "src",
-                "test",
-                "resources",
-                "META-INF",
-                "native-image",
-            )
-            os.makedirs(legacy_dir)
-            with open(os.path.join(legacy_dir, "reflect-config.json"), "w", encoding="utf-8") as file:
-                file.write("[]\n")
-
-            result = LocalCIVerificationResult(status="running", base_commit=base)
-            with patch(
-                    "utility_scripts.local_ci_verification.build_timestamped_task_log_path",
-                    return_value=os.path.join(log_path, "policy.log"),
-            ):
-                failed = _run_legacy_test_native_image_config_validation(
-                    repo_path,
-                    base,
-                    result,
-                    [
-                        "tests/src/org.example/demo/1.0.0/src/test/resources/"
-                        "META-INF/native-image/reflect-config.json",
-                    ],
-                )
-
-        self.assertIsNotNone(failed)
-        self.assertEqual(failed.gate, "legacy-test-native-image-config")
-        self.assertIn("reflect-config.json", result.commands[0].output_excerpt)
-        self.assertIn("reachability-metadata.json", result.commands[0].output_excerpt)
-
-    def test_test_matrix_prepulls_docker_images_without_privileged_network_scripts(self) -> None:
-        with tempfile.TemporaryDirectory() as repo_path:
-            docker_test_dir = os.path.join(repo_path, "tests", "src", "org.example", "docker-demo", "1.0.0")
-            os.makedirs(docker_test_dir)
-            with open(os.path.join(docker_test_dir, "required-docker-images.txt"), "w", encoding="utf-8") as file:
-                file.write("nginx:1-alpine-slim\n")
-
-            result = LocalCIVerificationResult(status="running", base_commit="base")
-            calls: list[tuple[str, list[str]]] = []
-
-            def fake_run_recorded_command(
-                    repo_path_arg: str,
-                    gate: str,
-                    command: list[str],
-                    local_result: LocalCIVerificationResult,
-                    env: dict[str, str] | None = None,
-                    failure_output_pattern: str | None = None,
-            ) -> CommandRecord | None:
-                del repo_path_arg, local_result, env, failure_output_pattern
-                calls.append((gate, command))
-                return None
-
-            with patch("utility_scripts.local_ci_verification._run_recorded_command", side_effect=fake_run_recorded_command), \
-                    patch(
-                        "utility_scripts.local_ci_verification._run_recorded_command_without_new_docker_images",
-                        side_effect=fake_run_recorded_command,
-                    ):
-                failed = _run_test_matrix_entries(
-                    repo_path,
-                    [
-                        {"coordinates": "org.example:plain-demo:1.0.0", "versions": ["1.0.0"]},
-                        {"coordinates": "org.example:docker-demo:1.0.0", "versions": ["1.0.0"]},
-                    ],
-                    result,
-                )
-
-            self.assertIsNone(failed)
-            self.assertEqual(
-                [call for call in calls if call[0] == "pull-allowed-docker-images"],
-                [
-                    (
-                        "pull-allowed-docker-images",
-                        ["./gradlew", "pullAllowedDockerImages", "-Pcoordinates=org.example:docker-demo:1.0.0"],
-                    ),
-                ],
-            )
-            self.assertNotIn("disable-docker-networking", [call[0] for call in calls])
-            self.assertNotIn("restore-docker-networking", [call[0] for call in calls])
-            self.assertEqual([call[0] for call in calls].count("run-consecutive-tests"), 2)
-
-    def test_test_matrix_resolves_docker_declaration_from_index_test_version(self) -> None:
-        with tempfile.TemporaryDirectory() as repo_path:
-            metadata_dir = os.path.join(repo_path, "metadata", "org.example", "demo")
-            docker_test_dir = os.path.join(repo_path, "tests", "src", "org.example", "demo", "1.0.0")
-            os.makedirs(metadata_dir)
-            os.makedirs(docker_test_dir)
-            with open(os.path.join(metadata_dir, "index.json"), "w", encoding="utf-8") as file:
-                json.dump([
-                    {
-                        "metadata-version": "2.0.0",
-                        "test-version": "1.0.0",
-                        "tested-versions": ["2.0.1"],
-                    },
-                ], file)
-            with open(os.path.join(docker_test_dir, "required-docker-images.txt"), "w", encoding="utf-8") as file:
-                file.write("# comment\n\nnginx:1-alpine-slim\n")
-
-            result = LocalCIVerificationResult(status="running", base_commit="base")
-            calls: list[tuple[str, list[str]]] = []
-
-            def fake_run_recorded_command(
-                    repo_path_arg: str,
-                    gate: str,
-                    command: list[str],
-                    local_result: LocalCIVerificationResult,
-                    env: dict[str, str] | None = None,
-                    failure_output_pattern: str | None = None,
-            ) -> CommandRecord | None:
-                del repo_path_arg, local_result, env, failure_output_pattern
-                calls.append((gate, command))
-                return None
-
-            with patch("utility_scripts.local_ci_verification._run_recorded_command", side_effect=fake_run_recorded_command), \
-                    patch(
-                        "utility_scripts.local_ci_verification._run_recorded_command_without_new_docker_images",
-                        side_effect=fake_run_recorded_command,
-                    ):
-                failed = _run_test_matrix_entries(
-                    repo_path,
-                    [{"coordinates": "org.example:demo:2.0.1", "versions": ["2.0.1"]}],
-                    result,
-                )
-
-            self.assertIsNone(failed)
-            self.assertEqual(
-                [call for call in calls if call[0] == "pull-allowed-docker-images"],
-                [
-                    (
-                        "pull-allowed-docker-images",
-                        ["./gradlew", "pullAllowedDockerImages", "-Pcoordinates=org.example:demo:2.0.1"],
-                    ),
-                ],
-            )
-            self.assertNotIn("disable-docker-networking", [call[0] for call in calls])
-            self.assertNotIn("restore-docker-networking", [call[0] for call in calls])
-
     def test_run_recorded_command_rejects_sudo_command_without_running_it(self) -> None:
         with tempfile.TemporaryDirectory() as repo_path, tempfile.TemporaryDirectory() as log_path:
             result = LocalCIVerificationResult(status="running", base_commit="base")
@@ -498,220 +378,6 @@ class LocalCIVerificationTests(unittest.TestCase):
             run.assert_not_called()
             self.assertEqual(result.commands[0].returncode, 1)
             self.assertIn("gradlew", result.commands[0].output_excerpt)
-
-    def test_run_recorded_command_without_new_docker_images_fails_when_test_pulls_image(self) -> None:
-        with tempfile.TemporaryDirectory() as repo_path, tempfile.TemporaryDirectory() as log_path:
-            result = LocalCIVerificationResult(status="running", base_commit="base")
-            docker_outputs = [
-                "postgres:16 image-a\n",
-                "postgres:16 image-a\nredis:7 image-b\n",
-            ]
-
-            def fake_run(
-                    command: list[str],
-                    cwd: str | None = None,
-                    env: dict[str, str] | None = None,
-                    stdin=None,
-                    stdout=None,
-                    stderr=None,
-                    text: bool | None = None,
-                    check: bool | None = None,
-            ) -> subprocess.CompletedProcess[str]:
-                del cwd, env, stdin, stderr, text, check
-                if command[:3] == ["docker", "image", "ls"]:
-                    return subprocess.CompletedProcess(command, 0, stdout=docker_outputs.pop(0))
-                if command == ["bash", "run-tests"]:
-                    stdout.write("tests passed\n")
-                    return subprocess.CompletedProcess(command, 0, stdout="tests passed\n")
-                raise AssertionError(f"unexpected command: {command}")
-
-            log_paths = [
-                os.path.join(log_path, "run.log"),
-                os.path.join(log_path, "docker.log"),
-            ]
-            with patch(
-                    "utility_scripts.local_ci_verification.build_timestamped_task_log_path",
-                    side_effect=log_paths,
-            ), patch("utility_scripts.local_ci_verification.subprocess.run", side_effect=fake_run):
-                failed = _run_recorded_command_without_new_docker_images(
-                    repo_path,
-                    "run-consecutive-tests",
-                    ["bash", "run-tests"],
-                    result,
-                )
-
-            self.assertIsNotNone(failed)
-            self.assertEqual(failed.gate, "unexpected-docker-image-pull")
-            self.assertEqual(result.commands[-1].returncode, 1)
-            self.assertIn("redis:7 image-b", result.commands[-1].output_excerpt)
-
-    def test_infrastructure_matrix_runs_test_infra_for_each_entry(self) -> None:
-        result = LocalCIVerificationResult(status="running", base_commit="base")
-        calls: list[tuple[str, list[str], dict[str, str] | None]] = []
-
-        def fake_run_recorded_command(
-                repo_path: str,
-                gate: str,
-                command: list[str],
-                local_result: LocalCIVerificationResult,
-                env: dict[str, str] | None = None,
-                failure_output_pattern: str | None = None,
-        ) -> CommandRecord | None:
-            del repo_path, local_result, failure_output_pattern
-            calls.append((gate, command, env))
-            return None
-
-        with patch.dict(os.environ, {"GRAALVM_HOME_25_0": "/graalvm25"}, clear=True), \
-                patch("utility_scripts.local_ci_verification._run_recorded_command", side_effect=fake_run_recorded_command):
-            failed = _run_infrastructure_matrix_entries(
-                "/repo",
-                [{"coordinates": "org.example:demo:1.0.0", "version": "25", "nativeImageMode": "future-defaults-all"}],
-                result,
-            )
-
-        self.assertIsNone(failed)
-        self.assertEqual(
-            [call[0] for call in calls],
-            [
-                "infrastructure-check-metadata-files",
-                "test-infra",
-            ],
-        )
-        self.assertEqual(
-            calls[-1][1],
-            ["./gradlew", "testInfra", "-Pcoordinates=org.example:demo:1.0.0", "-Pparallelism=1", "--stacktrace"],
-        )
-        self.assertEqual(calls[-1][2]["GRAALVM_HOME"], "/graalvm25")
-        self.assertEqual(calls[-1][2]["GVM_TCK_NATIVE_IMAGE_MODE"], "future-defaults-all")
-
-    def test_infrastructure_matrix_pulls_docker_images_when_coordinate_declares_them(self) -> None:
-        with tempfile.TemporaryDirectory() as repo_path:
-            docker_test_dir = os.path.join(repo_path, "tests", "src", "org.example", "demo", "1.0.0")
-            os.makedirs(docker_test_dir)
-            with open(os.path.join(docker_test_dir, "required-docker-images.txt"), "w", encoding="utf-8") as file:
-                file.write("nginx:1-alpine-slim\n")
-
-            result = LocalCIVerificationResult(status="running", base_commit="base")
-            gates: list[str] = []
-
-            def fake_run_recorded_command(
-                    repo_path_arg: str,
-                    gate: str,
-                    command: list[str],
-                    local_result: LocalCIVerificationResult,
-                    env: dict[str, str] | None = None,
-                    failure_output_pattern: str | None = None,
-            ) -> CommandRecord | None:
-                del repo_path_arg, command, local_result, env, failure_output_pattern
-                gates.append(gate)
-                return None
-
-            with patch("utility_scripts.local_ci_verification._run_recorded_command", side_effect=fake_run_recorded_command):
-                failed = _run_infrastructure_matrix_entries(
-                    repo_path,
-                    [{"coordinates": "org.example:demo:1.0.0"}],
-                    result,
-                )
-
-            self.assertIsNone(failed)
-            self.assertEqual(
-                gates,
-                [
-                    "infrastructure-pull-allowed-docker-images",
-                    "infrastructure-check-metadata-files",
-                    "test-infra",
-                ],
-            )
-
-    def test_spring_aot_matrix_runs_triaged_smoke_test(self) -> None:
-        result = LocalCIVerificationResult(status="running", base_commit="base")
-        calls: list[tuple[str, list[str], dict[str, str] | None]] = []
-
-        def fake_run_recorded_command(
-                repo_path: str,
-                gate: str,
-                command: list[str],
-                local_result: LocalCIVerificationResult,
-                env: dict[str, str] | None = None,
-                failure_output_pattern: str | None = None,
-        ) -> CommandRecord | None:
-            del repo_path, local_result, failure_output_pattern
-            calls.append((gate, command, env))
-            return None
-
-        with patch.dict(os.environ, {"GRAALVM_HOME_25_0": "/graalvm25"}, clear=True), \
-                patch("utility_scripts.local_ci_verification._run_recorded_command", side_effect=fake_run_recorded_command):
-            failed = _run_spring_aot_matrix_entries(
-                "/repo",
-                "/tmp/spring-aot-smoke-tests",
-                [{"project": ":data:data-mongodb", "java": "25"}],
-                result,
-            )
-
-        self.assertIsNone(failed)
-        self.assertEqual(calls[0][0], "spring-aot-smoke-test")
-        self.assertEqual(
-            calls[0][1],
-            [
-                "bash",
-                ".github/workflows/scripts/run-spring-aot-triaged-test.sh",
-                "/tmp/spring-aot-smoke-tests",
-                ":data:data-mongodb",
-                "4.1.x",
-            ],
-        )
-        self.assertEqual(calls[0][2]["JAVA_HOME"], "/graalvm25")
-
-    def test_verification_once_runs_infrastructure_but_skips_spring_lane(self) -> None:
-        result = LocalCIVerificationResult(status="running", base_commit="base")
-        gradle_tasks: list[str] = []
-
-        def fake_gradle_json_output(
-                repo_path: str,
-                task_name: str,
-                base_commit: str,
-                local_result: LocalCIVerificationResult,
-                gate: str,
-                extra_args: list[str] | None = None,
-        ) -> dict:
-            del repo_path, base_commit, local_result, gate, extra_args
-            gradle_tasks.append(task_name)
-            if task_name == "generateInfrastructureChangedCoordinatesMatrix":
-                return {"include": [{"coordinates": "org.example:demo:1.0.0"}]}
-            return {"include": []}
-
-        changed_files = [
-            "build.gradle",
-            "metadata/org.springframework/spring-jcl/6.0.0/reachability-metadata.json",
-        ]
-        with patch("utility_scripts.local_ci_verification.changed_files_for_ci", return_value=changed_files), \
-                patch("utility_scripts.local_ci_verification._gradle_json_output", side_effect=fake_gradle_json_output), \
-                patch("utility_scripts.local_ci_verification._run_test_matrix_entries", return_value=None), \
-                patch("utility_scripts.local_ci_verification._run_infrastructure_matrix_entries", return_value=None) as infra, \
-                patch("utility_scripts.local_ci_verification._run_spring_aot_verification", return_value=None) as spring, \
-                patch("utility_scripts.local_ci_verification._run_index_validation", return_value=None), \
-                patch("utility_scripts.local_ci_verification._run_style_validation", return_value=None), \
-                patch("utility_scripts.local_ci_verification._run_recorded_command", return_value=None):
-            failed = _run_verification_once("/repo", "base", result)
-
-        self.assertIsNone(failed)
-        self.assertIn("generateInfrastructureChangedCoordinatesMatrix", gradle_tasks)
-        infra.assert_called_once()
-        spring.assert_not_called()
-
-    def test_spring_aot_tests_are_left_to_ci(self) -> None:
-        self.assertFalse(_should_run_spring_aot_tests([
-            "metadata/org.springframework/spring-jcl/6.0.0/reachability-metadata.json",
-            ".github/workflows/scripts/run-spring-aot-triaged-test.sh",
-        ]))
-
-    def test_latest_ea_requires_latest_ea_graalvm_home(self) -> None:
-        with patch.dict(os.environ, {"GRAALVM_HOME": "/stable"}, clear=True):
-            with self.assertRaisesRegex(RuntimeError, "GRAALVM_HOME_LATEST_EA"):
-                _graalvm_home_for_java_version("latest-ea")
-
-        with patch.dict(os.environ, {"GRAALVM_HOME_LATEST_EA": "/ea"}, clear=True):
-            self.assertEqual(_graalvm_home_for_java_version("latest-ea"), "/ea")
 
     def test_github_repo_slug_from_url_accepts_https_and_ssh_forms(self) -> None:
         expected = "oracle/graalvm-reachability-metadata"

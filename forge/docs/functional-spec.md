@@ -103,7 +103,7 @@ metadata-relevant coverage from broader behavior coverage.
 | **Workflow driver** | Deterministic script in the `drivers/` subdirectory of [ai_workflows/](../ai_workflows/) that prepares the working environment, directories, branch/context, strategy bundle, workflow engine, agent, and metrics for one claimed unit of work. The driver runs Forge plumbing; Codex or another LLM agent should not decide that setup during a generated run. Specified by §WF-forge-workflow-drivers. |
 | **Workflow engine** | A registered state-machine-like workflow implementation among the core workflow objects in [ai_workflows/core/](../ai_workflows/core/), such as `basic_iterative` or `dynamic_access_iterative`. The engine owns prompts, command execution, retries, transitions, and terminal status selection for one run. |
 | **Predefined strategy** | Named configuration bundle in [strategies/predefined_strategies.json](../strategies/predefined_strategies.json). It selects the workflow engine, agent backend, model, prompts, workflow parameters, optional MCPs, and optional persistent instructions. Selected via `--strategy-name`. |
-| **Post-generation intervention** | The built-in recovery sequence the workflow base class runs when the post-iteration `./gradlew test` still fails during finalization. It is a fixed Codex-then-Pi lane, not a pluggable registry and not selected per strategy: a Codex metadata fix runs first (using the `fix-missing-reachability-metadata` skill, pinned to the run's GraalVM); only if that does not recover does Pi remove the offending failing tests as a last resort. When recovery makes the post-generation test pass, the run reports `SUCCESS_WITH_INTERVENTION_STATUS` and the intervention record (stage, intervention file, analysis) is saved for the run metrics and PR body. The base class runs this lane once per GraalVM test mode (current defaults and `future-defaults-all`). |
+| **Post-generation intervention** | The built-in recovery sequence the workflow base class runs when the post-iteration `./gradlew test` still fails during finalization. It is a fixed Codex-then-Pi lane, not a pluggable registry and not selected per strategy: a Codex metadata fix runs first (using the `fix-missing-reachability-metadata` skill, pinned to the run's GraalVM); only if that does not recover does Pi remove the offending failing tests as a last resort. When recovery makes the post-generation test pass, the run reports `SUCCESS_WITH_INTERVENTION_STATUS` and the intervention record (stage, intervention file, analysis) is saved for the run metrics and PR body. The base class runs this lane once per GraalVM test lane (current defaults and `future-defaults-all` on the latest GraalVM, plus current defaults on the GraalVM 25 toolchain). |
 | **Human intervention** | A maintainer follow-up signal applied through the `human-intervention` issue or PR label when Forge has evidence that generated work, repository automation, or library execution semantics require human judgment. It is distinct from post-generation intervention, which is an automated recovery step. The policy is defined in §FS-human-intervention-policy. |
 | **Dynamic access** | Reflection, JNI, resource access, serialization, or proxy use that GraalVM `native-image` cannot determine statically. |
 | **Dynamic-access report** | JSON written by Gradle task `generateDynamicAccessCoverageReport` to `tests/src/<group>/<artifact>/<version>/build/reports/dynamic-access/dynamic-access-coverage.json`, listing classes and per-class call sites that require dynamic-access metadata, marked covered/uncovered. |
@@ -236,61 +236,85 @@ If a run fails or times out, the saved logs are part of the diagnostic artifact
 set that allows maintainers or a later Forge run to continue from evidence,
 keeping the loop short as called for by §GOAL-shorten-issue-to-shipped-metadata.
 
-## 6. Local CI-Equivalent Verification
+## 6. Local Pre-Publication Verification
 
-### FS-local-ci-equivalent-verification: Local CI-equivalent verification
+### FS-local-ci-equivalent-verification: Local pre-publication verification
 
-Every Forge task must be fully tested locally in the same way it will be
-tested by CI before it is allowed to produce a PR-eligible result. This is a
-hard requirement, not an optimization or best-effort check.
+Every Forge task must pass local verification before it is allowed to produce a
+PR-eligible result. Verification is split into two tiers along the boundary
+between what a single-library generation can settle on its own and what it
+cannot: a library-scoped tier that runs during generation and finalization
+(§FS-local-ci-equivalent-verification.1), and a cross-cutting gate that runs
+before publication (§FS-local-ci-equivalent-verification.2).
 
-For the task's affected coordinate set, Forge must run the same validation
-surface that the corresponding CI workflow will run, including metadata
-validation, style checks, compilation, JVM tests, native-image build/run
-tests, Docker image pre-pull requirements, vulnerability checks when Docker
-images change, stats validation, and any workflow-specific gates. The local
-commands, coordinates filter, native-image mode, JDK/GraalVM selection, and
-Docker/image setup must be derived from the same repo configuration that CI
-uses, including `ci.json` and the Gradle task contracts. Where CI exercises more
-than one native-image mode, local verification must too: Forge runs the
-generated tests under both the current GraalVM defaults and the
-`future-defaults-all` native-image mode (selected by `GVM_TCK_NATIVE_IMAGE_MODE`),
-so a regression that only appears under future defaults is caught before a PR.
-
-Local verification runs must be non-privileged. Forge must not invoke `sudo`,
-must not run scripts that invoke `sudo`, and must not prompt for an
-administrator password during local automation. CI-only host mutation steps
+Local verification runs must be non-privileged in both tiers. Forge must not
+invoke `sudo`, must not run scripts that invoke `sudo`, and must not prompt for
+an administrator password during local automation. CI-only host mutation steps
 that require elevated privileges, such as changing system Docker networking,
-must be replaced by no-sudo local gates or omitted from local execution while
-preserving the rest of the CI-equivalent validation surface. A command that
-would require `sudo` is a local verification failure, not an interactive
-prompt. For Docker-backed tests, local verification must fail if tests create
-Docker images after the `pullAllowedDockerImages` gate, because that indicates
-the local run may have passed by pulling images that CI's disabled-network
-phase would reject.
+must be replaced by no-sudo local gates or omitted from local execution. A
+command that would require `sudo` is a local verification failure, not an
+interactive prompt.
 
-Local verification must also reject legacy test-only Native Image configuration
-for the coordinate: if uncommitted or changed `META-INF/native-image` test
-configuration files appear under the generated test sources, the run fails
-rather than publishing them, because that config form is no longer accepted and
-the reachability metadata belongs in the coordinate's `metadata/` directory.
+Forge must record the local verification commands and their outcomes in the run
+metrics and PR description. A task must not open a PR, mark a project item
+`Done`, return `RUN_STATUS_SUCCESS`, return `SUCCESS_WITH_INTERVENTION_STATUS`,
+or return `RUN_STATUS_CHUNK_READY` until both tiers have passed. If Forge cannot
+complete either tier, the workflow must return `RUN_STATUS_FAILURE` and preserve
+enough diagnostics for human follow-up.
 
-Forge must record the exact local verification commands and their outcomes in
-the run metrics and PR description. A task must not open a PR, mark a project
-item `Done`, return `RUN_STATUS_SUCCESS`, return
-`SUCCESS_WITH_INTERVENTION_STATUS`, or return `RUN_STATUS_CHUNK_READY` until
-that local CI-equivalent verification has passed. If Forge cannot reproduce
-the CI-equivalent validation locally, the workflow must return
-`RUN_STATUS_FAILURE` and preserve enough diagnostics for human follow-up.
+#### 1. Generation and finalization
 
-If local CI-equivalent verification fails, Forge may run a bounded fixup step
-before retrying the full verification. The fixup may repair generated
-library-scoped files or shared repository files when the failure is caused by
-the repository itself. After verification passes, Forge must algorithmically
-compare the final PR diff with the expected library-scoped paths. If any
-shared repository file changed, the PR must be labeled `human-intervention`
-and the verification metrics and PR description must list the repository-level
-paths that require maintainer review, following §FS-human-intervention-policy.
+Library-scoped correctness is established during generation and finalization,
+because a single-library generation owns and can fully settle these checks.
+Forge runs the generated tests for the coordinate under the CI native-image
+surface: current GraalVM defaults and the `future-defaults-all` mode on the
+latest GraalVM, plus current defaults on the GraalVM 25 toolchain (selected by
+`GRAALVM_HOME_25_0`). Each native lane may run a bounded metadata/intervention
+fixup and retry, so a regression that only appears under future defaults or on
+GraalVM 25 is caught before publication. Finalization then validates the
+coordinate's metadata with `checkMetadataFiles`, derives missing
+`allowed-packages`, applies and checks style, regenerates library stats, and
+rejects legacy test-only Native Image configuration: if uncommitted or changed
+`META-INF/native-image` test configuration files appear under the generated test
+sources, the run fails rather than publishing them, because that config form is
+no longer accepted and the reachability metadata belongs in the coordinate's
+`metadata/` directory.
+
+#### 2. Pre-publication gate
+
+Before a task may produce a PR-eligible result, Forge must also pass a
+pre-publication gate. This tier exists because the generated branch is rebased
+onto the current `master` before publication, and some checks can then fail for
+reasons no single-library generation could have settled: they depend on
+repository state that only exists once the branch sits on top of the latest
+`master`. An index-file bucket that another merged PR has since changed, a newly
+flagged Docker image, or a stray edit outside the coordinate's library scope can
+break the whole PR even though the generated metadata and tests are themselves
+valid. The gate therefore runs exactly the post-rebase, cross-cutting checks:
+index-file validation (`validateIndexFiles`, an aggregate over the rebased
+`master` state), Docker-image vulnerability scanning when allowed-image files
+change, and the human-intervention classification that detects changes outside
+the coordinate's library scope.
+
+The gate intentionally does not re-run the library-scoped checks that
+finalization (§FS-local-ci-equivalent-verification.1) already established, and by
+default it does not re-run the native test matrix or the Spring AOT smoke tests,
+which the generation lanes and repository CI cover. Forge must, however, expose
+an opt-in full-reproduction option (`reproduce_full_ci`) for operators and
+programmatic callers that need to reproduce the expensive per-PR CI surface
+locally: when enabled, the gate additionally expands the changed-metadata native
+test matrix, pre-pulls Docker images for coordinates that declare them, runs the
+generated tests under the CI native-image mode matrix, and runs Spring AOT smoke
+verification when metadata changes affect Spring AOT projects.
+
+If the gate fails, Forge may run a bounded fixup step before retrying it. The
+fixup may repair generated library-scoped files or shared repository files when
+the failure is caused by the repository itself. After the gate passes, Forge
+must algorithmically compare the final PR diff with the expected library-scoped
+paths. If any shared repository file changed, the PR must be labeled
+`human-intervention` and the verification metrics and PR description must list
+the repository-level paths that require maintainer review, following
+§FS-human-intervention-policy.
 
 ### FS-human-intervention-policy: Human intervention policy
 
