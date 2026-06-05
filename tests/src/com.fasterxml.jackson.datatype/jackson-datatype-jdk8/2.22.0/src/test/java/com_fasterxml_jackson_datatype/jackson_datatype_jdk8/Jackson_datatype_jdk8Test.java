@@ -242,15 +242,19 @@ public class Jackson_datatype_jdk8Test {
         String json = mapper.writeValueAsString(values);
 
         JsonNode tree = mapper.readTree(json);
-        assertThat(tree.withArray("names").get(0).asText()).isEqualTo("north");
-        assertThat(tree.withArray("names").get(1).asText()).isEqualTo("south");
-        assertThat(tree.withArray("counts").get(0).asInt()).isEqualTo(1);
-        assertThat(tree.withArray("counts").get(1).asInt()).isEqualTo(2);
-        assertThat(tree.withArray("counts").get(2).asInt()).isEqualTo(3);
-        assertThat(tree.withArray("sizes").get(0).asLong()).isEqualTo(10L);
-        assertThat(tree.withArray("sizes").get(1).asLong()).isEqualTo(20L);
-        assertThat(tree.withArray("ratios").get(0).asDouble()).isEqualTo(0.25D);
-        assertThat(tree.withArray("ratios").get(1).asDouble()).isEqualTo(0.5D);
+        JsonNode names = tree.get("names");
+        JsonNode counts = tree.get("counts");
+        JsonNode sizes = tree.get("sizes");
+        JsonNode ratios = tree.get("ratios");
+        assertThat(names.get(0).asText()).isEqualTo("north");
+        assertThat(names.get(1).asText()).isEqualTo("south");
+        assertThat(counts.get(0).asInt()).isEqualTo(1);
+        assertThat(counts.get(1).asInt()).isEqualTo(2);
+        assertThat(counts.get(2).asInt()).isEqualTo(3);
+        assertThat(sizes.get(0).asLong()).isEqualTo(10L);
+        assertThat(sizes.get(1).asLong()).isEqualTo(20L);
+        assertThat(ratios.get(0).asDouble()).isEqualTo(0.25D);
+        assertThat(ratios.get(1).asDouble()).isEqualTo(0.5D);
     }
 
     private static ObjectMapper jdk8Mapper() {
