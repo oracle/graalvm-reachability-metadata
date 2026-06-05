@@ -13,10 +13,14 @@ import io.fabric8.kubernetes.api.model.KubernetesResource;
 import io.fabric8.kubernetes.api.model.ListMetaBuilder;
 import io.fabric8.kubernetes.api.model.Quantity;
 import io.fabric8.kubernetes.api.model.Toleration;
+import io.fabric8.kubernetes.api.model.node.v1.Overhead;
+import io.fabric8.kubernetes.api.model.node.v1.OverheadBuilder;
 import io.fabric8.kubernetes.api.model.node.v1.RuntimeClass;
 import io.fabric8.kubernetes.api.model.node.v1.RuntimeClassBuilder;
 import io.fabric8.kubernetes.api.model.node.v1.RuntimeClassList;
 import io.fabric8.kubernetes.api.model.node.v1.RuntimeClassListBuilder;
+import io.fabric8.kubernetes.api.model.node.v1.Scheduling;
+import io.fabric8.kubernetes.api.model.node.v1.SchedulingBuilder;
 import java.math.BigDecimal;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -245,6 +249,63 @@ public class Kubernetes_model_nodeTest {
         assertThat(roundTripped).isEqualTo(edited);
         assertThat(roundTripped.getSpec().getScheduling().getNodeSelector())
                 .containsEntry("topology.kubernetes.io/zone", "test-zone");
+    }
+
+    @Test
+    void preservesStandaloneOverheadAndSchedulingExtensions() throws Exception {
+        Overhead overhead = new OverheadBuilder()
+                .addToPodFixed("cpu", new Quantity("250m"))
+                .addToPodFixed("memory", new Quantity("512Mi"))
+                .addToAdditionalProperties("node.fabric8.io/profile", Map.of("tier", "sandbox"))
+                .build();
+
+        Overhead editedOverhead = overhead.edit()
+                .removeFromPodFixed("memory")
+                .addToPodFixed("ephemeral-storage", new Quantity("2Gi"))
+                .addToAdditionalProperties("node.fabric8.io/enforced", true)
+                .build();
+
+        String overheadJson = MAPPER.writeValueAsString(editedOverhead);
+        Overhead roundTrippedOverhead = MAPPER.readValue(overheadJson, Overhead.class);
+
+        assertThat(roundTrippedOverhead.getPodFixed()).containsOnlyKeys("cpu", "ephemeral-storage");
+        assertThat(roundTrippedOverhead.getPodFixed().get("cpu").getNumericalAmount())
+                .isEqualByComparingTo(new BigDecimal("0.250"));
+        assertThat(roundTrippedOverhead.getAdditionalProperties())
+                .containsEntry("node.fabric8.io/enforced", true)
+                .containsKey("node.fabric8.io/profile");
+
+        Scheduling scheduling = new SchedulingBuilder()
+                .addToNodeSelector("node.kubernetes.io/instance-type", "sandbox")
+                .addToNodeSelector("kubernetes.io/os", "linux")
+                .addNewToleration("NoSchedule", "dedicated", "Equal", 600L, "sandbox")
+                .addNewToleration("NoExecute", "maintenance", "Equal", 30L, "planned")
+                .addToAdditionalProperties("node.fabric8.io/scheduler", Map.of("policy", "strict"))
+                .build();
+
+        assertThat(new SchedulingBuilder(scheduling)
+                .hasMatchingToleration(toleration -> "maintenance".equals(toleration.getKey()))).isTrue();
+
+        Scheduling editedScheduling = scheduling.edit()
+                .removeFromNodeSelector("node.kubernetes.io/instance-type")
+                .removeFromTolerations(scheduling.getTolerations().get(0))
+                .addToNodeSelector("node-role.kubernetes.io/worker", "true")
+                .addToAdditionalProperties("node.fabric8.io/priority", 5)
+                .build();
+
+        String schedulingJson = MAPPER.writeValueAsString(editedScheduling);
+        Scheduling roundTrippedScheduling = MAPPER.readValue(schedulingJson, Scheduling.class);
+
+        assertThat(roundTrippedScheduling.getNodeSelector())
+                .containsExactlyInAnyOrderEntriesOf(Map.of(
+                        "kubernetes.io/os", "linux",
+                        "node-role.kubernetes.io/worker", "true"));
+        assertThat(roundTrippedScheduling.getTolerations())
+                .extracting(Toleration::getValue)
+                .containsExactly("planned");
+        assertThat(roundTrippedScheduling.getAdditionalProperties())
+                .containsEntry("node.fabric8.io/priority", 5)
+                .containsKey("node.fabric8.io/scheduler");
     }
 
     @Test
