@@ -9,11 +9,13 @@ package io_fabric8.kubernetes_model_flowcontrol;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.fabric8.kubernetes.api.builder.Visitor;
 import io.fabric8.kubernetes.api.model.ListMetaBuilder;
 import io.fabric8.kubernetes.api.model.flowcontrol.v1.FlowSchema;
 import io.fabric8.kubernetes.api.model.flowcontrol.v1.FlowSchemaBuilder;
 import io.fabric8.kubernetes.api.model.flowcontrol.v1.FlowSchemaList;
 import io.fabric8.kubernetes.api.model.flowcontrol.v1.FlowSchemaListBuilder;
+import io.fabric8.kubernetes.api.model.flowcontrol.v1.NonResourcePolicyRuleBuilder;
 import io.fabric8.kubernetes.api.model.flowcontrol.v1.PriorityLevelConfiguration;
 import io.fabric8.kubernetes.api.model.flowcontrol.v1.PriorityLevelConfigurationBuilder;
 import io.fabric8.kubernetes.api.model.flowcontrol.v1.PriorityLevelConfigurationList;
@@ -428,6 +430,51 @@ public class Kubernetes_model_flowcontrolTest {
     }
 
     @Test
+    void appliesVisitorsToNestedPolicyRuleBuilders() {
+        FlowSchemaBuilder builder = new FlowSchemaBuilder()
+                .withNewMetadata()
+                    .withName("visitor-schema")
+                .endMetadata()
+                .withNewSpec()
+                    .withMatchingPrecedence(500)
+                    .withNewPriorityLevelConfiguration("visitor-priority")
+                    .addNewRule()
+                        .addNewSubject()
+                            .withKind("Group")
+                            .withNewGroup("system:authenticated")
+                        .endSubject()
+                        .addNewResourceRule()
+                            .withVerbs("get", "list")
+                            .withApiGroups("")
+                            .withResources("pods")
+                            .withNamespaces("team-visitor")
+                        .endResourceRule()
+                        .addNewNonResourceRule()
+                            .withVerbs("get")
+                            .withNonResourceURLs("/readyz")
+                        .endNonResourceRule()
+                    .endRule()
+                .endSpec();
+
+        builder.accept(ResourcePolicyRuleBuilder.class, new ResourcePolicyRuleVisitor());
+        builder.accept(NonResourcePolicyRuleBuilder.class, new NonResourcePolicyRuleVisitor());
+        FlowSchema schema = builder.build();
+
+        ResourcePolicyRule resourceRule = schema.getSpec().getRules().get(0).getResourceRules().get(0);
+        assertThat(resourceRule.getVerbs()).containsExactly("watch", "list");
+        assertThat(resourceRule.getResources()).containsExactly("pods", "pods/log");
+        assertThat(resourceRule.getClusterScope()).isFalse();
+        assertThat(resourceRule.getAdditionalProperties()).containsEntry("visitor", "resource");
+
+        assertThat(schema.getSpec().getRules().get(0).getNonResourceRules().get(0).getVerbs())
+                .containsExactly("head");
+        assertThat(schema.getSpec().getRules().get(0).getNonResourceRules().get(0).getNonResourceURLs())
+                .containsExactly("/livez", "/metrics");
+        assertThat(schema.getSpec().getRules().get(0).getNonResourceRules().get(0).getAdditionalProperties())
+                .containsEntry("visitor", "non-resource");
+    }
+
+    @Test
     void buildsAndEditsBeta3Resources() throws Exception {
         io.fabric8.kubernetes.api.model.flowcontrol.v1beta3.FlowSchema schema =
                 new io.fabric8.kubernetes.api.model.flowcontrol.v1beta3.FlowSchemaBuilder()
@@ -502,5 +549,30 @@ public class Kubernetes_model_flowcontrolTest {
                         configurationJson,
                         io.fabric8.kubernetes.api.model.flowcontrol.v1beta3.PriorityLevelConfiguration.class);
         assertThat(roundTrippedConfiguration).isEqualTo(configuration);
+    }
+
+    private static final class ResourcePolicyRuleVisitor implements Visitor<ResourcePolicyRuleBuilder> {
+        @Override
+        public void visit(ResourcePolicyRuleBuilder rule) {
+            if (rule.hasMatchingResource("pods"::equals)) {
+                rule.setToVerbs(0, "watch")
+                        .addToResources(1, "pods/log")
+                        .withClusterScope(false)
+                        .addToAdditionalProperties("visitor", "resource");
+            }
+        }
+    }
+
+    private static final class NonResourcePolicyRuleVisitor implements Visitor<NonResourcePolicyRuleBuilder> {
+        @Override
+        public void visit(NonResourcePolicyRuleBuilder rule) {
+            if (rule.hasMatchingNonResourceURL("/readyz"::equals)) {
+                rule.setToNonResourceURLs(0, "/livez")
+                        .addToNonResourceURLs("/metrics")
+                        .removeFromVerbs("get")
+                        .addToVerbs("head")
+                        .addToAdditionalProperties("visitor", "non-resource");
+            }
+        }
     }
 }
