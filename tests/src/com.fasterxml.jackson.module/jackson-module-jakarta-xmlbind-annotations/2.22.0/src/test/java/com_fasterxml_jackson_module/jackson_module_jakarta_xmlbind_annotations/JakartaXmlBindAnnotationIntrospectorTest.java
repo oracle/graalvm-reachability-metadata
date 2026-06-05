@@ -13,9 +13,11 @@ import java.util.Collections;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.Annotated;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationIntrospector;
+import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationModule;
 import jakarta.activation.DataHandler;
 import jakarta.xml.bind.annotation.XmlEnumValue;
 import org.junit.jupiter.api.Test;
@@ -35,6 +37,19 @@ public class JakartaXmlBindAnnotationIntrospectorTest {
 
         assertThat(serializer).isNotNull();
         assertThat(deserializer).isInstanceOf(JsonDeserializer.class);
+    }
+
+    @Test
+    void resolvesEnumValuesFromXmlEnumValueAnnotations() throws Exception {
+        ObjectMapper mapper = new ObjectMapper().registerModule(new JakartaXmlBindAnnotationModule());
+
+        String activeValue = mapper.writeValueAsString(Status.ACTIVE);
+        String unknownValue = mapper.writeValueAsString(Status.UNKNOWN);
+        Status inactiveStatus = mapper.readValue("\"inactive-status\"", Status.class);
+
+        assertThat(activeValue).isEqualTo("\"active-status\"");
+        assertThat(unknownValue).isEqualTo("\"UNKNOWN\"");
+        assertThat(inactiveStatus).isEqualTo(Status.INACTIVE);
     }
 
     @Test
