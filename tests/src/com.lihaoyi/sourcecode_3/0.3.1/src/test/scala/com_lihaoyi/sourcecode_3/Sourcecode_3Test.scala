@@ -101,9 +101,9 @@ class Sourcecode_3Test {
 
     assertEquals(2, argumentLists.size)
     assertEquals(List("first", "second"), argumentLists.head.map(_.source))
-    assertEquals(List(None, None), argumentLists.head.map(_.value))
+    assertEquals(List("alpha", 42), argumentLists.head.map(_.value))
     assertEquals(List("flag"), argumentLists(1).map(_.source))
-    assertEquals(List(None), argumentLists(1).map(_.value))
+    assertEquals(List(true), argumentLists(1).map(_.value))
   }
 
   @Test
@@ -113,9 +113,9 @@ class Sourcecode_3Test {
 
     assertEquals(2, argumentLists.size)
     assertEquals(List("label", "count"), argumentLists.head.map(_.source))
-    assertEquals(List(None, None), argumentLists.head.map(_.value))
+    assertEquals(List("alpha", 42), argumentLists.head.map(_.value))
     assertEquals(List("enabled"), argumentLists(1).map(_.source))
-    assertEquals(List(None), argumentLists(1).map(_.value))
+    assertEquals(List(true), argumentLists(1).map(_.value))
   }
 
   @Test
