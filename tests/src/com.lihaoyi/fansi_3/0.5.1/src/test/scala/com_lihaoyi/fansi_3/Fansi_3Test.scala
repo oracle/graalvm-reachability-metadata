@@ -106,13 +106,13 @@ class Fansi_3Test {
     assertEquals(s"\u001b[38;2;12;34;56mrgb$ForegroundReset", trueForeground.render)
     assertEquals(s"\u001b[48;2;1;2;3mback$BackgroundReset", trueBackground.render)
 
-    val parsed: Str = Str.Throw("A\u001b[38;2;12;34;56mB\u001b[48;2;1;2;3mC\u001b[0mD")
-    assertEquals("ABCD", parsed.plainText)
+    val parsed: Str = Str.Throw("A\u001b[38;2;12;34;56mB\u001b[39mC\u001b[48;5;22mD\u001b[49mE")
+    assertEquals("ABCDE", parsed.plainText)
     assertEquals(0L, parsed.getColor(0))
     assertEquals(Color.True(12, 34, 56).transform(0L), parsed.getColor(1))
-    assertEquals(Color.True(12, 34, 56).transform(0L), parsed.getColor(2) & Color.mask)
-    assertNotEquals(parsed.getColor(1), parsed.getColor(2))
-    assertEquals(0L, parsed.getColor(3))
+    assertEquals(0L, parsed.getColor(2))
+    assertEquals(Back.Full(22).transform(0L), parsed.getColor(3))
+    assertEquals(0L, parsed.getColor(4))
 
     assertEquals(0x0c2238, Color.trueIndex(12, 34, 56))
     assertEquals("\u001b[38;2;12;34;56m", Color.trueRgbEscape(12, 34, 56))
@@ -234,7 +234,8 @@ class Fansi_3Test {
     val styled: Str = allStyles(Str("x"))
     val withoutForeground: Str = Color.Reset(styled)
     val foregroundOnly: Str = (Back.Reset ++ Bold.Off ++ Underlined.Off ++ Reversed.Off)(styled)
-    val plainAgain: Str = Attr.Reset(styled)
+    val resettableStyles: Str = (Color.Red ++ Bold.On ++ Underlined.On ++ Reversed.On)(Str("x"))
+    val plainAgain: Str = Attr.Reset(resettableStyles)
 
     assertEquals((Back.Blue ++ Bold.On ++ Underlined.On ++ Reversed.On).transform(0L), withoutForeground.getColor(0))
     assertEquals(s"$BlueBackground$BoldOn$UnderlinedOn${ReversedOn}x$ResetAll", withoutForeground.render)
