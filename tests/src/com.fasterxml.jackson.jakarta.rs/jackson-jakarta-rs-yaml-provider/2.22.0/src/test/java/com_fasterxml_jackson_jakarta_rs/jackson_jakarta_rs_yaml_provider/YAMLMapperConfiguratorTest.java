@@ -25,7 +25,8 @@ public class YAMLMapperConfiguratorTest {
 
         YAMLMapper mapper = configurator.getDefaultMapper();
 
-        AnnotationIntrospector introspector = mapper.getSerializationConfig().getAnnotationIntrospector();
+        AnnotationIntrospector introspector = mapper.getSerializationConfig()
+                .getAnnotationIntrospector();
         assertThat(introspector).isInstanceOf(JakartaXmlBindAnnotationIntrospector.class);
 
         String yaml = mapper.writeValueAsString(new JakartaXmlBindBean("configured"));
