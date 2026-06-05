@@ -291,6 +291,75 @@ public class Kubernetes_model_metricsTest {
     }
 
     @Test
+    void deserializesMetricsResourcesThroughKubernetesResourceApi() throws Exception {
+        String podJson = """
+                {
+                  "apiVersion": "metrics.k8s.io/v1beta1",
+                  "kind": "PodMetrics",
+                  "metadata": {
+                    "name": "api-pod",
+                    "namespace": "production"
+                  },
+                  "timestamp": "2026-06-05T10:21:00Z",
+                  "window": "20s",
+                  "containers": [
+                    {
+                      "name": "api",
+                      "usage": {
+                        "cpu": "300m",
+                        "memory": "512Mi"
+                      }
+                    }
+                  ]
+                }
+                """;
+
+        KubernetesResource podResource = MAPPER.readValue(podJson, KubernetesResource.class);
+
+        assertThat(podResource).isInstanceOf(PodMetrics.class);
+        PodMetrics podMetrics = (PodMetrics) podResource;
+        assertThat(podMetrics.getMetadata().getNamespace()).isEqualTo("production");
+        assertThat(podMetrics.getContainers()).extracting(ContainerMetrics::getName).containsExactly("api");
+        assertThat(podMetrics.getContainers().get(0).getUsage().get("cpu").getNumericalAmount())
+                .isEqualByComparingTo(new BigDecimal("0.300"));
+        assertThat(podMetrics.getWindow().getDuration()).isEqualTo(java.time.Duration.of(20, ChronoUnit.SECONDS));
+
+        String nodeListJson = """
+                {
+                  "apiVersion": "metrics.k8s.io/v1beta1",
+                  "kind": "NodeMetricsList",
+                  "metadata": {
+                    "resourceVersion": "rv-polymorphic-nodes"
+                  },
+                  "items": [
+                    {
+                      "apiVersion": "metrics.k8s.io/v1beta1",
+                      "kind": "NodeMetrics",
+                      "metadata": {
+                        "name": "worker-1"
+                      },
+                      "timestamp": "2026-06-05T10:22:00Z",
+                      "window": "25s",
+                      "usage": {
+                        "cpu": "800m",
+                        "memory": "4096Mi"
+                      }
+                    }
+                  ]
+                }
+                """;
+
+        KubernetesResource nodeListResource = MAPPER.readValue(nodeListJson, KubernetesResource.class);
+
+        assertThat(nodeListResource).isInstanceOf(NodeMetricsList.class);
+        NodeMetricsList nodeMetricsList = (NodeMetricsList) nodeListResource;
+        assertThat(nodeMetricsList.getMetadata().getResourceVersion()).isEqualTo("rv-polymorphic-nodes");
+        assertThat(nodeMetricsList.getItems()).extracting(item -> item.getMetadata().getName())
+                .containsExactly("worker-1");
+        assertThat(nodeMetricsList.getItems().get(0).getUsage().get("memory").toString()).isEqualTo("4096Mi");
+    }
+
+    @Test
     void serviceLoaderDiscoversMetricsModelResources() {
         Set<Class<?>> resourceTypes = new LinkedHashSet<>();
         for (KubernetesResource resource : ServiceLoader.load(KubernetesResource.class)) {
