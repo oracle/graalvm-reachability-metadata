@@ -10,7 +10,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.fabric8.kubernetes.api.model.HasMetadata;
 import io.fabric8.kubernetes.api.model.KubernetesResource;
+import io.fabric8.kubernetes.api.model.KubernetesResourceList;
+import io.fabric8.kubernetes.api.model.ListMeta;
 import io.fabric8.kubernetes.api.model.MicroTime;
+import io.fabric8.kubernetes.api.model.Namespaced;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
 import io.fabric8.kubernetes.api.model.OwnerReference;
@@ -381,6 +384,68 @@ public class Kubernetes_model_coordinationTest {
                 .containsExactly("legacy-controller", "legacy-standby");
         assertThat(list.getItems().get(1).getSpec().getStrategy()).isEqualTo("Coordinated");
         assertThat(list.getAdditionalProperties()).containsEntry("list", "alpha");
+    }
+
+    @Test
+    void directPojoConstructorsAndSettersPreserveCoordinationResourceState() {
+        ZonedDateTime acquiredAt = ZonedDateTime.of(2026, 5, 1, 12, 0, 0, 0, ZoneOffset.UTC);
+        ZonedDateTime renewedAt = ZonedDateTime.of(2026, 5, 1, 12, 0, 5, 0, ZoneOffset.UTC);
+        ObjectMeta metadata = new ObjectMetaBuilder()
+                .withName("lease-from-pojo")
+                .withNamespace("kube-system")
+                .addToLabels("created-by", "constructor")
+                .build();
+        LeaseSpec spec = new LeaseSpec(
+                acquiredAt,
+                "pojo-holder-0",
+                15,
+                1,
+                "pojo-holder-1",
+                renewedAt,
+                "Coordinated");
+
+        spec.setHolderIdentity("pojo-holder-2");
+        spec.setLeaseDurationSeconds(20);
+        spec.setLeaseTransitions(2);
+        spec.setPreferredHolder("pojo-holder-3");
+        spec.setRenewTime(renewedAt.plusSeconds(5));
+        spec.setStrategy("OldestEmulationVersion");
+        spec.setAdditionalProperty("path", "setters");
+
+        Lease lease = new Lease(COORDINATION_API_GROUP + "/v1", "Lease", metadata, spec);
+        lease.setAdditionalProperties(Map.of("constructed", true));
+        lease.setMetadata(new ObjectMetaBuilder(lease.getMetadata())
+                .addToAnnotations("coordination.fabric8.io/mutation", "setter")
+                .build());
+
+        assertThat(lease).isInstanceOf(Namespaced.class);
+        assertThat(lease.getApiVersion()).isEqualTo(COORDINATION_API_GROUP + "/v1");
+        assertThat(lease.getKind()).isEqualTo("Lease");
+        assertThat(lease.getMetadata().getName()).isEqualTo("lease-from-pojo");
+        assertThat(lease.getMetadata().getAnnotations())
+                .containsEntry("coordination.fabric8.io/mutation", "setter");
+        assertThat(lease.getSpec().getAcquireTime()).isEqualTo(acquiredAt);
+        assertThat(lease.getSpec().getHolderIdentity()).isEqualTo("pojo-holder-2");
+        assertThat(lease.getSpec().getLeaseDurationSeconds()).isEqualTo(20);
+        assertThat(lease.getSpec().getLeaseTransitions()).isEqualTo(2);
+        assertThat(lease.getSpec().getPreferredHolder()).isEqualTo("pojo-holder-3");
+        assertThat(lease.getSpec().getRenewTime()).isEqualTo(renewedAt.plusSeconds(5));
+        assertThat(lease.getSpec().getStrategy()).isEqualTo("OldestEmulationVersion");
+        assertThat(lease.getSpec().getAdditionalProperties()).containsEntry("path", "setters");
+        assertThat(lease.getAdditionalProperties()).containsEntry("constructed", true);
+
+        ListMeta listMetadata = new ListMeta(null, 1L, "resource-version", null);
+        LeaseList list = new LeaseList(COORDINATION_API_GROUP + "/v1", List.of(lease), "LeaseList", listMetadata);
+        Lease replacement = leaseNamed("lease-from-list-setter", "list-holder-0");
+        list.setItems(List.of(replacement));
+        list.setAdditionalProperty("source", "pojo-list");
+
+        assertThat(list).isInstanceOf(KubernetesResourceList.class);
+        assertThat(list.getApiVersion()).isEqualTo(COORDINATION_API_GROUP + "/v1");
+        assertThat(list.getKind()).isEqualTo("LeaseList");
+        assertThat(list.getMetadata().getResourceVersion()).isEqualTo("resource-version");
+        assertThat(list.getItems()).containsExactly(replacement);
+        assertThat(list.getAdditionalProperties()).containsEntry("source", "pojo-list");
     }
 
     @Test
