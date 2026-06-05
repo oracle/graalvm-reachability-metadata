@@ -10,8 +10,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.fabric8.kubernetes.api.model.Duration;
+import io.fabric8.kubernetes.api.model.HasMetadata;
 import io.fabric8.kubernetes.api.model.KubernetesResource;
 import io.fabric8.kubernetes.api.model.ListMetaBuilder;
+import io.fabric8.kubernetes.api.model.OwnerReference;
 import io.fabric8.kubernetes.api.model.Quantity;
 import io.fabric8.kubernetes.api.model.metrics.v1beta1.ContainerMetrics;
 import io.fabric8.kubernetes.api.model.metrics.v1beta1.ContainerMetricsBuilder;
@@ -288,6 +290,52 @@ public class Kubernetes_model_metricsTest {
         assertThat(roundTripped.getAdditionalProperties())
                 .containsEntry("metrics.fabric8.io/restartCount", 2)
                 .containsEntry("metrics.fabric8.io/throttled", false);
+    }
+
+    @Test
+    void supportsHasMetadataLifecycleHelpersForMetricsResources() throws Exception {
+        PodMetrics owner = new PodMetricsBuilder()
+                .withNewMetadata()
+                    .withName("metrics-owner")
+                    .withNamespace("production")
+                    .withUid("metrics-owner-uid")
+                .endMetadata()
+                .build();
+        PodMetrics dependent = new PodMetricsBuilder()
+                .withNewMetadata()
+                    .withName("metrics-dependent")
+                    .withNamespace("production")
+                .endMetadata()
+                .build();
+
+        assertThat(HasMetadata.getGroup(PodMetrics.class)).isEqualTo("metrics.k8s.io");
+        assertThat(HasMetadata.getVersion(PodMetrics.class)).isEqualTo("v1beta1");
+        assertThat(HasMetadata.getApiVersion(PodMetrics.class)).isEqualTo("metrics.k8s.io/v1beta1");
+        assertThat(dependent.getFullResourceName()).isEqualTo(HasMetadata.getFullResourceName(PodMetrics.class));
+
+        assertThat(dependent.addFinalizer("metrics.fabric8.io/cleanup")).isTrue();
+        assertThat(dependent.addFinalizer("metrics.fabric8.io/cleanup")).isFalse();
+        assertThat(dependent.hasFinalizer("metrics.fabric8.io/cleanup")).isTrue();
+
+        OwnerReference ownerReference = dependent.addOwnerReference(owner);
+
+        assertThat(ownerReference.getApiVersion()).isEqualTo("metrics.k8s.io/v1beta1");
+        assertThat(ownerReference.getKind()).isEqualTo("PodMetrics");
+        assertThat(ownerReference.getName()).isEqualTo("metrics-owner");
+        assertThat(ownerReference.getUid()).isEqualTo("metrics-owner-uid");
+        assertThat(dependent.hasOwnerReferenceFor(owner)).isTrue();
+
+        String json = MAPPER.writeValueAsString(dependent);
+        PodMetrics roundTripped = MAPPER.readValue(json, PodMetrics.class);
+
+        assertThat(roundTripped.getFinalizers()).containsExactly("metrics.fabric8.io/cleanup");
+        assertThat(roundTripped.hasOwnerReferenceFor(owner)).isTrue();
+        assertThat(roundTripped.getOwnerReferenceFor(owner).orElseThrow().getName()).isEqualTo("metrics-owner");
+
+        assertThat(roundTripped.removeFinalizer("metrics.fabric8.io/cleanup")).isTrue();
+        roundTripped.removeOwnerReference(owner);
+        assertThat(roundTripped.hasFinalizer("metrics.fabric8.io/cleanup")).isFalse();
+        assertThat(roundTripped.hasOwnerReferenceFor(owner)).isFalse();
     }
 
     @Test
