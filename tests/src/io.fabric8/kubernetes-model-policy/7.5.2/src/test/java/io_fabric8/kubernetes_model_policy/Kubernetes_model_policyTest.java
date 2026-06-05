@@ -6,11 +6,297 @@
  */
 package io_fabric8.kubernetes_model_policy;
 
+import io.fabric8.kubernetes.api.model.Condition;
+import io.fabric8.kubernetes.api.model.ConditionBuilder;
+import io.fabric8.kubernetes.api.model.DeleteOptionsBuilder;
+import io.fabric8.kubernetes.api.model.IntOrString;
+import io.fabric8.kubernetes.api.model.KubernetesResource;
+import io.fabric8.kubernetes.api.model.LabelSelectorBuilder;
+import io.fabric8.kubernetes.api.model.policy.v1.Eviction;
+import io.fabric8.kubernetes.api.model.policy.v1.EvictionBuilder;
+import io.fabric8.kubernetes.api.model.policy.v1.PodDisruptionBudget;
+import io.fabric8.kubernetes.api.model.policy.v1.PodDisruptionBudgetBuilder;
+import io.fabric8.kubernetes.api.model.policy.v1.PodDisruptionBudgetList;
+import io.fabric8.kubernetes.api.model.policy.v1.PodDisruptionBudgetListBuilder;
+import io.fabric8.kubernetes.api.model.policy.v1beta1.AllowedCSIDriverBuilder;
+import io.fabric8.kubernetes.api.model.policy.v1beta1.AllowedFlexVolumeBuilder;
+import io.fabric8.kubernetes.api.model.policy.v1beta1.AllowedHostPath;
+import io.fabric8.kubernetes.api.model.policy.v1beta1.FSGroupStrategyOptionsBuilder;
+import io.fabric8.kubernetes.api.model.policy.v1beta1.HostPortRange;
+import io.fabric8.kubernetes.api.model.policy.v1beta1.HostPortRangeBuilder;
+import io.fabric8.kubernetes.api.model.policy.v1beta1.IDRangeBuilder;
+import io.fabric8.kubernetes.api.model.policy.v1beta1.PodSecurityPolicy;
+import io.fabric8.kubernetes.api.model.policy.v1beta1.PodSecurityPolicyBuilder;
+import io.fabric8.kubernetes.api.model.policy.v1beta1.PodSecurityPolicyList;
+import io.fabric8.kubernetes.api.model.policy.v1beta1.PodSecurityPolicyListBuilder;
+import io.fabric8.kubernetes.api.model.policy.v1beta1.PodSecurityPolicySpec;
+import io.fabric8.kubernetes.api.model.policy.v1beta1.PodSecurityPolicySpecBuilder;
+import io.fabric8.kubernetes.api.model.policy.v1beta1.RunAsGroupStrategyOptionsBuilder;
+import io.fabric8.kubernetes.api.model.policy.v1beta1.RunAsUserStrategyOptionsBuilder;
+import io.fabric8.kubernetes.api.model.policy.v1beta1.RuntimeClassStrategyOptionsBuilder;
+import io.fabric8.kubernetes.api.model.policy.v1beta1.SELinuxStrategyOptionsBuilder;
+import io.fabric8.kubernetes.api.model.policy.v1beta1.SupplementalGroupsStrategyOptionsBuilder;
 import org.junit.jupiter.api.Test;
 
-class Kubernetes_model_policyTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class Kubernetes_model_policyTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void buildsAndEditsPolicyV1PodDisruptionBudget() {
+        Condition condition = new ConditionBuilder()
+                .withType("DisruptionAllowed")
+                .withStatus("True")
+                .withReason("SufficientPods")
+                .withMessage("budget permits one disruption")
+                .withObservedGeneration(9L)
+                .build();
+
+        PodDisruptionBudget budget = new PodDisruptionBudgetBuilder()
+                .withApiVersion("policy/v1")
+                .withKind("PodDisruptionBudget")
+                .withNewMetadata()
+                    .withName("web-budget")
+                    .withNamespace("production")
+                    .addToLabels("app", "web")
+                .endMetadata()
+                .withNewSpec()
+                    .withMaxUnavailable(new IntOrString("25%"))
+                    .withMinAvailable(new IntOrString(2))
+                    .withSelector(new LabelSelectorBuilder().addToMatchLabels("app", "web").build())
+                    .withUnhealthyPodEvictionPolicy("IfHealthyBudget")
+                .endSpec()
+                .withNewStatus()
+                    .withCurrentHealthy(4)
+                    .withDesiredHealthy(3)
+                    .withDisruptionsAllowed(1)
+                    .withExpectedPods(5)
+                    .withObservedGeneration(9L)
+                    .addToDisruptedPods("web-0", "2026-01-01T00:00:00Z")
+                    .withConditions(condition)
+                .endStatus()
+                .addToAdditionalProperties("x-test", "retained")
+                .build();
+
+        assertThat(budget).isInstanceOf(KubernetesResource.class);
+        assertThat(budget.getApiVersion()).isEqualTo("policy/v1");
+        assertThat(budget.getKind()).isEqualTo("PodDisruptionBudget");
+        assertThat(budget.getMetadata().getName()).isEqualTo("web-budget");
+        assertThat(budget.getMetadata().getLabels()).containsEntry("app", "web");
+        assertThat(budget.getSpec().getMaxUnavailable().getStrVal()).isEqualTo("25%");
+        assertThat(budget.getSpec().getMinAvailable().getIntVal()).isEqualTo(2);
+        assertThat(budget.getSpec().getSelector().getMatchLabels()).containsEntry("app", "web");
+        assertThat(budget.getSpec().getUnhealthyPodEvictionPolicy()).isEqualTo("IfHealthyBudget");
+        assertThat(budget.getStatus().getConditions()).containsExactly(condition);
+        assertThat(budget.getStatus().getDisruptedPods()).containsEntry("web-0", "2026-01-01T00:00:00Z");
+        assertThat(budget.getAdditionalProperties()).containsEntry("x-test", "retained");
+
+        PodDisruptionBudget edited = budget.toBuilder()
+                .editSpec()
+                    .withMinAvailable(new IntOrString(3))
+                .endSpec()
+                .editStatus()
+                    .withCurrentHealthy(5)
+                    .removeFromDisruptedPods("web-0")
+                .endStatus()
+                .build();
+
+        assertThat(edited.getSpec().getMinAvailable().getIntVal()).isEqualTo(3);
+        assertThat(edited.getStatus().getCurrentHealthy()).isEqualTo(5);
+        assertThat(edited.getStatus().getDisruptedPods()).doesNotContainKey("web-0");
+        assertThat(edited.getMetadata().getName()).isEqualTo(budget.getMetadata().getName());
+    }
+
+    @Test
+    void buildsPolicyV1PodDisruptionBudgetListWithNestedItems() {
+        PodDisruptionBudget webBudget = new PodDisruptionBudgetBuilder()
+                .withApiVersion("policy/v1")
+                .withKind("PodDisruptionBudget")
+                .withNewMetadata()
+                    .withName("web-budget")
+                .endMetadata()
+                .withNewSpec()
+                    .withMinAvailable(new IntOrString("50%"))
+                .endSpec()
+                .build();
+
+        PodDisruptionBudgetList list = new PodDisruptionBudgetListBuilder()
+                .withApiVersion("policy/v1")
+                .withKind("PodDisruptionBudgetList")
+                .withNewMetadata("continue-token", 123L, "42", "rv-42")
+                .addToItems(webBudget)
+                .addNewItem()
+                    .withApiVersion("policy/v1")
+                    .withKind("PodDisruptionBudget")
+                    .withNewMetadata()
+                        .withName("api-budget")
+                    .endMetadata()
+                    .withNewSpec()
+                        .withMaxUnavailable(new IntOrString(1))
+                    .endSpec()
+                .endItem()
+                .build();
+
+        assertThat(list).isInstanceOf(KubernetesResource.class);
+        assertThat(list.getMetadata().getRemainingItemCount()).isEqualTo(123L);
+        assertThat(list.getItems()).hasSize(2);
+        assertThat(list.getItems().get(0).getMetadata().getName()).isEqualTo("web-budget");
+        assertThat(list.getItems().get(1).getSpec().getMaxUnavailable().getIntVal()).isEqualTo(1);
+        assertThat(new PodDisruptionBudgetListBuilder(list).buildMatchingItem(
+                item -> "api-budget".equals(item.buildMetadata().getName())))
+                .isEqualTo(list.getItems().get(1));
+    }
+
+    @Test
+    void buildsPolicyV1EvictionWithDeleteOptions() {
+        Eviction eviction = new EvictionBuilder()
+                .withApiVersion("policy/v1")
+                .withKind("Eviction")
+                .withNewMetadata()
+                    .withName("web-0")
+                    .withNamespace("production")
+                .endMetadata()
+                .withDeleteOptions(new DeleteOptionsBuilder()
+                        .withGracePeriodSeconds(30L)
+                        .withNewPreconditions(null, "pod-uid")
+                        .build())
+                .addToAdditionalProperties("requested-by", "test-suite")
+                .build();
+
+        assertThat(eviction).isInstanceOf(KubernetesResource.class);
+        assertThat(eviction.getMetadata().getName()).isEqualTo("web-0");
+        assertThat(eviction.getDeleteOptions().getGracePeriodSeconds()).isEqualTo(30L);
+        assertThat(eviction.getDeleteOptions().getPreconditions().getUid()).isEqualTo("pod-uid");
+        assertThat(eviction.getAdditionalProperties()).containsEntry("requested-by", "test-suite");
+    }
+
+    @Test
+    void buildsV1Beta1PodSecurityPolicyWithNestedSecurityStrategies() {
+        PodSecurityPolicySpec spec = new PodSecurityPolicySpecBuilder()
+                .withPrivileged(false)
+                .withAllowPrivilegeEscalation(false)
+                .withDefaultAllowPrivilegeEscalation(false)
+                .withReadOnlyRootFilesystem(true)
+                .withHostNetwork(false)
+                .withHostPID(false)
+                .withHostIPC(false)
+                .withAllowedCapabilities("NET_BIND_SERVICE")
+                .withDefaultAddCapabilities("AUDIT_WRITE")
+                .withRequiredDropCapabilities("ALL")
+                .withAllowedProcMountTypes("Default")
+                .withAllowedUnsafeSysctls("kernel.shm*", "net.ipv4.ip_local_port_range")
+                .withForbiddenSysctls("kernel.msg*", "net.*")
+                .withVolumes("configMap", "secret", "emptyDir")
+                .withAllowedCSIDrivers(new AllowedCSIDriverBuilder().withName("csi.example.com").build())
+                .withAllowedFlexVolumes(new AllowedFlexVolumeBuilder().withDriver("example.com/flex").build())
+                .addNewAllowedHostPath("/var/log", true)
+                .addToHostPorts(new HostPortRangeBuilder().withMin(30000).withMax(32767).build())
+                .withFsGroup(new FSGroupStrategyOptionsBuilder()
+                        .withRule("MustRunAs")
+                        .addToRanges(new IDRangeBuilder().withMin(1L).withMax(65535L).build())
+                        .build())
+                .withRunAsGroup(new RunAsGroupStrategyOptionsBuilder()
+                        .withRule("MustRunAs")
+                        .addToRanges(new IDRangeBuilder().withMin(1000L).withMax(2000L).build())
+                        .build())
+                .withRunAsUser(new RunAsUserStrategyOptionsBuilder()
+                        .withRule("MustRunAsNonRoot")
+                        .addToRanges(new IDRangeBuilder().withMin(1000L).withMax(2000L).build())
+                        .build())
+                .withRuntimeClass(new RuntimeClassStrategyOptionsBuilder()
+                        .withDefaultRuntimeClassName("runc")
+                        .withAllowedRuntimeClassNames("runc", "gvisor")
+                        .build())
+                .withSeLinux(new SELinuxStrategyOptionsBuilder()
+                        .withRule("RunAsAny")
+                        .withNewSeLinuxOptions("system_u", "system_r", "container_t", "s0")
+                        .build())
+                .withSupplementalGroups(new SupplementalGroupsStrategyOptionsBuilder()
+                        .withRule("MustRunAs")
+                        .addToRanges(new IDRangeBuilder().withMin(1L).withMax(65535L).build())
+                        .build())
+                .addToAdditionalProperties("policy-owner", "platform")
+                .build();
+
+        PodSecurityPolicy policy = new PodSecurityPolicyBuilder()
+                .withApiVersion("policy/v1beta1")
+                .withKind("PodSecurityPolicy")
+                .withNewMetadata()
+                    .withName("restricted")
+                    .addToAnnotations("seccomp.security.alpha.kubernetes.io/allowedProfileNames", "runtime/default")
+                .endMetadata()
+                .withSpec(spec)
+                .build();
+
+        assertThat(policy).isInstanceOf(KubernetesResource.class);
+        assertThat(policy.getMetadata().getName()).isEqualTo("restricted");
+        assertThat(policy.getSpec().getPrivileged()).isFalse();
+        assertThat(policy.getSpec().getReadOnlyRootFilesystem()).isTrue();
+        assertThat(policy.getSpec().getAllowedCapabilities()).containsExactly("NET_BIND_SERVICE");
+        assertThat(policy.getSpec().getRequiredDropCapabilities()).containsExactly("ALL");
+        assertThat(policy.getSpec().getAllowedUnsafeSysctls()).contains("kernel.shm*");
+        assertThat(policy.getSpec().getForbiddenSysctls()).contains("net.*");
+        assertThat(policy.getSpec().getAllowedCSIDrivers().get(0).getName()).isEqualTo("csi.example.com");
+        assertThat(policy.getSpec().getAllowedFlexVolumes().get(0).getDriver()).isEqualTo("example.com/flex");
+
+        AllowedHostPath hostPath = policy.getSpec().getAllowedHostPaths().get(0);
+        assertThat(hostPath.getPathPrefix()).isEqualTo("/var/log");
+        assertThat(hostPath.getReadOnly()).isTrue();
+
+        HostPortRange hostPort = policy.getSpec().getHostPorts().get(0);
+        assertThat(hostPort.getMin()).isEqualTo(30000);
+        assertThat(hostPort.getMax()).isEqualTo(32767);
+        assertThat(policy.getSpec().getFsGroup().getRanges().get(0).getMax()).isEqualTo(65535L);
+        assertThat(policy.getSpec().getRunAsGroup().getRanges().get(0).getMin()).isEqualTo(1000L);
+        assertThat(policy.getSpec().getRunAsUser().getRule()).isEqualTo("MustRunAsNonRoot");
+        assertThat(policy.getSpec().getRuntimeClass().getAllowedRuntimeClassNames()).containsExactly("runc", "gvisor");
+        assertThat(policy.getSpec().getSeLinux().getSeLinuxOptions().getType()).isEqualTo("container_t");
+        assertThat(policy.getSpec().getSupplementalGroups().getRule()).isEqualTo("MustRunAs");
+        assertThat(policy.getSpec().getAdditionalProperties()).containsEntry("policy-owner", "platform");
+    }
+
+    @Test
+    void buildsAndEditsV1Beta1PodSecurityPolicyList() {
+        PodSecurityPolicy restricted = new PodSecurityPolicyBuilder()
+                .withApiVersion("policy/v1beta1")
+                .withKind("PodSecurityPolicy")
+                .withNewMetadata()
+                    .withName("restricted")
+                .endMetadata()
+                .withNewSpec()
+                    .withPrivileged(false)
+                    .withVolumes("configMap", "secret")
+                .endSpec()
+                .build();
+
+        PodSecurityPolicyList list = new PodSecurityPolicyListBuilder()
+                .withApiVersion("policy/v1beta1")
+                .withKind("PodSecurityPolicyList")
+                .addToItems(restricted)
+                .addNewItem()
+                    .withApiVersion("policy/v1beta1")
+                    .withKind("PodSecurityPolicy")
+                    .withNewMetadata()
+                        .withName("baseline")
+                    .endMetadata()
+                    .withNewSpec()
+                        .withPrivileged(false)
+                        .withVolumes("*")
+                    .endSpec()
+                .endItem()
+                .build();
+
+        PodSecurityPolicyList edited = new PodSecurityPolicyListBuilder(list)
+                .editMatchingItem(item -> "baseline".equals(item.buildMetadata().getName()))
+                    .editSpec()
+                        .withReadOnlyRootFilesystem(true)
+                    .endSpec()
+                .endItem()
+                .build();
+
+        assertThat(edited).isInstanceOf(KubernetesResource.class);
+        assertThat(edited.getItems()).hasSize(2);
+        assertThat(edited.getItems().get(0).getMetadata().getName()).isEqualTo("restricted");
+        assertThat(edited.getItems().get(1).getSpec().getVolumes()).containsExactly("*");
+        assertThat(edited.getItems().get(1).getSpec().getReadOnlyRootFilesystem()).isTrue();
     }
 }
