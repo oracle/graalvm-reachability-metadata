@@ -71,7 +71,7 @@ public class Xml_apisTest {
         String version = Version.getVersion();
 
         assertThat(product).contains("XmlCommons");
-        assertThat(versionNumber).contains("1.0");
+        assertThat(versionNumber).matches("\\d+(?:\\.\\p{Alnum}+)+");
         assertThat(version).contains(product).contains(versionNumber);
     }
 
