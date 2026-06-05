@@ -404,6 +404,9 @@ public class Lettuce_coreTest {
                 case "PING":
                     writeSimple(output, "PONG");
                     break;
+                case "HELLO":
+                    writeHelloResponse(output);
+                    break;
                 case "AUTH":
                 case "CLIENT":
                 case "SELECT":
@@ -586,6 +589,18 @@ public class Lettuce_coreTest {
                 writeBulk(output, coordinates.getX().toString());
                 writeBulk(output, coordinates.getY().toString());
             }
+        }
+
+        private void writeHelloResponse(OutputStream output) throws IOException {
+            output.write("%4\r\n".getBytes(StandardCharsets.UTF_8));
+            writeSimple(output, "id");
+            writeInteger(output, 1);
+            writeSimple(output, "mode");
+            writeSimple(output, "standalone");
+            writeSimple(output, "version");
+            writeSimple(output, "7.0.0");
+            writeSimple(output, "role");
+            writeSimple(output, "master");
         }
 
         private void writeEvalResponse(OutputStream output, List<String> command) throws IOException {
