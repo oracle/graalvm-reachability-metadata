@@ -1,0 +1,750 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.130.0
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-53e832e2
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e9954-86bb-7be0-aeac-a9b2548427c8
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: xalan:xalan:2.7.3
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.7.3].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-53e832e2/metadata/xalan/xalan/index.json
+- Entry selector: "metadata-version" = "2.7.3"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2.7.3
+- Entry metadata-version: 2.7.3
+- Entry test-version: 2.7.3
+- Entry tested-versions: [2.7.3]
+codex
+I’ll inspect the existing index entry first, then verify Maven Central artifacts and the upstream tag URLs before editing only the missing fields.
+exec
+/bin/bash -lc "sed -n '1,220p' metadata/xalan/xalan/index.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-53e832e2
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.7.3",
+    "tested-versions" : [
+      "2.7.3"
+    ],
+    "allowed-packages" : [
+      "java_cup.runtime",
+      "org.apache"
+    ]
+  },
+  {
+    "metadata-version" : "2.7.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/xalan/xalan/$version$/xalan-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/xalan-java",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_0/xdocs",
+    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, or other XML document types. It includes XPath support and Java APIs, including JAXP/TRAX integration, for applying stylesheets and running transformations.",
+    "tested-versions" : [
+      "2.7.0",
+      "2.7.1",
+      "2.7.2"
+    ],
+    "allowed-packages" : [
+      "java_cup.runtime",
+      "org.apache"
+    ]
+  }
+]
+
+exec
+/bin/bash -lc 'pwd && git status --short' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-53e832e2
+ succeeded in 364ms:
+web search: 
+web search: Maven Central xalan xalan 2.7.3 sources javadoc tests
+web search: 
+web search: https://repo1.maven.org/maven2/xalan/xalan/2.7.3/
+codex
+The existing `2.7.3` entry has only package data. Maven Central exposes the binary and POM for this version, but I’m checking whether source, javadoc, or test classifier artifacts exist before falling back to upstream tags.
+exec
+/bin/bash -lc "curl -L -s https://repo.maven.apache.org/maven2/xalan/xalan/2.7.3/ | sed -n '1,80p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-53e832e2
+exec
+/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/xalan/xalan/2.7.3/xalan-2.7.3-sources.jar \\
+  https://repo1.maven.org/maven2/xalan/xalan/2.7.3/xalan-2.7.3-sources.jar \\
+  https://repo.maven.apache.org/maven2/xalan/xalan/2.7.3/xalan-2.7.3-javadoc.jar \\
+  https://repo.maven.apache.org/maven2/xalan/xalan/2.7.3/xalan-2.7.3-tests.jar \\
+  https://repo.maven.apache.org/maven2/xalan/xalan/2.7.3/xalan-2.7.3-test-sources.jar \\
+  https://github.com/apache/xalan-java/tree/xalan-j_2_7_3 \\
+  https://github.com/apache/xalan-java/tree/xalan-j_2_7_3/xdocs \\
+  https://github.com/apache/xalan-test/tree/xalan-j_2_7_3 \\
+  https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10; do
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$url")
+  printf '"'%s %s\\n' \""'$code" "$url"
+done' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-53e832e2
+ succeeded in 103ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: xalan/xalan/2.7.3</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>xalan/xalan/2.7.3</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="xalan-2.7.3.jar" title="xalan-2.7.3.jar">xalan-2.7.3.jar</a>                                   2023-05-04 12:31   3455761      
+<a href="xalan-2.7.3.jar.asc" title="xalan-2.7.3.jar.asc">xalan-2.7.3.jar.asc</a>                               2023-05-04 12:31       499      
+<a href="xalan-2.7.3.jar.asc.md5" title="xalan-2.7.3.jar.asc.md5">xalan-2.7.3.jar.asc.md5</a>                           2023-05-04 12:31        32      
+<a href="xalan-2.7.3.jar.asc.sha1" title="xalan-2.7.3.jar.asc.sha1">xalan-2.7.3.jar.asc.sha1</a>                          2023-05-04 12:31        40      
+<a href="xalan-2.7.3.jar.asc.sha256" title="xalan-2.7.3.jar.asc.sha256">xalan-2.7.3.jar.asc.sha256</a>                        2023-05-04 12:31        64      
+<a href="xalan-2.7.3.jar.asc.sha512" title="xalan-2.7.3.jar.asc.sha512">xalan-2.7.3.jar.asc.sha512</a>                        2023-05-04 12:31       128      
+<a href="xalan-2.7.3.jar.md5" title="xalan-2.7.3.jar.md5">xalan-2.7.3.jar.md5</a>                               2023-05-04 12:31        32      
+<a href="xalan-2.7.3.jar.sha1" title="xalan-2.7.3.jar.sha1">xalan-2.7.3.jar.sha1</a>                              2023-05-04 12:31        40      
+<a href="xalan-2.7.3.pom" title="xalan-2.7.3.pom">xalan-2.7.3.pom</a>                                   2023-05-04 12:31       384      
+<a href="xalan-2.7.3.pom.asc" title="xalan-2.7.3.pom.asc">xalan-2.7.3.pom.asc</a>                               2023-05-04 12:31       499      
+<a href="xalan-2.7.3.pom.asc.md5" title="xalan-2.7.3.pom.asc.md5">xalan-2.7.3.pom.asc.md5</a>                           2023-05-04 12:31        32      
+<a href="xalan-2.7.3.pom.asc.sha1" title="xalan-2.7.3.pom.asc.sha1">xalan-2.7.3.pom.asc.sha1</a>                          2023-05-04 12:31        40      
+<a href="xalan-2.7.3.pom.asc.sha256" title="xalan-2.7.3.pom.asc.sha256">xalan-2.7.3.pom.asc.sha256</a>                        2023-05-04 12:31        64      
+<a href="xalan-2.7.3.pom.asc.sha512" title="xalan-2.7.3.pom.asc.sha512">xalan-2.7.3.pom.asc.sha512</a>                        2023-05-04 12:31       128      
+<a href="xalan-2.7.3.pom.md5" title="xalan-2.7.3.pom.md5">xalan-2.7.3.pom.md5</a>                               2023-05-04 12:31        32      
+<a href="xalan-2.7.3.pom.sha1" title="xalan-2.7.3.pom.sha1">xalan-2.7.3.pom.sha1</a>                              2023-05-04 12:31        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 5082ms:
+404 https://repo1.maven.org/maven2/xalan/xalan/2.7.3/xalan-2.7.3-sources.jar
+404 https://repo.maven.apache.org/maven2/xalan/xalan/2.7.3/xalan-2.7.3-javadoc.jar
+404 https://repo.maven.apache.org/maven2/xalan/xalan/2.7.3/xalan-2.7.3-tests.jar
+404 https://repo.maven.apache.org/maven2/xalan/xalan/2.7.3/xalan-2.7.3-test-sources.jar
+404 https://github.com/apache/xalan-java/tree/xalan-j_2_7_3
+404 https://github.com/apache/xalan-java/tree/xalan-j_2_7_3/xdocs
+404 https://github.com/apache/xalan-test/tree/xalan-j_2_7_3
+200 https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10
+
+codex
+The 2.7.3 Maven directory does not contain source, javadoc, tests, or test-source classifier jars, so the Maven preference cannot be used for those fields. The upstream test repository has a release-candidate tag; I’m checking whether the main source repository uses the same tag and whether versioned docs are present under it.
+exec
+/bin/bash -lc "curl -L -s https://api.github.com/repos/apache/xalan-java/tags?per_page=100 | rg '\"name\"|xalan-j_2_7_3'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-53e832e2
+exec
+/bin/bash -lc "for url in \\
+  https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10 \\
+  https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs \\
+  https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc9 \\
+  https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc9/xdocs \\
+  https://github.com/apache/xalan-java/releases/tag/xalan-j_2_7_3-rc10 \\
+  https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests; do
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$url")
+  printf '"'%s %s\\n' \""'$code" "$url"
+done' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-53e832e2
+exec
+/bin/bash -lc "curl -L -s https://api.github.com/repos/apache/xalan-test/tags?per_page=100 | rg '\"name\"|xalan-j_2_7_3'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-53e832e2
+ succeeded in 416ms:
+    "name": "xsltc-1_1_0",
+    "name": "xsltc-1_0_0",
+    "name": "xsltc_dtm_milestone1",
+    "name": "xalan-j_2_7_3-rc10",
+    "zipball_url": "https://api.github.com/repos/apache/xalan-java/zipball/refs/tags/xalan-j_2_7_3-rc10",
+    "tarball_url": "https://api.github.com/repos/apache/xalan-java/tarball/refs/tags/xalan-j_2_7_3-rc10",
+    "name": "xalan-j_2_7_2",
+    "name": "xalan-j_2_7_2-rc1",
+    "name": "xalan-j_2_7_1",
+    "name": "xalan-j_2_7_1-rc1",
+    "name": "xalan-j_2_7_0",
+    "name": "xalan-j_2_6_0",
+    "name": "xalan-j_2_5_2",
+    "name": "xalan-j_2_5_1",
+    "name": "xalan-j_2_5_0",
+    "name": "xalan-j_2_5_D1",
+    "name": "xalan-j_2_4_1",
+    "name": "xalan-j_2_4_0",
+    "name": "xalan-j_2_4_D1",
+    "name": "xalan-j_2_3_1",
+    "name": "xalan-j_2_3_0",
+    "name": "xalan-j_2_3_D1",
+    "name": "xalan-j_2_2_0",
+    "name": "xalan-j_2_2_d14",
+    "name": "xalan-j_2_2_d13",
+    "name": "xalan-j_2_2_d12",
+    "name": "xalan-j_2_2_d11",
+    "name": "xalan-j_2_2_D8",
+    "name": "xalan-j_2_2_D7",
+    "name": "xalan-j_2_2_D6",
+    "name": "xalan-j_2_2_D05",
+    "name": "xalan-j_2_2_D04",
+    "name": "xalan-j_2_2_D02",
+    "name": "xalan-j_2_1_0",
+    "name": "xalan-j_2_0_1",
+    "name": "xalan-j_2_0_1_DTMBASE",
+    "name": "xalan-j_2_0_0",
+    "name": "xalan_2_2_d10",
+    "name": "xalan_2_2_D9",
+    "name": "xalan_2_0_0",
+    "name": "xalan_2_0_0b",
+    "name": "xalan_2_0_D07",
+    "name": "xalan_2_0_D06",
+    "name": "xalan_2_0_D04",
+    "name": "xalan_2_0_D02",
+    "name": "xalan_2_0_D01",
+    "name": "xalan1_0_0",
+    "name": "xalan_0_19_5",
+    "name": "xalan_0_19_3D03",
+    "name": "xalan_0_19_3D02",
+    "name": "xalan_0_19_3D01",
+    "name": "xalan_0_19_2",
+    "name": "xalan_0_19_1",
+    "name": "trunk-20230301",
+    "name": "status",
+    "name": "master-20231017",
+    "name": "jdk-1_4_2-07",
+    "name": "jdk-1_4_2-06",
+    "name": "jdk-1_4_2-05",
+    "name": "jdk-1_4_2-04",
+    "name": "jdk-1_4_2-03",
+    "name": "jdk-1_4_2-02",
+    "name": "jdk-1_4_2-01",
+    "name": "jaxp-ri-1_2_01-fcs-branch-xsltc-merge",
+    "name": "jaxp-ri-1_2_0-fcs-branch-xsltc-merge",
+    "name": "jaxp-ri-1_2_0-fcs-branch-01",
+    "name": "jaxp-ri-1_2_0-fcs-07",
+    "name": "jaxp-ri-1_2_0-fcs-06",
+    "name": "jaxp-ri-1_2_0-fcs-05",
+    "name": "jaxp-ri-1_2_0-fcs-04",
+    "name": "jaxp-ri-1_2_0-fcs-03",
+    "name": "jaxp-ri-1_2_0-fcs-02",
+    "name": "jaxp-ri-1_2_0-build13",
+    "name": "jaxp-ri-1_2_0-beta-b2",
+    "name": "jaxp-ri-1_2_0-beta-b1",
+    "name": "jaxp-2_13_2004",
+    "name": "jaxp-1_3_0-03",
+    "name": "jaxp-1_3_0-02",
+    "name": "jaxp-1_3_0-01",
+    "name": "jaxp_12_11_2003",
+    "name": "jaxp_02_26_2004",
+    "name": "jaxp_02_12_2004",
+    "name": "jaxp_01_26_2004",
+    "name": "before-commons",
+    "name": "Sun_24_03_04",
+    "name": "Sun_11_20_03",
+    "name": "SBOAG_BASE_PREVARFIXES1",
+    "name": "L22RC2",
+    "name": "BEFORE_ITERATOR_CHANGES",
+
+ succeeded in 431ms:
+    "name": "xsltc_dtm_milestone1",
+    "name": "xalanj_2_7_1",
+    "name": "xalan-j_2_7_3-rc10",
+    "zipball_url": "https://api.github.com/repos/apache/xalan-test/zipball/refs/tags/xalan-j_2_7_3-rc10",
+    "tarball_url": "https://api.github.com/repos/apache/xalan-test/tarball/refs/tags/xalan-j_2_7_3-rc10",
+    "name": "xalan-j_2_7_2-rc1",
+    "name": "xalan-j_2_7_1",
+    "name": "xalan-j_2_7_0",
+    "name": "xalan-j_2_6_0",
+    "name": "xalan-j_2_5_2",
+    "name": "xalan-j_2_5_1",
+    "name": "xalan-j_2_5_0",
+    "name": "xalan-j_2_5_D1",
+    "name": "xalan-j_2_4_1",
+    "name": "xalan-j_2_4_0",
+    "name": "xalan-j_2_4_D1",
+    "name": "xalan-j_2_3_0",
+    "name": "xalan-j_2_3_D1",
+    "name": "xalan-j_2_2_0",
+    "name": "xalan-j_2_2_d14",
+    "name": "xalan-j_2_2_d13",
+    "name": "xalan-j_2_2_d12",
+    "name": "xalan-j_2_2_d11",
+    "name": "xalan-j_2_2_D04",
+    "name": "xalan-j_2_2_D02",
+    "name": "xalan-j_2_1_0",
+    "name": "xalan_2_2_d10",
+    "name": "xalan_2_2_D9",
+    "name": "xalan_2_0_0",
+    "name": "xalan_2_0_0b",
+    "name": "xalan_2_0_D02",
+    "name": "xalan_1_2_2",
+    "name": "trax-alpha-Oct2000",
+    "name": "Xalan-C_1_10_0",
+    "name": "Xalan-C_1_9_0",
+    "name": "Xalan-C_1_8_0",
+    "name": "Xalan-C_1_7_0",
+    "name": "OBSOLETE-TESTS",
+
+ succeeded in 5094ms:
+200 https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10
+200 https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs
+404 https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc9
+404 https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc9/xdocs
+200 https://github.com/apache/xalan-java/releases/tag/xalan-j_2_7_3-rc10
+200 https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests
+
+web search: 
+web search: https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs
+web search: 
+web search: https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10
+web search: 
+web search: Apache Xalan-Java XSLT processor XPath JAXP TRAX
+codex
+I’ve verified the versioned upstream source tag, versioned `xdocs` directory, and versioned test-suite directory all resolve for the 2.7.3 alias. I’m going to add exact tag URLs rather than `$version$` templates because this release tag uses `2_7_3-rc10`, which would not render correctly from a literal `2.7.3` alias.
+apply patch
+patch: completed
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-53e832e2/metadata/xalan/xalan/index.json
+diff --git a/metadata/xalan/xalan/index.json b/metadata/xalan/xalan/index.json
+index 688b6ed4344654d7c2010f56b9ba442a72cfa3aa..691c8a832791161978d7540ce9680b8004ec1d33
+--- a/metadata/xalan/xalan/index.json
++++ b/metadata/xalan/xalan/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.7.3",
++    "source-code-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10",
++    "repository-url" : "https://github.com/apache/xalan-java",
++    "test-code-url" : "https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests",
++    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs",
++    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, or other XML document types. It includes XPath support and Java APIs, including JAXP/TRAX integration, for applying stylesheets and running transformations.",
+     "tested-versions" : [
+       "2.7.3"
+     ],
+
+diff --git a/metadata/xalan/xalan/index.json b/metadata/xalan/xalan/index.json
+index 688b6ed4344654d7c2010f56b9ba442a72cfa3aa..691c8a832791161978d7540ce9680b8004ec1d33
+--- a/metadata/xalan/xalan/index.json
++++ b/metadata/xalan/xalan/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.7.3",
++    "source-code-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10",
++    "repository-url" : "https://github.com/apache/xalan-java",
++    "test-code-url" : "https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests",
++    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs",
++    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, or other XML document types. It includes XPath support and Java APIs, including JAXP/TRAX integration, for applying stylesheets and running transformations.",
+     "tested-versions" : [
+       "2.7.3"
+     ],
+
+codex
+The entry is patched. I’ll validate the JSON shape first, then run the repository metadata-file check for `xalan:xalan:2.7.3` so we catch any schema or formatting issue.
+exec
+/bin/bash -lc 'jq . metadata/xalan/xalan/index.json >/dev/null' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-53e832e2
+ succeeded in 0ms:
+exec
+/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=xalan:xalan:2.7.3 --stacktrace' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-53e832e2
+diff --git a/metadata/xalan/xalan/index.json b/metadata/xalan/xalan/index.json
+index 688b6ed4344654d7c2010f56b9ba442a72cfa3aa..691c8a832791161978d7540ce9680b8004ec1d33
+--- a/metadata/xalan/xalan/index.json
++++ b/metadata/xalan/xalan/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.7.3",
++    "source-code-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10",
++    "repository-url" : "https://github.com/apache/xalan-java",
++    "test-code-url" : "https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests",
++    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs",
++    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, or other XML document types. It includes XPath support and Java APIs, including JAXP/TRAX integration, for applying stylesheets and running transformations.",
+     "tested-versions" : [
+       "2.7.3"
+     ],
+
+codex
+JSON parsing passed. The Gradle metadata validation is still running; it has started a fresh daemon and has not reported a result yet.
+diff --git a/metadata/xalan/xalan/index.json b/metadata/xalan/xalan/index.json
+index 688b6ed4344654d7c2010f56b9ba442a72cfa3aa..691c8a832791161978d7540ce9680b8004ec1d33
+--- a/metadata/xalan/xalan/index.json
++++ b/metadata/xalan/xalan/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.7.3",
++    "source-code-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10",
++    "repository-url" : "https://github.com/apache/xalan-java",
++    "test-code-url" : "https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests",
++    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs",
++    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, or other XML document types. It includes XPath support and Java APIs, including JAXP/TRAX integration, for applying stylesheets and running transformations.",
+     "tested-versions" : [
+       "2.7.3"
+     ],
+
+ exited 1 in 9669ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFilesMetadata files check failed for xalan:xalan:2.7.3: ERROR: Missing reachability-metadata.json in file:/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-53e832e2/metadata/xalan/xalan/2.7.3/
+ FAILED
+
+
+FAILURE: Build failed with an exception.
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-53e832e2/build/reports/problems/problems-report.html
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - xalan:xalan:2.7.3: ERROR: Missing reachability-metadata.json in file:/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-53e832e2/metadata/xalan/xalan/2.7.3/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:146)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:131)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:45)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - xalan:xalan:2.7.3: ERROR: Missing reachability-metadata.json in file:/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-53e832e2/metadata/xalan/xalan/2.7.3/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 57 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 9s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+The targeted Gradle validation failed because this repository entry has no `metadata/xalan/xalan/2.7.3/reachability-metadata.json`, which is outside the requested URL/description fields. I’ll do a final diff check now to confirm the edit is limited to the requested index entry.
+exec
+/bin/bash -lc 'git diff -- metadata/xalan/xalan/index.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-53e832e2
+ succeeded in 0ms:
+diff --git a/metadata/xalan/xalan/index.json b/metadata/xalan/xalan/index.json
+index 688b6ed434..691c8a8327 100644
+--- a/metadata/xalan/xalan/index.json
++++ b/metadata/xalan/xalan/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.7.3",
++    "source-code-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10",
++    "repository-url" : "https://github.com/apache/xalan-java",
++    "test-code-url" : "https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests",
++    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs",
++    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, or other XML document types. It includes XPath support and Java APIs, including JAXP/TRAX integration, for applying stylesheets and running transformations.",
+     "tested-versions" : [
+       "2.7.3"
+     ],
+
+exec
+/bin/bash -lc 'git status --short metadata/xalan/xalan/index.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-53e832e2
+ succeeded in 0ms:
+ M metadata/xalan/xalan/index.json
+
+diff --git a/metadata/xalan/xalan/index.json b/metadata/xalan/xalan/index.json
+index 688b6ed4344654d7c2010f56b9ba442a72cfa3aa..691c8a832791161978d7540ce9680b8004ec1d33
+--- a/metadata/xalan/xalan/index.json
++++ b/metadata/xalan/xalan/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.7.3",
++    "source-code-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10",
++    "repository-url" : "https://github.com/apache/xalan-java",
++    "test-code-url" : "https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests",
++    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs",
++    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, or other XML document types. It includes XPath support and Java APIs, including JAXP/TRAX integration, for applying stylesheets and running transformations.",
+     "tested-versions" : [
+       "2.7.3"
+     ],
+
+web search: 
+web search: site:github.com/apache/xalan-java xalan-j_2_7_3-rc10
+web search: 
+web search: https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests
+web search: 
+web search: https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10
+web search: 
+web search: repo.maven.apache.org maven2 xalan xalan 2.7.3 xalan-2.7.3.jar
+codex
+Updated [metadata/xalan/xalan/index.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-53e832e2/metadata/xalan/xalan/index.json) for `metadata-version` `2.7.3`.
+
+Filled:
+- `source-code-url`: versioned `xalan-j_2_7_3-rc10` source tag. ([github.com](https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10))
+- `repository-url`: canonical Apache `xalan-java` repository root. ([github.com](https://github.com/apache/xalan-java?utm_source=openai))
+- `test-code-url`: versioned `xalan-test` tests directory. ([github.com](https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests))
+- `documentation-url`: versioned `xdocs` directory. ([github.com](https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs))
+- `description`: exactly two sentences, based on Apache’s Xalan-Java description as an XSLT/XPath/JAXP processor. ([xalan.apache.org](https://xalan.apache.org/xalan-j/index.html?utm_source=openai))
+
+No `language` field was added; this is not Kotlin, Groovy, Scala 2, or Scala 3 specific.
+
+Validation:
+- `jq . metadata/xalan/xalan/index.json` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=xalan:xalan:2.7.3 --stacktrace` failed because `metadata/xalan/xalan/2.7.3/reachability-metadata.json` is missing, unrelated to the requested index fields.
+diff --git a/metadata/xalan/xalan/index.json b/metadata/xalan/xalan/index.json
+index 688b6ed4344654d7c2010f56b9ba442a72cfa3aa..691c8a832791161978d7540ce9680b8004ec1d33
+--- a/metadata/xalan/xalan/index.json
++++ b/metadata/xalan/xalan/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.7.3",
++    "source-code-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10",
++    "repository-url" : "https://github.com/apache/xalan-java",
++    "test-code-url" : "https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests",
++    "documentation-url" : "https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs",
++    "description" : "Xalan-Java is an XSLT processor for transforming XML documents into HTML, text, or other XML document types. It includes XPath support and Java APIs, including JAXP/TRAX integration, for applying stylesheets and running transformations.",
+     "tested-versions" : [
+       "2.7.3"
+     ],
+
+tokens used
+78,915
+Updated [metadata/xalan/xalan/index.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-53e832e2/metadata/xalan/xalan/index.json) for `metadata-version` `2.7.3`.
+
+Filled:
+- `source-code-url`: versioned `xalan-j_2_7_3-rc10` source tag. ([github.com](https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10))
+- `repository-url`: canonical Apache `xalan-java` repository root. ([github.com](https://github.com/apache/xalan-java?utm_source=openai))
+- `test-code-url`: versioned `xalan-test` tests directory. ([github.com](https://github.com/apache/xalan-test/tree/xalan-j_2_7_3-rc10/tests))
+- `documentation-url`: versioned `xdocs` directory. ([github.com](https://github.com/apache/xalan-java/tree/xalan-j_2_7_3-rc10/xdocs))
+- `description`: exactly two sentences, based on Apache’s Xalan-Java description as an XSLT/XPath/JAXP processor. ([xalan.apache.org](https://xalan.apache.org/xalan-j/index.html?utm_source=openai))
+
+No `language` field was added; this is not Kotlin, Groovy, Scala 2, or Scala 3 specific.
+
+Validation:
+- `jq . metadata/xalan/xalan/index.json` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=xalan:xalan:2.7.3 --stacktrace` failed because `metadata/xalan/xalan/2.7.3/reachability-metadata.json` is missing, unrelated to the requested index fields.
+Ran agent for xalan:xalan:2.7.3 (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-53e832e2/build/agent-url-discovery-logs/xalan-xalan-2.7.3.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4115-53e832e2/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 57s
+9 actionable tasks: 1 executed, 8 up-to-date
