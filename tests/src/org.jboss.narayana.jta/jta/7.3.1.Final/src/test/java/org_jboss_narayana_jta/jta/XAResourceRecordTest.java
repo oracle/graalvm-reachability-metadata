@@ -13,16 +13,22 @@ import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
 import com.arjuna.ats.arjuna.ObjectType;
+import com.arjuna.ats.arjuna.common.arjPropertyManager;
 import com.arjuna.ats.arjuna.state.InputObjectState;
 import com.arjuna.ats.arjuna.state.OutputObjectState;
+import com.arjuna.ats.arjuna.utils.Process;
 import com.arjuna.ats.internal.jta.resources.arjunacore.XAResourceRecord;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class XAResourceRecordTest {
+    private static final Process TEST_PROCESS = () -> 12345;
+
     @Test
     void saveAndRestoreStateWithSerializableXaResource() throws Exception {
+        arjPropertyManager.getCoreEnvironmentBean().setProcessImplementation(TEST_PROCESS);
+
         SerializableXaResource.COMMIT_CALLS.set(0);
 
         XAResourceRecord resourceRecord = new XAResourceRecord(
