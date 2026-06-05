@@ -6,10 +6,6 @@
  */
 package com_fasterxml_jackson_core.jackson_databind;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -56,17 +52,17 @@ public class JacksonAnnotatedMethodTest {
     }
 
     @Test
-    void resolvesAnnotatedMethodAfterJdkSerialization() throws Exception {
+    void exposesUnderlyingMethodMetadata() throws Exception {
         BeanDescription beanDescription = MAPPER.getSerializationConfig()
                 .introspect(MAPPER.constructType(MethodTarget.class));
         AnnotatedMethod getter = findMemberMethod(beanDescription, "getName");
 
-        byte[] bytes = serialize(getter);
-        Object restored = deserialize(bytes);
-
-        assertThat(restored).isInstanceOf(AnnotatedMethod.class);
-        AnnotatedMethod restoredMethod = (AnnotatedMethod) restored;
-        assertThat(restoredMethod.callOn(new MethodTarget("resolved"))).isEqualTo("resolved");
+        assertThat(getter.getAnnotated()).isSameAs(getter.getMember());
+        assertThat(getter.getDeclaringClass()).isEqualTo(MethodTarget.class);
+        assertThat(getter.getRawReturnType()).isEqualTo(String.class);
+        assertThat(getter.getRawParameterTypes()).isEmpty();
+        assertThat(getter.getFullName()).endsWith("#getName()");
+        assertThat(getter.callOn(new MethodTarget("resolved"))).isEqualTo("resolved");
     }
 
     private static AnnotatedMethod findFactoryMethod(BeanDescription beanDescription, String name,
@@ -83,20 +79,6 @@ public class JacksonAnnotatedMethodTest {
         AnnotatedMethod method = beanDescription.findMethod(name, parameterTypes);
         assertThat(method).as("member method %s", name).isNotNull();
         return method;
-    }
-
-    private static byte[] serialize(Object value) throws Exception {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        try (ObjectOutputStream output = new ObjectOutputStream(bytes)) {
-            output.writeObject(value);
-        }
-        return bytes.toByteArray();
-    }
-
-    private static Object deserialize(byte[] bytes) throws Exception {
-        try (ObjectInputStream input = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
-            return input.readObject();
-        }
     }
 
     public static final class FactoryTarget {

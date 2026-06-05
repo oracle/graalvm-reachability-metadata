@@ -14,26 +14,26 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class JacksonConstructorPropertiesTest {
+public class JacksonConstructorPropertiesTest {
 
-    static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     @Test
     void deserializeConstructorProperties() throws JsonProcessingException {
-        Foo foo = mapper.readValue("{ \"bar\": \"baz\" }", Foo.class);
+        Foo foo = MAPPER.readValue("{ \"bar\": \"baz\" }", Foo.class);
         assertThat(foo.getBar()).isEqualTo("baz");
     }
 
-    static class Foo {
+    public static final class Foo {
 
-        private String bar;
+        private final String bar;
 
         @ConstructorProperties("bar")
-        Foo(String bar) {
+        public Foo(String bar) {
             this.bar = bar;
         }
 
-        String getBar() {
+        public String getBar() {
             return bar;
         }
     }
