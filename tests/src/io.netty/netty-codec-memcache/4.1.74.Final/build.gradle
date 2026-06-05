@@ -15,6 +15,16 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.named("nativeTest") {
+    if (libraryVersion == '4.2.1.Final') {
+        // Netty 4.2.x requires explicit unsafe access on Java 25 native runs.
+        runtimeArgs.addAll([
+                '-Dsun.misc.unsafe.memory.access=allow',
+                '-Dio.netty.tryReflectionSetAccessible=true'
+        ])
+    }
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
