@@ -31,6 +31,12 @@ import io.fabric8.kubernetes.api.model.admissionregistration.v1.ValidatingWebhoo
 import io.fabric8.kubernetes.api.model.admissionregistration.v1.ValidatingWebhookConfigurationBuilder;
 import io.fabric8.kubernetes.api.model.admissionregistration.v1.ValidatingWebhookConfigurationList;
 import io.fabric8.kubernetes.api.model.admissionregistration.v1.ValidatingWebhookConfigurationListBuilder;
+import io.fabric8.kubernetes.api.model.authentication.SelfSubjectReview;
+import io.fabric8.kubernetes.api.model.authentication.SelfSubjectReviewBuilder;
+import io.fabric8.kubernetes.api.model.authentication.TokenRequest;
+import io.fabric8.kubernetes.api.model.authentication.TokenRequestBuilder;
+import io.fabric8.kubernetes.api.model.authentication.TokenReview;
+import io.fabric8.kubernetes.api.model.authentication.TokenReviewBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -631,6 +637,109 @@ public class Kubernetes_model_admissionregistrationTest {
                 .endResponse()
                 .build()
                 .getResponse().getAllowed()).isTrue();
+    }
+
+    @Test
+    void authenticationModelsSupportBoundTokenRequestsReviewsAndSelfSubjectStatus() {
+        TokenRequest tokenRequest = new TokenRequestBuilder()
+                .withNewMetadata()
+                    .withName("builder-token")
+                    .withNamespace("production")
+                .endMetadata()
+                .withNewSpec()
+                    .withAudiences("https://kubernetes.default.svc", "admission-webhook")
+                    .withExpirationSeconds(600L)
+                    .withNewBoundObjectRef("v1", "Secret", "builder-token-secret", "secret-uid-1")
+                    .addToAdditionalProperties("spec-source", "service-account")
+                .endSpec()
+                .withNewStatus()
+                    .withToken("issued-token")
+                    .withExpirationTimestamp("2030-01-01T00:10:00Z")
+                .endStatus()
+                .addToAdditionalProperties("request-id", "token-request-1")
+                .build();
+
+        assertThat(tokenRequest).isInstanceOf(HasMetadata.class);
+        assertThat(tokenRequest.getApiVersion()).isEqualTo("authentication.k8s.io/v1");
+        assertThat(tokenRequest.getKind()).isEqualTo("TokenRequest");
+        assertThat(tokenRequest.getMetadata().getNamespace()).isEqualTo("production");
+        assertThat(tokenRequest.getSpec().getAudiences())
+                .containsExactly("https://kubernetes.default.svc", "admission-webhook");
+        assertThat(tokenRequest.getSpec().getExpirationSeconds()).isEqualTo(600L);
+        assertThat(tokenRequest.getSpec().getBoundObjectRef().getKind()).isEqualTo("Secret");
+        assertThat(tokenRequest.getSpec().getBoundObjectRef().getName()).isEqualTo("builder-token-secret");
+        assertThat(tokenRequest.getSpec().getAdditionalProperties()).containsEntry("spec-source", "service-account");
+        assertThat(tokenRequest.getStatus().getToken()).isEqualTo("issued-token");
+        assertThat(tokenRequest.getAdditionalProperties()).containsEntry("request-id", "token-request-1");
+
+        TokenRequest rotatedTokenRequest = tokenRequest.toBuilder()
+                .editSpec()
+                    .setToAudiences(1, "https://webhook.example.test")
+                    .editBoundObjectRef()
+                        .withName("rotated-token-secret")
+                    .endBoundObjectRef()
+                .endSpec()
+                .editStatus()
+                    .withToken("rotated-token")
+                .endStatus()
+                .removeFromAdditionalProperties("request-id")
+                .build();
+
+        assertThat(rotatedTokenRequest.getSpec().getAudiences())
+                .containsExactly("https://kubernetes.default.svc", "https://webhook.example.test");
+        assertThat(rotatedTokenRequest.getSpec().getBoundObjectRef().getName()).isEqualTo("rotated-token-secret");
+        assertThat(rotatedTokenRequest.getStatus().getToken()).isEqualTo("rotated-token");
+        assertThat(rotatedTokenRequest.getAdditionalProperties()).doesNotContainKey("request-id");
+        assertThat(tokenRequest.getSpec().getBoundObjectRef().getName()).isEqualTo("builder-token-secret");
+
+        TokenReview tokenReview = new TokenReviewBuilder()
+                .withNewMetadata()
+                    .withName("builder-token-review")
+                .endMetadata()
+                .withNewSpec()
+                    .withToken("issued-token")
+                    .withAudiences("https://kubernetes.default.svc")
+                .endSpec()
+                .withNewStatus()
+                    .withAuthenticated(true)
+                    .withAudiences("https://kubernetes.default.svc")
+                    .withNewUser()
+                        .withUsername("system:serviceaccount:production:builder")
+                        .withUid("service-account-uid")
+                        .withGroups("system:serviceaccounts", "system:authenticated")
+                        .addToExtra("scopes", List.of("build", "deploy"))
+                    .endUser()
+                .endStatus()
+                .build();
+
+        assertThat(tokenReview.getApiVersion()).isEqualTo("authentication.k8s.io/v1");
+        assertThat(tokenReview.getKind()).isEqualTo("TokenReview");
+        assertThat(tokenReview.getSpec().getToken()).isEqualTo("issued-token");
+        assertThat(tokenReview.getStatus().getAuthenticated()).isTrue();
+        assertThat(tokenReview.getStatus().getUser().getGroups())
+                .containsExactly("system:serviceaccounts", "system:authenticated");
+        assertThat(tokenReview.getStatus().getUser().getExtra()).containsEntry("scopes", List.of("build", "deploy"));
+
+        SelfSubjectReview selfSubjectReview = new SelfSubjectReviewBuilder()
+                .withNewMetadata()
+                    .withName("current-user")
+                .endMetadata()
+                .withNewStatus()
+                    .withNewUserInfo()
+                        .withUsername("system:serviceaccount:production:builder")
+                        .withUid("service-account-uid")
+                        .withGroups("system:serviceaccounts", "system:authenticated")
+                        .addToExtra("authentication.kubernetes.io/credential-id", List.of("jti=token-request-1"))
+                    .endUserInfo()
+                .endStatus()
+                .build();
+
+        assertThat(selfSubjectReview.getApiVersion()).isEqualTo("authentication.k8s.io/v1");
+        assertThat(selfSubjectReview.getKind()).isEqualTo("SelfSubjectReview");
+        assertThat(selfSubjectReview.getStatus().getUserInfo().getUsername())
+                .isEqualTo("system:serviceaccount:production:builder");
+        assertThat(selfSubjectReview.getStatus().getUserInfo().getExtra())
+                .containsEntry("authentication.kubernetes.io/credential-id", List.of("jti=token-request-1"));
     }
 
     @Test
