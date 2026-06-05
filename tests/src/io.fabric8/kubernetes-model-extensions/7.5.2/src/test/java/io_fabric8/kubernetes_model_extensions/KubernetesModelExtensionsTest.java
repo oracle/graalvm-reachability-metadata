@@ -6,6 +6,7 @@
  */
 package io_fabric8.kubernetes_model_extensions;
 
+import io.fabric8.kubernetes.api.model.Container;
 import io.fabric8.kubernetes.api.model.LoadBalancerStatusBuilder;
 import io.fabric8.kubernetes.api.model.extensions.AllowedCSIDriver;
 import io.fabric8.kubernetes.api.model.extensions.AllowedFlexVolume;
@@ -41,6 +42,8 @@ import io.fabric8.kubernetes.api.model.extensions.ReplicaSet;
 import io.fabric8.kubernetes.api.model.extensions.ReplicaSetBuilder;
 import io.fabric8.kubernetes.api.model.extensions.ReplicaSetList;
 import io.fabric8.kubernetes.api.model.extensions.ReplicaSetListBuilder;
+import io.fabric8.kubernetes.api.model.extensions.ReplicaSetSpec;
+import io.fabric8.kubernetes.api.model.extensions.ReplicaSetSpecBuilder;
 import io.fabric8.kubernetes.api.model.extensions.Scale;
 import io.fabric8.kubernetes.api.model.extensions.ScaleBuilder;
 import org.junit.jupiter.api.Test;
@@ -295,6 +298,62 @@ public class KubernetesModelExtensionsTest {
         assertThat(editedPolicy.getSpec().getEgress().get(0).getTo().get(0).getIpBlock().getCidr())
                 .isEqualTo("10.0.0.0/8");
         assertThat(list.getItems()).containsExactly(editedPolicy);
+    }
+
+    @Test
+    void createsControllerSpecWithPodTemplate() {
+        ReplicaSetSpec spec = new ReplicaSetSpecBuilder()
+                .withReplicas(2)
+                .withNewSelector()
+                    .addToMatchLabels("app", "templated-web")
+                .endSelector()
+                .withNewTemplate()
+                    .withNewMetadata()
+                        .addToLabels("app", "templated-web")
+                    .endMetadata()
+                    .withNewSpec()
+                        .addNewContainer()
+                            .withName("web")
+                            .withImage("nginx")
+                            .addNewPort()
+                                .withName("http")
+                                .withContainerPort(8080)
+                            .endPort()
+                            .addNewEnv()
+                                .withName("APP_MODE")
+                                .withValue("production")
+                            .endEnv()
+                        .endContainer()
+                    .endSpec()
+                .endTemplate()
+                .build();
+
+        ReplicaSetSpec editedSpec = new ReplicaSetSpecBuilder(spec)
+                .editTemplate()
+                    .editSpec()
+                        .editFirstContainer()
+                            .withImage("nginx:stable")
+                        .endContainer()
+                        .addNewImagePullSecret()
+                            .withName("registry-secret")
+                        .endImagePullSecret()
+                    .endSpec()
+                .endTemplate()
+                .build();
+        Container container = editedSpec.getTemplate().getSpec().getContainers().get(0);
+
+        assertThat(editedSpec.getReplicas()).isEqualTo(2);
+        assertThat(editedSpec.getSelector().getMatchLabels()).containsEntry("app", "templated-web");
+        assertThat(editedSpec.getTemplate().getMetadata().getLabels()).containsEntry("app", "templated-web");
+        assertThat(container.getName()).isEqualTo("web");
+        assertThat(container.getImage()).isEqualTo("nginx:stable");
+        assertThat(container.getPorts().get(0).getName()).isEqualTo("http");
+        assertThat(container.getPorts().get(0).getContainerPort()).isEqualTo(8080);
+        assertThat(container.getEnv().get(0).getName()).isEqualTo("APP_MODE");
+        assertThat(container.getEnv().get(0).getValue()).isEqualTo("production");
+        assertThat(editedSpec.getTemplate().getSpec().getImagePullSecrets())
+                .extracting(secret -> secret.getName())
+                .containsExactly("registry-secret");
     }
 
     @Test
