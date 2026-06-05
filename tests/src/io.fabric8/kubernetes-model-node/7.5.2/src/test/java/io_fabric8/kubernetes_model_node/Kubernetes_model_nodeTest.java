@@ -125,6 +125,52 @@ public class Kubernetes_model_nodeTest {
     }
 
     @Test
+    void filtersAndUpdatesRuntimeClassListItemsWithPredicates() {
+        RuntimeClass nativeRuntime = new RuntimeClassBuilder()
+                .withNewMetadata()
+                    .withName("native")
+                .endMetadata()
+                .withHandler("runc")
+                .build();
+        RuntimeClass kata = new RuntimeClassBuilder()
+                .withNewMetadata()
+                    .withName("kata")
+                .endMetadata()
+                .withHandler("kata-qemu")
+                .build();
+        RuntimeClass gvisor = new RuntimeClassBuilder()
+                .withNewMetadata()
+                    .withName("gvisor")
+                .endMetadata()
+                .withHandler("runsc")
+                .build();
+
+        RuntimeClassListBuilder builder = new RuntimeClassListBuilder()
+                .withItems(nativeRuntime, kata, gvisor);
+
+        assertThat(builder.hasItems()).isTrue();
+        assertThat(builder.hasMatchingItem(item -> "kata".equals(item.buildMetadata().getName()))).isTrue();
+        assertThat(builder.buildMatchingItem(item -> "runsc".equals(item.getHandler())).getMetadata().getName())
+                .isEqualTo("gvisor");
+
+        RuntimeClassList edited = builder
+                .setToItems(0, new RuntimeClassBuilder(nativeRuntime).withHandler("runc-v2").build())
+                .editMatchingItem(item -> "kata".equals(item.buildMetadata().getName()))
+                    .withHandler("kata-qemu-v2")
+                .endItem()
+                .removeMatchingFromItems(item -> "runsc".equals(item.getHandler()))
+                .addNewItemLike(gvisor)
+                    .withHandler("runsc-v2")
+                .endItem()
+                .build();
+
+        assertThat(edited.getItems()).extracting(item -> item.getMetadata().getName())
+                .containsExactly("native", "kata", "gvisor");
+        assertThat(edited.getItems()).extracting(RuntimeClass::getHandler)
+                .containsExactly("runc-v2", "kata-qemu-v2", "runsc-v2");
+    }
+
+    @Test
     void buildsAndSerializesBetaRuntimeClass() throws Exception {
         io.fabric8.kubernetes.api.model.node.v1beta1.RuntimeClass runtimeClass =
                 new io.fabric8.kubernetes.api.model.node.v1beta1.RuntimeClassBuilder()
