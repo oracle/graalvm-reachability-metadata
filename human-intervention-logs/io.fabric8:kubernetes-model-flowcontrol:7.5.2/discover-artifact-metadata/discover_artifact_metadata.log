@@ -1,0 +1,1090 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e9972-3bff-7460-b1da-de53de35a52d
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.fabric8:kubernetes-model-flowcontrol:7.5.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "7.5.2" when "$version$" is replaced with "7.5.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "io.fabric8:kubernetes-model-flowcontrol:7.5.2".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "7.5.2".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and the upstream repository/tag, then update the generated JSON in place with the resolved URLs.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6
+ succeeded in 0ms:
+{
+  "coordinates" : "io.fabric8:kubernetes-model-flowcontrol:7.5.2"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'io\\.fabric8:kubernetes-model|kubernetes-model-flowcontrol|fabric8' build/discovered-artifact-metadata metadata tests -g '*.json' -g 'index.json'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6
+ succeeded in 0ms:
+build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json:2:  "coordinates" : "io.fabric8:kubernetes-model-flowcontrol:7.5.2"
+metadata/io.fabric8/kubernetes-model-node/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/fabric8/kubernetes-model-node/$version$/kubernetes-model-node-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-node/index.json:6:    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+metadata/io.fabric8/kubernetes-model-node/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/blob/v$version$/kubernetes-tests/src/test/java/io/fabric8/kubernetes/client/mock/RuntimeClassTest.java",
+metadata/io.fabric8/kubernetes-model-node/index.json:8:    "documentation-url" : "https://javadoc.io/doc/io.fabric8/kubernetes-model-node/$version$/index.html",
+metadata/io.fabric8/kubernetes-model-node/index.json:14:      "io.fabric8.kubernetes.api.model.node"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:5:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:17:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:19:      "type" : "io.fabric8.kubernetes.api.builder.Editable"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:23:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:25:      "type" : "io.fabric8.kubernetes.api.model.APIGroup"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:29:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:31:      "type" : "io.fabric8.kubernetes.api.model.APIGroupList"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:35:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:37:      "type" : "io.fabric8.kubernetes.api.model.APIResourceList"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:41:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:43:      "type" : "io.fabric8.kubernetes.api.model.APIService"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:47:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:49:      "type" : "io.fabric8.kubernetes.api.model.APIServiceList"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:53:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:55:      "type" : "io.fabric8.kubernetes.api.model.APIVersions"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:59:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:61:      "type" : "io.fabric8.kubernetes.api.model.Binding"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:65:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:67:      "type" : "io.fabric8.kubernetes.api.model.ComponentStatus"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:71:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:73:      "type" : "io.fabric8.kubernetes.api.model.ComponentStatusList"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:77:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:79:      "type" : "io.fabric8.kubernetes.api.model.ConfigMap"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:83:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:85:      "type" : "io.fabric8.kubernetes.api.model.ConfigMapList"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:89:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:91:      "type" : "io.fabric8.kubernetes.api.model.CreateOptions"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:95:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:97:      "type" : "io.fabric8.kubernetes.api.model.DeleteOptions"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:101:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:103:      "type" : "io.fabric8.kubernetes.api.model.Endpoints"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:107:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:109:      "type" : "io.fabric8.kubernetes.api.model.EndpointsList"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:113:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:115:      "type" : "io.fabric8.kubernetes.api.model.Event"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:119:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:121:      "type" : "io.fabric8.kubernetes.api.model.EventList"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:125:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:127:      "type" : "io.fabric8.kubernetes.api.model.FieldsV1"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:131:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:133:      "type" : "io.fabric8.kubernetes.api.model.GetOptions"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:137:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:139:      "type" : "io.fabric8.kubernetes.api.model.HasMetadata"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:143:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:145:      "type" : "io.fabric8.kubernetes.api.model.KubernetesList"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:149:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:151:      "type" : "io.fabric8.kubernetes.api.model.KubernetesResource"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:155:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:157:      "type" : "io.fabric8.kubernetes.api.model.KubernetesResourceList"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:161:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:163:      "type" : "io.fabric8.kubernetes.api.model.LimitRange"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:167:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:169:      "type" : "io.fabric8.kubernetes.api.model.LimitRangeList"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:173:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:175:      "type" : "io.fabric8.kubernetes.api.model.ListMeta",
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:217:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:219:      "type" : "io.fabric8.kubernetes.api.model.ListOptions"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:223:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:225:      "type" : "io.fabric8.kubernetes.api.model.ManagedFieldsEntry"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:229:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:231:      "type" : "io.fabric8.kubernetes.api.model.Namespace"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:235:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:237:      "type" : "io.fabric8.kubernetes.api.model.NamespaceList"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:241:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:243:      "type" : "io.fabric8.kubernetes.api.model.Node"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:247:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:249:      "type" : "io.fabric8.kubernetes.api.model.NodeList"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:253:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:255:      "type" : "io.fabric8.kubernetes.api.model.ObjectMeta",
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:347:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:349:      "type" : "io.fabric8.kubernetes.api.model.OwnerReference"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:353:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:355:      "type" : "io.fabric8.kubernetes.api.model.PatchOptions"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:359:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:361:      "type" : "io.fabric8.kubernetes.api.model.PersistentVolume"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:365:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:367:      "type" : "io.fabric8.kubernetes.api.model.PersistentVolumeClaim"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:371:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:373:      "type" : "io.fabric8.kubernetes.api.model.PersistentVolumeClaimList"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:377:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:379:      "type" : "io.fabric8.kubernetes.api.model.PersistentVolumeList"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:383:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:385:      "type" : "io.fabric8.kubernetes.api.model.Pod"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:389:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:391:      "type" : "io.fabric8.kubernetes.api.model.PodExecOptions"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:395:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:397:      "type" : "io.fabric8.kubernetes.api.model.PodList"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:401:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:403:      "type" : "io.fabric8.kubernetes.api.model.PodTemplate"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:407:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:409:      "type" : "io.fabric8.kubernetes.api.model.PodTemplateList"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:413:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:415:      "type" : "io.fabric8.kubernetes.api.model.Quantity$Deserializer",
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:425:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:427:      "type" : "io.fabric8.kubernetes.api.model.Quantity$Serializer",
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:437:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:439:      "type" : "io.fabric8.kubernetes.api.model.ReplicationController"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:443:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:445:      "type" : "io.fabric8.kubernetes.api.model.ReplicationControllerList"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:449:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:451:      "type" : "io.fabric8.kubernetes.api.model.ResourceQuota"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:455:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:457:      "type" : "io.fabric8.kubernetes.api.model.ResourceQuotaList"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:461:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:463:      "type" : "io.fabric8.kubernetes.api.model.Secret"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:467:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:469:      "type" : "io.fabric8.kubernetes.api.model.SecretList"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:473:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:475:      "type" : "io.fabric8.kubernetes.api.model.Service"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:479:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:481:      "type" : "io.fabric8.kubernetes.api.model.ServiceAccount"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:485:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:487:      "type" : "io.fabric8.kubernetes.api.model.ServiceAccountList"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:491:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:493:      "type" : "io.fabric8.kubernetes.api.model.ServiceList"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:497:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:499:      "type" : "io.fabric8.kubernetes.api.model.Status"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:503:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:505:      "type" : "io.fabric8.kubernetes.api.model.Toleration",
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:569:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:571:      "type" : "io.fabric8.kubernetes.api.model.TypeMeta"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:575:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:577:      "type" : "io.fabric8.kubernetes.api.model.UpdateOptions"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:581:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:583:      "type" : "io.fabric8.kubernetes.api.model.node.v1.Overhead",
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:614:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:616:      "type" : "io.fabric8.kubernetes.api.model.node.v1.RuntimeClass",
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:678:            "io.fabric8.kubernetes.api.model.ObjectMeta"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:684:            "io.fabric8.kubernetes.api.model.node.v1.Overhead"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:690:            "io.fabric8.kubernetes.api.model.node.v1.Scheduling"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:697:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:699:      "type" : "io.fabric8.kubernetes.api.model.node.v1.RuntimeClassList",
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:746:            "io.fabric8.kubernetes.api.model.ListMeta"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:753:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:755:      "type" : "io.fabric8.kubernetes.api.model.node.v1.Scheduling",
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:796:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:798:      "type" : "io.fabric8.kubernetes.api.model.node.v1alpha1.Overhead",
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:822:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:824:      "type" : "io.fabric8.kubernetes.api.model.node.v1alpha1.RuntimeClass",
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:865:            "io.fabric8.kubernetes.api.model.ObjectMeta"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:871:            "io.fabric8.kubernetes.api.model.node.v1alpha1.RuntimeClassSpec"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:878:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:880:      "type" : "io.fabric8.kubernetes.api.model.node.v1alpha1.RuntimeClassList"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:884:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:886:      "type" : "io.fabric8.kubernetes.api.model.node.v1alpha1.RuntimeClassSpec",
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:911:            "io.fabric8.kubernetes.api.model.node.v1alpha1.Overhead"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:923:            "io.fabric8.kubernetes.api.model.node.v1alpha1.Scheduling"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:930:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:932:      "type" : "io.fabric8.kubernetes.api.model.node.v1alpha1.Scheduling",
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:966:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:968:      "type" : "io.fabric8.kubernetes.api.model.node.v1beta1.Overhead",
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:992:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:994:      "type" : "io.fabric8.kubernetes.api.model.node.v1beta1.RuntimeClass",
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:1056:            "io.fabric8.kubernetes.api.model.ObjectMeta"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:1062:            "io.fabric8.kubernetes.api.model.node.v1beta1.Overhead"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:1068:            "io.fabric8.kubernetes.api.model.node.v1beta1.Scheduling"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:1075:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:1077:      "type" : "io.fabric8.kubernetes.api.model.node.v1beta1.RuntimeClassList"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:1081:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:1083:      "type" : "io.fabric8.kubernetes.api.model.node.v1beta1.Scheduling",
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:1117:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:1123:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:1135:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:1141:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:1153:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:1159:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:1165:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:1171:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:1179:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:1181:      "glob" : "META-INF/services/io.fabric8.kubernetes.api.model.KubernetesResource"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:1185:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/src/test/resources/META-INF/native-image/reachability-metadata.json:1191:        "typeReached" : "io_fabric8.kubernetes_model_node.Kubernetes_model_nodeTest"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/user-code-filter.json:7:      "includeClasses" : "io.fabric8.kubernetes.api.model.node.**"
+tests/src/io.fabric8/kubernetes-model-node/7.5.2/user-code-filter.json:10:      "includeClasses" : "io_fabric8.kubernetes_model_node.**"
+
+web search: 
+web search: io.fabric8 kubernetes-model-flowcontrol 7.5.2 Maven Central POM sources jar
+web search: 
+web search: https://github.com/fabric8io/kubernetes-client/tree/v7.5.2/kubernetes-model-generator/kubernetes-model-flowcontrol
+web search: 
+web search: repo.maven.apache.org maven2 io fabric8 kubernetes-model-flowcontrol 7.5.2 sources jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/fabric8/
+web search: 
+web search: 
+codex
+The local repo already has a similar `kubernetes-model-node` entry, which gives the expected shape. I’m checking Maven Central now to prefer the published source artifact when it exists, and GitHub for the matching `v7.5.2` test paths.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/fabric8/kubernetes-model-flowcontrol/7.5.2/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/fabric8/kubernetes-model-flowcontrol/7.5.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/fabric8/kubernetes-model-flowcontrol/7.5.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="kubernetes-model-flowcontrol-7.5.2-javadoc.jar" title="kubernetes-model-flowcontrol-7.5.2-javadoc.jar">kubernetes-model-flowcontrol-7.5.2-javadoc.ja...</a>  2026-01-22 08:16   2774917      
+<a href="kubernetes-model-flowcontrol-7.5.2-javadoc.jar.asc" title="kubernetes-model-flowcontrol-7.5.2-javadoc.jar.asc">kubernetes-model-flowcontrol-7.5.2-javadoc.ja...</a>  2026-01-22 08:16       833      
+<a href="kubernetes-model-flowcontrol-7.5.2-javadoc.jar.md5" title="kubernetes-model-flowcontrol-7.5.2-javadoc.jar.md5">kubernetes-model-flowcontrol-7.5.2-javadoc.ja...</a>  2026-01-22 08:16        32      
+<a href="kubernetes-model-flowcontrol-7.5.2-javadoc.jar.sha1" title="kubernetes-model-flowcontrol-7.5.2-javadoc.jar.sha1">kubernetes-model-flowcontrol-7.5.2-javadoc.ja...</a>  2026-01-22 08:16        40      
+<a href="kubernetes-model-flowcontrol-7.5.2-javadoc.jar.sha256" title="kubernetes-model-flowcontrol-7.5.2-javadoc.jar.sha256">kubernetes-model-flowcontrol-7.5.2-javadoc.ja...</a>  2026-01-22 08:16        64      
+<a href="kubernetes-model-flowcontrol-7.5.2-javadoc.jar.sha512" title="kubernetes-model-flowcontrol-7.5.2-javadoc.jar.sha512">kubernetes-model-flowcontrol-7.5.2-javadoc.ja...</a>  2026-01-22 08:16       128      
+<a href="kubernetes-model-flowcontrol-7.5.2-sources.jar" title="kubernetes-model-flowcontrol-7.5.2-sources.jar">kubernetes-model-flowcontrol-7.5.2-sources.ja...</a>  2026-01-22 08:16    364046      
+<a href="kubernetes-model-flowcontrol-7.5.2-sources.jar.asc" title="kubernetes-model-flowcontrol-7.5.2-sources.jar.asc">kubernetes-model-flowcontrol-7.5.2-sources.ja...</a>  2026-01-22 08:16       833      
+<a href="kubernetes-model-flowcontrol-7.5.2-sources.jar.md5" title="kubernetes-model-flowcontrol-7.5.2-sources.jar.md5">kubernetes-model-flowcontrol-7.5.2-sources.ja...</a>  2026-01-22 08:16        32      
+<a href="kubernetes-model-flowcontrol-7.5.2-sources.jar.sha1" title="kubernetes-model-flowcontrol-7.5.2-sources.jar.sha1">kubernetes-model-flowcontrol-7.5.2-sources.ja...</a>  2026-01-22 08:16        40      
+<a href="kubernetes-model-flowcontrol-7.5.2-sources.jar.sha256" title="kubernetes-model-flowcontrol-7.5.2-sources.jar.sha256">kubernetes-model-flowcontrol-7.5.2-sources.ja...</a>  2026-01-22 08:16        64      
+<a href="kubernetes-model-flowcontrol-7.5.2-sources.jar.sha512" title="kubernetes-model-flowcontrol-7.5.2-sources.jar.sha512">kubernetes-model-flowcontrol-7.5.2-sources.ja...</a>  2026-01-22 08:16       128      
+<a href="kubernetes-model-flowcontrol-7.5.2.jar" title="kubernetes-model-flowcontrol-7.5.2.jar">kubernetes-model-flowcontrol-7.5.2.jar</a>            2026-01-22 08:16    875648      
+<a href="kubernetes-model-flowcontrol-7.5.2.jar.asc" title="kubernetes-model-flowcontrol-7.5.2.jar.asc">kubernetes-model-flowcontrol-7.5.2.jar.asc</a>        2026-01-22 08:16       833      
+<a href="kubernetes-model-flowcontrol-7.5.2.jar.md5" title="kubernetes-model-flowcontrol-7.5.2.jar.md5">kubernetes-model-flowcontrol-7.5.2.jar.md5</a>        2026-01-22 08:16        32      
+<a href="kubernetes-model-flowcontrol-7.5.2.jar.sha1" title="kubernetes-model-flowcontrol-7.5.2.jar.sha1">kubernetes-model-flowcontrol-7.5.2.jar.sha1</a>       2026-01-22 08:16        40      
+<a href="kubernetes-model-flowcontrol-7.5.2.jar.sha256" title="kubernetes-model-flowcontrol-7.5.2.jar.sha256">kubernetes-model-flowcontrol-7.5.2.jar.sha256</a>     2026-01-22 08:16        64      
+<a href="kubernetes-model-flowcontrol-7.5.2.jar.sha512" title="kubernetes-model-flowcontrol-7.5.2.jar.sha512">kubernetes-model-flowcontrol-7.5.2.jar.sha512</a>     2026-01-22 08:16       128      
+<a href="kubernetes-model-flowcontrol-7.5.2.pom" title="kubernetes-model-flowcontrol-7.5.2.pom">kubernetes-model-flowcontrol-7.5.2.pom</a>            2026-01-22 08:16      2742      
+<a href="kubernetes-model-flowcontrol-7.5.2.pom.asc" title="kubernetes-model-flowcontrol-7.5.2.pom.asc">kubernetes-model-flowcontrol-7.5.2.pom.asc</a>        2026-01-22 08:16       833      
+<a href="kubernetes-model-flowcontrol-7.5.2.pom.md5" title="kubernetes-model-flowcontrol-7.5.2.pom.md5">kubernetes-model-flowcontrol-7.5.2.pom.md5</a>        2026-01-22 08:16        32      
+<a href="kubernetes-model-flowcontrol-7.5.2.pom.sha1" title="kubernetes-model-flowcontrol-7.5.2.pom.sha1">kubernetes-model-flowcontrol-7.5.2.pom.sha1</a>       2026-01-22 08:16        40      
+<a href="kubernetes-model-flowcontrol-7.5.2.pom.sha256" title="kubernetes-model-flowcontrol-7.5.2.pom.sha256">kubernetes-model-flowcontrol-7.5.2.pom.sha256</a>     2026-01-22 08:16        64      
+<a href="kubernetes-model-flowcontrol-7.5.2.pom.sha512" title="kubernetes-model-flowcontrol-7.5.2.pom.sha512">kubernetes-model-flowcontrol-7.5.2.pom.sha512</a>     2026-01-22 08:16       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/fabric8/kubernetes-model-flowcontrol/7.5.2/kubernetes-model-flowcontrol-7.5.2.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2015 Red Hat, Inc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.fabric8</groupId>
+    <artifactId>kubernetes-model-generator</artifactId>
+    <version>7.5.2</version>
+  </parent>
+
+  <artifactId>kubernetes-model-flowcontrol</artifactId>
+  <packaging>bundle</packaging>
+  <name>Fabric8 :: Kubernetes Model :: FlowControl</name>
+
+  <properties>
+    <clone-kube>true</clone-kube>
+    <osgi.import>*</osgi.import>
+    <osgi.export>
+      io.fabric8.kubernetes.api.model.flowcontrol**,
+      io.fabric8.kubernetes.api.model.internal.apiserver**
+    </osgi.export>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.fabric8</groupId>
+      <artifactId>kubernetes-model-core</artifactId>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <profile>
+      <id>generate</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>openapi-model-generator-maven-plugin</artifactId>
+            <configuration >
+              <settings combine.self="append">
+                <schemas>
+                  <schema>${project.basedir}/../openapi/schemas/kubernetes-1.21.14.json</schema>
+                  <schema>${project.basedir}/../openapi/schemas/kubernetes-1.26.15.json</schema>
+                  <schema>${openapi.schema.kubernetes-latest}</schema>
+                </schemas>
+                <packageMappings combine.self="append">
+                  <io.k8s.api.flowcontrol>io.fabric8.kubernetes.api.model.flowcontrol</io.k8s.api.flowcontrol>
+                </packageMappings>
+                <includeGenerationRegexes>
+                  <includeGenerationRegex>^io\.k8s\.api\.flowcontrol\..*$</includeGenerationRegex>
+                </includeGenerationRegexes>
+              </settings>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/io/fabric8/kubernetes-model-flowcontrol/7.5.2/kubernetes-model-flowcontrol-7.5.2-tests.jar && curl -fsSI https://repo1.maven.org/maven2/io/fabric8/kubernetes-model-flowcontrol/7.5.2/kubernetes-model-flowcontrol-7.5.2-sources.jar && curl -fsSI https://repo1.maven.org/maven2/io/fabric8/kubernetes-model-flowcontrol/7.5.2/kubernetes-model-flowcontrol-7.5.2.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6
+ exited 22 in 246ms:
+HTTP/2 404 
+date: Fri, 05 Jun 2026 20:21:27 GMT
+content-type: text/html
+cf-ray: a071e23d78e4be8b-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/io/fabric8/kubernetes-model-flowcontrol/7.5.2/kubernetes-model-flowcontrol-7.5.2-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/fabric8io/kubernetes-client/contents/kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1?ref=v7.5.2' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6
+ succeeded in 180ms:
+[
+  {
+    "name": "FlowSchemaTest.java",
+    "path": "kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaTest.java",
+    "sha": "98520c3effb86bf998c505a58e5c10e0385ccf43",
+    "size": 6085,
+    "url": "https://api.github.com/repos/fabric8io/kubernetes-client/contents/kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaTest.java?ref=v7.5.2",
+    "html_url": "https://github.com/fabric8io/kubernetes-client/blob/v7.5.2/kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaTest.java",
+    "git_url": "https://api.github.com/repos/fabric8io/kubernetes-client/git/blobs/98520c3effb86bf998c505a58e5c10e0385ccf43",
+    "download_url": "https://raw.githubusercontent.com/fabric8io/kubernetes-client/v7.5.2/kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/fabric8io/kubernetes-client/contents/kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaTest.java?ref=v7.5.2",
+      "git": "https://api.github.com/repos/fabric8io/kubernetes-client/git/blobs/98520c3effb86bf998c505a58e5c10e0385ccf43",
+      "html": "https://github.com/fabric8io/kubernetes-client/blob/v7.5.2/kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaTest.java"
+    }
+  },
+  {
+    "name": "PriorityLevelConfigurationTest.java",
+    "path": "kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1/PriorityLevelConfigurationTest.java",
+    "sha": "94c39fa9a5c3bc5bb3a4edcf673a5955ab30e252",
+    "size": 4557,
+    "url": "https://api.github.com/repos/fabric8io/kubernetes-client/contents/kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1/PriorityLevelConfigurationTest.java?ref=v7.5.2",
+    "html_url": "https://github.com/fabric8io/kubernetes-client/blob/v7.5.2/kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1/PriorityLevelConfigurationTest.java",
+    "git_url": "https://api.github.com/repos/fabric8io/kubernetes-client/git/blobs/94c39fa9a5c3bc5bb3a4edcf673a5955ab30e252",
+    "download_url": "https://raw.githubusercontent.com/fabric8io/kubernetes-client/v7.5.2/kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1/PriorityLevelConfigurationTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/fabric8io/kubernetes-client/contents/kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1/PriorityLevelConfigurationTest.java?ref=v7.5.2",
+      "git": "https://api.github.com/repos/fabric8io/kubernetes-client/git/blobs/94c39fa9a5c3bc5bb3a4edcf673a5955ab30e252",
+      "html": "https://github.com/fabric8io/kubernetes-client/blob/v7.5.2/kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1/PriorityLevelConfigurationTest.java"
+    }
+  }
+]
+
+codex
+Maven Central has the main JAR, source JAR, and Javadoc JAR for `7.5.2`, but no `-tests.jar`, so I’ll use the upstream test source path under the `v$version$` tag for the test suite URL.
+exec
+/usr/bin/bash -lc "rg -n '\"test-code-url\" : \"https://github.com/.*/tree/|\"test-code-url\" : \"https://github.com/.*/blob/' metadata -g 'index.json' | head -60" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6
+ succeeded in 0ms:
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.twitter/hpack/index.json:7:    "test-code-url" : "https://github.com/twitter/hpack/tree/hpack-parent-$version$/hpack/src/test",
+metadata/com.google.truth/truth/index.json:7:    "test-code-url" : "https://github.com/google/truth/tree/release_1_1_3/core/src/test/java?version=$version$",
+metadata/com.google.dagger/dagger/index.json:7:    "test-code-url" : "https://github.com/google/dagger/tree/dagger-$version$/javatests/dagger",
+metadata/org.eclipse.collections/eclipse-collections-api/index.json:7:    "test-code-url" : "https://github.com/eclipse/eclipse-collections/tree/$version$/unit-tests/src/test/java",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+metadata/com.spotify/completable-futures/index.json:7:    "test-code-url" : "https://github.com/spotify/completable-futures/tree/v$version$/src/test/java",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:37:    "test-code-url" : "https://github.com/apache/hadoop/tree/rel/release-$version$/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common/src/test/java",
+metadata/org.tpolecat/doobie-free_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/doobie/tree/v$version$/modules/free/src/test",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-jmx/src/test/java",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/io.dropwizard.metrics/metrics-json/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-json/src/test/java",
+metadata/org.tpolecat/typename_3/index.json:7:    "test-code-url" : "https://github.com/tpolecat/typename/tree/v$version$/src/test/scala-3",
+metadata/io.dropwizard.metrics/metrics-jvm/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-jvm/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:35:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/org.codehaus.plexus/plexus-compiler-api/index.json:7:    "test-code-url" : "https://github.com/codehaus-plexus/plexus-compiler/tree/plexus-compiler-$version$/plexus-compiler-api/src/test",
+metadata/junit/junit/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit4/tree/r4.13.2/src/test/java",
+metadata/org.tpolecat/sourcepos_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/SourcePos/tree/v$version$/sourcepos/src/test",
+metadata/com.sun.xml.bind.external/relaxng-datatype/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/$version$-RI/jaxb-ri/external/relaxng-datatype/src/test",
+metadata/io.dropwizard.metrics/metrics-core/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-core/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:22:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:37:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-api/src/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/io.dropwizard.metrics/metrics-graphite/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-graphite/src/test/java",
+metadata/org.threeten/threetenbp/index.json:7:    "test-code-url" : "https://github.com/ThreeTen/threetenbp/tree/v$version$/src/test",
+metadata/org.tpolecat/skunk-core_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/skunk/tree/v$version$/modules/tests",
+metadata/com.github.pureconfig/pureconfig-generic-base_3/index.json:7:    "test-code-url" : "https://github.com/pureconfig/pureconfig/tree/v$version$/modules/generic-base/src/test",
+metadata/com.sun.xml.bind.external/rngom/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/$version$-RI/jaxb-ri/external/rngom/src/test",
+metadata/org.scala-lang/scalap/index.json:7:    "test-code-url" : "https://github.com/scala/scala/tree/v$version$/test/files/scalap",
+metadata/org.codehaus.jackson/jackson-xc/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-1/tree/8b0ff4837b7fe509b9e96c1857392dea3ecd364d/$version$/src/test/org/codehaus/jackson/jaxb",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/org.threeten/threeten-extra/index.json:7:    "test-code-url" : "https://github.com/ThreeTen/threeten-extra/tree/v$version$/src/test",
+metadata/com.github.pureconfig/pureconfig-core_3/index.json:7:    "test-code-url" : "https://github.com/pureconfig/pureconfig/tree/v$version$/tests/src/test",
+metadata/org.eclipse.parsson/parsson/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/parsson/tree/$version$/impl/src/test",
+metadata/org.mockito/mockito-junit-jupiter/index.json:7:    "test-code-url" : "https://github.com/mockito/mockito/tree/v$version$/subprojects/junit-jupiter/src/test/java",
+metadata/org.scala-lang/scala3-interfaces/index.json:7:    "test-code-url" : "https://github.com/scala/scala3/tree/$version$/tests",
+metadata/org.codehaus.plexus/plexus-io/index.json:7:    "test-code-url" : "https://github.com/sonatype/plexus-io/tree/plexus-io-$version$/src/test",
+metadata/org.codehaus.jackson/jackson-core-asl/index.json:7:    "test-code-url" : "https://github.com/codehaus/jackson/tree/1.8/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/org.codehaus.jackson/jackson-mapper-asl/index.json:7:    "test-code-url" : "https://github.com/codehaus/jackson/tree/refs/tags/1.8/$version$/src/test/org/codehaus/jackson/map",
+metadata/com.github.pureconfig/pureconfig-generic-scala3_3/index.json:7:    "test-code-url" : "https://github.com/pureconfig/pureconfig/tree/v$version$/modules/generic-scala3/src/test",
+metadata/org.apache.tomcat.embed/tomcat-embed-el/index.json:7:    "test-code-url" : "https://github.com/apache/tomcat/tree/$version$/test/org/apache/el",
+metadata/org.apache.hadoop/hadoop-auth/index.json:7:    "test-code-url" : "https://github.com/apache/hadoop/tree/rel/release-$version$/hadoop-common-project/hadoop-auth/src/test",
+metadata/tools.jackson.jaxrs/jackson-jaxrs-json-provider/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-jaxrs-providers/tree/jackson-jaxrs-providers-$version$/json/src/test",
+metadata/org.apache.directory.api/api-ldap-model/index.json:20:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:35:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:52:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:66:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:80:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:94:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.tomcat.embed/tomcat-embed-websocket/index.json:7:    "test-code-url" : "https://github.com/apache/tomcat/tree/$version$/test/org/apache/tomcat/websocket",
+metadata/com.beachape/enumeratum-circe_3/index.json:7:    "test-code-url" : "https://github.com/lloydmeta/enumeratum/tree/enumeratum-$version$/enumeratum-circe/src/test/scala",
+metadata/tools.jackson.jaxrs/jackson-jaxrs-base/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-jaxrs-providers/tree/jackson-jaxrs-providers-$version$/base/src/test",
+metadata/com.beachape/enumeratum_3/index.json:7:    "test-code-url" : "https://github.com/lloydmeta/enumeratum/tree/enumeratum-$version$/enumeratum-core/src/test",
+metadata/org.apache.httpcomponents/httpcore/index.json:77:    "test-code-url" : "https://github.com/apache/httpcomponents-core/tree/rel/v$version$/httpcore/src/test/java",
+metadata/org.apache.directory.api/api-i18n/index.json:7:    "test-code-url" : "https://github.com/apache/directory-ldap-api/blob/$version$/integ-osgi/src/test/java/org/apache/directory/api/osgi/ApiI18nOsgiTest.java",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/fabric8/kubernetes-model-flowcontrol/7.5.2/kubernetes-model-flowcontrol-7.5.2-sources.jar -o /tmp/kubernetes-model-flowcontrol-7.5.2-sources.jar && jar tf /tmp/kubernetes-model-flowcontrol-7.5.2-sources.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/fabric8/kubernetes-model-flowcontrol/7.5.2/kubernetes-model-flowcontrol-7.5.2.jar -o /tmp/kubernetes-model-flowcontrol-7.5.2.jar && jar tf /tmp/kubernetes-model-flowcontrol-7.5.2.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/fabric8io/kubernetes-client/v7.5.2/kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaTest.java | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6
+ succeeded in 151ms:
+META-INF/
+META-INF/MANIFEST.MF
+io/
+io/fabric8/
+io/fabric8/kubernetes/
+io/fabric8/kubernetes/api/
+io/fabric8/kubernetes/api/model/
+io/fabric8/kubernetes/api/model/flowcontrol/
+io/fabric8/kubernetes/api/model/flowcontrol/v1/
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta1/
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta2/
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta3/
+META-INF/services/
+META-INF/maven/
+META-INF/maven/io.fabric8/
+META-INF/maven/io.fabric8/kubernetes-model-flowcontrol/
+io/fabric8/kubernetes/api/model/flowcontrol/v1/ExemptPriorityLevelConfiguration.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowDistinguisherMethod.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchema.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaCondition.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaList.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaSpec.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaStatus.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1/GroupSubject.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1/LimitResponse.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1/LimitedPriorityLevelConfiguration.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1/NonResourcePolicyRule.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PolicyRulesWithSubjects.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PriorityLevelConfiguration.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PriorityLevelConfigurationCondition.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PriorityLevelConfigurationList.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PriorityLevelConfigurationReference.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PriorityLevelConfigurationSpec.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PriorityLevelConfigurationStatus.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1/QueuingConfiguration.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1/ResourcePolicyRule.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1/ServiceAccountSubject.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1/Subject.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1/UserSubject.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta1/FlowDistinguisherMethod.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta1/FlowSchema.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta1/FlowSchemaCondition.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta1/FlowSchemaList.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta1/FlowSchemaSpec.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta1/FlowSchemaStatus.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta1/GroupSubject.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta1/LimitResponse.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta1/LimitedPriorityLevelConfiguration.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta1/NonResourcePolicyRule.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta1/PolicyRulesWithSubjects.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta1/PriorityLevelConfiguration.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta1/PriorityLevelConfigurationCondition.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta1/PriorityLevelConfigurationList.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta1/PriorityLevelConfigurationReference.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta1/PriorityLevelConfigurationSpec.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta1/PriorityLevelConfigurationStatus.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta1/QueuingConfiguration.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta1/ResourcePolicyRule.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta1/ServiceAccountSubject.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta1/Subject.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta1/UserSubject.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta2/FlowDistinguisherMethod.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta2/FlowSchema.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta2/FlowSchemaCondition.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta2/FlowSchemaList.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta2/FlowSchemaSpec.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta2/FlowSchemaStatus.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta2/GroupSubject.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta2/LimitResponse.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta2/LimitedPriorityLevelConfiguration.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta2/NonResourcePolicyRule.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta2/PolicyRulesWithSubjects.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta2/PriorityLevelConfiguration.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta2/PriorityLevelConfigurationCondition.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta2/PriorityLevelConfigurationList.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta2/PriorityLevelConfigurationReference.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta2/PriorityLevelConfigurationSpec.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta2/PriorityLevelConfigurationStatus.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta2/QueuingConfiguration.java
+io/fabric8/kubernetes/api/model/flowcontrol/v1beta2/ResourcePolicyRule.java
+
+ succeeded in 203ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/jandex.idx
+META-INF/maven/
+META-INF/maven/io.fabric8/
+META-INF/maven/io.fabric8/kubernetes-model-flowcontrol/
+META-INF/maven/io.fabric8/kubernetes-model-flowcontrol/pom.properties
+META-INF/maven/io.fabric8/kubernetes-model-flowcontrol/pom.xml
+META-INF/services/
+META-INF/services/io.fabric8.kubernetes.api.model.KubernetesResource
+io/
+io/fabric8/
+io/fabric8/kubernetes/
+io/fabric8/kubernetes/api/
+io/fabric8/kubernetes/api/model/
+io/fabric8/kubernetes/api/model/flowcontrol/
+io/fabric8/kubernetes/api/model/flowcontrol/v1/
+io/fabric8/kubernetes/api/model/flowcontrol/v1/ExemptPriorityLevelConfiguration.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/ExemptPriorityLevelConfigurationBuilder.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/ExemptPriorityLevelConfigurationFluent.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowDistinguisherMethod.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowDistinguisherMethodBuilder.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowDistinguisherMethodFluent.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchema.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaBuilder.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaCondition.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaConditionBuilder.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaConditionFluent.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaFluent$MetadataNested.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaFluent$SpecNested.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaFluent$StatusNested.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaFluent.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaList.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaListBuilder.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaListFluent$ItemsNested.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaListFluent.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaSpec.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaSpecBuilder.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaSpecFluent$DistinguisherMethodNested.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaSpecFluent$PriorityLevelConfigurationNested.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaSpecFluent$RulesNested.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaSpecFluent.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaStatus.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaStatusBuilder.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaStatusFluent$ConditionsNested.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/FlowSchemaStatusFluent.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/GroupSubject.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/GroupSubjectBuilder.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/GroupSubjectFluent.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/LimitResponse.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/LimitResponseBuilder.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/LimitResponseFluent$QueuingNested.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/LimitResponseFluent.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/LimitedPriorityLevelConfiguration.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/LimitedPriorityLevelConfigurationBuilder.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/LimitedPriorityLevelConfigurationFluent$LimitResponseNested.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/LimitedPriorityLevelConfigurationFluent.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/NonResourcePolicyRule.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/NonResourcePolicyRuleBuilder.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/NonResourcePolicyRuleFluent.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PolicyRulesWithSubjects.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PolicyRulesWithSubjectsBuilder.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PolicyRulesWithSubjectsFluent$NonResourceRulesNested.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PolicyRulesWithSubjectsFluent$ResourceRulesNested.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PolicyRulesWithSubjectsFluent$SubjectsNested.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PolicyRulesWithSubjectsFluent.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PriorityLevelConfiguration.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PriorityLevelConfigurationBuilder.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PriorityLevelConfigurationCondition.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PriorityLevelConfigurationConditionBuilder.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PriorityLevelConfigurationConditionFluent.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PriorityLevelConfigurationFluent$MetadataNested.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PriorityLevelConfigurationFluent$SpecNested.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PriorityLevelConfigurationFluent$StatusNested.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PriorityLevelConfigurationFluent.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PriorityLevelConfigurationList.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PriorityLevelConfigurationListBuilder.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PriorityLevelConfigurationListFluent$ItemsNested.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PriorityLevelConfigurationListFluent.class
+io/fabric8/kubernetes/api/model/flowcontrol/v1/PriorityLevelConfigurationReference.class
+
+ succeeded in 181ms:
+/*
+ * Copyright (C) 2015 Red Hat, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.fabric8.kubernetes.api.model.flowcontrol.v1;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.fabric8.kubernetes.api.model.Namespaced;
+import org.assertj.core.api.InstanceOfAssertFactories;
+import org.junit.jupiter.api.Test;
+
+import java.util.Collections;
+import java.util.Scanner;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+class FlowSchemaTest {
+  private final ObjectMapper mapper = new ObjectMapper();
+
+  @Test
+  void isClusterScoped() {
+    assertThat(FlowSchema.class.getInterfaces()).doesNotContain(Namespaced.class);
+  }
+
+  @Test
+  void deserializationAndSerializationShouldWorkAsExpected() throws JsonProcessingException {
+    // Given
+    String originalJson = new Scanner(getClass().getResourceAsStream("/valid-v1-flowschema.json"))
+        .useDelimiter("\\A")
+        .next();
+
+    // When
+    final FlowSchema flowSchema = mapper.readValue(originalJson, FlowSchema.class);
+    final String serializedJson = mapper.writeValueAsString(flowSchema);
+
+    // Then
+    assertThat(serializedJson).isNotNull();
+    assertThat(flowSchema)
+        .isNotNull()
+        .hasFieldOrPropertyWithValue("metadata.name", "test-flowschema")
+        .hasFieldOrPropertyWithValue("spec.priorityLevelConfiguration.name", "nameValue")
+        .hasFieldOrPropertyWithValue("spec.matchingPrecedence", 2)
+        .hasFieldOrPropertyWithValue("spec.distinguisherMethod.type", "typeValue")
+        .extracting(FlowSchema::getSpec)
+        .extracting(FlowSchemaSpec::getRules)
+        .asInstanceOf(InstanceOfAssertFactories.LIST)
+        .element(0)
+        .hasFieldOrPropertyWithValue("subjects", Collections.singletonList(new SubjectBuilder()
+            .withKind("kindValue")
+            .withNewUser().withName("nameValue").endUser()
+            .withNewGroup().withName("nameValue").endGroup()
+            .withNewServiceAccount()
+            .withName("nameValue")
+            .withNamespace("namespaceValue")
+            .endServiceAccount()
+            .build()))
+        .hasFieldOrPropertyWithValue("resourceRules", Collections.singletonList(new ResourcePolicyRuleBuilder()
+            .withVerbs("verbsValue")
+            .withApiGroups("apiGroupsValue")
+            .withResources("resourcesValue")
+            .withClusterScope(true)
+            .withNamespaces("namespacesValue")
+            .build()))
+        .hasFieldOrPropertyWithValue("nonResourceRules", Collections.singletonList(new NonResourcePolicyRuleBuilder()
+            .withVerbs("verbsValue")
+            .withNonResourceURLs("nonResourceURLsValue")
+            .build()));
+  }
+
+codex
+The published source and binary JARs contain ordinary Java `.java` and `.class` files, so this remains a JVM artifact and does not need `not-for-native-image`. Next I’m checking the full test directory and then I’ll write the JSON.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/fabric8io/kubernetes-client/contents/kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol?ref=v7.5.2' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6
+exec
+/usr/bin/bash -lc "curl -fsSI https://javadoc.io/doc/io.fabric8/kubernetes-model-flowcontrol/7.5.2/index.html | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/fabric8io/kubernetes-client/v7.5.2/kubernetes-model-generator/kubernetes-model-flowcontrol/pom.xml | sed -n '1,180p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6
+ succeeded in 118ms:
+HTTP/2 200 
+date: Fri, 05 Jun 2026 20:21:42 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/io.fabric8/kubernetes-model-flowcontrol/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=ax82zZnqjel2joY1djwr7ODsZOafzJy4l2bW8cGWRZYk6VmdK72ss0V0Vp7SZ3OgLZQ4ZRq5WxJa%2Fb92c%2BFwgIaZ1UYIUBs07UEmU6UklQnLJU2w8uX%2BrjuepZoXvh%2B%2Bd110lFiJpe3H"}]}
+server: cloudflare
+cf-ray: a071e29e2e6b13a1-LYS
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 155ms:
+[
+  {
+    "name": "v1",
+    "path": "kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1",
+    "sha": "d30af4762e1a5b6a57b5f97f820169c1b3457a79",
+    "size": 0,
+    "url": "https://api.github.com/repos/fabric8io/kubernetes-client/contents/kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1?ref=v7.5.2",
+    "html_url": "https://github.com/fabric8io/kubernetes-client/tree/v7.5.2/kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1",
+    "git_url": "https://api.github.com/repos/fabric8io/kubernetes-client/git/trees/d30af4762e1a5b6a57b5f97f820169c1b3457a79",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/fabric8io/kubernetes-client/contents/kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1?ref=v7.5.2",
+      "git": "https://api.github.com/repos/fabric8io/kubernetes-client/git/trees/d30af4762e1a5b6a57b5f97f820169c1b3457a79",
+      "html": "https://github.com/fabric8io/kubernetes-client/tree/v7.5.2/kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1"
+    }
+  }
+]
+
+ succeeded in 159ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2015 Red Hat, Inc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.fabric8</groupId>
+    <artifactId>kubernetes-model-generator</artifactId>
+    <version>7.5.2</version>
+  </parent>
+
+  <artifactId>kubernetes-model-flowcontrol</artifactId>
+  <packaging>bundle</packaging>
+  <name>Fabric8 :: Kubernetes Model :: FlowControl</name>
+
+  <properties>
+    <clone-kube>true</clone-kube>
+    <osgi.import>*</osgi.import>
+    <osgi.export>
+      io.fabric8.kubernetes.api.model.flowcontrol**,
+      io.fabric8.kubernetes.api.model.internal.apiserver**
+    </osgi.export>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.fabric8</groupId>
+      <artifactId>kubernetes-model-core</artifactId>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <profile>
+      <id>generate</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>openapi-model-generator-maven-plugin</artifactId>
+            <configuration >
+              <settings combine.self="append">
+                <schemas>
+                  <schema>${project.basedir}/../openapi/schemas/kubernetes-1.21.14.json</schema>
+                  <schema>${project.basedir}/../openapi/schemas/kubernetes-1.26.15.json</schema>
+                  <schema>${openapi.schema.kubernetes-latest}</schema>
+                </schemas>
+                <packageMappings combine.self="append">
+                  <io.k8s.api.flowcontrol>io.fabric8.kubernetes.api.model.flowcontrol</io.k8s.api.flowcontrol>
+                </packageMappings>
+                <includeGenerationRegexes>
+                  <includeGenerationRegex>^io\.k8s\.api\.flowcontrol\..*$</includeGenerationRegex>
+                </includeGenerationRegexes>
+              </settings>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
+
+codex
+I found the tagged test directory at `kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/.../flowcontrol/v1`, and Javadoc resolves for `7.5.2`. I’m applying the metadata update with only the requested keys.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json
+diff --git a/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json b/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json
+index 25586e9a59ba435307cdfa5a8f85f18b3cac6b6a..c625757d1cd628781456cb9e3ab904bdcd45c125
+--- a/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json
++++ b/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.fabric8:kubernetes-model-flowcontrol:7.5.2"
++  "coordinates" : "io.fabric8:kubernetes-model-flowcontrol:7.5.2",
++  "repository-url" : "https://github.com/fabric8io/kubernetes-client",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/fabric8/kubernetes-model-flowcontrol/$version$/kubernetes-model-flowcontrol-$version$-sources.jar",
++  "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1",
++  "documentation-url" : "https://javadoc.io/doc/io.fabric8/kubernetes-model-flowcontrol/$version$/index.html",
++  "description" : "Fabric8 Kubernetes Model FlowControl provides Java model classes for Kubernetes API Priority and Fairness resources, including FlowSchema and PriorityLevelConfiguration objects. It is part of the Fabric8 Kubernetes Client model set and lets JVM applications serialize, deserialize, and build flow-control Kubernetes resources."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json b/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json
+index 25586e9a59ba435307cdfa5a8f85f18b3cac6b6a..c625757d1cd628781456cb9e3ab904bdcd45c125
+--- a/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json
++++ b/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.fabric8:kubernetes-model-flowcontrol:7.5.2"
++  "coordinates" : "io.fabric8:kubernetes-model-flowcontrol:7.5.2",
++  "repository-url" : "https://github.com/fabric8io/kubernetes-client",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/fabric8/kubernetes-model-flowcontrol/$version$/kubernetes-model-flowcontrol-$version$-sources.jar",
++  "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1",
++  "documentation-url" : "https://javadoc.io/doc/io.fabric8/kubernetes-model-flowcontrol/$version$/index.html",
++  "description" : "Fabric8 Kubernetes Model FlowControl provides Java model classes for Kubernetes API Priority and Fairness resources, including FlowSchema and PriorityLevelConfiguration objects. It is part of the Fabric8 Kubernetes Client model set and lets JVM applications serialize, deserialize, and build flow-control Kubernetes resources."
+ }
+
+codex
+The file is updated; I’m doing a quick JSON/schema-shape check so the output is valid and limited to the allowed top-level keys.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6
+ succeeded in 0ms:
+{
+  "coordinates": "io.fabric8:kubernetes-model-flowcontrol:7.5.2",
+  "repository-url": "https://github.com/fabric8io/kubernetes-client",
+  "source-code-url": "https://repo1.maven.org/maven2/io/fabric8/kubernetes-model-flowcontrol/$version$/kubernetes-model-flowcontrol-$version$-sources.jar",
+  "test-code-url": "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1",
+  "documentation-url": "https://javadoc.io/doc/io.fabric8/kubernetes-model-flowcontrol/$version$/index.html",
+  "description": "Fabric8 Kubernetes Model FlowControl provides Java model classes for Kubernetes API Priority and Fairness resources, including FlowSchema and PriorityLevelConfiguration objects. It is part of the Fabric8 Kubernetes Client model set and lets JVM applications serialize, deserialize, and build flow-control Kubernetes resources."
+}
+
+exec
+/usr/bin/bash -lc "jq -r 'keys_unsorted[]' build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6
+ succeeded in 0ms:
+coordinates
+repository-url
+source-code-url
+test-code-url
+documentation-url
+description
+
+diff --git a/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json b/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json
+index 25586e9a59ba435307cdfa5a8f85f18b3cac6b6a..c625757d1cd628781456cb9e3ab904bdcd45c125
+--- a/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json
++++ b/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.fabric8:kubernetes-model-flowcontrol:7.5.2"
++  "coordinates" : "io.fabric8:kubernetes-model-flowcontrol:7.5.2",
++  "repository-url" : "https://github.com/fabric8io/kubernetes-client",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/fabric8/kubernetes-model-flowcontrol/$version$/kubernetes-model-flowcontrol-$version$-sources.jar",
++  "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1",
++  "documentation-url" : "https://javadoc.io/doc/io.fabric8/kubernetes-model-flowcontrol/$version$/index.html",
++  "description" : "Fabric8 Kubernetes Model FlowControl provides Java model classes for Kubernetes API Priority and Fairness resources, including FlowSchema and PriorityLevelConfiguration objects. It is part of the Fabric8 Kubernetes Client model set and lets JVM applications serialize, deserialize, and build flow-control Kubernetes resources."
+ }
+
+web search: 
+web search: https://github.com/fabric8io/kubernetes-client/tree/v7.5.2/kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1
+web search: 
+web search: "kubernetes-model-flowcontrol-7.5.2-sources.jar" "repo1.maven.org"
+web search: 
+web search: "io.fabric8" "kubernetes-model-flowcontrol" "7.5.2" "Maven Central"
+web search: 
+web search: https://mvnrepository.com/artifact/io.fabric8/kubernetes-model-flowcontrol/7.5.2
+web search: 
+web search: 
+codex
+The JSON parses cleanly and contains only the allowed fields. I’m checking the final diff once so I can report exactly what changed.
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json b/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json
+index 25586e9a59ba435307cdfa5a8f85f18b3cac6b6a..c625757d1cd628781456cb9e3ab904bdcd45c125
+--- a/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json
++++ b/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.fabric8:kubernetes-model-flowcontrol:7.5.2"
++  "coordinates" : "io.fabric8:kubernetes-model-flowcontrol:7.5.2",
++  "repository-url" : "https://github.com/fabric8io/kubernetes-client",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/fabric8/kubernetes-model-flowcontrol/$version$/kubernetes-model-flowcontrol-$version$-sources.jar",
++  "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1",
++  "documentation-url" : "https://javadoc.io/doc/io.fabric8/kubernetes-model-flowcontrol/$version$/index.html",
++  "description" : "Fabric8 Kubernetes Model FlowControl provides Java model classes for Kubernetes API Priority and Fairness resources, including FlowSchema and PriorityLevelConfiguration objects. It is part of the Fabric8 Kubernetes Client model set and lets JVM applications serialize, deserialize, and build flow-control Kubernetes resources."
+ }
+
+codex
+`git diff` is empty because this file is under `build/` and appears untracked or ignored, so I’m checking its status directly rather than assuming it is in the index.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6
+ succeeded in 0ms:
+{
+  "coordinates" : "io.fabric8:kubernetes-model-flowcontrol:7.5.2",
+  "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+  "source-code-url" : "https://repo1.maven.org/maven2/io/fabric8/kubernetes-model-flowcontrol/$version$/kubernetes-model-flowcontrol-$version$-sources.jar",
+  "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1",
+  "documentation-url" : "https://javadoc.io/doc/io.fabric8/kubernetes-model-flowcontrol/$version$/index.html",
+  "description" : "Fabric8 Kubernetes Model FlowControl provides Java model classes for Kubernetes API Priority and Fairness resources, including FlowSchema and PriorityLevelConfiguration objects. It is part of the Fabric8 Kubernetes Client model set and lets JVM applications serialize, deserialize, and build flow-control Kubernetes resources."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6
+diff --git a/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json b/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json
+index 25586e9a59ba435307cdfa5a8f85f18b3cac6b6a..c625757d1cd628781456cb9e3ab904bdcd45c125
+--- a/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json
++++ b/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.fabric8:kubernetes-model-flowcontrol:7.5.2"
++  "coordinates" : "io.fabric8:kubernetes-model-flowcontrol:7.5.2",
++  "repository-url" : "https://github.com/fabric8io/kubernetes-client",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/fabric8/kubernetes-model-flowcontrol/$version$/kubernetes-model-flowcontrol-$version$-sources.jar",
++  "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1",
++  "documentation-url" : "https://javadoc.io/doc/io.fabric8/kubernetes-model-flowcontrol/$version$/index.html",
++  "description" : "Fabric8 Kubernetes Model FlowControl provides Java model classes for Kubernetes API Priority and Fairness resources, including FlowSchema and PriorityLevelConfiguration objects. It is part of the Fabric8 Kubernetes Client model set and lets JVM applications serialize, deserialize, and build flow-control Kubernetes resources."
+ }
+
+ succeeded in 273ms:
+!! build/
+
+web search: 
+web search: Maven Central io.fabric8 kubernetes-model-flowcontrol 7.5.2
+codex
+Updated [io.fabric8-kubernetes-model-flowcontrol-7.5.2.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json) with repository, Maven source JAR, tagged GitHub test directory, Javadoc URL, and the required two-sentence description. I confirmed the artifact/version and docs against Maven/Javadoc listings and the upstream Fabric8 repository. ([mvnrepository.com](https://mvnrepository.com/artifact/io.fabric8/kubernetes-model-flowcontrol?utm_source=openai))
+
+No `language` field was added: the artifact is not Kotlin/Groovy/Scala-specific. No `not-for-native-image` fields were added: the published JAR contains JVM `.class` files, so it remains applicable to Native Image reachability metadata. Verified with `jq`.
+diff --git a/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json b/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json
+index 25586e9a59ba435307cdfa5a8f85f18b3cac6b6a..c625757d1cd628781456cb9e3ab904bdcd45c125
+--- a/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json
++++ b/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.fabric8:kubernetes-model-flowcontrol:7.5.2"
++  "coordinates" : "io.fabric8:kubernetes-model-flowcontrol:7.5.2",
++  "repository-url" : "https://github.com/fabric8io/kubernetes-client",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/fabric8/kubernetes-model-flowcontrol/$version$/kubernetes-model-flowcontrol-$version$-sources.jar",
++  "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-flowcontrol/src/test/java/io/fabric8/kubernetes/api/model/flowcontrol/v1",
++  "documentation-url" : "https://javadoc.io/doc/io.fabric8/kubernetes-model-flowcontrol/$version$/index.html",
++  "description" : "Fabric8 Kubernetes Model FlowControl provides Java model classes for Kubernetes API Priority and Fairness resources, including FlowSchema and PriorityLevelConfiguration objects. It is part of the Fabric8 Kubernetes Client model set and lets JVM applications serialize, deserialize, and build flow-control Kubernetes resources."
+ }
+
+tokens used
+97,294
+Updated [io.fabric8-kubernetes-model-flowcontrol-7.5.2.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6/build/discovered-artifact-metadata/io.fabric8-kubernetes-model-flowcontrol-7.5.2.json) with repository, Maven source JAR, tagged GitHub test directory, Javadoc URL, and the required two-sentence description. I confirmed the artifact/version and docs against Maven/Javadoc listings and the upstream Fabric8 repository. ([mvnrepository.com](https://mvnrepository.com/artifact/io.fabric8/kubernetes-model-flowcontrol?utm_source=openai))
+
+No `language` field was added: the artifact is not Kotlin/Groovy/Scala-specific. No `not-for-native-image` fields were added: the published JAR contains JVM `.class` files, so it remains applicable to Native Image reachability metadata. Verified with `jq`.
+Ran agent for io.fabric8:kubernetes-model-flowcontrol:7.5.2 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6/build/agent-artifact-discovery-logs/io.fabric8-kubernetes-model-flowcontrol-7.5.2.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7834-9b4230b6/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 51s
+9 actionable tasks: 9 executed
