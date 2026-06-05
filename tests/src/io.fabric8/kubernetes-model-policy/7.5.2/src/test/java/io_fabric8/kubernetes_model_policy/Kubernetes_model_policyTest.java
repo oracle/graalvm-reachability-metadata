@@ -170,6 +170,93 @@ public class Kubernetes_model_policyTest {
     }
 
     @Test
+    void editsPolicyV1Beta1PodDisruptionBudgetListWithPredicateRemoval() {
+        Condition blockedCondition = new ConditionBuilder()
+                .withType("DisruptionAllowed")
+                .withStatus("False")
+                .withReason("InsufficientPods")
+                .withMessage("no pods can be disrupted")
+                .build();
+
+        io.fabric8.kubernetes.api.model.policy.v1beta1.PodDisruptionBudget frontendBudget =
+                new io.fabric8.kubernetes.api.model.policy.v1beta1.PodDisruptionBudgetBuilder()
+                        .withApiVersion("policy/v1beta1")
+                        .withKind("PodDisruptionBudget")
+                        .withNewMetadata()
+                            .withName("frontend-budget")
+                            .addToLabels("tier", "frontend")
+                        .endMetadata()
+                        .withNewSpec()
+                            .withMinAvailable(new IntOrString("60%"))
+                            .withSelector(new LabelSelectorBuilder().addToMatchLabels("tier", "frontend").build())
+                        .endSpec()
+                        .withNewStatus()
+                            .withCurrentHealthy(2)
+                            .withDesiredHealthy(3)
+                            .withDisruptionsAllowed(0)
+                            .withExpectedPods(3)
+                            .withConditions(blockedCondition)
+                        .endStatus()
+                        .build();
+
+        io.fabric8.kubernetes.api.model.policy.v1beta1.PodDisruptionBudgetList list =
+                new io.fabric8.kubernetes.api.model.policy.v1beta1.PodDisruptionBudgetListBuilder()
+                        .withApiVersion("policy/v1beta1")
+                        .withKind("PodDisruptionBudgetList")
+                        .addToItems(frontendBudget)
+                        .addNewItem()
+                            .withApiVersion("policy/v1beta1")
+                            .withKind("PodDisruptionBudget")
+                            .withNewMetadata()
+                                .withName("api-budget")
+                                .addToLabels("tier", "backend")
+                            .endMetadata()
+                            .withNewSpec()
+                                .withMaxUnavailable(new IntOrString(1))
+                                .withSelector(new LabelSelectorBuilder().addToMatchLabels("tier", "backend").build())
+                            .endSpec()
+                            .withNewStatus()
+                                .withCurrentHealthy(4)
+                                .withDesiredHealthy(4)
+                                .withDisruptionsAllowed(0)
+                                .withExpectedPods(5)
+                                .addToDisruptedPods("api-0", "2026-01-01T00:00:00Z")
+                                .withConditions(blockedCondition)
+                            .endStatus()
+                        .endItem()
+                        .build();
+
+        io.fabric8.kubernetes.api.model.policy.v1beta1.PodDisruptionBudgetList edited =
+                new io.fabric8.kubernetes.api.model.policy.v1beta1.PodDisruptionBudgetListBuilder(list)
+                        .editMatchingItem(item -> "api-budget".equals(item.buildMetadata().getName()))
+                            .editSpec()
+                                .withMaxUnavailable(new IntOrString("20%"))
+                            .endSpec()
+                            .editStatus()
+                                .withDisruptionsAllowed(1)
+                                .removeFromDisruptedPods("api-0")
+                            .endStatus()
+                        .endItem()
+                        .removeMatchingFromItems(item -> "frontend".equals(
+                                item.buildSpec().getSelector().getMatchLabels().get("tier")))
+                        .build();
+
+        assertThat(edited).isInstanceOf(KubernetesResource.class);
+        assertThat(edited.getItems()).hasSize(1);
+
+        io.fabric8.kubernetes.api.model.policy.v1beta1.PodDisruptionBudget remainingBudget =
+                edited.getItems().get(0);
+        assertThat(remainingBudget.getApiVersion()).isEqualTo("policy/v1beta1");
+        assertThat(remainingBudget.getMetadata().getName()).isEqualTo("api-budget");
+        assertThat(remainingBudget.getMetadata().getLabels()).containsEntry("tier", "backend");
+        assertThat(remainingBudget.getSpec().getMaxUnavailable().getStrVal()).isEqualTo("20%");
+        assertThat(remainingBudget.getSpec().getSelector().getMatchLabels()).containsEntry("tier", "backend");
+        assertThat(remainingBudget.getStatus().getDisruptionsAllowed()).isEqualTo(1);
+        assertThat(remainingBudget.getStatus().getDisruptedPods()).doesNotContainKey("api-0");
+        assertThat(remainingBudget.getStatus().getConditions()).containsExactly(blockedCondition);
+    }
+
+    @Test
     void buildsV1Beta1PodSecurityPolicyWithNestedSecurityStrategies() {
         PodSecurityPolicySpec spec = new PodSecurityPolicySpecBuilder()
                 .withPrivileged(false)
