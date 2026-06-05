@@ -83,7 +83,7 @@ class Langchain4jTest {
     }
 
     @Test
-    void registersOnlyDeclaredToolMethodsFromToolObjects() {
+    void registersAnnotatedToolMethodsFromToolObjects() {
         ToolCallingChatModel chatModel = new ToolCallingChatModel();
         Assistant assistant = AiServices.builder(Assistant.class)
                 .chatModel(chatModel)
@@ -162,7 +162,7 @@ class Langchain4jTest {
             if (invocationCount == 1) {
                 assertThat(chatRequest.toolSpecifications())
                         .extracting(ToolSpecification::name)
-                        .containsExactly("declaredTool");
+                        .containsExactly("declaredTool", "inheritedTool");
                 return ChatResponse.builder()
                         .aiMessage(AiMessage.from(ToolExecutionRequest.builder()
                                 .id("tool-call-2")
