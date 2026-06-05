@@ -75,6 +75,11 @@ import io.fabric8.kubernetes.api.model.resource.v1.ResourceClaimSpec;
 import io.fabric8.kubernetes.api.model.resource.v1.ResourceClaimSpecBuilder;
 import io.fabric8.kubernetes.api.model.resource.v1.ResourceClaimStatus;
 import io.fabric8.kubernetes.api.model.resource.v1.ResourceClaimStatusBuilder;
+import io.fabric8.kubernetes.api.model.resource.v1.ResourceClaimTemplate;
+import io.fabric8.kubernetes.api.model.resource.v1.ResourceClaimTemplateBuilder;
+import io.fabric8.kubernetes.api.model.resource.v1.ResourceClaimTemplateList;
+import io.fabric8.kubernetes.api.model.resource.v1.ResourceClaimTemplateListBuilder;
+import io.fabric8.kubernetes.api.model.resource.v1.ResourceClaimTemplateSpecBuilder;
 import io.fabric8.kubernetes.api.model.resource.v1.ResourcePool;
 import io.fabric8.kubernetes.api.model.resource.v1.ResourcePoolBuilder;
 import io.fabric8.kubernetes.api.model.resource.v1.ResourceSlice;
@@ -327,6 +332,60 @@ public class Kubernetes_model_resourceTest {
         assertThat(updated.getSpec().getAdditionalProperties()).containsEntry("validated", Boolean.TRUE);
         assertThat(list.getItems()).extracting(item -> item.getMetadata().getName())
                 .containsExactly("gpu-class", "gpu-class");
+    }
+
+    @Test
+    void resourceClaimTemplateSeparatesTemplateMetadataFromClaimMetadata() {
+        ResourceClaimSpec claimSpec = new ResourceClaimSpecBuilder()
+                .addToAdditionalProperties("allocationStrategy", "balanced")
+                .build();
+        ResourceClaimTemplate template = new ResourceClaimTemplateBuilder()
+                .withApiVersion(API_VERSION)
+                .withKind("ResourceClaimTemplate")
+                .withMetadata(new ObjectMetaBuilder()
+                        .withName("gpu-claim-template")
+                        .withNamespace("workloads")
+                        .addToLabels("template", "true")
+                        .build())
+                .withNewSpec()
+                .withMetadata(new ObjectMetaBuilder()
+                        .withGenerateName("gpu-claim-")
+                        .addToLabels("tier", "gold")
+                        .addToAnnotations("resource.fabric8.io/profile", "interactive")
+                        .build())
+                .withSpec(claimSpec)
+                .endSpec()
+                .addToAdditionalProperties("managedBy", "fabric8-test")
+                .build();
+
+        assertThat(template).isInstanceOf(HasMetadata.class).isInstanceOf(Namespaced.class);
+        assertThat(template.getMetadata().getName()).isEqualTo("gpu-claim-template");
+        assertThat(template.getMetadata().getLabels()).containsEntry("template", "true");
+        assertThat(template.getSpec().getMetadata().getGenerateName()).isEqualTo("gpu-claim-");
+        assertThat(template.getSpec().getMetadata().getLabels()).containsEntry("tier", "gold");
+        assertThat(template.getSpec().getMetadata().getAnnotations())
+                .containsEntry("resource.fabric8.io/profile", "interactive");
+        assertThat(template.getSpec().getSpec().getAdditionalProperties())
+                .containsEntry("allocationStrategy", "balanced");
+        assertThat(template.getAdditionalProperties()).containsEntry("managedBy", "fabric8-test");
+
+        ResourceClaimTemplate updated = template.toBuilder()
+                .withSpec(new ResourceClaimTemplateSpecBuilder(template.getSpec())
+                        .withMetadata(new ObjectMetaBuilder(template.getSpec().getMetadata())
+                                .addToLabels("workload", "render")
+                                .build())
+                        .build())
+                .build();
+        ResourceClaimTemplateList list = new ResourceClaimTemplateListBuilder()
+                .withApiVersion(API_VERSION)
+                .withKind("ResourceClaimTemplateList")
+                .withItems(template, updated)
+                .build();
+
+        assertThat(updated.getSpec().getMetadata().getLabels()).containsEntry("workload", "render");
+        assertThat(template.getSpec().getMetadata().getLabels()).doesNotContainKey("workload");
+        assertThat(list.getItems()).extracting(item -> item.getSpec().getMetadata().getGenerateName())
+                .containsExactly("gpu-claim-", "gpu-claim-");
     }
 
     @Test
