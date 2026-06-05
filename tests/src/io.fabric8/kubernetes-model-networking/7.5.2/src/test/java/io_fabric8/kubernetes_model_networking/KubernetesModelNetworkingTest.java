@@ -368,6 +368,94 @@ public class KubernetesModelNetworkingTest {
     }
 
     @Test
+    void v1beta1AddressAllocationResourcesSupportListsAndNestedEdits() {
+        io.fabric8.kubernetes.api.model.networking.v1beta1.IPAddress primaryAddress =
+                new io.fabric8.kubernetes.api.model.networking.v1beta1.IPAddressBuilder()
+                .withNewMetadata()
+                    .withName("fd00-10-96-0-10")
+                    .addToLabels("address-family", "dual-stack")
+                .endMetadata()
+                .withNewSpec()
+                    .withNewParentRef("", "kubernetes", "default", "services")
+                .endSpec()
+                .build();
+        io.fabric8.kubernetes.api.model.networking.v1beta1.IPAddress secondaryAddress =
+                primaryAddress.toBuilder()
+                .editMetadata()
+                    .withName("fd00-10-96-0-11")
+                .endMetadata()
+                .editSpec()
+                    .editParentRef()
+                        .withName("metrics")
+                    .endParentRef()
+                .endSpec()
+                .build();
+
+        io.fabric8.kubernetes.api.model.networking.v1beta1.IPAddressList addressList =
+                new io.fabric8.kubernetes.api.model.networking.v1beta1.IPAddressListBuilder()
+                .withNewMetadata("continue-token", 2L, null, null)
+                .withItems(primaryAddress, secondaryAddress)
+                .editMatchingItem(item -> "fd00-10-96-0-11".equals(item.buildMetadata().getName()))
+                    .editMetadata()
+                        .addToAnnotations("allocation", "reserved")
+                    .endMetadata()
+                .endItem()
+                .build();
+
+        assertThat(addressList.getApiVersion()).isEqualTo("networking.k8s.io/v1beta1");
+        assertThat(addressList.getKind()).isEqualTo("IPAddressList");
+        assertThat(addressList.getMetadata().getContinue()).isEqualTo("continue-token");
+        assertThat(addressList.getItems())
+                .extracting(address -> address.getSpec().getParentRef().getName())
+                .containsExactly("kubernetes", "metrics");
+        assertThat(addressList.getItems().get(1).getMetadata().getAnnotations())
+                .containsEntry("allocation", "reserved");
+        assertThat(primaryAddress.getSpec().getParentRef().getName()).isEqualTo("kubernetes");
+
+        Condition available = new ConditionBuilder()
+                .withType("Ready")
+                .withStatus("True")
+                .withReason("Allocated")
+                .withMessage("Beta service CIDR is allocated")
+                .build();
+        io.fabric8.kubernetes.api.model.networking.v1beta1.ServiceCIDR serviceCIDR =
+                new io.fabric8.kubernetes.api.model.networking.v1beta1.ServiceCIDRBuilder()
+                .withNewMetadata()
+                    .withName("beta-services")
+                .endMetadata()
+                .withNewSpec()
+                    .addToCidrs("fd00:10:96::/112")
+                .endSpec()
+                .withNewStatus()
+                    .addToConditions(available)
+                    .addToAdditionalProperties("controller", "cluster-ipam")
+                .endStatus()
+                .build();
+        io.fabric8.kubernetes.api.model.networking.v1beta1.ServiceCIDR expanded =
+                serviceCIDR.toBuilder()
+                .editSpec()
+                    .addToCidrs(0, "10.96.0.0/12")
+                .endSpec()
+                .build();
+        io.fabric8.kubernetes.api.model.networking.v1beta1.ServiceCIDRList serviceCIDRList =
+                new io.fabric8.kubernetes.api.model.networking.v1beta1.ServiceCIDRListBuilder()
+                .withNewMetadata(null, 2L, null, null)
+                .withItems(serviceCIDR, expanded)
+                .build();
+
+        assertThat(serviceCIDR.getApiVersion()).isEqualTo("networking.k8s.io/v1beta1");
+        assertThat(serviceCIDR.getKind()).isEqualTo("ServiceCIDR");
+        assertThat(serviceCIDR.getStatus().getConditions()).containsExactly(available);
+        assertThat(serviceCIDR.getStatus().getAdditionalProperties()).containsEntry("controller", "cluster-ipam");
+        assertThat(expanded.getSpec().getCidrs()).containsExactly("10.96.0.0/12", "fd00:10:96::/112");
+        assertThat(serviceCIDRList.getApiVersion()).isEqualTo("networking.k8s.io/v1beta1");
+        assertThat(serviceCIDRList.getKind()).isEqualTo("ServiceCIDRList");
+        assertThat(serviceCIDRList.getItems())
+                .extracting(cidr -> cidr.getMetadata().getName())
+                .containsExactly("beta-services", "beta-services");
+    }
+
+    @Test
     void serviceLoaderDiscoversNetworkingResources() {
         List<String> discoveredApiKinds = new ArrayList<>();
         for (KubernetesResource resource : ServiceLoader.load(KubernetesResource.class)) {
