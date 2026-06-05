@@ -280,6 +280,65 @@ public class Kubernetes_model_discoveryTest {
     }
 
     @Test
+    void endpointSliceBuilderVisitorUpdatesNestedEndpointsAndPorts() {
+        EndpointSliceBuilder builder = new EndpointSliceBuilder()
+                .withAddressType("IPv4")
+                .withNewMetadata()
+                    .withName("visitor-slice")
+                    .withNamespace("default")
+                .endMetadata()
+                .addNewEndpoint()
+                    .withAddresses("10.3.0.10")
+                    .withHostname("blue-0")
+                    .withNodeName("node-a")
+                    .withZone("us-east-1a")
+                .endEndpoint()
+                .addNewEndpoint()
+                    .withAddresses("10.3.0.11")
+                    .withHostname("blue-1")
+                    .withNodeName("node-b")
+                    .withZone("us-east-1b")
+                .endEndpoint()
+                .addNewPort(null, "web", 80, "TCP")
+                .addNewPort(null, "admin", 9000, "TCP");
+
+        builder.accept(EndpointBuilder.class, endpoint -> {
+            if ("blue-0".equals(endpoint.getHostname())) {
+                endpoint.withNodeName("node-c")
+                        .withZone("us-east-1c")
+                        .editOrNewConditions()
+                            .withReady(true)
+                            .withServing(true)
+                            .withTerminating(false)
+                        .endConditions();
+            }
+        });
+        builder.accept(EndpointPortBuilder.class, port -> {
+            if ("web".equals(port.getName())) {
+                port.withAppProtocol("kubernetes.io/ws")
+                        .withPort(8080);
+            }
+        });
+
+        EndpointSlice visited = builder.build();
+
+        assertThat(visited.getEndpoints()).extracting(Endpoint::getHostname)
+                .containsExactly("blue-0", "blue-1");
+        assertThat(visited.getEndpoints().get(0).getNodeName()).isEqualTo("node-c");
+        assertThat(visited.getEndpoints().get(0).getZone()).isEqualTo("us-east-1c");
+        assertThat(visited.getEndpoints().get(0).getConditions().getReady()).isTrue();
+        assertThat(visited.getEndpoints().get(0).getConditions().getServing()).isTrue();
+        assertThat(visited.getEndpoints().get(0).getConditions().getTerminating()).isFalse();
+        assertThat(visited.getEndpoints().get(1).getNodeName()).isEqualTo("node-b");
+        assertThat(visited.getEndpoints().get(1).getConditions()).isNull();
+        assertThat(visited.getPorts()).extracting(EndpointPort::getName)
+                .containsExactly("web", "admin");
+        assertThat(visited.getPorts().get(0).getAppProtocol()).isEqualTo("kubernetes.io/ws");
+        assertThat(visited.getPorts().get(0).getPort()).isEqualTo(8080);
+        assertThat(visited.getPorts().get(1).getPort()).isEqualTo(9000);
+    }
+
+    @Test
     void betaEndpointSliceModelsTopologyHintsListsAndEdits() {
         io.fabric8.kubernetes.api.model.discovery.v1beta1.EndpointSlice betaSlice =
                 new io.fabric8.kubernetes.api.model.discovery.v1beta1.EndpointSliceBuilder()
