@@ -194,7 +194,7 @@ public class Kubernetes_model_eventsTest {
 
     @Test
     void eventBuildersCreateMissingNestedObjectsFromTemplates() {
-        ObjectMeta metadataTemplate = new ObjectMetaBuilder()
+        ObjectMeta metadataTemplateAnnotationAccess = new ObjectMetaBuilder()
                 .withName("deployment-scaled.17b4e0")
                 .withNamespace("operations")
                 .addToLabels("controller", "deployment")
@@ -226,7 +226,7 @@ public class Kubernetes_model_eventsTest {
                 .withReportingController("deployment-controller")
                 .withReportingInstance("controller-manager-0")
                 .withNewEventTime("2026-04-01T12:00:00.000001Z")
-                .editOrNewMetadataLike(metadataTemplate)
+                .editOrNewMetadataLike(metadataTemplateAnnotationAccess)
                     .addToAnnotations("events.fabric8.io/template", "metadata")
                 .endMetadata()
                 .editOrNewRegardingLike(regardingTemplate)
@@ -252,7 +252,7 @@ public class Kubernetes_model_eventsTest {
         assertThat(event.getSeries().getAdditionalProperties())
                 .containsEntry("aggregation", "controller-manager");
         assertThat(seriesTemplate.getCount()).isEqualTo(7);
-        assertThat(metadataTemplate.getAnnotations())
+        assertThat(metadataTemplateAnnotationAccess.getAnnotations())
                 .containsEntry("events.fabric8.io/template", "source");
 
         io.fabric8.kubernetes.api.model.events.v1beta1.Event betaEvent =
