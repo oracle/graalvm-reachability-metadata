@@ -47,8 +47,8 @@ public class FormattersAnonymous12Anonymous2Test {
             final ClassLoader classLoader,
             final String resourceName
     ) throws Throwable {
-        final Class<?> enclosingFormatterStepClass = Class.forName(Formatters.class.getName() + "$12");
-        final Class<?> resourceActionClass = Class.forName(enclosingFormatterStepClass.getName() + "$2");
+        final Class<?> enclosingFormatterStepClass = Class.forName(Formatters.class.getName() + "$11");
+        final Class<?> resourceActionClass = Class.forName(enclosingFormatterStepClass.getName() + "$3");
         final MethodHandle constructor = MethodHandles.privateLookupIn(resourceActionClass, MethodHandles.lookup())
                 .findConstructor(
                         resourceActionClass,
