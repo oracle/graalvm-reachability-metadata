@@ -11,6 +11,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.fabric8.kubernetes.api.model.HasMetadata;
 import io.fabric8.kubernetes.api.model.KubernetesResource;
 import io.fabric8.kubernetes.api.model.MicroTime;
+import io.fabric8.kubernetes.api.model.ObjectMeta;
+import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
+import io.fabric8.kubernetes.api.model.ObjectReference;
+import io.fabric8.kubernetes.api.model.ObjectReferenceBuilder;
 import io.fabric8.kubernetes.api.model.events.v1.Event;
 import io.fabric8.kubernetes.api.model.events.v1.EventBuilder;
 import io.fabric8.kubernetes.api.model.events.v1.EventList;
@@ -186,6 +190,96 @@ public class Kubernetes_model_eventsTest {
                 .containsEntry("ordered", true)
                 .doesNotContainKey("phase");
         assertThat(pending.getReason()).isEqualTo("Pending");
+    }
+
+    @Test
+    void eventBuildersCreateMissingNestedObjectsFromTemplates() {
+        ObjectMeta metadataTemplate = new ObjectMetaBuilder()
+                .withName("deployment-scaled.17b4e0")
+                .withNamespace("operations")
+                .addToLabels("controller", "deployment")
+                .addToAnnotations("events.fabric8.io/template", "source")
+                .build();
+        ObjectReference regardingTemplate = new ObjectReferenceBuilder()
+                .withApiVersion("apps/v1")
+                .withKind("Deployment")
+                .withNamespace("operations")
+                .withName("api")
+                .build();
+        ObjectReference relatedTemplate = new ObjectReferenceBuilder()
+                .withApiVersion("apps/v1")
+                .withKind("ReplicaSet")
+                .withNamespace("operations")
+                .withName("api-7d9c")
+                .build();
+        EventSeries seriesTemplate = new EventSeriesBuilder()
+                .withCount(7)
+                .withNewLastObservedTime("2026-04-01T12:00:00.000001Z")
+                .addToAdditionalProperties("aggregation", "controller-manager")
+                .build();
+
+        Event event = new EventBuilder()
+                .withAction("Scale")
+                .withReason("ScalingReplicaSet")
+                .withNote("Scaled replica set for deployment")
+                .withType("Normal")
+                .withReportingController("deployment-controller")
+                .withReportingInstance("controller-manager-0")
+                .withNewEventTime("2026-04-01T12:00:00.000001Z")
+                .editOrNewMetadataLike(metadataTemplate)
+                    .addToAnnotations("events.fabric8.io/template", "metadata")
+                .endMetadata()
+                .editOrNewRegardingLike(regardingTemplate)
+                    .withFieldPath("spec.replicas")
+                .endRegarding()
+                .editOrNewRelatedLike(relatedTemplate)
+                    .withUid("replicaset-uid")
+                .endRelated()
+                .editOrNewSeriesLike(seriesTemplate)
+                    .withCount(8)
+                .endSeries()
+                .build();
+
+        assertThat(event.getMetadata().getName()).isEqualTo("deployment-scaled.17b4e0");
+        assertThat(event.getMetadata().getLabels()).containsEntry("controller", "deployment");
+        assertThat(event.getMetadata().getAnnotations())
+                .containsEntry("events.fabric8.io/template", "metadata");
+        assertThat(event.getRegarding().getKind()).isEqualTo("Deployment");
+        assertThat(event.getRegarding().getFieldPath()).isEqualTo("spec.replicas");
+        assertThat(event.getRelated().getKind()).isEqualTo("ReplicaSet");
+        assertThat(event.getRelated().getUid()).isEqualTo("replicaset-uid");
+        assertThat(event.getSeries().getCount()).isEqualTo(8);
+        assertThat(event.getSeries().getAdditionalProperties())
+                .containsEntry("aggregation", "controller-manager");
+        assertThat(seriesTemplate.getCount()).isEqualTo(7);
+        assertThat(metadataTemplate.getAnnotations())
+                .containsEntry("events.fabric8.io/template", "source");
+
+        io.fabric8.kubernetes.api.model.events.v1beta1.Event betaEvent =
+                new io.fabric8.kubernetes.api.model.events.v1beta1.EventBuilder()
+                .withAction("HealthCheck")
+                .withReason("ProbeReady")
+                .withNewEventTime("2026-04-02T12:00:00.000001Z")
+                .editOrNewMetadata()
+                    .withName("probe-ready.17b4e1")
+                    .withNamespace("operations")
+                .endMetadata()
+                .editOrNewRegarding()
+                    .withApiVersion("v1")
+                    .withKind("Pod")
+                    .withName("api-0")
+                .endRegarding()
+                .editOrNewSeries()
+                    .withCount(1)
+                    .withNewLastObservedTime("2026-04-02T12:00:00.000001Z")
+                .endSeries()
+                .build();
+
+        assertThat(betaEvent.getMetadata().getName()).isEqualTo("probe-ready.17b4e1");
+        assertThat(betaEvent.getRegarding().getKind()).isEqualTo("Pod");
+        assertThat(betaEvent.getSeries().getCount()).isEqualTo(1);
+        assertThat(betaEvent.getSeries().getLastObservedTime().getTime())
+                .isEqualTo("2026-04-02T12:00:00.000001Z");
     }
 
     @Test
