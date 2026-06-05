@@ -6,8 +6,10 @@
  */
 package com_fasterxml_jackson_jakarta_rs.jackson_jakarta_rs_json_provider;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.jakarta.rs.cfg.Annotations;
 import com.fasterxml.jackson.jakarta.rs.json.JsonMapperConfigurator;
 import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationIntrospector;
@@ -17,6 +19,20 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class JsonMapperConfiguratorTest {
+    @Test
+    void configuresDefaultMapperWithJacksonAnnotations() throws Exception {
+        JsonMapperConfigurator configurator = new JsonMapperConfigurator(null,
+                new Annotations[] {Annotations.JACKSON});
+
+        ObjectMapper mapper = configurator.getDefaultMapper();
+
+        assertThat(mapper.getSerializationConfig().getAnnotationIntrospector().allIntrospectors())
+                .extracting(AnnotationIntrospector::getClass)
+                .contains(JacksonAnnotationIntrospector.class);
+        assertThat(mapper.writeValueAsString(new JsonPropertyBean("configured")))
+                .isEqualTo("{\"json_name\":\"configured\"}");
+    }
+
     @Test
     void configuresDefaultMapperWithJakartaXmlBindAnnotations() throws Exception {
         JsonMapperConfigurator configurator = new JsonMapperConfigurator(null,
@@ -29,6 +45,15 @@ public class JsonMapperConfiguratorTest {
                 .contains(JakartaXmlBindAnnotationIntrospector.class);
         assertThat(mapper.writeValueAsString(new XmlElementBean("configured")))
                 .isEqualTo("{\"xml_name\":\"configured\"}");
+    }
+
+    public static final class JsonPropertyBean {
+        @JsonProperty("json_name")
+        public final String name;
+
+        public JsonPropertyBean(String name) {
+            this.name = name;
+        }
     }
 
     public static final class XmlElementBean {
