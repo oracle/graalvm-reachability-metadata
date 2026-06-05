@@ -88,6 +88,30 @@ import io.fabric8.kubernetes.api.model.resource.v1.ResourceSliceList;
 import io.fabric8.kubernetes.api.model.resource.v1.ResourceSliceListBuilder;
 import io.fabric8.kubernetes.api.model.resource.v1.ResourceSliceSpec;
 import io.fabric8.kubernetes.api.model.resource.v1.ResourceSliceSpecBuilder;
+import io.fabric8.kubernetes.api.model.resource.v1alpha2.NamedResourcesAttribute;
+import io.fabric8.kubernetes.api.model.resource.v1alpha2.NamedResourcesAttributeBuilder;
+import io.fabric8.kubernetes.api.model.resource.v1alpha2.NamedResourcesInstance;
+import io.fabric8.kubernetes.api.model.resource.v1alpha2.NamedResourcesInstanceBuilder;
+import io.fabric8.kubernetes.api.model.resource.v1alpha2.NamedResourcesIntSliceBuilder;
+import io.fabric8.kubernetes.api.model.resource.v1alpha2.NamedResourcesResources;
+import io.fabric8.kubernetes.api.model.resource.v1alpha2.NamedResourcesResourcesBuilder;
+import io.fabric8.kubernetes.api.model.resource.v1alpha2.NamedResourcesStringSliceBuilder;
+import io.fabric8.kubernetes.api.model.resource.v1alpha2.PodSchedulingContext;
+import io.fabric8.kubernetes.api.model.resource.v1alpha2.PodSchedulingContextBuilder;
+import io.fabric8.kubernetes.api.model.resource.v1alpha2.PodSchedulingContextSpec;
+import io.fabric8.kubernetes.api.model.resource.v1alpha2.PodSchedulingContextSpecBuilder;
+import io.fabric8.kubernetes.api.model.resource.v1alpha2.PodSchedulingContextStatus;
+import io.fabric8.kubernetes.api.model.resource.v1alpha2.PodSchedulingContextStatusBuilder;
+import io.fabric8.kubernetes.api.model.resource.v1alpha2.ResourceClaimSchedulingStatus;
+import io.fabric8.kubernetes.api.model.resource.v1alpha2.ResourceClaimSchedulingStatusBuilder;
+import io.fabric8.kubernetes.api.model.resource.v1alpha2.ResourceClassParameters;
+import io.fabric8.kubernetes.api.model.resource.v1alpha2.ResourceClassParametersBuilder;
+import io.fabric8.kubernetes.api.model.resource.v1alpha2.ResourceClassParametersList;
+import io.fabric8.kubernetes.api.model.resource.v1alpha2.ResourceClassParametersListBuilder;
+import io.fabric8.kubernetes.api.model.resource.v1alpha2.ResourceFilter;
+import io.fabric8.kubernetes.api.model.resource.v1alpha2.ResourceFilterBuilder;
+import io.fabric8.kubernetes.api.model.resource.v1alpha2.VendorParameters;
+import io.fabric8.kubernetes.api.model.resource.v1alpha2.VendorParametersBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -97,6 +121,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class Kubernetes_model_resourceTest {
     private static final String API_VERSION = "resource.k8s.io/v1";
+    private static final String ALPHA2_API_VERSION = "resource.k8s.io/v1alpha2";
     private static final String DRIVER = "gpu.example.com";
 
     @Test
@@ -386,6 +411,110 @@ public class Kubernetes_model_resourceTest {
         assertThat(template.getSpec().getMetadata().getLabels()).doesNotContainKey("workload");
         assertThat(list.getItems()).extracting(item -> item.getSpec().getMetadata().getGenerateName())
                 .containsExactly("gpu-claim-", "gpu-claim-");
+    }
+
+    @Test
+    void v1alpha2ModelsNamedResourceParametersAndPodSchedulingDecisions() {
+        NamedResourcesAttribute vendor = new NamedResourcesAttributeBuilder()
+                .withName("vendor")
+                .withString("acme")
+                .build();
+        NamedResourcesAttribute memory = new NamedResourcesAttributeBuilder()
+                .withName("memory")
+                .withNewQuantity("24", "Gi")
+                .build();
+        NamedResourcesAttribute computeProfiles = new NamedResourcesAttributeBuilder()
+                .withName("computeProfiles")
+                .withStringSlice(new NamedResourcesStringSliceBuilder().withStrings("graphics", "ml").build())
+                .build();
+        NamedResourcesAttribute numaNodes = new NamedResourcesAttributeBuilder()
+                .withName("numaNodes")
+                .withIntSlice(new NamedResourcesIntSliceBuilder().withInts(0L, 1L).build())
+                .build();
+        NamedResourcesInstance instance = new NamedResourcesInstanceBuilder()
+                .withName("gpu-a")
+                .withAttributes(vendor, memory, computeProfiles, numaNodes)
+                .build();
+        NamedResourcesResources namedResources = new NamedResourcesResourcesBuilder()
+                .withInstances(instance)
+                .build();
+        ResourceFilter filter = new ResourceFilterBuilder()
+                .withDriverName(DRIVER)
+                .withNewNamedResources("attributes.vendor.string == \"acme\"")
+                .build();
+        VendorParameters parameters = new VendorParametersBuilder()
+                .withDriverName(DRIVER)
+                .withParameters(Map.of("policy", "prefer-local"))
+                .build();
+        ResourceClassParameters classParameters = new ResourceClassParametersBuilder()
+                .withApiVersion(ALPHA2_API_VERSION)
+                .withKind("ResourceClassParameters")
+                .withMetadata(new ObjectMetaBuilder()
+                        .withName("gpu-parameters")
+                        .withNamespace("resource-admin")
+                        .build())
+                .withNewGeneratedFrom("resource.k8s.io", "ResourceClass", "gpu-class", "resource-admin")
+                .withFilters(filter)
+                .withVendorParameters(parameters)
+                .addToAdditionalProperties("scope", "class")
+                .build();
+        ResourceClassParametersList list = new ResourceClassParametersListBuilder()
+                .withApiVersion(ALPHA2_API_VERSION)
+                .withKind("ResourceClassParametersList")
+                .withItems(classParameters)
+                .build();
+        ResourceClaimSchedulingStatus claimStatus = new ResourceClaimSchedulingStatusBuilder()
+                .withName("gpu-claim")
+                .withUnsuitableNodes("node-b", "node-c")
+                .build();
+        PodSchedulingContextSpec schedulingSpec = new PodSchedulingContextSpecBuilder()
+                .withSelectedNode("node-a")
+                .withPotentialNodes("node-a", "node-b", "node-c")
+                .build();
+        PodSchedulingContextStatus schedulingStatus = new PodSchedulingContextStatusBuilder()
+                .withResourceClaims(claimStatus)
+                .build();
+        PodSchedulingContext context = new PodSchedulingContextBuilder()
+                .withApiVersion(ALPHA2_API_VERSION)
+                .withKind("PodSchedulingContext")
+                .withMetadata(new ObjectMetaBuilder()
+                        .withName("renderer")
+                        .withNamespace("workloads")
+                        .build())
+                .withSpec(schedulingSpec)
+                .withStatus(schedulingStatus)
+                .build();
+
+        assertThat(classParameters).isInstanceOf(HasMetadata.class).isInstanceOf(Namespaced.class);
+        assertThat(classParameters.getGeneratedFrom().getName()).isEqualTo("gpu-class");
+        assertThat(classParameters.getFilters().get(0).getNamedResources().getSelector()).contains("vendor");
+        assertThat(classParameters.getVendorParameters().get(0).getParameters())
+                .isEqualTo(Map.of("policy", "prefer-local"));
+        assertThat(classParameters.getAdditionalProperties()).containsEntry("scope", "class");
+        assertThat(list.getItems()).containsExactly(classParameters);
+        assertThat(namedResources.getInstances().get(0).getAttributes())
+                .extracting(NamedResourcesAttribute::getName)
+                .containsExactly("vendor", "memory", "computeProfiles", "numaNodes");
+        assertThat(namedResources.getInstances().get(0).getAttributes().get(1).getQuantity())
+                .isEqualTo(new Quantity("24", "Gi"));
+        assertThat(namedResources.getInstances().get(0).getAttributes().get(2).getStringSlice().getStrings())
+                .containsExactly("graphics", "ml");
+        assertThat(namedResources.getInstances().get(0).getAttributes().get(3).getIntSlice().getInts())
+                .containsExactly(0L, 1L);
+        assertThat(context).isInstanceOf(HasMetadata.class).isInstanceOf(Namespaced.class);
+        assertThat(context.getSpec().getSelectedNode()).isEqualTo("node-a");
+        assertThat(context.getSpec().getPotentialNodes()).containsExactly("node-a", "node-b", "node-c");
+        assertThat(context.getStatus().getResourceClaims().get(0).getUnsuitableNodes())
+                .containsExactly("node-b", "node-c");
+
+        PodSchedulingContext rescheduled = context.edit()
+                .withSpec(new PodSchedulingContextSpecBuilder(context.getSpec())
+                        .withSelectedNode("node-b")
+                        .build())
+                .build();
+
+        assertThat(rescheduled.getSpec().getSelectedNode()).isEqualTo("node-b");
+        assertThat(context.getSpec().getSelectedNode()).isEqualTo("node-a");
     }
 
     @Test
