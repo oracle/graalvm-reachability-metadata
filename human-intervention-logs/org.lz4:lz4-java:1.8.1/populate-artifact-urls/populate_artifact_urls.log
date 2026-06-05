@@ -1,0 +1,1694 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e99cd-ed60-71c0-b042-f87d2c64893d
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.lz4:lz4-java:1.8.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [1.8.1].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14/metadata/org.lz4/lz4-java/index.json
+- Entry selector: "metadata-version" = "1.8.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 1.8.1
+- Entry metadata-version: 1.8.1
+- Entry test-version: 1.8.1
+- Entry tested-versions: [1.8.1]
+codex
+I’ll inspect the existing metadata entry first, then verify the candidate Maven and project URLs before editing only the missing fields.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.lz4/lz4-java/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.8.1",
+    "tested-versions" : [
+      "1.8.1"
+    ],
+    "allowed-packages" : [
+      "net.jpountz"
+    ]
+  },
+  {
+    "metadata-version" : "1.8.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/lz4/lz4-java/$version$/lz4-java-$version$-sources.jar",
+    "repository-url" : "https://github.com/lz4/lz4-java",
+    "test-code-url" : "https://github.com/lz4/lz4-java/tree/$version$/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/lz4/lz4-java/$version$/lz4-java-$version$-javadoc.jar",
+    "description" : "lz4-java provides Java ports and bindings for the LZ4 compression algorithm and the xxHash hashing algorithm. It offers JNI, pure Java, and Unsafe-based implementations for fast compression, decompression, and hashing.",
+    "tested-versions" : [
+      "1.8.0"
+    ],
+    "allowed-packages" : [
+      "net.jpountz"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n 'org\\.lz4|lz4-java|source-code-url|documentation-url|test-code-url|description|language' metadata/org.lz4/lz4-java/index.json metadata/org.lz4 -S" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14
+ succeeded in 0ms:
+metadata/org.lz4/lz4-java/index.json:14:    "source-code-url" : "https://repo1.maven.org/maven2/org/lz4/lz4-java/$version$/lz4-java-$version$-sources.jar",
+metadata/org.lz4/lz4-java/index.json:15:    "repository-url" : "https://github.com/lz4/lz4-java",
+metadata/org.lz4/lz4-java/index.json:16:    "test-code-url" : "https://github.com/lz4/lz4-java/tree/$version$/src/test",
+metadata/org.lz4/lz4-java/index.json:17:    "documentation-url" : "https://repo1.maven.org/maven2/org/lz4/lz4-java/$version$/lz4-java-$version$-javadoc.jar",
+metadata/org.lz4/lz4-java/index.json:18:    "description" : "lz4-java provides Java ports and bindings for the LZ4 compression algorithm and the xxHash hashing algorithm. It offers JNI, pure Java, and Unsafe-based implementations for fast compression, decompression, and hashing.",
+metadata/org.lz4/lz4-java/index.json:14:    "source-code-url" : "https://repo1.maven.org/maven2/org/lz4/lz4-java/$version$/lz4-java-$version$-sources.jar",
+metadata/org.lz4/lz4-java/index.json:15:    "repository-url" : "https://github.com/lz4/lz4-java",
+metadata/org.lz4/lz4-java/index.json:16:    "test-code-url" : "https://github.com/lz4/lz4-java/tree/$version$/src/test",
+metadata/org.lz4/lz4-java/index.json:17:    "documentation-url" : "https://repo1.maven.org/maven2/org/lz4/lz4-java/$version$/lz4-java-$version$-javadoc.jar",
+metadata/org.lz4/lz4-java/index.json:18:    "description" : "lz4-java provides Java ports and bindings for the LZ4 compression algorithm and the xxHash hashing algorithm. It offers JNI, pure Java, and Unsafe-based implementations for fast compression, decompression, and hashing.",
+metadata/org.lz4/lz4-java/1.8.0/reachability-metadata.json:297:      "glob": "net/jpountz/util/*/*/liblz4-java.*"
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.1/
+web search: 
+web search: org.lz4 lz4-java 1.8.1 maven sources jar javadoc jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.1/
+web search: 
+web search: 
+codex
+The 1.8.1 `org.lz4` entry is a relocation-only Maven artifact: Maven Central lists the POM but not sources or javadocs under `org/lz4`, while the relocated artifact has source and javadoc jars. I’m checking whether the relocated Maven artifacts or the GitHub tag are the better versioned targets for this metadata entry.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.1/lz4-java-1.8.1.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+  <!--
+    The relocation POM for this version is being published
+    by Sonatype, Inc. with the collaboration and support
+    of the original LZ4 project and the maintainers of
+    the relocation target.
+  -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.lz4</groupId>
+  <artifactId>lz4-java</artifactId>
+  <version>1.8.1</version>
+  <distributionManagement>
+    <relocation>
+      <groupId>at.yawk.lz4</groupId>
+    </relocation>
+  </distributionManagement>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: at/yawk/lz4/lz4-java/1.8.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>at/yawk/lz4/lz4-java/1.8.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="lz4-java-1.8.1-javadoc.jar" title="lz4-java-1.8.1-javadoc.jar">lz4-java-1.8.1-javadoc.jar</a>                        2025-11-26 08:55    271487      
+<a href="lz4-java-1.8.1-javadoc.jar.asc" title="lz4-java-1.8.1-javadoc.jar.asc">lz4-java-1.8.1-javadoc.jar.asc</a>                    2025-11-26 08:55       833      
+<a href="lz4-java-1.8.1-javadoc.jar.md5" title="lz4-java-1.8.1-javadoc.jar.md5">lz4-java-1.8.1-javadoc.jar.md5</a>                    2025-11-26 08:55        32      
+<a href="lz4-java-1.8.1-javadoc.jar.sha1" title="lz4-java-1.8.1-javadoc.jar.sha1">lz4-java-1.8.1-javadoc.jar.sha1</a>                   2025-11-26 08:55        40      
+<a href="lz4-java-1.8.1-javadoc.jar.sha256" title="lz4-java-1.8.1-javadoc.jar.sha256">lz4-java-1.8.1-javadoc.jar.sha256</a>                 2025-11-26 08:55        64      
+<a href="lz4-java-1.8.1-javadoc.jar.sha512" title="lz4-java-1.8.1-javadoc.jar.sha512">lz4-java-1.8.1-javadoc.jar.sha512</a>                 2025-11-26 08:55       128      
+<a href="lz4-java-1.8.1-sources.jar" title="lz4-java-1.8.1-sources.jar">lz4-java-1.8.1-sources.jar</a>                        2025-11-26 08:55    652114      
+<a href="lz4-java-1.8.1-sources.jar.asc" title="lz4-java-1.8.1-sources.jar.asc">lz4-java-1.8.1-sources.jar.asc</a>                    2025-11-26 08:55       833      
+<a href="lz4-java-1.8.1-sources.jar.md5" title="lz4-java-1.8.1-sources.jar.md5">lz4-java-1.8.1-sources.jar.md5</a>                    2025-11-26 08:55        32      
+<a href="lz4-java-1.8.1-sources.jar.sha1" title="lz4-java-1.8.1-sources.jar.sha1">lz4-java-1.8.1-sources.jar.sha1</a>                   2025-11-26 08:55        40      
+<a href="lz4-java-1.8.1-sources.jar.sha256" title="lz4-java-1.8.1-sources.jar.sha256">lz4-java-1.8.1-sources.jar.sha256</a>                 2025-11-26 08:55        64      
+<a href="lz4-java-1.8.1-sources.jar.sha512" title="lz4-java-1.8.1-sources.jar.sha512">lz4-java-1.8.1-sources.jar.sha512</a>                 2025-11-26 08:55       128      
+<a href="lz4-java-1.8.1.jar" title="lz4-java-1.8.1.jar">lz4-java-1.8.1.jar</a>                                2025-11-26 08:55    683071      
+<a href="lz4-java-1.8.1.jar.asc" title="lz4-java-1.8.1.jar.asc">lz4-java-1.8.1.jar.asc</a>                            2025-11-26 08:55       833      
+<a href="lz4-java-1.8.1.jar.md5" title="lz4-java-1.8.1.jar.md5">lz4-java-1.8.1.jar.md5</a>                            2025-11-26 08:55        32      
+<a href="lz4-java-1.8.1.jar.sha1" title="lz4-java-1.8.1.jar.sha1">lz4-java-1.8.1.jar.sha1</a>                           2025-11-26 08:55        40      
+<a href="lz4-java-1.8.1.jar.sha256" title="lz4-java-1.8.1.jar.sha256">lz4-java-1.8.1.jar.sha256</a>                         2025-11-26 08:55        64      
+<a href="lz4-java-1.8.1.jar.sha512" title="lz4-java-1.8.1.jar.sha512">lz4-java-1.8.1.jar.sha512</a>                         2025-11-26 08:55       128      
+<a href="lz4-java-1.8.1.module" title="lz4-java-1.8.1.module">lz4-java-1.8.1.module</a>                             2025-11-26 08:55      4374      
+<a href="lz4-java-1.8.1.module.asc" title="lz4-java-1.8.1.module.asc">lz4-java-1.8.1.module.asc</a>                         2025-11-26 08:55       833      
+<a href="lz4-java-1.8.1.module.md5" title="lz4-java-1.8.1.module.md5">lz4-java-1.8.1.module.md5</a>                         2025-11-26 08:55        32      
+<a href="lz4-java-1.8.1.module.sha1" title="lz4-java-1.8.1.module.sha1">lz4-java-1.8.1.module.sha1</a>                        2025-11-26 08:55        40      
+<a href="lz4-java-1.8.1.module.sha256" title="lz4-java-1.8.1.module.sha256">lz4-java-1.8.1.module.sha256</a>                      2025-11-26 08:55        64      
+<a href="lz4-java-1.8.1.module.sha512" title="lz4-java-1.8.1.module.sha512">lz4-java-1.8.1.module.sha512</a>                      2025-11-26 08:55       128      
+<a href="lz4-java-1.8.1.pom" title="lz4-java-1.8.1.pom">lz4-java-1.8.1.pom</a>                                2025-11-26 08:55     10654      
+<a href="lz4-java-1.8.1.pom.asc" title="lz4-java-1.8.1.pom.asc">lz4-java-1.8.1.pom.asc</a>                            2025-11-26 08:55       833      
+<a href="lz4-java-1.8.1.pom.md5" title="lz4-java-1.8.1.pom.md5">lz4-java-1.8.1.pom.md5</a>                            2025-11-26 08:55        32      
+<a href="lz4-java-1.8.1.pom.sha1" title="lz4-java-1.8.1.pom.sha1">lz4-java-1.8.1.pom.sha1</a>                           2025-11-26 08:55        40      
+<a href="lz4-java-1.8.1.pom.sha256" title="lz4-java-1.8.1.pom.sha256">lz4-java-1.8.1.pom.sha256</a>                         2025-11-26 08:55        64      
+<a href="lz4-java-1.8.1.pom.sha512" title="lz4-java-1.8.1.pom.sha512">lz4-java-1.8.1.pom.sha512</a>                         2025-11-26 08:55       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/lz4/lz4-java/tree/1.8.1 | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/lz4/lz4-java/tree/1.8.1/src/test | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14
+ succeeded in 298ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Fri, 05 Jun 2026 22:01:34 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=AttFNpYiTRfSlRt4RHAG596uoX3sNTIXUWUvMw%2BigRuVYYn2W2IDsHqvRxikA%2Fk0dympPuAhnXQRhZKJ2%2Fq9bCu0NcT%2BkOtaAFcZ%2FXo%2FBCPvg6KWztwdM06QlhYXbw6y8B1BcPE6wdN9lhejAI8MjOCUkJlyktVr9Un0V2YG6puq0soIlOEB70yYBGlNyuYeeNiD%2BuILis3iTqtTpgwBwhdHg962PTbLXj0hT5ltK5wGTJlcjn8RtfBs2ClrF1wthKlitcvm1tnb4hOy9pMm2g%3D%3D--rmRCt%2Fw%2FSBQZDA1X--v%2BrsFH5rmepw5LhyTpT9eQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.389104554.1780696894; expires=Sat, 05 Jun 2027 22:01:34 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 05 Jun 2027 22:01:34 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6209:3978A:1B1DE6B:14D3BC2:6A23473E
+
+
+ succeeded in 436ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Fri, 05 Jun 2026 22:01:34 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=T%2F3VjVnLaz7VG1a4LDl4gl5T0Djzgzirec9a5fDuX5AIQ0CHB7YxD9Q2eANscfCZrEd79Vrg9MQOuQ9ZhlHBIhZ97NST4%2B0y0%2Be4K9OAfehfO45keTQnMlDK6sEXr%2F1AMqKamRSz%2FrSRAsAauiCfgtONH3HY1TUXz3OKWG6eMXZJ69GTwAjFgF%2FCWM6JjKHPx%2BRy94QD%2FgN0MAAV8ifXJGt%2BDI4L8aPnORnSDflSSH3ZsJ6bQxAZKyFSgRptRcZRpQclcgBuq75OSeQ6snD9LA%3D%3D--%2B04uRbRg337Dq9ug--OlcpJGmAys69ZAkl0ivqQg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.722041900.1780696894; expires=Sat, 05 Jun 2027 22:01:34 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 05 Jun 2027 22:01:34 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6205:604D:1A4E06C:14355E4:6A23473E
+
+
+codex
+GitHub does not expose a `1.8.1` tag path, so I’m checking tag naming and Maven POM metadata next. For this entry, a `$version$` template is only acceptable if rendering `1.8.1` actually resolves.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion> <!-- do_not_remove: published-with-gradle-metadata -->
+  <groupId>at.yawk.lz4</groupId>
+  <artifactId>lz4-java</artifactId>
+  <version>1.8.1</version>
+  <name>LZ4 Java Compression</name>
+  <description>Java bindings and pure Java implementations of LZ4 and XXHash</description>
+  <url>https://github.com/lz4/lz4-java</url>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>jpountz</id>
+      <name>Adrien Grand</name>
+      <email>jpountz@gmail.com</email>
+    </developer>
+    <developer>
+      <id>odaira</id>
+      <name>Rei Odaira</name>
+      <email>Rei.Odaira@gmail.com</email>
+    </developer>
+    <developer>
+      <id>yawkat</id>
+      <name>Jonas Konrad</name>
+      <email>me@yawk.at</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>https://github.com/yawkat/lz4-java.git</connection>
+    <developerConnection>git@github.com:yawkat/lz4-java.git</developerConnection>
+    <tag>d041c28d3d4cd734d7c238206a27fd4768abb21d</tag>
+    <url>https://github.com/yawkat/lz4-java</url>
+  </scm>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.build.outputTimestamp>1980-01-01T00:00:02Z</project.build.outputTimestamp>
+    <generated.sources.dir>${project.build.directory}/generated-sources/mvel</generated.sources.dir>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <version>5.11.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-launcher</artifactId>
+      <version>1.11.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.carrotsearch.randomizedtesting</groupId>
+      <artifactId>randomizedtesting-runner</artifactId>
+      <version>2.7.7</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <sourceDirectory>${project.basedir}/src/java</sourceDirectory>
+    <testSourceDirectory>${project.basedir}/src/test</testSourceDirectory>
+    <resources>
+      <resource>
+        <filtering>false</filtering>
+        <directory>${project.basedir}/src/resources</directory>
+      </resource>
+    </resources>
+    <testResources>
+      <testResource>
+        <filtering>false</filtering>
+        <directory>${project.basedir}/src/test-resources</directory>
+      </testResource>
+    </testResources>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.6.0</version>
+        <executions>
+          <execution>
+            <id>add-extra-source-roots</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${project.basedir}/src/java-unsafe</source>
+                <source>${generated.sources.dir}</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.11.0</version>
+        <executions>
+          <execution>
+            <id>default-compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <source>1.7</source>
+              <target>1.7</target>
+              <encoding>${project.build.sourceEncoding}</encoding>
+              <debug>true</debug>
+              <fork>true</fork>
+              <jdkToolchain>
+                <version>7</version>
+              </jdkToolchain>
+            </configuration>
+          </execution>
+          <execution>
+            <id>default-testCompile</id>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <configuration>
+              <release>21</release>
+              <encoding>${project.build.sourceEncoding}</encoding>
+              <debug>true</debug>
+              <fork>true</fork>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.4.1</version>
+        <configuration>
+          <archive>
+            <addMavenDescriptor>false</addMavenDescriptor>
+            <manifestEntries>
+              <Automatic-Module-Name>org.lz4.java</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>mvel-generate-sources</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <property name="out.dir" value="${generated.sources.dir}" />
+                <property environment="env" />
+                <java fork="true" classname="org.mvel2.sh.Main" failonerror="true" dir="${project.basedir}/src/build/source_templates">
+                  <sysproperty value="${generated.sources.dir}" key="out.dir" />
+                  <classpath refid="maven.plugin.classpath" />
+                  <arg value="${project.basedir}/src/build/gen_sources.mvel" />
+                </java>
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>bnd-wrap-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <property name="packages.version" value="${project.version}" />
+                <property name="ivy.revision" value="${project.version}" />
+                <property name="-noextraheaders" value="true" />
+                <property name="-reproducible" value="true" />
+                <taskdef resource="aQute/bnd/ant/taskdef.properties" classpathref="maven.plugin.classpath" />
+                <bndwrap output="${project.build.directory}/${project.build.finalName}-wrapped.jar" trace="true" definitions="${project.basedir}">
+                  <fileset includes="${project.build.finalName}.jar" dir="${project.build.directory}" />
+                </bndwrap>
+                <delete file="${project.build.directory}/${project.build.finalName}.jar" />
+                <move file="${project.build.directory}/${project.build.finalName}-wrapped.jar" tofile="${project.build.directory}/${project.build.finalName}.jar" />
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>biz.aQute.bnd</groupId>
+            <artifactId>biz.aQute.bnd.ant</artifactId>
+            <version>7.1.0</version>
+          </dependency>
+          <dependency>
+            <groupId>org.mvel</groupId>
+            <artifactId>mvel2</artifactId>
+            <version>2.5.2.Final</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.2.5</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/lz4/lz4-java/tags?per_page=100' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1.module | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14
+ succeeded in 250ms:
+[
+  {
+    "name": "1.8.0",
+    "zipball_url": "https://api.github.com/repos/lz4/lz4-java/zipball/refs/tags/1.8.0",
+    "tarball_url": "https://api.github.com/repos/lz4/lz4-java/tarball/refs/tags/1.8.0",
+    "commit": {
+      "sha": "78eae489e8163e4df56735a79dd8ef9c4f4ec056",
+      "url": "https://api.github.com/repos/lz4/lz4-java/commits/78eae489e8163e4df56735a79dd8ef9c4f4ec056"
+    },
+    "node_id": "MDM6UmVmNTA5OTQ1MzpyZWZzL3RhZ3MvMS44LjA="
+  },
+  {
+    "name": "1.7.1",
+    "zipball_url": "https://api.github.com/repos/lz4/lz4-java/zipball/refs/tags/1.7.1",
+    "tarball_url": "https://api.github.com/repos/lz4/lz4-java/tarball/refs/tags/1.7.1",
+    "commit": {
+      "sha": "45639f68a3c46df4ddb17ec28ce05738272e3349",
+      "url": "https://api.github.com/repos/lz4/lz4-java/commits/45639f68a3c46df4ddb17ec28ce05738272e3349"
+    },
+    "node_id": "MDM6UmVmNTA5OTQ1MzpyZWZzL3RhZ3MvMS43LjE="
+  },
+  {
+    "name": "1.7.0",
+    "zipball_url": "https://api.github.com/repos/lz4/lz4-java/zipball/refs/tags/1.7.0",
+    "tarball_url": "https://api.github.com/repos/lz4/lz4-java/tarball/refs/tags/1.7.0",
+    "commit": {
+      "sha": "86e04161365a859eddbcf5c7ae6d21e746ed0296",
+      "url": "https://api.github.com/repos/lz4/lz4-java/commits/86e04161365a859eddbcf5c7ae6d21e746ed0296"
+    },
+    "node_id": "MDM6UmVmNTA5OTQ1MzpyZWZzL3RhZ3MvMS43LjA="
+  },
+  {
+    "name": "1.6.0",
+    "zipball_url": "https://api.github.com/repos/lz4/lz4-java/zipball/refs/tags/1.6.0",
+    "tarball_url": "https://api.github.com/repos/lz4/lz4-java/tarball/refs/tags/1.6.0",
+    "commit": {
+      "sha": "e1440ab98429ce52f86265061aefaaad06c93514",
+      "url": "https://api.github.com/repos/lz4/lz4-java/commits/e1440ab98429ce52f86265061aefaaad06c93514"
+    },
+    "node_id": "MDM6UmVmNTA5OTQ1MzpyZWZzL3RhZ3MvMS42LjA="
+  },
+  {
+    "name": "1.5.1",
+    "zipball_url": "https://api.github.com/repos/lz4/lz4-java/zipball/refs/tags/1.5.1",
+    "tarball_url": "https://api.github.com/repos/lz4/lz4-java/tarball/refs/tags/1.5.1",
+    "commit": {
+      "sha": "1320a549699d8e57b0b8f5bd540d2e11b277b5f6",
+      "url": "https://api.github.com/repos/lz4/lz4-java/commits/1320a549699d8e57b0b8f5bd540d2e11b277b5f6"
+    },
+    "node_id": "MDM6UmVmNTA5OTQ1MzpyZWZzL3RhZ3MvMS41LjE="
+  },
+  {
+    "name": "1.5.0",
+    "zipball_url": "https://api.github.com/repos/lz4/lz4-java/zipball/refs/tags/1.5.0",
+    "tarball_url": "https://api.github.com/repos/lz4/lz4-java/tarball/refs/tags/1.5.0",
+    "commit": {
+      "sha": "16ec10dc369420e1790e3ca6156e7013753c683d",
+      "url": "https://api.github.com/repos/lz4/lz4-java/commits/16ec10dc369420e1790e3ca6156e7013753c683d"
+    },
+    "node_id": "MDM6UmVmNTA5OTQ1MzpyZWZzL3RhZ3MvMS41LjA="
+  },
+  {
+    "name": "1.4.1",
+    "zipball_url": "https://api.github.com/repos/lz4/lz4-java/zipball/refs/tags/1.4.1",
+    "tarball_url": "https://api.github.com/repos/lz4/lz4-java/tarball/refs/tags/1.4.1",
+    "commit": {
+      "sha": "02e53cb470bed939b69ddcc8dfe291d5e6428e38",
+      "url": "https://api.github.com/repos/lz4/lz4-java/commits/02e53cb470bed939b69ddcc8dfe291d5e6428e38"
+    },
+    "node_id": "MDM6UmVmNTA5OTQ1MzpyZWZzL3RhZ3MvMS40LjE="
+  },
+  {
+    "name": "1.4.0",
+    "zipball_url": "https://api.github.com/repos/lz4/lz4-java/zipball/refs/tags/1.4.0",
+    "tarball_url": "https://api.github.com/repos/lz4/lz4-java/tarball/refs/tags/1.4.0",
+    "commit": {
+      "sha": "6d4693f56253fcddfad7b441bb8d917b182efa2d",
+      "url": "https://api.github.com/repos/lz4/lz4-java/commits/6d4693f56253fcddfad7b441bb8d917b182efa2d"
+    },
+    "node_id": "MDM6UmVmNTA5OTQ1MzpyZWZzL3RhZ3MvMS40LjA="
+  },
+  {
+    "name": "1.3.0",
+    "zipball_url": "https://api.github.com/repos/lz4/lz4-java/zipball/refs/tags/1.3.0",
+    "tarball_url": "https://api.github.com/repos/lz4/lz4-java/tarball/refs/tags/1.3.0",
+    "commit": {
+      "sha": "4ebcf3438cd39d5eca42e499dc9659d22419dcb5",
+      "url": "https://api.github.com/repos/lz4/lz4-java/commits/4ebcf3438cd39d5eca42e499dc9659d22419dcb5"
+    },
+    "node_id": "MDM6UmVmNTA5OTQ1MzpyZWZzL3RhZ3MvMS4zLjA="
+  },
+  {
+    "name": "1.2.0",
+    "zipball_url": "https://api.github.com/repos/lz4/lz4-java/zipball/refs/tags/1.2.0",
+    "tarball_url": "https://api.github.com/repos/lz4/lz4-java/tarball/refs/tags/1.2.0",
+    "commit": {
+      "sha": "a8129ca524a7ede5b4b04cce3a43977dbe62b8a2",
+      "url": "https://api.github.com/repos/lz4/lz4-java/commits/a8129ca524a7ede5b4b04cce3a43977dbe62b8a2"
+    },
+    "node_id": "MDM6UmVmNTA5OTQ1MzpyZWZzL3RhZ3MvMS4yLjA="
+  },
+  {
+    "name": "1.0.0",
+    "zipball_url": "https://api.github.com/repos/lz4/lz4-java/zipball/refs/tags/1.0.0",
+    "tarball_url": "https://api.github.com/repos/lz4/lz4-java/tarball/refs/tags/1.0.0",
+    "commit": {
+      "sha": "8dfdc1f631c81a2ae080fb16e13a3c02b2fc1d39",
+      "url": "https://api.github.com/repos/lz4/lz4-java/commits/8dfdc1f631c81a2ae080fb16e13a3c02b2fc1d39"
+    },
+    "node_id": "MDM6UmVmNTA5OTQ1MzpyZWZzL3RhZ3MvMS4wLjA="
+  }
+]
+
+ succeeded in 272ms:
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "at.yawk.lz4",
+    "module": "lz4-java",
+    "version": "1.8.1",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [],
+      "files": [
+        {
+          "name": "lz4-java-1.8.1.jar",
+          "url": "lz4-java-1.8.1.jar",
+          "size": 683071,
+          "sha512": "db6befaba00ebe1f68632683711271222b237d6b2ba8762e9886deb8de3ff2070a12b6125240179c6332ad231a4b8925e3c0479914b66e776679725ba6d9830b",
+          "sha256": "1de8ff91b90fba9d4896b8617ed3594c2e4390d321d5a92c34f80e62e406c1b0",
+          "sha1": "1f30a180ee04ccd53339a716aec13cae60a013b5",
+          "md5": "e6739b208e974a11b6c653ececb0443d"
+        }
+      ],
+      "capabilities": [
+        {
+          "group": "at.yawk.lz4",
+          "name": "lz4-java",
+          "version": "1.8.1"
+        },
+        {
+          "group": "org.lz4",
+          "name": "lz4-java",
+          "version": "1.8.1"
+        },
+        {
+          "group": "org.lz4",
+          "name": "lz4-pure-java",
+          "version": "1.8.1"
+        },
+        {
+          "group": "net.jpountz.lz4",
+          "name": "lz4",
+          "version": "1.8.1"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [],
+      "files": [
+        {
+          "name": "lz4-java-1.8.1.jar",
+          "url": "lz4-java-1.8.1.jar",
+          "size": 683071,
+          "sha512": "db6befaba00ebe1f68632683711271222b237d6b2ba8762e9886deb8de3ff2070a12b6125240179c6332ad231a4b8925e3c0479914b66e776679725ba6d9830b",
+          "sha256": "1de8ff91b90fba9d4896b8617ed3594c2e4390d321d5a92c34f80e62e406c1b0",
+          "sha1": "1f30a180ee04ccd53339a716aec13cae60a013b5",
+          "md5": "e6739b208e974a11b6c653ececb0443d"
+        }
+      ],
+      "capabilities": [
+        {
+          "group": "at.yawk.lz4",
+          "name": "lz4-java",
+          "version": "1.8.1"
+        },
+        {
+          "group": "org.lz4",
+          "name": "lz4-java",
+          "version": "1.8.1"
+        },
+        {
+          "group": "org.lz4",
+          "name": "lz4-pure-java",
+          "version": "1.8.1"
+        },
+        {
+          "group": "net.jpountz.lz4",
+          "name": "lz4",
+          "version": "1.8.1"
+        }
+      ]
+    },
+    {
+      "name": "javadocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [],
+      "files": [
+        {
+          "name": "lz4-java-1.8.1-javadoc.jar",
+          "url": "lz4-java-1.8.1-javadoc.jar",
+          "size": 271487,
+          "sha512": "b1b66e9ba182899f3e63745138cb301119a583efe652f173213d2d5f42f472c94ce94a39e4c2df4160f0599b46c06e8609ed02c3a11d28d31954cca591476faa",
+          "sha256": "b51b0ecef3e1076ac52774f47e88e5fd841ec6e3a156d5c74914cdefe7a491aa",
+          "sha1": "fab6550c7a439b58972a2dce0b8f2d586214ac96",
+          "md5": "be18f77da9de057743983f7982e587ac"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [],
+      "files": [
+        {
+          "name": "lz4-java-1.8.1-sources.jar",
+          "url": "lz4-java-1.8.1-sources.jar",
+          "size": 652114,
+          "sha512": "f4e2ec7ed21ea3084c495b735f03e2be2b5bae1190b2a60aeabc0efc5431ff4b6c8f9df1cc0cbe9fa083e22d37c445ae32d9db51ee67bd1b4c61802933142a2c",
+          "sha256": "04bac11c17cba9754404d82e15400c86677a04030492ac21ef32ad9f6f0d46e8",
+          "sha1": "0e67448aca8092b3eb88155afecb755c03cd43b2",
+          "md5": "124053602573a2643f7e9f83eef17679"
+        }
+      ]
+    }
+  ]
+}
+
+codex
+The relocated POM keeps the project URL as `https://github.com/lz4/lz4-java` but its SCM URL points to the publishing fork. I’m verifying the fork’s exact tag and test path because the source and test links need to target the right 1.8.1 code.
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/yawkat/lz4-java/tree/1.8.1/src/test | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/yawkat/lz4-java/tags?per_page=100' | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/yawkat/lz4-java/tree/d041c28d3d4cd734d7c238206a27fd4768abb21d/src/test | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/yawkat/lz4-java/tree/d041c28d3d4cd734d7c238206a27fd4768abb21d | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14
+ succeeded in 188ms:
+[
+  {
+    "name": "v1.11.0",
+    "zipball_url": "https://api.github.com/repos/yawkat/lz4-java/zipball/refs/tags/v1.11.0",
+    "tarball_url": "https://api.github.com/repos/yawkat/lz4-java/tarball/refs/tags/v1.11.0",
+    "commit": {
+      "sha": "5049a27b0c5ed288d68a7f81f414fe3369f05e2b",
+      "url": "https://api.github.com/repos/yawkat/lz4-java/commits/5049a27b0c5ed288d68a7f81f414fe3369f05e2b"
+    },
+    "node_id": "REF_kwDOPiPyZ7FyZWZzL3RhZ3MvdjEuMTEuMA"
+  },
+  {
+    "name": "v1.10.4",
+    "zipball_url": "https://api.github.com/repos/yawkat/lz4-java/zipball/refs/tags/v1.10.4",
+    "tarball_url": "https://api.github.com/repos/yawkat/lz4-java/tarball/refs/tags/v1.10.4",
+    "commit": {
+      "sha": "de5e4dba57119f679be8fe016299ac0566a43501",
+      "url": "https://api.github.com/repos/yawkat/lz4-java/commits/de5e4dba57119f679be8fe016299ac0566a43501"
+    },
+    "node_id": "REF_kwDOPiPyZ7FyZWZzL3RhZ3MvdjEuMTAuNA"
+  },
+  {
+    "name": "v1.10.3",
+    "zipball_url": "https://api.github.com/repos/yawkat/lz4-java/zipball/refs/tags/v1.10.3",
+    "tarball_url": "https://api.github.com/repos/yawkat/lz4-java/tarball/refs/tags/v1.10.3",
+    "commit": {
+      "sha": "af57e230ed21ab71b227fc0ea038b10b5020deea",
+      "url": "https://api.github.com/repos/yawkat/lz4-java/commits/af57e230ed21ab71b227fc0ea038b10b5020deea"
+    },
+    "node_id": "REF_kwDOPiPyZ7FyZWZzL3RhZ3MvdjEuMTAuMw"
+  },
+  {
+    "name": "v1.10.2",
+    "zipball_url": "https://api.github.com/repos/yawkat/lz4-java/zipball/refs/tags/v1.10.2",
+    "tarball_url": "https://api.github.com/repos/yawkat/lz4-java/tarball/refs/tags/v1.10.2",
+    "commit": {
+      "sha": "e3aa42cc8367331993a616b1b0a00baeafb3247c",
+      "url": "https://api.github.com/repos/yawkat/lz4-java/commits/e3aa42cc8367331993a616b1b0a00baeafb3247c"
+    },
+    "node_id": "REF_kwDOPiPyZ7FyZWZzL3RhZ3MvdjEuMTAuMg"
+  },
+  {
+    "name": "v1.10.1",
+    "zipball_url": "https://api.github.com/repos/yawkat/lz4-java/zipball/refs/tags/v1.10.1",
+    "tarball_url": "https://api.github.com/repos/yawkat/lz4-java/tarball/refs/tags/v1.10.1",
+    "commit": {
+      "sha": "33d180cb70c4d93c80fb0dc3ab3002f457e93840",
+      "url": "https://api.github.com/repos/yawkat/lz4-java/commits/33d180cb70c4d93c80fb0dc3ab3002f457e93840"
+    },
+    "node_id": "REF_kwDOPiPyZ7FyZWZzL3RhZ3MvdjEuMTAuMQ"
+  },
+  {
+    "name": "v1.10.0",
+    "zipball_url": "https://api.github.com/repos/yawkat/lz4-java/zipball/refs/tags/v1.10.0",
+    "tarball_url": "https://api.github.com/repos/yawkat/lz4-java/tarball/refs/tags/v1.10.0",
+    "commit": {
+      "sha": "d2d01a7330c4c4a91d99526f01b3a288ac4b1cd0",
+      "url": "https://api.github.com/repos/yawkat/lz4-java/commits/d2d01a7330c4c4a91d99526f01b3a288ac4b1cd0"
+    },
+    "node_id": "REF_kwDOPiPyZ7FyZWZzL3RhZ3MvdjEuMTAuMA"
+  },
+  {
+    "name": "v1.9.0",
+    "zipball_url": "https://api.github.com/repos/yawkat/lz4-java/zipball/refs/tags/v1.9.0",
+    "tarball_url": "https://api.github.com/repos/yawkat/lz4-java/tarball/refs/tags/v1.9.0",
+    "commit": {
+      "sha": "358ee5039f13005f57be6f4a77430e19ace04c61",
+      "url": "https://api.github.com/repos/yawkat/lz4-java/commits/358ee5039f13005f57be6f4a77430e19ace04c61"
+    },
+    "node_id": "REF_kwDOPiPyZ7ByZWZzL3RhZ3MvdjEuOS4w"
+  },
+  {
+    "name": "v1.8.1",
+    "zipball_url": "https://api.github.com/repos/yawkat/lz4-java/zipball/refs/tags/v1.8.1",
+    "tarball_url": "https://api.github.com/repos/yawkat/lz4-java/tarball/refs/tags/v1.8.1",
+    "commit": {
+      "sha": "d041c28d3d4cd734d7c238206a27fd4768abb21d",
+      "url": "https://api.github.com/repos/yawkat/lz4-java/commits/d041c28d3d4cd734d7c238206a27fd4768abb21d"
+    },
+    "node_id": "REF_kwDOPiPyZ7ByZWZzL3RhZ3MvdjEuOC4x"
+  },
+  {
+    "name": "1.8.0",
+    "zipball_url": "https://api.github.com/repos/yawkat/lz4-java/zipball/refs/tags/1.8.0",
+    "tarball_url": "https://api.github.com/repos/yawkat/lz4-java/tarball/refs/tags/1.8.0",
+    "commit": {
+      "sha": "78eae489e8163e4df56735a79dd8ef9c4f4ec056",
+      "url": "https://api.github.com/repos/yawkat/lz4-java/commits/78eae489e8163e4df56735a79dd8ef9c4f4ec056"
+    },
+    "node_id": "REF_kwDOPiPyZ69yZWZzL3RhZ3MvMS44LjA"
+  },
+  {
+    "name": "1.7.1",
+    "zipball_url": "https://api.github.com/repos/yawkat/lz4-java/zipball/refs/tags/1.7.1",
+    "tarball_url": "https://api.github.com/repos/yawkat/lz4-java/tarball/refs/tags/1.7.1",
+    "commit": {
+      "sha": "45639f68a3c46df4ddb17ec28ce05738272e3349",
+      "url": "https://api.github.com/repos/yawkat/lz4-java/commits/45639f68a3c46df4ddb17ec28ce05738272e3349"
+    },
+    "node_id": "REF_kwDOPiPyZ69yZWZzL3RhZ3MvMS43LjE"
+  },
+  {
+    "name": "1.7.0",
+    "zipball_url": "https://api.github.com/repos/yawkat/lz4-java/zipball/refs/tags/1.7.0",
+    "tarball_url": "https://api.github.com/repos/yawkat/lz4-java/tarball/refs/tags/1.7.0",
+    "commit": {
+      "sha": "86e04161365a859eddbcf5c7ae6d21e746ed0296",
+      "url": "https://api.github.com/repos/yawkat/lz4-java/commits/86e04161365a859eddbcf5c7ae6d21e746ed0296"
+    },
+    "node_id": "REF_kwDOPiPyZ69yZWZzL3RhZ3MvMS43LjA"
+  },
+  {
+    "name": "1.6.0",
+    "zipball_url": "https://api.github.com/repos/yawkat/lz4-java/zipball/refs/tags/1.6.0",
+    "tarball_url": "https://api.github.com/repos/yawkat/lz4-java/tarball/refs/tags/1.6.0",
+    "commit": {
+      "sha": "e1440ab98429ce52f86265061aefaaad06c93514",
+      "url": "https://api.github.com/repos/yawkat/lz4-java/commits/e1440ab98429ce52f86265061aefaaad06c93514"
+    },
+    "node_id": "REF_kwDOPiPyZ69yZWZzL3RhZ3MvMS42LjA"
+  },
+  {
+    "name": "1.5.1",
+    "zipball_url": "https://api.github.com/repos/yawkat/lz4-java/zipball/refs/tags/1.5.1",
+    "tarball_url": "https://api.github.com/repos/yawkat/lz4-java/tarball/refs/tags/1.5.1",
+    "commit": {
+      "sha": "1320a549699d8e57b0b8f5bd540d2e11b277b5f6",
+      "url": "https://api.github.com/repos/yawkat/lz4-java/commits/1320a549699d8e57b0b8f5bd540d2e11b277b5f6"
+    },
+    "node_id": "REF_kwDOPiPyZ69yZWZzL3RhZ3MvMS41LjE"
+  },
+  {
+    "name": "1.5.0",
+    "zipball_url": "https://api.github.com/repos/yawkat/lz4-java/zipball/refs/tags/1.5.0",
+    "tarball_url": "https://api.github.com/repos/yawkat/lz4-java/tarball/refs/tags/1.5.0",
+    "commit": {
+      "sha": "16ec10dc369420e1790e3ca6156e7013753c683d",
+      "url": "https://api.github.com/repos/yawkat/lz4-java/commits/16ec10dc369420e1790e3ca6156e7013753c683d"
+    },
+    "node_id": "REF_kwDOPiPyZ69yZWZzL3RhZ3MvMS41LjA"
+  },
+  {
+    "name": "1.4.1",
+    "zipball_url": "https://api.github.com/repos/yawkat/lz4-java/zipball/refs/tags/1.4.1",
+    "tarball_url": "https://api.github.com/repos/yawkat/lz4-java/tarball/refs/tags/1.4.1",
+    "commit": {
+      "sha": "02e53cb470bed939b69ddcc8dfe291d5e6428e38",
+      "url": "https://api.github.com/repos/yawkat/lz4-java/commits/02e53cb470bed939b69ddcc8dfe291d5e6428e38"
+    },
+    "node_id": "REF_kwDOPiPyZ69yZWZzL3RhZ3MvMS40LjE"
+  },
+  {
+    "name": "1.4.0",
+    "zipball_url": "https://api.github.com/repos/yawkat/lz4-java/zipball/refs/tags/1.4.0",
+    "tarball_url": "https://api.github.com/repos/yawkat/lz4-java/tarball/refs/tags/1.4.0",
+    "commit": {
+      "sha": "6d4693f56253fcddfad7b441bb8d917b182efa2d",
+      "url": "https://api.github.com/repos/yawkat/lz4-java/commits/6d4693f56253fcddfad7b441bb8d917b182efa2d"
+    },
+    "node_id": "REF_kwDOPiPyZ69yZWZzL3RhZ3MvMS40LjA"
+  },
+  {
+    "name": "1.3.0",
+    "zipball_url": "https://api.github.com/repos/yawkat/lz4-java/zipball/refs/tags/1.3.0",
+    "tarball_url": "https://api.github.com/repos/yawkat/lz4-java/tarball/refs/tags/1.3.0",
+    "commit": {
+      "sha": "4ebcf3438cd39d5eca42e499dc9659d22419dcb5",
+      "url": "https://api.github.com/repos/yawkat/lz4-java/commits/4ebcf3438cd39d5eca42e499dc9659d22419dcb5"
+    },
+    "node_id": "REF_kwDOPiPyZ69yZWZzL3RhZ3MvMS4zLjA"
+  },
+  {
+    "name": "1.2.0",
+    "zipball_url": "https://api.github.com/repos/yawkat/lz4-java/zipball/refs/tags/1.2.0",
+    "tarball_url": "https://api.github.com/repos/yawkat/lz4-java/tarball/refs/tags/1.2.0",
+    "commit": {
+      "sha": "a8129ca524a7ede5b4b04cce3a43977dbe62b8a2",
+      "url": "https://api.github.com/repos/yawkat/lz4-java/commits/a8129ca524a7ede5b4b04cce3a43977dbe62b8a2"
+    },
+    "node_id": "REF_kwDOPiPyZ69yZWZzL3RhZ3MvMS4yLjA"
+  },
+  {
+    "name": "1.0.0",
+    "zipball_url": "https://api.github.com/repos/yawkat/lz4-java/zipball/refs/tags/1.0.0",
+    "tarball_url": "https://api.github.com/repos/yawkat/lz4-java/tarball/refs/tags/1.0.0",
+    "commit": {
+      "sha": "8dfdc1f631c81a2ae080fb16e13a3c02b2fc1d39",
+      "url": "https://api.github.com/repos/yawkat/lz4-java/commits/8dfdc1f631c81a2ae080fb16e13a3c02b2fc1d39"
+    },
+    "node_id": "REF_kwDOPiPyZ69yZWZzL3RhZ3MvMS4wLjA"
+  }
+]
+
+ succeeded in 544ms:
+HTTP/2 200 
+date: Fri, 05 Jun 2026 22:01:46 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"48f53d8d70bf7b1a9ed7485f4da9d63d"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=tFdxAwCI3K3%2BgaIuJMwQd9QNVoeML7CL86Zq7dQ3BKBKlKPy7rRFUXr7d%2F3dxnXul7q%2FCXdaS32O37tZ6odUG8kvAV0uPrXynG0BoLXK8up8yuAuZkwaoUfzQ1Pk%2BbKelssMjQk4bczuPOpirC%2Fe7qdarZfFHQYirkkSlUE7n%2BTWZg1z%2Bkd6ILZa%2FuWuDKn2uaqjmEUfLShtgjBVfOzpJK%2FPq0E782F4vjDvXkW%2F2RyJs11F5ns0sfTho8YlFNZcItmySmNEuoek2JCXQfUZ0A%3D%3D--fXdYDt6L8vqbOFu6--I8krAQTmQ5d%2BtkiKEwXorw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.41255703.1780696905; expires=Sat, 05 Jun 2027 22:01:45 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 05 Jun 2027 22:01:45 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 620C:1A5945:1A9595F:146900E:6A234749
+
+
+ succeeded in 665ms:
+HTTP/2 200 
+date: Fri, 05 Jun 2026 22:01:46 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"b7f54ba6756c2323b0b8471d2b334a1b"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=Y6IPTHl6CfAK01qSDXVQxjyJK2fArfCQpKuFncBavktWCE2nr7e%2FVpSAhSGzS00VX%2BHldlaeA9tLrIj4lUqOlOlmj%2Bl7C2ibb3qusZTrgTd8br2t44x%2BxlEfvd6ZlbCCh%2Fyyylc%2BcftdcNqLxKZu9HajyzUcnVH4M0oqV2f5e%2FkVrb4d2zOJUZIqrQXCVsXKlbumW5m1cS0hE2vfc%2FDSekwt1qx3R%2BJ346xCH9FA70L4Ha7eJJ3WIxTvBlEmf6ya7OLllN3Bt1jZyhj1Uq8YpQ%3D%3D--mEy2EJ0pvb4Yfm%2Bu--FhHQmlF2zEKyA3EhIN6eSQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1959272806.1780696905; expires=Sat, 05 Jun 2027 22:01:45 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 05 Jun 2027 22:01:45 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 621D:3BA8D0:1A48E03:1436AF7:6A234749
+
+
+ succeeded in 671ms:
+HTTP/2 200 
+date: Fri, 05 Jun 2026 22:01:46 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"12f417d702ecd1f9617163321b07f63f"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=doP2CaNwYKqXZf1OVwsGswSm2L%2Fl3e7bhkzTZxxb%2B%2BzYd5IjCZz6mANHosqP3sMO8AXJa%2F7ZJnBQWZq7dV6dZSpIGWSuNa3Xr2TwZxPnNMHKzWt2QMAAujW40BGXiFuPEHTqxDSsnCYyQFss4Pw%2FeNavngb83NU8gX%2BiPtPbUkwU8JOpK3esa5T10tcgjwS6YzVMDF6%2BufA0iKxs3251MOmuQWMSGo2GxC6nrMv6GsoCSZ%2BDcTbbDRSb8Mx3kgS5j3%2BPBtrWpohEsd66%2BqXYTA%3D%3D--TTsm4xrQI1jv9%2BM9--jzgbQsBvtwgznaOwDG0lXg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.460678905.1780696905; expires=Sat, 05 Jun 2027 22:01:45 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 05 Jun 2027 22:01:45 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6223:5754:B9D0C3:905899:6A234749
+
+
+codex
+The fork has a `v1.8.1` tag and `src/test` resolves there. Maven Central has sources and javadocs for the relocated `at.yawk.lz4` artifact, but I still need to confirm there is no published test jar before using GitHub for tests.
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-tests.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-test-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/yawkat/lz4-java/v1.8.1/README.md | sed -n '1,180p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/sources.jar" https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-sources.jar && jar tf "$tmp/sources.jar" | sed -n '"'1,120p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14
+ succeeded in 129ms:
+META-INF/MANIFEST.MF
+META-INF/
+net/
+net/jpountz/
+net/jpountz/lz4/
+net/jpountz/util/
+net/jpountz/xxhash/
+net/jpountz/util/darwin/
+net/jpountz/util/darwin/aarch64/
+net/jpountz/util/darwin/x86_64/
+net/jpountz/util/linux/
+net/jpountz/util/linux/aarch64/
+net/jpountz/util/linux/amd64/
+net/jpountz/util/linux/i386/
+net/jpountz/util/linux/ppc64le/
+net/jpountz/util/linux/s390x/
+net/jpountz/util/win32/
+net/jpountz/util/win32/amd64/
+META-INF/maven/
+META-INF/maven/at.yawk.lz4/
+META-INF/maven/at.yawk.lz4/lz4-java/
+net/jpountz/lz4/LZ4BlockInputStream.java
+net/jpountz/lz4/LZ4BlockOutputStream.java
+net/jpountz/lz4/LZ4ByteBufferUtils.java
+net/jpountz/lz4/LZ4Compressor.java
+net/jpountz/lz4/LZ4CompressorWithLength.java
+net/jpountz/lz4/LZ4Constants.java
+net/jpountz/lz4/LZ4Decompressor.java
+net/jpountz/lz4/LZ4DecompressorWithLength.java
+net/jpountz/lz4/LZ4Exception.java
+net/jpountz/lz4/LZ4Factory.java
+net/jpountz/lz4/LZ4FastDecompressor.java
+net/jpountz/lz4/LZ4FrameInputStream.java
+net/jpountz/lz4/LZ4FrameOutputStream.java
+net/jpountz/lz4/LZ4HCJNICompressor.java
+net/jpountz/lz4/LZ4JNI.java
+net/jpountz/lz4/LZ4JNICompressor.java
+net/jpountz/lz4/LZ4JNIFastDecompressor.java
+net/jpountz/lz4/LZ4JNISafeDecompressor.java
+net/jpountz/lz4/LZ4SafeDecompressor.java
+net/jpountz/lz4/LZ4SafeUtils.java
+net/jpountz/lz4/LZ4UnknownSizeDecompressor.java
+net/jpountz/lz4/LZ4Utils.java
+net/jpountz/lz4/package.html
+net/jpountz/util/ByteBufferUtils.java
+net/jpountz/util/Native.java
+net/jpountz/util/SafeUtils.java
+net/jpountz/util/Utils.java
+net/jpountz/util/package.html
+net/jpountz/xxhash/AbstractStreamingXXHash32Java.java
+net/jpountz/xxhash/AbstractStreamingXXHash64Java.java
+net/jpountz/xxhash/StreamingXXHash32.java
+net/jpountz/xxhash/StreamingXXHash32JNI.java
+net/jpountz/xxhash/StreamingXXHash64.java
+net/jpountz/xxhash/StreamingXXHash64JNI.java
+net/jpountz/xxhash/XXHash32.java
+net/jpountz/xxhash/XXHash32JNI.java
+net/jpountz/xxhash/XXHash64.java
+net/jpountz/xxhash/XXHash64JNI.java
+net/jpountz/xxhash/XXHashConstants.java
+net/jpountz/xxhash/XXHashFactory.java
+net/jpountz/xxhash/XXHashJNI.java
+net/jpountz/xxhash/package.html
+overview.html
+net/jpountz/lz4/LZ4UnsafeUtils.java
+net/jpountz/util/UnsafeUtils.java
+net/jpountz/lz4/LZ4HCJavaSafeCompressor.java
+net/jpountz/lz4/LZ4HCJavaUnsafeCompressor.java
+net/jpountz/lz4/LZ4JavaSafeCompressor.java
+net/jpountz/lz4/LZ4JavaSafeFastDecompressor.java
+net/jpountz/lz4/LZ4JavaSafeSafeDecompressor.java
+net/jpountz/lz4/LZ4JavaUnsafeCompressor.java
+net/jpountz/lz4/LZ4JavaUnsafeFastDecompressor.java
+net/jpountz/lz4/LZ4JavaUnsafeSafeDecompressor.java
+net/jpountz/xxhash/StreamingXXHash32JavaSafe.java
+net/jpountz/xxhash/StreamingXXHash32JavaUnsafe.java
+net/jpountz/xxhash/StreamingXXHash64JavaSafe.java
+net/jpountz/xxhash/StreamingXXHash64JavaUnsafe.java
+net/jpountz/xxhash/XXHash32JavaSafe.java
+net/jpountz/xxhash/XXHash32JavaUnsafe.java
+net/jpountz/xxhash/XXHash64JavaSafe.java
+net/jpountz/xxhash/XXHash64JavaUnsafe.java
+net/jpountz/util/darwin/aarch64/liblz4-java.dylib
+net/jpountz/util/darwin/x86_64/liblz4-java.dylib
+net/jpountz/util/linux/aarch64/liblz4-java.so
+net/jpountz/util/linux/amd64/liblz4-java.so
+net/jpountz/util/linux/i386/liblz4-java.so
+net/jpountz/util/linux/ppc64le/liblz4-java.so
+net/jpountz/util/linux/s390x/liblz4-java.so
+net/jpountz/util/win32/amd64/liblz4-java.so
+META-INF/maven/at.yawk.lz4/lz4-java/pom.xml
+META-INF/maven/at.yawk.lz4/lz4-java/pom.properties
+
+ succeeded in 172ms:
+# LZ4 Java
+
+LZ4 compression for Java, based on Yann Collet's work available at
+http://code.google.com/p/lz4/.
+
+This library provides access to two compression methods that both generate a
+valid LZ4 stream:
+ - fast scan (LZ4):
+   - low memory footprint (~ 16 KB),
+   - very fast (fast scan with skipping heuristics in case the input looks
+     incompressible),
+   - reasonable compression ratio (depending on the redundancy of the input).
+ - high compression (LZ4 HC):
+   - medium memory footprint (~ 256 KB),
+   - rather slow (~ 10 times slower than LZ4),
+   - good compression ratio (depending on the size and the redundancy of the
+     input).
+
+The streams produced by those 2 compression algorithms use the same compression
+format, are very fast to decompress and can be decompressed by the same
+decompressor instance.
+
+## Implementations
+
+For LZ4 compressors, LZ4 HC compressors and decompressors, 3 implementations are
+available:
+ - JNI bindings to the original C implementation by Yann Collet,
+ - a pure Java port of the compression and decompression algorithms,
+ - a Java port that uses the sun.misc.Unsafe API in order to achieve compression
+   and decompression speeds close to the C implementation.
+
+Have a look at LZ4Factory for more information.
+
+## Compatibility notes
+
+ - Compressors and decompressors are interchangeable: it is perfectly correct
+   to compress with the JNI bindings and to decompress with a Java port, or the
+   other way around.
+
+ - Compressors might not generate the same compressed streams on all platforms,
+   especially if CPU endianness differs, but the compressed streams can be
+   safely decompressed by any decompressor implementation on any platform.
+
+## Examples
+
+```java
+LZ4Factory factory = LZ4Factory.fastestInstance();
+
+byte[] data = "12345345234572".getBytes("UTF-8");
+final int decompressedLength = data.length;
+
+// compress data
+LZ4Compressor compressor = factory.fastCompressor();
+int maxCompressedLength = compressor.maxCompressedLength(decompressedLength);
+byte[] compressed = new byte[maxCompressedLength];
+int compressedLength = compressor.compress(data, 0, decompressedLength, compressed, 0, maxCompressedLength);
+
+// decompress data
+// - method 1: when the decompressed length is known
+LZ4FastDecompressor decompressor = factory.fastDecompressor();
+byte[] restored = new byte[decompressedLength];
+int compressedLength2 = decompressor.decompress(compressed, 0, restored, 0, decompressedLength);
+// compressedLength == compressedLength2
+
+// - method 2: when the compressed length is known (a little slower)
+// the destination buffer needs to be over-sized
+LZ4SafeDecompressor decompressor2 = factory.safeDecompressor();
+int decompressedLength2 = decompressor2.decompress(compressed, 0, compressedLength, restored, 0);
+// decompressedLength == decompressedLength2
+```
+
+```java
+byte[] data = "12345345234572".getBytes("UTF-8");
+final int decompressedLength = data.length;
+
+LZ4FrameOutputStream outStream = new LZ4FrameOutputStream(new FileOutputStream(new File("test.lz4")));
+outStream.write(data);
+outStream.close();
+
+byte[] restored = new byte[decompressedLength];
+LZ4FrameInputStream inStream = new LZ4FrameInputStream(new FileInputStream(new File("test.lz4")));
+inStream.read(restored);
+inStream.close();
+```
+
+# xxhash Java
+
+xxhash hashing for Java, based on Yann Collet's work available at https://github.com/Cyan4973/xxHash (old version
+http://code.google.com/p/xxhash/). xxhash is a non-cryptographic, extremly fast
+and high-quality ([SMHasher](http://code.google.com/p/smhasher/wiki/SMHasher)
+score of 10) hash function.
+
+## Implementations
+
+Similarly to LZ4, 3 implementations are available: JNI bindings, pure Java port
+and pure Java port that uses sun.misc.Unsafe.
+
+Have a look at XXHashFactory for more information.
+
+## Compatibility notes
+
+ - All implementation return the same hash for the same input bytes:
+   - on any JVM,
+   - on any platform (even if the endianness or integer size differs).
+
+## Example
+
+```java
+XXHashFactory factory = XXHashFactory.fastestInstance();
+
+byte[] data = "12345345234572".getBytes("UTF-8");
+ByteArrayInputStream in = new ByteArrayInputStream(data);
+
+int seed = 0x9747b28c; // used to initialize the hash value, use whatever
+                       // value you want, but always the same
+StreamingXXHash32 hash32 = factory.newStreamingHash32(seed);
+byte[] buf = new byte[8]; // for real-world usage, use a larger buffer, like 8192 bytes
+for (;;) {
+  int read = in.read(buf);
+  if (read == -1) {
+    break;
+  }
+  hash32.update(buf, 0, read);
+}
+int hash = hash32.getValue();
+```
+
+# Download
+
+You can download released artifacts from [Maven Central](https://search.maven.org/search?q=g:org.lz4%20a:lz4-java).
+
+You can download pure-Java lz4-java from [Maven Central](https://search.maven.org/search?q=g:org.lz4%20a:lz4-pure-java). These artifacts include the Safe and Unsafe Java versions but not JNI bindings. (Experimental)
+
+# Documentation
+
+ - [lz4](https://lz4.github.io/lz4-java/1.8.0/docs/net/jpountz/lz4/package-summary.html)
+ - [xxhash](https://lz4.github.io/lz4-java/1.8.0/docs/net/jpountz/xxhash/package-summary.html)
+ - [changelog](https://github.com/lz4/lz4-java/blob/master/CHANGES.md)
+
+# Performance
+
+Both lz4 and xxhash focus on speed. Although compression, decompression and
+hashing performance can depend a lot on the input (there are lies, damn lies
+and benchmarks), here are some benchmarks that try to give a sense of the
+speed at which they compress/decompress/hash bytes.
+
+ - [lz4 compression](https://lz4.github.io/lz4-java/1.8.0/lz4-compression-benchmark/)
+ - [lz4 decompression](https://lz4.github.io/lz4-java/1.8.0/lz4-decompression-benchmark/)
+ - [xxhash hashing](https://lz4.github.io/lz4-java/1.3.0/xxhash-benchmark/)
+
+# Build
+
+## Requirements
+
+ - JDK version 7 or newer,
+ - ant version 1.10.2 or newer,
+ - ivy.
+
+If ivy is not installed yet, ant can take care of it for you, just run
+`ant ivy-bootstrap`. The library will be installed under ${user.home}/.ant/lib.
+
+You might hit an error like the following when the ivy in ${user.home}/.ant/lib is old. You can delete it and then run `ant ivy-bootstrap` again to install the latest version.
+```
+[ivy:resolve] 		::::::::::::::::::::::::::::::::::::::::::::::
+[ivy:resolve] 		::          UNRESOLVED DEPENDENCIES         ::
+[ivy:resolve] 		::::::::::::::::::::::::::::::::::::::::::::::
+```
+
+## Instructions
+
+For lz4-java 1.5.0 or newer, first run `git submodule init` and then `git submodule update`
+to initialize the `lz4` submodule in `src/lz4`.
+
+Then run `ant`. It will:
+
+ - generate some Java source files in `build/java` from the templates that are
+   located under `src/build`,
+ - compile the lz4 and xxhash libraries and their JNI (Java Native Interface)
+   bindings,
+ - compile Java sources in `src/java` (normal sources), `src/java-unsafe`
+
+ succeeded in 216ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Fri, 05 Jun 2026 22:01:54 GMT
+content-type: text/html
+cf-ray: a07275609acaa625-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 219ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Fri, 05 Jun 2026 22:01:54 GMT
+content-type: text/html
+cf-ray: a07275609886be75-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+I’m going to write the 1.8.1 entry with Maven Central URLs for source and javadoc, the fork SCM root for the repository, and the `v$version$` GitHub tag path for tests. I’ll leave `language` absent because this is a Java library, not a Kotlin, Groovy, or Scala-specific artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14/metadata/org.lz4/lz4-java/index.json
+diff --git a/metadata/org.lz4/lz4-java/index.json b/metadata/org.lz4/lz4-java/index.json
+index 657d19f124ddab6b2e3260c16b9959b7cc23c780..e315e38339e4c3d2870b72b81009307b843056ec
+--- a/metadata/org.lz4/lz4-java/index.json
++++ b/metadata/org.lz4/lz4-java/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/$version$/lz4-java-$version$-sources.jar",
++    "repository-url" : "https://github.com/yawkat/lz4-java",
++    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/v$version$/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/$version$/lz4-java-$version$-javadoc.jar",
++    "description" : "lz4-java provides Java bindings and pure Java implementations of the LZ4 compression algorithm. It also includes xxHash hashing APIs and JNI, safe Java, and Unsafe-based implementations for fast compression, decompression, and hashing.",
+     "tested-versions" : [
+       "1.8.1"
+     ],
+
+diff --git a/metadata/org.lz4/lz4-java/index.json b/metadata/org.lz4/lz4-java/index.json
+index 657d19f124ddab6b2e3260c16b9959b7cc23c780..e315e38339e4c3d2870b72b81009307b843056ec
+--- a/metadata/org.lz4/lz4-java/index.json
++++ b/metadata/org.lz4/lz4-java/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/$version$/lz4-java-$version$-sources.jar",
++    "repository-url" : "https://github.com/yawkat/lz4-java",
++    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/v$version$/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/$version$/lz4-java-$version$-javadoc.jar",
++    "description" : "lz4-java provides Java bindings and pure Java implementations of the LZ4 compression algorithm. It also includes xxHash hashing APIs and JNI, safe Java, and Unsafe-based implementations for fast compression, decompression, and hashing.",
+     "tested-versions" : [
+       "1.8.1"
+     ],
+
+codex
+The metadata entry is edited. I’m doing two lightweight checks now: JSON parsing and rendered URL verification for the single tested version.
+exec
+/usr/bin/bash -lc 'jq . metadata/org.lz4/lz4-java/index.json >/dev/null' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.lz4/lz4-java/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14
+ succeeded in 0ms:
+diff --git i/metadata/org.lz4/lz4-java/index.json w/metadata/org.lz4/lz4-java/index.json
+index 657d19f124..e315e38339 100644
+--- i/metadata/org.lz4/lz4-java/index.json
++++ w/metadata/org.lz4/lz4-java/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/$version$/lz4-java-$version$-sources.jar",
++    "repository-url" : "https://github.com/yawkat/lz4-java",
++    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/v$version$/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/$version$/lz4-java-$version$-javadoc.jar",
++    "description" : "lz4-java provides Java bindings and pure Java implementations of the LZ4 compression algorithm. It also includes xxHash hashing APIs and JNI, safe Java, and Unsafe-based implementations for fast compression, decompression, and hashing.",
+     "tested-versions" : [
+       "1.8.1"
+     ],
+
+exec
+/usr/bin/bash -lc "for url in 'https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-sources.jar' 'https://github.com/yawkat/lz4-java' 'https://github.com/yawkat/lz4-java/tree/v1.8.1/src/test' 'https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-javadoc.jar'; do printf '%s ' \""'$url"; curl -fsSI "$url" | sed -n '"'1p'; done" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14
+diff --git a/metadata/org.lz4/lz4-java/index.json b/metadata/org.lz4/lz4-java/index.json
+index 657d19f124ddab6b2e3260c16b9959b7cc23c780..e315e38339e4c3d2870b72b81009307b843056ec
+--- a/metadata/org.lz4/lz4-java/index.json
++++ b/metadata/org.lz4/lz4-java/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/$version$/lz4-java-$version$-sources.jar",
++    "repository-url" : "https://github.com/yawkat/lz4-java",
++    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/v$version$/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/$version$/lz4-java-$version$-javadoc.jar",
++    "description" : "lz4-java provides Java bindings and pure Java implementations of the LZ4 compression algorithm. It also includes xxHash hashing APIs and JNI, safe Java, and Unsafe-based implementations for fast compression, decompression, and hashing.",
+     "tested-versions" : [
+       "1.8.1"
+     ],
+
+ succeeded in 1396ms:
+HTTP/2 200 
+https://github.com/yawkat/lz4-java/tree/v1.8.1/src/test HTTP/2 200 
+https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-javadoc.jar HTTP/2 200 
+
+codex
+The rendered URLs all return HTTP 200 and the JSON parses. I’ll run the repository’s targeted metadata validation for this coordinate as the final check.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.lz4:lz4-java:1.8.1 --stacktrace' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14
+diff --git a/metadata/org.lz4/lz4-java/index.json b/metadata/org.lz4/lz4-java/index.json
+index 657d19f124ddab6b2e3260c16b9959b7cc23c780..e315e38339e4c3d2870b72b81009307b843056ec
+--- a/metadata/org.lz4/lz4-java/index.json
++++ b/metadata/org.lz4/lz4-java/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/$version$/lz4-java-$version$-sources.jar",
++    "repository-url" : "https://github.com/yawkat/lz4-java",
++    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/v$version$/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/$version$/lz4-java-$version$-javadoc.jar",
++    "description" : "lz4-java provides Java bindings and pure Java implementations of the LZ4 compression algorithm. It also includes xxHash hashing APIs and JNI, safe Java, and Unsafe-based implementations for fast compression, decompression, and hashing.",
+     "tested-versions" : [
+       "1.8.1"
+     ],
+
+ exited 1 in 3616ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.lz4:lz4-java:1.8.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14/metadata/org.lz4/lz4-java/1.8.1/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.lz4:lz4-java:1.8.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14/metadata/org.lz4/lz4-java/1.8.1/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:146)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:131)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:45)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.lz4:lz4-java:1.8.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14/metadata/org.lz4/lz4-java/1.8.1/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 57 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 3s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/
+web search: 
+web search: site:github.com/yawkat/lz4-java/releases/tag/v1.8.1 lz4-java v1.8.1
+web search: 
+web search: https://central.sonatype.com/artifact/at.yawk.lz4/lz4-java/1.8.1
+codex
+Updated [metadata/org.lz4/lz4-java/index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14/metadata/org.lz4/lz4-java/index.json) for metadata version `1.8.1`.
+
+I filled `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and the required two-sentence `description`. I left `language` absent because this is a Java library, not a Kotlin, Groovy, or Scala-specific artifact; the selected source and javadoc URLs use the relocated Maven artifact that publishes the 1.8.1 source/javadoc jars, and the repository/test URLs use the SCM repo with `src/test`. ([repo1.maven.org](https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/))
+
+Verification:
+- `jq` JSON parse passed.
+- Rendered URLs for `1.8.1` all returned HTTP 200.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.lz4:lz4-java:1.8.1 --stacktrace` failed because `metadata/org.lz4/lz4-java/1.8.1/reachability-metadata.json` is missing, which is outside the requested URL/description fill.
+diff --git a/metadata/org.lz4/lz4-java/index.json b/metadata/org.lz4/lz4-java/index.json
+index 657d19f124ddab6b2e3260c16b9959b7cc23c780..e315e38339e4c3d2870b72b81009307b843056ec
+--- a/metadata/org.lz4/lz4-java/index.json
++++ b/metadata/org.lz4/lz4-java/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/$version$/lz4-java-$version$-sources.jar",
++    "repository-url" : "https://github.com/yawkat/lz4-java",
++    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/v$version$/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/$version$/lz4-java-$version$-javadoc.jar",
++    "description" : "lz4-java provides Java bindings and pure Java implementations of the LZ4 compression algorithm. It also includes xxHash hashing APIs and JNI, safe Java, and Unsafe-based implementations for fast compression, decompression, and hashing.",
+     "tested-versions" : [
+       "1.8.1"
+     ],
+
+tokens used
+70,992
+Updated [metadata/org.lz4/lz4-java/index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14/metadata/org.lz4/lz4-java/index.json) for metadata version `1.8.1`.
+
+I filled `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and the required two-sentence `description`. I left `language` absent because this is a Java library, not a Kotlin, Groovy, or Scala-specific artifact; the selected source and javadoc URLs use the relocated Maven artifact that publishes the 1.8.1 source/javadoc jars, and the repository/test URLs use the SCM repo with `src/test`. ([repo1.maven.org](https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/))
+
+Verification:
+- `jq` JSON parse passed.
+- Rendered URLs for `1.8.1` all returned HTTP 200.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.lz4:lz4-java:1.8.1 --stacktrace` failed because `metadata/org.lz4/lz4-java/1.8.1/reachability-metadata.json` is missing, which is outside the requested URL/description fill.
+Ran agent for org.lz4:lz4-java:1.8.1 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14/build/agent-url-discovery-logs/org.lz4-lz4-java-1.8.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1812-6e435f14/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 33s
+9 actionable tasks: 1 executed, 8 up-to-date
