@@ -131,8 +131,8 @@ public class PostgreSQLCopyParsedStatementTest {
                     name VARCHAR NOT NULL
                 );
                 COPY copy_statement_test.copied_people (id, name) FROM STDIN;
-                1	Ada
-                2	Grace
+                1\tAda
+                2\tGrace
                 \\.
                 """);
 
