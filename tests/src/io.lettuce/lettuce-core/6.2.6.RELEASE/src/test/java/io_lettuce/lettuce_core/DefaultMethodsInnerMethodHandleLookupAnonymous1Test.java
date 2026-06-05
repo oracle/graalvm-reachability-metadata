@@ -11,9 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
-import io.lettuce.core.dynamic.Commands;
 import io.lettuce.core.dynamic.RedisCommandFactory;
-import io.lettuce.core.dynamic.annotation.Command;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -37,11 +35,11 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 
-public class DefaultRedisCommandsMetadataTest {
+public class DefaultMethodsInnerMethodHandleLookupAnonymous1Test {
     private static final Duration COMMAND_TIMEOUT = Duration.ofSeconds(5);
 
     @Test
-    void dynamicCommandFactoryDiscoversInheritedCommandInterfaceMethods() throws Exception {
+    void dynamicCommandProxyInvokesDefaultInterfaceMethod() throws Exception {
         try (FakeRedisServer server = new FakeRedisServer()) {
             RedisClient client = RedisClient.create(server.redisUri());
             StatefulRedisConnection<String, String> connection = null;
@@ -50,38 +48,16 @@ public class DefaultRedisCommandsMetadataTest {
                 connection.setTimeout(COMMAND_TIMEOUT);
 
                 RedisCommandFactory factory = new RedisCommandFactory(connection);
-                InheritedCommands commands = factory.getCommands(InheritedCommands.class);
+                DefaultRedisCommandsMetadataTest.InheritedCommands commands =
+                        factory.getCommands(DefaultRedisCommandsMetadataTest.InheritedCommands.class);
 
-                assertThat(commands.setValue("metadata-key", "metadata-value")).isEqualTo("OK");
-                assertThat(commands.getValue("metadata-key")).isEqualTo("metadata-value");
-                assertThat(server.commands()).extracting(command -> command.get(0))
-                        .contains("COMMAND", "SET", "GET");
+                assertThat(commands.writeThenRead("metadata-key", "metadata-value")).isEqualTo("metadata-value");
+                assertThat(server.commands()).extracting(command -> command.get(0)).contains("COMMAND", "SET", "GET");
             } finally {
                 closeConnection(connection);
-                shutdown(client);
+                client.shutdown(Duration.ZERO, Duration.ofSeconds(2));
             }
         }
-    }
-
-    public interface BaseCommands extends Commands {
-
-        @Command("GET ?0")
-        String getValue(String key);
-
-        @Command("SET ?0 ?1")
-        String setValue(String key, String value);
-
-        default String writeThenRead(String key, String value) {
-            setValue(key, value);
-            return getValue(key);
-        }
-    }
-
-    public interface InheritedCommands extends BaseCommands {
-    }
-
-    private static void shutdown(RedisClient client) {
-        client.shutdown(Duration.ZERO, Duration.ofSeconds(2));
     }
 
     private static void closeConnection(StatefulRedisConnection<String, String> connection) {
@@ -101,7 +77,7 @@ public class DefaultRedisCommandsMetadataTest {
         FakeRedisServer() throws Exception {
             serverSocket = new ServerSocket(0, 50, InetAddress.getLoopbackAddress());
             serverSocket.setSoTimeout(500);
-            thread = new Thread(this::acceptConnections, "metadata-fake-redis-server");
+            thread = new Thread(this::acceptConnections, "default-method-fake-redis-server");
             thread.setDaemon(true);
             thread.start();
             assertThat(started.await(5, TimeUnit.SECONDS)).isTrue();
@@ -215,18 +191,18 @@ public class DefaultRedisCommandsMetadataTest {
                 case "COMMAND":
                     writeEmptyArray(output);
                     break;
-                case "AUTH":
-                case "CLIENT":
-                case "SELECT":
-                case "QUIT":
-                    writeSimple(output, "OK");
-                    break;
                 case "SET":
                     strings.put(command.get(1), command.get(2));
                     writeSimple(output, "OK");
                     break;
                 case "GET":
                     writeBulk(output, strings.get(command.get(1)));
+                    break;
+                case "AUTH":
+                case "CLIENT":
+                case "SELECT":
+                case "QUIT":
+                    writeSimple(output, "OK");
                     break;
                 default:
                     writeSimple(output, "OK");

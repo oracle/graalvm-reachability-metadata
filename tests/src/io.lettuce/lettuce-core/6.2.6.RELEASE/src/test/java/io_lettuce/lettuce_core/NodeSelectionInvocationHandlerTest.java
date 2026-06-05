@@ -8,12 +8,12 @@ package io_lettuce.lettuce_core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
-import io.lettuce.core.api.StatefulRedisConnection;
-import io.lettuce.core.dynamic.Commands;
-import io.lettuce.core.dynamic.RedisCommandFactory;
-import io.lettuce.core.dynamic.annotation.Command;
+import io.lettuce.core.cluster.RedisClusterClient;
+import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
+import io.lettuce.core.cluster.api.sync.Executions;
+import io.lettuce.core.cluster.api.sync.NodeSelection;
+import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -28,82 +28,58 @@ import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 
-public class DefaultRedisCommandsMetadataTest {
+public class NodeSelectionInvocationHandlerTest {
     private static final Duration COMMAND_TIMEOUT = Duration.ofSeconds(5);
 
     @Test
-    void dynamicCommandFactoryDiscoversInheritedCommandInterfaceMethods() throws Exception {
-        try (FakeRedisServer server = new FakeRedisServer()) {
-            RedisClient client = RedisClient.create(server.redisUri());
-            StatefulRedisConnection<String, String> connection = null;
+    void nodeSelectionCommandsInvokeAsyncNodeCommandForEachSelectedNode() throws Exception {
+        try (FakeRedisClusterServer server = new FakeRedisClusterServer()) {
+            RedisClusterClient client = RedisClusterClient.create(server.redisUri());
+            StatefulRedisClusterConnection<String, String> connection = null;
             try {
                 connection = client.connect();
                 connection.setTimeout(COMMAND_TIMEOUT);
+                RedisAdvancedClusterCommands<String, String> commands = connection.sync();
 
-                RedisCommandFactory factory = new RedisCommandFactory(connection);
-                InheritedCommands commands = factory.getCommands(InheritedCommands.class);
+                NodeSelection<String, String> selection = commands.nodes(node -> true);
+                Executions<String> pings = selection.commands().ping();
 
-                assertThat(commands.setValue("metadata-key", "metadata-value")).isEqualTo("OK");
-                assertThat(commands.getValue("metadata-key")).isEqualTo("metadata-value");
-                assertThat(server.commands()).extracting(command -> command.get(0))
-                        .contains("COMMAND", "SET", "GET");
+                assertThat(pings.nodes()).hasSize(1);
+                assertThat(pings.get(selection.node(0))).isEqualTo("PONG");
+                assertThat(server.commands()).extracting(command -> command.get(0)).contains("CLUSTER", "PING");
             } finally {
-                closeConnection(connection);
-                shutdown(client);
+                if (connection != null) {
+                    connection.close();
+                }
+                client.shutdown(Duration.ZERO, Duration.ofSeconds(2));
             }
         }
     }
 
-    public interface BaseCommands extends Commands {
+    private static final class FakeRedisClusterServer implements Closeable {
+        private static final String NODE_ID = "0000000000000000000000000000000000000001";
 
-        @Command("GET ?0")
-        String getValue(String key);
-
-        @Command("SET ?0 ?1")
-        String setValue(String key, String value);
-
-        default String writeThenRead(String key, String value) {
-            setValue(key, value);
-            return getValue(key);
-        }
-    }
-
-    public interface InheritedCommands extends BaseCommands {
-    }
-
-    private static void shutdown(RedisClient client) {
-        client.shutdown(Duration.ZERO, Duration.ofSeconds(2));
-    }
-
-    private static void closeConnection(StatefulRedisConnection<String, String> connection) {
-        if (connection != null) {
-            connection.close();
-        }
-    }
-
-    private static final class FakeRedisServer implements Closeable {
         private final ServerSocket serverSocket;
-        private final Thread thread;
+        private final Thread acceptThread;
         private final CountDownLatch started = new CountDownLatch(1);
+        private final ExecutorService clientExecutor = Executors.newCachedThreadPool();
         private final List<List<String>> commands = new CopyOnWriteArrayList<>();
-        private final Map<String, String> strings = Collections.synchronizedMap(new LinkedHashMap<>());
         private volatile boolean closed;
 
-        FakeRedisServer() throws Exception {
+        FakeRedisClusterServer() throws Exception {
             serverSocket = new ServerSocket(0, 50, InetAddress.getLoopbackAddress());
             serverSocket.setSoTimeout(500);
-            thread = new Thread(this::acceptConnections, "metadata-fake-redis-server");
-            thread.setDaemon(true);
-            thread.start();
+            acceptThread = new Thread(this::acceptConnections, "node-selection-fake-redis-cluster-server");
+            acceptThread.setDaemon(true);
+            acceptThread.start();
             assertThat(started.await(5, TimeUnit.SECONDS)).isTrue();
         }
 
@@ -122,7 +98,13 @@ public class DefaultRedisCommandsMetadataTest {
             closed = true;
             serverSocket.close();
             try {
-                thread.join(TimeUnit.SECONDS.toMillis(5));
+                acceptThread.join(TimeUnit.SECONDS.toMillis(5));
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            clientExecutor.shutdownNow();
+            try {
+                clientExecutor.awaitTermination(5, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
@@ -131,15 +113,26 @@ public class DefaultRedisCommandsMetadataTest {
         private void acceptConnections() {
             started.countDown();
             while (!closed) {
-                try (Socket socket = serverSocket.accept()) {
+                try {
+                    Socket socket = serverSocket.accept();
                     socket.setSoTimeout(5_000);
-                    handle(socket);
+                    clientExecutor.execute(() -> handleClient(socket));
                 } catch (SocketTimeoutException e) {
                     continue;
                 } catch (IOException e) {
                     if (!closed) {
                         throw new IllegalStateException(e);
                     }
+                }
+            }
+        }
+
+        private void handleClient(Socket socket) {
+            try (Socket client = socket) {
+                handle(client);
+            } catch (IOException e) {
+                if (!closed) {
+                    throw new IllegalStateException(e);
                 }
             }
         }
@@ -212,21 +205,18 @@ public class DefaultRedisCommandsMetadataTest {
                 case "HELLO":
                     writeHelloResponse(output);
                     break;
-                case "COMMAND":
-                    writeEmptyArray(output);
+                case "INFO":
+                    writeBulk(output, "connected_clients:1\nmaster_repl_offset:0\n");
+                    break;
+                case "CLUSTER":
+                    writeClusterResponse(output, command);
                     break;
                 case "AUTH":
                 case "CLIENT":
+                case "READONLY":
                 case "SELECT":
                 case "QUIT":
                     writeSimple(output, "OK");
-                    break;
-                case "SET":
-                    strings.put(command.get(1), command.get(2));
-                    writeSimple(output, "OK");
-                    break;
-                case "GET":
-                    writeBulk(output, strings.get(command.get(1)));
                     break;
                 default:
                     writeSimple(output, "OK");
@@ -234,12 +224,26 @@ public class DefaultRedisCommandsMetadataTest {
             }
         }
 
+        private void writeClusterResponse(OutputStream output, List<String> command) throws IOException {
+            if (command.size() > 1 && command.get(1).equalsIgnoreCase("NODES")) {
+                writeBulk(output, clusterNodes());
+                return;
+            }
+            writeSimple(output, "OK");
+        }
+
+        private String clusterNodes() {
+            return NODE_ID + " " + serverSocket.getInetAddress().getHostAddress() + ":" + serverSocket.getLocalPort()
+                    + "@" + (serverSocket.getLocalPort() + 10_000)
+                    + " myself,master - 0 0 1 connected 0-16383\n";
+        }
+
         private void writeHelloResponse(OutputStream output) throws IOException {
             output.write("%4\r\n".getBytes(StandardCharsets.UTF_8));
             writeSimple(output, "id");
             writeInteger(output, 1);
             writeSimple(output, "mode");
-            writeSimple(output, "standalone");
+            writeSimple(output, "cluster");
             writeSimple(output, "version");
             writeSimple(output, "7.0.0");
             writeSimple(output, "role");
@@ -263,10 +267,6 @@ public class DefaultRedisCommandsMetadataTest {
             output.write(("$" + bytes.length + "\r\n").getBytes(StandardCharsets.UTF_8));
             output.write(bytes);
             output.write("\r\n".getBytes(StandardCharsets.UTF_8));
-        }
-
-        private void writeEmptyArray(OutputStream output) throws IOException {
-            output.write("*0\r\n".getBytes(StandardCharsets.UTF_8));
         }
     }
 }
