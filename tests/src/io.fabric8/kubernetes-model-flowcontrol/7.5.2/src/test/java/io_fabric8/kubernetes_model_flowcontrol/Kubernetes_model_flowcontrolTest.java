@@ -18,6 +18,8 @@ import io.fabric8.kubernetes.api.model.flowcontrol.v1.PriorityLevelConfiguration
 import io.fabric8.kubernetes.api.model.flowcontrol.v1.PriorityLevelConfigurationBuilder;
 import io.fabric8.kubernetes.api.model.flowcontrol.v1.PriorityLevelConfigurationList;
 import io.fabric8.kubernetes.api.model.flowcontrol.v1.PriorityLevelConfigurationListBuilder;
+import io.fabric8.kubernetes.api.model.flowcontrol.v1.PriorityLevelConfigurationSpec;
+import io.fabric8.kubernetes.api.model.flowcontrol.v1.PriorityLevelConfigurationSpecBuilder;
 import io.fabric8.kubernetes.api.model.flowcontrol.v1.ResourcePolicyRule;
 import io.fabric8.kubernetes.api.model.flowcontrol.v1.ResourcePolicyRuleBuilder;
 import io.fabric8.kubernetes.api.model.flowcontrol.v1.Subject;
@@ -356,6 +358,73 @@ public class Kubernetes_model_flowcontrolTest {
                         beta2Json,
                         io.fabric8.kubernetes.api.model.flowcontrol.v1beta2.PriorityLevelConfiguration.class);
         assertThat(beta2RoundTripped).isEqualTo(beta2Configuration);
+    }
+
+    @Test
+    void createsMissingNestedSectionsWithEditOrNewHelpers() {
+        FlowSchema schema = new FlowSchemaBuilder()
+                .editOrNewMetadata()
+                    .withName("edit-or-new-schema")
+                    .addToLabels("source", "builder")
+                .endMetadata()
+                .editOrNewSpec()
+                    .withMatchingPrecedence(600)
+                    .editOrNewDistinguisherMethod()
+                        .withType("ByNamespace")
+                    .endDistinguisherMethod()
+                    .editOrNewPriorityLevelConfiguration()
+                        .withName("edit-or-new-priority")
+                    .endPriorityLevelConfiguration()
+                    .addNewRule()
+                        .addNewSubject()
+                            .withKind("Group")
+                            .withNewGroup("system:masters")
+                        .endSubject()
+                        .addNewResourceRule()
+                            .withVerbs("create", "update")
+                            .withApiGroups("apps")
+                            .withResources("deployments")
+                            .withNamespaces("admin")
+                        .endResourceRule()
+                    .endRule()
+                .endSpec()
+                .editOrNewStatus()
+                    .addNewCondition(
+                            "2024-01-01T00:00:00Z", "created by editOrNew", "AsExpected", "True", "Ready")
+                .endStatus()
+                .build();
+
+        assertThat(schema.getMetadata().getName()).isEqualTo("edit-or-new-schema");
+        assertThat(schema.getSpec().getDistinguisherMethod().getType()).isEqualTo("ByNamespace");
+        assertThat(schema.getSpec().getPriorityLevelConfiguration().getName()).isEqualTo("edit-or-new-priority");
+        assertThat(schema.getSpec().getRules().get(0).getSubjects().get(0).getGroup().getName())
+                .isEqualTo("system:masters");
+        assertThat(schema.getStatus().getConditions().get(0).getReason()).isEqualTo("AsExpected");
+
+        PriorityLevelConfigurationSpec exemptSpec = new PriorityLevelConfigurationSpecBuilder()
+                .withType("Exempt")
+                .withNewExempt(80, 70)
+                .build();
+        PriorityLevelConfiguration configuration = new PriorityLevelConfigurationBuilder()
+                .editOrNewMetadata()
+                    .withName("seeded-exempt")
+                .endMetadata()
+                .editOrNewSpecLike(exemptSpec)
+                    .editOrNewExempt()
+                        .withNominalConcurrencyShares(90)
+                    .endExempt()
+                .endSpec()
+                .editOrNewStatus()
+                    .addNewCondition(
+                            "2024-01-01T00:00:00Z", "seeded", "AsExpected", "True", "Ready")
+                .endStatus()
+                .build();
+
+        assertThat(configuration.getMetadata().getName()).isEqualTo("seeded-exempt");
+        assertThat(configuration.getSpec().getType()).isEqualTo("Exempt");
+        assertThat(configuration.getSpec().getExempt().getNominalConcurrencyShares()).isEqualTo(90);
+        assertThat(configuration.getSpec().getExempt().getLendablePercent()).isEqualTo(80);
+        assertThat(configuration.getStatus().getConditions().get(0).getMessage()).isEqualTo("seeded");
     }
 
     @Test
