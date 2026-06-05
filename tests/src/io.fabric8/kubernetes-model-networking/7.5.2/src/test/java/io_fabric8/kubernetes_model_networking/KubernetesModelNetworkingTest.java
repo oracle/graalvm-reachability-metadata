@@ -10,6 +10,7 @@ import io.fabric8.kubernetes.api.model.Condition;
 import io.fabric8.kubernetes.api.model.ConditionBuilder;
 import io.fabric8.kubernetes.api.model.HasMetadata;
 import io.fabric8.kubernetes.api.model.KubernetesResource;
+import io.fabric8.kubernetes.api.model.TypedLocalObjectReference;
 import io.fabric8.kubernetes.api.model.networking.v1.IPAddress;
 import io.fabric8.kubernetes.api.model.networking.v1.IPAddressBuilder;
 import io.fabric8.kubernetes.api.model.networking.v1.Ingress;
@@ -26,6 +27,7 @@ import io.fabric8.kubernetes.api.model.networking.v1.NetworkPolicyList;
 import io.fabric8.kubernetes.api.model.networking.v1.NetworkPolicyListBuilder;
 import io.fabric8.kubernetes.api.model.networking.v1.ServiceCIDR;
 import io.fabric8.kubernetes.api.model.networking.v1.ServiceCIDRBuilder;
+import io.fabric8.kubernetes.api.model.networking.v1beta1.IngressBackend;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -304,6 +306,65 @@ public class KubernetesModelNetworkingTest {
         assertThat(list.getItems())
                 .extracting(item -> item.getMetadata().getName())
                 .containsExactly("internal", "external");
+    }
+
+    @Test
+    void v1beta1IngressBuilderSupportsLegacyServiceAndResourceBackends() {
+        io.fabric8.kubernetes.api.model.networking.v1beta1.Ingress ingress =
+                new io.fabric8.kubernetes.api.model.networking.v1beta1.IngressBuilder()
+                .withNewMetadata()
+                    .withName("beta-ingress")
+                    .withNamespace("production")
+                .endMetadata()
+                .withNewSpec()
+                    .withIngressClassName("beta-controller")
+                    .withNewBackend()
+                        .withServiceName("legacy-default-service")
+                        .withNewServicePort(8080)
+                    .endBackend()
+                    .addNewRule()
+                        .withHost("beta.example.test")
+                        .withNewHttp()
+                            .addNewPath()
+                                .withPath("/assets")
+                                .withPathType("ImplementationSpecific")
+                                .withNewBackend()
+                                    .withNewResource("storage.example.test", "StorageBucket", "static-assets")
+                                .endBackend()
+                            .endPath()
+                        .endHttp()
+                    .endRule()
+                    .addNewTl()
+                        .addToHosts("beta.example.test")
+                        .withSecretName("beta-tls")
+                    .endTl()
+                .endSpec()
+                .addToAdditionalProperties("networking-tier", "beta")
+                .build();
+
+        assertThat(ingress.getApiVersion()).isEqualTo("networking.k8s.io/v1beta1");
+        assertThat(ingress.getKind()).isEqualTo("Ingress");
+        assertThat(ingress.getSpec().getIngressClassName()).isEqualTo("beta-controller");
+        assertThat(ingress.getSpec().getBackend().getServiceName()).isEqualTo("legacy-default-service");
+        assertThat(ingress.getSpec().getBackend().getServicePort().getIntVal()).isEqualTo(8080);
+        IngressBackend resourceBackend = ingress.getSpec().getRules().get(0).getHttp().getPaths().get(0).getBackend();
+        TypedLocalObjectReference resource = resourceBackend.getResource();
+        assertThat(resource.getApiGroup()).isEqualTo("storage.example.test");
+        assertThat(resource.getKind()).isEqualTo("StorageBucket");
+        assertThat(resource.getName()).isEqualTo("static-assets");
+        assertThat(ingress.getSpec().getTls().get(0).getHosts()).containsExactly("beta.example.test");
+        assertThat(ingress.getAdditionalProperties()).containsEntry("networking-tier", "beta");
+
+        io.fabric8.kubernetes.api.model.networking.v1beta1.Ingress edited = ingress.toBuilder()
+                .editSpec()
+                    .editBackend()
+                        .withServiceName("legacy-edited-service")
+                    .endBackend()
+                .endSpec()
+                .build();
+
+        assertThat(edited.getSpec().getBackend().getServiceName()).isEqualTo("legacy-edited-service");
+        assertThat(ingress.getSpec().getBackend().getServiceName()).isEqualTo("legacy-default-service");
     }
 
     @Test
