@@ -13,6 +13,7 @@ import io.fabric8.kubernetes.api.model.KubernetesResource;
 import io.fabric8.kubernetes.api.model.MicroTime;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
+import io.fabric8.kubernetes.api.model.OwnerReference;
 import io.fabric8.kubernetes.api.model.coordination.v1.Lease;
 import io.fabric8.kubernetes.api.model.coordination.v1.LeaseBuilder;
 import io.fabric8.kubernetes.api.model.coordination.v1.LeaseList;
@@ -396,6 +397,53 @@ public class Kubernetes_model_coordinationTest {
                 io.fabric8.kubernetes.api.model.coordination.v1beta1.LeaseCandidateList.class,
                 io.fabric8.kubernetes.api.model.coordination.v1alpha2.LeaseCandidate.class,
                 io.fabric8.kubernetes.api.model.coordination.v1alpha2.LeaseCandidateList.class);
+    }
+
+    @Test
+    void coordinationResourcesExposeMetadataHelpersForNamesFinalizersAndOwners() {
+        Lease leader = new LeaseBuilder()
+                .withNewMetadata()
+                    .withName("controller-leader")
+                    .withNamespace("kube-system")
+                    .withUid("leader-uid")
+                .endMetadata()
+                .build();
+        io.fabric8.kubernetes.api.model.coordination.v1beta1.LeaseCandidate candidate =
+                new io.fabric8.kubernetes.api.model.coordination.v1beta1.LeaseCandidateBuilder()
+                .withNewMetadata()
+                    .withName("controller-candidate")
+                    .withNamespace("kube-system")
+                    .withUid("candidate-uid")
+                    .addToFinalizers("coordination.fabric8.io/bootstrap")
+                .endMetadata()
+                .build();
+
+        assertThat(leader.getPlural()).isEqualTo("leases");
+        assertThat(leader.getSingular()).isEqualTo("lease");
+        assertThat(leader.getFullResourceName()).isEqualTo("leases." + COORDINATION_API_GROUP);
+        assertThat(candidate.getPlural()).isEqualTo("leasecandidates");
+        assertThat(candidate.getFullResourceName()).isEqualTo("leasecandidates." + COORDINATION_API_GROUP);
+
+        assertThat(candidate.getFinalizers()).containsExactly("coordination.fabric8.io/bootstrap");
+        assertThat(candidate.addFinalizer("coordination.fabric8.io/cleanup")).isTrue();
+        assertThat(candidate.addFinalizer("coordination.fabric8.io/cleanup")).isFalse();
+        assertThat(candidate.hasFinalizer("coordination.fabric8.io/cleanup")).isTrue();
+        assertThat(candidate.removeFinalizer("coordination.fabric8.io/bootstrap")).isTrue();
+        assertThat(candidate.getFinalizers()).containsExactly("coordination.fabric8.io/cleanup");
+
+        OwnerReference leaderReference = candidate.addOwnerReference(leader);
+
+        assertThat(leaderReference.getApiVersion()).isEqualTo(COORDINATION_API_GROUP + "/v1");
+        assertThat(leaderReference.getKind()).isEqualTo("Lease");
+        assertThat(leaderReference.getName()).isEqualTo("controller-leader");
+        assertThat(leaderReference.getUid()).isEqualTo("leader-uid");
+        assertThat(candidate.hasOwnerReferenceFor(leader)).isTrue();
+        assertThat(candidate.getOwnerReferenceFor("leader-uid")).contains(leaderReference);
+
+        candidate.removeOwnerReference(leader);
+
+        assertThat(candidate.hasOwnerReferenceFor(leader)).isFalse();
+        assertThat(candidate.getMetadata().getOwnerReferences()).isEmpty();
     }
 
     private static Lease leaseNamed(String name, String holderIdentity) {
