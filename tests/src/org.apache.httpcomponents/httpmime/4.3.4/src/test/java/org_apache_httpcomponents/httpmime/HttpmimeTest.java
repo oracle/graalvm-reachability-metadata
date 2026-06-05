@@ -324,8 +324,9 @@ public class HttpmimeTest {
 
     @Test
     void constructorsRejectInvalidArguments() {
-        assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> new StringBody(null, textContentType(UTF_8)));
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> new StringBody(null, textContentType(UTF_8)))
+                .withMessage("Text may not be null");
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> new ByteArrayBody(null, ContentType.APPLICATION_OCTET_STREAM, "missing.bin"))
                 .withMessage("byte[] may not be null");
