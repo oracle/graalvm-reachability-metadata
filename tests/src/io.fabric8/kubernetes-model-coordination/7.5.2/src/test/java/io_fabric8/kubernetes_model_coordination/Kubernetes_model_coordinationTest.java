@@ -143,7 +143,8 @@ public class Kubernetes_model_coordinationTest {
         assertThat(lease.getSpec().getAdditionalProperties()).containsEntry("source", "edited");
         assertThat(template.getHolderIdentity()).isEqualTo("scheduler-0");
         assertThat(template.getAdditionalProperties()).containsEntry("source", "template");
-        assertThat(metadataTemplate.getAnnotations()).isEmpty();
+        assertThat(metadataTemplate).extracting(ObjectMeta::getAnnotations)
+                .satisfies(annotations -> assertThat(annotations).isEmpty());
     }
 
     @Test
