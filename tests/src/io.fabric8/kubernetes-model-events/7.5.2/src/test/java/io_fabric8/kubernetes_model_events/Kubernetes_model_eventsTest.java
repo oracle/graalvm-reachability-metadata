@@ -18,6 +18,7 @@ import io.fabric8.kubernetes.api.model.events.v1.EventListBuilder;
 import io.fabric8.kubernetes.api.model.events.v1.EventSeries;
 import io.fabric8.kubernetes.api.model.events.v1.EventSeriesBuilder;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -145,6 +146,46 @@ public class Kubernetes_model_eventsTest {
         assertThat(list.getItems().get(1).getSeries().getCount()).isEqualTo(2);
         assertThat(list.getAdditionalProperties()).containsEntry("source", "watch-cache");
         assertThat(pulled.getReason()).isEqualTo("Pulled");
+    }
+
+    @Test
+    void stableEventListsSupportPositionalAndBulkItemMutation() {
+        Event pending = eventNamed("checkout-0.pending", "Pending", "Pod is waiting for scheduling");
+        Event scheduled = eventNamed("checkout-0.scheduled", "Scheduled", "Pod assigned to node-a");
+        Event failed = eventNamed("checkout-0.failed", "Failed", "Container start failed");
+        Event recovered = eventNamed("checkout-0.recovered", "Recovered", "Container recovered");
+        Event running = eventNamed("checkout-0.running", "Running", "Container is running");
+
+        EventListBuilder builder = new EventListBuilder()
+                .withItems(pending)
+                .addToItems(0, scheduled)
+                .addAllToItems(List.of(failed, recovered));
+
+        assertThat(builder.buildFirstItem().getReason()).isEqualTo("Scheduled");
+        assertThat(builder.buildItem(1).getReason()).isEqualTo("Pending");
+        assertThat(builder.buildLastItem().getReason()).isEqualTo("Recovered");
+        assertThat(builder.buildItems())
+                .extracting(Event::getReason)
+                .containsExactly("Scheduled", "Pending", "Failed", "Recovered");
+
+        EventList list = builder
+                .setToItems(1, running)
+                .removeFromItems(failed)
+                .removeAllFromItems(List.of(recovered))
+                .addToAdditionalProperties(Map.<String, Object>of("ordered", true, "phase", "updated"))
+                .removeFromAdditionalProperties(Map.<String, Object>of("phase", "updated"))
+                .build();
+
+        assertThat(list.getItems())
+                .extracting(Event::getReason)
+                .containsExactly("Scheduled", "Running");
+        assertThat(list.getItems())
+                .extracting(item -> item.getMetadata().getName())
+                .containsExactly("checkout-0.scheduled", "checkout-0.running");
+        assertThat(list.getAdditionalProperties())
+                .containsEntry("ordered", true)
+                .doesNotContainKey("phase");
+        assertThat(pending.getReason()).isEqualTo("Pending");
     }
 
     @Test
