@@ -9,9 +9,32 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String sourceArchiveVersion = libraryVersion.replace('.', '_')
+File jcrSourceArchive = file("../../../../../../../source_context/javax.jcr/jcr/$libraryVersion/main/"
+        + "content_repository-${sourceArchiveVersion}-mr-source.zip")
+
+TaskProvider<Sync> extractJcrSources = tasks.register("extractJcrSources", Sync) {
+    from(zipTree(jcrSourceArchive)) {
+        include "src/java/**/*.java"
+        eachFile { FileCopyDetails fileCopyDetails ->
+            fileCopyDetails.path = fileCopyDetails.path.substring("src/java/".length())
+        }
+        includeEmptyDirs = false
+    }
+    into(layout.buildDirectory.dir("generated/sources/jcr"))
+}
+
+sourceSets {
+    main {
+        java.srcDir(layout.buildDirectory.dir("generated/sources/jcr"))
+    }
+}
+
+tasks.named("compileJava") {
+    dependsOn(extractJcrSources)
+}
 
 dependencies {
-    testImplementation "javax.jcr:jcr:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
