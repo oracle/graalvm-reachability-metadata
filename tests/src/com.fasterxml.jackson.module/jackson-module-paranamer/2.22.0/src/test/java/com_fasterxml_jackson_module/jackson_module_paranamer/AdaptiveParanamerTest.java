@@ -9,21 +9,27 @@ package com_fasterxml_jackson_module.jackson_module_paranamer;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.module.paranamer.shaded.AdaptiveParanamer;
-import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import org.junit.jupiter.api.Test;
 
 public class AdaptiveParanamerTest {
     @Test
-    void defaultConstructorIncludesReflectionBasedParameterNameLookup() throws Exception {
+    void defaultConstructorReadsParameterNamesFromAvailableStrategies() throws Exception {
         AdaptiveParanamer paranamer = new AdaptiveParanamer();
-        Constructor<ConstructorParameterFixture> constructor = ConstructorParameterFixture.class.getDeclaredConstructor(
-                String.class, int.class);
+        Method method = MethodParameterFixture.class.getDeclaredMethod("format", String.class, int.class);
 
-        String[] parameterNames = paranamer.lookupParameterNames(constructor, false);
+        String[] parameterNames = paranamer.lookupParameterNames(method, false);
 
-        assertThat(parameterNames).containsExactly("text", "repeatCount");
+        assertThat(parameterNames).containsExactly("message", "repeatCount");
     }
 
-    public record ConstructorParameterFixture(String text, int repeatCount) {
+    private static final class MethodParameterFixture {
+        String format(String message, int repeatCount) {
+            StringBuilder result = new StringBuilder();
+            for (int index = 0; index < repeatCount; index++) {
+                result.append(message);
+            }
+            return result.toString();
+        }
     }
 }
