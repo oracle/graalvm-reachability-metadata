@@ -1,0 +1,930 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e997d-4e43-7570-baee-b788ebf5b15e
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.httpcomponents:httpmime:4.3.4
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [4.3.4].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99/metadata/org.apache.httpcomponents/httpmime/index.json
+- Entry selector: "metadata-version" = "4.3.4"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 4.3.4
+- Entry metadata-version: 4.3.4
+- Entry test-version: 4.3.4
+- Entry tested-versions: [4.3.4]
+codex
+I’ll verify the artifact metadata and versioned source/test/docs targets first, then patch only the missing fields in the selected `index.json` entry.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"|source-code-url|repository-url|test-code-url|documentation-url|description|language|tested-versions|test-version' metadata/org.apache.httpcomponents/httpmime/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99
+4:    "metadata-version" : "4.3.4",
+5:    "tested-versions" : [
+13:    "metadata-version" : "4.3",
+14:    "tested-versions" : [
+25:    "metadata-version" : "4.1",
+26:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-sources.jar",
+27:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+28:    "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/test/java/",
+29:    "documentation-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/site/apt/index.apt",
+30:    "description" : "Apache HttpMime is the MIME multipart entity module for Apache HttpComponents HttpClient. It provides support for building and handling MIME multipart encoded HTTP entities, such as form-data uploads, used by HttpClient applications.",
+31:    "tested-versions" : [
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.apache.httpcomponents/httpmime/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.3.4",
+    "tested-versions" : [
+      "4.3.4"
+    ],
+    "allowed-packages" : [
+      "org.apache.http.entity.mime"
+    ]
+  },
+  {
+    "metadata-version" : "4.3",
+    "tested-versions" : [
+      "4.3",
+      "4.3.1",
+      "4.3.2",
+      "4.3.3"
+    ],
+    "allowed-packages" : [
+      "org.apache.http.entity.mime"
+    ]
+  },
+  {
+    "metadata-version" : "4.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/httpcomponents-client",
+    "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/test/java/",
+    "documentation-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/site/apt/index.apt",
+    "description" : "Apache HttpMime is the MIME multipart entity module for Apache HttpComponents HttpClient. It provides support for building and handling MIME multipart encoded HTTP entities, such as form-data uploads, used by HttpClient applications.",
+    "tested-versions" : [
+      "4.1"
+    ],
+    "allowed-packages" : [
+      "org.apache.http.entity.mime"
+    ]
+  }
+]
+
+web search: 
+web search: Maven Central org.apache.httpcomponents httpmime 4.3.4 sources test jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/httpcomponents/httpmime/4.3.4/
+codex
+The local entry is missing all requested fields, and an older `4.1` entry already points at Maven sources plus Apache SVN tag paths. I’m checking whether those same templates actually render for `4.3.4` and whether Maven Central has a tests artifact to prefer.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/4.3.4/httpmime-4.3.4.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/4.3.4/httpmime-4.3.4-sources.jar" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99
+ succeeded in 0ms:
+200 https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/4.3.4/httpmime-4.3.4-sources.jar
+
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   ====================================================================
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+   ====================================================================
+
+   This software consists of voluntary contributions made by many
+   individuals on behalf of the Apache Software Foundation.  For more
+   information on the Apache Software Foundation, please see
+   <http://www.apache.org />.
+ --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.httpcomponents</groupId>
+    <artifactId>httpcomponents-client</artifactId>
+    <version>4.3.4</version>
+  </parent>
+  <artifactId>httpmime</artifactId>
+  <name>Apache HttpClient Mime</name>
+  <description>
+   HttpComponents HttpClient - MIME coded entities
+  </description>
+  <url>http://hc.apache.org/httpcomponents-client</url>
+  <packaging>jar</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Not currently used
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+            <include>**/*.properties</include>
+        </includes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.8</version>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>src/main/java-deprecated</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <reporting>
+    <plugins>
+
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+         <version>${hc.javadoc.version}</version>
+        <configuration>
+          <!-- reduce console output. Can override with -Dquiet=false -->
+          <quiet>true</quiet>
+          <source>${maven.compiler.source}</source>
+          <links>
+            <link>http://download.oracle.com/javase/1.5.0/docs/api/</link>
+            <link>http://hc.apache.org/httpcomponents-core-ga/httpcore/apidocs/</link>
+          </links>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>javadoc</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>${hc.project-info.version}</version>
+        <inherited>false</inherited>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>dependencies</report>
+              <report>dependency-info</report>
+              <report>summary</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-jxr-plugin</artifactId>
+         <version>${hc.jxr.version}</version>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+         <version>${hc.surefire-report.version}</version>
+      </plugin>
+
+    </plugins>
+  </reporting>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/4.3.4/httpmime/src/test/java/" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/4.3.4/httpmime-4.3.4-tests.jar" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99
+ succeeded in 109ms:
+200 https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/4.3.4/httpmime/src/test/java/
+
+ succeeded in 301ms:
+404 https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/4.3.4/httpmime-4.3.4-tests.jar
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/4.3.4/httpmime/src/site/apt/index.apt" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99
+ succeeded in 0ms:
+404 https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/4.3.4/httpmime/src/site/apt/index.apt
+
+codex
+Maven Central has the `4.3.4` sources jar, but no `-tests.jar`; the SVN test directory exists. The older documentation template is stale for this version, so I’m locating a versioned documentation target instead of carrying it forward.
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://javadoc.io/doc/org.apache.httpcomponents/httpmime/4.3.4/" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/4.3.4/httpmime-4.3.4-javadoc.jar" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/4.3.4/httpmime/src/site/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/4.3.4/httpmime/src/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1935052: /httpcomponents/httpclient/tags/4.3.4/httpmime/src</title></head>
+<body>
+ <h2>asf - Revision 1935052: /httpcomponents/httpclient/tags/4.3.4/httpmime/src</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="examples/">examples/</a></li>
+  <li><a href="main/">main/</a></li>
+  <li><a href="test/">test/</a></li>
+ </ul>
+</body></html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/4.3.4/httpmime/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1935052: /httpcomponents/httpclient/tags/4.3.4/httpmime</title></head>
+<body>
+ <h2>asf - Revision 1935052: /httpcomponents/httpclient/tags/4.3.4/httpmime</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="pom.xml">pom.xml</a></li>
+  <li><a href="src/">src/</a></li>
+ </ul>
+</body></html>
+ succeeded in 183ms:
+200 https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/4.3.4/httpmime-4.3.4-javadoc.jar
+
+ succeeded in 492ms:
+200 https://javadoc.io/doc/org.apache.httpcomponents/httpmime/4.3.4/index.html
+
+exec
+/usr/bin/bash -lc "rg -n 'httpcomponents-client|httpmime' metadata/org.apache.httpcomponents -g 'index.json'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99
+ succeeded in 0ms:
+metadata/org.apache.httpcomponents/httpclient/index.json:5:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+metadata/org.apache.httpcomponents/httpclient/index.json:20:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+metadata/org.apache.httpcomponents/httpmime/index.json:26:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpmime/index.json:27:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+metadata/org.apache.httpcomponents/httpmime/index.json:28:    "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/test/java/",
+metadata/org.apache.httpcomponents/httpmime/index.json:29:    "documentation-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/site/apt/index.apt",
+
+exec
+/usr/bin/bash -lc "rg -n 'javadoc\\.jar|javadoc.io|documentation-url.*repo.maven.apache.org' metadata | head -n 40" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99
+ succeeded in 0ms:
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-annotations/$version$/hadoop-annotations-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-web-proxy/$version$/hadoop-yarn-server-web-proxy-$version$-javadoc.jar",
+metadata/com.google.dagger/dagger/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-javadoc.jar",
+metadata/com.google.truth/truth/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/com.twitter/hpack/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/twitter/hpack/$version$/hpack-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-javadoc.jar",
+metadata/io.getquill/quill-engine_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_3/$version$/quill-engine_3-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/org.eclipse.collections/eclipse-collections-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/collections/eclipse-collections-api/$version$/eclipse-collections-api-$version$-javadoc.jar",
+metadata/org.sonatype.sisu/sisu-inject-bean/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
+metadata/io.getquill/quill-engine_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_2.13/$version$/quill-engine_2.13-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-javadoc.jar",
+metadata/com.android.databinding/baseLibrary/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-javadoc.jar",
+metadata/com.android.databinding/baseLibrary/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/android/databinding/baseLibrary/$version$/baseLibrary-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-jmx/$version$/metrics-jmx-$version$-javadoc.jar",
+metadata/io.getquill/quill-util_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-util_3/$version$/quill-util_3-$version$-javadoc.jar",
+metadata/io.circe/circe-jawn_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-jawn_3/$version$/circe-jawn_3-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-json/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-json/$version$/metrics-json-$version$-javadoc.jar",
+metadata/me.tongfei/progressbar/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/me/tongfei/progressbar/$version$/progressbar-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/net.postgis/postgis-geometry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-jvm/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/dropwizard/metrics/metrics-jvm/$version$/metrics-jvm-$version$-javadoc.jar",
+metadata/io.circe/circe-parser_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-parser_3/$version$/circe-parser_3-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:43:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:57:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcomponents-client/4.3.4/httpcomponents-client-4.3.4.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   ====================================================================
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+   ====================================================================
+
+   This software consists of voluntary contributions made by many
+   individuals on behalf of the Apache Software Foundation.  For more
+   information on the Apache Software Foundation, please see
+   <http://www.apache.org />.
+ --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>project</artifactId>
+    <groupId>org.apache.httpcomponents</groupId>
+    <version>7</version>
+    <relativePath>../project/pom.xml</relativePath>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>httpcomponents-client</artifactId>
+  <name>HttpComponents Client</name>
+  <version>4.3.4</version>
+  <description>Apache HttpComponents Client is a library of components for building client side HTTP services</description>
+  <url>http://hc.apache.org/httpcomponents-client</url>
+  <inceptionYear>1999</inceptionYear>
+  <packaging>pom</packaging>
+
+  <organization>
+    <name>The Apache Software Foundation</name>
+    <url>http://www.apache.org/</url>
+  </organization>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>LICENSE.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <issueManagement>
+    <system>Jira</system>
+    <url>http://issues.apache.org/jira/browse/HTTPCLIENT</url>
+  </issueManagement>
+
+  <scm>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/4.3.4</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/4.3.4</developerConnection>
+    <url>https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/4.3.4</url>
+  </scm>
+
+  <properties>
+    <maven.compiler.source>1.5</maven.compiler.source>
+    <maven.compiler.target>1.5</maven.compiler.target>
+    <httpcore.version>4.3.2</httpcore.version>
+    <commons-logging.version>1.1.3</commons-logging.version>
+    <commons-codec.version>1.6</commons-codec.version>
+    <ehcache.version>2.2.0</ehcache.version>
+    <memcached.version>2.6</memcached.version>
+    <slf4j.version>1.5.11</slf4j.version>
+    <junit.version>4.9</junit.version>
+    <easymock.version>2.5.2</easymock.version>
+    <mockito.version>1.8.5</mockito.version>
+    <jna.version>4.0.0</jna.version>
+    <hc.stylecheck.version>1</hc.stylecheck.version>
+    <api.comparison.version>4.3</api.comparison.version>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>spy</id>
+      <name>Spy Repository</name>
+      <layout>default</layout>
+      <url>http://files.couchbase.com/maven2/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpcore</artifactId>
+        <version>${httpcore.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>${commons-logging.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>${commons-codec.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.sf.ehcache</groupId>
+        <artifactId>ehcache-core</artifactId>
+        <version>${ehcache.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-jcl</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>spy</groupId>
+        <artifactId>spymemcached</artifactId>
+        <version>${memcached.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.java.dev.jna</groupId>
+        <artifactId>jna</artifactId>
+        <version>${jna.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.java.dev.jna</groupId>
+        <artifactId>jna-platform</artifactId>
+        <version>${jna.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${mockito.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.easymock</groupId>
+        <artifactId>easymock</artifactId>
+        <version>${easymock.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.easymock</groupId>
+        <artifactId>easymockclassextension</artifactId>
+        <version>${easymock.version}</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <modules>
+    <module>httpclient</module>
+    <module>httpmime</module>
+    <module>fluent-hc</module>
+    <module>httpclient-cache</module>
+    <module>httpclient-osgi</module>
+  </modules>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Specification-Title>HttpComponents ${project.name}</Specification-Title>
+              <Specification-Version>${project.version}</Specification-Version>
+              <Specification-Vendor>The Apache Software Foundation</Specification-Vendor>
+              <Implementation-Title>HttpComponents ${project.name}</Implementation-Title>
+              <Implementation-Version>${project.version}</Implementation-Version>
+              <Implementation-Vendor>The Apache Software Foundation</Implementation-Vendor>
+              <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
+              <url>${project.url}</url>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <archive>
+            <!-- Ensure source jars have full manifest entries (note: defaults aren't suitable) -->
+            <manifestEntries>
+              <Specification-Title>HttpComponents ${project.name}</Specification-Title>
+              <Specification-Version>${project.version}</Specification-Version>
+              <Specification-Vendor>The Apache Software Foundation</Specification-Vendor>
+              <Implementation-Title>HttpComponents ${project.name}</Implementation-Title>
+              <Implementation-Version>${project.version}</Implementation-Version>
+              <Implementation-Vendor>The Apache Software Foundation</Implementation-Vendor>
+              <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.apache.httpcomponents/httpclient/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99
+ succeeded in 0ms:
+[
+  {
+    "metadata-version" : "4.5.5",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/httpcomponents-client",
+    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-tests.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-javadoc.jar",
+    "description" : "Apache HttpClient is a client-side HTTP library for sending requests and handling responses in Java applications. It provides APIs for connection management, authentication, cookies, redirects, and other common HTTP features.",
+    "tested-versions" : [
+      "4.5.5"
+    ],
+    "allowed-packages" : [
+      "org.apache.http"
+    ]
+  },
+  {
+    "latest" : true,
+    "metadata-version" : "4.5.14",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/httpcomponents-client",
+    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-tests.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-javadoc.jar",
+    "description" : "Apache HttpClient is a client-side HTTP library for sending requests and handling responses in Java applications. It provides APIs for connection management, authentication, cookies, redirects, and other common HTTP features.",
+    "tested-versions" : [
+      "4.5.14"
+    ],
+    "allowed-packages" : [
+      "org.apache.http"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/4.3.4/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/4.3.4/httpmime/src/test/java/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1935052: /httpcomponents/httpclient/tags/4.3.4/httpmime/src/test/java</title></head>
+<body>
+ <h2>asf - Revision 1935052: /httpcomponents/httpclient/tags/4.3.4/httpmime/src/test/java</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="org/">org/</a></li>
+ </ul>
+</body></html>
+ succeeded in 217ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/httpcomponents/httpmime/4.3.4</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/httpcomponents/httpmime/4.3.4</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="httpmime-4.3.4-javadoc.jar" title="httpmime-4.3.4-javadoc.jar">httpmime-4.3.4-javadoc.jar</a>                        2014-05-31 15:21    129899      
+<a href="httpmime-4.3.4-javadoc.jar.asc" title="httpmime-4.3.4-javadoc.jar.asc">httpmime-4.3.4-javadoc.jar.asc</a>                    2014-05-31 15:21       181      
+<a href="httpmime-4.3.4-javadoc.jar.asc.md5" title="httpmime-4.3.4-javadoc.jar.asc.md5">httpmime-4.3.4-javadoc.jar.asc.md5</a>                2014-05-31 15:21        32      
+<a href="httpmime-4.3.4-javadoc.jar.asc.sha1" title="httpmime-4.3.4-javadoc.jar.asc.sha1">httpmime-4.3.4-javadoc.jar.asc.sha1</a>               2014-05-31 15:21        40      
+<a href="httpmime-4.3.4-javadoc.jar.md5" title="httpmime-4.3.4-javadoc.jar.md5">httpmime-4.3.4-javadoc.jar.md5</a>                    2014-05-31 15:21        32      
+<a href="httpmime-4.3.4-javadoc.jar.sha1" title="httpmime-4.3.4-javadoc.jar.sha1">httpmime-4.3.4-javadoc.jar.sha1</a>                   2014-05-31 15:21        40      
+<a href="httpmime-4.3.4-sources.jar" title="httpmime-4.3.4-sources.jar">httpmime-4.3.4-sources.jar</a>                        2014-05-31 15:21     36769      
+<a href="httpmime-4.3.4-sources.jar.asc" title="httpmime-4.3.4-sources.jar.asc">httpmime-4.3.4-sources.jar.asc</a>                    2014-05-31 15:21       181      
+<a href="httpmime-4.3.4-sources.jar.asc.md5" title="httpmime-4.3.4-sources.jar.asc.md5">httpmime-4.3.4-sources.jar.asc.md5</a>                2014-05-31 15:21        32      
+<a href="httpmime-4.3.4-sources.jar.asc.sha1" title="httpmime-4.3.4-sources.jar.asc.sha1">httpmime-4.3.4-sources.jar.asc.sha1</a>               2014-05-31 15:21        40      
+<a href="httpmime-4.3.4-sources.jar.md5" title="httpmime-4.3.4-sources.jar.md5">httpmime-4.3.4-sources.jar.md5</a>                    2014-05-31 15:21        32      
+<a href="httpmime-4.3.4-sources.jar.sha1" title="httpmime-4.3.4-sources.jar.sha1">httpmime-4.3.4-sources.jar.sha1</a>                   2014-05-31 15:21        40      
+<a href="httpmime-4.3.4.jar" title="httpmime-4.3.4.jar">httpmime-4.3.4.jar</a>                                2014-05-31 15:21     37276      
+<a href="httpmime-4.3.4.jar.asc" title="httpmime-4.3.4.jar.asc">httpmime-4.3.4.jar.asc</a>                            2014-05-31 15:21       181      
+<a href="httpmime-4.3.4.jar.asc.md5" title="httpmime-4.3.4.jar.asc.md5">httpmime-4.3.4.jar.asc.md5</a>                        2014-05-31 15:21        32      
+<a href="httpmime-4.3.4.jar.asc.sha1" title="httpmime-4.3.4.jar.asc.sha1">httpmime-4.3.4.jar.asc.sha1</a>                       2014-05-31 15:21        40      
+<a href="httpmime-4.3.4.jar.md5" title="httpmime-4.3.4.jar.md5">httpmime-4.3.4.jar.md5</a>                            2014-05-31 15:21        32      
+<a href="httpmime-4.3.4.jar.sha1" title="httpmime-4.3.4.jar.sha1">httpmime-4.3.4.jar.sha1</a>                           2014-05-31 15:21        40      
+<a href="httpmime-4.3.4.pom" title="httpmime-4.3.4.pom">httpmime-4.3.4.pom</a>                                2014-05-31 15:21      4786      
+<a href="httpmime-4.3.4.pom.asc" title="httpmime-4.3.4.pom.asc">httpmime-4.3.4.pom.asc</a>                            2014-05-31 15:21       181      
+<a href="httpmime-4.3.4.pom.asc.md5" title="httpmime-4.3.4.pom.asc.md5">httpmime-4.3.4.pom.asc.md5</a>                        2014-05-31 15:21        32      
+<a href="httpmime-4.3.4.pom.asc.sha1" title="httpmime-4.3.4.pom.asc.sha1">httpmime-4.3.4.pom.asc.sha1</a>                       2014-05-31 15:21        40      
+<a href="httpmime-4.3.4.pom.md5" title="httpmime-4.3.4.pom.md5">httpmime-4.3.4.pom.md5</a>                            2014-05-31 15:21        32      
+<a href="httpmime-4.3.4.pom.sha1" title="httpmime-4.3.4.pom.sha1">httpmime-4.3.4.pom.sha1</a>                           2014-05-31 15:21        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: https://github.com/apache/httpcomponents-client
+web search: 
+web search: repo.maven.apache.org maven2 org apache httpcomponents httpmime 4.3.4 httpmime-4.3.4-javadoc.jar sources.jar
+web search: 
+web search: Apache HttpMime MIME multipart entity module HttpComponents HttpClient
+codex
+The versioned Javadoc jar is present on Maven Central, so I’ll use Maven for both `source-code-url` and `documentation-url`. For tests, Maven has no tests jar for `httpmime:4.3.4`, so I’ll use the verified Apache SVN tag test directory.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99/metadata/org.apache.httpcomponents/httpmime/index.json
+diff --git a/metadata/org.apache.httpcomponents/httpmime/index.json b/metadata/org.apache.httpcomponents/httpmime/index.json
+index 89b25b33b2ff803c7e69b39c468b7cff743fd65a..748b7c4a384434eb057208abf15c70c8b458fbc4
+--- a/metadata/org.apache.httpcomponents/httpmime/index.json
++++ b/metadata/org.apache.httpcomponents/httpmime/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "4.3.4",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/httpcomponents-client",
++    "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/test/java/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-javadoc.jar",
++    "description" : "Apache HttpMime is the MIME multipart entity module for Apache HttpComponents HttpClient. It provides support for building and handling MIME multipart encoded HTTP entities, such as form-data uploads, used by HttpClient applications.",
+     "tested-versions" : [
+       "4.3.4"
+     ],
+
+diff --git a/metadata/org.apache.httpcomponents/httpmime/index.json b/metadata/org.apache.httpcomponents/httpmime/index.json
+index 89b25b33b2ff803c7e69b39c468b7cff743fd65a..748b7c4a384434eb057208abf15c70c8b458fbc4
+--- a/metadata/org.apache.httpcomponents/httpmime/index.json
++++ b/metadata/org.apache.httpcomponents/httpmime/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "4.3.4",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/httpcomponents-client",
++    "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/test/java/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-javadoc.jar",
++    "description" : "Apache HttpMime is the MIME multipart entity module for Apache HttpComponents HttpClient. It provides support for building and handling MIME multipart encoded HTTP entities, such as form-data uploads, used by HttpClient applications.",
+     "tested-versions" : [
+       "4.3.4"
+     ],
+
+codex
+The metadata entry is patched. I’m doing a final JSON parse plus rendered URL checks for the single tested version before closing this out.
+exec
+/usr/bin/bash -lc "python -m json.tool metadata/org.apache.httpcomponents/httpmime/index.json >/dev/null && sed -n '1,42p' metadata/org.apache.httpcomponents/httpmime/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.3.4",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/httpcomponents-client",
+    "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/test/java/",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-javadoc.jar",
+    "description" : "Apache HttpMime is the MIME multipart entity module for Apache HttpComponents HttpClient. It provides support for building and handling MIME multipart encoded HTTP entities, such as form-data uploads, used by HttpClient applications.",
+    "tested-versions" : [
+      "4.3.4"
+    ],
+    "allowed-packages" : [
+      "org.apache.http.entity.mime"
+    ]
+  },
+  {
+    "metadata-version" : "4.3",
+    "tested-versions" : [
+      "4.3",
+      "4.3.1",
+      "4.3.2",
+      "4.3.3"
+    ],
+    "allowed-packages" : [
+      "org.apache.http.entity.mime"
+    ]
+  },
+  {
+    "metadata-version" : "4.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/httpcomponents-client",
+    "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/test/java/",
+    "documentation-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/site/apt/index.apt",
+    "description" : "Apache HttpMime is the MIME multipart entity module for Apache HttpComponents HttpClient. It provides support for building and handling MIME multipart encoded HTTP entities, such as form-data uploads, used by HttpClient applications.",
+    "tested-versions" : [
+      "4.1"
+    ],
+    "allowed-packages" : [
+      "org.apache.http.entity.mime"
+    ]
+  }
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/4.3.4/httpmime-4.3.4-sources.jar \\
+  https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/4.3.4/httpmime/src/test/java/ \\
+  https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/4.3.4/httpmime-4.3.4-javadoc.jar \\
+  https://github.com/apache/httpcomponents-client; do \\
+  curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' \""'$url"; '"\\
+done" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99
+ succeeded in 942ms:
+200 https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/4.3.4/httpmime/src/test/java/
+200 https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/4.3.4/httpmime-4.3.4-javadoc.jar
+200 https://github.com/apache/httpcomponents-client
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.apache.httpcomponents/httpmime/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99
+ succeeded in 0ms:
+diff --git i/metadata/org.apache.httpcomponents/httpmime/index.json w/metadata/org.apache.httpcomponents/httpmime/index.json
+index 89b25b33b2..748b7c4a38 100644
+--- i/metadata/org.apache.httpcomponents/httpmime/index.json
++++ w/metadata/org.apache.httpcomponents/httpmime/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "4.3.4",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/httpcomponents-client",
++    "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/test/java/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-javadoc.jar",
++    "description" : "Apache HttpMime is the MIME multipart entity module for Apache HttpComponents HttpClient. It provides support for building and handling MIME multipart encoded HTTP entities, such as form-data uploads, used by HttpClient applications.",
+     "tested-versions" : [
+       "4.3.4"
+     ],
+
+diff --git a/metadata/org.apache.httpcomponents/httpmime/index.json b/metadata/org.apache.httpcomponents/httpmime/index.json
+index 89b25b33b2ff803c7e69b39c468b7cff743fd65a..748b7c4a384434eb057208abf15c70c8b458fbc4
+--- a/metadata/org.apache.httpcomponents/httpmime/index.json
++++ b/metadata/org.apache.httpcomponents/httpmime/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "4.3.4",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/httpcomponents-client",
++    "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/test/java/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-javadoc.jar",
++    "description" : "Apache HttpMime is the MIME multipart entity module for Apache HttpComponents HttpClient. It provides support for building and handling MIME multipart encoded HTTP entities, such as form-data uploads, used by HttpClient applications.",
+     "tested-versions" : [
+       "4.3.4"
+     ],
+
+web search: 
+web search: https://github.com/apache/httpcomponents-client
+web search: 
+web search: org/apache/httpcomponents/httpmime/4.3.4/httpmime-4.3.4-sources.jar
+web search: 
+web search: "httpmime-4.3.4-javadoc.jar"
+web search: 
+web search: "/httpcomponents/httpclient/tags/4.3.4/httpmime/src/test/java"
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99/metadata/org.apache.httpcomponents/httpmime/index.json:4) for `metadata-version` `4.3.4`.
+
+I set Maven Central source and Javadoc jar templates, the canonical GitHub repository root, the verified Apache SVN tag test directory, and the two-sentence description. Maven Central lists the `4.3.4` sources and Javadocs, Apache SVN has the `4.3.4` tag, and the GitHub repo is the canonical repository root already used elsewhere in this metadata set. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/httpcomponents/httpmime/4.3.4/?utm_source=openai))
+
+No `language` field was added because this is not a Kotlin, Groovy, Scala 2, or Scala 3-specific library. Verified JSON parsing and all rendered URLs for `4.3.4` returned HTTP 200; Maven had no `httpmime-4.3.4-tests.jar`, so the SVN test URL was used.
+diff --git a/metadata/org.apache.httpcomponents/httpmime/index.json b/metadata/org.apache.httpcomponents/httpmime/index.json
+index 89b25b33b2ff803c7e69b39c468b7cff743fd65a..748b7c4a384434eb057208abf15c70c8b458fbc4
+--- a/metadata/org.apache.httpcomponents/httpmime/index.json
++++ b/metadata/org.apache.httpcomponents/httpmime/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "4.3.4",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/httpcomponents-client",
++    "test-code-url" : "https://svn.apache.org/repos/asf/httpcomponents/httpclient/tags/$version$/httpmime/src/test/java/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/$version$/httpmime-$version$-javadoc.jar",
++    "description" : "Apache HttpMime is the MIME multipart entity module for Apache HttpComponents HttpClient. It provides support for building and handling MIME multipart encoded HTTP entities, such as form-data uploads, used by HttpClient applications.",
+     "tested-versions" : [
+       "4.3.4"
+     ],
+
+tokens used
+77,239
+Updated [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99/metadata/org.apache.httpcomponents/httpmime/index.json:4) for `metadata-version` `4.3.4`.
+
+I set Maven Central source and Javadoc jar templates, the canonical GitHub repository root, the verified Apache SVN tag test directory, and the two-sentence description. Maven Central lists the `4.3.4` sources and Javadocs, Apache SVN has the `4.3.4` tag, and the GitHub repo is the canonical repository root already used elsewhere in this metadata set. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/httpcomponents/httpmime/4.3.4/?utm_source=openai))
+
+No `language` field was added because this is not a Kotlin, Groovy, Scala 2, or Scala 3-specific library. Verified JSON parsing and all rendered URLs for `4.3.4` returned HTTP 200; Maven had no `httpmime-4.3.4-tests.jar`, so the SVN test URL was used.
+Ran agent for org.apache.httpcomponents:httpmime:4.3.4 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99/build/agent-url-discovery-logs/org.apache.httpcomponents-httpmime-4.3.4.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4312-d32b9d99/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 6m 32s
+9 actionable tasks: 1 executed, 8 up-to-date
