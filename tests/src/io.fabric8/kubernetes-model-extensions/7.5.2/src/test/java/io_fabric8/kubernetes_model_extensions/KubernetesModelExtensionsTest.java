@@ -19,6 +19,8 @@ import io.fabric8.kubernetes.api.model.extensions.Deployment;
 import io.fabric8.kubernetes.api.model.extensions.DeploymentBuilder;
 import io.fabric8.kubernetes.api.model.extensions.DeploymentList;
 import io.fabric8.kubernetes.api.model.extensions.DeploymentListBuilder;
+import io.fabric8.kubernetes.api.model.extensions.DeploymentRollback;
+import io.fabric8.kubernetes.api.model.extensions.DeploymentRollbackBuilder;
 import io.fabric8.kubernetes.api.model.extensions.HostPortRange;
 import io.fabric8.kubernetes.api.model.extensions.HTTPIngressPath;
 import io.fabric8.kubernetes.api.model.extensions.IDRange;
@@ -430,6 +432,36 @@ public class KubernetesModelExtensionsTest {
         assertThat(userRange.getMax()).isEqualTo(2000L);
         assertThat(spec.getRuntimeClass().getAllowedRuntimeClassNames()).containsExactly("runc", "gvisor");
         assertThat(spec.getSeLinux().getSeLinuxOptions().getType()).isEqualTo("container_t");
+    }
+
+    @Test
+    void createsDeploymentRollbackRequestWithAnnotations() {
+        DeploymentRollback rollback = new DeploymentRollbackBuilder()
+                .withApiVersion(EXTENSIONS_API_VERSION)
+                .withKind("DeploymentRollback")
+                .withName("web")
+                .withNewRollbackTo(11L)
+                .addToUpdatedAnnotations("deployment.kubernetes.io/revision", "10")
+                .addToUpdatedAnnotations("rollback.cause", "smoke-test")
+                .addToAdditionalProperties("dryRun", true)
+                .build();
+
+        DeploymentRollback editedRollback = rollback.edit()
+                .editRollbackTo()
+                    .withRevision(12L)
+                .endRollbackTo()
+                .removeFromUpdatedAnnotations("rollback.cause")
+                .addToUpdatedAnnotations("rollback.operator", "controller")
+                .removeFromAdditionalProperties("dryRun")
+                .build();
+
+        assertThat(editedRollback.getName()).isEqualTo("web");
+        assertThat(editedRollback.getRollbackTo().getRevision()).isEqualTo(12L);
+        assertThat(editedRollback.getUpdatedAnnotations())
+                .containsEntry("deployment.kubernetes.io/revision", "10")
+                .containsEntry("rollback.operator", "controller")
+                .doesNotContainKey("rollback.cause");
+        assertThat(editedRollback.getAdditionalProperties()).doesNotContainKey("dryRun");
     }
 
     @Test
