@@ -342,6 +342,61 @@ public class Kubernetes_model_policyTest {
     }
 
     @Test
+    void editsV1Beta1PodSecurityPolicySpecNestedSecurityCollections() {
+        PodSecurityPolicySpec spec = new PodSecurityPolicySpecBuilder()
+                .addNewAllowedHostPath()
+                    .withPathPrefix("/var/log")
+                    .withReadOnly(true)
+                .endAllowedHostPath()
+                .addNewAllowedHostPath()
+                    .withPathPrefix("/var/lib/app")
+                    .withReadOnly(false)
+                .endAllowedHostPath()
+                .addNewHostPort()
+                    .withMin(80)
+                    .withMax(80)
+                .endHostPort()
+                .addNewHostPort()
+                    .withMin(30000)
+                    .withMax(32767)
+                .endHostPort()
+                .addNewAllowedCSIDriver()
+                    .withName("csi.fast.example.com")
+                .endAllowedCSIDriver()
+                .addNewAllowedCSIDriver()
+                    .withName("csi.slow.example.com")
+                .endAllowedCSIDriver()
+                .build();
+
+        PodSecurityPolicySpec edited = new PodSecurityPolicySpecBuilder(spec)
+                .editMatchingAllowedHostPath(hostPath -> "/var/lib/app".equals(hostPath.getPathPrefix()))
+                    .withReadOnly(true)
+                .endAllowedHostPath()
+                .editMatchingHostPort(hostPort -> Integer.valueOf(30000).equals(hostPort.getMin()))
+                    .withMax(31000)
+                .endHostPort()
+                .removeMatchingFromAllowedCSIDrivers(driver -> driver.getName().contains("slow"))
+                .build();
+
+        assertThat(spec.getAllowedHostPaths()).hasSize(2);
+        assertThat(spec.getAllowedHostPaths().get(1).getReadOnly()).isFalse();
+        assertThat(spec.getHostPorts().get(1).getMax()).isEqualTo(32767);
+        assertThat(spec.getAllowedCSIDrivers()).hasSize(2);
+
+        assertThat(edited.getAllowedHostPaths())
+                .extracting(AllowedHostPath::getPathPrefix)
+                .containsExactly("/var/log", "/var/lib/app");
+        assertThat(edited.getAllowedHostPaths().get(1).getReadOnly()).isTrue();
+        assertThat(edited.getHostPorts())
+                .extracting(HostPortRange::getMin)
+                .containsExactly(80, 30000);
+        assertThat(edited.getHostPorts().get(1).getMax()).isEqualTo(31000);
+        assertThat(edited.getAllowedCSIDrivers())
+                .singleElement()
+                .satisfies(driver -> assertThat(driver.getName()).isEqualTo("csi.fast.example.com"));
+    }
+
+    @Test
     void buildsAndEditsV1Beta1PodSecurityPolicyList() {
         PodSecurityPolicy restricted = new PodSecurityPolicyBuilder()
                 .withApiVersion("policy/v1beta1")
