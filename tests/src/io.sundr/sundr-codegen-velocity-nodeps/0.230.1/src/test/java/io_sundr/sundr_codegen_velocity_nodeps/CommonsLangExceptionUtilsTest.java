@@ -45,6 +45,14 @@ public class CommonsLangExceptionUtilsTest {
         assertThat(resolvedCause).isSameAs(cause);
     }
 
+    @Test
+    public void isNestedThrowableUsesModernThrowableCauseSupport() {
+        RuntimeException wrapper = new RuntimeException("wrapper");
+
+        assertThat(ExceptionUtils.isThrowableNested()).isTrue();
+        assertThat(ExceptionUtils.isNestedThrowable(wrapper)).isTrue();
+    }
+
     public static class LegacySetCauseException extends Exception {
         private Throwable legacyCause;
 
