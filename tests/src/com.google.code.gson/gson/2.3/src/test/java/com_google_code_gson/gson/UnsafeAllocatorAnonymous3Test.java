@@ -15,36 +15,35 @@ import org.junit.jupiter.api.Test;
 
 public class UnsafeAllocatorAnonymous3Test {
     @Test
-    void invokesConfiguredLegacyObjectStreamClassAllocationMethod() throws Exception {
+    void invokesConfiguredLegacyObjectInputStreamAllocationMethod() throws Exception {
         Method fallbackMethod = UnsafeAllocatorAnonymous3Test.class.getDeclaredMethod(
-                "legacyObjectStreamClassNewInstance", Class.class, int.class);
-        UnsafeAllocator allocator = newLegacyObjectStreamClassAllocator(fallbackMethod, 41);
+                "legacyObjectInputStreamNewInstance", Class.class, Class.class);
+        UnsafeAllocator allocator = newLegacyObjectInputStreamAllocator(fallbackMethod);
 
         FallbackAllocatedMessage message = allocator.newInstance(FallbackAllocatedMessage.class);
 
         assertThat(message.instantiationClass).isEqualTo(FallbackAllocatedMessage.class);
-        assertThat(message.constructorId).isEqualTo(41);
+        assertThat(message.constructorClass).isEqualTo(Object.class);
     }
 
-    private static UnsafeAllocator newLegacyObjectStreamClassAllocator(Method fallbackMethod, int constructorId)
-            throws Exception {
+    private static UnsafeAllocator newLegacyObjectInputStreamAllocator(Method fallbackMethod) throws Exception {
         Class<?> allocatorClass = Class.forName("com.google.gson.internal.UnsafeAllocator$3");
-        Constructor<?> constructor = allocatorClass.getDeclaredConstructor(Method.class, int.class);
+        Constructor<?> constructor = allocatorClass.getDeclaredConstructor(Method.class);
         constructor.setAccessible(true);
-        return (UnsafeAllocator) constructor.newInstance(fallbackMethod, constructorId);
+        return (UnsafeAllocator) constructor.newInstance(fallbackMethod);
     }
 
-    public static Object legacyObjectStreamClassNewInstance(Class<?> instantiationClass, int constructorId) {
-        return new FallbackAllocatedMessage(instantiationClass, constructorId);
+    public static Object legacyObjectInputStreamNewInstance(Class<?> instantiationClass, Class<?> constructorClass) {
+        return new FallbackAllocatedMessage(instantiationClass, constructorClass);
     }
 
     public static final class FallbackAllocatedMessage {
         private final Class<?> instantiationClass;
-        private final int constructorId;
+        private final Class<?> constructorClass;
 
-        FallbackAllocatedMessage(Class<?> instantiationClass, int constructorId) {
+        FallbackAllocatedMessage(Class<?> instantiationClass, Class<?> constructorClass) {
             this.instantiationClass = instantiationClass;
-            this.constructorId = constructorId;
+            this.constructorClass = constructorClass;
         }
     }
 }
