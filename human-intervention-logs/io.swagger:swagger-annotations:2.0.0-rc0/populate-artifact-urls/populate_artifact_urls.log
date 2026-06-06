@@ -1,0 +1,1023 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e9b9f-8cb0-7730-8bb4-a5cec05e6d57
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.swagger:swagger-annotations:2.0.0-rc0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.0.0-rc0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d/metadata/io.swagger/swagger-annotations/index.json
+- Entry selector: "metadata-version" = "2.0.0-rc0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2.0.0-rc0
+- Entry metadata-version: 2.0.0-rc0
+- Entry test-version: 2.0.0-rc0
+- Entry tested-versions: [2.0.0-rc0]
+codex
+I’ll verify the artifact against Maven and the upstream repository first, then patch only the missing fields in the targeted index entry.
+exec
+/usr/bin/bash -lc "jq '.[]? // . | select(.\"metadata-version\" == \"2.0.0-rc0\")' metadata/io.swagger/swagger-annotations/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "2.0.0-rc0",
+  "tested-versions": [
+    "2.0.0-rc0"
+  ],
+  "allowed-packages": [
+    "io.swagger.annotations"
+  ]
+}
+
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"|\"description\"|\"language\"' metadata/io.swagger metadata/io.swagger.core.v3 metadata -g 'index.json' | head -200" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d
+ succeeded in 0ms:
+metadata/io.swagger/swagger-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
+metadata/io.swagger/swagger-annotations/index.json:    "repository-url" : "https://github.com/swagger-api/swagger-core",
+metadata/io.swagger/swagger-annotations/index.json:    "test-code-url" : "N/A",
+metadata/io.swagger/swagger-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
+metadata/io.swagger/swagger-annotations/index.json:    "description" : "Swagger Annotations provides Java annotations used by swagger-core to describe REST APIs, operations, models, parameters, responses, and security metadata for Swagger/OpenAPI 2.0 generation. It contains annotation types under io.swagger.annotations so JVM applications and frameworks can decorate code without bringing in the full swagger-core runtime.",
+metadata/io.swagger.core.v3/swagger-annotations-jakarta/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/core/v3/swagger-annotations-jakarta/$version$/swagger-annotations-jakarta-$version$-sources.jar",
+metadata/io.swagger.core.v3/swagger-annotations-jakarta/index.json:    "repository-url" : "https://github.com/swagger-api/swagger-core",
+metadata/io.swagger.core.v3/swagger-annotations-jakarta/index.json:    "test-code-url" : "N/A",
+metadata/io.swagger.core.v3/swagger-annotations-jakarta/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/core/v3/swagger-annotations-jakarta/$version$/swagger-annotations-jakarta-$version$-javadoc.jar",
+metadata/io.swagger.core.v3/swagger-annotations-jakarta/index.json:    "description" : "Swagger Annotations Jakarta provides Java annotation types for describing OpenAPI metadata on Jakarta-based application classes, resources, operations, parameters, schemas, responses, security, and related API elements. It is the annotations-only module used by Swagger Core and compatible tooling to derive OpenAPI definitions from Java code.",
+metadata/io.swagger.core.v3/swagger-core-jakarta/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/core/v3/swagger-core-jakarta/$version$/swagger-core-jakarta-$version$-sources.jar",
+metadata/io.swagger.core.v3/swagger-core-jakarta/index.json:    "repository-url" : "https://github.com/swagger-api/swagger-core",
+metadata/io.swagger.core.v3/swagger-core-jakarta/index.json:    "test-code-url" : "https://github.com/swagger-api/swagger-core/tree/v$version$/modules/swagger-core/src/test",
+metadata/io.swagger.core.v3/swagger-core-jakarta/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/core/v3/swagger-core-jakarta/$version$/swagger-core-jakarta-$version$-javadoc.jar",
+metadata/io.swagger.core.v3/swagger-core-jakarta/index.json:    "description" : "Swagger Core Jakarta is the Jakarta namespace variant of Swagger Core, a Java implementation of the OpenAPI Specification for reading annotations, resolving models, and generating OpenAPI definitions. It provides the core converters, serializers, filters, and utilities used by Swagger integrations that target Jakarta APIs instead of the older javax namespace.",
+metadata/io.swagger.core.v3/swagger-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/core/v3/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
+metadata/io.swagger.core.v3/swagger-annotations/index.json:    "repository-url" : "https://github.com/swagger-api/swagger-core",
+metadata/io.swagger.core.v3/swagger-annotations/index.json:    "test-code-url" : "N/A",
+metadata/io.swagger.core.v3/swagger-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/core/v3/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
+metadata/io.swagger.core.v3/swagger-annotations/index.json:    "description" : "Swagger Annotations provides Java annotation types for describing OpenAPI metadata on application classes, resources, operations, parameters, schemas, responses, security, and related API elements. It is the annotations-only module used by Swagger Core and compatible tooling to derive OpenAPI definitions from Java code.",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:    "repository-url" : "https://github.com/paul-hammant/paranamer",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:    "description" : "ParaNamer is a Java library that exposes constructor and method parameter names at runtime. It can read parameter names from generated metadata, annotations, debug symbols, or bytecode so frameworks can bind arguments without manual name declarations.",
+metadata/io.swagger.core.v3/swagger-models-jakarta/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/core/v3/swagger-models-jakarta/$version$/swagger-models-jakarta-$version$-sources.jar",
+metadata/io.swagger.core.v3/swagger-models-jakarta/index.json:    "repository-url" : "https://github.com/swagger-api/swagger-core",
+metadata/io.swagger.core.v3/swagger-models-jakarta/index.json:    "test-code-url" : "https://github.com/swagger-api/swagger-core/tree/v$version$/modules/swagger-models/src/test",
+metadata/io.swagger.core.v3/swagger-models-jakarta/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/core/v3/swagger-models-jakarta/$version$/swagger-models-jakarta-$version$-javadoc.jar",
+metadata/io.swagger.core.v3/swagger-models-jakarta/index.json:    "description" : "Swagger Models Jakarta provides Java model classes that represent OpenAPI 3.x documents, including paths, operations, schemas, parameters, responses, security definitions, servers, tags, and related elements. This Jakarta variant is generated from Swagger Core's models module for use with Jakarta-aligned Swagger Core stacks while remaining a regular JVM jar.",
+metadata/com.google.truth/truth/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-sources.jar",
+metadata/com.google.truth/truth/index.json:    "repository-url" : "https://github.com/google/truth",
+metadata/com.google.truth/truth/index.json:    "test-code-url" : "https://github.com/google/truth/tree/release_1_1_3/core/src/test/java?version=$version$",
+metadata/com.google.truth/truth/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-javadoc.jar",
+metadata/com.google.truth/truth/index.json:    "description" : "Truth is a Java assertion framework that provides fluent assertions and readable failure messages for tests. It includes built-in subjects for common JDK and Guava types and extension points for defining custom assertions.",
+metadata/net.postgis/postgis-geometry/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+metadata/net.postgis/postgis-geometry/index.json:    "repository-url" : "https://github.com/postgis/postgis-java",
+metadata/net.postgis/postgis-geometry/index.json:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/postgis-geometry/src/test",
+metadata/net.postgis/postgis-geometry/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+metadata/net.postgis/postgis-geometry/index.json:    "description" : "PostGIS Geometry provides Java model classes for representing PostGIS geometry values such as points, lines, polygons, and geometry collections. It supports parsing and serializing those values in PostGIS-related text and binary forms so JDBC applications can move spatial values between Java and a PostGIS database.",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-jvm-graal-ffi-jvm/$version$/mordant-jvm-graal-ffi-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:    "repository-url" : "https://github.com/ajalt/mordant",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:    "documentation-url" : "https://github.com/ajalt/mordant/blob/$version$/mordant-jvm-graal-ffi/README.md",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:    "description" : "Mordant is a Kotlin multiplatform library for rendering styled terminal output, including colors, tables, widgets, Markdown, input, and animations. The mordant-jvm-graal-ffi-jvm artifact provides Mordant's JVM terminal interface for GraalVM Native Image by binding native terminal functionality through GraalVM foreign function interfaces.",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:    "language" : {
+metadata/net.postgis/postgis-jdbc/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+metadata/net.postgis/postgis-jdbc/index.json:    "repository-url" : "https://github.com/postgis/postgis-java",
+metadata/net.postgis/postgis-jdbc/index.json:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/jdbc/src/test",
+metadata/net.postgis/postgis-jdbc/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+metadata/net.postgis/postgis-jdbc/index.json:    "description" : "PostGIS JDBC provides PostgreSQL JDBC driver extensions that register PostGIS geometry and geography data types with Java JDBC connections. It builds on postgis-geometry and the PostgreSQL JDBC driver so applications can read, write, parse, and serialize spatial values in PostGIS databases.",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:    "repository-url" : "https://github.com/ajalt/mordant",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:    "description" : "Mordant Core is a Kotlin multiplatform library for rendering styled terminal output, including ANSI colors, text styling, widgets, tables, input handling, and terminal capability detection. The mordant-core-jvm artifact provides the JVM variant of the core APIs for command-line applications that need rich terminal rendering and interaction.",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:    "language" : {
+metadata/com.comcast/ip4s-core_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-sources.jar",
+metadata/com.comcast/ip4s-core_3/index.json:    "repository-url" : "https://github.com/Comcast/ip4s",
+metadata/com.comcast/ip4s-core_3/index.json:    "test-code-url" : "https://github.com/Comcast/ip4s/tree/v$version$/test-kit/shared/src/test",
+metadata/com.comcast/ip4s-core_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-javadoc.jar",
+metadata/com.comcast/ip4s-core_3/index.json:    "description" : "ip4s-core_3 provides immutable Scala 3 data types for IP addresses, hosts, ports, socket addresses, CIDR blocks, multicast addresses, and related network values. It emphasizes referentially transparent parsing and validation so applications can model network endpoints without implicit DNS lookups or mutable Java networking objects.",
+metadata/com.comcast/ip4s-core_3/index.json:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:    "repository-url" : "https://github.com/ajalt/mordant",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:    "documentation-url" : "https://github.com/ajalt/mordant/blob/$version$/mordant-jvm-ffm/README.md",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:    "description" : "Mordant is a Kotlin library for rendering styled terminal output, including colors, tables, widgets, Markdown, input, and animations. The mordant-jvm-ffm-jvm artifact provides Mordant's JVM terminal interface backed by Java's Foreign Function & Memory APIs for native terminal integration on JDK 22 or newer.",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:    "language" : {
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-sources.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-tests.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:    "description" : "Apache HttpClient 5 is a client-side HTTP library for building applications that send requests and consume HTTP services. It provides synchronous and asynchronous clients, connection management, authentication, state management, and support for HTTP/1.1 and HTTP/2.",
+metadata/org.glassfish.hk2/hk2-utils/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.glassfish.hk2/hk2-utils/index.json:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:    "description" : "HK2 Utils provides utility classes used by the HK2 dependency injection framework, including reflection helpers, cache abstractions, weak-reference collections, and general-purpose support code. It supports HK2 internals and applications built on HK2 by centralizing reusable Java utilities for type inspection, cache management, and lightweight data structures.",
+metadata/org.glassfish.hk2/hk2-utils/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:    "repository-url" : "https://github.com/javaee/hk2",
+metadata/org.glassfish.hk2/hk2-utils/index.json:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:    "description" : "HK2 Utils provides utility classes used by the HK2 dependency injection framework, including reflection helpers, cache abstractions, weak-reference collections, and general-purpose support code. It supports HK2 internals and applications built on HK2 by centralizing reusable Java utilities for type inspection, cache management, and lightweight data structures.",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-binary",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-binary/tree/jackson-dataformats-binary-$version$/cbor/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:    "description" : "Jackson Dataformat CBOR adds support for reading and writing Concise Binary Object Representation (CBOR) data through Jackson's streaming, data binding, and tree model APIs. It provides CBOR-specific parser, generator, factory, and mapper implementations so Java applications can serialize and deserialize objects and JSON-like structures in a compact binary format.",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-text",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/toml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:    "description" : "Jackson Dataformat TOML adds Jackson support for reading and writing TOML documents. It provides TOML parsing and generation through Jackson's streaming and databinding APIs.",
+metadata/org.glassfish.hk2/hk2-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.glassfish.hk2/hk2-api/index.json:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:    "description" : "HK2 API provides the core contracts, annotations, descriptors, and service locator interfaces for the HK2 dependency injection framework. It lets applications and HK2 extensions describe services, manage dynamic configurations, resolve injections, define scopes, and observe service lifecycle events.",
+metadata/org.glassfish.hk2/hk2-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.glassfish.hk2/hk2-api/index.json:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:    "description" : "HK2 API provides the core contracts, annotations, descriptors, and service locator interfaces for the HK2 dependency injection framework. It lets applications and HK2 extensions describe services, manage dynamic configurations, resolve injections, define scopes, and observe service lifecycle events.",
+metadata/org.glassfish.hk2/hk2-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:    "repository-url" : "https://github.com/javaee/hk2",
+metadata/org.glassfish.hk2/hk2-api/index.json:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:    "description" : "HK2 API provides the core contracts, annotations, descriptors, and service locator interfaces for the HK2 dependency injection framework. It lets applications and HK2 extensions describe services, manage dynamic configurations, resolve injections, define scopes, and observe service lifecycle events.",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-text",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/yaml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:    "description" : "Jackson Dataformat YAML provides Jackson-backed reading and writing of YAML data through the standard streaming and data-binding APIs. It integrates SnakeYAML as the underlying YAML parser and generator so Java applications can serialize and deserialize YAML alongside other Jackson data formats.",
+metadata/com.rabbitmq/amqp-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+metadata/com.rabbitmq/amqp-client/index.json:    "repository-url" : "https://github.com/rabbitmq/rabbitmq-java-client",
+metadata/com.rabbitmq/amqp-client/index.json:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v$version$/src/test",
+metadata/com.rabbitmq/amqp-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+metadata/com.rabbitmq/amqp-client/index.json:    "description" : "The RabbitMQ Java client library lets Java applications connect to RabbitMQ brokers and communicate using AMQP 0-9-1. It provides APIs for connections, channels, message publishing, consuming, acknowledgements, and related client-side broker interactions.",
+metadata/org.springframework/spring-instrument/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-instrument/index.json:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:    "description" : "Spring Instrument provides a Java instrumentation agent that captures and exposes the JVM Instrumentation instance for later use by Spring-based applications. It supports Spring features that need load-time class transformation or other access to the JVM instrumentation API.",
+metadata/org.apache.hadoop/hadoop-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-annotations/$version$/hadoop-annotations-$version$-sources.jar",
+metadata/org.apache.hadoop/hadoop-annotations/index.json:    "repository-url" : "https://github.com/apache/hadoop",
+metadata/org.apache.hadoop/hadoop-annotations/index.json:    "test-code-url" : "N/A",
+metadata/org.apache.hadoop/hadoop-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-annotations/$version$/hadoop-annotations-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-annotations/index.json:    "description" : "Apache Hadoop Annotations provides Java annotations for declaring the intended audience and stability of Hadoop APIs. It also includes doclet tools that include or exclude annotated API elements when generating public or private Javadocs.",
+metadata/org.springframework/spring-context-support/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context-support/$version$/spring-context-support-$version$-sources.jar",
+metadata/org.springframework/spring-context-support/index.json:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-context-support/index.json:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-context-support/src/test",
+metadata/org.springframework/spring-context-support/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context-support/$version$/spring-context-support-$version$-javadoc.jar",
+metadata/org.springframework/spring-context-support/index.json:    "description" : "Spring Context Support provides integration classes that connect Spring's application context with common third-party libraries. It includes support for mail sending, Quartz scheduling, caching integrations, and templating facilities used by Spring applications.",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "description" : "Brotli4j provides Java bindings for Brotli compression and decompression using platform-specific native libraries. It exposes encoder and decoder APIs for working with Brotli-compressed data from JVM applications.",
+metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-web-proxy/$version$/hadoop-yarn-server-web-proxy-$version$-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:    "repository-url" : "https://github.com/apache/hadoop",
+metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-web-proxy/$version$/hadoop-yarn-server-web-proxy-$version$-test-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-web-proxy/$version$/hadoop-yarn-server-web-proxy-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:    "description" : "Apache Hadoop YARN Web Proxy provides the server-side proxy component for YARN application web interfaces. It routes users through a trusted proxy to application master web UIs, reducing direct exposure to untrusted application-provided links and helping YARN manage web access.",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "description" : "Brotli4j provides Brotli compression and decompression bindings for Java backed by native libraries. The service artifact contains the BrotliNativeProvider service interface used by Brotli4j native-provider JARs to advertise which platform-specific Brotli library they contain.",
+metadata/org.springframework/spring-tx/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-tx/index.json:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-tx/src/test",
+metadata/org.springframework/spring-tx/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:    "description" : "Spring TX provides Spring Framework's transaction abstraction, including declarative and programmatic transaction management APIs for local and global transactions. It defines common transaction annotations, interceptors, synchronization infrastructure, and exception translation types used across Spring data access modules.",
+metadata/org.springframework/spring-tx/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-tx/index.json:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-tx/src/test",
+metadata/org.springframework/spring-tx/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:    "description" : "Spring TX provides Spring Framework's transaction abstraction, including declarative and programmatic transaction management APIs for local and global transactions. It defines common transaction annotations, interceptors, synchronization infrastructure, and exception translation types used across Spring data access modules.",
+metadata/org.springframework/spring-tx/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-tx/index.json:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-tx/src/test",
+metadata/org.springframework/spring-tx/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:    "description" : "Spring TX provides Spring Framework's transaction abstraction, including declarative and programmatic transaction management APIs for local and global transactions. It defines common transaction annotations, interceptors, synchronization infrastructure, and exception translation types used across Spring data access modules.",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:    "repository-url" : "https://github.com/apache/hadoop",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-test-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:    "description" : "Apache Hadoop YARN Server Common contains shared server-side services, protocol helpers, and utility classes used by YARN ResourceManager, NodeManager, and related server components. It supports coordination of cluster resource management features such as node registration, container lifecycle handling, shared cache management, and server configuration within Hadoop YARN.",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:    "repository-url" : "https://github.com/apache/hadoop",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-test-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:    "description" : "Apache Hadoop YARN Server Common contains shared server-side services, protocol helpers, and utility classes used by YARN ResourceManager, NodeManager, and related server components. It supports coordination of cluster resource management features such as node registration, container lifecycle handling, shared cache management, and server configuration within Hadoop YARN.",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:    "source-code-url" : "https://github.com/apache/hadoop/tree/rel/release-$version$/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:    "repository-url" : "https://github.com/apache/hadoop",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:    "test-code-url" : "https://github.com/apache/hadoop/tree/rel/release-$version$/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common/src/test/java",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:    "documentation-url" : "https://hadoop.apache.org/docs/r$version$/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common/apidocs/",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:    "description" : "Apache Hadoop YARN Server Common provides shared server-side classes, services, and protocol helpers used by YARN components such as the ResourceManager and NodeManager. It supports cluster resource-management infrastructure including node registration, container lifecycle handling, shared cache coordination, and server configuration within Hadoop YARN.",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "description" : "This artifact provides Java utility APIs used by bnd, including class-file parsing, functional exception wrappers, memoization, result types, signatures, stream helpers, and immutable collection helpers. It is a compile-time support library for bnd and OSGi tooling, packaging reusable utilities that other bnd components can statically link or consume on the JVM.",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "description" : "The biz.aQute.bnd.annotation artifact provides bnd-specific Java annotations for OSGi bundle metadata, package versioning, capabilities, service metadata, JPMS hints, licenses, and plugin declarations. These annotations are consumed by bnd and related tooling to generate or validate bundle headers and metadata without hard-coding that information in build instructions.",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:    "repository-url" : "https://github.com/apache/hadoop",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:    "test-code-url" : "N/A",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:    "description" : "Apache Hadoop YARN API provides Java interfaces, protocol records, and generated protocol buffer classes for interacting with YARN resource management services. It is used by Hadoop clients and services to describe applications, containers, resources, queues, and administrative operations in a YARN cluster.",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:    "repository-url" : "https://github.com/apache/hadoop",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:    "test-code-url" : "N/A",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:    "description" : "Apache Hadoop YARN API provides Java interfaces, protocol records, and generated protocol buffer classes for interacting with YARN resource management services. It is used by Hadoop clients and services to describe applications, containers, resources, queues, and administrative operations in a YARN cluster.",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "find metadata -path '*swagger-annotations/index.json' -print" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d
+ succeeded in 0ms:
+metadata/io.swagger/swagger-annotations/index.json
+metadata/io.swagger.core.v3/swagger-annotations/index.json
+
+codex
+The index already has populated Swagger annotation metadata on another entry, so I’m checking whether the same Maven-hosted source and Javadoc artifacts exist for `2.0.0-rc0` before reusing that pattern.
+web search: 
+web search: Maven io.swagger swagger-annotations 2.0.0-rc0 sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/io/swagger/swagger-annotations/
+web search: 
+web search: https://repo1.maven.org/maven2/io/swagger/swagger-annotations/
+codex
+Maven Central has both the versioned sources and Javadoc jars for this exact coordinate, and no test artifact is listed in that directory. I’m checking the tagged source tree now to decide whether there is a real upstream test suite path or whether `test-code-url` should be `N/A`.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/io.swagger/swagger-annotations/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.0-rc0",
+    "tested-versions" : [
+      "2.0.0-rc0"
+    ],
+    "allowed-packages" : [
+      "io.swagger.annotations"
+    ]
+  },
+  {
+    "metadata-version" : "1.6.2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
+    "repository-url" : "https://github.com/swagger-api/swagger-core",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
+    "description" : "Swagger Annotations provides Java annotations used by swagger-core to describe REST APIs, operations, models, parameters, responses, and security metadata for Swagger/OpenAPI 2.0 generation. It contains annotation types under io.swagger.annotations so JVM applications and frameworks can decorate code without bringing in the full swagger-core runtime.",
+    "tested-versions" : [
+      "1.6.2",
+      "1.6.3",
+      "1.6.4",
+      "1.6.5",
+      "1.6.6",
+      "1.6.7",
+      "1.6.8",
+      "1.6.9",
+      "1.6.10",
+      "1.6.11",
+      "1.6.12",
+      "1.6.13",
+      "1.6.14",
+      "1.6.15",
+      "1.6.16"
+    ],
+    "allowed-packages" : [
+      "io.swagger.annotations"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/swagger/swagger-annotations/2.0.0-rc0/swagger-annotations-2.0.0-rc0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>io.swagger</groupId>
+        <artifactId>swagger-project</artifactId>
+        <version>2.0.0-rc0</version>
+        <relativePath>../..</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>io.swagger</groupId>
+    <artifactId>swagger-annotations</artifactId>
+    <version>2.0.0-rc0</version>
+    <packaging>bundle</packaging>
+    <name>swagger-annotations</name>
+    <build>
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <defaultGoal>install</defaultGoal>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>${felix-version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>io.swagger.oas.annotations</Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <profiles>
+        <profile>
+            <id>publish-javadocs</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <version>${enforcer-plugin-version}</version>
+                        <executions>
+                            <execution>
+                                <id>enforce-no-snapshots</id>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
+                                        <requireReleaseVersion>
+                                            <message>Publish javadocs for a SNAPSHOT is not allowed.</message>
+                                        </requireReleaseVersion>
+                                    </rules>
+                                    <fail>true</fail>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>2.7</version>
+                        <executions>
+                            <execution>
+                                <id>copy-resources</id>
+                                <!-- here the phase you need -->
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/javadocprep/swagger-core/${project.version}/apidocs</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.build.directory}/apidocs</directory>
+                                            <filtering>true</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.pyx4j</groupId>
+                        <artifactId>maven-junction-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>link</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <links>
+                                <!-- link the html generated by client to webapp directory -->
+                                <link>
+                                    <dst>${project.build.directory}/javadocprep/swagger-core/current</dst>
+                                    <src>${project.build.directory}/javadocprep/swagger-core/${project.version}</src>
+                                </link>
+                            </links>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-scm-publish-plugin</artifactId>
+                        <version>1.1</version>
+                        <configuration>
+                            <checkoutDirectory>${project.build.directory}/scmpublish</checkoutDirectory>
+                            <checkinComment>Publishing javadoc for ${project.artifactId}:${project.version}</checkinComment>
+                            <content>${project.build.directory}/javadocprep</content>
+                            <skipDeletedFiles>true</skipDeletedFiles>
+                            <pubScmUrl>scm:git:https://github.com/swagger-api/swagger-core</pubScmUrl>
+                            <scmBranch>gh-pages</scmBranch>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>publish-javadocs</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>publish-scm</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+    <dependencies>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>2.0.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/swagger-api/swagger-core/contents/modules/swagger-annotations?ref=v2.0.0-rc0' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d
+ succeeded in 166ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "modules/swagger-annotations/pom.xml",
+    "sha": "950984df477f759db44ebe741920ab72b6410d3b",
+    "size": 6666,
+    "url": "https://api.github.com/repos/swagger-api/swagger-core/contents/modules/swagger-annotations/pom.xml?ref=v2.0.0-rc0",
+    "html_url": "https://github.com/swagger-api/swagger-core/blob/v2.0.0-rc0/modules/swagger-annotations/pom.xml",
+    "git_url": "https://api.github.com/repos/swagger-api/swagger-core/git/blobs/950984df477f759db44ebe741920ab72b6410d3b",
+    "download_url": "https://raw.githubusercontent.com/swagger-api/swagger-core/v2.0.0-rc0/modules/swagger-annotations/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swagger-api/swagger-core/contents/modules/swagger-annotations/pom.xml?ref=v2.0.0-rc0",
+      "git": "https://api.github.com/repos/swagger-api/swagger-core/git/blobs/950984df477f759db44ebe741920ab72b6410d3b",
+      "html": "https://github.com/swagger-api/swagger-core/blob/v2.0.0-rc0/modules/swagger-annotations/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "modules/swagger-annotations/src",
+    "sha": "ebac1591ec3ef3f5b3652cbbea9cd26f08b8b6d0",
+    "size": 0,
+    "url": "https://api.github.com/repos/swagger-api/swagger-core/contents/modules/swagger-annotations/src?ref=v2.0.0-rc0",
+    "html_url": "https://github.com/swagger-api/swagger-core/tree/v2.0.0-rc0/modules/swagger-annotations/src",
+    "git_url": "https://api.github.com/repos/swagger-api/swagger-core/git/trees/ebac1591ec3ef3f5b3652cbbea9cd26f08b8b6d0",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/swagger-api/swagger-core/contents/modules/swagger-annotations/src?ref=v2.0.0-rc0",
+      "git": "https://api.github.com/repos/swagger-api/swagger-core/git/trees/ebac1591ec3ef3f5b3652cbbea9cd26f08b8b6d0",
+      "html": "https://github.com/swagger-api/swagger-core/tree/v2.0.0-rc0/modules/swagger-annotations/src"
+    }
+  }
+]
+
+codex
+For this release the upstream module path exists under tag `v2.0.0-rc0`, but the artifact directory on Maven is the stronger source for source and Javadoc URLs. I’m doing HEAD checks on the exact rendered URLs now, including the absence of a test jar.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/swagger-api/swagger-core/contents/modules/swagger-annotations/src?ref=v2.0.0-rc0' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d
+exec
+/usr/bin/bash -lc "curl -fsSIL -o /dev/null -w '%{http_code}\\n' https://github.com/swagger-api/swagger-core && curl -fsSIL -o /dev/null -w '%{http_code}\\n' https://github.com/swagger-api/swagger-core/tree/v2.0.0-rc0/modules/swagger-annotations/src/test" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/2.0.0-rc0/swagger-annotations-2.0.0-rc0-sources.jar \\
+  https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/2.0.0-rc0/swagger-annotations-2.0.0-rc0-javadoc.jar \\
+  https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/2.0.0-rc0/swagger-annotations-2.0.0-rc0-tests.jar \\
+  https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/2.0.0-rc0/swagger-annotations-2.0.0-rc0-test-sources.jar; do
+  printf '%s ' \""'$url"
+  curl -fsSIL -o /dev/null -w '"'%{http_code}\\n' \""'$url" || true
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d
+ succeeded in 161ms:
+[
+  {
+    "name": "main",
+    "path": "modules/swagger-annotations/src/main",
+    "sha": "92e1d874b9d13a1c4141b6a1a8df2eab85649d75",
+    "size": 0,
+    "url": "https://api.github.com/repos/swagger-api/swagger-core/contents/modules/swagger-annotations/src/main?ref=v2.0.0-rc0",
+    "html_url": "https://github.com/swagger-api/swagger-core/tree/v2.0.0-rc0/modules/swagger-annotations/src/main",
+    "git_url": "https://api.github.com/repos/swagger-api/swagger-core/git/trees/92e1d874b9d13a1c4141b6a1a8df2eab85649d75",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/swagger-api/swagger-core/contents/modules/swagger-annotations/src/main?ref=v2.0.0-rc0",
+      "git": "https://api.github.com/repos/swagger-api/swagger-core/git/trees/92e1d874b9d13a1c4141b6a1a8df2eab85649d75",
+      "html": "https://github.com/swagger-api/swagger-core/tree/v2.0.0-rc0/modules/swagger-annotations/src/main"
+    }
+  }
+]
+
+ exited 22 in 1106ms:
+200
+curl: (22) The requested URL returned error: 404
+404
+
+ succeeded in 1341ms:
+200
+https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/2.0.0-rc0/swagger-annotations-2.0.0-rc0-javadoc.jar 200
+https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/2.0.0-rc0/swagger-annotations-2.0.0-rc0-tests.jar curl: (22) The requested URL returned error: 404
+404
+https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/2.0.0-rc0/swagger-annotations-2.0.0-rc0-test-sources.jar curl: (22) The requested URL returned error: 404
+404
+
+codex
+The rendered source and Javadoc templates both return 200 for `2.0.0-rc0`. The module’s `src` tree only has `main`, and Maven’s test artifact candidates are 404, so I’m going to set `test-code-url` to `N/A` rather than invent a non-existent test path.
+web search: 
+web search: site:repo.maven.apache.org/maven2/io/swagger/swagger-annotations/2.0.0-rc0 swagger-annotations-2.0.0-rc0-sources.jar
+web search: 
+web search: https://github.com/swagger-api/swagger-core/tree/v2.0.0-rc0/modules/swagger-annotations
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/2.0.0-rc0/
+web search: 
+web search: https://repo1.maven.org/maven2/io/swagger/swagger-annotations/
+web search: 
+web search: https://repo1.maven.org/maven2/io/swagger/swagger-annotations/
+codex
+I’m patching only the first entry for `metadata-version` `2.0.0-rc0`. I’ll keep the existing later `1.6.2` entry untouched and leave `language` absent because this is a regular Java/JVM artifact, not a Kotlin, Groovy, or Scala library.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d/metadata/io.swagger/swagger-annotations/index.json
+diff --git a/metadata/io.swagger/swagger-annotations/index.json b/metadata/io.swagger/swagger-annotations/index.json
+index 5253096a5d4d2ac0fc67b53bb784da1d17dd6bdb..d033af2b7ca5b42037e9b2ba86aa7b72fd9b125e
+--- a/metadata/io.swagger/swagger-annotations/index.json
++++ b/metadata/io.swagger/swagger-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-rc0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/swagger-api/swagger-core",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
++    "description" : "Swagger Annotations provides Java annotation types used by Swagger Core to describe OpenAPI metadata on application classes, operations, parameters, responses, schemas, tags, and security requirements. It is the annotations-only module that lets JVM frameworks and applications decorate source code so Swagger Core and related tooling can generate OpenAPI definitions.",
+     "tested-versions" : [
+       "2.0.0-rc0"
+     ],
+
+diff --git a/metadata/io.swagger/swagger-annotations/index.json b/metadata/io.swagger/swagger-annotations/index.json
+index 5253096a5d4d2ac0fc67b53bb784da1d17dd6bdb..d033af2b7ca5b42037e9b2ba86aa7b72fd9b125e
+--- a/metadata/io.swagger/swagger-annotations/index.json
++++ b/metadata/io.swagger/swagger-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-rc0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/swagger-api/swagger-core",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
++    "description" : "Swagger Annotations provides Java annotation types used by Swagger Core to describe OpenAPI metadata on application classes, operations, parameters, responses, schemas, tags, and security requirements. It is the annotations-only module that lets JVM frameworks and applications decorate source code so Swagger Core and related tooling can generate OpenAPI definitions.",
+     "tested-versions" : [
+       "2.0.0-rc0"
+     ],
+
+codex
+The JSON is updated. I’m validating the rendered URLs from the file and then running the repository metadata check for this coordinate.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"2.0.0-rc0\")' metadata/io.swagger/swagger-annotations/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "2.0.0-rc0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
+  "repository-url": "https://github.com/swagger-api/swagger-core",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
+  "description": "Swagger Annotations provides Java annotation types used by Swagger Core to describe OpenAPI metadata on application classes, operations, parameters, responses, schemas, tags, and security requirements. It is the annotations-only module that lets JVM frameworks and applications decorate source code so Swagger Core and related tooling can generate OpenAPI definitions.",
+  "tested-versions": [
+    "2.0.0-rc0"
+  ],
+  "allowed-packages": [
+    "io.swagger.annotations"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'for field in source-code-url documentation-url; do
+  url=$(jq -r --arg field "$field" '"'.[] | select(.\"metadata-version\" == \"2.0.0-rc0\") | .["'$field]'"' metadata/io.swagger/swagger-annotations/index.json | sed 's/\\"'$version'"\\"'$/2.0.0-rc0/g'"')
+  printf '%s %s ' \""'$field" "$url"
+  curl -fsSIL -o /dev/null -w '"'%{http_code}\\n' \""'$url"
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d
+ succeeded in 0ms:
+source-code-url https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/2.0.0-rc0/swagger-annotations-2.0.0-rc0-sources.jar 200
+documentation-url https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/2.0.0-rc0/swagger-annotations-2.0.0-rc0-javadoc.jar 200
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=io.swagger:swagger-annotations:2.0.0-rc0 --stacktrace' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d
+diff --git a/metadata/io.swagger/swagger-annotations/index.json b/metadata/io.swagger/swagger-annotations/index.json
+index 5253096a5d4d2ac0fc67b53bb784da1d17dd6bdb..d033af2b7ca5b42037e9b2ba86aa7b72fd9b125e
+--- a/metadata/io.swagger/swagger-annotations/index.json
++++ b/metadata/io.swagger/swagger-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-rc0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/swagger-api/swagger-core",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
++    "description" : "Swagger Annotations provides Java annotation types used by Swagger Core to describe OpenAPI metadata on application classes, operations, parameters, responses, schemas, tags, and security requirements. It is the annotations-only module that lets JVM frameworks and applications decorate source code so Swagger Core and related tooling can generate OpenAPI definitions.",
+     "tested-versions" : [
+       "2.0.0-rc0"
+     ],
+
+codex
+The rendered Maven source and Javadoc URLs return 200. Gradle metadata validation is still running; I’m waiting for that result before wrapping up.
+diff --git a/metadata/io.swagger/swagger-annotations/index.json b/metadata/io.swagger/swagger-annotations/index.json
+index 5253096a5d4d2ac0fc67b53bb784da1d17dd6bdb..d033af2b7ca5b42037e9b2ba86aa7b72fd9b125e
+--- a/metadata/io.swagger/swagger-annotations/index.json
++++ b/metadata/io.swagger/swagger-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-rc0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/swagger-api/swagger-core",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
++    "description" : "Swagger Annotations provides Java annotation types used by Swagger Core to describe OpenAPI metadata on application classes, operations, parameters, responses, schemas, tags, and security requirements. It is the annotations-only module that lets JVM frameworks and applications decorate source code so Swagger Core and related tooling can generate OpenAPI definitions.",
+     "tested-versions" : [
+       "2.0.0-rc0"
+     ],
+
+ exited 1 in 5796ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for io.swagger:swagger-annotations:2.0.0-rc0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d/metadata/io.swagger/swagger-annotations/2.0.0-rc0/
+
+
+FAILURE: Build failed with an exception.
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d/build/reports/problems/problems-report.html
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - io.swagger:swagger-annotations:2.0.0-rc0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d/metadata/io.swagger/swagger-annotations/2.0.0-rc0/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - io.swagger:swagger-annotations:2.0.0-rc0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d/metadata/io.swagger/swagger-annotations/2.0.0-rc0/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+9 actionable tasks: 1 executed, 8 up-to-date
+
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+BUILD FAILED in 5s
+
+codex
+The repository check failed before it could validate the URL content because this metadata version has no `reachability-metadata.json` directory content. That appears unrelated to this URL/description patch, so I’m checking the final diff and JSON validity now.
+exec
+/usr/bin/bash -lc 'jq empty metadata/io.swagger/swagger-annotations/index.json && echo OK' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d
+ succeeded in 0ms:
+OK
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/io.swagger/swagger-annotations/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d
+ succeeded in 0ms:
+diff --git i/metadata/io.swagger/swagger-annotations/index.json w/metadata/io.swagger/swagger-annotations/index.json
+index 5253096a5d..d033af2b7c 100644
+--- i/metadata/io.swagger/swagger-annotations/index.json
++++ w/metadata/io.swagger/swagger-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-rc0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/swagger-api/swagger-core",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
++    "description" : "Swagger Annotations provides Java annotation types used by Swagger Core to describe OpenAPI metadata on application classes, operations, parameters, responses, schemas, tags, and security requirements. It is the annotations-only module that lets JVM frameworks and applications decorate source code so Swagger Core and related tooling can generate OpenAPI definitions.",
+     "tested-versions" : [
+       "2.0.0-rc0"
+     ],
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/io.swagger/swagger-annotations/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d
+ succeeded in 0ms:
+ M metadata/io.swagger/swagger-annotations/index.json
+
+diff --git a/metadata/io.swagger/swagger-annotations/index.json b/metadata/io.swagger/swagger-annotations/index.json
+index 5253096a5d4d2ac0fc67b53bb784da1d17dd6bdb..d033af2b7ca5b42037e9b2ba86aa7b72fd9b125e
+--- a/metadata/io.swagger/swagger-annotations/index.json
++++ b/metadata/io.swagger/swagger-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-rc0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/swagger-api/swagger-core",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
++    "description" : "Swagger Annotations provides Java annotation types used by Swagger Core to describe OpenAPI metadata on application classes, operations, parameters, responses, schemas, tags, and security requirements. It is the annotations-only module that lets JVM frameworks and applications decorate source code so Swagger Core and related tooling can generate OpenAPI definitions.",
+     "tested-versions" : [
+       "2.0.0-rc0"
+     ],
+
+web search: 
+web search: io.swagger swagger-annotations 2.0.0-rc0 Maven Central
+codex
+The final diff is scoped to the requested entry, and `jq` confirms the index is valid JSON. The only failed check was `checkMetadataFiles`, due to a missing `reachability-metadata.json` under the existing `2.0.0-rc0` metadata directory.
+exec
+/usr/bin/bash -lc "nl -ba metadata/io.swagger/swagger-annotations/index.json | sed -n '1,24p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "2.0.0-rc0",
+     5	    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
+     6	    "repository-url" : "https://github.com/swagger-api/swagger-core",
+     7	    "test-code-url" : "N/A",
+     8	    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
+     9	    "description" : "Swagger Annotations provides Java annotation types used by Swagger Core to describe OpenAPI metadata on application classes, operations, parameters, responses, schemas, tags, and security requirements. It is the annotations-only module that lets JVM frameworks and applications decorate source code so Swagger Core and related tooling can generate OpenAPI definitions.",
+    10	    "tested-versions" : [
+    11	      "2.0.0-rc0"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "io.swagger.annotations"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "1.6.2",
+    19	    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
+    20	    "repository-url" : "https://github.com/swagger-api/swagger-core",
+    21	    "test-code-url" : "N/A",
+    22	    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
+    23	    "description" : "Swagger Annotations provides Java annotations used by swagger-core to describe REST APIs, operations, models, parameters, responses, and security metadata for Swagger/OpenAPI 2.0 generation. It contains annotation types under io.swagger.annotations so JVM applications and frameworks can decorate code without bringing in the full swagger-core runtime.",
+    24	    "tested-versions" : [
+
+diff --git a/metadata/io.swagger/swagger-annotations/index.json b/metadata/io.swagger/swagger-annotations/index.json
+index 5253096a5d4d2ac0fc67b53bb784da1d17dd6bdb..d033af2b7ca5b42037e9b2ba86aa7b72fd9b125e
+--- a/metadata/io.swagger/swagger-annotations/index.json
++++ b/metadata/io.swagger/swagger-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-rc0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/swagger-api/swagger-core",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
++    "description" : "Swagger Annotations provides Java annotation types used by Swagger Core to describe OpenAPI metadata on application classes, operations, parameters, responses, schemas, tags, and security requirements. It is the annotations-only module that lets JVM frameworks and applications decorate source code so Swagger Core and related tooling can generate OpenAPI definitions.",
+     "tested-versions" : [
+       "2.0.0-rc0"
+     ],
+
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d/metadata/io.swagger/swagger-annotations/index.json:5) for `metadata-version` `2.0.0-rc0` with Maven source/Javadoc templates, canonical Swagger Core repository URL, `test-code-url: "N/A"`, and the required two-sentence description. I left `language` absent because this is a Java/JVM artifact, not Kotlin, Groovy, or Scala; Swagger Core is the upstream Java OpenAPI implementation and Maven Central lists this exact artifact/version. citeturn175760search3turn741371search0
+
+Verification:
+- `jq empty metadata/io.swagger/swagger-annotations/index.json` passed.
+- Rendered source and Javadoc URLs for `2.0.0-rc0` returned HTTP 200.
+- `./gradlew checkMetadataFiles -Pcoordinates=io.swagger:swagger-annotations:2.0.0-rc0 --stacktrace` failed because `metadata/io.swagger/swagger-annotations/2.0.0-rc0/reachability-metadata.json` is missing, unrelated to the URL/description fields.
+diff --git a/metadata/io.swagger/swagger-annotations/index.json b/metadata/io.swagger/swagger-annotations/index.json
+index 5253096a5d4d2ac0fc67b53bb784da1d17dd6bdb..d033af2b7ca5b42037e9b2ba86aa7b72fd9b125e
+--- a/metadata/io.swagger/swagger-annotations/index.json
++++ b/metadata/io.swagger/swagger-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-rc0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
++    "repository-url" : "https://github.com/swagger-api/swagger-core",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
++    "description" : "Swagger Annotations provides Java annotation types used by Swagger Core to describe OpenAPI metadata on application classes, operations, parameters, responses, schemas, tags, and security requirements. It is the annotations-only module that lets JVM frameworks and applications decorate source code so Swagger Core and related tooling can generate OpenAPI definitions.",
+     "tested-versions" : [
+       "2.0.0-rc0"
+     ],
+
+tokens used
+74,593
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d/metadata/io.swagger/swagger-annotations/index.json:5) for `metadata-version` `2.0.0-rc0` with Maven source/Javadoc templates, canonical Swagger Core repository URL, `test-code-url: "N/A"`, and the required two-sentence description. I left `language` absent because this is a Java/JVM artifact, not Kotlin, Groovy, or Scala; Swagger Core is the upstream Java OpenAPI implementation and Maven Central lists this exact artifact/version. citeturn175760search3turn741371search0
+
+Verification:
+- `jq empty metadata/io.swagger/swagger-annotations/index.json` passed.
+- Rendered source and Javadoc URLs for `2.0.0-rc0` returned HTTP 200.
+- `./gradlew checkMetadataFiles -Pcoordinates=io.swagger:swagger-annotations:2.0.0-rc0 --stacktrace` failed because `metadata/io.swagger/swagger-annotations/2.0.0-rc0/reachability-metadata.json` is missing, unrelated to the URL/description fields.
+Ran agent for io.swagger:swagger-annotations:2.0.0-rc0 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d/build/agent-url-discovery-logs/io.swagger-swagger-annotations-2.0.0-rc0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5706-ac83922d/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 38s
+9 actionable tasks: 1 executed, 8 up-to-date
