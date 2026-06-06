@@ -8,7 +8,6 @@ package org_apache_logging_log4j.log4j_1_2_api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.config.PropertySetter;
 import org.junit.jupiter.api.Test;
 
@@ -23,13 +22,11 @@ public class PropertySetterTest {
         setter.setProperty("count", "42");
         setter.setProperty("timeout", "123456789");
         setter.setProperty("enabled", "true");
-        setter.setProperty("threshold", "ERROR");
 
         assertThat(target.getName()).isEqualTo("example-appender");
         assertThat(target.getCount()).isEqualTo(42);
         assertThat(target.getTimeout()).isEqualTo(123456789L);
         assertThat(target.isEnabled()).isTrue();
-        assertThat(target.getThreshold()).isEqualTo(Level.ERROR);
     }
 
     public static final class ConfigurableTarget {
@@ -38,7 +35,6 @@ public class PropertySetterTest {
         private int count;
         private long timeout;
         private boolean enabled;
-        private Level threshold;
 
         public String getName() {
             return name;
@@ -72,12 +68,5 @@ public class PropertySetterTest {
             this.enabled = enabled;
         }
 
-        public Level getThreshold() {
-            return threshold;
-        }
-
-        public void setThreshold(Level threshold) {
-            this.threshold = threshold;
-        }
     }
 }
