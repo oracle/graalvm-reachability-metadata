@@ -70,6 +70,7 @@ import org.neo4j.bolt.connection.SecurityPlans;
 import org.neo4j.bolt.connection.TelemetryApi;
 import org.neo4j.bolt.connection.TransactionType;
 import org.neo4j.bolt.connection.exception.BoltClientException;
+import org.neo4j.bolt.connection.message.Messages;
 import org.neo4j.bolt.connection.netty.BootstrapFactory;
 import org.neo4j.bolt.connection.netty.NettyBoltConnectionProvider;
 import org.neo4j.bolt.connection.summary.CommitSummary;
@@ -136,9 +137,11 @@ public class Neo4j_bolt_connection_nettyTest {
             assertThat(authInfo.authAckMillis()).isGreaterThan(0L);
 
             BasicResponseHandler queryHandler = new BasicResponseHandler();
-            await(connection.run("RETURN $name", Map.of("name", VALUE_FACTORY.value("Alice")))
-                    .thenCompose(c -> c.pull(1, -1))
-                    .thenCompose(c -> c.flush(queryHandler)));
+            await(connection.writeAndFlush(
+                    queryHandler,
+                    List.of(
+                            Messages.run("RETURN $name", Map.of("name", VALUE_FACTORY.value("Alice"))),
+                            Messages.pull(-1, 1))));
             BasicResponseHandler.Summaries querySummaries = await(queryHandler.summaries());
             RunSummary runSummary = querySummaries.runSummary();
             assertThat(runSummary.queryId()).isEqualTo(42L);
@@ -151,28 +154,31 @@ public class Neo4j_bolt_connection_nettyTest {
             assertThat(querySummaries.pullSummary().metadata().get("type").asString()).isEqualTo("r");
 
             BasicResponseHandler transactionHandler = new BasicResponseHandler();
-            await(connection.beginTransaction(
-                            DatabaseNameUtil.database("neo4j"),
-                            AccessMode.WRITE,
-                            "bm-1",
-                            Set.of("neo4j"),
-                            TransactionType.DEFAULT,
-                            Duration.ofSeconds(1),
-                            Map.of("purpose", VALUE_FACTORY.value("integration-test")),
-                            null,
-                            NotificationConfig.defaultConfig())
-                    .thenCompose(c -> c.commit())
-                    .thenCompose(c -> c.flush(transactionHandler)));
+            await(connection.writeAndFlush(
+                    transactionHandler,
+                    List.of(
+                            Messages.beginTransaction(
+                                    "neo4j",
+                                    AccessMode.WRITE,
+                                    "bm-1",
+                                    Set.of("neo4j"),
+                                    TransactionType.DEFAULT,
+                                    Duration.ofSeconds(1),
+                                    Map.of("purpose", VALUE_FACTORY.value("integration-test")),
+                                    NotificationConfig.defaultConfig()),
+                            Messages.commit())));
             BasicResponseHandler.Summaries transactionSummaries = await(transactionHandler.summaries());
             assertThat(transactionSummaries.beginSummary().databaseName()).contains("neo4j");
             CommitSummary commitSummary = transactionSummaries.commitSummary();
             assertThat(commitSummary.bookmark()).contains("bm-after-commit");
 
             BasicResponseHandler authAndTelemetryHandler = new BasicResponseHandler();
-            await(connection.telemetry(TelemetryApi.AUTO_COMMIT_TRANSACTION)
-                    .thenCompose(BoltConnection::logoff)
-                    .thenCompose(c -> c.logon(AuthTokens.none(VALUE_FACTORY)))
-                    .thenCompose(c -> c.flush(authAndTelemetryHandler)));
+            await(connection.writeAndFlush(
+                    authAndTelemetryHandler,
+                    List.of(
+                            Messages.telemetry(TelemetryApi.AUTO_COMMIT_TRANSACTION),
+                            Messages.logoff(),
+                            Messages.logon(AuthTokens.none(VALUE_FACTORY)))));
             BasicResponseHandler.Summaries authAndTelemetrySummaries = await(authAndTelemetryHandler.summaries());
             assertThat(authAndTelemetrySummaries.telemetrySummary()).isNotNull();
             AuthInfo refreshedAuthInfo = await(connection.authInfo());
@@ -192,18 +198,20 @@ public class Neo4j_bolt_connection_nettyTest {
             BoltConnection connection = await(provider.connect(server.address()));
             BasicResponseHandler handler = new BasicResponseHandler();
 
-            await(connection.runInAutoCommitTransaction(
-                            DatabaseNameUtil.database("neo4j"),
-                            AccessMode.READ,
-                            null,
-                            Set.of("bm-before-auto-commit"),
-                            "RETURN $name",
-                            Map.of("name", VALUE_FACTORY.value("Bob")),
-                            Duration.ofSeconds(2),
-                            Map.of("purpose", VALUE_FACTORY.value("auto-commit-test")),
-                            NotificationConfig.defaultConfig())
-                    .thenCompose(c -> c.discard(1, -1))
-                    .thenCompose(c -> c.flush(handler)));
+            await(connection.writeAndFlush(
+                    handler,
+                    List.of(
+                            Messages.run(
+                                    "neo4j",
+                                    AccessMode.READ,
+                                    null,
+                                    Set.of("bm-before-auto-commit"),
+                                    "RETURN $name",
+                                    Map.of("name", VALUE_FACTORY.value("Bob")),
+                                    Duration.ofSeconds(2),
+                                    Map.of("purpose", VALUE_FACTORY.value("auto-commit-test")),
+                                    NotificationConfig.defaultConfig()),
+                            Messages.discard(-1, 1))));
             BasicResponseHandler.Summaries summaries = await(handler.summaries());
 
             assertThat(summaries.runSummary().queryId()).isEqualTo(42L);
@@ -224,8 +232,9 @@ public class Neo4j_bolt_connection_nettyTest {
             BoltConnection connection = await(provider.connect(server.address()));
             BasicResponseHandler handler = new BasicResponseHandler();
 
-            await(connection.route(DatabaseNameUtil.database("neo4j"), null, Set.of("bm-before-route"))
-                    .thenCompose(c -> c.flush(handler)));
+            await(connection.writeAndFlush(
+                    handler,
+                    Messages.route("neo4j", null, Set.of("bm-before-route"))));
             BasicResponseHandler.Summaries summaries = await(handler.summaries());
             RouteSummary routeSummary = summaries.routeSummary();
             ClusterComposition clusterComposition = routeSummary.clusterComposition();
