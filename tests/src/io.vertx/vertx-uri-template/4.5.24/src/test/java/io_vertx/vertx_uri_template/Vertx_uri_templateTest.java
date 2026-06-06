@@ -122,6 +122,26 @@ public class Vertx_uri_templateTest {
     }
 
     @Test
+    void mergesJsonVariablesIntoExistingCollectionsAndClearsForReuse() {
+        Variables variables = Variables.variables()
+                .set("tenant", "stale")
+                .set("resource", "projects");
+        JsonObject update = new JsonObject()
+                .put("tenant", "acme")
+                .put("id", "42");
+
+        assertThat(variables.addAll(update)).isSameAs(variables);
+        assertThat(variables.names()).containsExactlyInAnyOrder("tenant", "resource", "id");
+        assertThat(variables.getSingle("tenant")).isEqualTo("acme");
+        assertThat(UriTemplate.of("/{tenant}{/resource,id}").expandToString(variables))
+                .isEqualTo("/acme/projects/42");
+
+        assertThat(variables.clear()).isSameAs(variables);
+        assertThat(variables.names()).isEmpty();
+        assertThat(variables.get("tenant")).isNull();
+    }
+
+    @Test
     void controlsMissingVariablesWithExpandOptionsAndJsonConversion() {
         UriTemplate template = UriTemplate.of("/users/{user}/orders/{order}");
         Variables variables = Variables.variables().set("user", "alice");
