@@ -50,6 +50,17 @@ public class Oci_java_sdk_addons_oke_workload_identityTest {
     }
 
     @Test
+    void authenticationBuilderNormalizesMetadataBaseUrlWithoutOpeningNetwork() {
+        OkeWorkloadIdentityAuthenticationDetailsProvider
+                        .OkeWorkloadIdentityAuthenticationDetailsProviderBuilder
+                builder = OkeWorkloadIdentityAuthenticationDetailsProvider.builder();
+
+        assertThat(builder.metadataBaseUrl("http://metadata.example.com/opc/v2"))
+                .isSameAs(builder);
+        assertThat(builder.getMetadataBaseUrl()).isEqualTo("http://metadata.example.com/opc/v2/");
+    }
+
+    @Test
     void sessionTokenDetailsBuilderTracksExplicitPodKeyAndCopiesIt() {
         GetOkeResourcePrincipalSessionTokenDetails details =
                 GetOkeResourcePrincipalSessionTokenDetails.builder().podKey("pod-key").build();
