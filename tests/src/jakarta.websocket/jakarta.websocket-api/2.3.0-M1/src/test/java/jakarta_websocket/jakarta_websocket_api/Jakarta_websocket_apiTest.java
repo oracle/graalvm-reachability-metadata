@@ -32,11 +32,13 @@ import jakarta.websocket.server.ServerEndpointConfig;
 import java.io.IOException;
 import java.net.URI;
 import java.security.Principal;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import javax.net.ssl.SSLContext;
@@ -237,6 +239,14 @@ public class Jakarta_websocket_apiTest {
         assertThat(request.getHeaders()).containsEntry(HandshakeRequest.SEC_WEBSOCKET_VERSION, List.of("13"));
         assertThat(request.getParameterMap()).containsEntry("room", List.of("blue", "green"));
         assertThat(request.getQueryString()).isEqualTo("room=blue&room=green");
+        assertThat(request.getUserX509CertificateChain()).isNull();
+        assertThat(request.getLocalAddress()).isEqualTo("192.0.2.10");
+        assertThat(request.getLocalHostName()).isEqualTo("websocket.example.test");
+        assertThat(request.getLocalPort()).isEqualTo(443);
+        assertThat(request.getRemoteAddress()).isEqualTo("198.51.100.25");
+        assertThat(request.getRemoteHostName()).isEqualTo("client.example.test");
+        assertThat(request.getRemotePort()).isEqualTo(52_000);
+        assertThat(request.getPreferredLocale()).isEqualTo(Locale.US);
         assertThat(request.getUserPrincipal()).isSameAs(principal);
         assertThat(request.isUserInRole("user")).isTrue();
         assertThat(request.isUserInRole("admin")).isFalse();
@@ -710,6 +720,46 @@ public class Jakarta_websocket_apiTest {
         @Override
         public String getQueryString() {
             return queryString;
+        }
+
+        @Override
+        public X509Certificate[] getUserX509CertificateChain() {
+            return null;
+        }
+
+        @Override
+        public String getLocalAddress() {
+            return "192.0.2.10";
+        }
+
+        @Override
+        public String getLocalHostName() {
+            return "websocket.example.test";
+        }
+
+        @Override
+        public int getLocalPort() {
+            return 443;
+        }
+
+        @Override
+        public String getRemoteAddress() {
+            return "198.51.100.25";
+        }
+
+        @Override
+        public String getRemoteHostName() {
+            return "client.example.test";
+        }
+
+        @Override
+        public int getRemotePort() {
+            return 52_000;
+        }
+
+        @Override
+        public Locale getPreferredLocale() {
+            return Locale.US;
         }
     }
 
