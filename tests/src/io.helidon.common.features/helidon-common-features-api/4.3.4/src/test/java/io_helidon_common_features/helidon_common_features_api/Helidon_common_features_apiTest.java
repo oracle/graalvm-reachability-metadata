@@ -105,8 +105,8 @@ public class Helidon_common_features_apiTest {
     }
 
     private static void assertSourceOnlyModuleAnnotation(Class<? extends Annotation> annotationType) {
-        Target target = annotationType.getAnnotation(Target.class);
-        Retention retention = annotationType.getAnnotation(Retention.class);
+        Target target = java.util.Arrays.stream(annotationType.getAnnotationsByType(Target.class)).findFirst().orElse(null);
+        Retention retention = java.util.Arrays.stream(annotationType.getAnnotationsByType(Retention.class)).findFirst().orElse(null);
 
         assertThat(target).as(annotationType.getName()).isNotNull();
         assertThat(target.value()).containsExactly(ElementType.MODULE);
