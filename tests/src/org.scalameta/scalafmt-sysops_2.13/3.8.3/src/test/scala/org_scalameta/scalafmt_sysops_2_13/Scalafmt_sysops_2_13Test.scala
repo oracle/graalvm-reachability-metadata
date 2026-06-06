@@ -301,6 +301,7 @@ class Scalafmt_sysops_2_13Test {
       runCommand(repository, "git", "config", "user.email", "test@example.invalid")
       runCommand(repository, "git", "config", "user.name", "Scalafmt Sysops Test")
       runCommand(repository, "git", "config", "commit.gpgsign", "false")
+      runCommand(repository, "git", "config", "core.autocrlf", "input")
       runCommand(repository, "git", "checkout", "-b", baselineBranch)
       Files.createDirectories(sourceDirectory)
       FileOps.writeFile(trackedFile, "object Tracked\n")
@@ -315,6 +316,7 @@ class Scalafmt_sysops_2_13Test {
       val repositoryRoot: Option[AbsoluteFile] = gitOps.rootDir
       assertTrue(repositoryRoot.isDefined)
       assertEquals(repository, repositoryRoot.get.path)
+      assertEquals(Some("input"), gitOps.getAutoCRLF)
 
       val trackedFiles: Set[AbsoluteFile] = gitOps.lsTree().toSet
       assertTrue(trackedFiles.contains(AbsoluteFile(trackedFile)))
@@ -410,7 +412,8 @@ class Scalafmt_sysops_2_13Test {
       rootOption: Option[AbsoluteFile],
       statusResult: Seq[AbsoluteFile] = Seq.empty,
       diffResult: Seq[AbsoluteFile] = Seq.empty,
-      lsTreeResult: Seq[AbsoluteFile] = Seq.empty
+      lsTreeResult: Seq[AbsoluteFile] = Seq.empty,
+      autoCRLFResult: Option[String] = None
   ) extends GitOps {
     var lastStatusDirs: Seq[AbsoluteFile] = Seq.empty
     var lastDiffBranch: String = ""
@@ -434,5 +437,7 @@ class Scalafmt_sysops_2_13Test {
     }
 
     override def rootDir: Option[AbsoluteFile] = rootOption
+
+    override def getAutoCRLF: Option[String] = autoCRLFResult
   }
 }
