@@ -6,7 +6,6 @@
  */
 package org_hibernate.hibernate_jpamodelgen;
 
-import org.graalvm.internal.tck.NativeImageSupport;
 import org.hibernate.processor.validation.Mocker;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +21,7 @@ public class MockerTest {
             assertThat(target.generatedText()).isEmpty();
             assertThat(target.generatedFlag()).isFalse();
         } catch (Error error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+            if (!HibernateJpamodelgenNativeImageSupport.isExpectedMockerFailure(error)) {
                 throw error;
             }
         }
@@ -39,7 +38,7 @@ public class MockerTest {
             assertThat(target.generatedLong()).isZero();
             assertThat(target.generatedNames()).isEmpty();
         } catch (Error error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+            if (!HibernateJpamodelgenNativeImageSupport.isExpectedMockerFailure(error)) {
                 throw error;
             }
         }
