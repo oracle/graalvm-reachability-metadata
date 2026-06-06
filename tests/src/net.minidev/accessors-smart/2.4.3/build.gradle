@@ -9,10 +9,35 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+File generatedAccessorsSmartSourcesDir = layout.buildDirectory.dir("generated/accessors-smart-sources").get().asFile
+
+configurations {
+    accessorsSmartSources
+}
 
 dependencies {
-    testImplementation "net.minidev:accessors-smart:$libraryVersion"
+    // Version 2.4.3 was published without a main JAR, so compile its published sources.
+    accessorsSmartSources "net.minidev:accessors-smart:$libraryVersion:sources"
+    testImplementation 'org.ow2.asm:asm:8.0.1'
     testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+sourceSets {
+    test {
+        java.srcDir generatedAccessorsSmartSourcesDir
+    }
+}
+
+tasks.register("unpackAccessorsSmartSources", Copy) {
+    from {
+        configurations.accessorsSmartSources.collect { zipTree(it) }
+    }
+    include "**/*.java"
+    into generatedAccessorsSmartSourcesDir
+}
+
+tasks.named("compileTestJava") {
+    dependsOn("unpackAccessorsSmartSources")
 }
 
 tasks.withType(Test).configureEach {
