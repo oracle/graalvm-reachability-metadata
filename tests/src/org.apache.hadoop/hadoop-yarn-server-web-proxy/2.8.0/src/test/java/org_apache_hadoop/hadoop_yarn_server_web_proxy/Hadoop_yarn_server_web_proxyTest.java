@@ -47,6 +47,8 @@ import org.apache.hadoop.http.FilterContainer;
 import org.apache.hadoop.yarn.api.ApplicationClientProtocol;
 import org.apache.hadoop.yarn.api.protocolrecords.CancelDelegationTokenRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.CancelDelegationTokenResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.FailApplicationAttemptRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.FailApplicationAttemptResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.GetApplicationAttemptReportRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.GetApplicationAttemptReportResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.GetApplicationAttemptsRequest;
@@ -71,6 +73,8 @@ import org.apache.hadoop.yarn.api.protocolrecords.GetLabelsToNodesRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.GetLabelsToNodesResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.GetNewApplicationRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.GetNewApplicationResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.GetNewReservationRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.GetNewReservationResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.GetNodesToLabelsRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.GetNodesToLabelsResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.GetQueueInfoRequest;
@@ -85,12 +89,18 @@ import org.apache.hadoop.yarn.api.protocolrecords.RenewDelegationTokenRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.RenewDelegationTokenResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.ReservationDeleteRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.ReservationDeleteResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.ReservationListRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.ReservationListResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.ReservationSubmissionRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.ReservationSubmissionResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.ReservationUpdateRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.ReservationUpdateResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.SignalContainerRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.SignalContainerResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.SubmitApplicationRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.SubmitApplicationResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.UpdateApplicationPriorityRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.UpdateApplicationPriorityResponse;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.ApplicationReport;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
@@ -432,6 +442,11 @@ public class Hadoop_yarn_server_web_proxyTest {
         }
 
         @Override
+        public FailApplicationAttemptResponse failApplicationAttempt(FailApplicationAttemptRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        @Override
         public GetClusterMetricsResponse getClusterMetrics(GetClusterMetricsRequest request) {
             throw unusedProtocolMethod();
         }
@@ -458,6 +473,11 @@ public class Hadoop_yarn_server_web_proxyTest {
         }
 
         @Override
+        public GetNewReservationResponse getNewReservation(GetNewReservationRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        @Override
         public ReservationSubmissionResponse submitReservation(ReservationSubmissionRequest request) {
             throw unusedProtocolMethod();
         }
@@ -469,6 +489,11 @@ public class Hadoop_yarn_server_web_proxyTest {
 
         @Override
         public ReservationDeleteResponse deleteReservation(ReservationDeleteRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        @Override
+        public ReservationListResponse listReservations(ReservationListRequest request) {
             throw unusedProtocolMethod();
         }
 
@@ -525,6 +550,16 @@ public class Hadoop_yarn_server_web_proxyTest {
 
         @Override
         public CancelDelegationTokenResponse cancelDelegationToken(CancelDelegationTokenRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        @Override
+        public SignalContainerResponse signalToContainer(SignalContainerRequest request) {
+            throw unusedProtocolMethod();
+        }
+
+        @Override
+        public UpdateApplicationPriorityResponse updateApplicationPriority(UpdateApplicationPriorityRequest request) {
             throw unusedProtocolMethod();
         }
 
