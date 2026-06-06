@@ -220,6 +220,19 @@ public class Helidon_common_buffersTest {
     }
 
     @Test
+    void dataReaderPeeksBuffersWithoutConsumingAndExtractsCurrentChunks() {
+        DataReader reader = reader("ab", "cd", "ef");
+
+        BufferData preview = reader.getBuffer(4);
+        assertEquals("abcd", preview.readString(preview.available(), StandardCharsets.US_ASCII));
+        assertEquals("ab", reader.readAsciiString(2));
+
+        BufferData currentChunk = reader.readBuffer();
+        assertEquals("cd", currentChunk.readString(currentChunk.available(), StandardCharsets.US_ASCII));
+        assertArrayEquals("ef".getBytes(StandardCharsets.US_ASCII), reader.readBytes(2));
+    }
+
+    @Test
     void dataReaderFindsDelimitersAndReportsInvalidNewLines() {
         DataReader reader = reader("abc:def", "\r", "\nrest");
         assertEquals(3, reader.findOrNewLine((byte) ':', 64));
