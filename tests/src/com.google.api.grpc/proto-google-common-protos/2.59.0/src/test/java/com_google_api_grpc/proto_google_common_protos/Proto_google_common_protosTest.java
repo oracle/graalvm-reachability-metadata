@@ -275,7 +275,7 @@ public class Proto_google_common_protosTest {
                 .setMessage("quota exhausted")
                 .addDetails(detail(
                         "type.googleapis.com/google.rpc.BadRequest",
-                        badRequest.getDescriptorForType().getFullName()))
+                        BadRequest.getDescriptor().getFullName()))
                 .addDetails(detail("type.googleapis.com/google.rpc.ErrorInfo", errorInfo.getReason()))
                 .addDetails(detail(
                         "type.googleapis.com/google.rpc.RetryInfo",
@@ -283,6 +283,7 @@ public class Proto_google_common_protosTest {
                 .addDetails(detail("type.googleapis.com/google.rpc.Help", help.getLinks(0).getUrl()))
                 .build();
 
+        assertThat(badRequest.getFieldViolationsList()).hasSize(1);
         assertThat(badRequest.getFieldViolations(0).getField()).isEqualTo("book.name");
         assertThat(errorInfo.getMetadataOrThrow("quota_limit")).isEqualTo("read-requests-per-minute");
         assertThat(retryInfo.hasRetryDelay()).isTrue();
