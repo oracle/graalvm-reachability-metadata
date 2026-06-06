@@ -18,7 +18,6 @@ import com.nimbusds.jose.CompressionAlgorithm;
 import com.nimbusds.jose.EncryptionMethod;
 import com.nimbusds.jose.Header;
 import com.nimbusds.jose.JOSEObject;
-import com.nimbusds.jose.JOSEObjectHandler;
 import com.nimbusds.jose.JOSEObjectType;
 import com.nimbusds.jose.JWEAlgorithm;
 import com.nimbusds.jose.JWEHeader;
@@ -37,6 +36,7 @@ import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jose.jwk.JWKMatcher;
 import com.nimbusds.jose.jwk.JWKSelector;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.KeyType;
@@ -46,13 +46,12 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.util.Base64URL;
 import com.nimbusds.jose.util.JSONObjectUtils;
 import com.nimbusds.jwt.EncryptedJWT;
+import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.JWTHandler;
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.PlainJWT;
-import com.nimbusds.jwt.ReadOnlyJWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import java.net.URL;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -88,7 +87,7 @@ public class Nimbus_jose_jwtTest {
         String serialized = jwt.serialize();
 
         PlainJWT parsed = PlainJWT.parse(serialized);
-        ReadOnlyJWTClaimsSet parsedClaims = parsed.getJWTClaimsSet();
+        JWTClaimsSet parsedClaims = parsed.getJWTClaimsSet();
         assertEquals("issuer-1", parsedClaims.getIssuer());
         assertEquals("subject-1", parsedClaims.getSubject());
         assertEquals(Arrays.asList("audience-a", "audience-b"), parsedClaims.getAudience());
@@ -107,7 +106,7 @@ public class Nimbus_jose_jwtTest {
 
         assertEquals("claims+json", parsed.getHeader().getContentType());
         assertEquals("native-image", parsed.getHeader().getCustomParam("tenant"));
-        assertEquals("plain", JWTParser.parse(serialized, new JwtKindHandler()));
+        assertEquals("plain", jwtKind(JWTParser.parse(serialized)));
         assertInstanceOf(PlainJWT.class, JWTParser.parse(serialized));
     }
 
@@ -131,10 +130,9 @@ public class Nimbus_jose_jwtTest {
         assertEquals("test", parsed.getHeader().getCustomParam("environment"));
         assertEquals(JWSAlgorithm.HS256, parsed.getHeader().getAlgorithm());
         assertEquals("subject-1", parsed.getJWTClaimsSet().getSubject());
-        assertEquals("signed", JWTParser.parse(serialized, new JwtKindHandler()));
+        assertEquals("signed", jwtKind(JWTParser.parse(serialized)));
 
         MACVerifier verifier = new MACVerifier(HMAC_SECRET);
-        verifier.setAcceptedAlgorithms(Collections.singleton(JWSAlgorithm.HS256));
         assertTrue(parsed.verify(verifier));
         assertEquals(JWSObject.State.VERIFIED, parsed.getState());
 
@@ -159,8 +157,7 @@ public class Nimbus_jose_jwtTest {
 
         assertFalse(parsed.verify(new MACVerifier(HMAC_SECRET)));
 
-        MACVerifier policyAwareVerifier = new MACVerifier(HMAC_SECRET);
-        policyAwareVerifier.setIgnoredCriticalHeaderParameters(Collections.singleton("tenant-policy"));
+        MACVerifier policyAwareVerifier = new MACVerifier(HMAC_SECRET, Collections.singleton("tenant-policy"));
         assertTrue(parsed.verify(policyAwareVerifier));
         assertEquals(JWSObject.State.VERIFIED, parsed.getState());
     }
@@ -188,7 +185,7 @@ public class Nimbus_jose_jwtTest {
 
         JOSEObject parsedAsGeneric = JOSEObject.parse(inner.serialize());
         assertInstanceOf(JWSObject.class, parsedAsGeneric);
-        assertEquals("signed-jose", JOSEObject.parse(inner.serialize(), new JoseKindHandler()));
+        assertEquals("signed-jose", joseKind(JOSEObject.parse(inner.serialize())));
     }
 
     @Test
@@ -212,7 +209,7 @@ public class Nimbus_jose_jwtTest {
         assertEquals(EncryptionMethod.A128GCM, parsed.getHeader().getEncryptionMethod());
         assertEquals(CompressionAlgorithm.DEF, parsed.getHeader().getCompressionAlgorithm());
         assertEquals("confidential-claims", parsed.getHeader().getCustomParam("purpose"));
-        assertEquals("encrypted", JWTParser.parse(serialized, new JwtKindHandler()));
+        assertEquals("encrypted", jwtKind(JWTParser.parse(serialized)));
 
         parsed.decrypt(new DirectDecrypter(DIRECT_ENCRYPTION_KEY));
         assertEquals(JWEObject.State.DECRYPTED, parsed.getState());
@@ -237,7 +234,7 @@ public class Nimbus_jose_jwtTest {
         assertEquals(JWEAlgorithm.DIR, parsed.getHeader().getAlgorithm());
         assertEquals(EncryptionMethod.A128CBC_HS256, parsed.getHeader().getEncryptionMethod());
         assertEquals("direct-cbc-key", parsed.getHeader().getKeyID());
-        assertEquals("encrypted-jose", JOSEObject.parse(serialized, new JoseKindHandler()));
+        assertEquals("encrypted-jose", joseKind(JOSEObject.parse(serialized)));
 
         parsed.decrypt(new DirectDecrypter(HMAC_SECRET));
         assertEquals(JWEObject.State.DECRYPTED, parsed.getState());
@@ -254,7 +251,7 @@ public class Nimbus_jose_jwtTest {
                 .keyUse(KeyUse.SIGNATURE)
                 .algorithm(JWSAlgorithm.RS256)
                 .keyID("rsa-sig")
-                .x509CertURL(new URL("https://example.invalid/cert.pem"))
+                .x509CertURL(new URI("https://example.invalid/cert.pem"))
                 .x509CertThumbprint(Base64URL.encode("thumbprint"))
                 .build();
 
@@ -300,18 +297,19 @@ public class Nimbus_jose_jwtTest {
         assertArrayEquals(HMAC_SECRET, ((OctetSequenceKey) parsedSet.getKeyByKeyId("hmac-sig")).toByteArray());
         assertEquals(KeyType.OCT, JWK.parse(octetJwk.toJSONString()).getKeyType());
 
-        JWKSelector publicRsaSelector = new JWKSelector();
-        publicRsaSelector.setKeyType(KeyType.RSA);
-        publicRsaSelector.setKeyUse(KeyUse.SIGNATURE);
-        publicRsaSelector.setAlgorithm(JWSAlgorithm.RS256);
-        publicRsaSelector.setKeyID("rsa-sig");
-        publicRsaSelector.setPublicOnly(true);
+        JWKMatcher publicRsaMatcher = new JWKMatcher.Builder()
+                .keyType(KeyType.RSA)
+                .keyUse(KeyUse.SIGNATURE)
+                .algorithm(JWSAlgorithm.RS256)
+                .keyID("rsa-sig")
+                .publicOnly(true)
+                .build();
+        JWKSelector publicRsaSelector = new JWKSelector(publicRsaMatcher);
         List<JWK> publicMatches = publicRsaSelector.select(jwkSet.toPublicJWKSet());
         assertEquals(1, publicMatches.size());
         assertFalse(publicMatches.get(0).isPrivate());
 
-        JWKSelector privateSelector = new JWKSelector();
-        privateSelector.setPrivateOnly(true);
+        JWKSelector privateSelector = new JWKSelector(new JWKMatcher.Builder().privateOnly(true).build());
         List<JWK> privateMatches = privateSelector.select(parsedSet);
         assertEquals(2, privateMatches.size());
 
@@ -367,28 +365,29 @@ public class Nimbus_jose_jwtTest {
                 + "\"nested\":{\"value\":\"ok\"}}");
         assertTrue(JSONObjectUtils.getBoolean(json, "enabled"));
         assertEquals(3, JSONObjectUtils.getInt(json, "count"));
-        assertEquals(new URL("https://example.invalid"), JSONObjectUtils.getURL(json, "url"));
+        assertEquals(new URI("https://example.invalid"), JSONObjectUtils.getURI(json, "url"));
         assertArrayEquals(new String[] {"alpha", "beta"}, JSONObjectUtils.getStringArray(json, "names"));
         assertEquals(Arrays.asList("alpha", "beta"), JSONObjectUtils.getStringList(json, "names"));
         assertEquals("ok", JSONObjectUtils.getString(JSONObjectUtils.getJSONObject(json, "nested"), "value"));
     }
 
     private static JWTClaimsSet claimsSet() throws ParseException {
-        JWTClaimsSet claimsSet = new JWTClaimsSet();
-        claimsSet.setIssuer("issuer-1");
-        claimsSet.setSubject("subject-1");
-        claimsSet.setAudience(Arrays.asList("audience-a", "audience-b"));
-        claimsSet.setExpirationTime(EXPIRES_AT);
-        claimsSet.setNotBeforeTime(NOT_BEFORE);
-        claimsSet.setIssueTime(ISSUED_AT);
-        claimsSet.setJWTID("jwt-id-1");
-        claimsSet.setClaim("role", "admin");
-        claimsSet.setClaim("scopes", Arrays.asList("read", "write"));
-        claimsSet.setClaim("active", true);
-        claimsSet.setClaim("login_count", 7);
-        claimsSet.setClaim("quota", 42L);
-        claimsSet.setClaim("score", 1.5f);
-        claimsSet.setClaim("ratio", 2.25d);
+        JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
+                .issuer("issuer-1")
+                .subject("subject-1")
+                .audience(Arrays.asList("audience-a", "audience-b"))
+                .expirationTime(EXPIRES_AT)
+                .notBeforeTime(NOT_BEFORE)
+                .issueTime(ISSUED_AT)
+                .jwtID("jwt-id-1")
+                .claim("role", "admin")
+                .claim("scopes", Arrays.asList("read", "write"))
+                .claim("active", true)
+                .claim("login_count", 7)
+                .claim("quota", 42L)
+                .claim("score", 1.5f)
+                .claim("ratio", 2.25d)
+                .build();
         return JWTClaimsSet.parse(claimsSet.toJSONObject());
     }
 
@@ -398,37 +397,29 @@ public class Nimbus_jose_jwtTest {
         return generator.generateKeyPair();
     }
 
-    private static final class JwtKindHandler implements JWTHandler<String> {
-        @Override
-        public String onPlainJWT(PlainJWT jwt) {
+    private static String jwtKind(JWT jwt) {
+        if (jwt instanceof PlainJWT) {
             return "plain";
         }
-
-        @Override
-        public String onSignedJWT(SignedJWT jwt) {
+        if (jwt instanceof SignedJWT) {
             return "signed";
         }
-
-        @Override
-        public String onEncryptedJWT(EncryptedJWT jwt) {
+        if (jwt instanceof EncryptedJWT) {
             return "encrypted";
         }
+        throw new IllegalArgumentException("Unsupported JWT type: " + jwt.getClass().getName());
     }
 
-    private static final class JoseKindHandler implements JOSEObjectHandler<String> {
-        @Override
-        public String onPlainObject(PlainObject plainObject) {
+    private static String joseKind(JOSEObject joseObject) {
+        if (joseObject instanceof PlainObject) {
             return "plain-jose";
         }
-
-        @Override
-        public String onJWSObject(JWSObject jwsObject) {
+        if (joseObject instanceof JWSObject) {
             return "signed-jose";
         }
-
-        @Override
-        public String onJWEObject(JWEObject jweObject) {
+        if (joseObject instanceof JWEObject) {
             return "encrypted-jose";
         }
+        throw new IllegalArgumentException("Unsupported JOSE object type: " + joseObject.getClass().getName());
     }
 }
