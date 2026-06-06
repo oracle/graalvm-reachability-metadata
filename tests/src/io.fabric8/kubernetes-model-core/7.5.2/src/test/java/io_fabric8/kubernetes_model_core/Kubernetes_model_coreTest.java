@@ -24,6 +24,8 @@ import io.fabric8.kubernetes.api.model.IntOrString;
 import io.fabric8.kubernetes.api.model.KubernetesList;
 import io.fabric8.kubernetes.api.model.KubernetesListBuilder;
 import io.fabric8.kubernetes.api.model.KubernetesResource;
+import io.fabric8.kubernetes.api.model.LimitRange;
+import io.fabric8.kubernetes.api.model.LimitRangeBuilder;
 import io.fabric8.kubernetes.api.model.NamedAuthInfo;
 import io.fabric8.kubernetes.api.model.NamedAuthInfoBuilder;
 import io.fabric8.kubernetes.api.model.NamedCluster;
@@ -43,6 +45,8 @@ import io.fabric8.kubernetes.api.model.PodBuilder;
 import io.fabric8.kubernetes.api.model.PodList;
 import io.fabric8.kubernetes.api.model.PodListBuilder;
 import io.fabric8.kubernetes.api.model.Quantity;
+import io.fabric8.kubernetes.api.model.ResourceQuota;
+import io.fabric8.kubernetes.api.model.ResourceQuotaBuilder;
 import io.fabric8.kubernetes.api.model.Secret;
 import io.fabric8.kubernetes.api.model.SecretBuilder;
 import io.fabric8.kubernetes.api.model.Service;
@@ -469,6 +473,81 @@ public class Kubernetes_model_coreTest {
                 .containsEntry("storage", new Quantity("20Gi"));
         assertThat(claim.getSpec().getResources().getRequests())
                 .containsEntry("storage", new Quantity("10Gi"));
+    }
+
+    @Test
+    void resourceQuotaAndLimitRangeBuildersModelNamespaceResourceGovernance() {
+        ResourceQuota quota = new ResourceQuotaBuilder()
+                .withNewMetadata()
+                    .withName("compute-quota")
+                    .withNamespace("production")
+                    .addToLabels("team", "platform")
+                .endMetadata()
+                .withNewSpec()
+                    .addToHard("pods", new Quantity("10"))
+                    .addToHard("requests.cpu", new Quantity("2"))
+                    .addToHard("requests.memory", new Quantity("4Gi"))
+                    .addToScopes("NotTerminating")
+                    .withNewScopeSelector()
+                        .addNewMatchExpression()
+                            .withScopeName("PriorityClass")
+                            .withOperator("In")
+                            .withValues("high-priority")
+                        .endMatchExpression()
+                    .endScopeSelector()
+                .endSpec()
+                .withNewStatus()
+                    .addToHard("pods", new Quantity("10"))
+                    .addToUsed("pods", new Quantity("3"))
+                    .addToUsed("requests.cpu", new Quantity("750m"))
+                .endStatus()
+                .build();
+
+        LimitRange limitRange = new LimitRangeBuilder()
+                .withNewMetadata()
+                    .withName("default-compute-limits")
+                    .withNamespace("production")
+                .endMetadata()
+                .withNewSpec()
+                    .addNewLimit()
+                        .withType("Container")
+                        .addToDefault("cpu", new Quantity("500m"))
+                        .addToDefaultRequest("memory", new Quantity("128Mi"))
+                        .addToMax("cpu", new Quantity("1"))
+                        .addToMin("memory", new Quantity("64Mi"))
+                        .addToMaxLimitRequestRatio("cpu", new Quantity("2"))
+                    .endLimit()
+                    .addNewLimit()
+                        .withType("PersistentVolumeClaim")
+                        .addToMax("storage", new Quantity("20Gi"))
+                        .addToMin("storage", new Quantity("1Gi"))
+                    .endLimit()
+                .endSpec()
+                .build();
+
+        assertThat(quota.getApiVersion()).isEqualTo("v1");
+        assertThat(quota.getKind()).isEqualTo("ResourceQuota");
+        assertThat(quota.getSpec().getHard()).containsEntry("requests.memory", new Quantity("4Gi"));
+        assertThat(quota.getSpec().getScopes()).containsExactly("NotTerminating");
+        assertThat(quota.getSpec().getScopeSelector().getMatchExpressions().get(0).getScopeName())
+                .isEqualTo("PriorityClass");
+        assertThat(quota.getSpec().getScopeSelector().getMatchExpressions().get(0).getValues())
+                .containsExactly("high-priority");
+        assertThat(quota.getStatus().getUsed()).containsEntry("pods", new Quantity("3"));
+        assertThat(quota.getStatus().getUsed()).containsEntry("requests.cpu", new Quantity("750m"));
+
+        assertThat(limitRange.getApiVersion()).isEqualTo("v1");
+        assertThat(limitRange.getKind()).isEqualTo("LimitRange");
+        assertThat(limitRange.getSpec().getLimits()).extracting(limit -> limit.getType())
+                .containsExactly("Container", "PersistentVolumeClaim");
+        assertThat(limitRange.getSpec().getLimits().get(0).getDefault())
+                .containsEntry("cpu", new Quantity("500m"));
+        assertThat(limitRange.getSpec().getLimits().get(0).getDefaultRequest())
+                .containsEntry("memory", new Quantity("128Mi"));
+        assertThat(limitRange.getSpec().getLimits().get(0).getMaxLimitRequestRatio())
+                .containsEntry("cpu", new Quantity("2"));
+        assertThat(limitRange.getSpec().getLimits().get(1).getMin())
+                .containsEntry("storage", new Quantity("1Gi"));
     }
 
     @Test
