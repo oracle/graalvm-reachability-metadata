@@ -204,6 +204,30 @@ public class TextFormatTest {
     }
 
     @Test
+    void writesPrometheusTextNamesForUntypedAndStateSetMetrics() throws IOException {
+        MetricFamilySamples unknown = new MetricFamilySamples(
+                "raw_metric",
+                Collector.Type.UNKNOWN,
+                "Raw metric",
+                List.of(new Sample("raw_metric", List.of(), List.of(), -1.0)));
+        MetricFamilySamples stateSet = new MetricFamilySamples(
+                "feature_enabled",
+                Collector.Type.STATE_SET,
+                "Feature state",
+                List.of(new Sample("feature_enabled", List.of("state"), List.of("on"), 1.0)));
+
+        assertThat(write004(Collections.enumeration(List.of(unknown, stateSet))))
+                .isEqualTo("""
+                        # HELP raw_metric Raw metric
+                        # TYPE raw_metric untyped
+                        raw_metric -1.0
+                        # HELP feature_enabled Feature state
+                        # TYPE feature_enabled gauge
+                        feature_enabled{state=\"on\",} 1.0
+                        """);
+    }
+
+    @Test
     void writesOpenMetricsNamesForAllNonCoreTypes() throws IOException {
         MetricFamilySamples unknown = new MetricFamilySamples(
                 "raw_metric",
