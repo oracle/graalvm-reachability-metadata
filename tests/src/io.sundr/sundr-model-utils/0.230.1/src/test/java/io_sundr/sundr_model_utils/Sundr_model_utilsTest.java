@@ -19,6 +19,7 @@ import io.sundr.model.TypeParamDef;
 import io.sundr.model.TypeRef;
 import io.sundr.model.functions.Assignable;
 import io.sundr.model.functions.GetDefinition;
+import io.sundr.model.functions.TypeCast;
 import io.sundr.model.repo.DefinitionRepository;
 import io.sundr.model.utils.Collections;
 import io.sundr.model.utils.Getter;
@@ -169,6 +170,35 @@ public class Sundr_model_utilsTest {
         assertThat(richTypeDef.getAllProperties()).extracting(Property::getName).containsExactly("key", "value");
         assertThat(richTypeDef.getProperties()).extracting(Property::getTypeRef)
                 .containsExactly(Types.STRING_REF, Types.INT_REF);
+    }
+
+    @Test
+    void castsReferencesToInheritedGenericTypes() {
+        TypeParamDef item = Types.newTypeParamDef("T");
+        TypeDef source = new TypeDefBuilder()
+                .withKind(Kind.INTERFACE)
+                .withPackageName("example.cast")
+                .withName("Source")
+                .withParameters(item)
+                .build();
+        TypeDef stringSource = new TypeDefBuilder()
+                .withKind(Kind.CLASS)
+                .withPackageName("example.cast")
+                .withName("StringSource")
+                .addToImplementsList(source.toReference(Types.STRING_REF))
+                .build();
+
+        DefinitionRepository repository = DefinitionRepository.getRepository();
+        repository.register(source);
+        repository.register(stringSource);
+
+        ClassRef castReference = TypeCast.to(source.toReference())
+                .apply(stringSource.toReference())
+                .orElseThrow();
+
+        assertThat(castReference.getFullyQualifiedName()).isEqualTo("example.cast.Source");
+        assertThat(castReference.getArguments()).containsExactly(Types.STRING_REF);
+        assertThat(TypeCast.to(source.toReference()).apply(Types.PRIMITIVE_INT_REF)).isEmpty();
     }
 
     @Test
