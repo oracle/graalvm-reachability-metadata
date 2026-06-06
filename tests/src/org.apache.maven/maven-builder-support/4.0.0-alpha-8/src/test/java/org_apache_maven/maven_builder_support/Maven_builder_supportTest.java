@@ -7,7 +7,6 @@
 package org_apache_maven.maven_builder_support;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -80,7 +79,7 @@ public class Maven_builder_supportTest {
     }
 
     @Test
-    void fileSourceReportsMissingFileLocationBeforeOpeningStream() {
+    void fileSourceReportsMissingFilePathWhenOpeningStream() {
         Path missingFile = tempDir.resolve("missing-pom.xml");
         FileSource source = new FileSource(missingFile.toFile());
         File expectedFile = missingFile.toFile().getAbsoluteFile();
@@ -88,7 +87,7 @@ public class Maven_builder_supportTest {
         assertThat(source.getFile()).isEqualTo(expectedFile);
         assertThat(source.getLocation()).isEqualTo(expectedFile.getPath());
         assertThatThrownBy(source::getInputStream)
-                .isInstanceOf(FileNotFoundException.class)
+                .isInstanceOf(IOException.class)
                 .hasMessageContaining("missing-pom.xml");
     }
 
