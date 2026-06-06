@@ -259,7 +259,11 @@ public class Kubernetes_model_schedulingTest {
                 new io.fabric8.kubernetes.api.model.scheduling.v1beta1.PriorityClassListBuilder()
                         .withApiVersion("scheduling.k8s.io/v1beta1")
                         .withKind("PriorityClassList")
-                        .withNewMetadata("continue-token", 1L, "100", null)
+                        .withMetadata(new ListMetaBuilder()
+                                .withContinue("continue-token")
+                                .withRemainingItemCount(1L)
+                                .withResourceVersion("100")
+                                .build())
                         .addToItems(priorityClass)
                         .build();
 
