@@ -6,6 +6,7 @@
  */
 package io_helidon_common.helidon_common_config;
 
+import io.helidon.common.HelidonServiceLoader;
 import io.helidon.common.config.Config;
 import io.helidon.common.config.ConfigBuilderSupport;
 import io.helidon.common.config.ConfigException;
@@ -16,6 +17,7 @@ import io.helidon.common.config.NamedService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
@@ -185,6 +187,26 @@ public class HelidonCommonConfigTest {
         assertThat(services).isEmpty();
         assertThat(service).isEmpty();
         assertThat(configuredDefault).isEmpty();
+    }
+
+    @Test
+    void configBuilderSupportDiscoversDefaultServicesFromLoader() {
+        HelidonServiceLoader<TestProvider> providers = HelidonServiceLoader
+                .builder(ServiceLoader.load(TestProvider.class))
+                .useSystemServiceLoader(false)
+                .addService(new TestProvider())
+                .build();
+
+        List<TestService> services = ConfigBuilderSupport.discoverServices(
+                Config.empty(),
+                "services",
+                providers,
+                TestProvider.class,
+                TestService.class,
+                true,
+                List.of());
+
+        assertThat(services).containsExactly(new TestService("test", "test"));
     }
 
     public record TestService(String name, String type) implements NamedService {
