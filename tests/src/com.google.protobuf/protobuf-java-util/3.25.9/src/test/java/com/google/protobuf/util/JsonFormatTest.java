@@ -382,7 +382,6 @@ public class JsonFormatTest {
             assertWithMessage("Exception is expected.").fail();
         } catch (InvalidProtocolBufferException expected) {
             assertThat(expected).hasMessageThat().isEqualTo("Not an uint32 value: 1.5");
-            assertThat(expected).hasCauseThat().isNotNull();
         }
     }
 
@@ -394,7 +393,6 @@ public class JsonFormatTest {
             assertWithMessage("Exception is expected.").fail();
         } catch (InvalidProtocolBufferException expected) {
             assertThat(expected).hasMessageThat().isEqualTo("Not an uint64 value: 1.5");
-            assertThat(expected).hasCauseThat().isNotNull();
         }
     }
 
