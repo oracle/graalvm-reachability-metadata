@@ -450,6 +450,8 @@ class Json4s_jackson_2_13Test {
         }
         JacksonAccount(name, score)
       }
+
+      override def readEither(value: JValue): Either[MappingException, JacksonAccount] = Right(read(value))
     }
 
     val account: JacksonAccount = JacksonAccount("jackson", 42)
