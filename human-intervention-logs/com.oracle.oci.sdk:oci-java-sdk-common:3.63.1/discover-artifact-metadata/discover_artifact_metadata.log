@@ -1,0 +1,982 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e9ce5-6046-73a0-b675-2aaeb6fb53fa
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.oracle.oci.sdk:oci-java-sdk-common:3.63.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "3.63.1" when "$version$" is replaced with "3.63.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "com.oracle.oci.sdk:oci-java-sdk-common:3.63.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.63.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact coordinates against the repo and Maven layout, then update only the requested JSON file with the discovered fields.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec
+ succeeded in 0ms:
+{
+  "coordinates" : "com.oracle.oci.sdk:oci-java-sdk-common:3.63.1"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec
+-rw-rw-r-- 1 vjovanov vjovanov 70 Jun  6 14:25 build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json
+
+exec
+/usr/bin/bash -lc 'rg -n "oci-java-sdk-common|com.oracle.oci.sdk" metadata tests build/discovered-artifact-metadata docs -S' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec
+ succeeded in 102ms:
+web search: 
+web search: https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common/3.63.1/
+web search: 
+web search: https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common/3.63.1/
+codex
+The Maven directory confirms this version publishes normal JVM artifacts plus sources and Javadocs. I’m checking the POM and upstream tag now so the repository and test URL match the exact release.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common/3.63.1/oci-java-sdk-common-3.63.1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.oracle.oci.sdk</groupId>
+    <artifactId>oci-java-sdk</artifactId>
+    <version>3.63.1</version>
+  </parent>
+
+  <artifactId>oci-java-sdk-common</artifactId>
+  <name>Oracle Cloud Infrastructure SDK - Common</name>
+  <description>This project contains the common runtime components of the SDK used for Oracle Cloud Infrastructure</description>
+  <url>https://docs.oracle.com/iaas/Content/API/SDKDocs/javasdk.htm</url>
+  <properties>
+    <jetty.version>9.4.56.v20240826</jetty.version>
+    <maven-surefire-plugin.argLine>--illegal-access=warn
+      --add-opens=java.base/java.io=ALL-UNNAMED
+      --add-opens=java.base/java.lang=ALL-UNNAMED
+      --add-opens=java.base/java.lang.reflect=ALL-UNNAMED
+      --add-opens=java.base/java.net=ALL-UNNAMED
+      --add-opens=java.base/java.nio.channels=ALL-UNNAMED
+      --add-opens=java.base/java.text=ALL-UNNAMED
+      --add-opens=java.base/java.security=ALL-UNNAMED
+      --add-opens=java.base/java.util=ALL-UNNAMED
+      --add-opens=java.base/java.util.concurrent=ALL-UNNAMED
+      --add-opens=java.base/java.util.regex=ALL-UNNAMED
+      --add-opens=java.base/java.util.stream=ALL-UNNAMED
+      --add-opens=java.base/java.time=ALL-UNNAMED
+    </maven-surefire-plugin.argLine>
+  </properties>
+  <profiles>
+    <profile>
+      <id>jdk-8-only</id>
+      <activation>
+        <jdk>1.8</jdk>
+      </activation>
+      <properties>
+        <maven-surefire-plugin.argLine></maven-surefire-plugin.argLine>
+      </properties>
+    </profile>
+  </profiles>
+  <build>
+    <!-- Substitutes maven properties into the SDK properties -->
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.1.2</version>
+        <executions>
+          <execution>
+            <id>check-dependencies</id>
+            <goals>
+              <goal>analyze-only</goal>
+            </goals>
+            <phase>verify</phase>
+            <configuration>
+              <failOnWarning>false</failOnWarning>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-core</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.oracle.oci.sdk</groupId>
+      <artifactId>oci-java-sdk-circuitbreaker</artifactId>
+      <version>3.63.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.oracle.oci.sdk</groupId>
+      <artifactId>oci-java-sdk-common-httpclient</artifactId>
+      <version>3.63.1</version>
+    </dependency>
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>com.github.tomakehurst</groupId>
+      <artifactId>wiremock</artifactId>
+      <version>2.23.2</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- SDK-6401 / SDK-6502: vulnerabilities in wiremock -->
+    <!-- but cannot upgrade to 3.x, because 3.x requires Java 11 -->
+    <dependency>
+      <groupId>net.minidev</groupId>
+      <artifactId>json-smart</artifactId>
+      <version>2.5.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>${jetty.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlet</artifactId>
+      <version>${jetty.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlets</artifactId>
+      <version>${jetty.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-webapp</artifactId>
+      <version>${jetty.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- End SDK-6401/ SDK-6502: vulnerabilities in wiremock -->
+    <dependency>
+      <groupId>com.oracle.oci.sdk</groupId>
+      <artifactId>oci-java-sdk-common-httpclient-jersey</artifactId>
+      <version>3.63.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport</artifactId>
+      <version>4.1.77.Final</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-module-junit4</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-api-mockito2</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Build only dependencies -->
+    <dependency>
+      <groupId>jakarta.annotation</groupId>
+      <artifactId>jakarta.annotation-api</artifactId>
+      <version>${jakarta9.annotations.version}</version>
+    </dependency>
+    <!-- Direct dependencies -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+  </dependencies>
+</project>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common/3.63.1/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/oracle/oci/sdk/oci-java-sdk-common/3.63.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/oracle/oci/sdk/oci-java-sdk-common/3.63.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="oci-java-sdk-common-3.63.1-javadoc.jar" title="oci-java-sdk-common-3.63.1-javadoc.jar">oci-java-sdk-common-3.63.1-javadoc.jar</a>            2025-04-15 18:10   2045122      
+<a href="oci-java-sdk-common-3.63.1-javadoc.jar.asc" title="oci-java-sdk-common-3.63.1-javadoc.jar.asc">oci-java-sdk-common-3.63.1-javadoc.jar.asc</a>        2025-04-15 18:10       438      
+<a href="oci-java-sdk-common-3.63.1-javadoc.jar.md5" title="oci-java-sdk-common-3.63.1-javadoc.jar.md5">oci-java-sdk-common-3.63.1-javadoc.jar.md5</a>        2025-04-15 18:10        33      
+<a href="oci-java-sdk-common-3.63.1-javadoc.jar.sha1" title="oci-java-sdk-common-3.63.1-javadoc.jar.sha1">oci-java-sdk-common-3.63.1-javadoc.jar.sha1</a>       2025-04-15 18:10        41      
+<a href="oci-java-sdk-common-3.63.1-sources.jar" title="oci-java-sdk-common-3.63.1-sources.jar">oci-java-sdk-common-3.63.1-sources.jar</a>            2025-04-15 18:10    325593      
+<a href="oci-java-sdk-common-3.63.1-sources.jar.asc" title="oci-java-sdk-common-3.63.1-sources.jar.asc">oci-java-sdk-common-3.63.1-sources.jar.asc</a>        2025-04-15 18:10       438      
+<a href="oci-java-sdk-common-3.63.1-sources.jar.md5" title="oci-java-sdk-common-3.63.1-sources.jar.md5">oci-java-sdk-common-3.63.1-sources.jar.md5</a>        2025-04-15 18:10        33      
+<a href="oci-java-sdk-common-3.63.1-sources.jar.sha1" title="oci-java-sdk-common-3.63.1-sources.jar.sha1">oci-java-sdk-common-3.63.1-sources.jar.sha1</a>       2025-04-15 18:10        41      
+<a href="oci-java-sdk-common-3.63.1.jar" title="oci-java-sdk-common-3.63.1.jar">oci-java-sdk-common-3.63.1.jar</a>                    2025-04-15 18:10    490749      
+<a href="oci-java-sdk-common-3.63.1.jar.asc" title="oci-java-sdk-common-3.63.1.jar.asc">oci-java-sdk-common-3.63.1.jar.asc</a>                2025-04-15 18:10       438      
+<a href="oci-java-sdk-common-3.63.1.jar.md5" title="oci-java-sdk-common-3.63.1.jar.md5">oci-java-sdk-common-3.63.1.jar.md5</a>                2025-04-15 18:10        33      
+<a href="oci-java-sdk-common-3.63.1.jar.sha1" title="oci-java-sdk-common-3.63.1.jar.sha1">oci-java-sdk-common-3.63.1.jar.sha1</a>               2025-04-15 18:10        41      
+<a href="oci-java-sdk-common-3.63.1.pom" title="oci-java-sdk-common-3.63.1.pom">oci-java-sdk-common-3.63.1.pom</a>                    2025-04-15 18:10      6369      
+<a href="oci-java-sdk-common-3.63.1.pom.asc" title="oci-java-sdk-common-3.63.1.pom.asc">oci-java-sdk-common-3.63.1.pom.asc</a>                2025-04-15 18:10       438      
+<a href="oci-java-sdk-common-3.63.1.pom.md5" title="oci-java-sdk-common-3.63.1.pom.md5">oci-java-sdk-common-3.63.1.pom.md5</a>                2025-04-15 18:10        33      
+<a href="oci-java-sdk-common-3.63.1.pom.sha1" title="oci-java-sdk-common-3.63.1.pom.sha1">oci-java-sdk-common-3.63.1.pom.sha1</a>               2025-04-15 18:10        41      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec
+ succeeded in 1636ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk/3.63.1/oci-java-sdk-3.63.1.pom | sed -n '1,240p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.oracle.oci.sdk</groupId>
+  <artifactId>oci-java-sdk</artifactId>
+  <version>3.63.1</version>
+  <packaging>pom</packaging>
+  <name>Oracle Cloud Infrastructure SDK</name>
+  <description>This project contains the SDK used for Oracle Cloud Infrastructure</description>
+  <url>https://docs.oracle.com/iaas/Content/API/SDKDocs/javasdk.htm</url>
+  <inceptionYear>2016</inceptionYear>
+  <licenses>
+    <license>
+      <name>The Universal Permissive License (UPL), Version 1.0</name>
+      <url>http://www.oracle.com/technetwork/licenses/upl-license-2927578.html</url>
+      <distribution>repo</distribution>
+    </license>
+    <license>
+      <name>Apache License 2.0</name>
+      <url>http://apache.org/licenses/LICENSE-2.0.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>oracle</id>
+      <name>Oracle</name>
+      <organizationUrl>https://www.oracle.com</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git@github.com:oracle/oci-java-sdk.git</connection>
+    <url>https://github.com/oracle/oci-java-sdk</url>
+  </scm>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <jackson.version>2.17.1</jackson.version>
+    <jackson.databind.version>2.17.1</jackson.databind.version>
+    <jersey.version>2.35</jersey.version>
+    <apache-httpcomponents.version>4.5.13</apache-httpcomponents.version>
+    <apache-httpcomponents.httpclient.version>4.5.13</apache-httpcomponents.httpclient.version>
+    <apache-httpcomponents.httpcore.version>4.4.13</apache-httpcomponents.httpcore.version>
+    <junit.version>4.13.2</junit.version>
+    <slf4j.version>1.7.33</slf4j.version>
+    <javax.annotation.version>1.3.2</javax.annotation.version>
+    <jakarta9.annotations.version>2.1.1</jakarta9.annotations.version>
+    <jakarta.ws.rs-api.version>2.1.6</jakarta.ws.rs-api.version>
+    <!-- Update resilience4jVersion and io.vavr.version together -->
+    <resilience4jVersion>1.7.1</resilience4jVersion>
+    <io.vavr.version>0.10.4</io.vavr.version>
+    <maven-shade-plugin.version>3.5.0</maven-shade-plugin.version>
+    <mockito.version>2.18.0</mockito.version>
+    <maven-surefire-plugin.argLine />
+    <powermock.version>2.0.2</powermock.version>
+    <hk2.version>2.6.1</hk2.version>
+    <net.jodah.failsafe.version>0.9.2</net.jodah.failsafe.version>
+    <hamcrest.core.version>1.3</hamcrest.core.version>
+    <hamcrest.junit.version>2.0.0.0</hamcrest.junit.version>
+    <native.maven.plugin.version>0.10.2</native.maven.plugin.version>
+    <excluded.testcases>**/*IntegrationAutoTest.java</excluded.testcases>
+    <dev.profile.skip.javadoc>true</dev.profile.skip.javadoc>
+    <exec.skip>true</exec.skip>
+    <exec.mainClass>com.acme.Undefined</exec.mainClass>
+    <oci.codegen.version>2.119</oci.codegen.version>
+  </properties>
+  <profiles>
+    <profile>
+      <id>ziponly</id>
+      <modules>
+        <module>bmc-dist</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>dev</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>timestamp-property</id>
+                <goals>
+                  <goal>timestamp-property</goal>
+                </goals>
+                <phase>validate</phase>
+                <configuration>
+                  <name>current.year</name>
+                  <pattern>yyyy</pattern>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>replace_links</id>
+                <phase>process-sources</phase>
+                <configuration>
+                  <target>
+                    <replace dir="src/main/java" token="{{DOC_SERVER_URL}}/iaas" value="https://docs.oracle.com/iaas" />
+                    <replace dir="src/main/java" token="{{DOC_SERVER_URL}}" value="https://docs.oracle.com/iaas" />
+                    <replace dir="src/main/java" token="https://docs.cloud.oracle.com/iaas" value="https://docs.oracle.com/iaas" />
+                    <replace dir="src/main/java" token="https://docs.cloud.oracle.com" value="https://docs.oracle.com/iaas" />
+                    <replace dir="src/main/java" token="https://docs.us-phoenix-1.oraclecloud.com" value="https://docs.oracle.com/iaas" />
+                  </target>
+                  <failOnError>false</failOnError>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.theoryinpractise</groupId>
+            <artifactId>googleformatter-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>reformat-sources</id>
+                <configuration>
+                  <includeStale>false</includeStale>
+                  <sortImports>NO</sortImports>
+                  <style>AOSP</style>
+                  <filterModified>true</filterModified>
+                  <skip>false</skip>
+                  <filterModified>false</filterModified>
+                </configuration>
+                <goals>
+                  <goal>format</goal>
+                </goals>
+                <phase>process-sources</phase>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.mycila</groupId>
+            <artifactId>license-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>process-sources</phase>
+                <goals>
+                  <goal>format</goal>
+                </goals>
+                <configuration>
+                  <properties>
+                    <current.year>${current.year}</current.year>
+                  </properties>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <configuration>
+              <skipSource>${dev.profile.skip.javadoc}</skipSource>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>3.7.0</version>
+            <configuration>
+              <skip>${dev.profile.skip.javadoc}</skip>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <configuration>
+              <skip>${dev.profile.skip.javadoc}</skip>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>quick</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.theoryinpractise</groupId>
+            <artifactId>googleformatter-maven-plugin</artifactId>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>com.mycila</groupId>
+            <artifactId>license-maven-plugin</artifactId>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <configuration>
+              <skipSource>true</skipSource>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>3.7.0</version>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>jdk-17-and-above</id>
+      <activation>
+        <jdk>[17,</jdk>
+      </activation>
+      <properties>
+        <argLine>
+          --add-opens=java.base/java.lang=ALL-UNNAMED
+          --add-opens=java.base/java.lang.reflect=ALL-UNNAMED
+          --add-opens=java.base/java.util=ALL-UNNAMED
+          --add-opens=java.base/java.util.concurrent=ALL-UNNAMED
+          --add-opens=java.base/java.io=ALL-UNNAMED
+          --add-opens=java.base/java.time=ALL-UNNAMED
+          --add-opens=java.base/java.util.regex=ALL-UNNAMED
+          --add-opens=java.base/java.util.stream=ALL-UNNAMED
+          --add-opens=java.base/java.text=ALL-UNNAMED
+          --add-opens=java.base/java.security=ALL-UNNAMED
+          --add-opens=java.base/java.net=ALL-UNNAMED
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/oracle/oci-java-sdk/tree/v3.63.1/bmc-common/src/test | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/oracle/oci-java-sdk/releases/tag/v3.63.1 | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec
+ succeeded in 557ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 12:26:01 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"4badfd022caa548964424b0a0ee27312"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=z9fPiYG8Roww%2Fs6Tws1SYLI%2BVuXiBCgD0lZJOLpcSbJ%2BZn6SEnmNnGH%2FWHlJ6%2FLZZsnVJqXWz8ra1J0wngZ3%2FZmoKiOsJ84wnKFYcD5tJUJVU1bQvj1kdRnjHOgItJR%2FAR2mtEUUnPbw37oM7paX567BZFcLEFRUKRdi2LteHGSj9Do%2FAL65aBLco5x7zdMtNujXUmt%2BqLvRN1gml%2BqfBPND1t61p4csNwdcG0ODcLhEQnaXfT93kK34rYZ7oNwzT70A4phIEQJ03WK%2FpJx77Q%3D%3D--sR7WDRsR2xoUmsj5--A7xBy18hQMLBAdXdrcIGWA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1092601397.1780748761; expires=Sun, 06 Jun 2027 12:26:01 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 06 Jun 2027 12:26:01 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6227:218E9E:3B87E4:2E1484:6A2411D9
+
+
+ succeeded in 554ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 12:26:01 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"a770d40f82fa8fd8d20edb0d6ecbf882"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=RSWrXnhnxGfAcPRirAOIdkQJMZF9PS2q8ocFGqJIbbtZtamiZXdmO8b33tTsXdUXryNYm%2FWp4sfXJAfmVDO%2BBC15aSiRleCImx%2F6x0ofAhgfhlvrfc19%2BjPrZZzsNtlhpRHwP5Jteta4ToyDjZWEYk3vJgimMaANnv65ujzabdw0hF7qSE1FMI%2BZqgvFwbdWnEbK690P7leETNpE%2BPCuFddR2q7RT9jl4EbpFMn8zMxXPB8yhk8S3z1cp0ScNeWoDl%2FZiXZlnPLJh%2Ffv8qMdeQ%3D%3D--ufMYsWd62v8FT7Rj--SSn%2FDeCdWofz%2BxcUISVWTQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2095514949.1780748761; expires=Sun, 06 Jun 2027 12:26:01 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 06 Jun 2027 12:26:01 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 620E:31CB57:39FCDC:2CE3D1:6A2411D9
+
+
+codex
+There is no test-sources or tests jar published for `oci-java-sdk-common` in Maven Central, so I’m using Maven for sources and Javadocs, and the release tag’s `bmc-common/src/test` directory for tests.
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common/3.63.1/oci-java-sdk-common-3.63.1.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 12:26:12 GMT
+content-type: application/java-archive
+content-length: 490749
+cf-ray: a0776776dd46a285-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 102026
+etag: "dc9a017b1617eaff27cf7da805263bc5"
+last-modified: Tue, 15 Apr 2025 18:10:23 GMT
+x-checksum-md5: dc9a017b1617eaff27cf7da805263bc5
+x-checksum-sha1: e1b2c4f422ffb7a386551249d0505c9c03c09fc6
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common/3.63.1/oci-java-sdk-common-3.63.1-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 12:26:12 GMT
+content-type: application/java-archive
+content-length: 325593
+cf-ray: a0776776eae22680-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 215909
+etag: "35e09ebca6317e8188028e4c32a6d62e"
+last-modified: Tue, 15 Apr 2025 18:10:25 GMT
+x-checksum-md5: 35e09ebca6317e8188028e4c32a6d62e
+x-checksum-sha1: f749b02f457183ed45adb5eb550914dc01bcf433
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common/3.63.1/oci-java-sdk-common-3.63.1-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 12:26:13 GMT
+content-type: application/java-archive
+content-length: 2045122
+cf-ray: a0776776eac4be7f-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 125832
+etag: "b56dbb63783fe5c8ab90a4975228d46f"
+last-modified: Tue, 15 Apr 2025 18:10:25 GMT
+x-checksum-md5: b56dbb63783fe5c8ab90a4975228d46f
+x-checksum-sha1: 2a3201761b7b745a7868ad6cd11068748a02b767
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/oracle/oci-java-sdk/contents/bmc-common/src/test?ref=v3.63.1 | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec
+ succeeded in 188ms:
+[
+  {
+    "name": "java",
+    "path": "bmc-common/src/test/java",
+    "sha": "18e0a52a8a2a9385043716264a99f42e4cbb90d7",
+    "size": 0,
+    "url": "https://api.github.com/repos/oracle/oci-java-sdk/contents/bmc-common/src/test/java?ref=v3.63.1",
+    "html_url": "https://github.com/oracle/oci-java-sdk/tree/v3.63.1/bmc-common/src/test/java",
+    "git_url": "https://api.github.com/repos/oracle/oci-java-sdk/git/trees/18e0a52a8a2a9385043716264a99f42e4cbb90d7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/oracle/oci-java-sdk/contents/bmc-common/src/test/java?ref=v3.63.1",
+      "git": "https://api.github.com/repos/oracle/oci-java-sdk/git/trees/18e0a52a8a2a9385043716264a99f42e4cbb90d7",
+      "html": "https://github.com/oracle/oci-java-sdk/tree/v3.63.1/bmc-common/src/test/java"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "bmc-common/src/test/resources",
+    "sha": "52889db1c70ae6603002aabaabbad712bf3ceba5",
+    "size": 0,
+    "url": "https://api.github.com/repos/oracle/oci-java-sdk/contents/bmc-common/src/test/resources?ref=v3.63.1",
+    "html_url": "https://github.com/oracle/oci-java-sdk/tree/v3.63.1/bmc-common/src/test/resources",
+    "git_url": "https://api.github.com/repos/oracle/oci-java-sdk/git/trees/52889db1c70ae6603002aabaabbad712bf3ceba5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/oracle/oci-java-sdk/contents/bmc-common/src/test/resources?ref=v3.63.1",
+      "git": "https://api.github.com/repos/oracle/oci-java-sdk/git/trees/52889db1c70ae6603002aabaabbad712bf3ceba5",
+      "html": "https://github.com/oracle/oci-java-sdk/tree/v3.63.1/bmc-common/src/test/resources"
+    }
+  }
+]
+
+codex
+I’ve got enough evidence to fill the file: Maven POM points to the GitHub repository, the artifact publishes a normal JVM jar, and the tagged test directory exists upstream. Next I’m replacing the placeholder JSON with the requested metadata shape.
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | head -5 | xargs -r -n1 sed -n '1,40p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec
+ succeeded in 0ms:
+{
+  "coordinates" : "com.oracle.oci.sdk:oci-java-sdk-common:3.63.1"
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common/3.63.1/oci-java-sdk-common-3.63.1-sources.jar -o /tmp/oci-java-sdk-common-3.63.1-sources.jar && jar tf /tmp/oci-java-sdk-common-3.63.1-sources.jar | sed -n '1,60p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common/3.63.1/oci-java-sdk-common-3.63.1.jar -o /tmp/oci-java-sdk-common-3.63.1.jar && jar tf /tmp/oci-java-sdk-common-3.63.1.jar | rg '\\.class"'$'"' | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec
+ succeeded in 201ms:
+THIRD_PARTY_LICENSES.txt
+LICENSE.txt
+NOTICE.txt
+META-INF/MANIFEST.MF
+META-INF/
+com/
+com/oracle/
+com/oracle/bmc/
+com/oracle/bmc/model/
+com/oracle/bmc/model/internal/
+com/oracle/bmc/util/
+com/oracle/bmc/util/internal/
+com/oracle/bmc/io/
+com/oracle/bmc/io/internal/
+com/oracle/bmc/http/
+com/oracle/bmc/http/signing/
+com/oracle/bmc/http/signing/internal/
+com/oracle/bmc/http/internal/
+com/oracle/bmc/retrier/
+com/oracle/bmc/responses/
+com/oracle/bmc/responses/internal/
+com/oracle/bmc/common/
+com/oracle/bmc/paginator/
+com/oracle/bmc/paginator/internal/
+com/oracle/bmc/internal/
+com/oracle/bmc/auth/
+com/oracle/bmc/auth/exception/
+com/oracle/bmc/auth/internal/
+com/oracle/bmc/waiter/
+com/oracle/bmc/waiter/internal/
+com/oracle/bmc/requests/
+com/oracle/bmc/helper/
+META-INF/native-image/
+META-INF/native-image/com.oracle.oci.sdk/
+META-INF/native-image/com.oracle.oci.sdk/oci-java-sdk-common/
+META-INF/maven/
+META-INF/maven/com.oracle.oci.sdk/
+META-INF/maven/com.oracle.oci.sdk/oci-java-sdk-common/
+com/oracle/bmc/model/RegionSchema.java
+com/oracle/bmc/util/internal/RefreshAuthTokenTransformingFuture.java
+com/oracle/bmc/util/internal/Validate.java
+com/oracle/bmc/io/internal/WrappedByteArrayInputStream.java
+com/oracle/bmc/Region.java
+com/oracle/bmc/http/signing/internal/PEMFileRSAPrivateKeySupplier.java
+com/oracle/bmc/http/signing/internal/KeySupplier.java
+com/oracle/bmc/http/signing/internal/Algorithm.java
+com/oracle/bmc/http/ClientConfigurator.java
+com/oracle/bmc/http/internal/ResponseHelper.java
+com/oracle/bmc/http/internal/HeaderUtils.java
+com/oracle/bmc/http/internal/BaseAsyncClient.java
+com/oracle/bmc/http/internal/HttpDateUtils.java
+com/oracle/bmc/paginator/internal/ResponseIterable.java
+com/oracle/bmc/internal/DefaultEndpointConfiguration.java
+com/oracle/bmc/auth/SessionKeySupplier.java
+com/oracle/bmc/auth/exception/AuthClientForbiddenException.java
+com/oracle/bmc/auth/AbstractFederationClientAuthenticationDetailsProviderBuilder.java
+com/oracle/bmc/auth/internal/ImdsRptPathProvider.java
+com/oracle/bmc/auth/internal/AuthUtils.java
+com/oracle/bmc/auth/internal/ForwardingX509Certificate.java
+com/oracle/bmc/auth/internal/GetResourcePrincipalTokenResponse.java
+
+ succeeded in 212ms:
+com/oracle/bmc/model/BmcException.class
+com/oracle/bmc/util/StreamUtils.class
+com/oracle/bmc/util/internal/RefreshAuthTokenWrapper.class
+com/oracle/bmc/util/internal/RefreshAuthTokenTransformingFuture.class
+com/oracle/bmc/ConfigFileReader$1.class
+com/oracle/bmc/io/internal/WrappedByteArrayInputStream.class
+com/oracle/bmc/io/internal/KeepOpenInputStream.class
+com/oracle/bmc/Region.class
+com/oracle/bmc/http/ApacheConfigurator.class
+com/oracle/bmc/http/ClientConfigurator.class
+com/oracle/bmc/http/internal/RetryTokenUtils.class
+com/oracle/bmc/http/internal/HttpDateUtils.class
+com/oracle/bmc/http/internal/LogHeadersFilter.class
+com/oracle/bmc/http/internal/ResponseHelper.class
+com/oracle/bmc/http/CompositeClientConfigurator.class
+com/oracle/bmc/responses/internal/NoOpAsyncHandler.class
+com/oracle/bmc/common/ClientBuilderBase.class
+com/oracle/bmc/auth/AbstractAuthenticationDetailsProvider.class
+com/oracle/bmc/auth/InstancePrincipalsAuthenticationDetailsProvider$InstancePrincipalsAuthenticationDetailsProviderBuilder.class
+com/oracle/bmc/auth/SessionTokenAuthenticationDetailsProvider$TokenRefreshResponse$Builder.class
+
+codex
+I’m writing the metadata now with Maven URLs for versioned sources and Javadocs, and the tagged upstream test directory for the test suite.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json
+diff --git a/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json b/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json
+index dc47d7e477772c2514f8500a5f901318e1ecdb29..0e6535ca591d936067ea417153cff198a44ee512
+--- a/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json
++++ b/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.oracle.oci.sdk:oci-java-sdk-common:3.63.1"
++  "coordinates": "com.oracle.oci.sdk:oci-java-sdk-common:3.63.1",
++  "repository-url": "https://github.com/oracle/oci-java-sdk",
++  "source-code-url": "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common/$version$/oci-java-sdk-common-$version$-sources.jar",
++  "test-code-url": "https://github.com/oracle/oci-java-sdk/tree/v$version$/bmc-common/src/test",
++  "documentation-url": "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common/$version$/oci-java-sdk-common-$version$-javadoc.jar",
++  "description": "OCI Java SDK Common provides the shared runtime components used by Oracle Cloud Infrastructure Java SDK modules. It supplies common client infrastructure such as authentication providers, region handling, HTTP helpers, requests, responses, pagination, and waiters."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json b/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json
+index dc47d7e477772c2514f8500a5f901318e1ecdb29..0e6535ca591d936067ea417153cff198a44ee512
+--- a/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json
++++ b/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.oracle.oci.sdk:oci-java-sdk-common:3.63.1"
++  "coordinates": "com.oracle.oci.sdk:oci-java-sdk-common:3.63.1",
++  "repository-url": "https://github.com/oracle/oci-java-sdk",
++  "source-code-url": "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common/$version$/oci-java-sdk-common-$version$-sources.jar",
++  "test-code-url": "https://github.com/oracle/oci-java-sdk/tree/v$version$/bmc-common/src/test",
++  "documentation-url": "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common/$version$/oci-java-sdk-common-$version$-javadoc.jar",
++  "description": "OCI Java SDK Common provides the shared runtime components used by Oracle Cloud Infrastructure Java SDK modules. It supplies common client infrastructure such as authentication providers, region handling, HTTP helpers, requests, responses, pagination, and waiters."
+ }
+
+codex
+The file is updated. I’m doing a quick validation pass: JSON parsing, allowed keys, version-substituted URLs, and the two-sentence description constraint.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec
+ succeeded in 0ms:
+{
+  "coordinates": "com.oracle.oci.sdk:oci-java-sdk-common:3.63.1",
+  "repository-url": "https://github.com/oracle/oci-java-sdk",
+  "source-code-url": "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common/$version$/oci-java-sdk-common-$version$-sources.jar",
+  "test-code-url": "https://github.com/oracle/oci-java-sdk/tree/v$version$/bmc-common/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common/$version$/oci-java-sdk-common-$version$-javadoc.jar",
+  "description": "OCI Java SDK Common provides the shared runtime components used by Oracle Cloud Infrastructure Java SDK modules. It supplies common client infrastructure such as authentication providers, region handling, HTTP helpers, requests, responses, pagination, and waiters."
+}
+
+exec
+/usr/bin/bash -lc "python3 - <<'PY'
+import json
+from pathlib import Path
+p=Path('build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json')
+data=json.loads(p.read_text())
+allowed={'coordinates','repository-url','source-code-url','test-code-url','documentation-url','description','language','not-for-native-image','reason','replacement'}
+print('unknown_keys=', sorted(set(data)-allowed))
+print('sentence_count=', len([s for s in data['description'].split('. ') if s.strip()]))
+print('has_language=', 'language' in data)
+print('has_not_for_native_image=', 'not-for-native-image' in data)
+PY" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec
+ succeeded in 0ms:
+unknown_keys= []
+sentence_count= 2
+has_language= False
+has_not_for_native_image= False
+
+exec
+/usr/bin/bash -lc "for url in 'https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common/3.63.1/oci-java-sdk-common-3.63.1-sources.jar' 'https://github.com/oracle/oci-java-sdk/tree/v3.63.1/bmc-common/src/test' 'https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common/3.63.1/oci-java-sdk-common-3.63.1-javadoc.jar'; do printf '%s -> ' \""'$url"; curl -fsSI "$url" | sed -n '"'1p'; done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec
+diff --git a/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json b/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json
+index dc47d7e477772c2514f8500a5f901318e1ecdb29..0e6535ca591d936067ea417153cff198a44ee512
+--- a/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json
++++ b/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.oracle.oci.sdk:oci-java-sdk-common:3.63.1"
++  "coordinates": "com.oracle.oci.sdk:oci-java-sdk-common:3.63.1",
++  "repository-url": "https://github.com/oracle/oci-java-sdk",
++  "source-code-url": "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common/$version$/oci-java-sdk-common-$version$-sources.jar",
++  "test-code-url": "https://github.com/oracle/oci-java-sdk/tree/v$version$/bmc-common/src/test",
++  "documentation-url": "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common/$version$/oci-java-sdk-common-$version$-javadoc.jar",
++  "description": "OCI Java SDK Common provides the shared runtime components used by Oracle Cloud Infrastructure Java SDK modules. It supplies common client infrastructure such as authentication providers, region handling, HTTP helpers, requests, responses, pagination, and waiters."
+ }
+
+ succeeded in 119ms:
+HTTP/2 200 
+
+codex
+Validation passed: the JSON parses, only allowed keys are present, the three version-rendered URLs return HTTP 200, and no language or not-for-native-image flags were added because this is a JVM Java artifact with class files.
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json b/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json
+index dc47d7e477772c2514f8500a5f901318e1ecdb29..0e6535ca591d936067ea417153cff198a44ee512
+--- a/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json
++++ b/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.oracle.oci.sdk:oci-java-sdk-common:3.63.1"
++  "coordinates": "com.oracle.oci.sdk:oci-java-sdk-common:3.63.1",
++  "repository-url": "https://github.com/oracle/oci-java-sdk",
++  "source-code-url": "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common/$version$/oci-java-sdk-common-$version$-sources.jar",
++  "test-code-url": "https://github.com/oracle/oci-java-sdk/tree/v$version$/bmc-common/src/test",
++  "documentation-url": "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common/$version$/oci-java-sdk-common-$version$-javadoc.jar",
++  "description": "OCI Java SDK Common provides the shared runtime components used by Oracle Cloud Infrastructure Java SDK modules. It supplies common client infrastructure such as authentication providers, region handling, HTTP helpers, requests, responses, pagination, and waiters."
+ }
+
+codex
+Updated [com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json).
+
+Validation done:
+- JSON parses successfully.
+- Only allowed top-level keys are present.
+- Rendered source, test, and documentation URLs for `3.63.1` return HTTP 200.
+- No `language` field added; this is not Kotlin/Groovy/Scala-specific.
+- No `not-for-native-image` field added; the artifact is a JVM jar with class files.
+diff --git a/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json b/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json
+index dc47d7e477772c2514f8500a5f901318e1ecdb29..0e6535ca591d936067ea417153cff198a44ee512
+--- a/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json
++++ b/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.oracle.oci.sdk:oci-java-sdk-common:3.63.1"
++  "coordinates": "com.oracle.oci.sdk:oci-java-sdk-common:3.63.1",
++  "repository-url": "https://github.com/oracle/oci-java-sdk",
++  "source-code-url": "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common/$version$/oci-java-sdk-common-$version$-sources.jar",
++  "test-code-url": "https://github.com/oracle/oci-java-sdk/tree/v$version$/bmc-common/src/test",
++  "documentation-url": "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common/$version$/oci-java-sdk-common-$version$-javadoc.jar",
++  "description": "OCI Java SDK Common provides the shared runtime components used by Oracle Cloud Infrastructure Java SDK modules. It supplies common client infrastructure such as authentication providers, region handling, HTTP helpers, requests, responses, pagination, and waiters."
+ }
+
+tokens used
+31,313
+Updated [com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.json).
+
+Validation done:
+- JSON parses successfully.
+- Only allowed top-level keys are present.
+- Rendered source, test, and documentation URLs for `3.63.1` return HTTP 200.
+- No `language` field added; this is not Kotlin/Groovy/Scala-specific.
+- No `not-for-native-image` field added; the artifact is a JVM jar with class files.
+Ran agent for com.oracle.oci.sdk:oci-java-sdk-common:3.63.1 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec/build/agent-artifact-discovery-logs/com.oracle.oci.sdk-oci-java-sdk-common-3.63.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7758-f5de6aec/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 21s
+9 actionable tasks: 9 executed
