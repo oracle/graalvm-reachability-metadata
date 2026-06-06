@@ -163,6 +163,35 @@ public class Transform_annotationsTest {
     }
 
     @Test
+    void javacDiscoversProcessorAndGeneratesSourceFromPackageRelativeVelocityTemplate() {
+        GenerationResult result = generateWithDiscoveredProcessor(Map.of("sample.Subject", """
+                package sample;
+
+                import io.sundr.transform.annotations.TemplateTransformation;
+
+                @TemplateTransformation("transformation.vm")
+                public class Subject {
+                }
+                """), Map.of("sample/transformation.vm", """
+                package ${model.packageName};
+
+                public class Generated${model.name} {
+                    public String sourceType() {
+                        return "${model.name}";
+                    }
+                }
+                """));
+
+        assertThat(result.successful()).as(result.diagnosticText()).isTrue();
+        assertThat(result.generatedSources())
+                .containsKey("sample/GeneratedSubject.java");
+        assertThat(result.generatedSources().get("sample/GeneratedSubject.java"))
+                .contains("package sample;")
+                .contains("public class GeneratedSubject")
+                .contains("return \"Subject\";");
+    }
+
+    @Test
     void annotationTypesPublishExpectedCompileTimeContracts() {
         ContractProcessor processor = new ContractProcessor();
         CompilationResult result = compile(Map.of("sample.ContractProbe", """
@@ -315,6 +344,135 @@ public class Transform_annotationsTest {
         }
     }
 
+    private static GenerationResult generateWithDiscoveredProcessor(
+            Map<String, String> sources, Map<String, String> sourceResources) {
+        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        if (compiler == null) {
+            return generateInExternalJvm(sources, sourceResources);
+        }
+
+        GenerationResult result = generateInProcess(
+                sources, sourceResources, System.getProperty("java.class.path", ""));
+        if (needsExternalCompiler(result.compilation())) {
+            return generateInExternalJvm(sources, sourceResources);
+        }
+        return result;
+    }
+
+    private static GenerationResult generateInProcess(
+            Map<String, String> sources, Map<String, String> sourceResources, String classpath) {
+        try {
+            Path resourceDirectory = Files.createTempDirectory("sundr-transform-annotations-resources");
+            writeFiles(resourceDirectory, sourceResources);
+            return generateInProcess(sources, Map.of(), classpath, resourceDirectory);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    private static GenerationResult generateInProcess(
+            Map<String, String> sources,
+            Map<String, String> sourceResources,
+            String classpath,
+            Path resourceDirectory) {
+        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        assertThat(compiler).as("system Java compiler").isNotNull();
+
+        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
+        List<String> options = new ArrayList<>();
+        options.add("-proc:only");
+        options.add("-implicit:none");
+        if (!classpath.isBlank()) {
+            options.add("-classpath");
+            options.add(classpath);
+        }
+
+        try (StandardJavaFileManager fileManager = compiler.getStandardFileManager(
+                diagnostics, Locale.ROOT, StandardCharsets.UTF_8)) {
+            writeFiles(resourceDirectory, sourceResources);
+            Path tempDirectory = Files.createTempDirectory("sundr-transform-annotations-generation");
+            Path classOutputDirectory = tempDirectory.resolve("classes");
+            Path sourceOutputDirectory = tempDirectory.resolve("generated-sources");
+            Files.createDirectories(classOutputDirectory);
+            Files.createDirectories(sourceOutputDirectory);
+            fileManager.setLocationFromPaths(StandardLocation.SOURCE_PATH, List.of(resourceDirectory));
+            fileManager.setLocationFromPaths(StandardLocation.CLASS_OUTPUT, List.of(classOutputDirectory));
+            fileManager.setLocationFromPaths(StandardLocation.SOURCE_OUTPUT, List.of(sourceOutputDirectory));
+            JavaCompiler.CompilationTask task = compiler.getTask(
+                    null,
+                    fileManager,
+                    diagnostics,
+                    options,
+                    null,
+                    sources.entrySet().stream()
+                            .map(entry -> new SourceFile(entry.getKey(), entry.getValue()))
+                            .toList());
+            Boolean successful = task.call();
+            CompilationResult compilation = new CompilationResult(
+                    Boolean.TRUE.equals(successful), diagnosticText(diagnostics.getDiagnostics()), List.of());
+            return new GenerationResult(
+                    compilation.successful(), compilation.diagnosticText(), generatedSources(sourceOutputDirectory));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    private static GenerationResult generateInExternalJvm(
+            Map<String, String> sources, Map<String, String> sourceResources) {
+        try {
+            Path tempDirectory = Files.createTempDirectory("sundr-transform-annotations-generation-test");
+            Path sourceDirectory = tempDirectory.resolve("sources");
+            Path resourceDirectory = tempDirectory.resolve("resources");
+            Path outputFile = tempDirectory.resolve("result.properties");
+            Path logFile = tempDirectory.resolve("compiler.log");
+            for (Map.Entry<String, String> source : sources.entrySet()) {
+                Path sourceFile = sourceDirectory.resolve(source.getKey().replace('.', '/') + ".java");
+                Files.createDirectories(sourceFile.getParent());
+                Files.writeString(sourceFile, source.getValue(), StandardCharsets.UTF_8);
+            }
+            writeFiles(resourceDirectory, sourceResources);
+
+            List<String> command = new ArrayList<>();
+            command.add(javaExecutable());
+            command.add("-cp");
+            command.add(externalClasspath());
+            command.add(Transform_annotationsTest.class.getName());
+            command.add("generate-helper");
+            command.add(sourceDirectory.toString());
+            command.add(resourceDirectory.toString());
+            command.add(outputFile.toString());
+
+            Process process = new ProcessBuilder(command)
+                    .redirectErrorStream(true)
+                    .redirectOutput(logFile.toFile())
+                    .start();
+            boolean completed = process.waitFor(EXTERNAL_COMPILER_TIMEOUT.toSeconds(), TimeUnit.SECONDS);
+            if (!completed) {
+                process.destroyForcibly();
+                String diagnosticText = "External javac process timed out" + System.lineSeparator();
+                return new GenerationResult(false, diagnosticText, Map.of());
+            }
+            String processOutput = Files.readString(logFile, StandardCharsets.UTF_8);
+            if (process.exitValue() != 0) {
+                return new GenerationResult(false, processOutput, Map.of());
+            }
+
+            Properties properties = new Properties();
+            try (var inputStream = Files.newInputStream(outputFile)) {
+                properties.load(inputStream);
+            }
+            return new GenerationResult(
+                    Boolean.parseBoolean(properties.getProperty("successful")),
+                    properties.getProperty("diagnostics", ""),
+                    generatedSources(properties));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new AssertionError("External javac process was interrupted", e);
+        }
+    }
+
     private static CompilationResult compile(Map<String, String> sources, AbstractProcessor processor) {
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         if (compiler == null) {
@@ -428,6 +586,26 @@ public class Transform_annotationsTest {
     public static void main(String[] args) throws Exception {
         if (args.length > 0 && "compile-helper".equals(args[0])) {
             runCompileHelper(args);
+        } else if (args.length > 0 && "generate-helper".equals(args[0])) {
+            runGenerateHelper(args);
+        }
+    }
+
+    private static void runGenerateHelper(String[] args) throws IOException {
+        Map<String, String> sources = readSources(Path.of(args[1]));
+        GenerationResult result = generateInProcess(sources, Map.of(), externalClasspath(), Path.of(args[2]));
+        Properties properties = new Properties();
+        properties.setProperty("successful", Boolean.toString(result.successful()));
+        properties.setProperty("diagnostics", result.diagnosticText());
+        int index = 0;
+        for (Map.Entry<String, String> generatedSource : result.generatedSources().entrySet()) {
+            properties.setProperty("generated.path." + index, generatedSource.getKey());
+            properties.setProperty("generated.content." + index, generatedSource.getValue());
+            index++;
+        }
+        properties.setProperty("generated.count", Integer.toString(index));
+        try (OutputStream outputStream = Files.newOutputStream(Path.of(args[3]))) {
+            properties.store(outputStream, null);
         }
     }
 
@@ -463,6 +641,40 @@ public class Transform_annotationsTest {
         return sources;
     }
 
+    private static void writeFiles(Path rootDirectory, Map<String, String> files) throws IOException {
+        for (Map.Entry<String, String> file : files.entrySet()) {
+            Path path = rootDirectory.resolve(file.getKey());
+            Files.createDirectories(path.getParent());
+            Files.writeString(path, file.getValue(), StandardCharsets.UTF_8);
+        }
+    }
+
+    private static Map<String, String> generatedSources(Path sourceOutputDirectory) throws IOException {
+        Map<String, String> generatedSources = new HashMap<>();
+        if (!Files.isDirectory(sourceOutputDirectory)) {
+            return generatedSources;
+        }
+        try (var paths = Files.walk(sourceOutputDirectory)) {
+            for (Path source : paths.filter(path -> path.getFileName().toString().endsWith(".java")).toList()) {
+                String relativePath = sourceOutputDirectory.relativize(source).toString()
+                        .replace(source.getFileSystem().getSeparator(), "/");
+                generatedSources.put(relativePath, Files.readString(source, StandardCharsets.UTF_8));
+            }
+        }
+        return generatedSources;
+    }
+
+    private static Map<String, String> generatedSources(Properties properties) {
+        int count = Integer.parseInt(properties.getProperty("generated.count", "0"));
+        Map<String, String> generatedSources = new HashMap<>();
+        for (int index = 0; index < count; index++) {
+            generatedSources.put(
+                    properties.getProperty("generated.path." + index),
+                    properties.getProperty("generated.content." + index));
+        }
+        return generatedSources;
+    }
+
     private static String externalClasspath() throws IOException {
         List<String> entries = new ArrayList<>();
         entries.add(Path.of("build", "classes", "java", "test").toAbsolutePath().toString());
@@ -476,6 +688,17 @@ public class Transform_annotationsTest {
             }
         }
         addCachedArtifacts(entries, "io.sundr", "transform-annotations");
+        addCachedArtifacts(entries, "io.sundr", "sundr-codegen-velocity-nodeps");
+        addCachedArtifacts(entries, "io.sundr", "sundr-codegen-template");
+        addCachedArtifacts(entries, "io.sundr", "sundr-codegen-apt");
+        addCachedArtifacts(entries, "io.sundr", "sundr-codegen-api");
+        addCachedArtifacts(entries, "io.sundr", "sundr-adapter-apt");
+        addCachedArtifacts(entries, "io.sundr", "sundr-adapter-api");
+        addCachedArtifacts(entries, "io.sundr", "sundr-model-utils");
+        addCachedArtifacts(entries, "io.sundr", "sundr-model-repo");
+        addCachedArtifacts(entries, "io.sundr", "sundr-model");
+        addCachedArtifacts(entries, "io.sundr", "sundr-model-base");
+        addCachedArtifacts(entries, "io.sundr", "sundr-core");
         addCachedArtifacts(entries, "org.assertj", "assertj-core");
         addCachedArtifacts(entries, "org.junit.jupiter", "junit-jupiter-api");
         addCachedArtifacts(entries, "org.junit.platform", "junit-platform-commons");
@@ -731,6 +954,12 @@ public class Transform_annotationsTest {
             return typeElement.getQualifiedName().toString();
         }
         return element.toString();
+    }
+
+    private record GenerationResult(boolean successful, String diagnosticText, Map<String, String> generatedSources) {
+        private CompilationResult compilation() {
+            return new CompilationResult(successful, diagnosticText, List.of());
+        }
     }
 
     private record CompilationResult(boolean successful, String diagnosticText, List<String> records) {
