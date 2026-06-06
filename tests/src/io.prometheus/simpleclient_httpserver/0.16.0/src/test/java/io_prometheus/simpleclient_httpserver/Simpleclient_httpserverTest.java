@@ -132,6 +132,38 @@ public class Simpleclient_httpserverTest {
     }
 
     @Test
+    void acceptHeaderSelectsOpenMetricsTextFormat() throws Exception {
+        CollectorRegistry registry = new CollectorRegistry();
+        Gauge openMetric = Gauge.build("open_metric", "OpenMetrics negotiated gauge.")
+                .labelNames("state", "kind")
+                .register(registry);
+        openMetric.labels("ready", "primary").set(8.0);
+
+        try (HTTPServer server = new HTTPServer.Builder()
+                .withInetAddress(loopbackAddress())
+                .withPort(0)
+                .withRegistry(registry)
+                .withDaemonThreads(true)
+                .build()) {
+            HttpResponse response = request(
+                    server,
+                    "GET",
+                    "/metrics",
+                    List.of(new Header("Accept", "text/plain;q=0.5, application/openmetrics-text; version=1.0.0")),
+                    false);
+
+            assertThat(response.statusCode).isEqualTo(HttpURLConnection.HTTP_OK);
+            assertThat(response.header("Content-Type"))
+                    .isEqualTo("application/openmetrics-text; version=1.0.0; charset=utf-8");
+            assertThat(response.body)
+                    .contains("# TYPE open_metric gauge")
+                    .contains("# HELP open_metric OpenMetrics negotiated gauge.")
+                    .contains("open_metric{state=\"ready\",kind=\"primary\"} 8.0")
+                    .endsWith("# EOF\n");
+        }
+    }
+
+    @Test
     void gzipCompressionAndHeadRequestsUseHttpSemantics() throws Exception {
         CollectorRegistry registry = new CollectorRegistry();
         Gauge temperature = Gauge.build("room_temperature_celsius", "Room temperature.")
