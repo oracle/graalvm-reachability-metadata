@@ -87,7 +87,7 @@ public class Oci_java_sdk_addons_oke_workload_identityTest {
     void sessionTokenRequestBuilderPreservesBodyCallbackAndRetryConfiguration() {
         GetOkeResourcePrincipalSessionTokenDetails details =
                 GetOkeResourcePrincipalSessionTokenDetails.builder().podKey("pod-key").build();
-        RequestInterceptor callback = request -> {};
+        RequestInterceptor callback = request -> { };
         RetryConfiguration retryConfiguration = RetryConfiguration.NO_RETRY_CONFIGURATION;
 
         GetOkeResourcePrincipalSessionTokenRequest request =
