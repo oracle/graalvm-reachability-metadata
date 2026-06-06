@@ -13,12 +13,15 @@ import com.oracle.bmc.auth.sasl.OciLoginModule;
 import com.oracle.bmc.auth.sasl.OciMechanism;
 import com.oracle.bmc.auth.sasl.OciSaslClient;
 import com.oracle.bmc.auth.sasl.OciSaslClientProvider;
+import com.oracle.bmc.auth.sasl.UserPrincipalsLoginModule;
 import com.oracle.bmc.identity.auth.sasl.messages.OciSaslMessages.Challenge;
 import com.oracle.bmc.identity.auth.sasl.messages.OciSaslMessages.Key;
 import com.oracle.bmc.identity.auth.sasl.messages.OciSaslMessages.Response;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.Security;
 import java.time.Instant;
 import java.util.Arrays;
@@ -34,6 +37,7 @@ import javax.security.sasl.Sasl;
 import javax.security.sasl.SaslClient;
 import javax.security.sasl.SaslException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -143,6 +147,43 @@ public class Oci_java_sdk_addons_saslTest {
         assertThat(subject.getPrivateCredentials(BasicAuthenticationDetailsProvider.class))
                 .contains(AUTH_PROVIDER);
         assertThat(subject.getPrivateCredentials(String.class)).hasSize(1);
+
+        SaslClient client = createClient(subjectPasswordCallbackHandler(subject));
+        Key key = Key.parseFrom(client.evaluateChallenge(new byte[0]));
+
+        assertThat(key.getKeyId()).isEqualTo(KEY_ID);
+        assertThat(key.getIntent()).isEqualTo(INTENT);
+    }
+
+    @Test
+    void userPrincipalsLoginModuleLoadsConfiguredProfile(@TempDir Path tempDir) throws Exception {
+        Path privateKeyFile = tempDir.resolve("oci_api_key.pem");
+        Path configFile = tempDir.resolve("config");
+        Files.writeString(privateKeyFile, PRIVATE_KEY, StandardCharsets.UTF_8);
+        Files.writeString(
+                configFile,
+                """
+                [TEST]
+                user=ocid1.user.example
+                fingerprint=00:11:22:33
+                tenancy=ocid1.tenancy.example
+                region=us-phoenix-1
+                key_file=%s
+                """
+                        .formatted(privateKeyFile),
+                StandardCharsets.UTF_8);
+        UserPrincipalsLoginModule loginModule = new UserPrincipalsLoginModule();
+        Subject subject = new Subject();
+
+        loginModule.initialize(
+                subject,
+                null,
+                Map.of(),
+                Map.of("intent", INTENT, "config", configFile.toString(), "profile", "TEST"));
+
+        assertThat(subject.getPublicCredentials(String.class)).contains(INTENT);
+        assertThat(subject.getPrivateCredentials(BasicAuthenticationDetailsProvider.class))
+                .hasSize(1);
 
         SaslClient client = createClient(subjectPasswordCallbackHandler(subject));
         Key key = Key.parseFrom(client.evaluateChallenge(new byte[0]));
