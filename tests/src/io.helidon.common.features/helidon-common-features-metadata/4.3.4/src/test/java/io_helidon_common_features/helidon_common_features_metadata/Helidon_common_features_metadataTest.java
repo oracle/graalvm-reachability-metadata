@@ -7,6 +7,7 @@
 package io_helidon_common_features.helidon_common_features_metadata;
 
 import java.util.List;
+import java.util.Properties;
 
 import io.helidon.common.features.metadata.FeatureMetadata;
 import io.helidon.common.features.metadata.FeatureRegistry;
@@ -18,6 +19,41 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class Helidon_common_features_metadataTest {
+    @Test
+    void parsesFeatureRegistryV1PropertiesMetadata() {
+        Properties properties = new Properties();
+        properties.setProperty("m", "example.legacy.module");
+        properties.setProperty("n", "Legacy Feature");
+        properties.setProperty("d", "Feature loaded from a properties document");
+        properties.setProperty("s", "initial");
+        properties.setProperty("p", "root,legacy");
+        properties.setProperty("in", Flavor.SE.name());
+        properties.setProperty("not", Flavor.MP.name());
+        properties.setProperty("aot", "true");
+        properties.setProperty("aotd", "Uses only runtime metadata");
+        properties.setProperty("dep", "false");
+        properties.setProperty("deps", "not deprecated");
+
+        FeatureMetadata metadata = FeatureRegistry.metadata("test-registry.properties", properties);
+
+        assertThat(metadata.module()).isEqualTo("example.legacy.module");
+        assertThat(metadata.name()).isEqualTo("Legacy Feature");
+        assertThat(metadata.path()).containsExactly("root", "legacy");
+        assertThat(metadata.description()).contains("Feature loaded from a properties document");
+        assertThat(metadata.since()).contains("initial");
+        assertThat(metadata.flavors()).containsExactly(Flavor.SE);
+        assertThat(metadata.invalidFlavors()).containsExactly(Flavor.MP);
+        assertThat(metadata.status()).isEqualTo(FeatureStatus.PRODUCTION);
+        assertThat(metadata.aot()).hasValueSatisfying(aotMetadata -> {
+            assertThat(aotMetadata.supported()).isTrue();
+            assertThat(aotMetadata.description()).contains("Uses only runtime metadata");
+        });
+        assertThat(metadata.deprecation()).hasValueSatisfying(deprecationMetadata -> {
+            assertThat(deprecationMetadata.isDeprecated()).isFalse();
+            assertThat(deprecationMetadata.since()).contains("not deprecated");
+        });
+    }
+
     @Test
     void parsesFeatureRegistryV2Metadata() {
         Hson.Struct aot = Hson.Struct.builder()
