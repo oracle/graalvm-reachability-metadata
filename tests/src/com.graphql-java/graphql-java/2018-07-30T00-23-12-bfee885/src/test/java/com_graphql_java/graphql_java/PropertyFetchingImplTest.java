@@ -6,9 +6,11 @@
  */
 package com_graphql_java.graphql_java;
 
+import graphql.execution.ExecutionContext;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.DataFetchingEnvironmentImpl;
 import graphql.schema.PropertyDataFetcher;
+import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,19 +22,16 @@ public class PropertyFetchingImplTest {
   @BeforeEach
   void resetPropertyFetcher() {
     PropertyDataFetcher.clearReflectionCache();
-    PropertyDataFetcher.setUseSetAccessible(true);
-    PropertyDataFetcher.setUseNegativeCache(true);
   }
 
   @Test
-  void invokesPublicGetterWithDataFetchingEnvironmentArgument() throws Exception {
-    EnvironmentAwareSource source = new EnvironmentAwareSource();
-    DataFetchingEnvironment environment = environmentFor(source);
+  void invokesFunctionFetcherWithSourceObject() throws Exception {
+    ZeroArgumentGetterSource source = new ZeroArgumentGetterSource();
 
-    String value = PropertyDataFetcher.<String>fetching("value").get(environment);
+    String value = PropertyDataFetcher.<String, ZeroArgumentGetterSource>fetching(
+        ZeroArgumentGetterSource::getName).get(environmentFor(source));
 
-    assertThat(value).isEqualTo("value from " + EnvironmentAwareSource.class.getSimpleName());
-    assertThat(source.seenEnvironment).isSameAs(environment);
+    assertThat(value).isEqualTo("zero argument getter value");
   }
 
   @Test
@@ -72,20 +71,11 @@ public class PropertyFetchingImplTest {
   }
 
   private DataFetchingEnvironment environmentFor(Object source) {
-    return DataFetchingEnvironmentImpl.newDataFetchingEnvironment()
-        .source(source)
-        .fieldType(GraphQLString)
-        .build();
-  }
-
-  public static class EnvironmentAwareSource {
-
-    private DataFetchingEnvironment seenEnvironment;
-
-    public String getValue(DataFetchingEnvironment environment) {
-      this.seenEnvironment = environment;
-      return "value from " + getClass().getSimpleName();
-    }
+    ExecutionContext executionContext = new ExecutionContext(null, null, null, null, null, null, null,
+        Collections.emptyMap(), null, null, Collections.emptyMap(), null, null);
+    return new DataFetchingEnvironmentImpl(source, Collections.emptyMap(), null, null, null,
+        Collections.emptyList(), GraphQLString, null, null, Collections.emptyMap(), null, null, null,
+        executionContext);
   }
 
   public static class ZeroArgumentGetterSource {
