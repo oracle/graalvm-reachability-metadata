@@ -4,11 +4,18 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+import org.graalvm.buildtools.gradle.tasks.NativeRunTask
+
 plugins {
     id "org.graalvm.internal.tck"
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String javaHome = System.getenv('JAVA_HOME') ?: System.getenv('GRAALVM_HOME')
+List<String> javacRuntimeArgs = [
+        "-Djava.home=${javaHome}",
+        "-Djava.class.path=${-> sourceSets.test.runtimeClasspath.asPath}"
+]
 
 dependencies {
     testImplementation "io.sundr:resourcecify-annotations:$libraryVersion"
@@ -16,6 +23,11 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            runtimeArgs.addAll(javacRuntimeArgs)
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
@@ -24,4 +36,8 @@ graalvmNative {
             }
         }
     }
+}
+
+tasks.named("nativeTest", NativeRunTask) {
+    runtimeArgs.addAll(javacRuntimeArgs)
 }
