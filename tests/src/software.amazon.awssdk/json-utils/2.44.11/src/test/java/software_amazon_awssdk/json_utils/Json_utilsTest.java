@@ -34,6 +34,7 @@ import software.amazon.awssdk.thirdparty.jackson.core.JsonParseException;
 import software.amazon.awssdk.thirdparty.jackson.core.JsonParser;
 import software.amazon.awssdk.thirdparty.jackson.core.JsonToken;
 import software.amazon.awssdk.thirdparty.jackson.core.json.JsonReadFeature;
+import software.amazon.awssdk.thirdparty.jackson.core.json.JsonWriteFeature;
 
 public class Json_utilsTest {
     @Test
@@ -190,6 +191,27 @@ public class Json_utilsTest {
         assertThat(exception.getCause()).isInstanceOf(JsonParseException.class);
         JsonParseException parseException = (JsonParseException) exception.getCause();
         assertThat(parseException.getLocation()).isNull();
+    }
+
+    @Test
+    void writerBuilderAcceptsJsonFactoryConfiguration() {
+        JsonFactory escapingFactory = JsonFactory.builder()
+            .configure(JsonWriteFeature.ESCAPE_NON_ASCII, true)
+            .build();
+
+        JsonWriter writer = JsonWriter.builder()
+            .jsonFactory(escapingFactory)
+            .build()
+            .writeStartObject()
+            .writeFieldName("word").writeValue("café")
+            .writeEndObject();
+
+        String json = new String(writer.getBytes(), StandardCharsets.UTF_8);
+        JsonNode parsed = JsonNode.parser().parse(json);
+
+        assertThat(json).contains("\\u");
+        assertThat(json).doesNotContain("café");
+        assertThat(required(parsed.field("word")).asString()).isEqualTo("café");
     }
 
     @Test
