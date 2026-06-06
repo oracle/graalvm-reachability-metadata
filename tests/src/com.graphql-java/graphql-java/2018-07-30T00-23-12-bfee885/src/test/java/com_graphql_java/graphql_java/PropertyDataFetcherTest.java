@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import static graphql.Scalars.GraphQLString;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PropertyFetchingImplTest {
+public class PropertyDataFetcherTest {
 
   @BeforeEach
   void resetPropertyFetcher() {
@@ -50,6 +50,15 @@ public class PropertyFetchingImplTest {
     String value = PropertyDataFetcher.<String>fetching("secret").get(environmentFor(source));
 
     assertThat(value).isEqualTo("private getter value");
+  }
+
+  @Test
+  void invokesPublicGetterDeclaredOnPublicSuperclass() throws Exception {
+    AutoValueStyleSource source = new AutoValueStyleSource("auto value style getter value");
+
+    String value = PropertyDataFetcher.<String>fetching("name").get(environmentFor(source));
+
+    assertThat(value).isEqualTo("auto value style getter value");
   }
 
   @Test
@@ -89,6 +98,25 @@ public class PropertyFetchingImplTest {
 
     private String getSecret() {
       return "private getter value";
+    }
+  }
+
+  public abstract static class PublicNameSource {
+
+    public abstract String getName();
+  }
+
+  private static final class AutoValueStyleSource extends PublicNameSource {
+
+    private final String name;
+
+    private AutoValueStyleSource(String name) {
+      this.name = name;
+    }
+
+    @Override
+    public String getName() {
+      return name;
     }
   }
 
