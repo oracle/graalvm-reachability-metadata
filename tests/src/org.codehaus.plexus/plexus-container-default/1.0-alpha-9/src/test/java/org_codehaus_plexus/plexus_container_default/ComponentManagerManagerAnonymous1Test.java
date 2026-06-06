@@ -13,8 +13,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ComponentManagerManagerAnonymous1Test {
     @Test
-    public void exposesInterfaceTypeName() {
-        assertThat(ComponentManagerManager.class.getName())
+    public void exposesRoleConstantInitializedFromInterfaceTypeName() {
+        assertThat(ComponentManagerManager.ROLE)
             .isEqualTo("org.codehaus.plexus.component.manager.ComponentManagerManager");
     }
 }
