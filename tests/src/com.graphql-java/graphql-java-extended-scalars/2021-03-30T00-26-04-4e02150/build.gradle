@@ -9,10 +9,15 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String graphqlJavaVersion = "16.1"
+
+configurations.configureEach {
+    resolutionStrategy.force "com.graphql-java:graphql-java:$graphqlJavaVersion"
+}
 
 dependencies {
     testImplementation "com.graphql-java:graphql-java-extended-scalars:$libraryVersion"
-    testImplementation "com.graphql-java:graphql-java:$libraryVersion"
+    testImplementation "com.graphql-java:graphql-java:$graphqlJavaVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
