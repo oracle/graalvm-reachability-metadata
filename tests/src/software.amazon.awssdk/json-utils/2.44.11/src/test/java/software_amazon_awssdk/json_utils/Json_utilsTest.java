@@ -232,15 +232,15 @@ public class Json_utilsTest {
             .jsonFactory(escapingFactory)
             .build()
             .writeStartObject()
-            .writeFieldName("word").writeValue("café")
+            .writeFieldName("word").writeValue("caf\u00e9")
             .writeEndObject();
 
         String json = new String(writer.getBytes(), StandardCharsets.UTF_8);
         JsonNode parsed = JsonNode.parser().parse(json);
 
         assertThat(json).contains("\\u");
-        assertThat(json).doesNotContain("café");
-        assertThat(required(parsed.field("word")).asString()).isEqualTo("café");
+        assertThat(json).doesNotContain("caf\u00e9");
+        assertThat(required(parsed.field("word")).asString()).isEqualTo("caf\u00e9");
     }
 
     @Test
