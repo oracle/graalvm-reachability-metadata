@@ -10,23 +10,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.ongres.saslprep.SaslPrep;
+import com.ongres.saslprep.SASLprep;
 import org.junit.jupiter.api.Test;
 
 public class SaslprepTest {
+    private static final SASLprep SASL_PREP = new SASLprep();
+
     @Test
     void preparesRfc4013Examples() {
-        assertThat(SaslPrep.saslPrep("I\u00ADX", true)).isEqualTo("IX");
-        assertThat(SaslPrep.saslPrep("user", true)).isEqualTo("user");
-        assertThat(SaslPrep.saslPrep("USER", true)).isEqualTo("USER");
-        assertThat(SaslPrep.saslPrep("\u00AA", true)).isEqualTo("a");
-        assertThat(SaslPrep.saslPrep("\u2168", true)).isEqualTo("IX");
-        assertThat(SaslPrep.saslPrep("\uD840\uDC00", true)).isEqualTo("\uD840\uDC00");
+        assertThat(prepare("I\u00ADX", true)).isEqualTo("IX");
+        assertThat(prepare("user", true)).isEqualTo("user");
+        assertThat(prepare("USER", true)).isEqualTo("USER");
+        assertThat(prepare("\u00AA", true)).isEqualTo("a");
+        assertThat(prepare("\u2168", true)).isEqualTo("IX");
+        assertThat(prepare("\uD840\uDC00", true)).isEqualTo("\uD840\uDC00");
     }
 
     @Test
     void removesCharactersCommonlyMappedToNothingBeforeValidation() {
-        String prepared = SaslPrep.saslPrep("pass\u00AD\u034Fword\u200B\uFE00", true);
+        String prepared = prepare("pass\u00AD\u034Fword\u200B\uFE00", true);
 
         assertThat(prepared).isEqualTo("password");
     }
@@ -36,20 +38,20 @@ public class SaslprepTest {
         String fullwidthUserWithDigits = "\uFF35\uFF53\uFF45\uFF52\uFF11\uFF12\uFF13";
         String ligatureAndRomanNumeral = "\uFB01-\u2168";
 
-        assertThat(SaslPrep.saslPrep(fullwidthUserWithDigits, true)).isEqualTo("User123");
-        assertThat(SaslPrep.saslPrep(ligatureAndRomanNumeral, true)).isEqualTo("fi-IX");
+        assertThat(prepare(fullwidthUserWithDigits, true)).isEqualTo("User123");
+        assertThat(prepare(ligatureAndRomanNumeral, true)).isEqualTo("fi-IX");
     }
 
     @Test
     void mapsNonAsciiSpaceCharactersToAsciiSpaceDuringPreparation() {
-        assertThat(SaslPrep.saslPrep("first\u00A0second", true)).isEqualTo("first second");
-        assertThat(SaslPrep.saslPrep("first\u2007second", true)).isEqualTo("first second");
-        assertThat(SaslPrep.saslPrep("first\u202Fsecond", true)).isEqualTo("first second");
+        assertThat(prepare("first\u00A0second", true)).isEqualTo("first second");
+        assertThat(prepare("first\u2007second", true)).isEqualTo("first second");
+        assertThat(prepare("first\u202Fsecond", true)).isEqualTo("first second");
     }
 
     @Test
     void preservesAsciiSpacesWithoutTrimmingOrCollapsing() {
-        assertThat(SaslPrep.saslPrep(" leading  inner  trailing ", true))
+        assertThat(prepare(" leading  inner  trailing ", true))
                 .isEqualTo(" leading  inner  trailing ");
     }
 
@@ -58,7 +60,7 @@ public class SaslprepTest {
         String cjkExtensionB = "\uD840\uDC00";
         String deseretCapitalLetterLongI = "\uD801\uDC00";
 
-        assertThat(SaslPrep.saslPrep("a" + cjkExtensionB + "\u00AD" + deseretCapitalLetterLongI + "b", true))
+        assertThat(prepare("a" + cjkExtensionB + "\u00AD" + deseretCapitalLetterLongI + "b", true))
                 .isEqualTo("a" + cjkExtensionB + deseretCapitalLetterLongI + "b");
     }
 
@@ -79,49 +81,56 @@ public class SaslprepTest {
     void rejectsUnassignedCodePointsOnlyForStoredStrings() {
         String stringWithUnassignedCodePoint = "user\u0221";
 
-        assertThat(SaslPrep.saslPrep(stringWithUnassignedCodePoint, false)).isEqualTo(stringWithUnassignedCodePoint);
-        assertThatThrownBy(() -> SaslPrep.saslPrep(stringWithUnassignedCodePoint, true))
+        assertThat(prepare(stringWithUnassignedCodePoint, false)).isEqualTo(stringWithUnassignedCodePoint);
+        assertThatThrownBy(() -> prepare(stringWithUnassignedCodePoint, true))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Prohibited character")
-                .hasMessageContaining("\u0221");
+                .hasMessageContaining("Unassigned code point")
+                .hasMessageContaining("0x0221");
     }
 
     @Test
     void enforcesBidirectionalRuleForRandAlCatCharacters() {
-        assertThat(SaslPrep.saslPrep("\u0627\u0661\u0628", true)).isEqualTo("\u0627\u0661\u0628");
-        assertThat(SaslPrep.saslPrep("\u05D0\u05D1", true)).isEqualTo("\u05D0\u05D1");
+        assertThat(prepare("\u0627\u0661\u0628", true)).isEqualTo("\u0627\u0661\u0628");
+        assertThat(prepare("\u05D0\u05D1", true)).isEqualTo("\u05D0\u05D1");
 
-        assertThatThrownBy(() -> SaslPrep.saslPrep("\u0627A\u0628", true))
+        assertThatThrownBy(() -> prepare("\u0627A\u0628", true))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("RandALCat and LCat");
 
-        assertThatThrownBy(() -> SaslPrep.saslPrep("\u06271", true))
+        assertThatThrownBy(() -> prepare("\u06271", true))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("RandALCat character is not the first and the last characters");
+                .hasMessageContaining("RandALCat character is not the first and the last character");
 
-        assertThatThrownBy(() -> SaslPrep.saslPrep("1\u0627", true))
+        assertThatThrownBy(() -> prepare("1\u0627", true))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("RandALCat character is not the first and the last characters");
+                .hasMessageContaining("RandALCat character is not the first and the last character");
     }
 
     @Test
     void appliesBidirectionalRuleAfterCompatibilityNormalization() {
-        assertThat(SaslPrep.saslPrep("\u0627\uFF11\u0628", true)).isEqualTo("\u06271\u0628");
+        assertThat(prepare("\u0627\uFF11\u0628", true)).isEqualTo("\u06271\u0628");
 
-        assertThatThrownBy(() -> SaslPrep.saslPrep("\u0627\uFF21\u0628", true))
+        assertThatThrownBy(() -> prepare("\u0627\uFF21\u0628", true))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("RandALCat and LCat");
     }
 
     @Test
     void rejectsNullInput() {
-        assertThatNullPointerException().isThrownBy(() -> SaslPrep.saslPrep(null, true));
+        assertThatNullPointerException().isThrownBy(() -> prepare(null, true));
     }
 
     private static void assertProhibited(String description, String value) {
-        assertThatThrownBy(() -> SaslPrep.saslPrep(value, true))
+        assertThatThrownBy(() -> prepare(value, true))
                 .as(description)
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Prohibited character");
+                .hasMessageContaining("Prohibited");
+    }
+
+    private static String prepare(String value, boolean stored) {
+        if (stored) {
+            return SASL_PREP.prepareStored(value);
+        }
+        return SASL_PREP.prepareQuery(value);
     }
 }
