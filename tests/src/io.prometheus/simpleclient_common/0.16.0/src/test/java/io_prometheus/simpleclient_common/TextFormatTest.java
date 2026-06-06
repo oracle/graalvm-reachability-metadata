@@ -266,6 +266,25 @@ public class TextFormatTest {
                         """);
     }
 
+    @Test
+    void writesOpenMetricsTimestampsWithLeadingMillisecondZeros() throws IOException {
+        MetricFamilySamples family = new MetricFamilySamples(
+                "scheduler_delay_seconds",
+                Collector.Type.GAUGE,
+                "Scheduler delay",
+                List.of(
+                        new Sample("scheduler_delay_seconds", List.of("worker"), List.of("early"), 1.5, 42L),
+                        new Sample("scheduler_delay_seconds", List.of("worker"), List.of("single"), 2.5, 7L)));
+
+        assertThat(writeOpenMetrics100(enumerationOf(family))).isEqualTo("""
+                # TYPE scheduler_delay_seconds gauge
+                # HELP scheduler_delay_seconds Scheduler delay
+                scheduler_delay_seconds{worker=\"early\"} 1.5 0.042
+                scheduler_delay_seconds{worker=\"single\"} 2.5 0.007
+                # EOF
+                """);
+    }
+
     private static String write004(Enumeration<MetricFamilySamples> families) throws IOException {
         StringWriter writer = new StringWriter();
         TextFormat.write004(writer, families);
