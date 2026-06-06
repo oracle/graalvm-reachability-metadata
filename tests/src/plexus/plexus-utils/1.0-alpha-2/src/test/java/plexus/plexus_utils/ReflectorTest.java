@@ -6,12 +6,12 @@
  */
 package plexus.plexus_utils;
 
+import java.lang.reflect.Method;
+
 import org.codehaus.plexus.util.reflection.Reflector;
-import org.codehaus.plexus.util.reflection.ReflectorException;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class ReflectorTest {
     @Test
@@ -49,16 +49,13 @@ public class ReflectorTest {
     }
 
     @Test
-    void objectPropertyFindsAccessorButFailsBeforeInvokingIt() {
+    void locatesPublicNoArgumentAccessor() throws Exception {
         Reflector reflector = new Reflector();
-        ReflectorFixture fixture = new ReflectorFixture("property-value");
 
-        // `getObjectProperty` finds `getValue`, but then looks for `value` on `Class.class`
-        // before invoking the accessor. `Class` exposes no public fields, so version 1.0.2
-        // fails at that field lookup before the final `Method.invoke` call site.
-        assertThatThrownBy(() -> reflector.getObjectProperty(fixture, "value"))
-                .isInstanceOf(ReflectorException.class)
-                .hasCauseInstanceOf(NoSuchFieldException.class);
+        Method method = reflector.getMethod(ReflectorFixture.class, "getValue", new Class[0]);
+
+        assertThat(method.getName()).isEqualTo("getValue");
+        assertThat(method.getParameterTypes()).isEmpty();
     }
 
     public static class ReflectorFixture {
