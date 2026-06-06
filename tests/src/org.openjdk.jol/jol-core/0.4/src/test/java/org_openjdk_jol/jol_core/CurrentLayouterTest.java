@@ -25,7 +25,7 @@ public class CurrentLayouterTest {
         assertThat(layout.instanceSize()).isGreaterThan(layout.headerSize());
         assertThat(layout.fields())
                 .extracting(FieldLayout::name)
-                .containsExactly("length", "<elements>");
+                .containsExactly("<elements>");
         assertThat(layout.fields())
                 .extracting(FieldLayout::hostClass)
                 .containsOnly(int[].class.getName());
@@ -33,6 +33,7 @@ public class CurrentLayouterTest {
                 .filteredOn(field -> "<elements>".equals(field.name()))
                 .singleElement()
                 .satisfies(field -> {
+                    assertThat(field.offset()).isGreaterThanOrEqualTo(layout.headerSize());
                     assertThat(field.typeClass()).isEqualTo("int");
                     assertThat(field.size()).isEqualTo(Integer.BYTES * 3);
                 });
