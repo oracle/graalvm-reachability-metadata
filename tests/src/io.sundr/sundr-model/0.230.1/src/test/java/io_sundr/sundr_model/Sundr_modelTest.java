@@ -13,13 +13,17 @@ import io.sundr.model.AnnotationRefBuilder;
 import io.sundr.model.Assign;
 import io.sundr.model.AttributeKey;
 import io.sundr.model.Block;
+import io.sundr.model.Break;
 import io.sundr.model.ClassRef;
 import io.sundr.model.ClassRefBuilder;
 import io.sundr.model.Construct;
+import io.sundr.model.Continue;
 import io.sundr.model.Declare;
+import io.sundr.model.Do;
 import io.sundr.model.Empty;
 import io.sundr.model.Expression;
 import io.sundr.model.For;
+import io.sundr.model.Foreach;
 import io.sundr.model.GreaterThan;
 import io.sundr.model.If;
 import io.sundr.model.Kind;
@@ -36,6 +40,8 @@ import io.sundr.model.PropertyBuilder;
 import io.sundr.model.PropertyRef;
 import io.sundr.model.Return;
 import io.sundr.model.StringStatement;
+import io.sundr.model.Switch;
+import io.sundr.model.Synchronized;
 import io.sundr.model.Ternary;
 import io.sundr.model.Throw;
 import io.sundr.model.Try;
@@ -47,6 +53,7 @@ import io.sundr.model.ValueRef;
 import io.sundr.model.While;
 import io.sundr.model.WildcardRef;
 import io.sundr.model.WildcardRefBuilder;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -283,6 +290,66 @@ public class Sundr_modelTest {
                         "java.lang.StringBuilder",
                         "java.lang.IllegalArgumentException",
                         "java.lang.String");
+    }
+
+    @Test
+    void rendersAdditionalStructuredStatements() {
+        Property state = Property.newProperty(STRING, "state");
+        Property name = Property.newProperty(STRING, "name");
+        Property names = Property.newProperty(ClassRef.forName("java.util.List"), "names");
+        Block startBlock = new Block(new Return(new ValueRef("ready")));
+        Block stopBlock = new Block(new Break());
+        Block defaultBlock = new Block(new Return(new ValueRef("unknown")));
+        ValueRef startCase = new ValueRef("start");
+        ValueRef stopCase = new ValueRef("stop");
+        Map<ValueRef, Block> cases = new LinkedHashMap<>();
+        cases.put(startCase, startBlock);
+        cases.put(stopCase, stopBlock);
+        ValueRef keepRunning = new ValueRef(false);
+
+        Switch switchStatement = new Switch(state.toReference(), cases, Optional.of(defaultBlock));
+        Foreach foreach = new Foreach(name, names, new Continue());
+        Synchronized synchronizedStatement = Synchronized.on(Property.newProperty("lock").toReference())
+                .body(foreach, switchStatement);
+        Do doStatement = new Do(keepRunning, synchronizedStatement);
+
+        String switchRender = switchStatement.render();
+        String foreachRender = foreach.render();
+        String synchronizedRender = synchronizedStatement.render();
+        String doRender = doStatement.render();
+
+        assertThat(switchStatement.getExpression().render()).isEqualTo("state");
+        assertThat(switchStatement.getCases()).containsEntry(startCase, startBlock);
+        assertThat(switchStatement.getDefaultCase()).hasValue(defaultBlock);
+        assertThat(switchRender)
+                .contains("switch")
+                .contains("case")
+                .contains("default")
+                .contains("break;")
+                .contains("ready")
+                .contains("unknown");
+        assertThat(foreach.getDeclare().getProperties()).containsExactly(name);
+        assertThat(foreach.getExpression()).isEqualTo(names);
+        assertThat(foreachRender)
+                .contains("for")
+                .contains("String")
+                .contains("name")
+                .contains("names")
+                .contains("continue;");
+        assertThat(synchronizedStatement.getLockExpression().render()).isEqualTo("lock");
+        assertThat(synchronizedRender)
+                .contains("synchronized")
+                .contains("lock")
+                .contains("switch")
+                .contains("continue;");
+        assertThat(doStatement.getCondition()).isEqualTo(keepRunning);
+        assertThat(doRender)
+                .contains("do")
+                .contains("synchronized")
+                .contains("while")
+                .contains("false");
+        assertThat(doStatement.getReferences()).extracting(ClassRef::getFullyQualifiedName)
+                .contains("java.lang.String", "java.util.List");
     }
 
     @Test
