@@ -1,0 +1,1415 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e9ad6-48f5-7b32-838b-83affaf32f36
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.fabric8:kubernetes-model-events:7.7.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [7.7.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282/metadata/io.fabric8/kubernetes-model-events/index.json
+- Entry selector: "metadata-version" = "7.7.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 7.7.0
+- Entry metadata-version: 7.7.0
+- Entry test-version: 7.7.0
+- Entry tested-versions: [7.7.0]
+codex
+I’ll inspect the existing metadata entry, then verify the Maven/GitHub URLs against the 7.7.0 artifact before editing only the missing fields.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/io.fabric8/kubernetes-model-events/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "7.7.0",
+    "tested-versions" : [
+      "7.7.0"
+    ],
+    "allowed-packages" : [
+      "io.fabric8.kubernetes.api.model.events"
+    ]
+  },
+  {
+    "metadata-version" : "7.5.2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/$version$/kubernetes-model-events-$version$-sources.jar",
+    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/$version$/kubernetes-model-events-$version$-javadoc.jar",
+    "description" : "Fabric8 Kubernetes Model Events provides Java model classes and builders for Kubernetes Events API resources. It is part of Fabric8 Kubernetes Client's generated model set and lets JVM applications serialize, deserialize, and construct Event, EventList, and EventSeries objects.",
+    "tested-versions" : [
+      "7.5.2",
+      "7.6.0",
+      "7.6.1"
+    ],
+    "allowed-packages" : [
+      "io.fabric8.kubernetes.api.model.events"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n 'kubernetes-model-events|io.fabric8' metadata/io.fabric8 tests/io.fabric8 -g 'index.json' -g '*.java' -g '*.md'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282
+ exited 2 in 0ms:
+rg: tests/io.fabric8: No such file or directory (os error 2)
+metadata/io.fabric8/kubernetes-model-rbac/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-rbac/$version$/kubernetes-model-rbac-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-rbac/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-rbac/$version$/kubernetes-model-rbac-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-rbac/index.json:16:      "io.fabric8.kubernetes.api.model.rbac"
+metadata/io.fabric8/kubernetes-model-gatewayapi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-gatewayapi/$version$/kubernetes-model-gatewayapi-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-gatewayapi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-gatewayapi/$version$/kubernetes-model-gatewayapi-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-gatewayapi/index.json:17:      "io.fabric8.kubernetes.api.model.gatewayapi"
+metadata/io.fabric8/kubernetes-model-coordination/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-coordination/$version$/kubernetes-model-coordination-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-coordination/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-coordination/$version$/kubernetes-model-coordination-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-coordination/index.json:16:      "io.fabric8.kubernetes.api.model.coordination"
+metadata/io.fabric8/kubernetes-model-certificates/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/fabric8/kubernetes-model-certificates/$version$/kubernetes-model-certificates-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-certificates/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/fabric8/kubernetes-model-certificates/$version$/kubernetes-model-certificates-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-certificates/index.json:14:      "io.fabric8.kubernetes.api.model.certificates"
+metadata/io.fabric8/kubernetes-model-events/index.json:9:      "io.fabric8.kubernetes.api.model.events"
+metadata/io.fabric8/kubernetes-model-events/index.json:14:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/$version$/kubernetes-model-events-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-events/index.json:17:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/$version$/kubernetes-model-events-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-events/index.json:25:      "io.fabric8.kubernetes.api.model.events"
+metadata/io.fabric8/kubernetes-model-resource/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-resource/$version$/kubernetes-model-resource-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-resource/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-resource/$version$/kubernetes-model-resource-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-resource/index.json:17:      "io.fabric8.kubernetes.api.model.resource"
+metadata/io.fabric8/kubernetes-model-discovery/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-discovery/$version$/kubernetes-model-discovery-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-discovery/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-discovery/$version$/kubernetes-model-discovery-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-discovery/index.json:16:      "io.fabric8.kubernetes.api.model.discovery"
+metadata/io.fabric8/kubernetes-model-node/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/fabric8/kubernetes-model-node/$version$/kubernetes-model-node-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-node/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/blob/v$version$/kubernetes-tests/src/test/java/io/fabric8/kubernetes/client/mock/RuntimeClassTest.java",
+metadata/io.fabric8/kubernetes-model-node/index.json:8:    "documentation-url" : "https://javadoc.io/doc/io.fabric8/kubernetes-model-node/$version$/index.html",
+metadata/io.fabric8/kubernetes-model-node/index.json:16:      "io.fabric8.kubernetes.api.model.node"
+metadata/io.fabric8/kubernetes-model-extensions/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-extensions/$version$/kubernetes-model-extensions-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-extensions/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-extensions/$version$/kubernetes-model-extensions-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-extensions/index.json:17:      "io.fabric8.kubernetes.api.model.extensions"
+metadata/io.fabric8/kubernetes-model-batch/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-batch/$version$/kubernetes-model-batch-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-batch/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-batch/$version$/kubernetes-model-batch-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-batch/index.json:16:      "io.fabric8.kubernetes.api.model.batch"
+metadata/io.fabric8/kubernetes-model-scheduling/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-scheduling/$version$/kubernetes-model-scheduling-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-scheduling/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-scheduling/$version$/kubernetes-model-scheduling-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-scheduling/index.json:16:      "io.fabric8.kubernetes.api.model.scheduling"
+metadata/io.fabric8/kubernetes-model-apps/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-apps/$version$/kubernetes-model-apps-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-apps/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-apps/$version$/kubernetes-model-apps-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-apps/index.json:14:      "io.fabric8.kubernetes.api.model.apps"
+metadata/io.fabric8/kubernetes-model-autoscaling/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-autoscaling/$version$/kubernetes-model-autoscaling-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-autoscaling/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-autoscaling/$version$/kubernetes-model-autoscaling-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-autoscaling/index.json:17:      "io.fabric8.kubernetes.api.model.autoscaling"
+metadata/io.fabric8/kubernetes-model-common/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-common/$version$/kubernetes-model-common-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-common/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-common/$version$/kubernetes-model-common-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-common/index.json:14:      "io.fabric8.kubernetes.api.builder",
+metadata/io.fabric8/kubernetes-model-common/index.json:15:      "io.fabric8.kubernetes.model"
+metadata/io.fabric8/kubernetes-model-apiextensions/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-apiextensions/$version$/kubernetes-model-apiextensions-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-apiextensions/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-apiextensions/$version$/kubernetes-model-apiextensions-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-apiextensions/index.json:14:      "io.fabric8.kubernetes.api.model.apiextensions"
+metadata/io.fabric8/kubernetes-model-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-core/$version$/kubernetes-model-core-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-core/$version$/kubernetes-model-core-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-core/index.json:14:      "io.fabric8.kubernetes"
+metadata/io.fabric8/kubernetes-model-admissionregistration/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/$version$/kubernetes-model-admissionregistration-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-admissionregistration/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/$version$/kubernetes-model-admissionregistration-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-admissionregistration/index.json:16:      "io.fabric8.kubernetes.api.model"
+metadata/io.fabric8/kubernetes-model-policy/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-policy/$version$/kubernetes-model-policy-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-policy/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-policy/$version$/kubernetes-model-policy-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-policy/index.json:16:      "io.fabric8.kubernetes.api.model.policy"
+metadata/io.fabric8/kubernetes-model-networking/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-networking/$version$/kubernetes-model-networking-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-networking/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-networking/$version$/kubernetes-model-networking-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-networking/index.json:16:      "io.fabric8.kubernetes.api.model.networking"
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/7.7.0/
+web search: 
+web search: repo.maven.apache.org maven2 io.fabric8 kubernetes-model-events 7.7.0 sources javadoc
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/fabric8/
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/fabric8/
+codex
+The local entry already has a prior-version block with the same artifact family. I’m checking Maven Central directly now, because source and javadoc artifacts are preferred here and the published directory will also show whether a test-sources/test jar exists.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/7.7.0/kubernetes-model-events-7.7.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2015 Red Hat, Inc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.fabric8</groupId>
+    <artifactId>kubernetes-model-generator</artifactId>
+    <version>7.7.0</version>
+  </parent>
+
+  <artifactId>kubernetes-model-events</artifactId>
+  <packaging>bundle</packaging>
+  <name>Fabric8 :: Kubernetes Model :: Events</name>
+
+  <properties>
+    <clone-kube>true</clone-kube>
+    <osgi.import>*</osgi.import>
+    <osgi.export>
+      io.fabric8.kubernetes.api.model.events**
+    </osgi.export>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.fabric8</groupId>
+      <artifactId>kubernetes-model-core</artifactId>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <profile>
+      <id>generate</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>openapi-model-generator-maven-plugin</artifactId>
+            <configuration >
+              <settings combine.self="append">
+                <schemas>
+                  <schema>${project.basedir}/../openapi/schemas/kubernetes-1.21.14.json</schema>
+                  <schema>${openapi.schema.kubernetes-latest}</schema>
+                </schemas>
+                <packageMappings combine.self="append">
+                  <io.k8s.api.events>io.fabric8.kubernetes.api.model.events</io.k8s.api.events>
+                </packageMappings>
+                <includeGenerationRegexes>
+                  <includeGenerationRegex>^io\.k8s\.api\.events\..*$</includeGenerationRegex>
+                </includeGenerationRegexes>
+              </settings>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/7.7.0/kubernetes-model-events-7.7.0-sources.jar https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/7.7.0/kubernetes-model-events-7.7.0-javadoc.jar https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/7.7.0/kubernetes-model-events-7.7.0-test-sources.jar https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/7.7.0/kubernetes-model-events-7.7.0-tests.jar" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/7.7.0/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282
+ succeeded in 193ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/fabric8/kubernetes-model-events/7.7.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/fabric8/kubernetes-model-events/7.7.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="kubernetes-model-events-7.7.0-javadoc.jar" title="kubernetes-model-events-7.7.0-javadoc.jar">kubernetes-model-events-7.7.0-javadoc.jar</a>         2026-05-12 10:35    527725      
+<a href="kubernetes-model-events-7.7.0-javadoc.jar.asc" title="kubernetes-model-events-7.7.0-javadoc.jar.asc">kubernetes-model-events-7.7.0-javadoc.jar.asc</a>     2026-05-12 10:35       833      
+<a href="kubernetes-model-events-7.7.0-javadoc.jar.md5" title="kubernetes-model-events-7.7.0-javadoc.jar.md5">kubernetes-model-events-7.7.0-javadoc.jar.md5</a>     2026-05-12 10:35        32      
+<a href="kubernetes-model-events-7.7.0-javadoc.jar.sha1" title="kubernetes-model-events-7.7.0-javadoc.jar.sha1">kubernetes-model-events-7.7.0-javadoc.jar.sha...</a>  2026-05-12 10:35        40      
+<a href="kubernetes-model-events-7.7.0-javadoc.jar.sha256" title="kubernetes-model-events-7.7.0-javadoc.jar.sha256">kubernetes-model-events-7.7.0-javadoc.jar.sha...</a>  2026-05-12 10:35        64      
+<a href="kubernetes-model-events-7.7.0-javadoc.jar.sha512" title="kubernetes-model-events-7.7.0-javadoc.jar.sha512">kubernetes-model-events-7.7.0-javadoc.jar.sha...</a>  2026-05-12 10:35       128      
+<a href="kubernetes-model-events-7.7.0-sources.jar" title="kubernetes-model-events-7.7.0-sources.jar">kubernetes-model-events-7.7.0-sources.jar</a>         2026-05-12 10:35     33173      
+<a href="kubernetes-model-events-7.7.0-sources.jar.asc" title="kubernetes-model-events-7.7.0-sources.jar.asc">kubernetes-model-events-7.7.0-sources.jar.asc</a>     2026-05-12 10:35       833      
+<a href="kubernetes-model-events-7.7.0-sources.jar.md5" title="kubernetes-model-events-7.7.0-sources.jar.md5">kubernetes-model-events-7.7.0-sources.jar.md5</a>     2026-05-12 10:35        32      
+<a href="kubernetes-model-events-7.7.0-sources.jar.sha1" title="kubernetes-model-events-7.7.0-sources.jar.sha1">kubernetes-model-events-7.7.0-sources.jar.sha...</a>  2026-05-12 10:35        40      
+<a href="kubernetes-model-events-7.7.0-sources.jar.sha256" title="kubernetes-model-events-7.7.0-sources.jar.sha256">kubernetes-model-events-7.7.0-sources.jar.sha...</a>  2026-05-12 10:35        64      
+<a href="kubernetes-model-events-7.7.0-sources.jar.sha512" title="kubernetes-model-events-7.7.0-sources.jar.sha512">kubernetes-model-events-7.7.0-sources.jar.sha...</a>  2026-05-12 10:35       128      
+<a href="kubernetes-model-events-7.7.0.jar" title="kubernetes-model-events-7.7.0.jar">kubernetes-model-events-7.7.0.jar</a>                 2026-05-12 10:35     80349      
+<a href="kubernetes-model-events-7.7.0.jar.asc" title="kubernetes-model-events-7.7.0.jar.asc">kubernetes-model-events-7.7.0.jar.asc</a>             2026-05-12 10:35       833      
+<a href="kubernetes-model-events-7.7.0.jar.md5" title="kubernetes-model-events-7.7.0.jar.md5">kubernetes-model-events-7.7.0.jar.md5</a>             2026-05-12 10:35        32      
+<a href="kubernetes-model-events-7.7.0.jar.sha1" title="kubernetes-model-events-7.7.0.jar.sha1">kubernetes-model-events-7.7.0.jar.sha1</a>            2026-05-12 10:35        40      
+<a href="kubernetes-model-events-7.7.0.jar.sha256" title="kubernetes-model-events-7.7.0.jar.sha256">kubernetes-model-events-7.7.0.jar.sha256</a>          2026-05-12 10:35        64      
+<a href="kubernetes-model-events-7.7.0.jar.sha512" title="kubernetes-model-events-7.7.0.jar.sha512">kubernetes-model-events-7.7.0.jar.sha512</a>          2026-05-12 10:35       128      
+<a href="kubernetes-model-events-7.7.0.pom" title="kubernetes-model-events-7.7.0.pom">kubernetes-model-events-7.7.0.pom</a>                 2026-05-12 10:35      2546      
+<a href="kubernetes-model-events-7.7.0.pom.asc" title="kubernetes-model-events-7.7.0.pom.asc">kubernetes-model-events-7.7.0.pom.asc</a>             2026-05-12 10:35       833      
+<a href="kubernetes-model-events-7.7.0.pom.md5" title="kubernetes-model-events-7.7.0.pom.md5">kubernetes-model-events-7.7.0.pom.md5</a>             2026-05-12 10:35        32      
+<a href="kubernetes-model-events-7.7.0.pom.sha1" title="kubernetes-model-events-7.7.0.pom.sha1">kubernetes-model-events-7.7.0.pom.sha1</a>            2026-05-12 10:35        40      
+<a href="kubernetes-model-events-7.7.0.pom.sha256" title="kubernetes-model-events-7.7.0.pom.sha256">kubernetes-model-events-7.7.0.pom.sha256</a>          2026-05-12 10:35        64      
+<a href="kubernetes-model-events-7.7.0.pom.sha512" title="kubernetes-model-events-7.7.0.pom.sha512">kubernetes-model-events-7.7.0.pom.sha512</a>          2026-05-12 10:35       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 603ms:
+200 https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/7.7.0/kubernetes-model-events-7.7.0-javadoc.jar
+HTTP/2 404 
+date: Sat, 06 Jun 2026 02:50:15 GMT
+content-type: text/html
+cf-ray: a0741bc83d28862a-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/io/fabric8/kubernetes-model-events/7.7.0/kubernetes-model-events-7.7.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+404 https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/7.7.0/kubernetes-model-events-7.7.0-test-sources.jar
+HTTP/2 404 
+date: Sat, 06 Jun 2026 02:50:16 GMT
+content-type: text/html
+cf-ray: a0741bca1f38862a-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/io/fabric8/kubernetes-model-events/7.7.0/kubernetes-model-events-7.7.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+404 https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/7.7.0/kubernetes-model-events-7.7.0-tests.jar
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-generator/7.7.0/kubernetes-model-generator-7.7.0.pom | sed -n '1,260p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2015 Red Hat, Inc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.fabric8</groupId>
+    <artifactId>kubernetes-client-project</artifactId>
+    <version>7.7.0</version>
+  </parent>
+
+  <artifactId>kubernetes-model-generator</artifactId>
+  <packaging>pom</packaging>
+  <name>Fabric8 :: Kubernetes Model Parent</name>
+
+  <modules>
+    <module>openapi/maven-plugin</module>
+    <module>openapi/validator</module>
+    <module>kubernetes-model-common</module>
+    <module>kubernetes-model-core</module>
+    <module>kubernetes-model-gatewayapi</module>
+    <module>kubernetes-model-rbac</module>
+    <module>kubernetes-model-admissionregistration</module>
+    <module>kubernetes-model-apiextensions</module>
+    <module>kubernetes-model-apps</module>
+    <module>kubernetes-model-autoscaling</module>
+    <module>kubernetes-model-batch</module>
+    <module>kubernetes-model-certificates</module>
+    <module>kubernetes-model-coordination</module>
+    <module>kubernetes-model-discovery</module>
+    <module>kubernetes-model-events</module>
+    <module>kubernetes-model-extensions</module>
+    <module>kubernetes-model-flowcontrol</module>
+    <module>kubernetes-model-networking</module>
+    <module>kubernetes-model-node</module>
+    <module>kubernetes-model-metrics</module>
+    <module>kubernetes-model-policy</module>
+    <module>kubernetes-model-resource</module>
+    <module>kubernetes-model-scheduling</module>
+    <module>kubernetes-model-storageclass</module>
+    <module>kubernetes-model-kustomize</module>
+    <module>openshift-model</module>
+    <module>openshift-model-autoscaling</module>
+    <module>openshift-model-config</module>
+    <module>openshift-model-hive</module>
+    <!-- DEPRECATED: This module is deprecated and will be removed in a future release -->
+    <module>openshift-model-installer</module>
+    <module>openshift-model-miscellaneous</module>
+    <module>openshift-model-insights</module>
+    <module>openshift-model-operator</module>
+    <module>openshift-model-operatorhub</module>
+    <module>openshift-model-machine</module>
+    <module>openshift-model-monitoring</module>
+    <module>openshift-model-console</module>
+    <module>openshift-model-machineconfiguration</module>
+    <module>openshift-model-tuned</module>
+    <module>openshift-model-whereabouts</module>
+    <module>openshift-model-storageversionmigrator</module>
+  </modules>
+
+  <properties>
+    <!-- should we include the integration test in this build? -->
+    <itest>true</itest>
+    <skipTests>false</skipTests>
+    <testExclusionPattern>**/*KubernetesTest.java</testExclusionPattern>
+    <openapi.schema.kubernetes-latest>${project.parent.basedir}/openapi/schemas/kubernetes-1.36.0.json</openapi.schema.kubernetes-latest>
+    <openapi.schema.openshift-generated>${project.parent.basedir}/openapi/schemas/openshift-generated.json</openapi.schema.openshift-generated>
+    <openapi.schema.dev.knative>${project.basedir}/../../../kubernetes-model-generator/openapi/schemas/dev.knative.json</openapi.schema.dev.knative>
+    <openapi.schema.dev.tekton>${project.basedir}/../../../kubernetes-model-generator/openapi/schemas/dev.tekton.json</openapi.schema.dev.tekton>
+    <openapi.schema.io.cert-manager>${project.basedir}/../../../kubernetes-model-generator/openapi/schemas/io.cert-manager.json</openapi.schema.io.cert-manager>
+    <openapi.schema.io.istio>${project.basedir}/../../../kubernetes-model-generator/openapi/schemas/io.istio.json</openapi.schema.io.istio>
+    <openapi.schema.io.k8s.autoscaling>${project.basedir}/../../../kubernetes-model-generator/openapi/schemas/io.k8s.autoscaling.json</openapi.schema.io.k8s.autoscaling>
+    <openapi.schema.io.k8s.storage.snapshot>${project.basedir}/../../../kubernetes-model-generator/openapi/schemas/io.k8s.storage.snapshot.json</openapi.schema.io.k8s.storage.snapshot>
+    <openapi.schema.io.open-cluster-management>${project.basedir}/../../../kubernetes-model-generator/openapi/schemas/io.open-cluster-management.json</openapi.schema.io.open-cluster-management>
+    <openapi.schema.org.chaos-mesh>${project.basedir}/../../../kubernetes-model-generator/openapi/schemas/org.chaos-mesh.json</openapi.schema.org.chaos-mesh>
+    <openapi.schema.org.ovn>${project.basedir}/../../../kubernetes-model-generator/openapi/schemas/org.ovn.json</openapi.schema.org.ovn>
+    <openapi.schema.sh.volcano>${project.basedir}/../../../kubernetes-model-generator/openapi/schemas/sh.volcano.json</openapi.schema.sh.volcano>
+    <openapi.openshift-version>4.20</openapi.openshift-version>
+    <openapi.storageversionmigrator-revision>5c8923c5ff96ceb4435f66b986b5aec2dd0cbc22</openapi.storageversionmigrator-revision>
+    <openapi.whereabouts-revision>5bb9e1542cf987458db181bedee7c051a1538dc1</openapi.whereabouts-revision>
+    <osgi.require-capability>
+      osgi.extender;
+      filter:="(osgi.extender=osgi.serviceloader.registrar)"
+    </osgi.require-capability>
+    <osgi.provide-capability>
+      osgi.serviceloader;
+      osgi.serviceloader=io.fabric8.kubernetes.api.model.KubernetesResource
+    </osgi.provide-capability>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
+
+    <!-- CompileOnly (provided) dependencies -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.sundr</groupId>
+      <artifactId>builder-annotations</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.sundr</groupId>
+      <artifactId>transform-annotations</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.sundr</groupId>
+      <artifactId>sundr-codegen-velocity-nodeps</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.fabric8</groupId>
+      <artifactId>zjsonpatch</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>io.fabric8</groupId>
+          <artifactId>openapi-model-generator-maven-plugin</artifactId>
+          <version>${project.version}</version>
+          <configuration>
+            <settings>
+              <outputDirectory>${project.basedir}</outputDirectory>
+              <packageName>io.fabric8.kubernetes.api.model</packageName>
+              <builderPackage>io.fabric8.kubernetes.api.builder</builderPackage>
+              <addBuildableReferences>true</addBuildableReferences>
+              <generateJavadoc>true</generateJavadoc>
+              <packageMappings>
+                <com.coreos.monitoring>io.fabric8.openshift.api.model.monitoring</com.coreos.monitoring>
+                <com.github.openshift.custom-resource-status>io.fabric8.openshift.api.model.customresourcestatus</com.github.openshift.custom-resource-status>
+                <com.github.tektoncd.pipeline>io.fabric8.tekton.pipeline</com.github.tektoncd.pipeline>
+                <dev.knative>io.fabric8.knative</dev.knative>
+                <dev.tekton>io.fabric8.tekton</dev.tekton>
+                <io.cert-manager>io.fabric8.certmanager.api.model</io.cert-manager>
+                <io.istio>io.fabric8.istio.api</io.istio>
+                <io.k8s.api.core.v1>io.fabric8.kubernetes.api.model</io.k8s.api.core.v1>
+                <io.k8s.apimachinery.pkg>io.fabric8.kubernetes.api.model</io.k8s.apimachinery.pkg>
+                <io.k8s.apimachinery.pkg.apis.meta.v1>io.fabric8.kubernetes.api.model</io.k8s.apimachinery.pkg.apis.meta.v1>
+                <io.k8s.apimachinery.pkg.runtime.schema>io.fabric8.kubernetes.api.model</io.k8s.apimachinery.pkg.runtime.schema>
+                <io.k8s.api>io.fabric8.kubernetes.api.model</io.k8s.api>
+                <io.k8s.api.apps.v1>io.fabric8.kubernetes.api.model.apps</io.k8s.api.apps.v1>
+                <io.k8s.api.rbac.v1>io.fabric8.kubernetes.api.model.rbac</io.k8s.api.rbac.v1>
+                <io.k8s.autoscaling>io.fabric8.autoscaling.api.model</io.k8s.autoscaling>
+                <io.k8s.client-go.tools.clientcmd.api.v1>io.fabric8.kubernetes.api.model</io.k8s.client-go.tools.clientcmd.api.v1>
+                <io.k8s.kube-aggregator.pkg.apis.apiregistration.v1>io.fabric8.kubernetes.api.model</io.k8s.kube-aggregator.pkg.apis.apiregistration.v1>
+                <io.k8s.networking.gateway>io.fabric8.kubernetes.api.model.gatewayapi</io.k8s.networking.gateway>
+                <io.k8s.sigs.cluster-api.api>io.fabric8.kubernetes.api.model.clusterapi</io.k8s.sigs.cluster-api.api>
+                <io.k8s.storage.snapshot.v1>io.fabric8.volumesnapshot.api.model</io.k8s.storage.snapshot.v1>
+                <io.open-cluster-management>io.fabric8.openclustermanagement.api.model</io.open-cluster-management>
+                <io.openshift>io.fabric8.openshift.api.model</io.openshift>
+                <io.openshift.apiserver>io.fabric8.openshift.api.model.miscellaneous.apiserver</io.openshift.apiserver>
+                <io.openshift.apps.v1>io.fabric8.openshift.api.model</io.openshift.apps.v1>
+                <io.openshift.authorization.v1>io.fabric8.openshift.api.model</io.openshift.authorization.v1>
+                <io.openshift.build.v1>io.fabric8.openshift.api.model</io.openshift.build.v1>
+                <io.openshift.cloudcredential>io.fabric8.openshift.api.model.miscellaneous.cloudcredential</io.openshift.cloudcredential>
+                <io.openshift.helm>io.fabric8.openshift.api.model.miscellaneous.helm</io.openshift.helm>
+                <io.openshift.image.v1>io.fabric8.openshift.api.model</io.openshift.image.v1>
+                <io.openshift.install>io.fabric8.openshift.api.model.installer</io.openshift.install>
+                <io.openshift.network>io.fabric8.openshift.api.model.miscellaneous.network</io.openshift.network>
+                <io.openshift.oauth.v1>io.fabric8.openshift.api.model</io.openshift.oauth.v1>
+                <io.openshift.project.v1>io.fabric8.openshift.api.model</io.openshift.project.v1>
+                <io.openshift.quota.v1>io.fabric8.openshift.api.model</io.openshift.quota.v1>
+                <io.openshift.route.v1>io.fabric8.openshift.api.model</io.openshift.route.v1>
+                <io.openshift.security.v1>io.fabric8.openshift.api.model</io.openshift.security.v1>
+                <io.openshift.template.v1>io.fabric8.openshift.api.model</io.openshift.template.v1>
+                <io.openshift.user.v1>io.fabric8.openshift.api.model</io.openshift.user.v1>
+                <io.x-k8s.cluster>io.fabric8.kubernetes.api.model.clusterapi</io.x-k8s.cluster>
+                <org.chaos-mesh>io.fabric8.chaosmesh</org.chaos-mesh>
+                <org.ovn.k8s>io.fabric8.kubernetes.api.model.ovn</org.ovn.k8s>
+                <sh.volcano>io.fabric8.volcano.api.model</sh.volcano>
+              </packageMappings>
+            </settings>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>generate-model</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <executions>
+            <execution>
+              <phase>generate-sources</phase>
+              <goals>
+                <goal>add-source</goal>
+              </goals>
+              <configuration>
+                <sources>
+                  <source>${generate.targetDirectory}</source>
+                </sources>
+              </configuration>
+            </execution>
+            <execution>
+              <id>attach-artifacts</id>
+              <phase>package</phase>
+              <goals>
+                <goal>attach-artifact</goal>
+              </goals>
+              <configuration>
+                <skipAttach>true</skipAttach>
+                <artifacts>
+                  <artifact>
+                    <file>${project.build.outputDirectory}/schema/kube-schema.json</file>
+                    <type>json</type>
+                    <classifier>schema</classifier>
+                  </artifact>
+                </artifacts>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/fabric8io/kubernetes-client/tree/v7.7.0 https://github.com/fabric8io/kubernetes-client/tree/v7.7.0/kubernetes-model-generator/kubernetes-model-events/src/main/java/io/fabric8/kubernetes/api/model/events https://github.com/fabric8io/kubernetes-client/tree/v7.7.0/kubernetes-model-generator/kubernetes-model-events/src/test/java https://github.com/fabric8io/kubernetes-client/tree/v7.7.0/kubernetes-model-generator/kubernetes-model-events/src/test" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/fabric8io/kubernetes-client/contents/kubernetes-model-generator/kubernetes-model-events?ref=v7.7.0' | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282
+ succeeded in 165ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "kubernetes-model-generator/kubernetes-model-events/pom.xml",
+    "sha": "c449782efb5168823084651244531f1d3e3eb9b4",
+    "size": 2546,
+    "url": "https://api.github.com/repos/fabric8io/kubernetes-client/contents/kubernetes-model-generator/kubernetes-model-events/pom.xml?ref=v7.7.0",
+    "html_url": "https://github.com/fabric8io/kubernetes-client/blob/v7.7.0/kubernetes-model-generator/kubernetes-model-events/pom.xml",
+    "git_url": "https://api.github.com/repos/fabric8io/kubernetes-client/git/blobs/c449782efb5168823084651244531f1d3e3eb9b4",
+    "download_url": "https://raw.githubusercontent.com/fabric8io/kubernetes-client/v7.7.0/kubernetes-model-generator/kubernetes-model-events/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/fabric8io/kubernetes-client/contents/kubernetes-model-generator/kubernetes-model-events/pom.xml?ref=v7.7.0",
+      "git": "https://api.github.com/repos/fabric8io/kubernetes-client/git/blobs/c449782efb5168823084651244531f1d3e3eb9b4",
+      "html": "https://github.com/fabric8io/kubernetes-client/blob/v7.7.0/kubernetes-model-generator/kubernetes-model-events/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "kubernetes-model-generator/kubernetes-model-events/src",
+    "sha": "5034f757c07c8fa58a4f26c512474bae9ac9a6e3",
+    "size": 0,
+    "url": "https://api.github.com/repos/fabric8io/kubernetes-client/contents/kubernetes-model-generator/kubernetes-model-events/src?ref=v7.7.0",
+    "html_url": "https://github.com/fabric8io/kubernetes-client/tree/v7.7.0/kubernetes-model-generator/kubernetes-model-events/src",
+    "git_url": "https://api.github.com/repos/fabric8io/kubernetes-client/git/trees/5034f757c07c8fa58a4f26c512474bae9ac9a6e3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/fabric8io/kubernetes-client/contents/kubernetes-model-generator/kubernetes-model-events/src?ref=v7.7.0",
+      "git": "https://api.github.com/repos/fabric8io/kubernetes-client/git/trees/5034f757c07c8fa58a4f26c512474bae9ac9a6e3",
+      "html": "https://github.com/fabric8io/kubernetes-client/tree/v7.7.0/kubernetes-model-generator/kubernetes-model-events/src"
+    }
+  }
+]
+
+ succeeded in 1705ms:
+200 https://github.com/fabric8io/kubernetes-client/tree/v7.7.0
+HTTP/2 404 
+date: Sat, 06 Jun 2026 02:50:23 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=yqw%2FjL0Kwy4gWvoh63342w97V0ndLtOEu%2FtbCZkErAT79lAd7bwPogW0lpF8dPW%2FD7g6JANIZN69bZtJ6z0P%2BdBMtFlWtwp3%2FPp97IfhMopIYn%2BJVFAptfzEHbnGPU9MECU0WgBn5zl0GYLOt0leW6D6ZA9aoLAepvVHQVr6fQQWLALK0otB%2FZtFTO4ifgrho8UZyB%2BtcaR88JZMYS%2BXpLidKMw53rlMtUFHergXV24gfgiMp4JqauthionU26%2BkeNVrI6vYReRGymQZ1WjaNw%3D%3D--DYVe6NGDd%2BDJHKD1--nVkKqQehtJkV5FfR0CSzBw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1100261029.1780714223; expires=Sun, 06 Jun 2027 02:50:23 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 06 Jun 2027 02:50:23 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 61FD:14E542:36BF000:2BA2AB4:6A238AEE
+
+404 https://github.com/fabric8io/kubernetes-client/tree/v7.7.0/kubernetes-model-generator/kubernetes-model-events/src/main/java/io/fabric8/kubernetes/api/model/events
+HTTP/2 404 
+date: Sat, 06 Jun 2026 02:50:23 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=90NTk4sh1aUSkw1kmZRdG9Mvu5cZfZlAa8odcyLbDwmJIg%2BT%2FjwKDMe3MqZNRSRqqD0TarGMlf4jWYp07bwoxVQ%2FBIlEDDKFV9AmfflR16XCOu1%2B35Nu37Q4PNL%2FsR1jK2A3PfeJo47tZY6y%2BM5HVBnyYw3TEve3pA%2BD%2FLsH9wAseMZoDOXdNvKZH0iRFkXx8ffL6BlMiVix%2BkpLXe066tfgZg%2B85iyixLMYvWPKrVMNVTlqPGZTb3UITFPJSM%2B87FQqy0UcJxZ2JzF5uqXwBg%3D%3D--fpYsIJZeUasp9K9u--QjF8rMwvWNvpKM7oeJiRTQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1226989178.1780714223; expires=Sun, 06 Jun 2027 02:50:23 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 06 Jun 2027 02:50:23 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 61FD:14E542:36BF20C:2BA2C5E:6A238AEF
+
+404 https://github.com/fabric8io/kubernetes-client/tree/v7.7.0/kubernetes-model-generator/kubernetes-model-events/src/test/java
+HTTP/2 404 
+date: Sat, 06 Jun 2026 02:50:24 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=mkgUk87y4IqXw%2BWd%2Fv5yO5CUmSdG%2FxNLjj4S7ablrPhp7pedPITvuf%2BcKy5y%2BvNxfUwPfJ7VygjmPPYugem6JN%2BpxL3hZMHAks2jHADq7QPvOiNiVsWQkXTwg%2Fon57M%2BMWPGgO3VKUTtcR6wqys8exzIFdeimYvowDfGQXwNykKSxY4DhrAmnN8egFeEkEEp7R4EEn%2FV0H88%2B3um7yVcpdl75yB9NFhy9UUb4Agjm59XI982dPJBxRhTPC0rV2d%2BWMzYwsmPBwz%2FifFHV8%2BDIQ%3D%3D--4g%2F4o3mOLRLhL5eH--ZcuIvr2fMySdtXsrmvN%2F%2Fw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1146416086.1780714223; expires=Sun, 06 Jun 2027 02:50:23 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 06 Jun 2027 02:50:23 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 61FD:14E542:36BF3DE:2BA2DED:6A238AEF
+
+404 https://github.com/fabric8io/kubernetes-client/tree/v7.7.0/kubernetes-model-generator/kubernetes-model-events/src/test
+
+codex
+Maven Central publishes the 7.7.0 sources and javadoc jars, but no test-sources or tests artifact. I’m checking the tagged upstream tree for a versioned test location; if the module has no committed tests, the test URL should stay `N/A` rather than point at a misleading directory.
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/fabric8io/kubernetes-client/contents/kubernetes-model-generator/kubernetes-model-events/src?ref=v7.7.0' | sed -n '1,260p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/fabric8io/kubernetes-client/git/trees/v7.7.0?recursive=1' | rg 'kubernetes-model-events|Event|events' | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282
+exec
+/usr/bin/bash -lc "for url in \\
+'https://github.com/fabric8io/kubernetes-client/tree/v7.7.0/kubernetes-model-generator/kubernetes-model-events/src/test/java' \\
+'https://github.com/fabric8io/kubernetes-client/tree/v7.7.0/kubernetes-model-generator/kubernetes-model-events/src/test' \\
+'https://github.com/fabric8io/kubernetes-client/tree/v7.7.0/kubernetes-tests/src/test/java'; do printf '%s ' \""'$url"; curl -I -L -s -o /dev/null -w '"'%{http_code}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282
+ succeeded in 146ms:
+[
+  {
+    "name": "generated",
+    "path": "kubernetes-model-generator/kubernetes-model-events/src/generated",
+    "sha": "f526d5cfa750ca61abc83f39290090c1327c0aea",
+    "size": 0,
+    "url": "https://api.github.com/repos/fabric8io/kubernetes-client/contents/kubernetes-model-generator/kubernetes-model-events/src/generated?ref=v7.7.0",
+    "html_url": "https://github.com/fabric8io/kubernetes-client/tree/v7.7.0/kubernetes-model-generator/kubernetes-model-events/src/generated",
+    "git_url": "https://api.github.com/repos/fabric8io/kubernetes-client/git/trees/f526d5cfa750ca61abc83f39290090c1327c0aea",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/fabric8io/kubernetes-client/contents/kubernetes-model-generator/kubernetes-model-events/src/generated?ref=v7.7.0",
+      "git": "https://api.github.com/repos/fabric8io/kubernetes-client/git/trees/f526d5cfa750ca61abc83f39290090c1327c0aea",
+      "html": "https://github.com/fabric8io/kubernetes-client/tree/v7.7.0/kubernetes-model-generator/kubernetes-model-events/src/generated"
+    }
+  }
+]
+
+ succeeded in 544ms:
+200
+
+ succeeded in 1022ms:
+      "path": "extensions/chaosmesh/model/src/generated/java/io/fabric8/chaosmesh/v1alpha1/RecordEvent.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/duck/v1/AppliedEventPoliciesStatus.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/duck/v1/AppliedEventPolicyRef.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/duck/v1/CloudEventAttributes.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/duck/v1/CloudEventOverrides.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/duck/v1beta1/CloudEventOverrides.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1alpha1/EventPolicy.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1alpha1/EventPolicyFromReference.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1alpha1/EventPolicyList.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1alpha1/EventPolicySelector.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1alpha1/EventPolicySpec.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1alpha1/EventPolicySpecFrom.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1alpha1/EventPolicySpecTo.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1alpha1/EventPolicyStatus.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1alpha1/EventPolicyToReference.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1alpha1/EventTransform.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1alpha1/EventTransformList.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1alpha1/EventTransformSpec.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1alpha1/EventTransformStatus.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1alpha1/EventTransformations.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1alpha1/JsonataEventTransformationSpec.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1alpha1/JsonataEventTransformationStatus.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1beta1/EventType.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1beta1/EventTypeList.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1beta1/EventTypeSpec.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1beta1/EventTypeStatus.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1beta2/EventType.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1beta2/EventTypeList.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1beta2/EventTypeSpec.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1beta2/EventTypeStatus.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1beta3/EventAttributeDefinition.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1beta3/EventType.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1beta3/EventTypeList.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1beta3/EventTypeSpec.java",
+      "path": "extensions/knative/model/src/generated/java/io/fabric8/knative/eventing/v1beta3/EventTypeStatus.java",
+      "path": "extensions/knative/tests/src/test/java/io/fabric8/knative/test/EventsContribResourcesTest.java",
+      "path": "extensions/open-cluster-management/model/src/generated/java/io/fabric8/openclustermanagement/api/model/policy/v1beta1/ClusterEvent.java",
+      "path": "extensions/tekton/model/src/generated/java/io/fabric8/tekton/triggers/v1alpha1/EventListener.java",
+      "path": "extensions/tekton/model/src/generated/java/io/fabric8/tekton/triggers/v1alpha1/EventListenerConfig.java",
+      "path": "extensions/tekton/model/src/generated/java/io/fabric8/tekton/triggers/v1alpha1/EventListenerList.java",
+      "path": "extensions/tekton/model/src/generated/java/io/fabric8/tekton/triggers/v1alpha1/EventListenerSpec.java",
+      "path": "extensions/tekton/model/src/generated/java/io/fabric8/tekton/triggers/v1alpha1/EventListenerStatus.java",
+      "path": "extensions/tekton/model/src/generated/java/io/fabric8/tekton/triggers/v1alpha1/EventListenerTrigger.java",
+      "path": "extensions/tekton/model/src/generated/java/io/fabric8/tekton/triggers/v1beta1/EventListener.java",
+      "path": "extensions/tekton/model/src/generated/java/io/fabric8/tekton/triggers/v1beta1/EventListenerConfig.java",
+      "path": "extensions/tekton/model/src/generated/java/io/fabric8/tekton/triggers/v1beta1/EventListenerList.java",
+      "path": "extensions/tekton/model/src/generated/java/io/fabric8/tekton/triggers/v1beta1/EventListenerSpec.java",
+      "path": "extensions/tekton/model/src/generated/java/io/fabric8/tekton/triggers/v1beta1/EventListenerStatus.java",
+      "path": "extensions/tekton/model/src/generated/java/io/fabric8/tekton/triggers/v1beta1/EventListenerTrigger.java",
+      "path": "extensions/tekton/model/src/generated/java/io/fabric8/tekton/triggers/v1beta1/EventListenerTriggerGroup.java",
+      "path": "extensions/tekton/model/src/generated/java/io/fabric8/tekton/triggers/v1beta1/EventListenerTriggerSelector.java",
+      "path": "extensions/tekton/model/src/generated/java/io/fabric8/tekton/v1beta1/CloudEventDelivery.java",
+      "path": "extensions/tekton/model/src/generated/java/io/fabric8/tekton/v1beta1/CloudEventDeliveryState.java",
+      "path": "extensions/tekton/tests/src/test/java/io/fabric8/tekton/triggers/v1alpha1/EventListenerTest.java",
+      "path": "extensions/tekton/tests/src/test/java/io/fabric8/tekton/triggers/v1beta1/EventListenerTest.java",
+      "path": "junit/kubernetes-server-mock/src/main/java/io/fabric8/kubernetes/client/server/mock/WatchEventsListener.java",
+      "path": "junit/mockwebserver/src/main/java/io/fabric8/mockwebserver/dsl/EventDoneable.java",
+      "path": "junit/mockwebserver/src/main/java/io/fabric8/mockwebserver/dsl/Eventable.java",
+      "path": "kubernetes-client-api/src/main/java/io/fabric8/kubernetes/client/dsl/EventingAPIGroupDSL.java",
+      "path": "kubernetes-client-api/src/main/java/io/fabric8/kubernetes/client/dsl/V1EventingAPIGroupDSL.java",
+      "path": "kubernetes-client-api/src/main/java/io/fabric8/kubernetes/client/dsl/V1beta1EventingAPIGroupDSL.java",
+      "path": "kubernetes-client-api/src/main/java/io/fabric8/kubernetes/client/informers/ResourceEventHandler.java",
+      "path": "kubernetes-client-api/src/main/java/io/fabric8/kubernetes/client/informers/SharedInformerEventListener.java",
+      "path": "kubernetes-client/src/main/java/io/fabric8/kubernetes/client/impl/EventingAPIGroupClient.java",
+      "path": "kubernetes-client/src/main/java/io/fabric8/kubernetes/client/impl/V1EventingAPIGroupClient.java",
+      "path": "kubernetes-client/src/main/java/io/fabric8/kubernetes/client/impl/V1beta1EventingAPIGroupClient.java",
+      "path": "kubernetes-examples/src/main/java/io/fabric8/kubernetes/examples/kubectl/equivalents/EventsGetEquivalent.java",
+      "path": "kubernetes-examples/src/main/java/io/fabric8/kubernetes/examples/kubectl/equivalents/EventsGetForJobEquivalent.java",
+      "path": "kubernetes-itests/src/test/java/io/fabric8/kubernetes/EventsIT.java",
+      "path": "kubernetes-model-generator/kubernetes-model-core/src/generated/java/io/fabric8/kubernetes/api/model/Event.java",
+      "path": "kubernetes-model-generator/kubernetes-model-core/src/generated/java/io/fabric8/kubernetes/api/model/EventList.java",
+      "path": "kubernetes-model-generator/kubernetes-model-core/src/generated/java/io/fabric8/kubernetes/api/model/EventSeries.java",
+      "path": "kubernetes-model-generator/kubernetes-model-core/src/generated/java/io/fabric8/kubernetes/api/model/EventSource.java",
+      "path": "kubernetes-model-generator/kubernetes-model-core/src/generated/java/io/fabric8/kubernetes/api/model/WatchEvent.java",
+      "path": "kubernetes-model-generator/kubernetes-model-core/src/test/java/io/fabric8/kubernetes/api/model/EventTest.java",
+      "path": "kubernetes-model-generator/kubernetes-model-core/src/test/java/io/fabric8/kubernetes/api/model/WatchEventTest.java",
+      "path": "kubernetes-model-generator/kubernetes-model-core/src/test/resources/watch-events.json",
+      "path": "kubernetes-model-generator/kubernetes-model-events",
+      "path": "kubernetes-model-generator/kubernetes-model-events/pom.xml",
+      "path": "kubernetes-model-generator/kubernetes-model-events/src",
+      "path": "kubernetes-model-generator/kubernetes-model-events/src/generated",
+      "path": "kubernetes-model-generator/kubernetes-model-events/src/generated/java",
+      "path": "kubernetes-model-generator/kubernetes-model-events/src/generated/java/io",
+      "path": "kubernetes-model-generator/kubernetes-model-events/src/generated/java/io/fabric8",
+      "path": "kubernetes-model-generator/kubernetes-model-events/src/generated/java/io/fabric8/kubernetes",
+      "path": "kubernetes-model-generator/kubernetes-model-events/src/generated/java/io/fabric8/kubernetes/api",
+      "path": "kubernetes-model-generator/kubernetes-model-events/src/generated/java/io/fabric8/kubernetes/api/model",
+      "path": "kubernetes-model-generator/kubernetes-model-events/src/generated/java/io/fabric8/kubernetes/api/model/events",
+      "path": "kubernetes-model-generator/kubernetes-model-events/src/generated/java/io/fabric8/kubernetes/api/model/events/v1",
+      "path": "kubernetes-model-generator/kubernetes-model-events/src/generated/java/io/fabric8/kubernetes/api/model/events/v1/Event.java",
+      "path": "kubernetes-model-generator/kubernetes-model-events/src/generated/java/io/fabric8/kubernetes/api/model/events/v1/EventList.java",
+      "path": "kubernetes-model-generator/kubernetes-model-events/src/generated/java/io/fabric8/kubernetes/api/model/events/v1/EventSeries.java",
+      "path": "kubernetes-model-generator/kubernetes-model-events/src/generated/java/io/fabric8/kubernetes/api/model/events/v1beta1",
+      "path": "kubernetes-model-generator/kubernetes-model-events/src/generated/java/io/fabric8/kubernetes/api/model/events/v1beta1/Event.java",
+      "path": "kubernetes-model-generator/kubernetes-model-events/src/generated/java/io/fabric8/kubernetes/api/model/events/v1beta1/EventList.java",
+      "path": "kubernetes-model-generator/kubernetes-model-events/src/generated/java/io/fabric8/kubernetes/api/model/events/v1beta1/EventSeries.java",
+      "path": "kubernetes-model-generator/openapi/maven-plugin/src/it/kubernetes-model-core/expected/WatchEvent.expected",
+      "path": "kubernetes-model-generator/openshift-model-miscellaneous/src/generated/java/io/fabric8/openshift/api/model/miscellaneous/metal3/v1alpha1/BMCEventSubscription.java",
+      "path": "kubernetes-model-generator/openshift-model-miscellaneous/src/generated/java/io/fabric8/openshift/api/model/miscellaneous/metal3/v1alpha1/BMCEventSubscriptionList.java",
+      "path": "kubernetes-model-generator/openshift-model-miscellaneous/src/generated/java/io/fabric8/openshift/api/model/miscellaneous/metal3/v1alpha1/BMCEventSubscriptionSpec.java",
+      "path": "kubernetes-model-generator/openshift-model-miscellaneous/src/generated/java/io/fabric8/openshift/api/model/miscellaneous/metal3/v1alpha1/BMCEventSubscriptionStatus.java",
+      "path": "kubernetes-model-generator/openshift-model/src/generated/java/io/fabric8/openshift/api/model/GenericWebHookEvent.java",
+      "path": "kubernetes-model-generator/openshift-model/src/generated/java/io/fabric8/openshift/api/model/NamedTagEventList.java",
+      "path": "kubernetes-model-generator/openshift-model/src/generated/java/io/fabric8/openshift/api/model/TagEvent.java",
+      "path": "kubernetes-model-generator/openshift-model/src/generated/java/io/fabric8/openshift/api/model/TagEventCondition.java",
+      "path": "kubernetes-tests/src/test/java/io/fabric8/kubernetes/client/mock/EventTest.java",
+      "path": "kubernetes-tests/src/test/java/io/fabric8/kubernetes/client/mock/V1EventsTest.java",
+      "path": "kubernetes-tests/src/test/java/io/fabric8/kubernetes/client/mock/V1beta1EventsTest.java",
+
+codex
+The tagged tree has no `src/test` under the model-events module, but it does include versioned client mock tests for Events resources under `kubernetes-tests`. I’m comparing nearby Fabric8 entries to keep the chosen URL style consistent before writing the JSON.
+exec
+/usr/bin/bash -lc "rg -n 'V1EventsTest|kubernetes-tests/src/test/java/io/fabric8/kubernetes/client/mock|test-code-url.*fabric8io/kubernetes-client' metadata/io.fabric8 -g 'index.json'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282
+ succeeded in 0ms:
+metadata/io.fabric8/kubernetes-model-rbac/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-rbac/src/test",
+metadata/io.fabric8/kubernetes-model-gatewayapi/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-gatewayapi/src/test",
+metadata/io.fabric8/kubernetes-model-coordination/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-coordination/src/test",
+metadata/io.fabric8/kubernetes-model-certificates/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-certificates/src/test",
+metadata/io.fabric8/kubernetes-model-resource/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-resource/src/test",
+metadata/io.fabric8/kubernetes-model-discovery/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-discovery/src/test",
+metadata/io.fabric8/kubernetes-model-extensions/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-itests/src/test/java",
+metadata/io.fabric8/kubernetes-model-batch/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-batch/src/test",
+metadata/io.fabric8/kubernetes-model-networking/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-networking/src/test",
+metadata/io.fabric8/kubernetes-model-policy/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-policy/src/test",
+metadata/io.fabric8/kubernetes-model-node/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/blob/v$version$/kubernetes-tests/src/test/java/io/fabric8/kubernetes/client/mock/RuntimeClassTest.java",
+metadata/io.fabric8/kubernetes-model-apps/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-apps/src/test",
+metadata/io.fabric8/kubernetes-model-core/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-core/src/test",
+metadata/io.fabric8/kubernetes-model-admissionregistration/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-admissionregistration/src/test",
+metadata/io.fabric8/kubernetes-model-autoscaling/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-autoscaling/src/test",
+metadata/io.fabric8/kubernetes-model-apiextensions/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-apiextensions/src/test",
+metadata/io.fabric8/kubernetes-model-common/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-common/src/test",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-client-project/7.7.0/kubernetes-client-project-7.7.0.pom | rg -n '<url>|<scm>|<connection>|<developerConnection>|<tag>' -C 2" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282
+ succeeded in 0ms:
+29-  <name>Fabric8 :: Kubernetes :: Project</name>
+30-  <description>Java client for Kubernetes and OpenShift</description>
+31:  <url>https://github.com/fabric8io/kubernetes-client</url>
+32-  <inceptionYear>2015</inceptionYear>
+33-
+34-  <organization>
+35-    <name>Red Hat</name>
+36:    <url>https://redhat.com</url>
+37-  </organization>
+38-
+--
+40-    <license>
+41-      <name>Apache License, Version 2.0</name>
+42:      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+43-      <distribution>repo</distribution>
+44-    </license>
+--
+56-  </developers>
+57-
+58:  <scm>
+59:    <connection>scm:git:git@github.com:fabric8io/kubernetes-client.git</connection>
+60:    <developerConnection>scm:git:git@github.com:fabric8io/kubernetes-client.git</developerConnection>
+61:    <url>https://github.com/fabric8io/kubernetes-client/</url>
+62:    <tag>${project.version}</tag>
+63-  </scm>
+64-
+--
+67-      <id>central-portal</id>
+68-      <name>Central Portal (Snapshots)</name>
+69:      <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+70-    </snapshotRepository>
+71-  </distributionManagement>
+--
+75-      <id>sonatype-maven-org</id>
+76-      <name>Sonatype Maven Repository (maven.org)</name>
+77:      <url>https://repo1.maven.org/maven2/</url>
+78-      <releases><enabled>true</enabled></releases>
+79-      <snapshots><enabled>false</enabled></snapshots>
+--
+1460-              <offlineLinks>
+1461-                <offlineLink>
+1462:                  <url>${javadoc.links}/${project.groupId}/kubernetes-model-core/${project.version}</url>
+1463-                  <location>${maven.multiModuleProjectDirectory}/doc/javadoc-links/kubernetes-model-core</location>
+1464-                </offlineLink>
+1465-                <offlineLink>
+1466:                  <url>${javadoc.links}/${project.groupId}/kubernetes-model-common/${project.version}</url>
+1467-                  <location>${maven.multiModuleProjectDirectory}/doc/javadoc-links/kubernetes-model-common</location>
+1468-                </offlineLink>
+1469-                <offlineLink>
+1470:                  <url>${javadoc.links}/${project.groupId}/kubernetes-client-api/${project.version}</url>
+1471-                  <location>${maven.multiModuleProjectDirectory}/doc/javadoc-links/kubernetes-client-api</location>
+1472-                </offlineLink>
+1473-                <offlineLink>
+1474:                  <url>${javadoc.links}/${project.groupId}/kubernetes-client/${project.version}</url>
+1475-                  <location>${maven.multiModuleProjectDirectory}/doc/javadoc-links/kubernetes-client</location>
+1476-                </offlineLink>
+1477-                <offlineLink>
+1478:                  <url>${javadoc.links}/${project.groupId}/openshift-client-api/${project.version}</url>
+1479-                  <location>${maven.multiModuleProjectDirectory}/doc/javadoc-links/openshift-client-api</location>
+1480-                </offlineLink>
+1481-                <offlineLink>
+1482:                  <url>${javadoc.links}/${project.groupId}/openshift-client/${project.version}</url>
+1483-                  <location>${maven.multiModuleProjectDirectory}/doc/javadoc-links/openshift-client</location>
+1484-                </offlineLink>
+1485-                <offlineLink>
+1486:                  <url>${javadoc.links}/com.fasterxml.jackson.core/jackson-databind/${jackson.version}</url>
+1487-                  <location>${maven.multiModuleProjectDirectory}/doc/javadoc-links/jackson-databind</location>
+1488-                </offlineLink>
+1489-                <offlineLink>
+1490:                  <url>${javadoc.links}/com.fasterxml.jackson.core/jackson-core/${jackson.version}</url>
+1491-                  <location>${maven.multiModuleProjectDirectory}/doc/javadoc-links/jackson-core</location>
+1492-                </offlineLink>
+1493-                <offlineLink>
+1494:                  <url>${javadoc.links}/org.slf4j/slf4j-api/${slf4j.version}</url>
+1495-                  <location>${maven.multiModuleProjectDirectory}/doc/javadoc-links/slf4j-api</location>
+1496-                </offlineLink>
+--
+1604-              <offlineLinks>
+1605-                <offlineLink>
+1606:                  <url>${javadoc.links}/${project.groupId}/kubernetes-model-core/${project.version}</url>
+1607-                  <location>${maven.multiModuleProjectDirectory}/doc/javadoc-links/kubernetes-model-core</location>
+1608-                </offlineLink>
+1609-                <offlineLink>
+1610:                  <url>${javadoc.links}/${project.groupId}/kubernetes-model-common/${project.version}</url>
+1611-                  <location>${maven.multiModuleProjectDirectory}/doc/javadoc-links/kubernetes-model-common</location>
+1612-                </offlineLink>
+1613-                <offlineLink>
+1614:                  <url>${javadoc.links}/${project.groupId}/kubernetes-client-api/${project.version}</url>
+1615-                  <location>${maven.multiModuleProjectDirectory}/doc/javadoc-links/kubernetes-client-api</location>
+1616-                </offlineLink>
+1617-                <offlineLink>
+1618:                  <url>${javadoc.links}/${project.groupId}/kubernetes-client/${project.version}</url>
+1619-                  <location>${maven.multiModuleProjectDirectory}/doc/javadoc-links/kubernetes-client</location>
+1620-                </offlineLink>
+1621-                <offlineLink>
+1622:                  <url>${javadoc.links}/${project.groupId}/openshift-client-api/${project.version}</url>
+1623-                  <location>${maven.multiModuleProjectDirectory}/doc/javadoc-links/openshift-client-api</location>
+1624-                </offlineLink>
+1625-                <offlineLink>
+1626:                  <url>${javadoc.links}/${project.groupId}/openshift-client/${project.version}</url>
+1627-                  <location>${maven.multiModuleProjectDirectory}/doc/javadoc-links/openshift-client</location>
+1628-                </offlineLink>
+1629-                <offlineLink>
+1630:                  <url>${javadoc.links}/com.fasterxml.jackson.core/jackson-databind/${jackson.version}</url>
+1631-                  <location>${maven.multiModuleProjectDirectory}/doc/javadoc-links/jackson-databind</location>
+1632-                </offlineLink>
+1633-                <offlineLink>
+1634:                  <url>${javadoc.links}/com.fasterxml.jackson.core/jackson-core/${jackson.version}</url>
+1635-                  <location>${maven.multiModuleProjectDirectory}/doc/javadoc-links/jackson-core</location>
+1636-                </offlineLink>
+1637-                <offlineLink>
+1638:                  <url>${javadoc.links}/org.slf4j/slf4j-api/${slf4j.version}</url>
+1639-                  <location>${maven.multiModuleProjectDirectory}/doc/javadoc-links/slf4j-api</location>
+1640-                </offlineLink>
+
+exec
+/usr/bin/bash -lc "for url in \\
+'https://github.com/fabric8io/kubernetes-client/blob/v7.7.0/kubernetes-tests/src/test/java/io/fabric8/kubernetes/client/mock/V1EventsTest.java' \\
+'https://github.com/fabric8io/kubernetes-client/blob/v7.7.0/kubernetes-tests/src/test/java/io/fabric8/kubernetes/client/mock/V1beta1EventsTest.java' \\
+'https://github.com/fabric8io/kubernetes-client/blob/v7.7.0/kubernetes-tests/src/test/java/io/fabric8/kubernetes/client/mock/EventTest.java' \\
+'https://github.com/fabric8io/kubernetes-client/tree/v7.7.0/kubernetes-tests/src/test/java/io/fabric8/kubernetes/client/mock'; do printf '%s ' \""'$url"; curl -I -L -s -o /dev/null -w '"'%{http_code}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282
+ succeeded in 2557ms:
+200
+https://github.com/fabric8io/kubernetes-client/blob/v7.7.0/kubernetes-tests/src/test/java/io/fabric8/kubernetes/client/mock/V1beta1EventsTest.java 200
+https://github.com/fabric8io/kubernetes-client/blob/v7.7.0/kubernetes-tests/src/test/java/io/fabric8/kubernetes/client/mock/EventTest.java 200
+https://github.com/fabric8io/kubernetes-client/tree/v7.7.0/kubernetes-tests/src/test/java/io/fabric8/kubernetes/client/mock 200
+
+codex
+I have enough to update the entry: Maven Central for sources and javadocs, the canonical GitHub repo root from the parent POM, and the tagged `kubernetes-tests` mock test directory for Events coverage. I’ll leave `language` absent because this is a Java/JVM model artifact, not a Kotlin, Groovy, or Scala-specific library under the requested schema.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282/metadata/io.fabric8/kubernetes-model-events/index.json
+diff --git a/metadata/io.fabric8/kubernetes-model-events/index.json b/metadata/io.fabric8/kubernetes-model-events/index.json
+index 2f8415ff9a3cf6f737f01e5c49cce623cc53cc79..304567f1cd2b954e3b5f0b4292009f166b2a7982
+--- a/metadata/io.fabric8/kubernetes-model-events/index.json
++++ b/metadata/io.fabric8/kubernetes-model-events/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "7.7.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/$version$/kubernetes-model-events-$version$-sources.jar",
++    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
++    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-tests/src/test/java/io/fabric8/kubernetes/client/mock",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/$version$/kubernetes-model-events-$version$-javadoc.jar",
++    "description" : "Fabric8 Kubernetes Model Events provides generated Java model classes and builders for Kubernetes Events API resources. It lets JVM applications serialize, deserialize, and construct Event, EventList, and EventSeries objects used by the Fabric8 Kubernetes Client.",
+     "tested-versions" : [
+       "7.7.0"
+     ],
+
+diff --git a/metadata/io.fabric8/kubernetes-model-events/index.json b/metadata/io.fabric8/kubernetes-model-events/index.json
+index 2f8415ff9a3cf6f737f01e5c49cce623cc53cc79..304567f1cd2b954e3b5f0b4292009f166b2a7982
+--- a/metadata/io.fabric8/kubernetes-model-events/index.json
++++ b/metadata/io.fabric8/kubernetes-model-events/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "7.7.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/$version$/kubernetes-model-events-$version$-sources.jar",
++    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
++    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-tests/src/test/java/io/fabric8/kubernetes/client/mock",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/$version$/kubernetes-model-events-$version$-javadoc.jar",
++    "description" : "Fabric8 Kubernetes Model Events provides generated Java model classes and builders for Kubernetes Events API resources. It lets JVM applications serialize, deserialize, and construct Event, EventList, and EventSeries objects used by the Fabric8 Kubernetes Client.",
+     "tested-versions" : [
+       "7.7.0"
+     ],
+
+codex
+The JSON is patched. I’m doing two checks now: template-rendered URLs for 7.7.0, and the repository metadata validator for this coordinate.
+exec
+/usr/bin/bash -lc "jq . metadata/io.fabric8/kubernetes-model-events/index.json >/dev/null && sed -n '1,80p' metadata/io.fabric8/kubernetes-model-events/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "7.7.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/$version$/kubernetes-model-events-$version$-sources.jar",
+    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-tests/src/test/java/io/fabric8/kubernetes/client/mock",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/$version$/kubernetes-model-events-$version$-javadoc.jar",
+    "description" : "Fabric8 Kubernetes Model Events provides generated Java model classes and builders for Kubernetes Events API resources. It lets JVM applications serialize, deserialize, and construct Event, EventList, and EventSeries objects used by the Fabric8 Kubernetes Client.",
+    "tested-versions" : [
+      "7.7.0"
+    ],
+    "allowed-packages" : [
+      "io.fabric8.kubernetes.api.model.events"
+    ]
+  },
+  {
+    "metadata-version" : "7.5.2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/$version$/kubernetes-model-events-$version$-sources.jar",
+    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/$version$/kubernetes-model-events-$version$-javadoc.jar",
+    "description" : "Fabric8 Kubernetes Model Events provides Java model classes and builders for Kubernetes Events API resources. It is part of Fabric8 Kubernetes Client's generated model set and lets JVM applications serialize, deserialize, and construct Event, EventList, and EventSeries objects.",
+    "tested-versions" : [
+      "7.5.2",
+      "7.6.0",
+      "7.6.1"
+    ],
+    "allowed-packages" : [
+      "io.fabric8.kubernetes.api.model.events"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "for url in \\
+'https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/7.7.0/kubernetes-model-events-7.7.0-sources.jar' \\
+'https://github.com/fabric8io/kubernetes-client' \\
+'https://github.com/fabric8io/kubernetes-client/tree/v7.7.0/kubernetes-tests/src/test/java/io/fabric8/kubernetes/client/mock' \\
+'https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/7.7.0/kubernetes-model-events-7.7.0-javadoc.jar'; do printf '%s ' \""'$url"; curl -I -L -s -o /dev/null -w '"'%{http_code}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=io.fabric8:kubernetes-model-events:7.7.0 --stacktrace' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282
+ succeeded in 586ms:
+200
+https://github.com/fabric8io/kubernetes-client/tree/v7.7.0/kubernetes-tests/src/test/java/io/fabric8/kubernetes/client/mock 200
+https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/7.7.0/kubernetes-model-events-7.7.0-javadoc.jar 200
+
+diff --git a/metadata/io.fabric8/kubernetes-model-events/index.json b/metadata/io.fabric8/kubernetes-model-events/index.json
+index 2f8415ff9a3cf6f737f01e5c49cce623cc53cc79..304567f1cd2b954e3b5f0b4292009f166b2a7982
+--- a/metadata/io.fabric8/kubernetes-model-events/index.json
++++ b/metadata/io.fabric8/kubernetes-model-events/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "7.7.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/$version$/kubernetes-model-events-$version$-sources.jar",
++    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
++    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-tests/src/test/java/io/fabric8/kubernetes/client/mock",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/$version$/kubernetes-model-events-$version$-javadoc.jar",
++    "description" : "Fabric8 Kubernetes Model Events provides generated Java model classes and builders for Kubernetes Events API resources. It lets JVM applications serialize, deserialize, and construct Event, EventList, and EventSeries objects used by the Fabric8 Kubernetes Client.",
+     "tested-versions" : [
+       "7.7.0"
+     ],
+
+ exited 1 in 3265ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+Metadata files check failed for io.fabric8:kubernetes-model-events:7.7.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282/metadata/io.fabric8/kubernetes-model-events/7.7.0/
+
+> Task :checkMetadataFiles FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - io.fabric8:kubernetes-model-events:7.7.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282/metadata/io.fabric8/kubernetes-model-events/7.7.0/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - io.fabric8:kubernetes-model-events:7.7.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282/metadata/io.fabric8/kubernetes-model-events/7.7.0/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 2s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+The URL checks all returned HTTP 200. The Gradle metadata validation is still running; I’m waiting for that result before wrapping up.
+diff --git a/metadata/io.fabric8/kubernetes-model-events/index.json b/metadata/io.fabric8/kubernetes-model-events/index.json
+index 2f8415ff9a3cf6f737f01e5c49cce623cc53cc79..304567f1cd2b954e3b5f0b4292009f166b2a7982
+--- a/metadata/io.fabric8/kubernetes-model-events/index.json
++++ b/metadata/io.fabric8/kubernetes-model-events/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "7.7.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/$version$/kubernetes-model-events-$version$-sources.jar",
++    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
++    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-tests/src/test/java/io/fabric8/kubernetes/client/mock",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/$version$/kubernetes-model-events-$version$-javadoc.jar",
++    "description" : "Fabric8 Kubernetes Model Events provides generated Java model classes and builders for Kubernetes Events API resources. It lets JVM applications serialize, deserialize, and construct Event, EventList, and EventSeries objects used by the Fabric8 Kubernetes Client.",
+     "tested-versions" : [
+       "7.7.0"
+     ],
+
+codex
+The metadata validator failed before checking URL semantics because this coordinate lacks `metadata/io.fabric8/kubernetes-model-events/7.7.0/reachability-metadata.json`. That is outside the requested field fill, so I’m leaving it untouched and doing a final diff review.
+exec
+/usr/bin/bash -lc 'git diff -- metadata/io.fabric8/kubernetes-model-events/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282
+ succeeded in 0ms:
+diff --git i/metadata/io.fabric8/kubernetes-model-events/index.json w/metadata/io.fabric8/kubernetes-model-events/index.json
+index 2f8415ff9a..304567f1cd 100644
+--- i/metadata/io.fabric8/kubernetes-model-events/index.json
++++ w/metadata/io.fabric8/kubernetes-model-events/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "7.7.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/$version$/kubernetes-model-events-$version$-sources.jar",
++    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
++    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-tests/src/test/java/io/fabric8/kubernetes/client/mock",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/$version$/kubernetes-model-events-$version$-javadoc.jar",
++    "description" : "Fabric8 Kubernetes Model Events provides generated Java model classes and builders for Kubernetes Events API resources. It lets JVM applications serialize, deserialize, and construct Event, EventList, and EventSeries objects used by the Fabric8 Kubernetes Client.",
+     "tested-versions" : [
+       "7.7.0"
+     ],
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/io.fabric8/kubernetes-model-events/index.json metadata/io.fabric8/kubernetes-model-events/7.7.0/reachability-metadata.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282
+ succeeded in 0ms:
+ M metadata/io.fabric8/kubernetes-model-events/index.json
+
+diff --git a/metadata/io.fabric8/kubernetes-model-events/index.json b/metadata/io.fabric8/kubernetes-model-events/index.json
+index 2f8415ff9a3cf6f737f01e5c49cce623cc53cc79..304567f1cd2b954e3b5f0b4292009f166b2a7982
+--- a/metadata/io.fabric8/kubernetes-model-events/index.json
++++ b/metadata/io.fabric8/kubernetes-model-events/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "7.7.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/$version$/kubernetes-model-events-$version$-sources.jar",
++    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
++    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-tests/src/test/java/io/fabric8/kubernetes/client/mock",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/$version$/kubernetes-model-events-$version$-javadoc.jar",
++    "description" : "Fabric8 Kubernetes Model Events provides generated Java model classes and builders for Kubernetes Events API resources. It lets JVM applications serialize, deserialize, and construct Event, EventList, and EventSeries objects used by the Fabric8 Kubernetes Client.",
+     "tested-versions" : [
+       "7.7.0"
+     ],
+
+codex
+The diff is scoped to the requested 7.7.0 entry only. I’m done with the edit; the only failed check is the unrelated missing reachability metadata file for that coordinate.
+codex
+Updated [metadata/io.fabric8/kubernetes-model-events/index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282/metadata/io.fabric8/kubernetes-model-events/index.json:4) for metadata version `7.7.0`.
+
+Filled:
+- `source-code-url`
+- `repository-url`
+- `test-code-url`
+- `documentation-url`
+- `description`
+
+Left `language` absent because this is not Kotlin, Groovy, or Scala-specific.
+
+Verification:
+- Rendered URLs for `7.7.0` all returned HTTP `200`.
+- `jq` JSON validation passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=io.fabric8:kubernetes-model-events:7.7.0 --stacktrace` failed because `metadata/io.fabric8/kubernetes-model-events/7.7.0/reachability-metadata.json` is missing, which was outside the requested field update.
+diff --git a/metadata/io.fabric8/kubernetes-model-events/index.json b/metadata/io.fabric8/kubernetes-model-events/index.json
+index 2f8415ff9a3cf6f737f01e5c49cce623cc53cc79..304567f1cd2b954e3b5f0b4292009f166b2a7982
+--- a/metadata/io.fabric8/kubernetes-model-events/index.json
++++ b/metadata/io.fabric8/kubernetes-model-events/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "7.7.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/$version$/kubernetes-model-events-$version$-sources.jar",
++    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
++    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-tests/src/test/java/io/fabric8/kubernetes/client/mock",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/$version$/kubernetes-model-events-$version$-javadoc.jar",
++    "description" : "Fabric8 Kubernetes Model Events provides generated Java model classes and builders for Kubernetes Events API resources. It lets JVM applications serialize, deserialize, and construct Event, EventList, and EventSeries objects used by the Fabric8 Kubernetes Client.",
+     "tested-versions" : [
+       "7.7.0"
+     ],
+
+tokens used
+55,306
+Updated [metadata/io.fabric8/kubernetes-model-events/index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282/metadata/io.fabric8/kubernetes-model-events/index.json:4) for metadata version `7.7.0`.
+
+Filled:
+- `source-code-url`
+- `repository-url`
+- `test-code-url`
+- `documentation-url`
+- `description`
+
+Left `language` absent because this is not Kotlin, Groovy, or Scala-specific.
+
+Verification:
+- Rendered URLs for `7.7.0` all returned HTTP `200`.
+- `jq` JSON validation passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=io.fabric8:kubernetes-model-events:7.7.0 --stacktrace` failed because `metadata/io.fabric8/kubernetes-model-events/7.7.0/reachability-metadata.json` is missing, which was outside the requested field update.
+Ran agent for io.fabric8:kubernetes-model-events:7.7.0 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282/build/agent-url-discovery-logs/io.fabric8-kubernetes-model-events-7.7.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7911-04987282/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 24s
+9 actionable tasks: 1 executed, 8 up-to-date
