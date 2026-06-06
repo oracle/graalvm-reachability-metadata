@@ -84,6 +84,8 @@ import org.junit.jupiter.api.Test;
 public class Jakarta_servlet_jsp_jstl_apiTest {
     private static final String NAMED_MESSAGES_BUNDLE = "jakarta_servlet_jsp_jstl.jakarta_servlet_jsp_jstl_api"
             + ".Jakarta_servlet_jsp_jstl_apiTest$NamedLocaleMessages";
+    private static final String ROOT_MESSAGES_BUNDLE = "jakarta_servlet_jsp_jstl.jakarta_servlet_jsp_jstl_api"
+            + ".Jakarta_servlet_jsp_jstl_apiTest$RootMessages";
 
     @Test
     void configStoresScopedValuesAndFindsThemInStandardOrder() {
@@ -146,6 +148,16 @@ public class Jakarta_servlet_jsp_jstl_apiTest {
         assertThat(LocaleSupport.getLocalizedMessage(pageContext, "salutation", new Object[] {"Ada"},
                 NAMED_MESSAGES_BUNDLE)).isEqualTo("Howdy Ada");
         assertThat(pageContext.getResponse().getLocale()).isEqualTo(Locale.US);
+    }
+
+    @Test
+    void localeSupportLoadsRootBundleWhenConfiguredLocaleDoesNotMatchAvailableBundles() {
+        TestPageContext pageContext = new TestPageContext();
+
+        Config.set(pageContext, Config.FMT_LOCALE, "zz-ZZ", PageContext.PAGE_SCOPE);
+
+        assertThat(LocaleSupport.getLocalizedMessage(pageContext, "rootOnly", ROOT_MESSAGES_BUNDLE))
+                .isEqualTo("Resolved from the root bundle");
     }
 
     @Test
@@ -589,6 +601,15 @@ public class Jakarta_servlet_jsp_jstl_apiTest {
         protected Object[][] getContents() {
             return new Object[][] {
                     {"salutation", "Howdy {0}"}
+            };
+        }
+    }
+
+    public static final class RootMessages extends ListResourceBundle {
+        @Override
+        protected Object[][] getContents() {
+            return new Object[][] {
+                    {"rootOnly", "Resolved from the root bundle"}
             };
         }
     }
