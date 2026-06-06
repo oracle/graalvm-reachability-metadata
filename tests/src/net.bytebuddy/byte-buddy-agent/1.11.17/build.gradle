@@ -15,6 +15,12 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
@@ -24,4 +30,8 @@ graalvmNative {
             }
         }
     }
+}
+
+tasks.named("test") {
+    jvmArgs += ["-Djava.security.manager=allow"]
 }

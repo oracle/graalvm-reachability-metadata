@@ -13,8 +13,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.lang.instrument.ClassDefinition;
+import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
+import java.lang.instrument.UnmodifiableClassException;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.jar.JarFile;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,7 +53,7 @@ public class ByteBuddyAgentInnerAgentProviderInnerForByteBuddyAgentTest {
     void installCreatesTemporaryAgentJarFromInstallerClassResource() throws Exception {
         Instrumentation instrumentation = ByteBuddyAgent.install(new RecordingAttachmentProvider(), () -> PROCESS_ID);
 
-        assertThat(instrumentation).isNull();
+        assertThat(instrumentation).isSameAs(RecordingVirtualMachine.instrumentation);
         assertThat(RecordingVirtualMachine.attachedProcessId).isEqualTo(PROCESS_ID);
         assertThat(RecordingVirtualMachine.loadedAgentArgument).isNull();
         assertThat(RecordingVirtualMachine.detached).isTrue();
@@ -91,6 +97,8 @@ public class ByteBuddyAgentInnerAgentProviderInnerForByteBuddyAgentTest {
     }
 
     public static final class RecordingVirtualMachine {
+        private static final Instrumentation instrumentation = new RecordingInstrumentation();
+
         private static String attachedProcessId;
         private static String loadedAgent;
         private static String loadedAgentArgument;
@@ -104,6 +112,7 @@ public class ByteBuddyAgentInnerAgentProviderInnerForByteBuddyAgentTest {
         public void loadAgent(String agent, String argument) {
             loadedAgent = agent;
             loadedAgentArgument = argument;
+            Installer.agentmain(argument, instrumentation);
         }
 
         public void detach() {
@@ -115,6 +124,91 @@ public class ByteBuddyAgentInnerAgentProviderInnerForByteBuddyAgentTest {
             loadedAgent = null;
             loadedAgentArgument = null;
             detached = false;
+        }
+    }
+
+    private static final class RecordingInstrumentation implements Instrumentation {
+        @Override
+        public void addTransformer(ClassFileTransformer transformer, boolean canRetransform) {
+        }
+
+        @Override
+        public void addTransformer(ClassFileTransformer transformer) {
+        }
+
+        @Override
+        public boolean removeTransformer(ClassFileTransformer transformer) {
+            return false;
+        }
+
+        @Override
+        public boolean isRetransformClassesSupported() {
+            return false;
+        }
+
+        @Override
+        public void retransformClasses(Class<?>... classes) throws UnmodifiableClassException {
+        }
+
+        @Override
+        public boolean isRedefineClassesSupported() {
+            return false;
+        }
+
+        @Override
+        public void redefineClasses(ClassDefinition... definitions)
+                throws ClassNotFoundException, UnmodifiableClassException {
+        }
+
+        @Override
+        public boolean isModifiableClass(Class<?> type) {
+            return false;
+        }
+
+        @Override
+        public Class<?>[] getAllLoadedClasses() {
+            return new Class<?>[0];
+        }
+
+        @Override
+        public Class<?>[] getInitiatedClasses(ClassLoader loader) {
+            return new Class<?>[0];
+        }
+
+        @Override
+        public long getObjectSize(Object object) {
+            return 0L;
+        }
+
+        @Override
+        public void appendToBootstrapClassLoaderSearch(JarFile jarFile) {
+        }
+
+        @Override
+        public void appendToSystemClassLoaderSearch(JarFile jarFile) {
+        }
+
+        @Override
+        public boolean isNativeMethodPrefixSupported() {
+            return false;
+        }
+
+        @Override
+        public void setNativeMethodPrefix(ClassFileTransformer transformer, String prefix) {
+        }
+
+        @Override
+        public void redefineModule(Module module,
+                                   Set<Module> extraReads,
+                                   Map<String, Set<Module>> extraExports,
+                                   Map<String, Set<Module>> extraOpens,
+                                   Set<Class<?>> extraUses,
+                                   Map<Class<?>, List<Class<?>>> extraProvides) {
+        }
+
+        @Override
+        public boolean isModifiableModule(Module module) {
+            return false;
         }
     }
 }
