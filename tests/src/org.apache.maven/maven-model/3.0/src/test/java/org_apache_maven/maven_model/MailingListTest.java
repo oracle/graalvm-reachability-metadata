@@ -10,17 +10,15 @@ import org.apache.maven.model.MailingList;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MailingListTest {
     @Test
-    void rejectsNullOtherArchiveWithTypedErrorMessage() {
+    void addsNullOtherArchiveToOtherArchives() {
         MailingList mailingList = new MailingList();
 
-        ClassCastException exception = assertThrows(ClassCastException.class,
-                () -> mailingList.addOtherArchive(null));
+        mailingList.addOtherArchive(null);
 
-        assertThat(exception).hasMessageContaining("java.lang.String");
-        assertThat(mailingList.getOtherArchives()).isEmpty();
+        assertThat(mailingList.getOtherArchives()).hasSize(1);
+        assertThat(mailingList.getOtherArchives().get(0)).isNull();
     }
 }

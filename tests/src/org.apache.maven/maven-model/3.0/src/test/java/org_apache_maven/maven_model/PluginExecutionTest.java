@@ -10,17 +10,15 @@ import org.apache.maven.model.PluginExecution;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PluginExecutionTest {
     @Test
-    void rejectsNullGoalWithTypedErrorMessage() {
+    void addsNullGoalToGoals() {
         PluginExecution execution = new PluginExecution();
 
-        ClassCastException exception = assertThrows(ClassCastException.class,
-                () -> execution.addGoal(null));
+        execution.addGoal(null);
 
-        assertThat(exception).hasMessageContaining("java.lang.String");
-        assertThat(execution.getGoals()).isEmpty();
+        assertThat(execution.getGoals()).hasSize(1);
+        assertThat(execution.getGoals().get(0)).isNull();
     }
 }

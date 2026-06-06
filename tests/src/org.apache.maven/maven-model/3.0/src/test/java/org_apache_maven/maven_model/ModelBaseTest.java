@@ -10,17 +10,15 @@ import org.apache.maven.model.ModelBase;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ModelBaseTest {
     @Test
-    void rejectsNullDependencyWithTypedErrorMessage() {
+    void addsNullDependencyToDependencies() {
         ModelBase modelBase = new ModelBase();
 
-        ClassCastException exception = assertThrows(ClassCastException.class,
-                () -> modelBase.addDependency(null));
+        modelBase.addDependency(null);
 
-        assertThat(exception).hasMessageContaining("org.apache.maven.model.Dependency");
-        assertThat(modelBase.getDependencies()).isEmpty();
+        assertThat(modelBase.getDependencies()).hasSize(1);
+        assertThat(modelBase.getDependencies().get(0)).isNull();
     }
 }

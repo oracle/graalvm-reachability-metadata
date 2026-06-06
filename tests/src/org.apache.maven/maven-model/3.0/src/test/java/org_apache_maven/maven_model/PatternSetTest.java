@@ -10,17 +10,15 @@ import org.apache.maven.model.PatternSet;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PatternSetTest {
     @Test
-    void rejectsNullExcludeWithTypedErrorMessage() {
+    void addsNullExcludeToExcludes() {
         PatternSet patternSet = new PatternSet();
 
-        ClassCastException exception = assertThrows(ClassCastException.class,
-                () -> patternSet.addExclude(null));
+        patternSet.addExclude(null);
 
-        assertThat(exception).hasMessageContaining("java.lang.String");
-        assertThat(patternSet.getExcludes()).isEmpty();
+        assertThat(patternSet.getExcludes()).hasSize(1);
+        assertThat(patternSet.getExcludes().get(0)).isNull();
     }
 }

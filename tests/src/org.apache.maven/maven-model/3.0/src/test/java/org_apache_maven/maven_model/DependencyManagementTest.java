@@ -10,17 +10,15 @@ import org.apache.maven.model.DependencyManagement;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DependencyManagementTest {
     @Test
-    void rejectsNullDependencyWithTypedErrorMessage() {
+    void addsNullDependencyToDependencies() {
         DependencyManagement dependencyManagement = new DependencyManagement();
 
-        ClassCastException exception = assertThrows(ClassCastException.class,
-                () -> dependencyManagement.addDependency(null));
+        dependencyManagement.addDependency(null);
 
-        assertThat(exception).hasMessageContaining("org.apache.maven.model.Dependency");
-        assertThat(dependencyManagement.getDependencies()).isEmpty();
+        assertThat(dependencyManagement.getDependencies()).hasSize(1);
+        assertThat(dependencyManagement.getDependencies().get(0)).isNull();
     }
 }

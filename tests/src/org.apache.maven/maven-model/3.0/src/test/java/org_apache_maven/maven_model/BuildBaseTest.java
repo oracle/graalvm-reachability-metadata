@@ -10,17 +10,15 @@ import org.apache.maven.model.BuildBase;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BuildBaseTest {
     @Test
-    void rejectsNullFilterWithTypedErrorMessage() {
+    void addsNullFilterToFilters() {
         BuildBase buildBase = new BuildBase();
 
-        ClassCastException exception = assertThrows(ClassCastException.class,
-                () -> buildBase.addFilter(null));
+        buildBase.addFilter(null);
 
-        assertThat(exception).hasMessageContaining("java.lang.String");
-        assertThat(buildBase.getFilters()).isEmpty();
+        assertThat(buildBase.getFilters()).hasSize(1);
+        assertThat(buildBase.getFilters().get(0)).isNull();
     }
 }

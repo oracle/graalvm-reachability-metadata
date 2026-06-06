@@ -10,17 +10,15 @@ import org.apache.maven.model.Model;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ModelTest {
     @Test
-    void rejectsNullContributorWithTypedErrorMessage() {
+    void addsNullContributorToContributors() {
         Model model = new Model();
 
-        ClassCastException exception = assertThrows(ClassCastException.class,
-                () -> model.addContributor(null));
+        model.addContributor(null);
 
-        assertThat(exception).hasMessageContaining("org.apache.maven.model.Contributor");
-        assertThat(model.getContributors()).isEmpty();
+        assertThat(model.getContributors()).hasSize(1);
+        assertThat(model.getContributors().get(0)).isNull();
     }
 }

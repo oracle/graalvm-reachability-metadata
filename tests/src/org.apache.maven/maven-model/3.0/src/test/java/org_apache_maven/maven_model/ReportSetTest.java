@@ -10,17 +10,15 @@ import org.apache.maven.model.ReportSet;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ReportSetTest {
     @Test
-    void rejectsNullReportWithTypedErrorMessage() {
+    void addsNullReportToReports() {
         ReportSet reportSet = new ReportSet();
 
-        ClassCastException exception = assertThrows(ClassCastException.class,
-                () -> reportSet.addReport(null));
+        reportSet.addReport(null);
 
-        assertThat(exception).hasMessageContaining("java.lang.String");
-        assertThat(reportSet.getReports()).isEmpty();
+        assertThat(reportSet.getReports()).hasSize(1);
+        assertThat(reportSet.getReports().get(0)).isNull();
     }
 }

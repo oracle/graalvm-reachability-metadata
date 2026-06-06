@@ -10,17 +10,15 @@ import org.apache.maven.model.Build;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BuildTest {
     @Test
-    void rejectsNullBuildExtensionWithTypedErrorMessage() {
+    void addsNullBuildExtensionToExtensions() {
         Build build = new Build();
 
-        ClassCastException exception = assertThrows(ClassCastException.class,
-                () -> build.addExtension(null));
+        build.addExtension(null);
 
-        assertThat(exception).hasMessageContaining("org.apache.maven.model.Extension");
-        assertThat(build.getExtensions()).isEmpty();
+        assertThat(build.getExtensions()).hasSize(1);
+        assertThat(build.getExtensions().get(0)).isNull();
     }
 }

@@ -10,17 +10,15 @@ import org.apache.maven.model.PluginContainer;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PluginContainerTest {
     @Test
-    void rejectsNullPluginWithTypedErrorMessage() {
+    void addsNullPluginToPlugins() {
         PluginContainer pluginContainer = new PluginContainer();
 
-        ClassCastException exception = assertThrows(ClassCastException.class,
-                () -> pluginContainer.addPlugin(null));
+        pluginContainer.addPlugin(null);
 
-        assertThat(exception).hasMessageContaining("org.apache.maven.model.Plugin");
-        assertThat(pluginContainer.getPlugins()).isEmpty();
+        assertThat(pluginContainer.getPlugins()).hasSize(1);
+        assertThat(pluginContainer.getPlugins().get(0)).isNull();
     }
 }

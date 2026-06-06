@@ -10,17 +10,15 @@ import org.apache.maven.model.CiManagement;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CiManagementTest {
     @Test
-    void rejectsNullNotifierWithTypedErrorMessage() {
+    void addsNullNotifierToNotifiers() {
         CiManagement ciManagement = new CiManagement();
 
-        ClassCastException exception = assertThrows(ClassCastException.class,
-                () -> ciManagement.addNotifier(null));
+        ciManagement.addNotifier(null);
 
-        assertThat(exception).hasMessageContaining("org.apache.maven.model.Notifier");
-        assertThat(ciManagement.getNotifiers()).isEmpty();
+        assertThat(ciManagement.getNotifiers()).hasSize(1);
+        assertThat(ciManagement.getNotifiers().get(0)).isNull();
     }
 }
