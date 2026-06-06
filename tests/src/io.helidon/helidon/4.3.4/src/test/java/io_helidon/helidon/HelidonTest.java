@@ -16,12 +16,14 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import io.helidon.Main;
+import io.helidon.common.HelidonServiceLoader;
 import io.helidon.common.Weight;
 import io.helidon.spi.HelidonShutdownHandler;
 import io.helidon.spi.HelidonStartupProvider;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class HelidonTest {
     private static final AtomicInteger START_COUNT = new AtomicInteger();
@@ -49,6 +51,26 @@ public class HelidonTest {
         assertThat(START_COUNT).hasValue(1);
         assertThat(START_ARGUMENTS.get())
                 .containsExactly("--server.port=0", "app.message=hello");
+    }
+
+    @Test
+    void mainFailsWhenDiscoveredStartupProviderIsExcluded() {
+        START_COUNT.set(0);
+        START_ARGUMENTS.set(List.of());
+        String previousExcludes = System.getProperty(HelidonServiceLoader.SYSTEM_PROPERTY_EXCLUDE);
+        System.setProperty(HelidonServiceLoader.SYSTEM_PROPERTY_EXCLUDE, RecordingStartupProvider.class.getName());
+        try {
+            assertThatThrownBy(() -> Main.main(new String[] {"--server.port=0"}))
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessageContaining("startup provider");
+            assertThat(START_COUNT).hasValue(0);
+        } finally {
+            if (previousExcludes == null) {
+                System.clearProperty(HelidonServiceLoader.SYSTEM_PROPERTY_EXCLUDE);
+            } else {
+                System.setProperty(HelidonServiceLoader.SYSTEM_PROPERTY_EXCLUDE, previousExcludes);
+            }
+        }
     }
 
     @Test
