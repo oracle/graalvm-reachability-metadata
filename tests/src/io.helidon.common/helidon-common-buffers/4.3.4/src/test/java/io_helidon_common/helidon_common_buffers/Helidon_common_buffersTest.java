@@ -41,8 +41,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class Helidon_common_buffersTest {
     @Test
     void asciiConversionHandlesOnlyAsciiLetters() {
-        assertEquals("header-name-123_Ä", Ascii.toLowerCase("Header-Name-123_Ä"));
-        assertEquals("HEADER-NAME-123_Ä", Ascii.toUpperCase((CharSequence) "Header-Name-123_Ä"));
+        assertEquals("header-name-123_\u00c4", Ascii.toLowerCase("Header-Name-123_\u00c4"));
+        assertEquals("HEADER-NAME-123_\u00c4", Ascii.toUpperCase((CharSequence) "Header-Name-123_\u00c4"));
         assertEquals('q', Ascii.toLowerCase('Q'));
         assertEquals('Q', Ascii.toUpperCase('q'));
         assertEquals('!', Ascii.toLowerCase('!'));
