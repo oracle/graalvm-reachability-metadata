@@ -192,6 +192,31 @@ public class Oci_java_sdk_circuitbreakerTest {
     }
 
     @Test
+    void exceptionPredicateControlsWhichFailuresAreRecorded() {
+        OciCircuitBreaker circuitBreaker =
+                CircuitBreakerFactory.build(
+                        CircuitBreakerConfiguration.builder()
+                                .failureRateThreshold(50)
+                                .slowCallRateThreshold(100)
+                                .minimumNumberOfCalls(2)
+                                .slidingWindowSize(2)
+                                .build(),
+                        throwable -> throwable instanceof RecordedRuntimeException);
+
+        circuitBreaker.onError(1, TimeUnit.MILLISECONDS, new IgnoredRuntimeException("ignored"));
+        circuitBreaker.onError(1, TimeUnit.MILLISECONDS, new IgnoredRuntimeException("ignored"));
+        assertThat(circuitBreaker.getState()).isEqualTo(CircuitBreaker.State.CLOSED);
+        assertThat(circuitBreaker.tryAcquirePermission()).isTrue();
+
+        circuitBreaker.onError(1, TimeUnit.MILLISECONDS, new RecordedRuntimeException("recorded"));
+        assertThat(circuitBreaker.getState()).isEqualTo(CircuitBreaker.State.CLOSED);
+
+        circuitBreaker.onError(1, TimeUnit.MILLISECONDS, new RecordedRuntimeException("recorded"));
+        assertThat(circuitBreaker.getState()).isEqualTo(CircuitBreaker.State.OPEN);
+        assertThat(circuitBreaker.tryAcquirePermission()).isFalse();
+    }
+
+    @Test
     void halfOpenProbeClosesCircuitBreakerAfterOpenStateWait() throws InterruptedException {
         OciCircuitBreaker circuitBreaker =
                 CircuitBreakerFactory.build(
@@ -262,6 +287,18 @@ public class Oci_java_sdk_circuitbreakerTest {
 
     private static final class CustomRuntimeException extends RuntimeException {
         private CustomRuntimeException(String message) {
+            super(message);
+        }
+    }
+
+    private static final class RecordedRuntimeException extends RuntimeException {
+        private RecordedRuntimeException(String message) {
+            super(message);
+        }
+    }
+
+    private static final class IgnoredRuntimeException extends RuntimeException {
+        private IgnoredRuntimeException(String message) {
             super(message);
         }
     }
