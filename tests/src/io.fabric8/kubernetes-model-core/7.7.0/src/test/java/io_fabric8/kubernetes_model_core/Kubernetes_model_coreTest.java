@@ -291,7 +291,9 @@ public class Kubernetes_model_coreTest {
         assertThat(service.getSpec().getPorts().get(1).getPort()).isEqualTo(9100);
 
         ServiceList services = new ServiceListBuilder()
-                .withNewMetadata(null, null, "100", null)
+                .withNewMetadata()
+                    .withResourceVersion("100")
+                .endMetadata()
                 .withItems(service, edited)
                 .build();
 
@@ -339,7 +341,9 @@ public class Kubernetes_model_coreTest {
                 .addToData("log.level", "debug")
                 .build();
         ConfigMapList configMaps = new ConfigMapListBuilder()
-                .withNewMetadata(null, null, "44", null)
+                .withNewMetadata()
+                    .withResourceVersion("44")
+                .endMetadata()
                 .withItems(configMap, editedConfigMap)
                 .build();
         KubernetesList resources = new KubernetesListBuilder()
@@ -692,7 +696,9 @@ public class Kubernetes_model_coreTest {
                 .endSeries()
                 .build();
         EventList events = new EventListBuilder()
-                .withNewMetadata(null, null, "72", null)
+                .withNewMetadata()
+                    .withResourceVersion("72")
+                .endMetadata()
                 .withItems(scheduled, repeated)
                 .build();
 
@@ -730,7 +736,9 @@ public class Kubernetes_model_coreTest {
         assertThat(loadedResources).anySatisfy(resource -> assertThat(resource).isInstanceOf(ConfigMap.class));
 
         PodList pods = new PodListBuilder()
-                .withNewMetadata(null, null, "55", null)
+                .withNewMetadata()
+                    .withResourceVersion("55")
+                .endMetadata()
                 .addNewItem()
                     .withNewMetadata()
                         .withName("web-0")
