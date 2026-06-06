@@ -29,7 +29,7 @@ class Twiddles_core_3Test {
     val active: Option[Boolean] = Some(true)
 
     val pair: Option[Int *: String *: EmptyTuple] = id *: name
-    val triple: Option[Int *: String *: Boolean *: EmptyTuple] = id *: name *: active
+    val triple: Option[Int *: (String *: Boolean *: EmptyTuple) *: EmptyTuple] = id *: name *: active
     val missingId: Option[Int] = None
     val missingPair: Option[Int *: String *: EmptyTuple] = missingId *: name
 
