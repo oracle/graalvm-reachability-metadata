@@ -33,12 +33,12 @@ import io.fabric8.kubernetes.api.model.certificates.v1alpha1.ClusterTrustBundleL
 import io.fabric8.kubernetes.api.model.certificates.v1alpha1.ClusterTrustBundleListBuilder;
 import io.fabric8.kubernetes.api.model.certificates.v1alpha1.ClusterTrustBundleSpec;
 import io.fabric8.kubernetes.api.model.certificates.v1alpha1.ClusterTrustBundleSpecBuilder;
-import io.fabric8.kubernetes.api.model.certificates.v1alpha1.PodCertificateRequest;
-import io.fabric8.kubernetes.api.model.certificates.v1alpha1.PodCertificateRequestBuilder;
-import io.fabric8.kubernetes.api.model.certificates.v1alpha1.PodCertificateRequestList;
-import io.fabric8.kubernetes.api.model.certificates.v1alpha1.PodCertificateRequestListBuilder;
-import io.fabric8.kubernetes.api.model.certificates.v1alpha1.PodCertificateRequestSpec;
-import io.fabric8.kubernetes.api.model.certificates.v1alpha1.PodCertificateRequestStatus;
+import io.fabric8.kubernetes.api.model.certificates.v1beta1.PodCertificateRequest;
+import io.fabric8.kubernetes.api.model.certificates.v1beta1.PodCertificateRequestBuilder;
+import io.fabric8.kubernetes.api.model.certificates.v1beta1.PodCertificateRequestList;
+import io.fabric8.kubernetes.api.model.certificates.v1beta1.PodCertificateRequestListBuilder;
+import io.fabric8.kubernetes.api.model.certificates.v1beta1.PodCertificateRequestSpec;
+import io.fabric8.kubernetes.api.model.certificates.v1beta1.PodCertificateRequestStatus;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -522,7 +522,7 @@ public class Kubernetes_model_certificatesTest {
                 .addToAdditionalProperties("namespaced", true)
                 .build();
 
-        assertThat(request.getApiVersion()).isEqualTo("certificates.k8s.io/v1alpha1");
+        assertThat(request.getApiVersion()).isEqualTo("certificates.k8s.io/v1beta1");
         assertThat(request.getKind()).isEqualTo("PodCertificateRequest");
         assertThat(request.getMetadata().getNamespace()).isEqualTo("production");
         assertThat(request.getSpec().getSignerName()).isEqualTo("example.com/pod-serving");
@@ -570,7 +570,8 @@ public class Kubernetes_model_certificatesTest {
                 "POP",
                 "api",
                 "api-sa-uid",
-                "example.com/pod-client");
+                "example.com/pod-client",
+                Map.of("kubernetes.io/pod-name", "api-0"));
         spec.setAdditionalProperty("profile", "client");
         PodCertificateRequestStatus status = new PodCertificateRequestStatus(
                 "2026-01-01T00:30:00Z",
@@ -584,7 +585,7 @@ public class Kubernetes_model_certificatesTest {
                 .withNamespace("default")
                 .build();
         PodCertificateRequest constructed = new PodCertificateRequest(
-                "certificates.k8s.io/v1alpha1", "PodCertificateRequest", metadata, spec, status);
+                "certificates.k8s.io/v1beta1", "PodCertificateRequest", metadata, spec, status);
         constructed.setAdditionalProperty("owner", "api-team");
 
         PodCertificateRequest copied = new PodCertificateRequestBuilder(constructed).build();
@@ -606,6 +607,8 @@ public class Kubernetes_model_certificatesTest {
         assertThat(copied.hashCode()).isEqualTo(constructed.hashCode());
         assertThat(copied.toString()).contains("api-pod-cert", "PodCertificateRequest");
         assertThat(copied.getSpec().getAdditionalProperties()).containsEntry("profile", "client");
+        assertThat(copied.getSpec().getUnverifiedUserAnnotations())
+                .containsEntry("kubernetes.io/pod-name", "api-0");
         assertThat(copied.getStatus().getAdditionalProperties()).containsEntry("state", "created");
         assertThat(copied.getAdditionalProperties()).containsEntry("owner", "api-team");
         assertThat(edited.getMetadata().getNamespace()).isEqualTo("platform");
@@ -623,7 +626,7 @@ public class Kubernetes_model_certificatesTest {
                 .addToAdditionalProperties("source", "constructor-test")
                 .build();
 
-        assertThat(list.getApiVersion()).isEqualTo("certificates.k8s.io/v1alpha1");
+        assertThat(list.getApiVersion()).isEqualTo("certificates.k8s.io/v1beta1");
         assertThat(list.getKind()).isEqualTo("PodCertificateRequestList");
         assertThat(list.getMetadata().getContinue()).isEqualTo("pod-continue");
         assertThat(list.getItems()).extracting(item -> item.getMetadata().getName())
@@ -783,7 +786,7 @@ public class Kubernetes_model_certificatesTest {
         assertThat(discoveredApiKinds)
                 .contains("certificates.k8s.io/v1/CertificateSigningRequest")
                 .contains("certificates.k8s.io/v1alpha1/ClusterTrustBundle")
-                .contains("certificates.k8s.io/v1alpha1/PodCertificateRequest")
+                .contains("certificates.k8s.io/v1beta1/PodCertificateRequest")
                 .contains("certificates.k8s.io/v1beta1/CertificateSigningRequest")
                 .contains("certificates.k8s.io/v1beta1/ClusterTrustBundle");
     }
