@@ -26,11 +26,16 @@ import org.junit.jupiter.api.TestMethodOrder;
 public class EnumTest {
     private static final String ENUM_CLASS_NAME = "io.sundr.deps.org.apache.commons.lang.enum.Enum";
     private static final String ENUM_INTERNAL_NAME = "io/sundr/deps/org/apache/commons/lang/enum/Enum";
+    private static final String ENUMS_INTERNAL_NAME = "io/sundr/deps/org/apache/commons/lang/enums/Enum";
     private static final String ENUM_UTILS_CLASS_NAME = "io.sundr.deps.org.apache.commons.lang.enum.EnumUtils";
     private static final String GENERATED_ENUM_CLASS =
             "io_sundr.sundr_codegen_velocity_nodeps.GeneratedSundrEnumValue";
     private static final String GENERATED_ENUM_INTERNAL_NAME =
             "io_sundr/sundr_codegen_velocity_nodeps/GeneratedSundrEnumValue";
+    private static final String GENERATED_ENUMS_CLASS =
+            "io_sundr.sundr_codegen_velocity_nodeps.GeneratedSundrEnumsValue";
+    private static final String GENERATED_ENUMS_INTERNAL_NAME =
+            "io_sundr/sundr_codegen_velocity_nodeps/GeneratedSundrEnumsValue";
 
     @Order(1)
     @Test
@@ -99,6 +104,25 @@ public class EnumTest {
         assertThat(alpha.getName()).isEqualTo("alpha");
     }
 
+    @Order(5)
+    @Test
+    public void equalsAndCompareToReadEnumNameAcrossClassLoaders() throws Exception {
+        try {
+            byte[] classBytes = generatedEnumsConstructorOnlyBytes();
+            ByteArrayClassLoader firstLoader = new ByteArrayClassLoader(EnumTest.class.getClassLoader());
+            ByteArrayClassLoader secondLoader = new ByteArrayClassLoader(EnumTest.class.getClassLoader());
+            Enum first = newGeneratedEnumsValue(firstLoader, classBytes, "alpha");
+            Enum second = newGeneratedEnumsValue(secondLoader, classBytes, "alpha");
+
+            assertThat(first).isEqualTo(second);
+            assertThat(first.compareTo(second)).isZero();
+        } catch (Error error) {
+            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+                throw error;
+            }
+        }
+    }
+
     private static byte[] generatedEnumBytes() throws IOException {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(bytes);
@@ -147,6 +171,45 @@ public class EnumTest {
         out.writeInt(2);
         out.writeShort(20);
         return bytes.toByteArray();
+    }
+
+    private static byte[] generatedEnumsConstructorOnlyBytes() throws IOException {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream out = new DataOutputStream(bytes);
+        out.writeInt(0xCAFEBABE);
+        out.writeShort(0);
+        out.writeShort(49);
+        out.writeShort(12);
+        writeUtf8(out, GENERATED_ENUMS_INTERNAL_NAME);
+        writeClass(out, 1);
+        writeUtf8(out, ENUMS_INTERNAL_NAME);
+        writeClass(out, 3);
+        writeUtf8(out, "<init>");
+        writeUtf8(out, "(Ljava/lang/String;)V");
+        writeNameAndType(out, 5, 6);
+        writeMethodRef(out, 4, 7);
+        writeUtf8(out, "Code");
+        writeUtf8(out, "SourceFile");
+        writeUtf8(out, "GeneratedSundrEnumsValue.java");
+        out.writeShort(0x0031);
+        out.writeShort(2);
+        out.writeShort(4);
+        out.writeShort(0);
+        out.writeShort(0);
+        out.writeShort(1);
+        writeMethod(out, 0x0001, 5, 6, new byte[] {(byte) 0x2A, (byte) 0x2B, (byte) 0xB7, 0, 8, (byte) 0xB1},
+                2, 2);
+        out.writeShort(1);
+        out.writeShort(10);
+        out.writeInt(2);
+        out.writeShort(11);
+        return bytes.toByteArray();
+    }
+
+    private static Enum newGeneratedEnumsValue(ByteArrayClassLoader classLoader, byte[] classBytes, String name)
+            throws Exception {
+        Class<?> generatedEnumClass = classLoader.define(GENERATED_ENUMS_CLASS, classBytes);
+        return (Enum) generatedEnumClass.getConstructor(String.class).newInstance(name);
     }
 
     private static void writeUtf8(DataOutputStream out, String value) throws IOException {
@@ -204,7 +267,11 @@ public class EnumTest {
         }
 
         private Class<?> define(byte[] classBytes) {
-            return defineClass(GENERATED_ENUM_CLASS, classBytes, 0, classBytes.length);
+            return define(GENERATED_ENUM_CLASS, classBytes);
+        }
+
+        private Class<?> define(String className, byte[] classBytes) {
+            return defineClass(className, classBytes, 0, classBytes.length);
         }
     }
 
