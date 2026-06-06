@@ -1,0 +1,140 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.glassfish.jersey.core:jersey-server:3.0.8
+Command: `/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 3 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :compileTestJava
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+
+> Task :test FAILED
+
+WadlGeneratorLoaderTest > createWadlGeneratorConfiguresPropertiesWithSupportedConversions() FAILED
+    jakarta.ws.rs.ProcessingException: Could not load wadl generators from wadlGeneratorDescriptions.
+        at app//org.glassfish.jersey.server.wadl.config.WadlGeneratorConfig.createWadlGenerator(WadlGeneratorConfig.java:155)
+        at app//org_glassfish_jersey_core.jersey_server.WadlGeneratorLoaderTest.createWadlGeneratorConfiguresPropertiesWithSupportedConversions(WadlGeneratorLoaderTest.java:48)
+
+        Caused by:
+        java.lang.NullPointerException: Cannot invoke "org.glassfish.jersey.internal.inject.InjectionManager.getInstance(java.lang.Class)" because "injectionManager" is null
+            at org.glassfish.jersey.internal.inject.Injections.getOrCreate(Injections.java:105)
+            at org.glassfish.jersey.server.wadl.config.WadlGeneratorLoader.loadWadlGenerator(WadlGeneratorLoader.java:119)
+            at org.glassfish.jersey.server.wadl.config.WadlGeneratorLoader.loadWadlGeneratorDescriptions(WadlGeneratorLoader.java:100)
+            at org.glassfish.jersey.server.wadl.config.WadlGeneratorConfig.createWadlGenerator(WadlGeneratorConfig.java:153)
+            ... 1 more
+
+WadlGeneratorLoaderTest > classpathFilePropertyReportsMissingResource() FAILED
+    org.opentest4j.AssertionFailedError: 
+    Expecting a root cause with message:
+      "The file '/missing-wadl-loader-resource.xml' does not exist in the classpath. It's loaded by the generator class, so if you use a relative filename it's relative to the generator class, otherwise you might want to load it via an absolute classpath reference like classpath:/somefile.xml"
+    but message was:
+      "Cannot invoke "org.glassfish.jersey.internal.inject.InjectionManager.getInstance(java.lang.Class)" because "injectionManager" is null".
+    Throwable that failed the check:
+
+    jakarta.ws.rs.ProcessingException: Could not load wadl generators from wadlGeneratorDescriptions.
+    	at org.glassfish.jersey.server.wadl.config.WadlGeneratorConfig.createWadlGenerator(WadlGeneratorConfig.java:155)
+    	at org_glassfish_jersey_core.jersey_server.WadlGeneratorLoaderTest.lambda$classpathFilePropertyReportsMissingResource$0(WadlGeneratorLoaderTest.java:66)
+    	at org.assertj.core.api.ThrowableAssert.catchThrowable(ThrowableAssert.java:63)
+    	at org.assertj.core.api.AssertionsForClassTypes.catchThrowable(AssertionsForClassTypes.java:878)
+    	at org.assertj.core.api.Assertions.catchThrowable(Assertions.java:1337)
+    	at org.assertj.core.api.Assertions.assertThatThrownBy(Assertions.java:1181)
+    	at org_glassfish_jersey_core.jersey_server.WadlGeneratorLoaderTest.classpathFilePropertyReportsMissingResource(WadlGeneratorLoaderTest.java:66)
+    	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+    	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+    	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+    	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+    	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+    	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+    	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+    	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+    	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+    	at java.base/java.lang.Thread.run(Thread.java:1474)
+    Caused by: java.lang.NullPointerException: Cannot invoke "org.glassfish.jersey.internal.inject.InjectionManager.getInstance(java.lang.Class)" because "injectionManager" is null
+    	at org.glassfish.jersey.internal.inject.Injections.getOrCreate(Injections.java:105)
+    	at org.glassfish.jersey.server.wadl.config.WadlGeneratorLoader.loadWadlGenerator(WadlGeneratorLoader.java:119)
+    	at org.glassfish.jersey.server.wadl.config.WadlGeneratorLoader.loadWadlGeneratorDescriptions(WadlGeneratorLoader.java:100)
+    	at org.glassfish.jersey.server.wadl.config.WadlGeneratorConfig.createWadlGenerator(WadlGeneratorConfig.java:153)
+    	... 16 more
+        at java.base@25.0.3/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+        at java.base@25.0.3/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+        at app//org_glassfish_jersey_core.jersey_server.WadlGeneratorLoaderTest.classpathFilePropertyReportsMissingResource(WadlGeneratorLoaderTest.java:69)
+
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9/tests/src/org.glassfish.jersey.core/jersey-server/3.0.8/build/reports/problems/problems-report.html3 tests completed, 2 failed
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9/tests/src/org.glassfish.jersey.core/jersey-server/3.0.8/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 9s
+14 actionable tasks: 3 executed, 11 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.glassfish.jersey.core:jersey-server:3.0.8 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 10s
+9 actionable tasks: 1 executed, 8 up-to-date

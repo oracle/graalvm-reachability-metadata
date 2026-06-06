@@ -1,0 +1,3264 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e9e50-9b41-7e92-9bd3-fcababa916bc
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.glassfish.jersey.core:jersey-server:3.0.8
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "3.0.8" when "$version$" is replaced with "3.0.8".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "org.glassfish.jersey.core:jersey-server:3.0.8".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.0.8".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven Central and the upstream Jersey repository, then update the JSON in place with the version-tokenized URLs.
+web search: 
+web search: Maven Central org.glassfish.jersey.core jersey-server 3.0.8 pom scm url
+web search: 
+web search: https://repo1.maven.org/maven2/org/glassfish/jersey/core/jersey-server/3.0.8/
+codex
+Maven Central has the 3.0.8 binary, sources, and javadoc artifacts, but no obvious test artifact in the version directory. I’m checking the repo’s existing metadata style now so the URLs match local conventions.
+exec
+/usr/bin/bash -lc 'pwd && ls build/discovered-artifact-metadata | head' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9
+org.glassfish.jersey.core-jersey-server-3.0.8.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9
+ succeeded in 0ms:
+{
+  "coordinates" : "org.glassfish.jersey.core:jersey-server:3.0.8"
+}
+
+exec
+/usr/bin/bash -lc "rg '\"repository-url\": \"https://github.com/eclipse-ee4j/jersey' -n build/discovered-artifact-metadata metadata | head -20" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg 'javadoc.io/doc/org.glassfish.jersey|jersey.*documentation-url|jersey-server' -n build/discovered-artifact-metadata metadata | head -50" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json:2:  "coordinates" : "org.glassfish.jersey.core:jersey-server:3.0.8"
+
+web search: 
+web search: site:repo1.maven.org/maven2/org/glassfish/jersey/core/jersey-server/3.0.8 jersey-server-3.0.8.pom
+web search: 
+web search: https://repo1.maven.org/maven2/org/glassfish/jersey/core/jersey-server/3.0.8/
+codex
+The local tree only has the placeholder JSON, so there is no existing Jersey entry to mirror. I’m going to use the Maven POM for the upstream SCM fields and probe the tag paths directly before editing.
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://repo1.maven.org/maven2/org/glassfish/jersey/core/jersey-server/3.0.8/jersey-server-3.0.8-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 19:02:54 GMT
+content-type: application/java-archive
+content-length: 1435648
+cf-ray: a079ac906ec09a60-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 243203
+etag: "810ce7e54cdb8a1f2c1bc509aba3343a"
+last-modified: Thu, 01 Sep 2022 09:20:34 GMT
+x-checksum-md5: 810ce7e54cdb8a1f2c1bc509aba3343a
+x-checksum-sha1: 0f0d1d49cd54629fb583b5f9f7451dfe4d613a5d
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://github.com/eclipse-ee4j/jersey/tree/3.0.8/core-server/src/test' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://github.com/eclipse-ee4j/jersey/tree/3.0.8/core-server/src/main/java' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://repo1.maven.org/maven2/org/glassfish/jersey/core/jersey-server/3.0.8/jersey-server-3.0.8-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/glassfish/jersey/core/jersey-server/3.0.8/jersey-server-3.0.8.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9
+ succeeded in 179ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 19:02:54 GMT
+content-type: application/java-archive
+content-length: 795292
+cf-ray: a079ac907ad401f4-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "22609006fd48ef7f7890cc74c7c5660e"
+last-modified: Thu, 01 Sep 2022 09:20:34 GMT
+x-checksum-md5: 22609006fd48ef7f7890cc74c7c5660e
+x-checksum-sha1: 780c3ad128cdbd9954d4d3d7c43bc991598b46b7
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 270ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2010, 2022 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.glassfish.jersey</groupId>
+        <artifactId>project</artifactId>
+        <version>3.0.8</version>
+    </parent>
+
+    <groupId>org.glassfish.jersey.core</groupId>
+    <artifactId>jersey-server</artifactId>
+    <packaging>jar</packaging>
+    <name>jersey-core-server</name>
+
+    <description>Jersey core server implementation</description>
+
+    <licenses>
+        <license>
+            <name>EPL 2.0</name>
+            <url>http://www.eclipse.org/legal/epl-2.0</url>
+            <distribution>repo</distribution>
+            <comments>Except for Guava, JSR-166 files, Dropwizard Monitoring inspired classes, ASM and Jackson JAX-RS Providers.
+                See also https://github.com/eclipse-ee4j/jersey/blob/master/NOTICE.md</comments>
+        </license>
+        <license>
+            <name>The GNU General Public License (GPL), Version 2, With Classpath Exception</name>
+            <url>https://www.gnu.org/software/classpath/license.html</url>
+            <distribution>repo</distribution>
+            <comments>Except for Dropwizard Monitoring inspired classes and ASM.
+                See also https://github.com/eclipse-ee4j/jersey/blob/master/NOTICE.md</comments>
+        </license>
+        <license>
+            <name>Apache License, 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+            <comments>Dropwizard Monitoring inspired classes @ org.glassfish.jersey.server.internal.monitoring.core</comments>
+        </license>
+        <license>
+            <name>Modified BSD</name>
+            <url>https://asm.ow2.io/license.html</url>
+            <distribution>repo</distribution>
+            <comments>ASM @ jersey.repackaged.org.objectweb.asm</comments>
+        </license>
+    </licenses>
+
+    <build>
+        <testResources>
+            <testResource>
+                <directory>${basedir}/src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+
+        <plugins>
+            <plugin>
+                <groupId>com.sun.istack</groupId>
+                <artifactId>istack-commons-maven-plugin</artifactId>
+                <inherited>true</inherited>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <inherited>true</inherited>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <inherited>true</inherited>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <!-- Note: When you're changing these properties change them also in bundles/jaxrs-ri/pom.xml. -->
+                        <Export-Package>
+                            org.glassfish.jersey.server.*;version=${project.version},
+                            com.sun.research.ws.wadl.*;version=${project.version}
+                        </Export-Package>
+                        <Import-Package>
+                            ${jakarta.annotation.osgi.version},
+                            jakarta.xml.bind;version="!";resolution:=optional,
+                            jakarta.xml.bind.annotation;version="!";resolution:=optional,
+                            jakarta.xml.bind.annotation.adapters;version="!";resolution:=optional,
+                            javax.xml.namespace;resolution:=optional,
+                            javax.xml.parsers;resolution:=optional,
+                            javax.xml.transform;resolution:=optional,
+                            javax.xml.transform.sax;resolution:=optional,
+                            javax.xml.transform.stream;resolution:=optional,
+                            jakarta.validation.*;resolution:=optional;version="[3,4)",
+                            *
+                        </Import-Package>
+                    </instructions>
+                    <unpackBundle>true</unpackBundle>
+                </configuration>
+            </plugin>
+            <plugin>
+                <!--
+                Note: If you need to re-generate WADL classes do so by invoking:
+
+                    mvn com.sun.tools.xjc.maven2:maven-jaxb-plugin:generate
+                -->
+                <groupId>com.sun.tools.xjc.maven2</groupId>
+                <artifactId>maven-jaxb-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>jakarta.xml.bind</groupId>
+                        <artifactId>jakarta.xml.bind-api</artifactId>
+                        <version>${jakarta.jaxb.api.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.sun.xml.bind</groupId>
+                        <artifactId>jaxb-impl</artifactId>
+                        <version>${jaxb.ri.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.sun.xml.bind</groupId>
+                        <artifactId>jaxb-xjc</artifactId>
+                        <version>${jaxb.ri.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <generateDirectory>${basedir}/src/main/java</generateDirectory>
+                    <generatePackage>com.sun.research.ws.wadl</generatePackage>
+                    <catalog>${basedir}/etc/catalog.xml</catalog>
+                    <schemaDirectory>${basedir}/etc</schemaDirectory>
+                    <includeSchemas>
+                        <includeSchema>wadl.xsd</includeSchema>
+                    </includeSchemas>
+                    <removeOldOutput>true</removeOldOutput>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!-- Execute test classes in parallel - 1 thread per CPU core. -->
+                    <parallel>classes</parallel>
+                    <perCoreThreadCount>true</perCoreThreadCount>
+                    <threadCount>1</threadCount>
+                    <forkCount>1C</forkCount>
+                    <reuseForks>true</reuseForks>
+                    <systemPropertiesFile>${project.basedir}/etc/systemPropertiesFile</systemPropertiesFile>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.inject</groupId>
+            <artifactId>jakarta.inject-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-osgi</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-jaxb</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-vfs</artifactId>
+            <version>3.2.6.Final</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>securityOff</id>
+            <properties>
+                <surefire.security.argline />
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/SecurityManagerConfiguredTest.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>sonar</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <!-- disable parallel execution so that JaCoCo listener can properly work -->
+                            <parallel>none</parallel>
+                            <perCoreThreadCount>false</perCoreThreadCount>
+                            <forkCount>1</forkCount>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>shade-archive</id>
+                                <phase>none</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <properties>
+        <surefire.security.argline>-Djava.security.manager -Djava.security.policy=${project.build.directory}/test-classes/server.policy</surefire.security.argline>
+    </properties>
+
+</project>
+
+ succeeded in 495ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 19:02:55 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"479a9124bc1ad2687ba3809ebb77c5f1"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=uZVYCXR2238vhBIcubNzyYEp8Fydw%2F1wDbaw%2B6Yo9jxeFh8IShawZ%2BVavkurZZSxsIqiqQuzTT3vqjyYCsvm9%2BxzpLbBf4rEVvVbNkGSK%2Fy0b1VyWP1MF%2FXmHxIxTxlu0UmV%2BoGW%2Bp%2BDm0N40aQJLIAJAYDNj2%2F2bq244VaSPjDD%2FtT6K7M%2Bndx6G%2B0iHhoFx39%2FMfTwrdGUYuSs4wSEhnVb%2FWEZ0qr2apoIbtapLTULiRos8E1fPsapwy0vv%2FlJOHEYKMvYRKHZAhCmAodiiw%3D%3D--ZVv2HRfuBdTAFSxH--Dg13RObgKJaArUMRyyigLg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1171118819.1780772574; expires=Sun, 06 Jun 2027 19:02:54 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 06 Jun 2027 19:02:54 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6205:84CEA:57B522:49A847:6A246EDE
+
+
+ succeeded in 591ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 19:02:55 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"24f0fa1a4a66a0a4ac2648d00f55517d"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=RMO36YC%2Fq%2FDDH71eQRn7OmU1B4OT%2BHzvNud%2Boj%2FCoRl%2Fubx07ClISCsgnQkMHkv011QBHtWWr2XM9mFYRojaHZ%2BwwKhxpVXtDtdiWnXc%2BKnwBKkPIVzCZ%2FrkmGmfKkw6G9sH7Z4lbibuF8sz3RkeyIc5cenugdEVGD9xJwxQHXQGmXhORa5%2BalFo5hlSSnPsO8kfv4Z8Jg%2FqaViCBmzCIRKjNfnw5CGSUHQc1gEcE2ZTX%2B2Fh1fC26kx7Oz2A6ztOTMlj0NzfoJacV2Ao3g0Ew%3D%3D--AU4DmFSqWnuiect%2B--v0wQs6is6wCtjqRDiSfAPw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1731294421.1780772574; expires=Sun, 06 Jun 2027 19:02:54 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 06 Jun 2027 19:02:54 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6206:9603F:5A6FC2:4BA00C:6A246EDE
+
+
+codex
+The artifact POM confirms this is a normal JVM `jar` package and uses only Java/Jakarta dependencies, so it does not need a `language` entry and it is still applicable to Native Image metadata. I’m checking the parent POM for the canonical repository root and release tag conventions.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/glassfish/jersey/project/3.0.8/project-3.0.8.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2010, 2022 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.eclipse.ee4j</groupId>
+        <artifactId>project</artifactId>
+        <version>1.0.7</version>
+    </parent>
+
+    <groupId>org.glassfish.jersey</groupId>
+    <artifactId>project</artifactId>
+    <packaging>pom</packaging>
+    <version>3.0.8</version>
+    <name>jersey</name>
+    <description>
+        Eclipse Jersey is the open source (under dual EPL+GPL license) Jakarta RESTful WebServices 3.0
+        production quality Reference Implementation for building RESTful Web Services.
+    </description>
+
+    <url>https://projects.eclipse.org/projects/ee4j.jersey</url>
+
+    <!-- prerequisites -->
+
+    <issueManagement>
+        <system>JIRA</system>
+        <url>https://github.com/eclipse-ee4j/jersey/issues</url>
+    </issueManagement>
+
+    <ciManagement>
+        <system>Hudson</system>
+        <url>http://hudson.glassfish.org/job/Jersey-trunk-multiplatform/</url>
+    </ciManagement>
+
+    <inceptionYear>2010</inceptionYear>
+
+    <mailingLists>
+        <mailingList>
+            <name>Users List</name>
+            <post>jersey-dev@eclipse.org</post>
+        </mailingList>
+    </mailingLists>
+
+    <developers>
+        <developer>
+            <name>Jorge Bescos Gascon</name>
+            <organization>Oracle Corporation</organization>
+            <organizationUrl>http://www.oracle.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Lukas Jungmann</name>
+            <organization>Oracle Corporation</organization>
+            <organizationUrl>http://www.oracle.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Dmitry Kornilov</name>
+            <organization>Oracle Corporation</organization>
+            <organizationUrl>http://www.oracle.com/</organizationUrl>
+            <url>https://dmitrykornilov.net</url>
+        </developer>
+        <developer>
+            <name>David Kral</name>
+            <organization>Oracle Corporation</organization>
+            <organizationUrl>http://www.oracle.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Tomas Kraus</name>
+            <organization>Oracle Corporation</organization>
+            <organizationUrl>http://www.oracle.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Tomas Langer</name>
+            <organization>Oracle Corporation</organization>
+            <organizationUrl>http://www.oracle.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Maxim Nesen</name>
+            <organization>Oracle Corporation</organization>
+            <organizationUrl>http://www.oracle.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Santiago Pericas-Geertsen</name>
+            <organization>Oracle Corporation</organization>
+            <organizationUrl>http://www.oracle.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Jan Supol</name>
+            <organization>Oracle Corporation</organization>
+            <organizationUrl>http://www.oracle.com/</organizationUrl>
+            <url>http://blog.supol.info</url>
+        </developer>
+    </developers>
+
+    <contributors>
+        <contributor>
+            <name>Petr Bouda</name>
+        </contributor>
+        <contributor>
+            <name>Pavel Bucek</name>
+            <organization>Oracle Corporation</organization>
+            <url>http://u-modreho-kralika.net/</url>
+        </contributor>
+        <contributor>
+            <name>Michal Gajdos</name>
+            <url>http://blog.dejavu.sk</url>
+        </contributor>
+        <contributor>
+            <name>Petr Janouch</name>
+        </contributor>
+        <contributor>
+            <name>Libor Kramolis</name>
+        </contributor>
+        <contributor>
+            <name>Adam Lindenthal</name>
+        </contributor>
+        <contributor>
+            <name>Jakub Podlesak</name>
+            <organization>Oracle Corporation</organization>
+            <organizationUrl>http://www.oracle.com/</organizationUrl>
+        </contributor>
+        <contributor>
+            <name>Marek Potociar</name>
+        </contributor>
+        <contributor>
+            <name>Stepan Vavra</name>
+        </contributor>
+    </contributors>
+
+    <licenses>
+        <license>
+            <name>EPL 2.0</name>
+            <url>http://www.eclipse.org/legal/epl-2.0</url>
+            <distribution>repo</distribution>
+            <comments>Except for 3rd content and examples.
+                      See also https://github.com/eclipse-ee4j/jersey/blob/master/NOTICE.md</comments>
+        </license>
+        <license>
+            <name>GPL2 w/ CPE</name>
+            <url>https://www.gnu.org/software/classpath/license.html</url>
+            <distribution>repo</distribution>
+            <comments>Except for 3rd content and examples.
+                      See also https://github.com/eclipse-ee4j/jersey/blob/master/NOTICE.md</comments>
+        </license>
+        <license>
+            <name>EDL 1.0</name>
+            <url>http://www.eclipse.org/org/documents/edl-v10.php</url>
+            <distribution>repo</distribution>
+            <comments>The examples except bookstore-webapp example</comments>
+        </license>
+        <license>
+            <name>BSD 2-Clause</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+            <distribution>repo</distribution>
+            <comments>The bookstore-webapp example</comments>
+        </license>
+        <license>
+            <name>Apache License, 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+            <comments>Google Guava @ org.glassfish.jersey.internal.guava,
+                      Dropwizard Monitoring inspired classes @ org.glassfish.jersey.server.internal.monitoring.core,
+                      Hibernate Validation classes @ org.glassfish.jersey.server.validation.internal.hibernate, and
+                      Jackson JAX-RS Providers @ org.glassfish.jersey.jackson.internal.jackson.jaxrs</comments>
+        </license>
+        <license>
+            <name>Public Domain</name>
+            <url>https://creativecommons.org/publicdomain/zero/1.0/</url>
+            <distribution>repo</distribution>
+            <comments>JSR-166 Extension to JEP 266 @ org.glassfish.jersey.internal.jsr166</comments>
+        </license>
+        <license>
+            <name>Modified BSD</name>
+            <url>https://asm.ow2.io/license.html</url>
+            <distribution>repo</distribution>
+            <comments>ASM @ jersey.repackaged.org.objectweb.asm</comments>
+        </license>
+        <license>
+            <name>jQuery license</name>
+            <url>jquery.org/license</url>
+            <distribution>repo</distribution>
+            <comments>jQuery v1.12.4</comments>
+        </license>
+        <license>
+            <name>MIT license</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <distribution>repo</distribution>
+            <comments>AngularJS, Bootstrap v3.3.7,
+                      jQuery Barcode plugin 0.3, KineticJS v4.7.1</comments>
+        </license>
+        <license>
+            <name>W3C license</name>
+            <url>https://www.w3.org/Consortium/Legal/copyright-documents-19990405</url>
+            <distribution>repo</distribution>
+            <comments>Content of core-server/etc</comments>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git@github.com:jersey/jersey.git</connection>
+        <developerConnection>scm:git:git@github.com:eclipse-ee4j/jersey.git</developerConnection>
+        <url>https://github.com/eclipse-ee4j/jersey</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <organization>
+        <name>Eclipse Foundation</name>
+        <url>https://www.eclipse.org/org/foundation/</url>
+    </organization>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.glassfish.jersey.tools.plugins</groupId>
+                    <artifactId>jersey-doc-modulelist-maven-plugin</artifactId>
+                    <version>1.0.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>${enforcer.version}</version>
+                    <executions>
+                        <execution>
+                            <id>enforce-versions</id>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <requireJavaVersion>
+                                        <version>${java.version}</version>
+                                    </requireJavaVersion>
+                                    <dependencyConvergence/>
+                                </rules>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.0.0</version>
+                    <executions>
+                        <execution>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>add-source</goal>
+                            </goals>
+                            <configuration>
+                                <sources>
+                                    <source>${project.build.directory}/generated-sources/rsrc-gen</source>
+                                </sources>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <phase>initialize</phase>
+                            <id>parse-version</id>
+                            <goals>
+                                <goal>parse-version</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>com.sun.istack</groupId>
+                    <artifactId>istack-commons-maven-plugin</artifactId>
+                    <version>3.0.8</version>
+                    <executions>
+                        <execution>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>rs-gen</goal>
+                            </goals>
+                            <configuration>
+                                <resources>
+                                    <directory>${basedir}/src/main/resources</directory>
+                                    <includes>
+                                        <include>**/localization.properties</include>
+                                    </includes>
+                                </resources>
+                                <destDir>${project.build.directory}/generated-sources/rsrc-gen</destDir>
+                                <localizationUtilitiesPkgName>org.glassfish.jersey.internal.l10n</localizationUtilitiesPkgName>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>2.5</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.0</version>
+                    <inherited>true</inherited>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                        <compilerArguments>
+                            <!--<Werror />-->
+                            <!-- TODO work towards eliminating all warnings in order to be able to enable the -Xlint option -->
+                            <!--Xlint/-->
+                        </compilerArguments>
+                        <showWarnings>false</showWarnings>
+                        <fork>false</fork>
+                        <excludes>
+                            <exclude>module-info.java</exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>2.5.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>2.6</version>
+                    <extensions>true</extensions>
+                    <!-- Add legal information, NOTICE.md and LINCENSE.md to jars -->
+                    <executions>
+                        <execution>
+                            <!-- copy the files to classes folder for maven-jar/war-plugin to grab it -->
+                            <id>copy-legaldocs</id>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <phase>process-sources</phase>
+                            <configuration>
+                                <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                                <resources>
+                                    <resource>
+                                        <directory>${legal.source.folder}</directory>
+                                        <targetPath>META-INF/</targetPath>
+                                        <includes>
+                                            <include>NOTICE.md</include>
+                                            <include>LICENSE.md</include>
+                                        </includes>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <!-- copy the files to source folder for maven-source-plugin to grab it -->
+                            <id>copy-legaldocs-to-sources</id>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <phase>process-sources</phase>
+                            <configuration>
+                                <outputDirectory>${project.build.directory}/generated-sources/rsrc-gen</outputDirectory>
+                                <resources>
+                                    <resource>
+                                        <directory>${legal.source.folder}</directory>
+                                        <targetPath>META-INF/</targetPath>
+                                        <includes>
+                                            <include>NOTICE.md</include>
+                                            <include>LICENSE.md</include>
+                                        </includes>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <!-- copy the files to legal folder for felix plugin to grab it -->
+                            <id>copy-legaldocs-to-osgi-bundles</id>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <phase>process-sources</phase>
+                            <configuration>
+                                <outputDirectory>${project.build.directory}/legal</outputDirectory>
+                                <resources>
+                                    <resource>
+                                        <directory>${legal.source.folder}</directory>
+                                        <targetPath>META-INF/</targetPath>
+                                        <includes>
+                                            <include>NOTICE.md</include>
+                                            <include>LICENSE.md</include>
+                                        </includes>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${surefire.version}</version>
+                    <configuration>
+                        <!-- print full stack trace if error -->
+                        <trimStackTrace>false</trimStackTrace>
+                        <!-- for convenience reasons, 'argLine' should not be overridden in child poms. if needed, a property should be declared and used here -->
+                        <argLine>
+                            -Xmx${surefire.maxmem.argline}m -Dfile.encoding=UTF8 ${surefire.security.argline} ${surefire.coverage.argline}
+                        </argLine>
+                        <skipTests>${skip.tests}</skipTests>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.maven.surefire</groupId>
+                            <artifactId>surefire-logger-api</artifactId>
+                            <version>${surefire.version}</version>
+                            <!-- to get around bug https://github.com/junit-team/junit5/issues/1367 -->
+                            <optional>true</optional>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.maven.surefire</groupId>
+                            <artifactId>surefire-api</artifactId>
+                            <version>${surefire.version}</version>
+                            <optional>true</optional>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>2.4</version>
+                    <configuration>
+                        <tarLongFileMode>gnu</tarLongFileMode>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.1.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.2.0</version>
+                    <configuration>
+                        <doctitle>Jersey ${jersey.version} API Documentation</doctitle>
+                        <windowtitle>Jersey ${jersey.version} API</windowtitle>
+                        <bottom>
+                            <![CDATA[Copyright &#169; 2007-2021,
+                                <a href="http://www.oracle.com">Oracle</a>
+                                and/or its affiliates.
+                                All Rights Reserved. Use is subject to license terms.]]>
+                        </bottom>
+                        <links>
+                            <link>https://jakartaee.github.io/rest/apidocs/3.0.0/</link>
+                            <link>https://javaee.github.io/hk2/apidocs/</link>
+                        </links>
+                        <excludePackageNames>
+                            *.internal.*:*.tests.*
+                        </excludePackageNames>
+                        <sourceFileExcludes>
+                            <exclude>bundles/**</exclude>
+                            <fileExclude>module-info.java</fileExclude>
+                        </sourceFileExcludes>
+                        <verbose>true</verbose>
+                        <doclint>none</doclint>
+                        <maxmemory>256m</maxmemory>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>attach-javadocs</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.0.1</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.8.1</version>
+                    <configuration>
+                        <retryFailedDeploymentCount>10</retryFailedDeploymentCount>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.ops4j.pax.exam</groupId>
+                    <artifactId>maven-paxexam-plugin</artifactId>
+                    <version>${paxexam.mvn.plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>generate-config</id>
+                            <goals>
+                                <goal>generate-depends-file</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <options>
+                            <platform>felix</platform>
+                        </options>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.7.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>1.2.1</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>java</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jxr-plugin</artifactId>
+                    <version>2.3</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>jxr</goal>
+                            </goals>
+                            <phase>validate</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>${checkstyle.mvn.plugin.version}</version>
+                    <configuration>
+                        <configLocation>etc/config/checkstyle.xml</configLocation>
+                        <suppressionsLocation>etc/config/checkstyle-suppressions.xml</suppressionsLocation>
+                        <outputFile>${project.build.directory}/checkstyle/checkstyle-result.xml</outputFile>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.puppycrawl.tools</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>${checkstyle.version}</version>
+                            <exclusions>
+                                <!-- MCHECKSTYLE-156 -->
+                                <exclusion>
+                                    <groupId>com.sun</groupId>
+                                    <artifactId>tools</artifactId>
+                                </exclusion>
+                            </exclusions>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>findbugs-maven-plugin</artifactId>
+                    <version>${findbugs.version}</version>
+                    <configuration>
+                        <skip>${findbugs.skip}</skip>
+                        <threshold>${findbugs.threshold}</threshold>
+                        <excludeFilterFile>${findbugs.exclude}</excludeFilterFile>
+                        <xmlOutput>true</xmlOutput>
+                        <findbugsXmlOutput>true</findbugsXmlOutput>
+                        <!-- findbugs detector configuration -->
+                        <jvmArgs>-Dfindbugs.glassfish.logging.validLoggerPrefixes=${findbugs.glassfish.logging.validLoggerPrefixes}</jvmArgs>
+                        <plugins>
+                            <plugin>
+                                <groupId>org.glassfish.findbugs</groupId>
+                                <artifactId>findbugs-logging-detectors</artifactId>
+                                <version>${findbugs.glassfish.version}</version>
+                            </plugin>
+                        </plugins>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.glassfish.findbugs</groupId>
+                            <artifactId>findbugs</artifactId>
+                            <version>${findbugs.glassfish.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>3.0.0-M3</version>
+                    <configuration>
+                        <!-- print full stack trace if error -->
+                        <trimStackTrace>false</trimStackTrace>
+                        <skipTests>${skip.tests}</skipTests>
+                        <skipITs>${skip.tests}</skipITs>
+                        <argLine>${failsafe.coverage.argline}</argLine>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>integration-test</goal>
+                                <goal>verify</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>3.3.1</version>
+                    <configuration>
+                        <failOnMissingWebXml>false</failOnMissingWebXml>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-ear-plugin</artifactId>
+                    <version>2.8</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.glassfish.embedded</groupId>
+                    <artifactId>maven-embedded-glassfish-plugin</artifactId>
+                    <version>3.1.2.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.glassfish.copyright</groupId>
+                    <artifactId>glassfish-copyright-maven-plugin</artifactId>
+                    <configuration>
+                        <excludeFile>etc/config/copyright-exclude</excludeFile>
+                        <!--svn|mercurial|git - defaults to svn-->
+                        <scm>git</scm>
+                        <!-- turn on/off debugging -->
+                        <debug>false</debug>
+                        <!-- skip files not under SCM-->
+                        <scmOnly>true</scmOnly>
+                        <!-- turn off warnings -->
+                        <warn>false</warn>
+                        <!-- for use with repair -->
+                        <update>false</update>
+                        <!-- check that year is correct -->
+                        <ignoreYear>false</ignoreYear>
+                        <templateFile>etc/config/copyright.txt</templateFile>
+                        <bsdTemplateFile>etc/config/edl-copyright.txt</bsdTemplateFile>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>3.5.0</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <instructions>
+                            <_versionpolicy>[$(version;==;$(@)),$(version;+;$(@)))</_versionpolicy>
+                            <_nodefaultversion>false</_nodefaultversion>
+                            <Include-Resource>{maven-resources},${project.build.directory}/legal</Include-Resource>
+                        </instructions>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>osgi-bundle</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>bundle</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>xml-maven-plugin</artifactId>
+                    <version>1.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.sun.tools.xjc.maven2</groupId>
+                    <artifactId>maven-jaxb-plugin</artifactId>
+                    <version>1.1.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>buildnumber-maven-plugin</artifactId>
+                    <version>1.1</version>
+                </plugin>
+                <!-- TODO: remove the old jetty plugin dependencies -->
+                <plugin>
+                    <groupId>org.mortbay.jetty</groupId>
+                    <artifactId>jetty-maven-plugin</artifactId>
+                    <version>8.1.8.v20121106</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-maven-plugin</artifactId>
+                    <version>${jetty.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.glassfish.build</groupId>
+                    <artifactId>gfnexus-maven-plugin</artifactId>
+                    <version>0.16</version>
+                    <configuration>
+                        <stagingRepos>
+                            <stagingRepo>
+                                <!--
+                                    The reference artifact used to identify the right staging repository
+                                -->
+                                <ref>org.glassfish.jersey:project:${project.version}:pom</ref>
+                                <profile>com.sun.jersey</profile>
+                            </stagingRepo>
+                        </stagingRepos>
+                        <!--
+                            Temporary till there is a jersey promotion profile
+                        -->
+                        <promotionProfile>glassfish-integration</promotionProfile>
+                        <message>JERSEY-${project.version}</message>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>2.4.3</version>
+                    <executions>
+                        <execution>
+                            <id>shade-archive</id>
+                            <goals>
+                                <goal>shade</goal>
+                            </goals>
+                            <configuration>
+                                <minimizeJar>false</minimizeJar>
+                                <filters>
+                                    <filter>
+                                        <artifact>*:*</artifact>
+                                        <excludes>
+                                            <exclude>module-info.*</exclude>
+                                        </excludes>
+                                    </filter>
+                                </filters>
+                            </configuration>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <shadeTestJar>false</shadeTestJar>
+                        <minimizeJar>true</minimizeJar>
+                        <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+                        <!-- Do not create reduced pom - jaxrs-ri cannot be built when set to true -->
+                        <createDependencyReducedPom>false</createDependencyReducedPom>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>3.0.0</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.ant</groupId>
+                            <artifactId>ant</artifactId>
+                            <version>1.10.11</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.fortasoft</groupId>
+                    <artifactId>gradle-maven-plugin</artifactId>
+                    <version>1.0.5</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.wvengen</groupId>
+                    <artifactId>proguard-maven-plugin</artifactId>
+                    <version>2.0.8</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>net.sf.proguard</groupId>
+                            <artifactId>proguard-base</artifactId>
+                            <version>5.1</version><!-- transitive dependency version increased from 5.0 -->
+                            <scope>runtime</scope>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.commonjava.maven.plugins</groupId>
+                <artifactId>directory-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <id>directories</id>
+                        <goals>
+                            <goal>highest-basedir</goal>
+                        </goals>
+                        <phase>initialize</phase>
+                        <configuration>
+                            <property>legal.source.folder</property>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.glassfish.jersey.tools.plugins</groupId>
+                <artifactId>jersey-doc-modulelist-maven-plugin</artifactId>
+                <inherited>false</inherited>
+                <configuration>
+                    <outputFileName>docs/src/main/docbook/modules.xml</outputFileName>
+                    <templateFileName>docs/src/main/docbook/inc/modules.src</templateFileName>
+                    <tableHeaderFileName>docs/src/main/docbook/inc/modules_table_header.src</tableHeaderFileName>
+                    <tableFooterFileName>docs/src/main/docbook/inc/modules_table_footer.src</tableFooterFileName>
+                    <tableRowFileName>docs/src/main/docbook/inc/modules_table_row.src</tableRowFileName>
+                    <outputUnmatched>false</outputUnmatched>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+            </plugin>
+        </plugins>
+        <extensions>
+            <extension>
+                <groupId>org.glassfish</groupId>
+                <artifactId>findbugs</artifactId>
+                <version>3.2-b06</version>
+            </extension>
+        </extensions>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>jdk8</id>
+            <activation>
+                <jdk>1.8</jdk>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-compiler-plugin</artifactId>
+                            <inherited>true</inherited>
+                            <configuration>
+                                <source>${java.version}</source>
+                                <target>${java.version}</target>
+                                <excludes>
+                                    <exclude>module-info.java</exclude>
+                                </excludes>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+        <profile>
+            <id>jdk11+</id>
+            <!--
+                JDK 9 & 10 is unsupported (as well as <release>9</release>)
+                module-info for java.xml.bind is taken from JDK (lib/ct.sym/9-modules)
+                and it depends on java.activation which clashes with javax.activation
+            -->
+            <activation>
+                <jdk>[11,)</jdk>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-compiler-plugin</artifactId>
+                            <inherited>true</inherited>
+                            <executions>
+<!-- when module.info
+                                <execution>
+                                    <id>default-compile</id>
+                                    <configuration>
+                                        compile everything to ensure module-info contains right entries
+                                        <release>11</release>
+                                    </configuration>
+                                </execution>
+-->
+                                <execution>
+                                    <id>base-compile</id>
+                                    <goals>
+                                        <goal>compile</goal>
+                                    </goals>
+                                    <!-- recompile everything for target VM except the module-info.java -->
+                                    <configuration>
+                                        <excludes>
+                                            <exclude>module-info.java</exclude>
+                                        </excludes>
+                                        <source>1.8</source>
+                                        <target>1.8</target>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+        <profile>
+            <!-- Use it with release-perform goal to skip another test run. -->
+            <id>testsSkip</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <!-- this is how to align back with maven standards where property 'skipTests' makes maven-surefire-plugin
+                (and also maven-failsafe-plugin) skip tests execution -->
+                <property>
+                    <name>skipTests</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <properties>
+<!--                <release.tests.args>-Dskip.tests=true</release.tests.args>-->
+                <skip.tests>true</skip.tests>
+                <skip.e2e>true</skip.e2e>
+            </properties>
+        </profile>
+        <profile>
+            <id>checkstyleSkip</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <checkstyle.skip>true</checkstyle.skip>
+            </properties>
+        </profile>
+        <profile>
+            <id>findbugsSkip</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <findbugs.skip>true</findbugs.skip>
+            </properties>
+        </profile>
+        <profile> <!-- tests module will be automatically included unless tests.excluded env variable is set -->
+            <id>testsIncluded</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                  <name>!tests.excluded</name>
+                </property>
+            </activation>
+            <modules>
+                <module>tests</module>
+            </modules>
+        </profile>
+        <profile> <!-- examples module will be automatically included unless examples.excluded env variable is set -->
+            <id>examplesIncluded</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>!examples.excluded</name>
+                </property>
+            </activation>
+            <modules>
+                <module>examples</module>
+            </modules>
+        </profile>
+        <profile> <!-- bundles module will be automatically included unless bundles.excluded env variable is set -->
+            <id>bundlesIncluded</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>!bundles.excluded</name>
+                </property>
+            </activation>
+            <modules>
+                <module>bundles</module>
+            </modules>
+        </profile>
+        <profile> <!-- test-framework module will be automatically included unless test-framework.excluded env variable is set -->
+            <id>testFrameworkIncluded</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>!test-framework.excluded</name>
+                </property>
+            </activation>
+            <modules>
+                <module>test-framework</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>pre-release</id>
+            <modules>
+                <module>docs</module>
+            </modules>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>xdk</id>
+            <activation>
+                <property>
+                    <name>xdk</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <!-- add xdk sax parser to the classpath and exclude xerces -->
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <inherited>true</inherited>
+                        <configuration>
+                            <additionalClasspathElements>
+                                <additionalClasspathElement>${xdk.absolute.path}</additionalClasspathElement>
+                            </additionalClasspathElements>
+                            <classpathDependencyExcludes>
+                                <classpathDependencyExcludes>xerces:xercesImpl</classpathDependencyExcludes>
+                            </classpathDependencyExcludes>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <!-- ensure, that the path to the xdk sax parser has been set -->
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <executions>
+                            <execution>
+                               <id>enforce-property</id>
+                               <goals>
+                                   <goal>enforce</goal>
+                               </goals>
+                                <configuration>
+                                    <rules>
+                                        <requireProperty>
+                                            <property>xdk.absolute.path</property>
+                                            <message>Property 'xdk.absolute.path' has to be specified.</message>
+                                            <regex>.*/xmlparserv2.jar$</regex>
+                                            <regexMessage>
+                                                Property 'xdk.absolute.path' has to point to the xdk parser jar (xmlparserv2.jar).
+                                            </regexMessage>
+                                        </requireProperty>
+                                    </rules>
+                                    <fail>true</fail>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>moxy</id>
+            <activation>
+                <property>
+                    <name>moxy</name>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.eclipse.persistence</groupId>
+                    <artifactId>org.eclipse.persistence.moxy</artifactId>
+                    <version>${moxy.version}</version>
+                </dependency>
+            </dependencies>
+            <repositories>
+                <repository>
+                    <id>eclipselink.repository</id>
+                    <name>Eclipse Maven Repository</name>
+                    <url>https://www.eclipse.org/downloads/download.php?r=1&amp;nf=1&amp;file=/rt/eclipselink/maven.repo</url>
+                    <layout>default</layout>
+                </repository>
+            </repositories>
+        </profile>
+        <profile>
+            <id>securityOff</id>
+            <properties>
+                <surefire.security.argline />
+            </properties>
+        </profile>
+        <profile>
+            <id>project-info</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <reporting>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-project-info-reports-plugin</artifactId>
+                        <version>3.1.1</version>
+                        <reportSets>
+                            <reportSet>
+                                <reports>
+                                    <report>dependencies</report>
+                                    <report>index</report>
+                                </reports>
+                            </reportSet>
+                        </reportSets>
+                    </plugin>
+                </plugins>
+            </reporting>
+            <!-- placeholder required for site:stage -->
+            <distributionManagement>
+                <site>
+                    <id>localhost</id>
+                    <url>http://localhost</url>
+                </site>
+            </distributionManagement>
+        </profile>
+        <profile>
+            <id>jdk1.7+</id>
+            <activation>
+                <jdk>[1.7,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>verify</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <!-- Fail the build if checkstyle rules for contributions are not met. -->
+                                    <goal>check</goal>
+                                </goals>
+                                <configuration>
+                                    <configLocation>etc/config/checkstyle-verify.xml</configLocation>
+                                    <consoleOutput>true</consoleOutput>
+                                    <failOnViolation>true</failOnViolation>
+                                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                                    <excludes>**/module-info.java</excludes>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>sonar</id>
+            <properties>
+                <!-- Sonar/Reporting settings (heavily inspired at http://www.aheritier.net/maven-failsafe-sonar-and-jacoco-are-in-a-boat/ -->
+
+                <!-- Tells Sonar to use jacoco for coverage results -->
+                <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+
+                <!-- Don't let Sonar execute tests. We will ask it to Maven -->
+                <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+                <!-- The system property jacoco.outputDir is based on. This won't work for 'sonar:sonar' (see http://jira.codehaus.org/browse/SONAR-3427), as such a property 'jacoco.outputDir' has to be explicitly specified from a command line -->
+                <jacoco.outputDir>${session.executionRootDirectory}/target</jacoco.outputDir>
+                <!-- Tells Sonar where the Jacoco coverage result file is located for Unit Tests -->
+                <sonar.jacoco.reportPath>${jacoco.outputDir}/jacoco.exec</sonar.jacoco.reportPath>
+                <!-- Tells Sonar where the Jacoco coverage result file is located for Integration Tests -->
+                <sonar.jacoco.itReportPath>${jacoco.outputDir}/jacoco-it.exec</sonar.jacoco.itReportPath>
+
+                <!-- Force JaCoCo to show 0% coverage if the report is missing -->
+                <sonar.jacoco.reportMissing.force.zero>true</sonar.jacoco.reportMissing.force.zero>
+
+                <!-- jacoco.agent.*.arg properties are dynamically generated by jacoco:prepare-agent (see bellow) -->
+                <surefire.coverage.argline>${jacoco.agent.ut.arg}</surefire.coverage.argline>
+                <failsafe.coverage.argline>${jacoco.agent.it.arg}</failsafe.coverage.argline>
+
+                <!-- Maven versions -->
+                <jacoco.version>0.7.4.201502262128</jacoco.version>
+                <sonar-jacoco-listeners.version>3.2</sonar-jacoco-listeners.version>
+                <sonar.version>2.6</sonar.version>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.codehaus.sonar-plugins.java</groupId>
+                    <artifactId>sonar-jacoco-listeners</artifactId>
+                    <version>${sonar-jacoco-listeners.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>${jacoco.version}</version>
+                        <executions>
+                            <!-- Prepares a variable, jacoco.agent.ut.arg, that contains the info to be passed to the JVM hosting the code being tested. -->
+                            <execution>
+                                <id>prepare-ut-agent</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                                <configuration>
+                                    <destFile>${sonar.jacoco.reportPath}</destFile>
+                                    <propertyName>jacoco.agent.ut.arg</propertyName>
+                                    <append>true</append>
+                                </configuration>
+                            </execution>
+                            <!-- Prepares a variable, jacoco.agent.it.arg, that contains the info to be passed to the JVM hosting the code being tested. -->
+                            <execution>
+                                <id>prepare-it-agent</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                                <configuration>
+                                    <destFile>${sonar.jacoco.itReportPath}</destFile>
+                                    <propertyName>jacoco.agent.it.arg</propertyName>
+                                    <append>true</append>
+                                </configuration>
+                            </execution>
+
+                            <!-- Generate reports which may not be complete as the execution won't consider tests of projects that weren't executed during the build yet --><!-- The good thing is that with every module built, we're ensured that integrity of both jacoco .exec files was preserved -->
+                            <execution>
+                                <id>jacoco-report-unit-tests</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- Sets the path to the file which contains the execution data. -->
+                                    <dataFile>${sonar.jacoco.reportPath}</dataFile>
+                                    <!-- Sets the output directory for the code coverage report. -->
+                                    <outputDirectory>${project.build.directory}/jacoco</outputDirectory>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>jacoco-report-integration-tests</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>report-integration</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- Sets the path to the file which contains the execution data. -->
+                                    <dataFile>${sonar.jacoco.itReportPath}</dataFile>
+                                    <!-- Sets the output directory for the code coverage report. -->
+                                    <outputDirectory>${project.build.directory}/jacoco-it</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>sonar-maven-plugin</artifactId>
+                            <version>${sonar.version}</version>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-surefire-plugin</artifactId>
+                            <configuration>
+                                <!-- If possible (in some modules, this has to be disabled due to https://jira.sonarsource.com/browse/SONARJAVA-728), enable coverage details per JUnit test -->
+                                <properties>
+                                    <property>
+                                        <name>listener</name>
+                                        <value>org.sonar.java.jacoco.JUnitListener</value>
+                                    </property>
+                                </properties>
+                            </configuration>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-failsafe-plugin</artifactId>
+                            <configuration>
+                                <!-- Enable coverage details per JUnit test -->
+                                <properties>
+                                    <property>
+                                        <name>listener</name>
+                                        <value>org.sonar.java.jacoco.JUnitListener</value>
+                                    </property>
+                                </properties>
+                                <!-- Let's put failsafe reports with surefire to have access to tests failures/success reports in Sonar -->
+                                <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+        <profile>
+            <!--
+            Profile is aimed to run the build on travis
+            due to travis limitations for output (max 4MB) this profile is used along with grep which reduces
+            the output.
+            However some e2e tests produce output which is not grepped (thus is not visible) and run longer than
+            10 minutes which results in the whole build is being murdered by Travis because of death suspection
+
+            the whole build is run as clean install but excludes several e2e tests because of the not grepped output
+            -->
+            <id>travis_e2e_skip</id>
+            <properties>
+                <skip.e2e>true</skip.e2e>
+            </properties>
+        </profile>
+        <profile>
+            <!--
+             Profile is aimed to run the build on travis
+            due to travis limitations for output (max 4MB) this profile is used to run e2e tests only.
+
+            the only thing which is happen using profile is run of e2e tests (with additional build)
+            everything is already build using travis_e2e_skip profile
+
+            the whole build is run as test -Ptravis_e2e
+            -->
+            <id>travis_e2e</id>
+            <properties>
+                <skip.e2e>false</skip.e2e>
+                <skip.tests>true</skip.tests>
+            </properties>
+        </profile>
+        <profile>
+                <!-- Use -Peclipse_repo to use SNAPSHOTs stored in Eclipse's Nexus instance ("Nightly Builds") -->
+                <id>eclipse_repo</id>
+            <repositories>
+                    <repository>
+                        <snapshots>
+                            <enabled>true</enabled>
+                        </snapshots>
+                        <id>repo.jaxrs-api.eclipse.org</id>
+                        <name>JAX-RS API Repository - Snapshots</name>
+                        <url>https://repo.eclipse.org/content/repositories/jax-rs-api-snapshots</url>
+                    </repository>
+                </repositories>
+        </profile>
+        <profile>
+            <id>license_check</id>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>dash-licenses-snapshots</id>
+                    <url>https://repo.eclipse.org/content/repositories/dash-licenses-snapshots/</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.eclipse.dash</groupId>
+                        <artifactId>license-tool-plugin</artifactId>
+                        <version>0.0.1-SNAPSHOT</version>
+                        <executions>
+                            <execution>
+                                <id>license-check</id>
+                                <goals>
+                                    <goal>license-check</goal>
+                                </goals>
+                                <configuration>
+                                    <summary>DEPENDENCIES</summary>
+                                    <failWhenReviewNeeded>true</failWhenReviewNeeded>
+                                    <reviewSummary>REVIEW_SUMMARY</reviewSummary>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <reporting>
+        <excludeDefaults>true</excludeDefaults>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>${findbugs.version}</version>
+                <reportSets>
+                    <reportSet>
+                        <configuration>
+                            <skip>${findbugs.skip}</skip>
+                            <threshold>${findbugs.threshold}</threshold>
+                            <excludeFilterFile>${findbugs.exclude}</excludeFilterFile>
+                            <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+                            <!-- findbugs detector configuration -->
+                            <jvmArgs>-Dfindbugs.glassfish.logging.validLoggerPrefixes=${findbugs.glassfish.logging.validLoggerPrefixes}</jvmArgs>
+                            <plugins>
+                                <plugin>
+                                    <groupId>org.glassfish.findbugs</groupId>
+                                    <artifactId>findbugs-logging-detectors</artifactId>
+                                    <version>${findbugs.glassfish.version}</version>
+                                </plugin>
+                            </plugins>
+                        </configuration>
+                        <reports>
+                            <report>findbugs</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
+                <!-- Run this plugin report sets only in the main Jersey pom -->
+                <inherited>false</inherited>
+                <configuration>
+                    <doctitle>Jersey ${jersey.version} API Documentation</doctitle>
+                    <windowtitle>Jersey ${jersey.version} API</windowtitle>
+                    <bottom>
+                        <![CDATA[Copyright &#169; 2007-2022,
+                            <a href="http://www.oracle.com">Oracle</a>
+                            and/or its affiliates.
+                            All Rights Reserved. Use is subject to license terms.]]>
+                    </bottom>
+                    <excludePackageNames>
+                        com.sun.ws.rs.ext:*.examples.*:*.internal.*:*.tests.*
+                    </excludePackageNames>
+                    <links>
+                        <link>https://jax-rs.github.io/apidocs/2.1</link>
+                        <link>https://javaee.github.io/hk2/apidocs/</link>
+                    </links>
+                    <doclint>none</doclint>
+                    <sourceFileExcludes>
+                        <fileExclude>module-info.java</fileExclude>
+                    </sourceFileExcludes>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>aggregate</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+            <!--plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.12</version>
+            </plugin-->
+            <!--plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <formats>
+                        <format>xml</format>
+                        <format>html</format>
+                    </formats>
+                </configuration>
+            </plugin-->
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.3</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>jxr</report>
+                        </reports>
+                    </reportSet>
+                    <reportSet>
+                        <!-- Run this report set only in the main Jersey pom -->
+                        <inherited>false</inherited>
+                        <reports>
+                            <report>aggregate</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${checkstyle.mvn.plugin.version}</version>
+                <configuration>
+                    <configLocation>etc/config/checkstyle.xml</configLocation>
+                    <suppressionsLocation>etc/config/checkstyle-suppressions.xml</suppressionsLocation>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>checkstyle</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <modules>
+        <module>archetypes</module>
+        <module>bom</module>
+        <module>connectors</module>
+        <module>containers</module>
+
+        <module>core-common</module>
+        <module>core-server</module>
+        <module>core-client</module>
+
+        <module>ext</module>
+        <module>incubator</module>
+        <module>inject</module>
+        <module>media</module>
+        <module>security</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>jakarta.ws.rs</groupId>
+                <artifactId>jakarta.ws.rs-api</artifactId>
+                <version>${jaxrs.api.impl.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.annotation</groupId>
+                <artifactId>jakarta.annotation-api</artifactId>
+                <version>${jakarta.annotation.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>jakarta.enterprise</groupId>
+                <artifactId>jakarta.enterprise.cdi-api</artifactId>
+                <version>${cdi.api.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>jakarta.transaction</groupId>
+                <artifactId>jakarta.transaction-api</artifactId>
+                <version>${jta.api.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>jakarta.activation</groupId>
+                <artifactId>jakarta.activation-api</artifactId>
+                <version>${jakarta.activation-api.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.sun.activation</groupId>
+                <artifactId>jakarta.activation</artifactId>
+                <version>${jakarta.activation.version}</version>
+            </dependency>
+
+            <!--<dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>--> <!-- The latest repackaged guava version is 18.0 -->
+
+            <dependency>
+                <groupId>org.glassfish.hk2</groupId>
+                <artifactId>hk2-locator</artifactId>
+                <version>${hk2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.hk2</groupId>
+                <artifactId>hk2-utils</artifactId>
+                <version>${hk2.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.glassfish.hk2</groupId>
+                <artifactId>hk2-api</artifactId>
+                <version>${hk2.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>jakarta.inject</groupId>
+                        <artifactId>jakarta.inject-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.hk2</groupId>
+                <artifactId>osgi-resource-locator</artifactId>
+                <version>1.0.3</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.main.hk2</groupId>
+                <artifactId>hk2-config</artifactId>
+                <version>${hk2.config.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.inject</groupId>
+                <artifactId>jakarta.inject-api</artifactId>
+                <version>${jakarta.inject.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.hk2.external</groupId>
+                <artifactId>aopalliance-repackaged</artifactId>
+                <version>${hk2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>${javassist.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.glassfish.grizzly</groupId>
+                <artifactId>grizzly-http-server</artifactId>
+                <version>${grizzly2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.grizzly</groupId>
+                <artifactId>grizzly-http2</artifactId>
+                <version>${grizzly2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.grizzly</groupId>
+                <artifactId>grizzly-http-servlet</artifactId>
+                <version>${grizzly2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.grizzly</groupId>
+                <artifactId>grizzly-websockets</artifactId>
+                <version>${grizzly2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.grizzly</groupId>
+                <artifactId>connection-pool</artifactId>
+                <version>${grizzly2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.grizzly</groupId>
+                <artifactId>grizzly-http-client</artifactId>
+                <version>${grizzly.client.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.grizzly</groupId>
+                <artifactId>grizzly-npn-api</artifactId>
+                <version>${grizzly.npn.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${httpclient.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents.client5</groupId>
+                <artifactId>httpclient5</artifactId>
+                <version>${httpclient5.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-util</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-client</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-server</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-webapp</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.simpleframework</groupId>
+                <artifactId>simple-http</artifactId>
+                <version>${simple.version}</version>
+             </dependency>
+
+            <dependency>
+                <groupId>org.simpleframework</groupId>
+                <artifactId>simple-transport</artifactId>
+                <version>${simple.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.simpleframework</groupId>
+                <artifactId>simple-common</artifactId>
+                <version>${simple.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.codehaus.jettison</groupId>
+                <artifactId>jettison</artifactId>
+                <version>${jettison.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>stax</groupId>
+                        <artifactId>stax-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>jakarta.xml.bind</groupId>
+                <artifactId>jakarta.xml.bind-api</artifactId>
+                <version>${jakarta.jaxb.api.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>${jaxb.ri.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-osgi</artifactId>
+                <version>${jaxb.ri.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipse.persistence</groupId>
+                <artifactId>org.eclipse.persistence.moxy</artifactId>
+                <version>${moxy.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>jakarta.persistence</groupId>
+                <artifactId>jakarta.persistence-api</artifactId>
+                <version>${jakarta.persistence.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>jakarta.ejb</groupId>
+                <artifactId>jakarta.ejb-api</artifactId>
+                <version>${ejb.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.jaxrs</groupId>
+                <artifactId>jackson-jaxrs-json-provider</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.jaxrs</groupId>
+                <artifactId>jackson-jaxrs-base</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-jaxb-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>xerces</groupId>
+                <artifactId>xercesImpl</artifactId>
+                <version>${xerces.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.core</artifactId>
+                <version>${osgi.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.compendium</artifactId>
+                <version>${osgi.compendium.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.service.cm</artifactId>
+                <version>${osgi.service.cm.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.glassfish.main.ejb</groupId>
+                <artifactId>ejb-container</artifactId>
+                <version>${gf.impl.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.main.common</groupId>
+                <artifactId>container-common</artifactId>
+                <version>${gf.impl.version}</version>
+            </dependency>
+
+            <!-- HV OSGi dependencies. -->
+            <dependency>
+                <groupId>org.jboss.logging</groupId>
+                <artifactId>jboss-logging</artifactId>
+                <version>${jboss.logging.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml</groupId>
+                <artifactId>classmate</artifactId>
+                <version>${fasterxml.classmate.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.el</groupId>
+                <artifactId>jakarta.el-api</artifactId>
+                <version>${jakarta.el.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish</groupId>
+                <artifactId>jakarta.el</artifactId>
+                <version>${jakarta.el.impl.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>jakarta.json</groupId>
+                <artifactId>jakarta.json-api</artifactId>
+                <version>${jakarta.jsonp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.parsson</groupId>
+                <artifactId>parsson</artifactId>
+                <version>${jsonp.ri.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.parsson</groupId>
+                <artifactId>parsson-media</artifactId>
+                <version>${jsonp.jaxrs.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hibernate.validator</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${validation.impl.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hibernate.validator</groupId>
+                <artifactId>hibernate-validator-cdi</artifactId>
+                <version>${validation.impl.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.ops4j.pax.web</groupId>
+                <artifactId>pax-web-jetty-bundle</artifactId>
+                <version>${pax.web.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ops4j.pax.web</groupId>
+                <artifactId>pax-web-extender-war</artifactId>
+                <version>${pax.web.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.openjdk.jmh</groupId>
+                <artifactId>jmh-core</artifactId>
+                <version>${jmh.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.openjdk.jmh</groupId>
+                <artifactId>jmh-generator-annprocess</artifactId>
+                <version>${jmh.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.esotericsoftware</groupId>
+                <artifactId>kryo</artifactId>
+                <version>${kryo.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>1.2</version>
+            </dependency>
+
+            <!-- Weld -->
+            <dependency>
+                <groupId>org.jboss.weld.se</groupId>
+                <artifactId>weld-se-core</artifactId>
+                <version>${weld.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.weld.servlet</groupId>
+                <artifactId>weld-servlet</artifactId>
+                <version>${weld.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>jakarta.validation</groupId>
+                <artifactId>jakarta.validation-api</artifactId>
+                <version>${jakarta.validation.api.version}</version>
+            </dependency>
+
+            <!-- Test scope -->
+
+            <dependency>
+                <groupId>org.ops4j.pax.exam</groupId>
+                <artifactId>pax-exam</artifactId>
+                <version>${pax.exam.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.ops4j.pax.exam</groupId>
+                <artifactId>pax-exam-junit4</artifactId>
+                <version>${pax.exam.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.ops4j.pax.exam</groupId>
+                <artifactId>pax-exam-container-forked</artifactId>
+                <version>${pax.exam.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.ops4j.pax.exam</groupId>
+                <artifactId>pax-exam-junit-extender-impl</artifactId>
+                <version>1.2.4</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.ops4j.pax.exam</groupId>
+                <artifactId>pax-exam-link-mvn</artifactId>
+                <version>${pax.exam.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.13.1</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${junit5.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>${junit5.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>6.9.6</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest</artifactId>
+                <version>${hamcrest.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jmockit</groupId>
+                <artifactId>jmockit</artifactId>
+                <version>${jmockit.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>xmlunit</groupId>
+                <artifactId>xmlunit</artifactId>
+                <version>${xmlunit.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15on</artifactId>
+                <version>${bouncycastle.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcmail-jdk15on</artifactId>
+                <version>${bouncycastle.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>org.apache.felix.framework</artifactId>
+                <version>7.0.0</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>org.apache.felix.eventadmin</artifactId>
+                <version>1.5.0</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>org.apache.felix.framework.security</artifactId>
+                <version>2.6.1</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>jakarta.json.bind</groupId>
+                <artifactId>jakarta.json.bind-api</artifactId>
+                <version>${jsonb.api.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipse</groupId>
+                <artifactId>yasson</artifactId>
+                <version>${yasson.version}</version>
+            </dependency>
+
+            <dependency>
+               <groupId>com.google.code.gson</groupId>
+               <artifactId>gson</artifactId>
+               <version>${gson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.opentracing</groupId>
+                <artifactId>opentracing-api</artifactId>
+                <version>${opentracing.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.opentracing</groupId>
+                <artifactId>opentracing-util</artifactId>
+                <version>${opentracing.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <properties>
+        <archetype.mvn.plugin.version>2.4</archetype.mvn.plugin.version>
+
+        <findbugs.skip>false</findbugs.skip>
+        <findbugs.threshold>Low</findbugs.threshold>
+        <!-- the exclude file cannot be here directly, as FindBugs would interpret the path as relative to
+        each module; the default exclude filter file is at etc/config/findbugs-exclude.xml -->
+        <findbugs.exclude />
+        <findbugs.glassfish.logging.validLoggerPrefixes>
+            javax.enterprise
+        </findbugs.glassfish.logging.validLoggerPrefixes>
+        <java.version>1.8</java.version>
+<!--        <jersey.repackaged.prefix>jersey.repackaged</jersey.repackaged.prefix>-->
+<!--        <netbeans.hint.license>gf-cddl-gpl</netbeans.hint.license>-->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+<!--        <release.tests.args>-Dmaven.test.skip=false</release.tests.args>-->
+<!--        <release.preparationGoals>clean install</release.preparationGoals>-->
+        <skip.tests>false</skip.tests>
+        <xdk.absolute.path />
+        <surefire.security.argline />
+        <surefire.coverage.argline />
+        <surefire.maxmem.argline>1024</surefire.maxmem.argline>
+        <failsafe.coverage.argline />
+        <server.coverage.argline>${failsafe.coverage.argline}</server.coverage.argline>
+
+
+        <!-- Dependency versions -->
+        <jersey.version>${project.version}</jersey.version>
+        <!-- asm is now source integrated - keeping this property to see the version -->
+        <!-- see core-server/src/main/java/jersey/repackaged/asm/.. -->
+        <asm.version>9.3</asm.version>
+        <bnd.plugin.version>2.3.6</bnd.plugin.version>
+
+        <bouncycastle.version>1.68</bouncycastle.version>
+        <commons.io.version>2.11.0</commons.io.version>
+        <commons-lang3.version>3.3.2</commons-lang3.version>
+        <checkstyle.mvn.plugin.version>3.1.0</checkstyle.mvn.plugin.version>
+        <checkstyle.version>8.28</checkstyle.version>
+        <easymock.version>3.3</easymock.version>
+
+        <fasterxml.classmate.version>1.3.3</fasterxml.classmate.version>
+        <findbugs.glassfish.version>1.7</findbugs.glassfish.version>
+        <findbugs.version>3.0.4</findbugs.version>
+        <freemarker.version>2.3.27-incubating</freemarker.version>
+        <gae.version>1.9.59</gae.version>
+        <grizzly.client.version>1.16</grizzly.client.version>
+        <enforcer.version>3.1.0</enforcer.version>
+
+        <!--versions, extracted here due to maven-enforcer-plugin -->
+        <slf4j.version>2.0.0-alpha6</slf4j.version>
+        <commons.codec.version>1.15</commons.codec.version>
+        <reactive.streams.version>1.0.3</reactive.streams.version>
+        <com.uber.jaeger.version>0.27.0</com.uber.jaeger.version>
+        <org.codehaus.gmavenplus.version>1.13.1</org.codehaus.gmavenplus.version>
+        <!-- end of versions extracted here due to maven-enforcer-plugin -->
+
+        <!-- microprofile -->
+        <microprofile.config.version>3.0</microprofile.config.version>
+        <microprofile.rest.client.version>3.0</microprofile.rest.client.version>
+        <helidon.config.version>3.0.0-M1</helidon.config.version>
+        <smallrye.config.version>3.0.0-RC1</smallrye.config.version>
+
+
+        <grizzly2.version>2.4.4</grizzly2.version>
+        <guava.version>31.1-jre</guava.version>
+        <hamcrest.version>2.2</hamcrest.version>
+        <!--<helidon.version>1.0.3</helidon.version>-->
+        <xmlunit.version>1.6</xmlunit.version>
+        <hk2.osgi.version>org.glassfish.hk2.*;version="[2.5,4)"</hk2.osgi.version>
+        <hk2.jvnet.osgi.version>org.jvnet.hk2.*;version="[2.5,4)"</hk2.jvnet.osgi.version>
+        <httpclient.version>4.5.13</httpclient.version>
+        <httpclient5.version>5.1.2</httpclient5.version>
+        <jackson.version>2.13.3</jackson.version>
+        <javassist.version>3.28.0-GA</javassist.version>
+        <jboss.logging.version>3.3.0.Final</jboss.logging.version>
+        <jersey1.version>1.19.3</jersey1.version>
+        <jersey1.last.final.version>${jersey1.version}</jersey1.last.final.version>
+        <jettison.version>1.3.7</jettison.version> <!-- TODO: 1.3.8 doesn't work; AbstractJsonTest complexBeanWithAttributes -->
+        <jmh.version>1.10.2</jmh.version>
+        <jmockit.version>1.44</jmockit.version>
+        <junit5.version>5.6.0</junit5.version>
+        <kryo.version>4.0.2</kryo.version>
+        <mockito.version>3.9.0</mockito.version> <!-- CQ 17673 -->
+        <mustache.version>0.8.17</mustache.version>
+        <netty.version>4.1.75.Final</netty.version>
+        <nexus-staging.mvn.plugin.version>1.6.7</nexus-staging.mvn.plugin.version>
+        <opentracing.version>0.30.0</opentracing.version>
+        <osgi.version>6.0.0</osgi.version>
+        <osgi.framework.version>1.10.0</osgi.framework.version>
+        <osgi.compendium.version>5.0.0</osgi.compendium.version>
+        <osgi.service.cm.version>1.6.0</osgi.service.cm.version>
+        <pax.exam.version>4.13.4</pax.exam.version>
+        <pax.web.version>0.7.4</pax.web.version><!-- TODO: UPGRADE! -->
+        <paxexam.mvn.plugin.version>1.2.4</paxexam.mvn.plugin.version>
+        <rxjava.version>1.2.5</rxjava.version>
+        <rxjava2.version>2.0.4</rxjava2.version>
+        <servlet3.version>3.0.1</servlet3.version>
+        <servlet4.version>4.0.3</servlet4.version>
+        <simple.version>6.0.1</simple.version>
+        <skip.e2e>false</skip.e2e>
+        <spring6.version>6.0.0-M3</spring6.version>
+        <surefire.version>3.0.0-M6</surefire.version>
+        <validation.impl.version>6.2.0.Final</validation.impl.version>
+        <gson.version>2.9.0</gson.version>
+
+        <!-- Jakartified, eligible for CQ -->
+        <weld.version>4.0.2.Final</weld.version>
+        <weld3.version>3.1.7.SP1</weld3.version>
+        <validation.impl.version>7.0.1.Final</validation.impl.version>
+        <!-- END of Jakartified, eligible for CQ -->
+        <xerces.version>2.12.2</xerces.version>
+
+        <!-- Graal VM       -->
+        <graalvm.version>20.3.2</graalvm.version>
+
+        <!-- do not need CQs (below this line till the end of version properties)-->
+        <gf.impl.version>6.2.5</gf.impl.version>
+        <hk2.config.version>6.2.5</hk2.config.version>
+        <!-- Jakartified -->
+        <cdi.api.version>3.0.0</cdi.api.version>
+        <cdi.osgi.version>javax.enterprise.*;version="[3.0,5)"</cdi.osgi.version>
+        <ejb.version>4.0.1</ejb.version>
+        <grizzly2.version>3.0.1</grizzly2.version>
+        <grizzly.npn.version>2.0.0</grizzly.npn.version>
+        <hk2.version>3.0.3</hk2.version>
+        <jsp.version>3.0.0</jsp.version>
+        <jstl.version>2.0.0</jstl.version>
+        <jta.api.version>2.0.1</jta.api.version>
+        <servlet5.version>5.0.0</servlet5.version>
+        <istack.commons.runtime.version>4.0.0</istack.commons.runtime.version>
+        <jakarta.activation-api.version>2.0.1</jakarta.activation-api.version>
+        <jakarta.activation.version>2.0.1</jakarta.activation.version>
+        <jakarta.el.version>4.0.0</jakarta.el.version>
+        <jakarta.el.impl.version>4.0.2</jakarta.el.impl.version>
+        <jakarta.annotation.osgi.version>jakarta.annotation.*;version="[2.0,3)"</jakarta.annotation.osgi.version>
+        <jakarta.annotation.version>2.0.0</jakarta.annotation.version>
+        <jakarta.inject.version>2.0.1</jakarta.inject.version>
+        <jakarta.interceptor.version>2.0.1</jakarta.interceptor.version>
+        <jakarta.jsonp.version>2.0.2</jakarta.jsonp.version>
+        <jakarta.persistence.version>3.0.0</jakarta.persistence.version>
+        <jakarta.validation.api.version>3.0.0</jakarta.validation.api.version> <!--Can't be updated to 3.0.1 /OSGi incompatibility with JDK 1.8 -->
+        <jakarta.jaxb.api.version>3.0.1</jakarta.jaxb.api.version>
+        <jaxb.ri.version>3.0.2</jaxb.ri.version>
+        <jaxrs.api.spec.version>3.0</jaxrs.api.spec.version>
+        <jaxrs.api.impl.version>3.0.0</jaxrs.api.impl.version>
+        <jetty.version>11.0.9</jetty.version>
+        <jetty.plugin.version>11.0.9</jetty.plugin.version>
+        <jetty.servlet.api.25.version>6.1.14</jetty.servlet.api.25.version>
+        <jsonb.api.version>2.0.0</jsonb.api.version>
+        <jsonp.ri.version>1.0.0</jsonp.ri.version>
+        <jsonp.jaxrs.version>1.0.0</jsonp.jaxrs.version>
+        <moxy.version>3.0.2</moxy.version>
+        <yasson.version>2.0.4</yasson.version>
+        <!-- END of Jakartified -->
+
+        <javax.annotation.version>1.3.2</javax.annotation.version> <!--Deprecated, used only for @generated annotation in perf tests -->
+        <mimepull.version>1.9.13</mimepull.version>
+    </properties>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/glassfish/jersey/core/jersey-server/3.0.8/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/eclipse-ee4j/jersey/git/ref/tags/3.0.8' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/eclipse-ee4j/jersey/3.0.8/core-server/pom.xml | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9
+ succeeded in 173ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2010, 2022 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.glassfish.jersey</groupId>
+        <artifactId>project</artifactId>
+        <version>3.0.8</version>
+    </parent>
+
+    <groupId>org.glassfish.jersey.core</groupId>
+    <artifactId>jersey-server</artifactId>
+    <packaging>jar</packaging>
+    <name>jersey-core-server</name>
+
+    <description>Jersey core server implementation</description>
+
+    <licenses>
+        <license>
+            <name>EPL 2.0</name>
+            <url>http://www.eclipse.org/legal/epl-2.0</url>
+            <distribution>repo</distribution>
+            <comments>Except for Guava, JSR-166 files, Dropwizard Monitoring inspired classes, ASM and Jackson JAX-RS Providers.
+                See also https://github.com/eclipse-ee4j/jersey/blob/master/NOTICE.md</comments>
+        </license>
+        <license>
+            <name>The GNU General Public License (GPL), Version 2, With Classpath Exception</name>
+            <url>https://www.gnu.org/software/classpath/license.html</url>
+            <distribution>repo</distribution>
+            <comments>Except for Dropwizard Monitoring inspired classes and ASM.
+                See also https://github.com/eclipse-ee4j/jersey/blob/master/NOTICE.md</comments>
+        </license>
+        <license>
+            <name>Apache License, 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+            <comments>Dropwizard Monitoring inspired classes @ org.glassfish.jersey.server.internal.monitoring.core</comments>
+        </license>
+        <license>
+            <name>Modified BSD</name>
+            <url>https://asm.ow2.io/license.html</url>
+            <distribution>repo</distribution>
+            <comments>ASM @ jersey.repackaged.org.objectweb.asm</comments>
+        </license>
+    </licenses>
+
+    <build>
+        <testResources>
+            <testResource>
+                <directory>${basedir}/src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+
+        <plugins>
+            <plugin>
+                <groupId>com.sun.istack</groupId>
+                <artifactId>istack-commons-maven-plugin</artifactId>
+                <inherited>true</inherited>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+
+ succeeded in 185ms:
+{
+  "ref": "refs/tags/3.0.8",
+  "node_id": "MDM6UmVmMTI5OTU0ODI4OnJlZnMvdGFncy8zLjAuOA==",
+  "url": "https://api.github.com/repos/eclipse-ee4j/jersey/git/refs/tags/3.0.8",
+  "object": {
+    "sha": "285973467c6bed9c860c9f6fe5312c0324ba2751",
+    "type": "tag",
+    "url": "https://api.github.com/repos/eclipse-ee4j/jersey/git/tags/285973467c6bed9c860c9f6fe5312c0324ba2751"
+  }
+}
+
+ succeeded in 279ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/glassfish/jersey/core/jersey-server/3.0.8</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/glassfish/jersey/core/jersey-server/3.0.8</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jersey-server-3.0.8-javadoc.jar" title="jersey-server-3.0.8-javadoc.jar">jersey-server-3.0.8-javadoc.jar</a>                   2022-09-01 09:20   1435648      
+<a href="jersey-server-3.0.8-javadoc.jar.asc" title="jersey-server-3.0.8-javadoc.jar.asc">jersey-server-3.0.8-javadoc.jar.asc</a>               2022-09-01 09:20       833      
+<a href="jersey-server-3.0.8-javadoc.jar.asc.asc" title="jersey-server-3.0.8-javadoc.jar.asc.asc">jersey-server-3.0.8-javadoc.jar.asc.asc</a>           2022-09-01 09:20       833      
+<a href="jersey-server-3.0.8-javadoc.jar.asc.asc.md5" title="jersey-server-3.0.8-javadoc.jar.asc.asc.md5">jersey-server-3.0.8-javadoc.jar.asc.asc.md5</a>       2022-09-01 09:20        32      
+<a href="jersey-server-3.0.8-javadoc.jar.asc.asc.sha1" title="jersey-server-3.0.8-javadoc.jar.asc.asc.sha1">jersey-server-3.0.8-javadoc.jar.asc.asc.sha1</a>      2022-09-01 09:20        40      
+<a href="jersey-server-3.0.8-javadoc.jar.asc.asc.sha256" title="jersey-server-3.0.8-javadoc.jar.asc.asc.sha256">jersey-server-3.0.8-javadoc.jar.asc.asc.sha25...</a>  2022-09-01 09:20        64      
+<a href="jersey-server-3.0.8-javadoc.jar.asc.asc.sha512" title="jersey-server-3.0.8-javadoc.jar.asc.asc.sha512">jersey-server-3.0.8-javadoc.jar.asc.asc.sha51...</a>  2022-09-01 09:20       128      
+<a href="jersey-server-3.0.8-javadoc.jar.asc.md5" title="jersey-server-3.0.8-javadoc.jar.asc.md5">jersey-server-3.0.8-javadoc.jar.asc.md5</a>           2022-09-01 09:20        32      
+<a href="jersey-server-3.0.8-javadoc.jar.asc.sha1" title="jersey-server-3.0.8-javadoc.jar.asc.sha1">jersey-server-3.0.8-javadoc.jar.asc.sha1</a>          2022-09-01 09:20        40      
+<a href="jersey-server-3.0.8-javadoc.jar.asc.sha256" title="jersey-server-3.0.8-javadoc.jar.asc.sha256">jersey-server-3.0.8-javadoc.jar.asc.sha256</a>        2022-09-01 09:20        64      
+<a href="jersey-server-3.0.8-javadoc.jar.asc.sha512" title="jersey-server-3.0.8-javadoc.jar.asc.sha512">jersey-server-3.0.8-javadoc.jar.asc.sha512</a>        2022-09-01 09:20       128      
+<a href="jersey-server-3.0.8-javadoc.jar.md5" title="jersey-server-3.0.8-javadoc.jar.md5">jersey-server-3.0.8-javadoc.jar.md5</a>               2022-09-01 09:20        32      
+<a href="jersey-server-3.0.8-javadoc.jar.sha1" title="jersey-server-3.0.8-javadoc.jar.sha1">jersey-server-3.0.8-javadoc.jar.sha1</a>              2022-09-01 09:20        40      
+<a href="jersey-server-3.0.8-sources.jar" title="jersey-server-3.0.8-sources.jar">jersey-server-3.0.8-sources.jar</a>                   2022-09-01 09:20    795292      
+<a href="jersey-server-3.0.8-sources.jar.asc" title="jersey-server-3.0.8-sources.jar.asc">jersey-server-3.0.8-sources.jar.asc</a>               2022-09-01 09:20       833      
+<a href="jersey-server-3.0.8-sources.jar.asc.asc" title="jersey-server-3.0.8-sources.jar.asc.asc">jersey-server-3.0.8-sources.jar.asc.asc</a>           2022-09-01 09:20       833      
+<a href="jersey-server-3.0.8-sources.jar.asc.asc.md5" title="jersey-server-3.0.8-sources.jar.asc.asc.md5">jersey-server-3.0.8-sources.jar.asc.asc.md5</a>       2022-09-01 09:20        32      
+<a href="jersey-server-3.0.8-sources.jar.asc.asc.sha1" title="jersey-server-3.0.8-sources.jar.asc.asc.sha1">jersey-server-3.0.8-sources.jar.asc.asc.sha1</a>      2022-09-01 09:20        40      
+<a href="jersey-server-3.0.8-sources.jar.asc.asc.sha256" title="jersey-server-3.0.8-sources.jar.asc.asc.sha256">jersey-server-3.0.8-sources.jar.asc.asc.sha25...</a>  2022-09-01 09:20        64      
+<a href="jersey-server-3.0.8-sources.jar.asc.asc.sha512" title="jersey-server-3.0.8-sources.jar.asc.asc.sha512">jersey-server-3.0.8-sources.jar.asc.asc.sha51...</a>  2022-09-01 09:20       128      
+<a href="jersey-server-3.0.8-sources.jar.asc.md5" title="jersey-server-3.0.8-sources.jar.asc.md5">jersey-server-3.0.8-sources.jar.asc.md5</a>           2022-09-01 09:20        32      
+<a href="jersey-server-3.0.8-sources.jar.asc.sha1" title="jersey-server-3.0.8-sources.jar.asc.sha1">jersey-server-3.0.8-sources.jar.asc.sha1</a>          2022-09-01 09:20        40      
+<a href="jersey-server-3.0.8-sources.jar.asc.sha256" title="jersey-server-3.0.8-sources.jar.asc.sha256">jersey-server-3.0.8-sources.jar.asc.sha256</a>        2022-09-01 09:20        64      
+<a href="jersey-server-3.0.8-sources.jar.asc.sha512" title="jersey-server-3.0.8-sources.jar.asc.sha512">jersey-server-3.0.8-sources.jar.asc.sha512</a>        2022-09-01 09:20       128      
+<a href="jersey-server-3.0.8-sources.jar.md5" title="jersey-server-3.0.8-sources.jar.md5">jersey-server-3.0.8-sources.jar.md5</a>               2022-09-01 09:20        32      
+<a href="jersey-server-3.0.8-sources.jar.sha1" title="jersey-server-3.0.8-sources.jar.sha1">jersey-server-3.0.8-sources.jar.sha1</a>              2022-09-01 09:20        40      
+<a href="jersey-server-3.0.8.jar" title="jersey-server-3.0.8.jar">jersey-server-3.0.8.jar</a>                           2022-09-01 09:20    956410      
+<a href="jersey-server-3.0.8.jar.asc" title="jersey-server-3.0.8.jar.asc">jersey-server-3.0.8.jar.asc</a>                       2022-09-01 09:20       833      
+<a href="jersey-server-3.0.8.jar.asc.asc" title="jersey-server-3.0.8.jar.asc.asc">jersey-server-3.0.8.jar.asc.asc</a>                   2022-09-01 09:20       833      
+<a href="jersey-server-3.0.8.jar.asc.asc.md5" title="jersey-server-3.0.8.jar.asc.asc.md5">jersey-server-3.0.8.jar.asc.asc.md5</a>               2022-09-01 09:20        32      
+<a href="jersey-server-3.0.8.jar.asc.asc.sha1" title="jersey-server-3.0.8.jar.asc.asc.sha1">jersey-server-3.0.8.jar.asc.asc.sha1</a>              2022-09-01 09:20        40      
+<a href="jersey-server-3.0.8.jar.asc.asc.sha256" title="jersey-server-3.0.8.jar.asc.asc.sha256">jersey-server-3.0.8.jar.asc.asc.sha256</a>            2022-09-01 09:20        64      
+<a href="jersey-server-3.0.8.jar.asc.asc.sha512" title="jersey-server-3.0.8.jar.asc.asc.sha512">jersey-server-3.0.8.jar.asc.asc.sha512</a>            2022-09-01 09:20       128      
+<a href="jersey-server-3.0.8.jar.asc.md5" title="jersey-server-3.0.8.jar.asc.md5">jersey-server-3.0.8.jar.asc.md5</a>                   2022-09-01 09:20        32      
+<a href="jersey-server-3.0.8.jar.asc.sha1" title="jersey-server-3.0.8.jar.asc.sha1">jersey-server-3.0.8.jar.asc.sha1</a>                  2022-09-01 09:20        40      
+<a href="jersey-server-3.0.8.jar.asc.sha256" title="jersey-server-3.0.8.jar.asc.sha256">jersey-server-3.0.8.jar.asc.sha256</a>                2022-09-01 09:20        64      
+<a href="jersey-server-3.0.8.jar.asc.sha512" title="jersey-server-3.0.8.jar.asc.sha512">jersey-server-3.0.8.jar.asc.sha512</a>                2022-09-01 09:20       128      
+<a href="jersey-server-3.0.8.jar.md5" title="jersey-server-3.0.8.jar.md5">jersey-server-3.0.8.jar.md5</a>                       2022-09-01 09:20        32      
+<a href="jersey-server-3.0.8.jar.sha1" title="jersey-server-3.0.8.jar.sha1">jersey-server-3.0.8.jar.sha1</a>                      2022-09-01 09:20        40      
+<a href="jersey-server-3.0.8.pom" title="jersey-server-3.0.8.pom">jersey-server-3.0.8.pom</a>                           2022-09-01 09:20     12322      
+<a href="jersey-server-3.0.8.pom.asc" title="jersey-server-3.0.8.pom.asc">jersey-server-3.0.8.pom.asc</a>                       2022-09-01 09:20       833      
+<a href="jersey-server-3.0.8.pom.asc.asc" title="jersey-server-3.0.8.pom.asc.asc">jersey-server-3.0.8.pom.asc.asc</a>                   2022-09-01 09:20       833      
+<a href="jersey-server-3.0.8.pom.asc.asc.md5" title="jersey-server-3.0.8.pom.asc.asc.md5">jersey-server-3.0.8.pom.asc.asc.md5</a>               2022-09-01 09:20        32      
+<a href="jersey-server-3.0.8.pom.asc.asc.sha1" title="jersey-server-3.0.8.pom.asc.asc.sha1">jersey-server-3.0.8.pom.asc.asc.sha1</a>              2022-09-01 09:20        40      
+<a href="jersey-server-3.0.8.pom.asc.asc.sha256" title="jersey-server-3.0.8.pom.asc.asc.sha256">jersey-server-3.0.8.pom.asc.asc.sha256</a>            2022-09-01 09:20        64      
+<a href="jersey-server-3.0.8.pom.asc.asc.sha512" title="jersey-server-3.0.8.pom.asc.asc.sha512">jersey-server-3.0.8.pom.asc.asc.sha512</a>            2022-09-01 09:20       128      
+<a href="jersey-server-3.0.8.pom.asc.md5" title="jersey-server-3.0.8.pom.asc.md5">jersey-server-3.0.8.pom.asc.md5</a>                   2022-09-01 09:20        32      
+<a href="jersey-server-3.0.8.pom.asc.sha1" title="jersey-server-3.0.8.pom.asc.sha1">jersey-server-3.0.8.pom.asc.sha1</a>                  2022-09-01 09:20        40      
+<a href="jersey-server-3.0.8.pom.asc.sha256" title="jersey-server-3.0.8.pom.asc.sha256">jersey-server-3.0.8.pom.asc.sha256</a>                2022-09-01 09:20        64      
+<a href="jersey-server-3.0.8.pom.asc.sha512" title="jersey-server-3.0.8.pom.asc.sha512">jersey-server-3.0.8.pom.asc.sha512</a>                2022-09-01 09:20       128      
+<a href="jersey-server-3.0.8.pom.md5" title="jersey-server-3.0.8.pom.md5">jersey-server-3.0.8.pom.md5</a>                       2022-09-01 09:20        32      
+<a href="jersey-server-3.0.8.pom.sha1" title="jersey-server-3.0.8.pom.sha1">jersey-server-3.0.8.pom.sha1</a>                      2022-09-01 09:20        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: Eclipse Jersey 3.0.8 documentation URL user guide
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://repo1.maven.org/maven2/org/glassfish/jersey/jersey-documentation/3.0.8/jersey-documentation-3.0.8-user-guide.pdf' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/glassfish/jersey/jersey-documentation/3.0.8/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://eclipse-ee4j.github.io/jersey.github.io/documentation/3.0.8/user-guide.html' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://eclipse-ee4j.github.io/jersey.github.io/apidocs/3.0.8/jersey/index.html' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9
+ succeeded in 143ms:
+HTTP/2 200 
+server: GitHub.com
+content-type: text/html; charset=utf-8
+last-modified: Wed, 05 Nov 2025 09:08:53 GMT
+access-control-allow-origin: *
+strict-transport-security: max-age=31556952
+etag: "690b1425-b9d"
+expires: Sat, 06 Jun 2026 19:13:09 GMT
+cache-control: max-age=600
+x-proxy-cache: MISS
+x-github-request-id: EBAE:64A6:117EA20:11CB02E:6A246EEC
+accept-ranges: bytes
+age: 0
+date: Sat, 06 Jun 2026 19:03:09 GMT
+via: 1.1 varnish
+x-served-by: cache-fra-eddf8230039-FRA
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1780772589.079059,VS0,VE116
+vary: Accept-Encoding
+x-fastly-request-id: c6fd8dcb8e3c4c4fdac503fa02095dcb232f024f
+content-length: 2973
+
+
+ succeeded in 212ms:
+HTTP/2 200 
+server: GitHub.com
+content-type: text/html; charset=utf-8
+x-origin-cache: HIT
+last-modified: Wed, 05 Nov 2025 09:08:42 GMT
+access-control-allow-origin: *
+strict-transport-security: max-age=31556952
+etag: "690b141a-150a65"
+expires: Sat, 06 Jun 2026 19:13:09 GMT
+cache-control: max-age=600
+x-proxy-cache: MISS
+x-github-request-id: BE06:26BF0:11A1DF5:11EE418:6A246EED
+accept-ranges: bytes
+age: 0
+date: Sat, 06 Jun 2026 19:03:09 GMT
+via: 1.1 varnish
+x-served-by: cache-fra-eddf8230134-FRA
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1780772589.079238,VS0,VE167
+vary: Accept-Encoding
+x-fastly-request-id: 6cd8dc95caf85354e71a132909f64d5444b62854
+content-length: 1378917
+
+
+ succeeded in 234ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/glassfish/jersey/jersey-documentation/3.0.8</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/glassfish/jersey/jersey-documentation/3.0.8</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jersey-documentation-3.0.8-docbook.zip" title="jersey-documentation-3.0.8-docbook.zip">jersey-documentation-3.0.8-docbook.zip</a>            2022-09-01 10:27   2790690      
+<a href="jersey-documentation-3.0.8-docbook.zip.asc" title="jersey-documentation-3.0.8-docbook.zip.asc">jersey-documentation-3.0.8-docbook.zip.asc</a>        2022-09-01 10:27       833      
+<a href="jersey-documentation-3.0.8-docbook.zip.asc.asc" title="jersey-documentation-3.0.8-docbook.zip.asc.asc">jersey-documentation-3.0.8-docbook.zip.asc.as...</a>  2022-09-01 10:27       833      
+<a href="jersey-documentation-3.0.8-docbook.zip.asc.asc.asc" title="jersey-documentation-3.0.8-docbook.zip.asc.asc.asc">jersey-documentation-3.0.8-docbook.zip.asc.as...</a>  2022-09-01 10:27       833      
+<a href="jersey-documentation-3.0.8-docbook.zip.asc.asc.asc.md5" title="jersey-documentation-3.0.8-docbook.zip.asc.asc.asc.md5">jersey-documentation-3.0.8-docbook.zip.asc.as...</a>  2022-09-01 10:27        32      
+<a href="jersey-documentation-3.0.8-docbook.zip.asc.asc.asc.sha1" title="jersey-documentation-3.0.8-docbook.zip.asc.asc.asc.sha1">jersey-documentation-3.0.8-docbook.zip.asc.as...</a>  2022-09-01 10:27        40      
+<a href="jersey-documentation-3.0.8-docbook.zip.asc.asc.asc.sha256" title="jersey-documentation-3.0.8-docbook.zip.asc.asc.asc.sha256">jersey-documentation-3.0.8-docbook.zip.asc.as...</a>  2022-09-01 10:27        64      
+<a href="jersey-documentation-3.0.8-docbook.zip.asc.asc.asc.sha512" title="jersey-documentation-3.0.8-docbook.zip.asc.asc.asc.sha512">jersey-documentation-3.0.8-docbook.zip.asc.as...</a>  2022-09-01 10:27       128      
+<a href="jersey-documentation-3.0.8-docbook.zip.asc.asc.md5" title="jersey-documentation-3.0.8-docbook.zip.asc.asc.md5">jersey-documentation-3.0.8-docbook.zip.asc.as...</a>  2022-09-01 10:27        32      
+<a href="jersey-documentation-3.0.8-docbook.zip.asc.asc.sha1" title="jersey-documentation-3.0.8-docbook.zip.asc.asc.sha1">jersey-documentation-3.0.8-docbook.zip.asc.as...</a>  2022-09-01 10:27        40      
+<a href="jersey-documentation-3.0.8-docbook.zip.asc.asc.sha256" title="jersey-documentation-3.0.8-docbook.zip.asc.asc.sha256">jersey-documentation-3.0.8-docbook.zip.asc.as...</a>  2022-09-01 10:27        64      
+<a href="jersey-documentation-3.0.8-docbook.zip.asc.asc.sha512" title="jersey-documentation-3.0.8-docbook.zip.asc.asc.sha512">jersey-documentation-3.0.8-docbook.zip.asc.as...</a>  2022-09-01 10:27       128      
+<a href="jersey-documentation-3.0.8-docbook.zip.asc.md5" title="jersey-documentation-3.0.8-docbook.zip.asc.md5">jersey-documentation-3.0.8-docbook.zip.asc.md...</a>  2022-09-01 10:27        32      
+<a href="jersey-documentation-3.0.8-docbook.zip.asc.sha1" title="jersey-documentation-3.0.8-docbook.zip.asc.sha1">jersey-documentation-3.0.8-docbook.zip.asc.sh...</a>  2022-09-01 10:27        40      
+<a href="jersey-documentation-3.0.8-docbook.zip.asc.sha256" title="jersey-documentation-3.0.8-docbook.zip.asc.sha256">jersey-documentation-3.0.8-docbook.zip.asc.sh...</a>  2022-09-01 10:27        64      
+<a href="jersey-documentation-3.0.8-docbook.zip.asc.sha512" title="jersey-documentation-3.0.8-docbook.zip.asc.sha512">jersey-documentation-3.0.8-docbook.zip.asc.sh...</a>  2022-09-01 10:27       128      
+<a href="jersey-documentation-3.0.8-docbook.zip.md5" title="jersey-documentation-3.0.8-docbook.zip.md5">jersey-documentation-3.0.8-docbook.zip.md5</a>        2022-09-01 10:27        32      
+<a href="jersey-documentation-3.0.8-docbook.zip.sha1" title="jersey-documentation-3.0.8-docbook.zip.sha1">jersey-documentation-3.0.8-docbook.zip.sha1</a>       2022-09-01 10:27        40      
+<a href="jersey-documentation-3.0.8-user-guide.pdf" title="jersey-documentation-3.0.8-user-guide.pdf">jersey-documentation-3.0.8-user-guide.pdf</a>         2022-09-01 10:27   2759936      
+<a href="jersey-documentation-3.0.8-user-guide.pdf.asc" title="jersey-documentation-3.0.8-user-guide.pdf.asc">jersey-documentation-3.0.8-user-guide.pdf.asc</a>     2022-09-01 10:27       833      
+<a href="jersey-documentation-3.0.8-user-guide.pdf.asc.asc" title="jersey-documentation-3.0.8-user-guide.pdf.asc.asc">jersey-documentation-3.0.8-user-guide.pdf.asc...</a>  2022-09-01 10:27       833      
+<a href="jersey-documentation-3.0.8-user-guide.pdf.asc.asc.asc" title="jersey-documentation-3.0.8-user-guide.pdf.asc.asc.asc">jersey-documentation-3.0.8-user-guide.pdf.asc...</a>  2022-09-01 10:27       833      
+<a href="jersey-documentation-3.0.8-user-guide.pdf.asc.asc.asc.md5" title="jersey-documentation-3.0.8-user-guide.pdf.asc.asc.asc.md5">jersey-documentation-3.0.8-user-guide.pdf.asc...</a>  2022-09-01 10:27        32      
+<a href="jersey-documentation-3.0.8-user-guide.pdf.asc.asc.asc.sha1" title="jersey-documentation-3.0.8-user-guide.pdf.asc.asc.asc.sha1">jersey-documentation-3.0.8-user-guide.pdf.asc...</a>  2022-09-01 10:27        40      
+<a href="jersey-documentation-3.0.8-user-guide.pdf.asc.asc.asc.sha256" title="jersey-documentation-3.0.8-user-guide.pdf.asc.asc.asc.sha256">jersey-documentation-3.0.8-user-guide.pdf.asc...</a>  2022-09-01 10:27        64      
+<a href="jersey-documentation-3.0.8-user-guide.pdf.asc.asc.asc.sha512" title="jersey-documentation-3.0.8-user-guide.pdf.asc.asc.asc.sha512">jersey-documentation-3.0.8-user-guide.pdf.asc...</a>  2022-09-01 10:27       128      
+<a href="jersey-documentation-3.0.8-user-guide.pdf.asc.asc.md5" title="jersey-documentation-3.0.8-user-guide.pdf.asc.asc.md5">jersey-documentation-3.0.8-user-guide.pdf.asc...</a>  2022-09-01 10:27        32      
+<a href="jersey-documentation-3.0.8-user-guide.pdf.asc.asc.sha1" title="jersey-documentation-3.0.8-user-guide.pdf.asc.asc.sha1">jersey-documentation-3.0.8-user-guide.pdf.asc...</a>  2022-09-01 10:27        40      
+<a href="jersey-documentation-3.0.8-user-guide.pdf.asc.asc.sha256" title="jersey-documentation-3.0.8-user-guide.pdf.asc.asc.sha256">jersey-documentation-3.0.8-user-guide.pdf.asc...</a>  2022-09-01 10:27        64      
+<a href="jersey-documentation-3.0.8-user-guide.pdf.asc.asc.sha512" title="jersey-documentation-3.0.8-user-guide.pdf.asc.asc.sha512">jersey-documentation-3.0.8-user-guide.pdf.asc...</a>  2022-09-01 10:27       128      
+<a href="jersey-documentation-3.0.8-user-guide.pdf.asc.md5" title="jersey-documentation-3.0.8-user-guide.pdf.asc.md5">jersey-documentation-3.0.8-user-guide.pdf.asc...</a>  2022-09-01 10:27        32      
+<a href="jersey-documentation-3.0.8-user-guide.pdf.asc.sha1" title="jersey-documentation-3.0.8-user-guide.pdf.asc.sha1">jersey-documentation-3.0.8-user-guide.pdf.asc...</a>  2022-09-01 10:27        40      
+<a href="jersey-documentation-3.0.8-user-guide.pdf.asc.sha256" title="jersey-documentation-3.0.8-user-guide.pdf.asc.sha256">jersey-documentation-3.0.8-user-guide.pdf.asc...</a>  2022-09-01 10:27        64      
+<a href="jersey-documentation-3.0.8-user-guide.pdf.asc.sha512" title="jersey-documentation-3.0.8-user-guide.pdf.asc.sha512">jersey-documentation-3.0.8-user-guide.pdf.asc...</a>  2022-09-01 10:27       128      
+<a href="jersey-documentation-3.0.8-user-guide.pdf.md5" title="jersey-documentation-3.0.8-user-guide.pdf.md5">jersey-documentation-3.0.8-user-guide.pdf.md5</a>     2022-09-01 10:27        32      
+<a href="jersey-documentation-3.0.8-user-guide.pdf.sha1" title="jersey-documentation-3.0.8-user-guide.pdf.sha1">jersey-documentation-3.0.8-user-guide.pdf.sha...</a>  2022-09-01 10:27        40      
+<a href="jersey-documentation-3.0.8.pom" title="jersey-documentation-3.0.8.pom">jersey-documentation-3.0.8.pom</a>                    2022-09-01 10:27     10216      
+<a href="jersey-documentation-3.0.8.pom.asc" title="jersey-documentation-3.0.8.pom.asc">jersey-documentation-3.0.8.pom.asc</a>                2022-09-01 10:27       833      
+<a href="jersey-documentation-3.0.8.pom.asc.asc" title="jersey-documentation-3.0.8.pom.asc.asc">jersey-documentation-3.0.8.pom.asc.asc</a>            2022-09-01 10:27       833      
+<a href="jersey-documentation-3.0.8.pom.asc.asc.asc" title="jersey-documentation-3.0.8.pom.asc.asc.asc">jersey-documentation-3.0.8.pom.asc.asc.asc</a>        2022-09-01 10:27       833      
+<a href="jersey-documentation-3.0.8.pom.asc.asc.asc.md5" title="jersey-documentation-3.0.8.pom.asc.asc.asc.md5">jersey-documentation-3.0.8.pom.asc.asc.asc.md...</a>  2022-09-01 10:27        32      
+<a href="jersey-documentation-3.0.8.pom.asc.asc.asc.sha1" title="jersey-documentation-3.0.8.pom.asc.asc.asc.sha1">jersey-documentation-3.0.8.pom.asc.asc.asc.sh...</a>  2022-09-01 10:27        40      
+<a href="jersey-documentation-3.0.8.pom.asc.asc.asc.sha256" title="jersey-documentation-3.0.8.pom.asc.asc.asc.sha256">jersey-documentation-3.0.8.pom.asc.asc.asc.sh...</a>  2022-09-01 10:27        64      
+<a href="jersey-documentation-3.0.8.pom.asc.asc.asc.sha512" title="jersey-documentation-3.0.8.pom.asc.asc.asc.sha512">jersey-documentation-3.0.8.pom.asc.asc.asc.sh...</a>  2022-09-01 10:27       128      
+<a href="jersey-documentation-3.0.8.pom.asc.asc.md5" title="jersey-documentation-3.0.8.pom.asc.asc.md5">jersey-documentation-3.0.8.pom.asc.asc.md5</a>        2022-09-01 10:27        32      
+<a href="jersey-documentation-3.0.8.pom.asc.asc.sha1" title="jersey-documentation-3.0.8.pom.asc.asc.sha1">jersey-documentation-3.0.8.pom.asc.asc.sha1</a>       2022-09-01 10:27        40      
+<a href="jersey-documentation-3.0.8.pom.asc.asc.sha256" title="jersey-documentation-3.0.8.pom.asc.asc.sha256">jersey-documentation-3.0.8.pom.asc.asc.sha256</a>     2022-09-01 10:27        64      
+<a href="jersey-documentation-3.0.8.pom.asc.asc.sha512" title="jersey-documentation-3.0.8.pom.asc.asc.sha512">jersey-documentation-3.0.8.pom.asc.asc.sha512</a>     2022-09-01 10:27       128      
+<a href="jersey-documentation-3.0.8.pom.asc.md5" title="jersey-documentation-3.0.8.pom.asc.md5">jersey-documentation-3.0.8.pom.asc.md5</a>            2022-09-01 10:27        32      
+<a href="jersey-documentation-3.0.8.pom.asc.sha1" title="jersey-documentation-3.0.8.pom.asc.sha1">jersey-documentation-3.0.8.pom.asc.sha1</a>           2022-09-01 10:27        40      
+<a href="jersey-documentation-3.0.8.pom.asc.sha256" title="jersey-documentation-3.0.8.pom.asc.sha256">jersey-documentation-3.0.8.pom.asc.sha256</a>         2022-09-01 10:27        64      
+<a href="jersey-documentation-3.0.8.pom.asc.sha512" title="jersey-documentation-3.0.8.pom.asc.sha512">jersey-documentation-3.0.8.pom.asc.sha512</a>         2022-09-01 10:27       128      
+<a href="jersey-documentation-3.0.8.pom.md5" title="jersey-documentation-3.0.8.pom.md5">jersey-documentation-3.0.8.pom.md5</a>                2022-09-01 10:27        32      
+<a href="jersey-documentation-3.0.8.pom.sha1" title="jersey-documentation-3.0.8.pom.sha1">jersey-documentation-3.0.8.pom.sha1</a>               2022-09-01 10:27        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 518ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 19:03:09 GMT
+content-type: application/pdf
+content-length: 2759936
+cf-ray: a079ace99883be77-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "7fa7406268e60cf4b1ab2ae1654c2223"
+last-modified: Thu, 01 Sep 2022 10:27:18 GMT
+x-checksum-md5: 7fa7406268e60cf4b1ab2ae1654c2223
+x-checksum-sha1: 8d68db2efbcdb9887cf7ef718f07e00721868f3f
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+I’ve got enough confidence to write the entry: Maven Central supplies the source and javadoc/user-guide artifacts for 3.0.8, while the upstream GitHub tag has the module tests under `core-server/src/test`. I’ll keep the language and Native Image exclusion fields absent because this is a Java JVM jar, not a Kotlin/Groovy/Scala or non-JVM artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json
+diff --git a/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json b/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json
+index 646c30c3272ce03b0a3c4f9d591af0cb61344b72..b76088b30a5373874c0a4c846a90dc02a236ceac
+--- a/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json
++++ b/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.jersey.core:jersey-server:3.0.8"
++  "coordinates" : "org.glassfish.jersey.core:jersey-server:3.0.8",
++  "repository-url" : "https://github.com/eclipse-ee4j/jersey",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/jersey/core/jersey-server/$version$/jersey-server-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jersey/tree/$version$/core-server/src/test",
++  "documentation-url" : "https://eclipse-ee4j.github.io/jersey.github.io/documentation/$version$/user-guide.html",
++  "description" : "Jersey Server is the core server-side implementation for Eclipse Jersey, the Jakarta RESTful Web Services reference implementation. It provides the runtime infrastructure for exposing REST resources, request routing, resource method invocation, validation integration, WADL support, and related server features."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json b/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json
+index 646c30c3272ce03b0a3c4f9d591af0cb61344b72..b76088b30a5373874c0a4c846a90dc02a236ceac
+--- a/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json
++++ b/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.jersey.core:jersey-server:3.0.8"
++  "coordinates" : "org.glassfish.jersey.core:jersey-server:3.0.8",
++  "repository-url" : "https://github.com/eclipse-ee4j/jersey",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/jersey/core/jersey-server/$version$/jersey-server-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jersey/tree/$version$/core-server/src/test",
++  "documentation-url" : "https://eclipse-ee4j.github.io/jersey.github.io/documentation/$version$/user-guide.html",
++  "description" : "Jersey Server is the core server-side implementation for Eclipse Jersey, the Jakarta RESTful Web Services reference implementation. It provides the runtime infrastructure for exposing REST resources, request routing, resource method invocation, validation integration, WADL support, and related server features."
+ }
+
+codex
+The JSON has been updated. I’m doing a quick syntax check and confirming the final file content before I wrap up.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9
+ succeeded in 0ms:
+{
+  "coordinates" : "org.glassfish.jersey.core:jersey-server:3.0.8",
+  "repository-url" : "https://github.com/eclipse-ee4j/jersey",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/jersey/core/jersey-server/$version$/jersey-server-$version$-sources.jar",
+  "test-code-url" : "https://github.com/eclipse-ee4j/jersey/tree/$version$/core-server/src/test",
+  "documentation-url" : "https://eclipse-ee4j.github.io/jersey.github.io/documentation/$version$/user-guide.html",
+  "description" : "Jersey Server is the core server-side implementation for Eclipse Jersey, the Jakarta RESTful Web Services reference implementation. It provides the runtime infrastructure for exposing REST resources, request routing, resource method invocation, validation integration, WADL support, and related server features."
+}
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9
+ succeeded in 0ms:
+{
+  "coordinates": "org.glassfish.jersey.core:jersey-server:3.0.8",
+  "repository-url": "https://github.com/eclipse-ee4j/jersey",
+  "source-code-url": "https://repo1.maven.org/maven2/org/glassfish/jersey/core/jersey-server/$version$/jersey-server-$version$-sources.jar",
+  "test-code-url": "https://github.com/eclipse-ee4j/jersey/tree/$version$/core-server/src/test",
+  "documentation-url": "https://eclipse-ee4j.github.io/jersey.github.io/documentation/$version$/user-guide.html",
+  "description": "Jersey Server is the core server-side implementation for Eclipse Jersey, the Jakarta RESTful Web Services reference implementation. It provides the runtime infrastructure for exposing REST resources, request routing, resource method invocation, validation integration, WADL support, and related server features."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json b/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json
+index 646c30c3272ce03b0a3c4f9d591af0cb61344b72..b76088b30a5373874c0a4c846a90dc02a236ceac
+--- a/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json
++++ b/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.jersey.core:jersey-server:3.0.8"
++  "coordinates" : "org.glassfish.jersey.core:jersey-server:3.0.8",
++  "repository-url" : "https://github.com/eclipse-ee4j/jersey",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/jersey/core/jersey-server/$version$/jersey-server-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jersey/tree/$version$/core-server/src/test",
++  "documentation-url" : "https://eclipse-ee4j.github.io/jersey.github.io/documentation/$version$/user-guide.html",
++  "description" : "Jersey Server is the core server-side implementation for Eclipse Jersey, the Jakarta RESTful Web Services reference implementation. It provides the runtime infrastructure for exposing REST resources, request routing, resource method invocation, validation integration, WADL support, and related server features."
+ }
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/glassfish/jersey/core/jersey-server/3.0.8/
+web search: 
+web search: https://eclipse-ee4j.github.io/jersey.github.io/documentation/3.0.8/user-guide.html
+codex
+`jq` accepts the file, and the final content only uses the allowed keys. The description is exactly two sentences, and no optional exclusion/language fields were added.
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json b/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json
+index 646c30c3272ce03b0a3c4f9d591af0cb61344b72..b76088b30a5373874c0a4c846a90dc02a236ceac
+--- a/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json
++++ b/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.jersey.core:jersey-server:3.0.8"
++  "coordinates" : "org.glassfish.jersey.core:jersey-server:3.0.8",
++  "repository-url" : "https://github.com/eclipse-ee4j/jersey",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/jersey/core/jersey-server/$version$/jersey-server-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jersey/tree/$version$/core-server/src/test",
++  "documentation-url" : "https://eclipse-ee4j.github.io/jersey.github.io/documentation/$version$/user-guide.html",
++  "description" : "Jersey Server is the core server-side implementation for Eclipse Jersey, the Jakarta RESTful Web Services reference implementation. It provides the runtime infrastructure for exposing REST resources, request routing, resource method invocation, validation integration, WADL support, and related server features."
+ }
+
+codex
+`git diff` did not show the generated file change, which likely means this build output is ignored or outside tracked paths. I’m checking status so I can report the workspace state accurately.
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json && git ls-files --error-unmatch build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9
+diff --git a/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json b/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json
+index 646c30c3272ce03b0a3c4f9d591af0cb61344b72..b76088b30a5373874c0a4c846a90dc02a236ceac
+--- a/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json
++++ b/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.jersey.core:jersey-server:3.0.8"
++  "coordinates" : "org.glassfish.jersey.core:jersey-server:3.0.8",
++  "repository-url" : "https://github.com/eclipse-ee4j/jersey",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/jersey/core/jersey-server/$version$/jersey-server-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jersey/tree/$version$/core-server/src/test",
++  "documentation-url" : "https://eclipse-ee4j.github.io/jersey.github.io/documentation/$version$/user-guide.html",
++  "description" : "Jersey Server is the core server-side implementation for Eclipse Jersey, the Jakarta RESTful Web Services reference implementation. It provides the runtime infrastructure for exposing REST resources, request routing, resource method invocation, validation integration, WADL support, and related server features."
+ }
+
+ exited 1 in 360ms:
+error: pathspec 'build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json' did not match any file(s) known to git
+Did you forget to 'git add'?
+
+codex
+Updated [org.glassfish.jersey.core-jersey-server-3.0.8.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json:1) with the repository, Maven sources URL, tagged test URL, versioned docs URL, and two-sentence description.
+
+I left `language`, `not-for-native-image`, `reason`, and `replacement` absent because this is a normal JVM `jar` artifact, not a language-specific or non-JVM artifact. Verified the JSON with `jq`; the file is not tracked by git.
+diff --git a/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json b/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json
+index 646c30c3272ce03b0a3c4f9d591af0cb61344b72..b76088b30a5373874c0a4c846a90dc02a236ceac
+--- a/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json
++++ b/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.jersey.core:jersey-server:3.0.8"
++  "coordinates" : "org.glassfish.jersey.core:jersey-server:3.0.8",
++  "repository-url" : "https://github.com/eclipse-ee4j/jersey",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/jersey/core/jersey-server/$version$/jersey-server-$version$-sources.jar",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jersey/tree/$version$/core-server/src/test",
++  "documentation-url" : "https://eclipse-ee4j.github.io/jersey.github.io/documentation/$version$/user-guide.html",
++  "description" : "Jersey Server is the core server-side implementation for Eclipse Jersey, the Jakarta RESTful Web Services reference implementation. It provides the runtime infrastructure for exposing REST resources, request routing, resource method invocation, validation integration, WADL support, and related server features."
+ }
+
+tokens used
+76,540
+Updated [org.glassfish.jersey.core-jersey-server-3.0.8.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-server-3.0.8.json:1) with the repository, Maven sources URL, tagged test URL, versioned docs URL, and two-sentence description.
+
+I left `language`, `not-for-native-image`, `reason`, and `replacement` absent because this is a normal JVM `jar` artifact, not a language-specific or non-JVM artifact. Verified the JSON with `jq`; the file is not tracked by git.
+Ran agent for org.glassfish.jersey.core:jersey-server:3.0.8 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9/build/agent-artifact-discovery-logs/org.glassfish.jersey.core-jersey-server-3.0.8.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 55s
+9 actionable tasks: 9 executed

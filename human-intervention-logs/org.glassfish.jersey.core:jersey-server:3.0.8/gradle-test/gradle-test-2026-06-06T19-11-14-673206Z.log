@@ -1,0 +1,127 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.glassfish.jersey.core:jersey-server:3.0.8
+Command: `/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 2 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :jar UP-TO-DATE
+
+warning: unknown enum constant XmlAccessType.FIELD
+> Task :compileTestJava
+  reason: class file for jakarta.xml.bind.annotation.XmlAccessType not found
+warning: unknown enum constant XmlAccessType.FIELD
+warning: unknown enum constant XmlAccessType.FIELD
+warning: unknown enum constant XmlAccessType.FIELD
+warning: unknown enum constant XmlAccessType.FIELD
+warning: unknown enum constant XmlAccessType.FIELD
+warning: unknown enum constant XmlAccessType.FIELD
+warning: unknown enum constant XmlAccessType.FIELD
+8 warnings
+
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+
+3 tests completed, 2 failed
+
+FAILURE: Build failed with an exception.
+
+> Task :test FAILED
+
+WadlGeneratorLoaderTest > createWadlGeneratorConfiguresPropertiesWithSupportedConversions() FAILED
+    java.lang.NoClassDefFoundError: jakarta/xml/bind/JAXBException
+        at org.glassfish.jersey.server.wadl.config.WadlGeneratorLoader.loadWadlGeneratorDescriptions(WadlGeneratorLoader.java:94)
+        at org.glassfish.jersey.server.wadl.config.WadlGeneratorConfig.createWadlGenerator(WadlGeneratorConfig.java:153)
+        at org_glassfish_jersey_core.jersey_server.WadlGeneratorLoaderTest.createWadlGeneratorConfiguresPropertiesWithSupportedConversions(WadlGeneratorLoaderTest.java:48)
+
+        Caused by:
+        java.lang.ClassNotFoundException: jakarta.xml.bind.JAXBException
+            at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:580)
+            at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+            ... 3 more
+
+WadlGeneratorLoaderTest > classpathFilePropertyReportsMissingResource() FAILED
+    java.lang.AssertionError: 
+    Expecting actual throwable to be an instance of:
+      jakarta.ws.rs.ProcessingException
+
+    but was:
+      java.lang.NoClassDefFoundError: jakarta/xml/bind/JAXBException
+* What went wrong:
+    	at org.glassfish.jersey.server.wadl.config.WadlGeneratorLoader.loadWadlGeneratorDescriptions(WadlGeneratorLoader.java:94)
+Execution failed for task ':test'.
+    	at org.glassfish.jersey.server.wadl.config.WadlGeneratorConfig.createWadlGenerator(WadlGeneratorConfig.java:153)
+    	at org_glassfish_jersey_core.jersey_server.WadlGeneratorLoaderTest.lambda$classpathFilePropertyReportsMissingResource$0(WadlGeneratorLoaderTest.java:66)
+    	...(15 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceElementsDisplayed)
+>         at org_glassfish_jersey_core.jersey_server.WadlGeneratorLoaderTest.classpathFilePropertyReportsMissingResource(WadlGeneratorLoaderTest.java:67)
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9/tests/src/org.glassfish.jersey.core/jersey-server/3.0.8/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9/tests/src/org.glassfish.jersey.core/jersey-server/3.0.8/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 4s
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+14 actionable tasks: 3 executed, 11 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7778-2ac4c4c9/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.glassfish.jersey.core:jersey-server:3.0.8 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 5s
+9 actionable tasks: 1 executed, 8 up-to-date
