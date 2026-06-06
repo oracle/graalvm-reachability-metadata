@@ -106,6 +106,28 @@ public class Resourcecify_annotationsTest {
     }
 
     @Test
+    void resourcecifyProcessorCopiesAnnotatedDefaultPackageSource(@TempDir Path sourceDirectory)
+            throws IOException {
+        String annotatedSource = """
+                import io.sundr.resourcecify.annotations.Resourcecify;
+
+                @Resourcecify
+                public class DefaultPackageResource {
+                    public String value() {
+                        return "default-package";
+                    }
+                }
+                """;
+        writeSource(sourceDirectory, "DefaultPackageResource", annotatedSource);
+
+        CompilationResult result = compileWithDiscoveredProcessor(sourceDirectory);
+
+        assertThat(result.successful()).as(result.diagnosticText()).isTrue();
+        assertThat(result.generatedResources())
+                .containsEntry("DefaultPackageResource.java", annotatedSource);
+    }
+
+    @Test
     void resourcecifyProcessorCopiesAnnotatedInterfaceAndEnumSources(@TempDir Path sourceDirectory)
             throws IOException {
         String interfaceSource = """
