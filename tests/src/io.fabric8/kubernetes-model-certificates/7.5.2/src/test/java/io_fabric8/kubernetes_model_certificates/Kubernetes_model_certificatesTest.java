@@ -38,9 +38,7 @@ import io.fabric8.kubernetes.api.model.certificates.v1alpha1.PodCertificateReque
 import io.fabric8.kubernetes.api.model.certificates.v1alpha1.PodCertificateRequestList;
 import io.fabric8.kubernetes.api.model.certificates.v1alpha1.PodCertificateRequestListBuilder;
 import io.fabric8.kubernetes.api.model.certificates.v1alpha1.PodCertificateRequestSpec;
-import io.fabric8.kubernetes.api.model.certificates.v1alpha1.PodCertificateRequestSpecBuilder;
 import io.fabric8.kubernetes.api.model.certificates.v1alpha1.PodCertificateRequestStatus;
-import io.fabric8.kubernetes.api.model.certificates.v1alpha1.PodCertificateRequestStatusBuilder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
