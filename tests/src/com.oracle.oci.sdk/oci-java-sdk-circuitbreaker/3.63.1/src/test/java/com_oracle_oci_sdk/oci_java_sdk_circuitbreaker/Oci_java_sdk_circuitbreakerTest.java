@@ -15,6 +15,7 @@ import com.oracle.bmc.circuitbreaker.CircuitBreakerFactory;
 import com.oracle.bmc.circuitbreaker.CircuitBreakerState;
 import com.oracle.bmc.circuitbreaker.NoCircuitBreakerConfiguration;
 import com.oracle.bmc.circuitbreaker.OciCircuitBreaker;
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import java.time.Duration;
 import java.util.Arrays;
@@ -206,6 +207,34 @@ public class Oci_java_sdk_circuitbreakerTest {
 
         assertThat(circuitBreaker.getState()).isEqualTo(CircuitBreaker.State.OPEN);
         assertThat(circuitBreaker.tryAcquirePermission()).isFalse();
+    }
+
+    @Test
+    void acquirePermissionEnforcesHalfOpenProbeLimitAndReleaseRestoresPermit() {
+        OciCircuitBreaker circuitBreaker =
+                CircuitBreakerFactory.build(
+                        CircuitBreakerConfiguration.builder()
+                                .permittedNumberOfCallsInHalfOpenState(1)
+                                .minimumNumberOfCalls(1)
+                                .slidingWindowSize(2)
+                                .build());
+
+        CircuitBreaker r4jCircuitBreaker = circuitBreaker.getR4jCircuitBreaker();
+        r4jCircuitBreaker.transitionToOpenState();
+        r4jCircuitBreaker.transitionToHalfOpenState();
+        circuitBreaker.acquirePermission();
+
+        assertThat(circuitBreaker.getState()).isEqualTo(CircuitBreaker.State.HALF_OPEN);
+        assertThatThrownBy(circuitBreaker::acquirePermission)
+                .isInstanceOf(CallNotPermittedException.class)
+                .hasMessageContaining("CircuitBreaker 'default'")
+                .hasMessageContaining("HALF_OPEN");
+
+        circuitBreaker.releasePermission();
+        circuitBreaker.acquirePermission();
+        circuitBreaker.onSuccess(1, TimeUnit.MILLISECONDS);
+
+        assertThat(circuitBreaker.getState()).isEqualTo(CircuitBreaker.State.CLOSED);
     }
 
     @Test
