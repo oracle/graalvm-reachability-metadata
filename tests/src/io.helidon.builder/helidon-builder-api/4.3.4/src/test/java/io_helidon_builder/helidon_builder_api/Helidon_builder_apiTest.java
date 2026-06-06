@@ -6,10 +6,12 @@
  */
 package io_helidon_builder.helidon_builder_api;
 
+import java.nio.file.spi.FileSystemProvider;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.Set;
 
 import io.helidon.builder.api.BuilderSupport;
@@ -73,6 +75,37 @@ public class Helidon_builder_apiTest {
                 .isEmpty();
         assertThat(BuilderSupport.discoverServices(ServiceContract.class, true, List.of(new FirstService("known"))))
                 .isEmpty();
+    }
+
+    @Test
+    void builderSupportDiscoversServiceLoaderProvidersAndFiltersKnownClasses() {
+        List<Class<? extends FileSystemProvider>> serviceLoaderProviderTypes = ServiceLoader.load(FileSystemProvider.class)
+                .stream()
+                .map(ServiceLoader.Provider::type)
+                .toList();
+
+        List<FileSystemProvider> discoveredProviders = BuilderSupport.discoverServices(
+                FileSystemProvider.class,
+                true,
+                List.of());
+
+        assertThat(discoveredProviders)
+                .isNotEmpty()
+                .extracting(Object::getClass)
+                .containsExactlyInAnyOrderElementsOf(serviceLoaderProviderTypes);
+        Optional<FileSystemProvider> discoveredService = BuilderSupport.discoverService(
+                FileSystemProvider.class,
+                true,
+                Optional.empty());
+
+        assertThat(discoveredService).isPresent();
+        assertThat(discoveredService.get().getClass()).isEqualTo(discoveredProviders.getFirst().getClass());
+        assertThat(BuilderSupport.discoverServices(
+                FileSystemProvider.class,
+                true,
+                List.of(discoveredProviders.getFirst())))
+                .extracting(Object::getClass)
+                .doesNotContain(discoveredProviders.getFirst().getClass());
     }
 
     @Test
