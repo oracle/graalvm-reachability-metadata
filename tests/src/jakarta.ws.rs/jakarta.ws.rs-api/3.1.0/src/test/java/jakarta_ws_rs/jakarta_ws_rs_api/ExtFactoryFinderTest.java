@@ -6,7 +6,11 @@
  */
 package jakarta_ws_rs.jakarta_ws_rs_api;
 
+import java.util.concurrent.CompletionStage;
+
+import jakarta.ws.rs.SeBootstrap;
 import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.EntityPart;
 import jakarta.ws.rs.core.Link;
 import jakarta.ws.rs.core.Response.ResponseBuilder;
 import jakarta.ws.rs.core.UriBuilder;
@@ -126,6 +130,28 @@ public class ExtFactoryFinderTest extends RuntimeDelegate {
 
     @Override
     public Link.Builder createLinkBuilder() {
+        return null;
+    }
+
+    @Override
+    public SeBootstrap.Configuration.Builder createConfigurationBuilder() {
+        return null;
+    }
+
+    @Override
+    public CompletionStage<SeBootstrap.Instance> bootstrap(
+            Application application, SeBootstrap.Configuration configuration) {
+        return null;
+    }
+
+    @Override
+    public CompletionStage<SeBootstrap.Instance> bootstrap(
+            Class<? extends Application> clazz, SeBootstrap.Configuration configuration) {
+        return null;
+    }
+
+    @Override
+    public EntityPart.Builder createEntityPartBuilder(String partName) {
         return null;
     }
 }
