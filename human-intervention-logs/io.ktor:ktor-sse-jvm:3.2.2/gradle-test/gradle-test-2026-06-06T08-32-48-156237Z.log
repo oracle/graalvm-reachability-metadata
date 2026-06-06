@@ -1,0 +1,194 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: io.ktor:ktor-sse-jvm:3.2.2
+Command: `/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6955-1f946257/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :compileKotlin NO-SOURCE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :jar
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :tck-test-support:compileJava
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes
+> Task :tck-test-support:jar
+> Task :compileTestKotlin
+> Task :compileTestJava NO-SOURCE
+> Task :testClasses UP-TO-DATE
+
+> Task :test
+
+Ktor_sse_jvmTest > typed server sent event serializes typed payload with custom serializer() FAILED
+    org.opentest4j.AssertionFailedError: 
+    expected: 
+      "data: 12:serialized
+      data: confirmed
+      event: payload-ready
+      id: payload-12
+      retry: 3000
+      : serialized-comment
+      "
+     but was: 
+      "event: payload-ready
+      data: 12:serialized
+      data: confirmed
+      id: payload-12
+      retry: 3000
+      : serialized-comment
+      "
+        at java.base@21.0.9/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+        at java.base@21.0.9/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502)
+        at app//io_ktor.ktor_sse_jvm.Ktor_sse_jvmTest.typed server sent event serializes typed payload with custom serializer(Ktor_sse_jvmTest.kt:164)
+
+Ktor_sse_jvmTest > server sent event supports defaults copies destructuring and equality() FAILED
+    org.opentest4j.AssertionFailedError: 
+    expected: 
+      "data: updated
+      event: created
+      id: 1
+      retry: 500
+      "
+     but was: 
+      "event: created
+      data: updated
+      id: 1
+      retry: 500
+      "
+        at java.base@21.0.9/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+        at java.base@21.0.9/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502)
+        at app//io_ktor.ktor_sse_jvm.Ktor_sse_jvmTest.server sent event supports defaults copies destructuring and equality(Ktor_sse_jvmTest.kt:114)
+
+Ktor_sse_jvmTest > server sent event preserves empty fields and blank lines in wire format() FAILED
+    org.opentest4j.AssertionFailedError: 
+    expected: 
+      "data: first line
+      data: 
+      data: third line
+      data: 
+      event: 
+      id: 
+      retry: 0
+      : 
+      : heartbeat
+      : 
+      "
+     but was: 
+      "event: 
+      data: first line
+      data: 
+      data: third line
+      data: 
+      id: 
+      retry: 0
+      : 
+      : heartbeat
+      : 
+      "
+        at java.base@21.0.9/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+        at java.base@21.0.9/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502)
+        at app//io_ktor.ktor_sse_jvm.Ktor_sse_jvmTest.server sent event preserves empty fields and blank lines in wire format(Ktor_sse_jvmTest.kt:66)
+
+Ktor_sse_jvmTest > server sent event exposes metadata and renders wire format() FAILED
+    org.opentest4j.AssertionFailedError: 
+    expected: 
+      "data: first line
+      data: second line
+      data: third line
+      data: fourth line
+      event: inventory-update
+      id: event-42
+      retry: 1500
+      : keep-alive
+      : client-visible
+      "
+     but was: 
+      "event: inventory-update
+      data: first line
+      data: second line
+      data: third line
+      data: fourth line
+      id: event-42
+      retry: 1500
+      : keep-alive
+      : client-visible
+      "
+        at java.base@21.0.9/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+        at java.base@21.0.9/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502)
+        at app//io_ktor.ktor_sse_jvm.Ktor_sse_jvmTest.server sent event exposes metadata and renders wire format(Ktor_sse_jvmTest.kt:35)
+
+
+> Task :test FAILED
+7 tests completed, 4 failed
+
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6955-1f946257/tests/src/io.ktor/ktor-sse-jvm/3.2.2/build/reports/problems/problems-report.html
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+
+Execution failed for task ':test'.
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+> There were failing tests. See the report at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6955-1f946257/tests/src/io.ktor/ktor-sse-jvm/3.2.2/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+14 actionable tasks: 6 executed, 8 up-to-date
+
+BUILD FAILED in 41s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6955-1f946257/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for io.ktor:ktor-sse-jvm:3.2.2 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 43s
+9 actionable tasks: 1 executed, 8 up-to-date
