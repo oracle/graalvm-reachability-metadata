@@ -52,7 +52,7 @@ public class HS_SA_CompressedReferencesProcessorTest {
     }
 
     private static ProcessResult runJavaHelper(String mode) throws Exception {
-        List<String> command = javaCommand(mode, true);
+        List<String> command = javaCommand(mode, false);
         Process process = new ProcessBuilder(command)
                 .redirectErrorStream(true)
                 .start();

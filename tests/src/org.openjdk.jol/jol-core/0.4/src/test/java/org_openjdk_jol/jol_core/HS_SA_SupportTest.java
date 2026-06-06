@@ -12,6 +12,7 @@ import org.openjdk.jol.util.HS_SA_Support;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectStreamClass;
 import java.io.PrintStream;
@@ -34,7 +35,7 @@ public class HS_SA_SupportTest {
 
     @Test
     void initializesHotspotServiceabilityAgentSupportWithVmManagementAccess() throws Exception {
-        ProcessResult result = runJavaHelper(INIT_MODE, true);
+        ProcessResult result = runJavaHelper(INIT_MODE, false);
 
         assertThat(result.output)
                 .describedAs("HotSpot SA support initialization output")
@@ -46,7 +47,7 @@ public class HS_SA_SupportTest {
 
     @Test
     void mainConsumesSerializedAgentRequestAndWritesResponse() throws Exception {
-        ProcessResult result = runJavaHelper(MAIN_MODE, true);
+        ProcessResult result = runJavaHelper(MAIN_MODE, false);
 
         assertThat(result.output)
                 .describedAs("HotSpot SA support main output")
@@ -77,17 +78,31 @@ public class HS_SA_SupportTest {
         processBuilder.environment().remove("JDK_JAVA_OPTIONS");
         processBuilder.environment().remove("JAVA_TOOL_OPTIONS");
         Process process = processBuilder.start();
+        CapturedProcessOutput capturedOutput = captureProcessOutput(process);
 
         boolean finished = process.waitFor(HELPER_TIMEOUT_SECONDS, TimeUnit.SECONDS);
         if (!finished) {
             process.destroyForcibly();
             process.waitFor(5, TimeUnit.SECONDS);
-            byte[] outputBytes = process.getInputStream().readAllBytes();
+            byte[] outputBytes = capturedOutput.awaitBytes();
             throw new AssertionError("Timed out waiting for helper process. Output:\n"
                     + new String(outputBytes, StandardCharsets.UTF_8));
         }
-        byte[] outputBytes = process.getInputStream().readAllBytes();
+        byte[] outputBytes = capturedOutput.awaitBytes();
         return new ProcessResult(process.exitValue(), new String(outputBytes, StandardCharsets.UTF_8));
+    }
+
+    private static CapturedProcessOutput captureProcessOutput(Process process) {
+        ByteArrayOutputStream outputBytes = new ByteArrayOutputStream();
+        Thread outputReader = new Thread(() -> {
+            try (InputStream input = process.getInputStream()) {
+                input.transferTo(outputBytes);
+            } catch (IOException ignored) {
+            }
+        }, "jol-core-hs-sa-support-output-reader");
+        outputReader.setDaemon(true);
+        outputReader.start();
+        return new CapturedProcessOutput(outputReader, outputBytes);
     }
 
     private static List<String> javaCommand(String mode, boolean includeCurrentInputArguments) throws Exception {
@@ -206,6 +221,21 @@ public class HS_SA_SupportTest {
         private ProcessResult(int exitCode, String output) {
             this.exitCode = exitCode;
             this.output = output;
+        }
+    }
+
+    private static final class CapturedProcessOutput {
+        private final Thread outputReader;
+        private final ByteArrayOutputStream outputBytes;
+
+        private CapturedProcessOutput(Thread outputReader, ByteArrayOutputStream outputBytes) {
+            this.outputReader = outputReader;
+            this.outputBytes = outputBytes;
+        }
+
+        private byte[] awaitBytes() throws InterruptedException {
+            outputReader.join(TimeUnit.SECONDS.toMillis(5));
+            return outputBytes.toByteArray();
         }
     }
 }
