@@ -16,24 +16,24 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.postgis.Geometry;
-import org.postgis.GeometryBuilder;
-import org.postgis.GeometryCollection;
-import org.postgis.GeometryTokenizer;
-import org.postgis.LineString;
-import org.postgis.LinearRing;
-import org.postgis.MultiLineString;
-import org.postgis.MultiPoint;
-import org.postgis.MultiPolygon;
-import org.postgis.Point;
-import org.postgis.Polygon;
-import org.postgis.binary.BinaryParser;
-import org.postgis.binary.BinaryWriter;
-import org.postgis.binary.ByteGetter;
-import org.postgis.binary.ByteSetter;
-import org.postgis.binary.ValueGetter;
-import org.postgis.binary.ValueSetter;
-import org.postgis.util.VersionFunctions;
+import net.postgis.jdbc.geometry.Geometry;
+import net.postgis.jdbc.geometry.GeometryBuilder;
+import net.postgis.jdbc.geometry.GeometryCollection;
+import net.postgis.jdbc.geometry.GeometryTokenizer;
+import net.postgis.jdbc.geometry.LineString;
+import net.postgis.jdbc.geometry.LinearRing;
+import net.postgis.jdbc.geometry.MultiLineString;
+import net.postgis.jdbc.geometry.MultiPoint;
+import net.postgis.jdbc.geometry.MultiPolygon;
+import net.postgis.jdbc.geometry.Point;
+import net.postgis.jdbc.geometry.Polygon;
+import net.postgis.jdbc.geometry.binary.BinaryParser;
+import net.postgis.jdbc.geometry.binary.BinaryWriter;
+import net.postgis.jdbc.geometry.binary.ByteGetter;
+import net.postgis.jdbc.geometry.binary.ByteSetter;
+import net.postgis.jdbc.geometry.binary.ValueGetter;
+import net.postgis.jdbc.geometry.binary.ValueSetter;
+import net.postgis.jdbc.geometry.util.VersionFunctions;
 
 public class Postgis_geometryTest {
 
