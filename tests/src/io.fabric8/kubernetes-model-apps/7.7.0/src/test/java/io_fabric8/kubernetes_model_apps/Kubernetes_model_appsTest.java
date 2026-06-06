@@ -11,6 +11,7 @@ import io.fabric8.kubernetes.api.model.Container;
 import io.fabric8.kubernetes.api.model.ContainerBuilder;
 import io.fabric8.kubernetes.api.model.HasMetadata;
 import io.fabric8.kubernetes.api.model.KubernetesResource;
+import io.fabric8.kubernetes.api.model.ListMetaBuilder;
 import io.fabric8.kubernetes.api.model.apps.ControllerRevision;
 import io.fabric8.kubernetes.api.model.apps.ControllerRevisionBuilder;
 import io.fabric8.kubernetes.api.model.apps.ControllerRevisionList;
@@ -175,7 +176,11 @@ public class Kubernetes_model_appsTest {
                 .endsWith(":stable");
 
         DeploymentList list = new DeploymentListBuilder()
-                .withNewMetadata("continue-token", 2L, "17", null)
+                .withMetadata(new ListMetaBuilder()
+                        .withContinue("continue-token")
+                        .withRemainingItemCount(2L)
+                        .withResourceVersion("17")
+                        .build())
                 .withItems(deployment, scaled)
                 .build();
 
@@ -268,7 +273,10 @@ public class Kubernetes_model_appsTest {
                 .endStatus()
                 .build();
         ReplicaSetList list = new ReplicaSetListBuilder()
-                .withNewMetadata(null, 2L, "21", null)
+                .withMetadata(new ListMetaBuilder()
+                        .withRemainingItemCount(2L)
+                        .withResourceVersion("21")
+                        .build())
                 .withItems(replicaSet, canary)
                 .editMatchingItem(item -> "checkout-8d10".equals(item.buildMetadata().getName()))
                     .editStatus()
@@ -371,7 +379,10 @@ public class Kubernetes_model_appsTest {
                 .endSpec()
                 .build();
         DaemonSetList list = new DaemonSetListBuilder()
-                .withNewMetadata(null, 2L, "31", null)
+                .withMetadata(new ListMetaBuilder()
+                        .withRemainingItemCount(2L)
+                        .withResourceVersion("31")
+                        .build())
                 .withItems(daemonSet, paused)
                 .removeMatchingFromItems(item -> item.buildMetadata().getName().endsWith("paused"))
                 .build();
@@ -493,7 +504,11 @@ public class Kubernetes_model_appsTest {
                 .endStatus()
                 .build();
         StatefulSetList list = new StatefulSetListBuilder()
-                .withNewMetadata("next", 2L, "41", null)
+                .withMetadata(new ListMetaBuilder()
+                        .withContinue("next")
+                        .withRemainingItemCount(2L)
+                        .withResourceVersion("41")
+                        .build())
                 .withItems(statefulSet, expanded)
                 .build();
 
@@ -535,7 +550,10 @@ public class Kubernetes_model_appsTest {
                 .addToAdditionalProperties("history", "canary")
                 .build();
         ControllerRevisionList list = new ControllerRevisionListBuilder()
-                .withNewMetadata(null, 2L, "51", null)
+                .withMetadata(new ListMetaBuilder()
+                        .withRemainingItemCount(2L)
+                        .withResourceVersion("51")
+                        .build())
                 .withItems(revision, nextRevision)
                 .editMatchingItem(item -> "checkout-8d10".equals(item.buildMetadata().getName()))
                     .addToAdditionalProperties("promoted", Boolean.TRUE)
