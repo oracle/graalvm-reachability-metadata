@@ -8,9 +8,9 @@ package io_sundr.sundr_codegen_velocity_nodeps;
 
 import org.junit.jupiter.api.Test;
 
-class Sundr_codegen_velocity_nodepsTest {
+public class Sundr_codegen_velocity_nodepsTest {
     @Test
-    void test() throws Exception {
+    public void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
     }
 }
