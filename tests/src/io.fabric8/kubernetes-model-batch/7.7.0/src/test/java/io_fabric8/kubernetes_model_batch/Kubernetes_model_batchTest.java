@@ -8,6 +8,8 @@ package io_fabric8.kubernetes_model_batch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.fabric8.kubernetes.api.model.ListMeta;
+import io.fabric8.kubernetes.api.model.ListMetaBuilder;
 import io.fabric8.kubernetes.api.model.ObjectReference;
 import io.fabric8.kubernetes.api.model.ObjectReferenceBuilder;
 import io.fabric8.kubernetes.api.model.batch.v1.CronJob;
@@ -416,7 +418,7 @@ public class Kubernetes_model_batchTest {
         Job exportJob = jobNamed("export", "ops", "False");
 
         JobList jobs = new JobListBuilder()
-                .withNewMetadata("next-page", 1L, "1024", "/apis/batch/v1/jobs")
+                .withMetadata(listMetadata("next-page", 1L, "1024"))
                 .addToItems(renderJob, reportJob)
                 .addToItems(1, exportJob)
                 .build();
@@ -449,7 +451,7 @@ public class Kubernetes_model_batchTest {
         CronJob hourly = cronJobNamed("hourly", "*/60 * * * *");
         CronJob daily = cronJobNamed("daily", "0 0 * * *");
         CronJobList cronJobs = new CronJobListBuilder()
-                .withNewMetadata("", 0L, "2048", "/apis/batch/v1/cronjobs")
+                .withMetadata(listMetadata("", 0L, "2048"))
                 .addToItems(hourly, daily)
                 .build();
         CronJobList editedCronJobs = new CronJobListBuilder(cronJobs)
@@ -574,7 +576,7 @@ public class Kubernetes_model_batchTest {
                         .build();
         io.fabric8.kubernetes.api.model.batch.v1beta1.CronJobList list =
                 new io.fabric8.kubernetes.api.model.batch.v1beta1.CronJobListBuilder()
-                        .withNewMetadata("", 0L, "3000", "/apis/batch/v1beta1/cronjobs")
+                        .withMetadata(listMetadata("", 0L, "3000"))
                         .addToItems(cronJob)
                         .build();
 
@@ -602,6 +604,14 @@ public class Kubernetes_model_batchTest {
         assertThat(edited.getSpec().getSuspend()).isTrue();
         assertThat(edited.getSpec().getJobTemplate().getSpec().getBackoffLimit()).isEqualTo(1);
         assertThat(cronJob.getSpec().getJobTemplate().getSpec().getBackoffLimit()).isNull();
+    }
+
+    private static ListMeta listMetadata(String continueToken, Long remainingItemCount, String resourceVersion) {
+        return new ListMetaBuilder()
+                .withContinue(continueToken)
+                .withRemainingItemCount(remainingItemCount)
+                .withResourceVersion(resourceVersion)
+                .build();
     }
 
     private static ObjectReference activeJobReference(String name, String uid) {
