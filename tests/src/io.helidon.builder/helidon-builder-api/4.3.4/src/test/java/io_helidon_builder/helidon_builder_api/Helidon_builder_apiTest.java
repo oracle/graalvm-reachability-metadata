@@ -116,6 +116,24 @@ public class Helidon_builder_apiTest {
         assertThat(runtimeComponent.prototype()).isEqualTo(new SimplePrototype("alpha"));
     }
 
+    @Test
+    void optionDecoratorCollectionHooksCanCustomizeListAndSetOperations() {
+        List<String> target = new ArrayList<>();
+        CollectionRecordingOptionDecorator decorator = new CollectionRecordingOptionDecorator();
+
+        decorator.decorateSetList(target, List.of("red", "blue"));
+        decorator.decorateAddList(target, List.of("green"));
+        decorator.decorateSetSet(target, Set.of("cyan"));
+        decorator.decorateAddSet(target, Set.of("magenta"));
+
+        assertThat(target)
+                .containsExactly(
+                        "set-list:red,blue",
+                        "add-list:green",
+                        "set-set:cyan",
+                        "add-set:magenta");
+    }
+
     public interface ServiceContract {
         String name();
     }
@@ -185,6 +203,34 @@ public class Helidon_builder_apiTest {
         @Override
         public void decorate(List<String> target, String value) {
             target.add(value);
+        }
+    }
+
+    private static final class CollectionRecordingOptionDecorator
+            implements Prototype.OptionDecorator<List<String>, String> {
+        @Override
+        public void decorate(List<String> target, String value) {
+            target.add("value:" + value);
+        }
+
+        @Override
+        public void decorateSetList(List<String> target, List<String> values) {
+            target.add("set-list:" + String.join(",", values));
+        }
+
+        @Override
+        public void decorateAddList(List<String> target, List<String> values) {
+            target.add("add-list:" + String.join(",", values));
+        }
+
+        @Override
+        public void decorateSetSet(List<String> target, Set<String> values) {
+            target.add("set-set:" + String.join(",", values));
+        }
+
+        @Override
+        public void decorateAddSet(List<String> target, Set<String> values) {
+            target.add("add-set:" + String.join(",", values));
         }
     }
 
