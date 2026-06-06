@@ -188,6 +188,27 @@ public class Oci_java_sdk_circuitbreakerTest {
     }
 
     @Test
+    void circuitBreakerOpensAfterConfiguredSlowCalls() {
+        OciCircuitBreaker circuitBreaker =
+                CircuitBreakerFactory.build(
+                        CircuitBreakerConfiguration.builder()
+                                .slowCallRateThreshold(50)
+                                .failureRateThreshold(100)
+                                .minimumNumberOfCalls(2)
+                                .slidingWindowSize(2)
+                                .slowCallDurationThreshold(Duration.ofMillis(1))
+                                .build());
+
+        circuitBreaker.onSuccess(2, TimeUnit.MILLISECONDS);
+        assertThat(circuitBreaker.getState()).isEqualTo(CircuitBreaker.State.CLOSED);
+
+        circuitBreaker.onSuccess(2, TimeUnit.MILLISECONDS);
+
+        assertThat(circuitBreaker.getState()).isEqualTo(CircuitBreaker.State.OPEN);
+        assertThat(circuitBreaker.tryAcquirePermission()).isFalse();
+    }
+
+    @Test
     void disabledWritableStackTraceIsAppliedToCreatedCallNotAllowedException() {
         OciCircuitBreaker circuitBreaker = CircuitBreakerFactory.build(fastOpeningConfiguration(false));
 
