@@ -9,10 +9,10 @@ package org_apache_pekko.pekko_protobuf_v3_3;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.pekko.protobufv3.internal.CodedInputStream;
 import org.apache.pekko.protobufv3.internal.DescriptorProtos;
 import org.apache.pekko.protobufv3.internal.Descriptors;
-import org.apache.pekko.protobufv3.internal.ExtensionRegistryLite;
+import org.apache.pekko.protobufv3.internal.DynamicMessage;
+import org.apache.pekko.protobufv3.internal.ExtensionRegistry;
 import org.apache.pekko.protobufv3.internal.GeneratedMessageV3;
 import org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException;
 import org.apache.pekko.protobufv3.internal.Message;
@@ -31,8 +31,13 @@ public final class DescriptorMessageInfoFactoryProbe extends GeneratedMessageV3 
     }
 
     public void initializeEmptyPayloadSchema() throws InvalidProtocolBufferException {
-        CodedInputStream input = CodedInputStream.newInstance(new byte[0]);
-        mergeFromAndMakeImmutableInternal(input, ExtensionRegistryLite.getEmptyRegistry());
+        DynamicMessage parsed = DynamicMessage.parseFrom(
+                getDescriptorForType(),
+                new byte[0],
+                ExtensionRegistry.getEmptyRegistry());
+        if (!parsed.getAllFields().isEmpty()) {
+            throw new InvalidProtocolBufferException("Empty input produced fields");
+        }
     }
 
     public Child getMessageChoice() {
