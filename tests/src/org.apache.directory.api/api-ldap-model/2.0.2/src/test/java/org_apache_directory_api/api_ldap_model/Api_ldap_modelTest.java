@@ -269,8 +269,8 @@ public class Api_ldap_modelTest {
         String renderedLdif = LdifUtils.convertToLdif(contentEntry.getEntry());
         assertThat(renderedLdif).contains(
                 "dn: cn=Jane Doe,ou=People,dc=example,dc=com",
-                "objectclass: top",
-                "objectclass: person",
+                "objectClass: top",
+                "objectClass: person",
                 "cn: Jane Doe");
 
         String changeLdif = """
