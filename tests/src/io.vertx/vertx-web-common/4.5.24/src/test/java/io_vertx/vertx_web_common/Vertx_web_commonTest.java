@@ -245,6 +245,23 @@ public class Vertx_web_commonTest {
     }
 
     @Test
+    void cachingTemplateEngineLeavesTemplateCacheDisabledInDevelopmentMode() throws Exception {
+        String previousMode = System.getProperty(WebEnvironment.SYSTEM_PROPERTY_NAME);
+        System.setProperty(WebEnvironment.SYSTEM_PROPERTY_NAME, "dev");
+        Vertx vertx = Vertx.vertx();
+        try {
+            TestCachingTemplateEngine engine = new TestCachingTemplateEngine(vertx, "tmpl");
+            TemplateHolder<String> holder = new TemplateHolder<>("compiled-template");
+
+            assertThat(engine.putTemplate("home", holder)).isNull();
+            assertThat(engine.getTemplate("home")).isNull();
+        } finally {
+            restoreSystemProperty(WebEnvironment.SYSTEM_PROPERTY_NAME, previousMode);
+            await(vertx.close());
+        }
+    }
+
+    @Test
     void webEnvironmentUsesSystemPropertyForModeAndDevelopmentFlag() {
         String previousMode = System.getProperty(WebEnvironment.SYSTEM_PROPERTY_NAME);
         try {
