@@ -10,6 +10,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.fabric8.kubernetes.api.model.HasMetadata;
 import io.fabric8.kubernetes.api.model.KubernetesResource;
+import io.fabric8.kubernetes.api.model.ListMeta;
+import io.fabric8.kubernetes.api.model.ListMetaBuilder;
 import io.fabric8.kubernetes.api.model.StatusBuilder;
 import io.fabric8.kubernetes.api.model.admission.v1.AdmissionReview;
 import io.fabric8.kubernetes.api.model.admission.v1.AdmissionReviewBuilder;
@@ -52,6 +54,14 @@ import java.util.ServiceLoader;
 import org.junit.jupiter.api.Test;
 
 public class Kubernetes_model_admissionregistrationTest {
+    private static ListMeta listMetadata(String continueToken, Long remainingItemCount, String resourceVersion) {
+        return new ListMetaBuilder()
+                .withContinue(continueToken)
+                .withRemainingItemCount(remainingItemCount)
+                .withResourceVersion(resourceVersion)
+                .build();
+    }
+
     @Test
     void buildsAndEditsStableWebhookConfigurationsWithSelectorsRulesAndClientConfig() {
         MutatingWebhookConfiguration mutatingConfiguration = new MutatingWebhookConfigurationBuilder()
@@ -175,7 +185,7 @@ public class Kubernetes_model_admissionregistrationTest {
         MutatingWebhookConfiguration imagePolicy = mutatingConfiguration("image-policy", "pods", "images");
 
         MutatingWebhookConfigurationList mutatingList = new MutatingWebhookConfigurationListBuilder()
-                .withNewMetadata("continue-token", 2L, "17", "self-link")
+                .withMetadata(listMetadata("continue-token", 2L, "17"))
                 .withItems(defaulting, imagePolicy)
                 .editMatchingItem(item -> "image-policy".equals(item.buildMetadata().getName()))
                     .editFirstWebhook()
@@ -231,7 +241,7 @@ public class Kubernetes_model_admissionregistrationTest {
                 .endWebhook()
                 .build();
         ValidatingWebhookConfigurationList validatingList = new ValidatingWebhookConfigurationListBuilder()
-                .withNewMetadata(null, 1L, "18", null)
+                .withMetadata(listMetadata(null, 1L, "18"))
                 .addToItems(validating)
                 .build();
 
@@ -346,11 +356,11 @@ public class Kubernetes_model_admissionregistrationTest {
         assertThat(binding.getSpec().getParamRef().getSelector().getMatchLabels()).containsEntry("team", "platform");
 
         ValidatingAdmissionPolicyList policyList = new ValidatingAdmissionPolicyListBuilder()
-                .withNewMetadata(null, 1L, "27", null)
+                .withMetadata(listMetadata(null, 1L, "27"))
                 .withItems(policy, editedPolicy)
                 .build();
         ValidatingAdmissionPolicyBindingList bindingList = new ValidatingAdmissionPolicyBindingListBuilder()
-                .withNewMetadata("next", 1L, "28", null)
+                .withMetadata(listMetadata("next", 1L, "28"))
                 .addToItems(binding)
                 .build();
 
@@ -444,13 +454,13 @@ public class Kubernetes_model_admissionregistrationTest {
                 .build();
         io.fabric8.kubernetes.api.model.admissionregistration.v1beta1.MutatingAdmissionPolicyList policyList =
                 new io.fabric8.kubernetes.api.model.admissionregistration.v1beta1.MutatingAdmissionPolicyListBuilder()
-                .withNewMetadata(null, 2L, "31", null)
+                .withMetadata(listMetadata(null, 2L, "31"))
                 .withItems(policy)
                 .build();
         io.fabric8.kubernetes.api.model.admissionregistration.v1beta1.MutatingAdmissionPolicyBindingList bindingList =
                 new io.fabric8.kubernetes.api.model.admissionregistration.v1beta1
                         .MutatingAdmissionPolicyBindingListBuilder()
-                .withNewMetadata(null, 1L, "32", null)
+                .withMetadata(listMetadata(null, 1L, "32"))
                 .withItems(binding)
                 .build();
 
@@ -541,12 +551,12 @@ public class Kubernetes_model_admissionregistrationTest {
         io.fabric8.kubernetes.api.model.admissionregistration.v1alpha1.MutatingAdmissionPolicyBindingList bindingList =
                 new io.fabric8.kubernetes.api.model.admissionregistration.v1alpha1
                         .MutatingAdmissionPolicyBindingListBuilder()
-                .withNewMetadata("continue", 1L, "41", null)
+                .withMetadata(listMetadata("continue", 1L, "41"))
                 .addToItems(binding)
                 .build();
         io.fabric8.kubernetes.api.model.admissionregistration.v1alpha1.MutatingAdmissionPolicyList policyList =
                 new io.fabric8.kubernetes.api.model.admissionregistration.v1alpha1.MutatingAdmissionPolicyListBuilder()
-                .withNewMetadata(null, 2L, "42", null)
+                .withMetadata(listMetadata(null, 2L, "42"))
                 .withItems(alphaPolicy, edited)
                 .build();
 
