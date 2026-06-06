@@ -6,11 +6,51 @@
  */
 package com_oracle_oci_sdk.oci_java_sdk_common_httpclient;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.oracle.bmc.http.client.pki.Pem;
+
+import java.nio.charset.StandardCharsets;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+
 import org.junit.jupiter.api.Test;
 
-class Oci_java_sdk_common_httpclientTest {
+public class Oci_java_sdk_common_httpclientTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
+    }
+
+    @Test
+    void pemEncoderAndDecoderRoundTripPublicKey() throws Exception {
+        KeyPair keyPair = generateRsaKeyPair();
+
+        String pem = Pem.encoder().encode(keyPair.getPublic());
+        PublicKey decodedPublicKey = Pem.decoder().decodePublicKey(pem);
+
+        assertThat(pem).contains("-----BEGIN PUBLIC KEY-----");
+        assertThat(decodedPublicKey.getAlgorithm()).isEqualTo("RSA");
+        assertThat(decodedPublicKey.getEncoded()).isEqualTo(keyPair.getPublic().getEncoded());
+    }
+
+    @Test
+    void pemEncoderAndDecoderRoundTripPrivateKey() throws Exception {
+        KeyPair keyPair = generateRsaKeyPair();
+
+        byte[] encodedPem = Pem.encoder().encode(keyPair.getPrivate());
+        PrivateKey decodedPrivateKey = Pem.decoder().decodePrivateKey(encodedPem);
+
+        assertThat(new String(encodedPem, StandardCharsets.UTF_8)).contains("-----BEGIN PRIVATE KEY-----");
+        assertThat(decodedPrivateKey.getAlgorithm()).isEqualTo("RSA");
+        assertThat(decodedPrivateKey.getEncoded()).isEqualTo(keyPair.getPrivate().getEncoded());
+    }
+
+    private static KeyPair generateRsaKeyPair() throws Exception {
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        keyPairGenerator.initialize(1024);
+        return keyPairGenerator.generateKeyPair();
     }
 }
