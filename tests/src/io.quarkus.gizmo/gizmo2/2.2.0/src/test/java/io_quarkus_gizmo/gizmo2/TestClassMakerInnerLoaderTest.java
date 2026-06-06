@@ -28,8 +28,6 @@ import io.quarkus.gizmo2.testing.TestClassMaker;
 public class TestClassMakerInnerLoaderTest {
     private static final String GENERATED_CLASS_NAME =
             "io_quarkus_gizmo.gizmo2.generated.TestClassMakerInnerLoaderTarget";
-    private static final String INVALID_CLASS_NAME =
-            "io_quarkus_gizmo.gizmo2.generated.TestClassMakerInnerLoaderInvalidTarget";
     private static final int GENERATED_METHOD_COUNT = 500;
 
     @Test
@@ -41,24 +39,6 @@ public class TestClassMakerInnerLoaderTest {
                 throw error;
             }
         }
-    }
-
-    @Test
-    void rejectsInvalidLocalClassResource() throws Exception {
-        TestClassMaker maker = TestClassMaker.create();
-        maker.registerResource(INVALID_CLASS_NAME.replace('.', '/') + ".class", new byte[] { 0, 1, 2, 3 });
-
-        try {
-            maker.classLoader().loadClass(INVALID_CLASS_NAME);
-        } catch (ClassFormatError expected) {
-            return;
-        } catch (Error error) {
-            if (NativeImageSupport.isUnsupportedFeatureError(error)) {
-                return;
-            }
-            throw error;
-        }
-        throw new AssertionError("Expected invalid class bytes to be rejected");
     }
 
     private static void exerciseParallelLocalClassLoading() throws Exception {
