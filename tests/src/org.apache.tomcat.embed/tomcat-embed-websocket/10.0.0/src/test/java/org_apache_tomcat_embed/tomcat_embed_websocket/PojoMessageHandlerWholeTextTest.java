@@ -8,6 +8,8 @@ package org_apache_tomcat_embed.tomcat_embed_websocket;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.util.Collections;
@@ -31,10 +33,10 @@ import org.apache.tomcat.websocket.WsSession;
 import org.apache.tomcat.websocket.WsWebSocketContainer;
 import org.junit.jupiter.api.Test;
 
-public class PojoMessageHandlerWholeBaseTest {
+public class PojoMessageHandlerWholeTextTest {
 
     @Test
-    void wholeTextMessageWithDecoderInvokesWrappedPojoHandler() throws DeploymentException {
+    void wholeTextMessageWithTextDecoderInvokesWrappedPojoHandler() throws DeploymentException {
         PayloadTextDecoder.reset();
         ClientEndpointConfig config = ClientEndpointConfig.Builder.create()
                 .decoders(List.of(PayloadTextDecoder.class))
@@ -50,6 +52,25 @@ public class PojoMessageHandlerWholeBaseTest {
         assertThat(PayloadTextDecoder.constructions()).isGreaterThanOrEqualTo(1);
         assertThat(PayloadTextDecoder.initializedWith()).isSameAs(config);
         assertThat(payloadHandler.receivedPayload.value).isEqualTo("decoded-value");
+    }
+
+    @Test
+    void wholeTextMessageWithTextStreamDecoderInvokesWrappedPojoHandler() throws DeploymentException {
+        PayloadTextStreamDecoder.reset();
+        ClientEndpointConfig config = ClientEndpointConfig.Builder.create()
+                .decoders(List.of(PayloadTextStreamDecoder.class))
+                .build();
+        WsSession session = newSession(config);
+        PayloadHandler payloadHandler = new PayloadHandler();
+
+        session.addMessageHandler(payloadHandler);
+        MessageHandler wrappedHandler = session.getMessageHandlers().iterator().next();
+        asWholeTextHandler(wrappedHandler).onMessage("stream-value");
+
+        assertThat(wrappedHandler).isNotSameAs(payloadHandler);
+        assertThat(PayloadTextStreamDecoder.constructions()).isGreaterThanOrEqualTo(1);
+        assertThat(PayloadTextStreamDecoder.initializedWith()).isSameAs(config);
+        assertThat(payloadHandler.receivedPayload.value).isEqualTo("stream-value");
     }
 
     @SuppressWarnings("unchecked")
@@ -103,13 +124,56 @@ public class PojoMessageHandlerWholeBaseTest {
         }
 
         @Override
-        public Payload decode(String s) throws DecodeException {
-            return new Payload(s);
+        public Payload decode(String value) throws DecodeException {
+            return new Payload(value);
         }
 
         @Override
-        public boolean willDecode(String s) {
+        public boolean willDecode(String value) {
             return true;
+        }
+
+        @Override
+        public void init(EndpointConfig config) {
+            INITIALIZED_WITH.set(config);
+        }
+
+        @Override
+        public void destroy() {
+        }
+    }
+
+    public static class PayloadTextStreamDecoder implements Decoder.TextStream<Payload> {
+        private static final AtomicInteger CONSTRUCTIONS = new AtomicInteger();
+        private static final AtomicReference<EndpointConfig> INITIALIZED_WITH = new AtomicReference<>();
+
+        public PayloadTextStreamDecoder() {
+            CONSTRUCTIONS.incrementAndGet();
+        }
+
+        static void reset() {
+            CONSTRUCTIONS.set(0);
+            INITIALIZED_WITH.set(null);
+        }
+
+        static int constructions() {
+            return CONSTRUCTIONS.get();
+        }
+
+        static EndpointConfig initializedWith() {
+            return INITIALIZED_WITH.get();
+        }
+
+        @Override
+        public Payload decode(Reader reader) throws DecodeException, IOException {
+            StringBuilder value = new StringBuilder();
+            char[] buffer = new char[32];
+            int read = reader.read(buffer);
+            while (read != -1) {
+                value.append(buffer, 0, read);
+                read = reader.read(buffer);
+            }
+            return new Payload(value.toString());
         }
 
         @Override
