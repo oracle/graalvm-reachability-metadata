@@ -1,0 +1,772 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e9ba8-5e41-79b2-b831-b1c63f6c34ff
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.typelevel:twiddles-core_3:1.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [1.0.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d/metadata/org.typelevel/twiddles-core_3/index.json
+- Entry selector: "metadata-version" = "1.0.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: {"name": "scala", "version": "3"}
+
+Context:
+- Coordinate version: 1.0.0
+- Entry metadata-version: 1.0.0
+- Entry test-version: 1.0.0
+- Entry tested-versions: [1.0.0]
+codex
+I’ll verify the artifact metadata from Maven/GitHub first, then patch only the missing fields in the target `index.json`. Since the URL requirements are version-specific, I’ll render and check the final candidates before writing them.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.typelevel/twiddles-core_3/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.0",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "1.0.0"
+    ],
+    "allowed-packages" : [
+      "org.typelevel.twiddles"
+    ]
+  },
+  {
+    "metadata-version" : "0.7.2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/$version$/twiddles-core_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/typelevel/twiddles",
+    "test-code-url" : "https://github.com/typelevel/twiddles/tree/v$version$/core/shared/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/$version$/twiddles-core_3-$version$-javadoc.jar",
+    "description" : "Twiddles provides twiddle lists for incrementally composing values of different types and converting them to shape-compatible case classes. The core module offers syntax and abstractions for building protocol-like structures such as decoders, encoders, and codecs using Cats invariant semigroupal and invariant type classes.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "0.7.2",
+      "0.8.0",
+      "0.9.0",
+      "0.9.1",
+      "0.10.0"
+    ],
+    "allowed-packages" : [
+      "org.typelevel.twiddles"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/typelevel/twiddles-core_3/1.0.0/twiddles-core_3-1.0.0.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.typelevel</groupId>
+    <artifactId>twiddles-core_3</artifactId>
+    <packaging>jar</packaging>
+    <description>twiddles-core</description>
+    <url>https://github.com/typelevel/twiddles</url>
+    <version>1.0.0</version>
+    <licenses>
+        <license>
+            <name>BSD-3-Clause</name>
+            <url>https://github.com/typelevel/twiddles/blob/main/LICENSE</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>twiddles-core</name>
+    <inceptionYear>2023</inceptionYear>
+    <organization>
+        <name>Typelevel</name>
+        <url>https://typelevel.org</url>
+    </organization>
+    <scm>
+        <url>https://github.com/typelevel/twiddles</url>
+        <connection>scm:git:https://github.com/typelevel/twiddles.git</connection>
+        <developerConnection>scm:git:git@github.com:typelevel/twiddles.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>typelevel</id>
+            <name>twiddles contributors</name>
+            <url>https://github.com/typelevel/twiddles/contributors</url>
+            <email>@typelevel</email>
+        </developer>
+        <developer>
+            <id>mpilquist</id>
+            <name>Michael Pilquist</name>
+            <url>https://github.com/mpilquist</url>
+            <email>@mpilquist</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://javadoc.io/doc/org.typelevel/twiddles-core_3/1.0.0/</info.apiURL>
+        <info.releaseNotesUrl>https://github.com/typelevel/twiddles/releases/tag/v1.0.0</info.releaseNotesUrl>
+        <info.versionScheme>early-semver</info.versionScheme>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.3.7</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.sbt-doctest</groupId>
+            <artifactId>doctest-runtime_3</artifactId>
+            <version>0.12.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>scalac-compat-annotation_3</artifactId>
+            <version>0.1.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>cats-core_3</artifactId>
+            <version>2.13.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scalameta</groupId>
+            <artifactId>munit_3</artifactId>
+            <version>1.2.4</version>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d
+ succeeded in 0ms:
+web search: 
+web search: org.typelevel twiddles-core_3 1.0.0 Maven repository twiddles
+web search: 
+web search: https://github.com/typelevel/twiddles/tree/v1.0.0/core/shared/src/test
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/1.0.0 twiddles-core_3-1.0.0-sources.jar
+codex
+The Maven POM points back to `https://github.com/typelevel/twiddles` and declares the Scala 3 artifact dependency, while the existing older metadata entry already uses Maven source/javadoc artifacts and the GitHub tagged test path. I’m checking whether 1.0.0 has published sources, javadocs, and any tests artifact before patching.
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/typelevel/twiddles/tree/v1.0.0/core/shared/src/test' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/1.0.0/twiddles-core_3-1.0.0-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/1.0.0/twiddles-core_3-1.0.0-tests.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/typelevel/twiddles' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/1.0.0/twiddles-core_3-1.0.0-javadoc.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d
+ exited 22 in 258ms:
+HTTP/2 404 
+date: Sat, 06 Jun 2026 06:39:45 GMT
+content-type: text/html
+cf-ray: a0756bf3d865bb16-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/typelevel/twiddles-core_3/1.0.0/twiddles-core_3-1.0.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 305ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 06:39:45 GMT
+content-type: application/java-archive
+content-length: 6273
+cf-ray: a0756bf3d964039d-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "d7fc7afd231108da4bed87d51e6d8f9c"
+last-modified: Tue, 14 Apr 2026 15:53:56 GMT
+x-checksum-md5: d7fc7afd231108da4bed87d51e6d8f9c
+x-checksum-sha1: 0203eaf1f0e2c0f8241f9cb14ec73b1c0ff92dfa
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 482ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 06:39:45 GMT
+content-type: application/java-archive
+content-length: 2731092
+cf-ray: a0756bf3df7e0221-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "c35e0344743e4a4f9e08b269c16755d3"
+last-modified: Tue, 14 Apr 2026 15:53:56 GMT
+x-checksum-md5: c35e0344743e4a4f9e08b269c16755d3
+x-checksum-sha1: 7ee0e90aa2785f06b23adbcd76db7252cc19e0cb
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 495ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 06:39:45 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"34f01240e25a29653e4873d4f5c80182"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=EQOzJJQXX5KHGuAlPHrZtnpaUpUcoZC8xZAu9aiGZTh8%2FkJWJZAvQQVvAtt6vn2uuSYdrZbO%2FAUNhfSjMo0OP%2BWW1oS8s7Cjh46G96Oc4YQ3p5Q%2FTQ0Xufe9GplVlIhWnsjB1%2F5WipGXvl%2Fit41llkSswBxjUjvT3e5%2FPRMFK4ZPtZ%2FlJx1JF%2BtKJfgt%2F8UGDJBjHQ6%2BETZNiDcjO93BGoBIInRDXtUF6Y2wSJiYw%2BxaPjdz%2FlKOk6eRN7HYaVLvPDqgmRSuDx1wXX07BHNhLg%3D%3D--5BZLhptOCFw%2Fc7fj--OkVrlQ0WWO8UjBXNul3pLQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.171182627.1780727985; expires=Sun, 06 Jun 2027 06:39:45 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 06 Jun 2027 06:39:45 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6218:3EF5E:4F6CF45:3F277BC:6A23C0B1
+
+
+ succeeded in 543ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 06:39:45 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"5f84aedb02a71ef8e61454130380532e"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=zNHYKY36IiBu3fikqqaRtU3ouPq7lkE2%2BwrWXoJxUy8asEriLEsMfjcUB5dT7BOWz4xKnDpsAHdYroUhnlJr25ylkPXtgNubSDSczrtQNzwZ8HMe0ohmWqcun%2B97Kk9JIkBGj8CAl6leJsVWTY3vS1Mv1%2BnGIf%2BSuCK85AAXthE0UwVHsMSOU4kuUm2wLh4d0llYkvlz1zRdBsN38N1ZguL7fR9SLc2yAnFPq9OXo2Ua80w2LhjOaUasIO1FqutWLA7uNII14AXKZo2c1%2BdvZA%3D%3D--ob9l%2FjElZf4T75JM--CtLw3Irgz1%2Brwnssv22KLQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1150472680.1780727985; expires=Sun, 06 Jun 2027 06:39:45 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 06 Jun 2027 06:39:45 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6201:2BAEE9:4E7FFE6:3E6E9E2:6A23C0B1
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/1.0.0/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/typelevel/twiddles/v1.0.0/README.md | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/typelevel/twiddles/git/ref/tags/v1.0.0' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d
+ succeeded in 166ms:
+# Twiddles
+
+A twiddle list is a list of one or more values, potentially of differing types, that supports incremental creation and supports conversion to case classes that are "shape compatible" with the constituent types of the twiddle list.
+
+Twiddle lists are useful in the creation of protocols (e.g., decoders, encoders, codecs), where a protocol for a complex type is built from simpler constituent protocols. This technique was first popularized by parser combinators with syntax like `lparen ~ expr ~ rparen`. In contrast to type driven derivation schemes, where protocols are implicitly determined by the constituent types of a data constructor, twiddle lists keep the focus on the protocol.
+
+This library provides the ability to work with twiddle lists for arbitrary types and provides a single API that works for both Scala 3 and Scala 2. On Scala 3, twiddle lists are represented as generic tuples -- e.g., `F[Int *: String *: Boolean *: EmptyTuple]` or equivalently `F[(Int, String, Boolean)]`. On Scala 2, twiddle lists are represented as Shapeless heterogeneous lists. The `org.typelevel.twiddles` package provides type aliases that allow for source compatibility (`*:` is aliased to `shapeles.::` and `EmptyTuple` is aliased to `shapeless.HNil`).
+
+## Getting Started
+
+Artifacts are published for Scala 2.12, 2.13, and 3 and all platforms (JVM, Scala.js, and Scala Native).
+
+```scala
+libraryDependencies += "org.typelevel" %%% "twiddles-core" % "0.7.2" // check Releases for the latest version
+```
+
+```scala
+// Enable twiddle syntax for arbitrary types
+import org.typelevel.twiddles.syntax._
+
+case class Foo(x: Int, y: String)
+
+val a = Option(42)
+// a: Option[Int] = Some(value = 42)
+val b = Option("Hi")
+// b: Option[String] = Some(value = "Hi")
+
+val foo = (a *: b).to[Foo]
+// foo: Option[Foo] = Some(value = Foo(x = 42, y = "Hi"))
+```
+
+In this example, `a *: b` creates an `Option[Int *: String *: EmptyTuple]`. We then convert that value to an `Option[Foo]` via `.to[Foo]`.
+
+The `*:` operation comes from the imported twiddle syntax and is similar to the Scala 3 built-in tuple cons operation, but works on applied type constructors. The expression `a *: b *: c` builds an `F[A *: B *: C *: EmptyTuple]` from an `F[A]`, `F[B]`, and `F[C]`. The `*:` operation requires that the type constructor `F` has a `cats.InvariantSemigroupal` instance.
+
+The `to` operation also comes from the imported twiddle syntax. Calling `.to[X]` on an `F[T]` for some twiddle list `T` results in an `F[X]` provided that `T` is shape compatible with `X`. In the most common case where `X` is a case class, shape compatibility is defined as `T` having the same types in the same order as the parameters of `X`. The `to` operation requires that the type constructor `F` has a `cats.Invariant` instance.
+
+Invariant semigroupals are much more general than (covariant) functors, which means twiddle list support works for a wide variety of data types. For instance, contravariant functors are invariant semigroupals allowing us to use twiddle list syntax to incrementally build instances:
+
+```scala
+val fooOrdering = (summon[Ordering[Int]] *: summon[Ordering[String]]).to[Foo]
+// fooOrdering: Ordering[Foo] = scala.math.Ordering$$anon$1@14de39e3
+```
+
+## Library Usage
+
+When designing a library that uses twiddle lists, the `TwiddleSyntax` trait can be mixed in to the companion object of a type constructor. This has the effect of providing twiddle syntax without requiring users of the library to import `org.typelevel.twiddles.syntax._` at each call site.
+
+```scala
+import org.typelevel.twiddles.TwiddleSyntax
+import cats.Applicative
+
+trait Json
+trait Decoder[A] {
+  def decode(j: Json): Option[A]
+}
+object Decoder extends TwiddleSyntax[Decoder] {
+  implicit val applicative: Applicative[Decoder] = new Applicative[Decoder] {
+    def pure[A](a: A): Decoder[A] = _ => Some(a)
+    def ap[A, B](ff: Decoder[A => B])(fa: Decoder[A]): Decoder[B] = j =>
+      for {
+        f <- ff.decode(j)
+        a <- fa.decode(j)
+      } yield f(a)
+  }
+}
+
+val int: Decoder[Int] = _ => ???
+// int: Decoder[Int] = repl.MdocSession$MdocApp0$$Lambda$9134/0x0000000802278000@3992fe1c
+val string: Decoder[String] = _ => ???
+// string: Decoder[String] = repl.MdocSession$MdocApp0$$Lambda$9135/0x0000000802278448@626b82b2
+
+case class Foo(x: Int, y: String)
+val fooDecoder = (int *: string).to[Foo]
+// fooDecoder: Decoder[Foo] = repl.MdocSession$$anon$8$$Lambda$9138/0x0000000802279308@63c9be6e
+```
+
+In this example, the `Decoder` type has an `Applicative` instance defined in its companion object (and `Applicative` extends `InvariantSemigroupal`), and the companion object extends `TwiddleSyntax`. The latter enables use of `*:` and `to` with `Decoder` values without adding explicit imports (that is, there's no need to import `org.typelevel.twiddles.syntax._` at call sites).
+
+## Etymology
+
+The term "twiddle list" was first coined by [Rob Norris](https://github.com/tpolecat) in the [Skunk](https://github.com/tpolecat/skunk) library, where a twiddle list was defined as a left nested tuple. For example, a 4 element twiddle list consisting of an `Int`, `String`, `Boolean`, and `Double` was represented as `(((Int, String), Boolean), Double)`.
+
+This library uses a different encoding -- twiddle lists are encoded as tuples on Scala 3 and Shapeless heterogeneous lists on Scala 2. The previous 4 element twiddle list is represented as `Int *: String *: Boolean *: Double *: EmptyTuple`.
+
+We adopt the name "twiddle list" to refer to the general technique of incremental construction of complex protocols.
+
+ succeeded in 220ms:
+{
+  "ref": "refs/tags/v1.0.0",
+  "node_id": "REF_kwDOJUl6gLByZWZzL3RhZ3MvdjEuMC4w",
+  "url": "https://api.github.com/repos/typelevel/twiddles/git/refs/tags/v1.0.0",
+  "object": {
+    "sha": "3cac2c18987e6e21d545fbe5a64cd51bcdd145b1",
+    "type": "commit",
+    "url": "https://api.github.com/repos/typelevel/twiddles/git/commits/3cac2c18987e6e21d545fbe5a64cd51bcdd145b1"
+  }
+}
+
+ succeeded in 291ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/typelevel/twiddles-core_3/1.0.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/typelevel/twiddles-core_3/1.0.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="twiddles-core_3-1.0.0-javadoc.jar" title="twiddles-core_3-1.0.0-javadoc.jar">twiddles-core_3-1.0.0-javadoc.jar</a>                 2026-04-14 15:53   2731092      
+<a href="twiddles-core_3-1.0.0-javadoc.jar.asc" title="twiddles-core_3-1.0.0-javadoc.jar.asc">twiddles-core_3-1.0.0-javadoc.jar.asc</a>             2026-04-14 15:53       228      
+<a href="twiddles-core_3-1.0.0-javadoc.jar.asc.md5" title="twiddles-core_3-1.0.0-javadoc.jar.asc.md5">twiddles-core_3-1.0.0-javadoc.jar.asc.md5</a>         2026-04-14 15:53        32      
+<a href="twiddles-core_3-1.0.0-javadoc.jar.asc.sha1" title="twiddles-core_3-1.0.0-javadoc.jar.asc.sha1">twiddles-core_3-1.0.0-javadoc.jar.asc.sha1</a>        2026-04-14 15:53        40      
+<a href="twiddles-core_3-1.0.0-javadoc.jar.md5" title="twiddles-core_3-1.0.0-javadoc.jar.md5">twiddles-core_3-1.0.0-javadoc.jar.md5</a>             2026-04-14 15:53        32      
+<a href="twiddles-core_3-1.0.0-javadoc.jar.sha1" title="twiddles-core_3-1.0.0-javadoc.jar.sha1">twiddles-core_3-1.0.0-javadoc.jar.sha1</a>            2026-04-14 15:53        40      
+<a href="twiddles-core_3-1.0.0-sources.jar" title="twiddles-core_3-1.0.0-sources.jar">twiddles-core_3-1.0.0-sources.jar</a>                 2026-04-14 15:53      6273      
+<a href="twiddles-core_3-1.0.0-sources.jar.asc" title="twiddles-core_3-1.0.0-sources.jar.asc">twiddles-core_3-1.0.0-sources.jar.asc</a>             2026-04-14 15:53       228      
+<a href="twiddles-core_3-1.0.0-sources.jar.asc.md5" title="twiddles-core_3-1.0.0-sources.jar.asc.md5">twiddles-core_3-1.0.0-sources.jar.asc.md5</a>         2026-04-14 15:53        32      
+<a href="twiddles-core_3-1.0.0-sources.jar.asc.sha1" title="twiddles-core_3-1.0.0-sources.jar.asc.sha1">twiddles-core_3-1.0.0-sources.jar.asc.sha1</a>        2026-04-14 15:53        40      
+<a href="twiddles-core_3-1.0.0-sources.jar.md5" title="twiddles-core_3-1.0.0-sources.jar.md5">twiddles-core_3-1.0.0-sources.jar.md5</a>             2026-04-14 15:53        32      
+<a href="twiddles-core_3-1.0.0-sources.jar.sha1" title="twiddles-core_3-1.0.0-sources.jar.sha1">twiddles-core_3-1.0.0-sources.jar.sha1</a>            2026-04-14 15:53        40      
+<a href="twiddles-core_3-1.0.0.jar" title="twiddles-core_3-1.0.0.jar">twiddles-core_3-1.0.0.jar</a>                         2026-04-14 15:53     25269      
+<a href="twiddles-core_3-1.0.0.jar.asc" title="twiddles-core_3-1.0.0.jar.asc">twiddles-core_3-1.0.0.jar.asc</a>                     2026-04-14 15:53       228      
+<a href="twiddles-core_3-1.0.0.jar.asc.md5" title="twiddles-core_3-1.0.0.jar.asc.md5">twiddles-core_3-1.0.0.jar.asc.md5</a>                 2026-04-14 15:53        32      
+<a href="twiddles-core_3-1.0.0.jar.asc.sha1" title="twiddles-core_3-1.0.0.jar.asc.sha1">twiddles-core_3-1.0.0.jar.asc.sha1</a>                2026-04-14 15:53        40      
+<a href="twiddles-core_3-1.0.0.jar.md5" title="twiddles-core_3-1.0.0.jar.md5">twiddles-core_3-1.0.0.jar.md5</a>                     2026-04-14 15:53        32      
+<a href="twiddles-core_3-1.0.0.jar.sha1" title="twiddles-core_3-1.0.0.jar.sha1">twiddles-core_3-1.0.0.jar.sha1</a>                    2026-04-14 15:53        40      
+<a href="twiddles-core_3-1.0.0.pom" title="twiddles-core_3-1.0.0.pom">twiddles-core_3-1.0.0.pom</a>                         2026-04-14 15:53      2987      
+<a href="twiddles-core_3-1.0.0.pom.asc" title="twiddles-core_3-1.0.0.pom.asc">twiddles-core_3-1.0.0.pom.asc</a>                     2026-04-14 15:53       228      
+<a href="twiddles-core_3-1.0.0.pom.asc.md5" title="twiddles-core_3-1.0.0.pom.asc.md5">twiddles-core_3-1.0.0.pom.asc.md5</a>                 2026-04-14 15:53        32      
+<a href="twiddles-core_3-1.0.0.pom.asc.sha1" title="twiddles-core_3-1.0.0.pom.asc.sha1">twiddles-core_3-1.0.0.pom.asc.sha1</a>                2026-04-14 15:53        40      
+<a href="twiddles-core_3-1.0.0.pom.md5" title="twiddles-core_3-1.0.0.pom.md5">twiddles-core_3-1.0.0.pom.md5</a>                     2026-04-14 15:53        32      
+<a href="twiddles-core_3-1.0.0.pom.sha1" title="twiddles-core_3-1.0.0.pom.sha1">twiddles-core_3-1.0.0.pom.sha1</a>                    2026-04-14 15:53        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+codex
+For 1.0.0, Maven Central has sources and javadocs but no tests jar, so the test URL should stay GitHub tag-based. I’m going to add the Maven templates for source/docs, the canonical GitHub repo root, the verified tagged test path, and the two-sentence description; the existing Scala 3 `language` field is already correct and non-blank.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d/metadata/org.typelevel/twiddles-core_3/index.json
+diff --git a/metadata/org.typelevel/twiddles-core_3/index.json b/metadata/org.typelevel/twiddles-core_3/index.json
+index 4a4cca4ff395042977199fa5b3c98e1164c27902..79c8b38a9d31f3bdb75b1530ced30b36c20ab276
+--- a/metadata/org.typelevel/twiddles-core_3/index.json
++++ b/metadata/org.typelevel/twiddles-core_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/$version$/twiddles-core_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/typelevel/twiddles",
++    "test-code-url" : "https://github.com/typelevel/twiddles/tree/v$version$/core/shared/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/$version$/twiddles-core_3-$version$-javadoc.jar",
++    "description" : "Twiddles provides twiddle lists for incrementally composing values of different types and converting them to shape-compatible case classes. The core module offers syntax and abstractions for building protocol-like structures such as decoders, encoders, and codecs using Cats invariant semigroupal and invariant type classes.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+diff --git a/metadata/org.typelevel/twiddles-core_3/index.json b/metadata/org.typelevel/twiddles-core_3/index.json
+index 4a4cca4ff395042977199fa5b3c98e1164c27902..79c8b38a9d31f3bdb75b1530ced30b36c20ab276
+--- a/metadata/org.typelevel/twiddles-core_3/index.json
++++ b/metadata/org.typelevel/twiddles-core_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/$version$/twiddles-core_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/typelevel/twiddles",
++    "test-code-url" : "https://github.com/typelevel/twiddles/tree/v$version$/core/shared/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/$version$/twiddles-core_3-$version$-javadoc.jar",
++    "description" : "Twiddles provides twiddle lists for incrementally composing values of different types and converting them to shape-compatible case classes. The core module offers syntax and abstractions for building protocol-like structures such as decoders, encoders, and codecs using Cats invariant semigroupal and invariant type classes.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+codex
+The JSON is patched. I’m doing a quick structural check and reviewing the diff so I can catch formatting or accidental field changes before wrapping up.
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.typelevel/twiddles-core_3/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.typelevel/twiddles-core_3/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d
+ succeeded in 0ms:
+diff --git i/metadata/org.typelevel/twiddles-core_3/index.json w/metadata/org.typelevel/twiddles-core_3/index.json
+index 4a4cca4ff3..79c8b38a9d 100644
+--- i/metadata/org.typelevel/twiddles-core_3/index.json
++++ w/metadata/org.typelevel/twiddles-core_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/$version$/twiddles-core_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/typelevel/twiddles",
++    "test-code-url" : "https://github.com/typelevel/twiddles/tree/v$version$/core/shared/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/$version$/twiddles-core_3-$version$-javadoc.jar",
++    "description" : "Twiddles provides twiddle lists for incrementally composing values of different types and converting them to shape-compatible case classes. The core module offers syntax and abstractions for building protocol-like structures such as decoders, encoders, and codecs using Cats invariant semigroupal and invariant type classes.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.typelevel:twiddles-core_3:1.0.0' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d
+diff --git a/metadata/org.typelevel/twiddles-core_3/index.json b/metadata/org.typelevel/twiddles-core_3/index.json
+index 4a4cca4ff395042977199fa5b3c98e1164c27902..79c8b38a9d31f3bdb75b1530ced30b36c20ab276
+--- a/metadata/org.typelevel/twiddles-core_3/index.json
++++ b/metadata/org.typelevel/twiddles-core_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/$version$/twiddles-core_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/typelevel/twiddles",
++    "test-code-url" : "https://github.com/typelevel/twiddles/tree/v$version$/core/shared/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/$version$/twiddles-core_3-$version$-javadoc.jar",
++    "description" : "Twiddles provides twiddle lists for incrementally composing values of different types and converting them to shape-compatible case classes. The core module offers syntax and abstractions for building protocol-like structures such as decoders, encoders, and codecs using Cats invariant semigroupal and invariant type classes.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+ exited 1 in 3187ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+Metadata files check failed for org.typelevel:twiddles-core_3:1.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d/metadata/org.typelevel/twiddles-core_3/1.0.0/
+
+> Task :checkMetadataFiles FAILED
+
+
+FAILURE: [Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d/build/reports/problems/problems-report.html
+Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.typelevel:twiddles-core_3:1.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d/metadata/org.typelevel/twiddles-core_3/1.0.0/
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 2s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+The file parses cleanly, and the diff is scoped to the requested missing fields. The repository metadata check fails for an unrelated existing reason: the entry’s `metadata/org.typelevel/twiddles-core_3/1.0.0/reachability-metadata.json` is missing, so the URL/description patch itself is not what the task rejected.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"1.0.0\")' metadata/org.typelevel/twiddles-core_3/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "1.0.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/$version$/twiddles-core_3-$version$-sources.jar",
+  "repository-url": "https://github.com/typelevel/twiddles",
+  "test-code-url": "https://github.com/typelevel/twiddles/tree/v$version$/core/shared/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/$version$/twiddles-core_3-$version$-javadoc.jar",
+  "description": "Twiddles provides twiddle lists for incrementally composing values of different types and converting them to shape-compatible case classes. The core module offers syntax and abstractions for building protocol-like structures such as decoders, encoders, and codecs using Cats invariant semigroupal and invariant type classes.",
+  "language": {
+    "name": "scala",
+    "version": "3"
+  },
+  "tested-versions": [
+    "1.0.0"
+  ],
+  "allowed-packages": [
+    "org.typelevel.twiddles"
+  ]
+}
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/1.0.0/twiddles-core_3-1.0.0-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/1.0.0/twiddles-core_3-1.0.0-javadoc.jar \\
+  https://github.com/typelevel/twiddles/tree/v1.0.0/core/shared/src/test \\
+  https://github.com/typelevel/twiddles; do
+  printf '%s ' \""'$url"
+  curl -fsSI "$url" | sed -n '"'1p'
+done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d
+ succeeded in 0ms:
+ M metadata/org.typelevel/twiddles-core_3/index.json
+
+diff --git a/metadata/org.typelevel/twiddles-core_3/index.json b/metadata/org.typelevel/twiddles-core_3/index.json
+index 4a4cca4ff395042977199fa5b3c98e1164c27902..79c8b38a9d31f3bdb75b1530ced30b36c20ab276
+--- a/metadata/org.typelevel/twiddles-core_3/index.json
++++ b/metadata/org.typelevel/twiddles-core_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/$version$/twiddles-core_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/typelevel/twiddles",
++    "test-code-url" : "https://github.com/typelevel/twiddles/tree/v$version$/core/shared/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/$version$/twiddles-core_3-$version$-javadoc.jar",
++    "description" : "Twiddles provides twiddle lists for incrementally composing values of different types and converting them to shape-compatible case classes. The core module offers syntax and abstractions for building protocol-like structures such as decoders, encoders, and codecs using Cats invariant semigroupal and invariant type classes.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+ succeeded in 211ms:
+HTTP/2 200 
+https://github.com/typelevel/twiddles HTTP/2 200 
+
+web search: 
+web search: Maven Central org.typelevel twiddles-core_3 1.0.0 sources javadoc
+web search: 
+web search: https://raw.githubusercontent.com/typelevel/twiddles/v1.0.0/README.md
+web search: 
+web search: https://central.sonatype.com/artifact/org.typelevel/twiddles-core_3
+exec
+/usr/bin/bash -lc "nl -ba metadata/org.typelevel/twiddles-core_3/index.json | sed -n '1,28p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "1.0.0",
+     5	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/$version$/twiddles-core_3-$version$-sources.jar",
+     6	    "repository-url" : "https://github.com/typelevel/twiddles",
+     7	    "test-code-url" : "https://github.com/typelevel/twiddles/tree/v$version$/core/shared/src/test",
+     8	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/$version$/twiddles-core_3-$version$-javadoc.jar",
+     9	    "description" : "Twiddles provides twiddle lists for incrementally composing values of different types and converting them to shape-compatible case classes. The core module offers syntax and abstractions for building protocol-like structures such as decoders, encoders, and codecs using Cats invariant semigroupal and invariant type classes.",
+    10	    "language" : {
+    11	      "name" : "scala",
+    12	      "version" : "3"
+    13	    },
+    14	    "tested-versions" : [
+    15	      "1.0.0"
+    16	    ],
+    17	    "allowed-packages" : [
+    18	      "org.typelevel.twiddles"
+    19	    ]
+    20	  },
+    21	  {
+    22	    "metadata-version" : "0.7.2",
+    23	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/$version$/twiddles-core_3-$version$-sources.jar",
+    24	    "repository-url" : "https://github.com/typelevel/twiddles",
+    25	    "test-code-url" : "https://github.com/typelevel/twiddles/tree/v$version$/core/shared/src/test",
+    26	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/$version$/twiddles-core_3-$version$-javadoc.jar",
+    27	    "description" : "Twiddles provides twiddle lists for incrementally composing values of different types and converting them to shape-compatible case classes. The core module offers syntax and abstractions for building protocol-like structures such as decoders, encoders, and codecs using Cats invariant semigroupal and invariant type classes.",
+    28	    "language" : {
+
+diff --git a/metadata/org.typelevel/twiddles-core_3/index.json b/metadata/org.typelevel/twiddles-core_3/index.json
+index 4a4cca4ff395042977199fa5b3c98e1164c27902..79c8b38a9d31f3bdb75b1530ced30b36c20ab276
+--- a/metadata/org.typelevel/twiddles-core_3/index.json
++++ b/metadata/org.typelevel/twiddles-core_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/$version$/twiddles-core_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/typelevel/twiddles",
++    "test-code-url" : "https://github.com/typelevel/twiddles/tree/v$version$/core/shared/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/$version$/twiddles-core_3-$version$-javadoc.jar",
++    "description" : "Twiddles provides twiddle lists for incrementally composing values of different types and converting them to shape-compatible case classes. The core module offers syntax and abstractions for building protocol-like structures such as decoders, encoders, and codecs using Cats invariant semigroupal and invariant type classes.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d/metadata/org.typelevel/twiddles-core_3/index.json:5) for `metadata-version` `1.0.0`.
+
+Filled:
+- `source-code-url`: Maven Central sources jar template
+- `repository-url`: canonical `typelevel/twiddles` repo root
+- `test-code-url`: GitHub `v$version$` test path
+- `documentation-url`: Maven Central javadoc jar template
+- `description`: exactly two sentences
+- `language`: left unchanged as Scala 3 because it was already non-blank
+
+Verification:
+- `jq empty` passed.
+- Rendered `1.0.0` source/docs/test/repo URLs returned HTTP 200.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.typelevel:twiddles-core_3:1.0.0` failed due to existing missing `metadata/org.typelevel/twiddles-core_3/1.0.0/reachability-metadata.json`, unrelated to these field updates.
+diff --git a/metadata/org.typelevel/twiddles-core_3/index.json b/metadata/org.typelevel/twiddles-core_3/index.json
+index 4a4cca4ff395042977199fa5b3c98e1164c27902..79c8b38a9d31f3bdb75b1530ced30b36c20ab276
+--- a/metadata/org.typelevel/twiddles-core_3/index.json
++++ b/metadata/org.typelevel/twiddles-core_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/$version$/twiddles-core_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/typelevel/twiddles",
++    "test-code-url" : "https://github.com/typelevel/twiddles/tree/v$version$/core/shared/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/$version$/twiddles-core_3-$version$-javadoc.jar",
++    "description" : "Twiddles provides twiddle lists for incrementally composing values of different types and converting them to shape-compatible case classes. The core module offers syntax and abstractions for building protocol-like structures such as decoders, encoders, and codecs using Cats invariant semigroupal and invariant type classes.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+tokens used
+59,127
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d/metadata/org.typelevel/twiddles-core_3/index.json:5) for `metadata-version` `1.0.0`.
+
+Filled:
+- `source-code-url`: Maven Central sources jar template
+- `repository-url`: canonical `typelevel/twiddles` repo root
+- `test-code-url`: GitHub `v$version$` test path
+- `documentation-url`: Maven Central javadoc jar template
+- `description`: exactly two sentences
+- `language`: left unchanged as Scala 3 because it was already non-blank
+
+Verification:
+- `jq empty` passed.
+- Rendered `1.0.0` source/docs/test/repo URLs returned HTTP 200.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.typelevel:twiddles-core_3:1.0.0` failed due to existing missing `metadata/org.typelevel/twiddles-core_3/1.0.0/reachability-metadata.json`, unrelated to these field updates.
+Ran agent for org.typelevel:twiddles-core_3:1.0.0 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d/build/agent-url-discovery-logs/org.typelevel-twiddles-core_3-1.0.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6531-f80ade2d/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 14s
+9 actionable tasks: 1 executed, 8 up-to-date
