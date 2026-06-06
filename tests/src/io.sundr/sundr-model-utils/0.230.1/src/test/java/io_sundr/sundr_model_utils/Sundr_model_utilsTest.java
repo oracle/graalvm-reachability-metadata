@@ -21,8 +21,11 @@ import io.sundr.model.functions.Assignable;
 import io.sundr.model.functions.GetDefinition;
 import io.sundr.model.repo.DefinitionRepository;
 import io.sundr.model.utils.Collections;
+import io.sundr.model.utils.Getter;
 import io.sundr.model.utils.Optionals;
 import io.sundr.model.utils.Parsers;
+import io.sundr.model.utils.Record;
+import io.sundr.model.utils.Setter;
 import io.sundr.model.utils.TypeArguments;
 import io.sundr.model.utils.Types;
 import io.sundr.model.visitors.ReplacePackage;
@@ -166,6 +169,49 @@ public class Sundr_model_utilsTest {
         assertThat(richTypeDef.getAllProperties()).extracting(Property::getName).containsExactly("key", "value");
         assertThat(richTypeDef.getProperties()).extracting(Property::getTypeRef)
                 .containsExactly(Types.STRING_REF, Types.INT_REF);
+    }
+
+    @Test
+    void discoversPropertyAccessorsIncludingRecordComponents() {
+        Property name = Property.newProperty(Types.STRING_REF, "name");
+        Property enabled = Property.newProperty(Types.PRIMITIVE_BOOLEAN_REF, "enabled");
+        Method getName = Method.newMethod("getName", Types.STRING_REF);
+        Method setName = Method.newMethod("setName", Types.VOID, name);
+        TypeDef bean = new TypeDefBuilder()
+                .withKind(Kind.CLASS)
+                .withPackageName("example.accessors")
+                .withName("Bean")
+                .addToProperties(name)
+                .addToProperties(enabled)
+                .addToMethods(getName)
+                .addToMethods(setName)
+                .build();
+        TypeDef record = new TypeDefBuilder()
+                .withKind(Kind.CLASS)
+                .withPackageName("example.accessors")
+                .withName("PersonRecord")
+                .addToExtendsList(ClassRef.forName("java.lang.Record"))
+                .addToProperties(name)
+                .addToMethods(Method.newMethod("name", Types.STRING_REF))
+                .build();
+
+        Method generatedBooleanGetter = Getter.forProperty(enabled);
+
+        assertThat(Getter.name(name)).isEqualTo("getName");
+        assertThat(Getter.name(enabled)).isEqualTo("isEnabled");
+        assertThat(generatedBooleanGetter.getName()).isEqualTo("isEnabled");
+        assertThat(generatedBooleanGetter.getReturnType()).isEqualTo(Types.PRIMITIVE_BOOLEAN_REF);
+        assertThat(Getter.is(generatedBooleanGetter)).isTrue();
+        assertThat(Getter.propertyName(getName)).isEqualTo("name");
+        assertThat(Getter.find(bean, name)).isEqualTo(getName);
+        assertThat(Getter.findOptional(bean, Property.newProperty(Types.STRING_REF, "missing"))).isEmpty();
+
+        assertThat(Setter.has(bean, name)).isTrue();
+        assertThat(Setter.find(bean, name).getSignature()).isEqualTo(setName.getSignature());
+        assertThat(Setter.isApplicable(setName, name)).isTrue();
+
+        assertThat(Record.is(record)).isTrue();
+        assertThat(Getter.find(record, name)).isEqualTo(record.getMethods().get(0));
     }
 
     @Test
