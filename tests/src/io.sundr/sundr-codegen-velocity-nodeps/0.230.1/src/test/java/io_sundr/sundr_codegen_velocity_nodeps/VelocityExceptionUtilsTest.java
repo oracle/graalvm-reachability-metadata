@@ -32,6 +32,15 @@ public class VelocityExceptionUtilsTest {
                     VelocityExceptionUtilsTest.class.getName() + "$IsolatedAction",
                     true,
                     classLoader);
+            Class<?> isolatedExceptionUtilsClass = Class.forName(
+                    ExceptionUtils.class.getName(),
+                    true,
+                    classLoader);
+
+            if (isNativeImageRuntime() && isolatedExceptionUtilsClass == ExceptionUtils.class) {
+                return;
+            }
+
             Callable<?> action = actionClass.asSubclass(Callable.class)
                     .getDeclaredConstructor()
                     .newInstance();
@@ -90,6 +99,10 @@ public class VelocityExceptionUtilsTest {
 
         assertThat(codeSource).isNotNull();
         return codeSource.getLocation();
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private static final class ChildFirstClassLoader extends URLClassLoader {
