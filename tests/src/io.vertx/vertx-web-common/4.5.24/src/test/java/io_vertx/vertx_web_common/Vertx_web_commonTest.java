@@ -203,6 +203,33 @@ public class Vertx_web_commonTest {
     }
 
     @Test
+    void multipartFormSupportsInMemoryTextAndPathBackedBinaryUploads() {
+        MultipartForm form = MultipartForm.create()
+                .textFileUpload("story", "story.txt", Buffer.buffer("Once upon a time"), "text/plain")
+                .binaryFileUpload("archive", "archive.zip", "/tmp/archive.zip", "application/zip");
+
+        List<FormDataPart> parts = new ArrayList<>();
+        form.forEach(parts::add);
+
+        assertThat(parts).hasSize(2);
+        assertThat(parts.get(0).isFileUpload()).isTrue();
+        assertThat(parts.get(0).name()).isEqualTo("story");
+        assertThat(parts.get(0).filename()).isEqualTo("story.txt");
+        assertThat(parts.get(0).pathname()).isNull();
+        assertThat(parts.get(0).content().toString()).isEqualTo("Once upon a time");
+        assertThat(parts.get(0).mediaType()).isEqualTo("text/plain");
+        assertThat(parts.get(0).isText()).isTrue();
+
+        assertThat(parts.get(1).isFileUpload()).isTrue();
+        assertThat(parts.get(1).name()).isEqualTo("archive");
+        assertThat(parts.get(1).filename()).isEqualTo("archive.zip");
+        assertThat(parts.get(1).pathname()).isEqualTo("/tmp/archive.zip");
+        assertThat(parts.get(1).content()).isNull();
+        assertThat(parts.get(1).mediaType()).isEqualTo("application/zip");
+        assertThat(parts.get(1).isText()).isFalse();
+    }
+
+    @Test
     void templateEngineDefaultMethodsDelegateToMapRenderingAndFutures() throws Exception {
         RecordingTemplateEngine engine = new RecordingTemplateEngine();
         JsonObject context = new JsonObject().put("name", "Ada");
