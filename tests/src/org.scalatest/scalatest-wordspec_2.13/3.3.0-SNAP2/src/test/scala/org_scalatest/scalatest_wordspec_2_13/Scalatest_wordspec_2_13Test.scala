@@ -9,11 +9,9 @@ package org_scalatest.scalatest_wordspec_2_13
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicReference
 
 import scala.concurrent.Future
 import scala.jdk.CollectionConverters._
-import scala.util.Try
 
 import org.junit.jupiter.api.Test
 import org.scalatest.Args
@@ -21,6 +19,7 @@ import org.scalatest.Filter
 import org.scalatest.FutureOutcome
 import org.scalatest.Outcome
 import org.scalatest.Reporter
+import org.scalatest.Status
 import org.scalatest.Suite
 import org.scalatest.Tag
 import org.scalatest.events.Event
@@ -357,16 +356,14 @@ class Scalatest_wordspec_2_13Test {
       filter: Filter = Filter.default,
       testName: Option[String] = None): RunResult = {
     val reporter: RecordingReporter = new RecordingReporter
-    val completion: AtomicReference[Try[Boolean]] = new AtomicReference[Try[Boolean]]()
     val completed: CountDownLatch = new CountDownLatch(1)
-    val status = suite.run(testName, Args(reporter = reporter, filter = filter))
-    status.whenCompleted { result: Try[Boolean] =>
-      completion.set(result)
+    val status: Status = suite.run(testName, Args(reporter = reporter, filter = filter))
+    status.whenCompleted { _ =>
       completed.countDown()
     }
 
     assert(completed.await(30, TimeUnit.SECONDS), s"ScalaTest suite ${suite.suiteName} did not complete")
-    RunResult(completion.get().get, reporter.events)
+    RunResult(status.succeeds(), reporter.events)
   }
 
   private def succeededEvents(events: Vector[Event]): Vector[TestSucceeded] =
