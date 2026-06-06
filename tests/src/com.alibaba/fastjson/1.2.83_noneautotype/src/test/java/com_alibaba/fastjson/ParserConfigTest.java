@@ -80,19 +80,18 @@ public class ParserConfigTest {
     }
 
     @Test
-    void checkAutoTypeScansClassResourcesWithDefaultAndConfiguredClassLoaders() {
-        ParserConfig defaultLoaderConfig = new ParserConfig();
-        defaultLoaderConfig.setAutoTypeSupport(true);
-        ParserConfig configuredLoaderConfig = new ParserConfig();
-        configuredLoaderConfig.setAutoTypeSupport(true);
-        configuredLoaderConfig.setDefaultClassLoader(ParserConfigTest.class.getClassLoader());
+    void checkAutoTypeUsesRegisteredHandlers() {
+        ParserConfig config = new ParserConfig();
+        RecordingAutoTypeCheckHandler handler = new RecordingAutoTypeCheckHandler(DefaultLoaderAutoTypeBean.class);
+        config.addAutoTypeCheckHandler(handler);
 
-        Class<?> defaultLoaderClass = defaultLoaderConfig.checkAutoType(DefaultLoaderAutoTypeBean.class.getName(), null);
-        Class<?> configuredLoaderClass = configuredLoaderConfig.checkAutoType(
-                ConfiguredLoaderAutoTypeBean.class.getName(), null);
+        Class<?> resolvedClass = config.checkAutoType(
+                DefaultLoaderAutoTypeBean.class.getName(), ConfiguredLoaderAutoTypeBean.class, 123);
 
-        assertThat(defaultLoaderClass).isEqualTo(DefaultLoaderAutoTypeBean.class);
-        assertThat(configuredLoaderClass).isEqualTo(ConfiguredLoaderAutoTypeBean.class);
+        assertThat(resolvedClass).isEqualTo(DefaultLoaderAutoTypeBean.class);
+        assertThat(handler.typeName).isEqualTo(DefaultLoaderAutoTypeBean.class.getName());
+        assertThat(handler.expectClass).isEqualTo(ConfiguredLoaderAutoTypeBean.class);
+        assertThat(handler.features).isEqualTo(123);
     }
 
     private static <T> T parseWithDeserializer(
@@ -185,6 +184,25 @@ public class ParserConfigTest {
         @Override
         public int getFastMatchToken() {
             return 0;
+        }
+    }
+
+    public static class RecordingAutoTypeCheckHandler implements ParserConfig.AutoTypeCheckHandler {
+        private final Class<?> supportedClass;
+        String typeName;
+        Class<?> expectClass;
+        int features;
+
+        RecordingAutoTypeCheckHandler(Class<?> supportedClass) {
+            this.supportedClass = supportedClass;
+        }
+
+        @Override
+        public Class<?> handler(String typeName, Class<?> expectClass, int features) {
+            this.typeName = typeName;
+            this.expectClass = expectClass;
+            this.features = features;
+            return supportedClass.getName().equals(typeName) ? supportedClass : null;
         }
     }
 
