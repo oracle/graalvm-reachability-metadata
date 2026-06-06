@@ -192,6 +192,32 @@ public class Oci_java_sdk_circuitbreakerTest {
     }
 
     @Test
+    void halfOpenProbeClosesCircuitBreakerAfterOpenStateWait() throws InterruptedException {
+        OciCircuitBreaker circuitBreaker =
+                CircuitBreakerFactory.build(
+                        CircuitBreakerConfiguration.builder()
+                                .failureRateThreshold(50)
+                                .slowCallRateThreshold(100)
+                                .waitDurationInOpenState(Duration.ofMillis(50))
+                                .permittedNumberOfCallsInHalfOpenState(1)
+                                .minimumNumberOfCalls(2)
+                                .slidingWindowSize(2)
+                                .build());
+
+        circuitBreaker.onError(1, TimeUnit.MILLISECONDS, new CustomRuntimeException("first"));
+        circuitBreaker.onError(1, TimeUnit.MILLISECONDS, new CustomRuntimeException("second"));
+        assertThat(circuitBreaker.getState()).isEqualTo(CircuitBreaker.State.OPEN);
+
+        Thread.sleep(150);
+        assertThat(circuitBreaker.tryAcquirePermission()).isTrue();
+        assertThat(circuitBreaker.getState()).isEqualTo(CircuitBreaker.State.HALF_OPEN);
+
+        circuitBreaker.onSuccess(1, TimeUnit.MILLISECONDS);
+        assertThat(circuitBreaker.getState()).isEqualTo(CircuitBreaker.State.CLOSED);
+        assertThat(circuitBreaker.tryAcquirePermission()).isTrue();
+    }
+
+    @Test
     void historyKeepsMostRecentFailuresAndFormatsDiagnosticMessage() {
         OciCircuitBreaker circuitBreaker =
                 CircuitBreakerFactory.build(
