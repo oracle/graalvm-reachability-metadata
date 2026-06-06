@@ -7,6 +7,10 @@
 package io_helidon_common_features.helidon_common_features_api;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 import io.helidon.common.features.api.Features;
 import io.helidon.common.features.api.HelidonFlavor;
@@ -85,6 +89,29 @@ public class Helidon_common_features_apiTest {
 
         assertThat(preview.annotationType()).isEqualTo(Features.Preview.class);
         assertThat(incubating.annotationType()).isEqualTo(Features.Incubating.class);
+    }
+
+    @Test
+    void featureDescriptorAnnotationsAreSourceOnlyModuleMetadata() {
+        assertSourceOnlyModuleAnnotation(Features.Name.class);
+        assertSourceOnlyModuleAnnotation(Features.Description.class);
+        assertSourceOnlyModuleAnnotation(Features.Since.class);
+        assertSourceOnlyModuleAnnotation(Features.Path.class);
+        assertSourceOnlyModuleAnnotation(Features.Flavor.class);
+        assertSourceOnlyModuleAnnotation(Features.InvalidFlavor.class);
+        assertSourceOnlyModuleAnnotation(Features.Aot.class);
+        assertSourceOnlyModuleAnnotation(Features.Preview.class);
+        assertSourceOnlyModuleAnnotation(Features.Incubating.class);
+    }
+
+    private static void assertSourceOnlyModuleAnnotation(Class<? extends Annotation> annotationType) {
+        Target target = annotationType.getAnnotation(Target.class);
+        Retention retention = annotationType.getAnnotation(Retention.class);
+
+        assertThat(target).as(annotationType.getName()).isNotNull();
+        assertThat(target.value()).containsExactly(ElementType.MODULE);
+        assertThat(retention).as(annotationType.getName()).isNotNull();
+        assertThat(retention.value()).isEqualTo(RetentionPolicy.SOURCE);
     }
 
     private record FeatureName(String value) implements Features.Name {
