@@ -8,6 +8,7 @@ package com_oracle_oci_sdk.oci_java_sdk_certificatesmanagement;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oracle.bmc.Region;
 import com.oracle.bmc.certificatesmanagement.CertificatesManagement;
 import com.oracle.bmc.certificatesmanagement.CertificatesManagementPaginators;
@@ -115,6 +116,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import javax.sql.rowset.serial.SerialBlob;
 import org.junit.jupiter.api.Test;
 
 public class Oci_java_sdk_certificatesmanagementTest {
@@ -495,6 +497,20 @@ public class Oci_java_sdk_certificatesmanagementTest {
     }
 
     @Test
+    void jacksonOptionalSqlHandlersRemainAvailableForOciSdkNativeImages()
+            throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+
+        assertThat(mapper.readValue("0", java.sql.Date.class)).isEqualTo(new java.sql.Date(0));
+        assertThat(mapper.readValue("0", java.sql.Timestamp.class))
+                .isEqualTo(new java.sql.Timestamp(0));
+        assertThat(mapper.writeValueAsString(new java.sql.Date(0))).isEqualTo("0");
+        assertThat(mapper.writeValueAsString(java.sql.Time.valueOf("00:00:00")))
+                .isEqualTo("\"00:00:00\"");
+        assertThat(mapper.writeValueAsString(new SerialBlob(new byte[0]))).isEqualTo("\"\"");
+    }
+
+    @Test
     void paginatorsRequestFollowingPagesAndFlattenCertificateRecords() {
         RecordingCertificatesManagement service = new RecordingCertificatesManagement();
         CertificatesManagementPaginators paginators = new CertificatesManagementPaginators(service);
@@ -552,10 +568,10 @@ public class Oci_java_sdk_certificatesmanagementTest {
         private final List<String> requestedCompartments = new ArrayList<>();
 
         @Override
-        public void refreshClient() {}
+        public void refreshClient() { }
 
         @Override
-        public void setEndpoint(String endpoint) {}
+        public void setEndpoint(String endpoint) { }
 
         @Override
         public String getEndpoint() {
@@ -563,13 +579,13 @@ public class Oci_java_sdk_certificatesmanagementTest {
         }
 
         @Override
-        public void setRegion(Region region) {}
+        public void setRegion(Region region) { }
 
         @Override
-        public void setRegion(String regionId) {}
+        public void setRegion(String regionId) { }
 
         @Override
-        public void useRealmSpecificEndpointTemplate(boolean useOfRealmSpecificEndpointTemplate) {}
+        public void useRealmSpecificEndpointTemplate(boolean useOfRealmSpecificEndpointTemplate) { }
 
         @Override
         public ListCertificatesResponse listCertificates(ListCertificatesRequest request) {
@@ -595,7 +611,7 @@ public class Oci_java_sdk_certificatesmanagementTest {
         }
 
         @Override
-        public void close() {}
+        public void close() { }
 
         @Override
         public CancelCertificateAuthorityDeletionResponse cancelCertificateAuthorityDeletion(
