@@ -17,6 +17,8 @@ import io.fabric8.kubernetes.api.model.autoscaling.v2.HorizontalPodAutoscalerLis
 import io.fabric8.kubernetes.api.model.autoscaling.v2.HorizontalPodAutoscalerListBuilder;
 import io.fabric8.kubernetes.api.model.autoscaling.v2.MetricSpec;
 import io.fabric8.kubernetes.api.model.autoscaling.v2.MetricSpecBuilder;
+import io.fabric8.kubernetes.api.model.autoscaling.v2.MetricStatus;
+import io.fabric8.kubernetes.api.model.autoscaling.v2.MetricStatusBuilder;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -238,6 +240,101 @@ public class Kubernetes_model_autoscalingTest {
         assertThat(list.getItems())
                 .extracting(item -> item.getMetadata().getName())
                 .containsExactly("checkout-hpa", "checkout-hpa");
+    }
+
+    @Test
+    void v2HorizontalPodAutoscalerStatusSupportsAllCurrentMetricKinds() {
+        MetricStatus objectStatus = new MetricStatusBuilder()
+                .withType("Object")
+                .withNewObject()
+                    .withNewDescribedObject("batch/v1", "Job", "daily-import")
+                    .withNewMetric()
+                        .withName("processed-records")
+                        .withNewSelector()
+                            .addToMatchLabels("pipeline", "daily")
+                        .endSelector()
+                    .endMetric()
+                    .withNewCurrent()
+                        .withNewValue("42")
+                    .endCurrent()
+                .endObject()
+                .build();
+        MetricStatus podsStatus = new MetricStatusBuilder()
+                .withType("Pods")
+                .withNewPods()
+                    .withNewMetric()
+                        .withName("requests-per-second")
+                    .endMetric()
+                    .withNewCurrent()
+                        .withNewAverageValue("125")
+                    .endCurrent()
+                .endPods()
+                .build();
+        MetricStatus externalStatus = new MetricStatusBuilder()
+                .withType("External")
+                .withNewExternal()
+                    .withNewMetric()
+                        .withName("queue_messages_ready")
+                        .withNewSelector()
+                            .addToMatchLabels("queue", "payments")
+                        .endSelector()
+                    .endMetric()
+                    .withNewCurrent()
+                        .withNewAverageValue("8")
+                    .endCurrent()
+                .endExternal()
+                .build();
+        MetricStatus containerStatus = new MetricStatusBuilder()
+                .withType("ContainerResource")
+                .withNewContainerResource()
+                    .withName("memory")
+                    .withContainer("worker")
+                    .withNewCurrent()
+                        .withAverageUtilization(71)
+                        .withNewAverageValue("512Mi")
+                    .endCurrent()
+                .endContainerResource()
+                .build();
+
+        HorizontalPodAutoscaler autoscaler = new HorizontalPodAutoscalerBuilder()
+                .withApiVersion("autoscaling/v2")
+                .withKind("HorizontalPodAutoscaler")
+                .withNewMetadata()
+                    .withName("worker-hpa")
+                .endMetadata()
+                .withNewSpec()
+                    .withNewScaleTargetRef("apps/v1", "Deployment", "worker")
+                    .withMinReplicas(1)
+                    .withMaxReplicas(10)
+                .endSpec()
+                .withNewStatus()
+                    .withLastScaleTime("2024-01-01T00:00:00Z")
+                    .withCurrentMetrics(objectStatus, podsStatus, externalStatus, containerStatus)
+                .endStatus()
+                .build();
+
+        assertThat(autoscaler.getStatus().getLastScaleTime()).isEqualTo("2024-01-01T00:00:00Z");
+        assertThat(autoscaler.getStatus().getCurrentMetrics())
+                .extracting(MetricStatus::getType)
+                .containsExactly("Object", "Pods", "External", "ContainerResource");
+        assertThat(autoscaler.getStatus().getCurrentMetrics().get(0).getObject().getDescribedObject().getKind())
+                .isEqualTo("Job");
+        assertThat(autoscaler.getStatus().getCurrentMetrics().get(0).getObject().getMetric().getSelector()
+                .getMatchLabels()).containsEntry("pipeline", "daily");
+        assertThat(autoscaler.getStatus().getCurrentMetrics().get(0).getObject().getCurrent().getValue()
+                .getAmount()).isEqualTo("42");
+        assertThat(autoscaler.getStatus().getCurrentMetrics().get(1).getPods().getCurrent().getAverageValue()
+                .getAmount()).isEqualTo("125");
+        assertThat(autoscaler.getStatus().getCurrentMetrics().get(2).getExternal().getMetric().getSelector()
+                .getMatchLabels()).containsEntry("queue", "payments");
+        assertThat(autoscaler.getStatus().getCurrentMetrics().get(2).getExternal().getCurrent().getAverageValue()
+                .getAmount()).isEqualTo("8");
+        assertThat(autoscaler.getStatus().getCurrentMetrics().get(3).getContainerResource().getContainer())
+                .isEqualTo("worker");
+        assertThat(autoscaler.getStatus().getCurrentMetrics().get(3).getContainerResource().getCurrent()
+                .getAverageUtilization()).isEqualTo(71);
+        assertThat(autoscaler.getStatus().getCurrentMetrics().get(3).getContainerResource().getCurrent()
+                .getAverageValue().getFormat()).isEqualTo("Mi");
     }
 
     @Test
