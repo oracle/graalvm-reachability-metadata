@@ -113,6 +113,36 @@ public class Oci_java_sdk_certificatesTest {
     }
 
     @Test
+    void modelsTrackExplicitlySetNullPropertiesSeparatelyFromUnsetProperties() {
+        CaBundle unsetNameBundle =
+                CaBundle.builder()
+                        .id("ca-bundle-1")
+                        .caBundlePem("ca-bundle-pem")
+                        .build();
+        CaBundle explicitNullNameBundle =
+                CaBundle.builder()
+                        .id("ca-bundle-1")
+                        .name(null)
+                        .caBundlePem("ca-bundle-pem")
+                        .build();
+
+        assertThat(unsetNameBundle.getName()).isNull();
+        assertThat(explicitNullNameBundle.getName()).isNull();
+        assertThat(unsetNameBundle.wasPropertyExplicitlySet("name")).isFalse();
+        assertThat(explicitNullNameBundle.wasPropertyExplicitlySet("name")).isTrue();
+        assertThat(explicitNullNameBundle.wasPropertyExplicitlySet("id")).isTrue();
+        assertThat(explicitNullNameBundle).isNotEqualTo(unsetNameBundle);
+
+        CaBundle copiedExplicitNullNameBundle = explicitNullNameBundle.toBuilder().build();
+        CaBundle copiedUnsetNameBundle = unsetNameBundle.toBuilder().build();
+
+        assertThat(copiedExplicitNullNameBundle).isEqualTo(explicitNullNameBundle);
+        assertThat(copiedExplicitNullNameBundle.wasPropertyExplicitlySet("name")).isTrue();
+        assertThat(copiedUnsetNameBundle).isEqualTo(unsetNameBundle);
+        assertThat(copiedUnsetNameBundle.wasPropertyExplicitlySet("name")).isFalse();
+    }
+
+    @Test
     void caBundleAndVersionCollectionsPreserveNestedModels() {
         Validity validity = validity();
         RevocationStatus revocationStatus = revocationStatus();
