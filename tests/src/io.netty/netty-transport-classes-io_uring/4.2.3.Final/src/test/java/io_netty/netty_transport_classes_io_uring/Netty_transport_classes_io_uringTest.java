@@ -175,46 +175,39 @@ public class Netty_transport_classes_io_uringTest {
                 UnpooledByteBufAllocator.DEFAULT,
                 64
         );
-        IoUringBufferRingConfig config = new IoUringBufferRingConfig(
-                (short) 7, (short) 8, 4, 16, false, allocator
-        );
-        IoUringBufferRingConfig sameGroup = new IoUringBufferRingConfig(
-                (short) 7, (short) 16, 8, 16, false, allocator
-        );
-        IoUringBufferRingConfig differentGroup = new IoUringBufferRingConfig(
-                (short) 8, (short) 8, 4, 16, false, allocator
-        );
+        IoUringBufferRingConfig config = bufferRingConfig((short) 7, (short) 8, 4, false, allocator);
+        IoUringBufferRingConfig sameGroup = bufferRingConfig((short) 7, (short) 16, 8, false, allocator);
+        IoUringBufferRingConfig differentGroup = bufferRingConfig((short) 8, (short) 8, 4, false, allocator);
+        IoUringBufferRingConfig batchAllocationConfig = IoUringBufferRingConfig.builder()
+                .bufferGroupId((short) 9)
+                .bufferRingSize((short) 8)
+                .batchSize(4)
+                .allocator(allocator)
+                .batchAllocation(true)
+                .incremental(false)
+                .build();
 
         assertThat(config.bufferGroupId()).isEqualTo((short) 7);
         assertThat(config.bufferRingSize()).isEqualTo((short) 8);
         assertThat(config.batchSize()).isEqualTo(4);
-        assertThat(config.maxUnreleasedBuffers()).isEqualTo(16);
         assertThat(config.allocator()).isSameAs(allocator);
+        assertThat(config.isBatchAllocation()).isFalse();
         assertThat(config.isIncremental()).isFalse();
+        assertThat(batchAllocationConfig.isBatchAllocation()).isTrue();
         assertThat(config).isEqualTo(sameGroup).hasSameHashCodeAs(sameGroup);
         assertThat(config).isNotEqualTo(differentGroup).isNotEqualTo("7");
 
-        IoUringBufferRingConfig shortConstructor = new IoUringBufferRingConfig(
-                (short) 9, (short) 8, 32, allocator
-        );
-        assertThat(shortConstructor.batchSize()).isEqualTo(4);
-        assertThat(shortConstructor.maxUnreleasedBuffers()).isEqualTo(32);
-        assertThat(shortConstructor.isIncremental()).isEqualTo(IoUring.isRegisterBufferRingIncSupported());
-
-        assertThatThrownBy(() -> new IoUringBufferRingConfig((short) -1, (short) 8, 4, 16, false, allocator))
+        assertThatThrownBy(() -> bufferRingConfig((short) -1, (short) 8, 4, false, allocator))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("bgId");
-        assertThatThrownBy(() -> new IoUringBufferRingConfig((short) 1, (short) 0, 4, 16, false, allocator))
+        assertThatThrownBy(() -> bufferRingConfig((short) 1, (short) 0, 4, false, allocator))
                 .isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> new IoUringBufferRingConfig((short) 1, (short) 6, 4, 16, false, allocator))
+        assertThatThrownBy(() -> bufferRingConfig((short) 1, (short) 6, 4, false, allocator))
                 .isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> new IoUringBufferRingConfig((short) 1, (short) 8, 0, 16, false, allocator))
+        assertThatThrownBy(() -> bufferRingConfig((short) 1, (short) 8, 0, false, allocator))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("batchSize");
-        assertThatThrownBy(() -> new IoUringBufferRingConfig((short) 1, (short) 8, 4, 7, false, allocator))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("maxUnreleasedBuffers");
-        assertThatThrownBy(() -> new IoUringBufferRingConfig((short) 1, (short) 8, 4, 16, false, null))
+        assertThatThrownBy(() -> bufferRingConfig((short) 1, (short) 8, 4, false, null))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining("allocator");
     }
@@ -230,12 +223,8 @@ public class Netty_transport_classes_io_uringTest {
         }
 
         IoUringBufferRingAllocator allocator = new IoUringFixedBufferRingAllocator(64);
-        IoUringBufferRingConfig firstRing = new IoUringBufferRingConfig(
-                (short) 1, (short) 8, 4, 16, false, allocator
-        );
-        IoUringBufferRingConfig secondRing = new IoUringBufferRingConfig(
-                (short) 2, (short) 16, 8, 32, false, allocator
-        );
+        IoUringBufferRingConfig firstRing = bufferRingConfig((short) 1, (short) 8, 4, false, allocator);
+        IoUringBufferRingConfig secondRing = bufferRingConfig((short) 2, (short) 16, 8, false, allocator);
         IoUringIoHandlerConfig config = new IoUringIoHandlerConfig()
                 .setRingSize(8)
                 .setCqSize(16)
@@ -252,12 +241,10 @@ public class Netty_transport_classes_io_uringTest {
         copy.clear();
         assertThat(config.getBufferRingConfigs()).containsExactlyInAnyOrder(firstRing, secondRing);
 
-        IoUringBufferRingConfig duplicateGroup = new IoUringBufferRingConfig(
-                (short) 1, (short) 32, 8, 32, false, allocator
-        );
+        IoUringBufferRingConfig duplicateGroup = bufferRingConfig((short) 1, (short) 32, 8, false, allocator);
         assertThatThrownBy(() -> config.setBufferRingConfig(firstRing, duplicateGroup))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("bufferGroupId 1");
+                .hasMessageContaining("Duplicated buffer group id: 1");
         assertThatThrownBy(() -> new IoUringIoHandlerConfig().setRingSize(0))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("ringSize");
@@ -472,6 +459,22 @@ public class Netty_transport_classes_io_uringTest {
             shutdown(clientGroup);
             shutdown(serverGroup);
         }
+    }
+
+    private static IoUringBufferRingConfig bufferRingConfig(
+            short bufferGroupId,
+            short bufferRingSize,
+            int batchSize,
+            boolean incremental,
+            IoUringBufferRingAllocator allocator
+    ) {
+        return IoUringBufferRingConfig.builder()
+                .bufferGroupId(bufferGroupId)
+                .bufferRingSize(bufferRingSize)
+                .batchSize(batchSize)
+                .allocator(allocator)
+                .incremental(incremental)
+                .build();
     }
 
     private static void assertChannelConstructorMatchesAvailability(Supplier<? extends Channel> constructor) {
