@@ -12,6 +12,11 @@ import com.oracle.bmc.Region;
 import com.oracle.bmc.certificatesmanagement.CertificatesManagement;
 import com.oracle.bmc.certificatesmanagement.CertificatesManagementPaginators;
 import com.oracle.bmc.certificatesmanagement.CertificatesManagementWaiters;
+import com.oracle.bmc.certificatesmanagement.model.Association;
+import com.oracle.bmc.certificatesmanagement.model.AssociationCollection;
+import com.oracle.bmc.certificatesmanagement.model.AssociationLifecycleState;
+import com.oracle.bmc.certificatesmanagement.model.AssociationSummary;
+import com.oracle.bmc.certificatesmanagement.model.AssociationType;
 import com.oracle.bmc.certificatesmanagement.model.CaBundle;
 import com.oracle.bmc.certificatesmanagement.model.CaBundleCollection;
 import com.oracle.bmc.certificatesmanagement.model.CaBundleLifecycleState;
@@ -352,6 +357,88 @@ public class Oci_java_sdk_certificatesmanagementTest {
         assertThat(caBundle.getLifecycleState()).isEqualTo(CaBundleLifecycleState.Active);
         assertThat(caBundle.toBuilder().build()).isEqualTo(caBundle);
         assertThat(collection.getItems()).containsExactly(summary);
+    }
+
+    @Test
+    void associationModelsAndRequestsExposeLinkedResourceFilters() {
+        Association association =
+                Association.builder()
+                        .id("ocid1.certificatesassociation.oc1..association")
+                        .name("load-balancer-certificate-association")
+                        .timeCreated(NOT_BEFORE)
+                        .lifecycleState(AssociationLifecycleState.Active)
+                        .certificatesResourceId("ocid1.certificate.oc1..cert")
+                        .associatedResourceId("ocid1.loadbalancer.oc1..listener")
+                        .compartmentId("ocid1.compartment.oc1..example")
+                        .associationType(AssociationType.Certificate)
+                        .build();
+        AssociationSummary summary =
+                AssociationSummary.builder()
+                        .id(association.getId())
+                        .name(association.getName())
+                        .timeCreated(association.getTimeCreated())
+                        .lifecycleState(association.getLifecycleState())
+                        .certificatesResourceId(association.getCertificatesResourceId())
+                        .associatedResourceId(association.getAssociatedResourceId())
+                        .compartmentId(association.getCompartmentId())
+                        .associationType(association.getAssociationType())
+                        .build();
+        AssociationCollection collection =
+                AssociationCollection.builder().items(List.of(summary)).build();
+        GetAssociationRequest getRequest =
+                GetAssociationRequest.builder()
+                        .associationId(association.getId())
+                        .opcRequestId("get-association-request")
+                        .build();
+        GetAssociationResponse getResponse =
+                GetAssociationResponse.builder()
+                        .__httpStatusCode__(200)
+                        .etag("association-etag")
+                        .opcRequestId(getRequest.getOpcRequestId())
+                        .association(association)
+                        .build();
+        ListAssociationsRequest listRequest =
+                ListAssociationsRequest.builder()
+                        .compartmentId(association.getCompartmentId())
+                        .certificatesResourceId(association.getCertificatesResourceId())
+                        .associatedResourceId(association.getAssociatedResourceId())
+                        .associationId(association.getId())
+                        .name(association.getName())
+                        .associationType(ListAssociationsRequest.AssociationType.Certificate)
+                        .sortBy(ListAssociationsRequest.SortBy.Name)
+                        .sortOrder(ListAssociationsRequest.SortOrder.Asc)
+                        .limit(10)
+                        .build();
+        ListAssociationsResponse listResponse =
+                ListAssociationsResponse.builder()
+                        .__httpStatusCode__(200)
+                        .opcRequestId("list-associations-request")
+                        .associationCollection(collection)
+                        .build();
+
+        assertThat(association.getAssociatedResourceId())
+                .isEqualTo("ocid1.loadbalancer.oc1..listener");
+        assertThat(association.getAssociationType()).isEqualTo(AssociationType.Certificate);
+        assertThat(association.toBuilder().build()).isEqualTo(association);
+        assertThat(summary.toBuilder().build()).isEqualTo(summary);
+        assertThat(collection.getItems()).containsExactly(summary);
+        assertThat(getRequest.getAssociationId()).isEqualTo(association.getId());
+        assertThat(getResponse.getAssociation()).isEqualTo(association);
+        assertThat(GetAssociationResponse.builder().copy(getResponse).build())
+                .isEqualTo(getResponse);
+        assertThat(listRequest.getCertificatesResourceId())
+                .isEqualTo(association.getCertificatesResourceId());
+        assertThat(listRequest.getAssociatedResourceId())
+                .isEqualTo(association.getAssociatedResourceId());
+        assertThat(listRequest.getAssociationType())
+                .isEqualTo(ListAssociationsRequest.AssociationType.Certificate);
+        assertThat(listRequest.toBuilder().build()).isEqualTo(listRequest);
+        assertThat(listResponse.getAssociationCollection().getItems()).containsExactly(summary);
+        assertThat(ListAssociationsResponse.builder().copy(listResponse).build())
+                .isEqualTo(listResponse);
+        assertThat(AssociationType.create("CA_BUNDLE")).isEqualTo(AssociationType.CaBundle);
+        assertThat(AssociationLifecycleState.create("DELETING"))
+                .isEqualTo(AssociationLifecycleState.Deleting);
     }
 
     @Test
