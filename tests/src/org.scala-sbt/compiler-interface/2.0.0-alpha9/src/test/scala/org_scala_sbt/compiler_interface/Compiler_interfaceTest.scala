@@ -800,6 +800,8 @@ final class Compiler_interfaceTest {
 
     override def contentHash(): Long = id().hashCode.toLong
 
+    override def contentHashStr(): String = JLong.toHexString(contentHash())
+
     override def input(): InputStream = new ByteArrayInputStream(Array.emptyByteArray)
 
     def toPath: NioPath = new File(id()).toPath
