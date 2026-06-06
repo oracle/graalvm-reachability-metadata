@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.sundr.deps.org.apache.velocity.VelocityContext;
+import io.sundr.deps.org.apache.velocity.app.event.ReferenceInsertionEventHandler;
 import io.sundr.deps.org.apache.velocity.exception.VelocityException;
 import io.sundr.deps.org.apache.velocity.runtime.RuntimeConstants;
 import io.sundr.deps.org.apache.velocity.runtime.RuntimeInstance;
@@ -41,6 +42,25 @@ public class RuntimeInstanceTest {
     }
 
     @Test
+    void configuredReferenceInsertionHandlerParticipatesInRendering() {
+        RuntimeInstance runtime = new RuntimeInstance();
+        Properties properties = shadedRuntimeProperties();
+        properties.setProperty(
+                RuntimeConstants.EVENTHANDLER_REFERENCEINSERTION,
+                ReferenceInsertionRecorder.class.getName());
+        runtime.init(properties);
+
+        VelocityContext context = new VelocityContext();
+        context.put("name", "Ada");
+        StringWriter writer = new StringWriter();
+
+        boolean rendered = runtime.evaluate(context, writer, "event-handler-test", "Hello $name");
+
+        assertThat(rendered).isTrue();
+        assertThat(writer).hasToString("Hello Ada!");
+    }
+
+    @Test
     void initRejectsConfiguredResourceManagerThatDoesNotImplementRequiredApi() {
         RuntimeInstance runtime = new RuntimeInstance();
         Properties properties = shadedRuntimeProperties();
@@ -50,6 +70,19 @@ public class RuntimeInstanceTest {
                 .isInstanceOf(VelocityException.class)
                 .hasMessageContaining("ResourceManager")
                 .hasMessageContaining("does not implement");
+    }
+
+    public static final class ReferenceInsertionRecorder implements ReferenceInsertionEventHandler {
+        public ReferenceInsertionRecorder() {
+        }
+
+        @Override
+        public Object referenceInsert(String reference, Object value) {
+            if (value instanceof String) {
+                return value + "!";
+            }
+            return value;
+        }
     }
 
     private static Properties shadedRuntimeProperties() {
