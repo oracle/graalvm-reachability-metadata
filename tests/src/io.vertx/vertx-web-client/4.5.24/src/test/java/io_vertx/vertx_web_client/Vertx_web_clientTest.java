@@ -10,11 +10,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.client.CachingWebClient;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
@@ -27,6 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 
 public class Vertx_web_clientTest {
@@ -173,6 +176,41 @@ public class Vertx_web_clientTest {
             if (upload != null) {
                 Files.deleteIfExists(upload);
             }
+            close(client, server, vertx);
+        }
+    }
+
+    @Test
+    void cachingClientServesFreshGetResponsesFromCache() throws Exception {
+        Vertx vertx = Vertx.vertx();
+        HttpServer server = null;
+        WebClient client = null;
+        AtomicInteger requestCount = new AtomicInteger();
+        try {
+            server = startServer(vertx, request -> {
+                int currentRequest = requestCount.incrementAndGet();
+                request.response()
+                        .putHeader("cache-control", "public, max-age=60")
+                        .putHeader("etag", "\"cached-resource\"")
+                        .putHeader("content-type", "text/plain")
+                        .end("response-" + currentRequest);
+            });
+            client = CachingWebClient.create(createClient(vertx, server.actualPort()));
+
+            HttpResponse<Buffer> firstResponse = await(client.get("/cached-resource")
+                    .as(BodyCodec.buffer())
+                    .expect(ResponsePredicate.SC_OK)
+                    .send());
+            HttpResponse<Buffer> secondResponse = await(client.get("/cached-resource")
+                    .as(BodyCodec.buffer())
+                    .expect(ResponsePredicate.SC_OK)
+                    .send());
+
+            assertThat(firstResponse.bodyAsString()).isEqualTo("response-1");
+            assertThat(secondResponse.bodyAsString()).isEqualTo("response-1");
+            assertThat(secondResponse.getHeader("age")).isNotNull();
+            assertThat(requestCount.get()).isEqualTo(1);
+        } finally {
             close(client, server, vertx);
         }
     }
