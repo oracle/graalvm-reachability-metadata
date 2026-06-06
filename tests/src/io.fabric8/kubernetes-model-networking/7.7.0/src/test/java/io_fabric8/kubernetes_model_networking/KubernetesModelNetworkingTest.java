@@ -10,6 +10,7 @@ import io.fabric8.kubernetes.api.model.Condition;
 import io.fabric8.kubernetes.api.model.ConditionBuilder;
 import io.fabric8.kubernetes.api.model.HasMetadata;
 import io.fabric8.kubernetes.api.model.KubernetesResource;
+import io.fabric8.kubernetes.api.model.ListMetaBuilder;
 import io.fabric8.kubernetes.api.model.TypedLocalObjectReference;
 import io.fabric8.kubernetes.api.model.networking.v1.IPAddress;
 import io.fabric8.kubernetes.api.model.networking.v1.IPAddressBuilder;
@@ -122,7 +123,7 @@ public class KubernetesModelNetworkingTest {
         assertThat(ingress.getSpec().getRules().get(0).getHost()).isEqualTo("www.example.test");
 
         IngressList list = new IngressListBuilder()
-                .withNewMetadata(null, null, "42", null)
+                .withMetadata(new ListMetaBuilder().withResourceVersion("42").build())
                 .withItems(ingress, edited)
                 .build();
 
@@ -200,7 +201,7 @@ public class KubernetesModelNetworkingTest {
         assertThat(policy.getSpec().getEgress().get(0).getPorts().get(0).getPort().getIntVal()).isEqualTo(53);
 
         NetworkPolicyList list = new NetworkPolicyListBuilder()
-                .withNewMetadata("next-page", null, null, null)
+                .withMetadata(new ListMetaBuilder().withContinue("next-page").build())
                 .withItems(policy, tightened)
                 .build();
 
@@ -296,7 +297,7 @@ public class KubernetesModelNetworkingTest {
                 .removeFromAdditionalProperties("owner")
                 .build();
         IngressClassList list = new IngressClassListBuilder()
-                .withNewMetadata(null, 2L, null, null)
+                .withMetadata(new ListMetaBuilder().withRemainingItemCount(2L).build())
                 .withItems(ingressClass, external)
                 .build();
 
@@ -393,7 +394,10 @@ public class KubernetesModelNetworkingTest {
 
         io.fabric8.kubernetes.api.model.networking.v1beta1.IPAddressList addressList =
                 new io.fabric8.kubernetes.api.model.networking.v1beta1.IPAddressListBuilder()
-                .withNewMetadata("continue-token", 2L, null, null)
+                .withMetadata(new ListMetaBuilder()
+                        .withContinue("continue-token")
+                        .withRemainingItemCount(2L)
+                        .build())
                 .withItems(primaryAddress, secondaryAddress)
                 .editMatchingItem(item -> "fd00-10-96-0-11".equals(item.buildMetadata().getName()))
                     .editMetadata()
@@ -439,7 +443,7 @@ public class KubernetesModelNetworkingTest {
                 .build();
         io.fabric8.kubernetes.api.model.networking.v1beta1.ServiceCIDRList serviceCIDRList =
                 new io.fabric8.kubernetes.api.model.networking.v1beta1.ServiceCIDRListBuilder()
-                .withNewMetadata(null, 2L, null, null)
+                .withMetadata(new ListMetaBuilder().withRemainingItemCount(2L).build())
                 .withItems(serviceCIDR, expanded)
                 .build();
 
