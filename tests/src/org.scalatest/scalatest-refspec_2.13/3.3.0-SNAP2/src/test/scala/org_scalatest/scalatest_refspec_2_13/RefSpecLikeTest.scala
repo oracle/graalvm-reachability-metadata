@@ -20,6 +20,9 @@ import org.scalatest.Ignore
 import org.scalatest.Reporter
 import org.scalatest.Suite
 import org.scalatest.events.Event
+import org.scalatest.events.SuiteAborted
+import org.scalatest.events.TestCanceled
+import org.scalatest.events.TestFailed
 import org.scalatest.events.TestIgnored
 import org.scalatest.events.TestSucceeded
 import org.scalatest.refspec.RefSpec
@@ -42,7 +45,8 @@ class RefSpecLikeTest {
 
     val result: RunResult = runSuite(suite)
 
-    assert(result.succeeded)
+    assert(result.completed.isSuccess)
+    assert(failureEvents(result.events).isEmpty)
     assert(suite.executed.toSet == Set("sum", "product", "root"))
     assert(succeededEvents(result.events).map(_.testName).toSet == Set(sumTestName, productTestName, rootTestName))
     assert(ignoredEvents(result.events).map(_.testName) == Vector(ignoredTestName))
@@ -90,7 +94,7 @@ class RefSpecLikeTest {
     }
 
     assert(completed.await(30, TimeUnit.SECONDS), s"ScalaTest suite ${suite.suiteName} did not complete")
-    RunResult(completion.get().get, reporter.events)
+    RunResult(completion.get(), reporter.events)
   }
 
   private def succeededEvents(events: Vector[Event]): Vector[TestSucceeded] =
@@ -98,6 +102,14 @@ class RefSpecLikeTest {
 
   private def ignoredEvents(events: Vector[Event]): Vector[TestIgnored] =
     events.collect { case event: TestIgnored => event }
+
+  private def failureEvents(events: Vector[Event]): Vector[Event] =
+    events.filter {
+      case _: SuiteAborted => true
+      case _: TestCanceled => true
+      case _: TestFailed => true
+      case _ => false
+    }
 
   private final class RecordingReporter extends Reporter {
     private val recordedEvents: CopyOnWriteArrayList[Event] = new CopyOnWriteArrayList[Event]()
@@ -110,5 +122,5 @@ class RefSpecLikeTest {
     def events: Vector[Event] = recordedEvents.asScala.toVector
   }
 
-  private final case class RunResult(succeeded: Boolean, events: Vector[Event])
+  private final case class RunResult(completed: Try[Boolean], events: Vector[Event])
 }
