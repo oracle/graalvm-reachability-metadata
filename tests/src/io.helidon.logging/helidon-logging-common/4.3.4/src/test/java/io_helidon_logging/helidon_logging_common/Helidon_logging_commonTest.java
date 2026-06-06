@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -104,6 +105,20 @@ public class Helidon_logging_commonTest {
     }
 
     @Test
+    void serviceLoaderDiscoversMdcSupplierPropagatorForContextPropagation() {
+        DataPropagationProvider<Map<String, Supplier<String>>> propagator = loadMdcSupplierPropagatorService();
+        HelidonMdc.setDeferred(REQUEST_ID, () -> "request-from-service-provider");
+        Map<String, Supplier<String>> captured = propagator.data();
+
+        HelidonMdc.clear();
+        assertThat(HelidonMdc.get(REQUEST_ID)).isEmpty();
+
+        propagator.propagateData(captured);
+
+        assertThat(HelidonMdc.get(REQUEST_ID)).contains("request-from-service-provider");
+    }
+
+    @Test
     void mdcSupplierPropagatorMovesCapturedContextBetweenThreads() throws Exception {
         DataPropagationProvider<Map<String, Supplier<String>>> propagator = new MdcSupplierPropagator();
         HelidonMdc.setDeferred(REQUEST_ID, () -> "request-from-parent");
@@ -126,6 +141,16 @@ public class Helidon_logging_commonTest {
             executor.shutdownNow();
             assertThat(executor.awaitTermination(10, TimeUnit.SECONDS)).isTrue();
         }
+    }
+
+    private DataPropagationProvider<Map<String, Supplier<String>>> loadMdcSupplierPropagatorService() {
+        ServiceLoader<?> serviceLoader = ServiceLoader.load(DataPropagationProvider.class);
+        for (Object provider : serviceLoader) {
+            if (provider instanceof MdcSupplierPropagator mdcSupplierPropagator) {
+                return mdcSupplierPropagator;
+            }
+        }
+        throw new AssertionError("MdcSupplierPropagator service provider was not discovered");
     }
 
     @Test
