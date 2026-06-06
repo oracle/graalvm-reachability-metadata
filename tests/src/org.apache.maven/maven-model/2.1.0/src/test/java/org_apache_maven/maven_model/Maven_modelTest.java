@@ -277,7 +277,8 @@ public class Maven_modelTest {
         assertThat(xml).contains("<artifactId>generated-model</artifactId>")
                 .contains("<module>api</module>")
                 .doesNotContain("<module>impl</module>")
-                .contains("<project>");
+                .contains("<project")
+                .contains("<modelVersion>4.0.0</modelVersion>");
 
         Model roundTripped = new MavenXpp3Reader().read(new StringReader(xml));
 
