@@ -14,12 +14,15 @@ import io.sundr.codegen.template.TemplateRendererFactory;
 import io.sundr.codegen.template.TemplateRenderers;
 import io.sundr.codegen.template.utils.Templates;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -93,6 +96,20 @@ public class Sundr_codegen_templateTest {
                 String.class, template.toUri().toURL());
 
         assertThat(renderer).isEmpty();
+    }
+
+    @Test
+    void readsTemplateContentFromJarUrl() throws IOException {
+        Path archive = tempDir.resolve("templates.jar");
+        try (JarOutputStream jar = new JarOutputStream(Files.newOutputStream(archive))) {
+            jar.putNextEntry(new JarEntry("templates/greeting.vm"));
+            jar.write("Hello from archive".getBytes(StandardCharsets.UTF_8));
+            jar.closeEntry();
+        }
+        URL template = URI.create("jar:" + archive.toUri() + "!/templates/greeting.vm").toURL();
+
+        assertThat(Templates.getExtension(template)).contains("vm");
+        assertThat(Templates.read(template)).isEqualTo("Hello from archive");
     }
 
     @Test
