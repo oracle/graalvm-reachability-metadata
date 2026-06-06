@@ -16,11 +16,10 @@ class GeneratedMessageAnonymous4Test {
   @Test
   def fileScopedExtensionLoadsDescriptorFromGeneratedDescriptorClass(): Unit = {
     val extension: GeneratedMessage.GeneratedExtension[Message, String] =
-      GeneratedMessage.newFileScopedGeneratedExtension[Message, String](
-        classOf[GeneratedMessageAnonymous4DescriptorProbe],
-        null,
-        classOf[GeneratedMessageAnonymous4DescriptorProbe].getName,
-        "covered_extension")
+      GeneratedMessage.newFileScopedGeneratedExtension[Message, String](classOf[String], null)
+    val extensionDescriptor: Descriptors.FieldDescriptor =
+      GeneratedMessageAnonymous4DescriptorProbe.descriptor.findExtensionByName("covered_extension")
+    extension.internalInit(extensionDescriptor)
 
     val descriptor: Descriptors.FieldDescriptor = extension.getDescriptor
 

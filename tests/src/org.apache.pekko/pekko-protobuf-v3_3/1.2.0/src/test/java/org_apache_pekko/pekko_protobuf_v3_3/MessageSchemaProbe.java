@@ -15,12 +15,12 @@ public final class MessageSchemaProbe {
     }
 
     public static int parseValidMessageValue() throws InvalidProtocolBufferException {
-        return ValidMessage.parseFrom(new byte[0]).getValue();
+        return ValidMessage.parseFrom(new byte[] {8, 123}).getValue();
     }
 
     public static RuntimeException parseInvalidMessageWithMissingField() {
         try {
-            InvalidMessage.parseFrom(new byte[0]);
+            InvalidMessage.parseFrom(new byte[] {8, 1});
             throw new AssertionError("Expected schema creation to fail for a missing backing field");
         } catch (ExceptionInInitializerError e) {
             Throwable cause = e.getCause();

@@ -14,7 +14,7 @@ class MessageSchemaTest {
   def createsRawMessageSchemaFromGeneratedLiteFieldMetadata(): Unit = {
     val parsedValue: Int = MessageSchemaProbe.parseValidMessageValue()
 
-    assertThat(parsedValue).isZero()
+    assertThat(parsedValue).isEqualTo(123)
   }
 
   @Test

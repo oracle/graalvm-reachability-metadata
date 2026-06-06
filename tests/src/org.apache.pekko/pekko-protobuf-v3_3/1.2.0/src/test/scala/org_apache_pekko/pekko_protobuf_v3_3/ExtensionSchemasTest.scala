@@ -6,7 +6,6 @@
  */
 package org_apache_pekko.pekko_protobuf_v3_3
 
-import org.apache.pekko.protobufv3.internal.Descriptors
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -17,7 +16,7 @@ class ExtensionSchemasTest {
 
     message.initializeEmptyPayloadSchema()
 
-    assertThat(message.getDescriptorForType.getFile.getSyntax).isEqualTo(Descriptors.FileDescriptor.Syntax.PROTO2)
+    assertThat(message.getDescriptorForType.getFile.toProto.hasSyntax).isFalse
     assertThat(message.getDescriptorForType.getName).isEqualTo("ExtensionSchemasProto2Probe")
   }
 }
