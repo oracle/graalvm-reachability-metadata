@@ -225,6 +225,27 @@ public class Oci_java_sdk_circuitbreakerTest {
     }
 
     @Test
+    void slowResultRecordsOpenCircuitBreakerBasedOnSlowCallRate() {
+        CircuitBreakerConfiguration configuration =
+                CircuitBreakerConfiguration.builder()
+                        .failureRateThreshold(100)
+                        .slowCallRateThreshold(50)
+                        .slowCallDurationThreshold(Duration.ofMillis(5))
+                        .minimumNumberOfCalls(2)
+                        .slidingWindowSize(2)
+                        .waitDurationInOpenState(Duration.ofSeconds(1))
+                        .build();
+        OciCircuitBreaker circuitBreaker = CircuitBreakerFactory.build(configuration);
+
+        circuitBreaker.onResult(10, TimeUnit.MILLISECONDS, "first response");
+        assertThat(circuitBreaker.getState()).isEqualTo(State.CLOSED);
+        circuitBreaker.onResult(10, TimeUnit.MILLISECONDS, "second response");
+
+        assertThat(circuitBreaker.getState()).isEqualTo(State.OPEN);
+        assertThat(circuitBreaker.tryAcquirePermission()).isFalse();
+    }
+
+    @Test
     void noCircuitBreakerConfigurationRetainsBaseDefaultsAndEnumsAreAccessible() {
         NoCircuitBreakerConfiguration noCircuitBreakerConfiguration = new NoCircuitBreakerConfiguration();
 
