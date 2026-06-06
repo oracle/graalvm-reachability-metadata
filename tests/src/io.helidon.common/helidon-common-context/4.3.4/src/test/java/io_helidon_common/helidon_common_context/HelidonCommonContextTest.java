@@ -287,6 +287,49 @@ public class HelidonCommonContextTest {
         }
     }
 
+    @Test
+    void wrappedScheduledExecutorCapturesContextForPeriodicTasks() throws Exception {
+        ScheduledExecutorService delegate = Executors.newSingleThreadScheduledExecutor();
+        ScheduledExecutorService wrapped = Contexts.wrap(delegate);
+        Context fixedRateContext = Context.builder().id("fixed-rate-context").build();
+        Context fixedDelayContext = Context.builder().id("fixed-delay-context").build();
+        CountDownLatch fixedRateLatch = new CountDownLatch(2);
+        CountDownLatch fixedDelayLatch = new CountDownLatch(2);
+        AtomicReference<String> fixedRateContextId = new AtomicReference<>();
+        AtomicReference<String> fixedDelayContextId = new AtomicReference<>();
+        AtomicInteger fixedRateRuns = new AtomicInteger();
+        AtomicInteger fixedDelayRuns = new AtomicInteger();
+
+        try {
+            ScheduledFuture<?> fixedRateFuture = Contexts.runInContext(fixedRateContext,
+                    () -> wrapped.scheduleAtFixedRate(() -> {
+                        fixedRateContextId.set(Contexts.context().orElseThrow().id());
+                        fixedRateRuns.incrementAndGet();
+                        fixedRateLatch.countDown();
+                    }, 0, 10, TimeUnit.MILLISECONDS));
+            assertThat(fixedRateLatch.await(5, TimeUnit.SECONDS)).isTrue();
+            assertThat(fixedRateFuture.cancel(true)).isTrue();
+
+            ScheduledFuture<?> fixedDelayFuture = Contexts.runInContext(fixedDelayContext,
+                    () -> wrapped.scheduleWithFixedDelay(() -> {
+                        fixedDelayContextId.set(Contexts.context().orElseThrow().id());
+                        fixedDelayRuns.incrementAndGet();
+                        fixedDelayLatch.countDown();
+                    }, 0, 10, TimeUnit.MILLISECONDS));
+            assertThat(fixedDelayLatch.await(5, TimeUnit.SECONDS)).isTrue();
+            assertThat(fixedDelayFuture.cancel(true)).isTrue();
+
+            assertThat(fixedRateContextId.get()).isEqualTo("fixed-rate-context");
+            assertThat(fixedDelayContextId.get()).isEqualTo("fixed-delay-context");
+            assertThat(fixedRateRuns.get()).isGreaterThanOrEqualTo(2);
+            assertThat(fixedDelayRuns.get()).isGreaterThanOrEqualTo(2);
+            assertThat(Contexts.context()).isEmpty();
+        } finally {
+            wrapped.shutdownNow();
+            assertThat(wrapped.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+        }
+    }
+
     private interface Animal {
         String name();
     }
