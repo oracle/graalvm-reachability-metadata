@@ -13,10 +13,11 @@ import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -56,13 +57,20 @@ public class DefaultPlexusContainerTest {
         """;
 
     @Test
-    void initializeAssignsLoggerForPlexusContainerRole() throws Exception {
+    void initializeAssignsLoggerForPlexusContainerRole(@TempDir Path tempDirectory) throws Exception {
         ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
         DefaultPlexusContainer container = new DefaultPlexusContainer();
         ClassWorld classWorld = new ClassWorld();
-        ClassRealm coreRealm = classWorld.newRealm("test.core", new BootstrapConfigurationClassLoader());
+        ClassRealm coreRealm = classWorld.newRealm(
+            "test.core",
+            DefaultPlexusContainerTest.class.getClassLoader()
+        );
+        Path bootstrapConfiguration = tempDirectory.resolve(DefaultPlexusContainer.BOOTSTRAP_CONFIGURATION);
+        Files.createDirectories(bootstrapConfiguration.getParent());
+        Files.writeString(bootstrapConfiguration, BOOTSTRAP_CONFIGURATION, StandardCharsets.UTF_8);
 
         try {
+            coreRealm.addConstituent(tempDirectory.toUri().toURL());
             container.setClassWorld(classWorld);
             container.setCoreRealm(coreRealm);
             container.setLoggerManager(new ConsoleLoggerManager("fatal"));
@@ -81,17 +89,4 @@ public class DefaultPlexusContainerTest {
         }
     }
 
-    private static final class BootstrapConfigurationClassLoader extends ClassLoader {
-        private BootstrapConfigurationClassLoader() {
-            super(DefaultPlexusContainerTest.class.getClassLoader());
-        }
-
-        @Override
-        public InputStream getResourceAsStream(String name) {
-            if (DefaultPlexusContainer.BOOTSTRAP_CONFIGURATION.equals(name)) {
-                return new ByteArrayInputStream(BOOTSTRAP_CONFIGURATION.getBytes(StandardCharsets.UTF_8));
-            }
-            return super.getResourceAsStream(name);
-        }
-    }
 }

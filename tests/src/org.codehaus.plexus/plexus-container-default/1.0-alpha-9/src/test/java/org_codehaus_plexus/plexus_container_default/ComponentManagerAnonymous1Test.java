@@ -9,11 +9,12 @@ package org_codehaus_plexus.plexus_container_default;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ComponentManagerAnonymous1Test {
     @Test
-    public void exposesInterfaceRoleName() {
-        assertEquals(ComponentManager.class.getName(), ComponentManager.ROLE);
+    public void exposesInterfaceTypeName() {
+        assertThat(ComponentManager.class.getName())
+            .isEqualTo("org.codehaus.plexus.component.manager.ComponentManager");
     }
 }

@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,7 +49,7 @@ public class CollectionConverterTest {
         Object value = converter.fromConfiguration(
             converterLookup,
             configuration,
-            ArrayList.class,
+            List.class,
             CollectionConverterTest.class,
             CollectionConverterTest.class.getClassLoader(),
             new LiteralExpressionEvaluator()
