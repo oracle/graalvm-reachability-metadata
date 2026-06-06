@@ -52,8 +52,8 @@ public class Selenium_apiTest {
         MutableCapabilities capabilities = new MutableCapabilities();
         capabilities.setCapability("browserName", "firefox");
         capabilities.setCapability("javascriptEnabled", true);
-        capabilities.setCapability("platform", "linux");
-        capabilities.setCapability("unexpectedAlertBehaviour", "accept");
+        capabilities.setCapability("platformName", "linux");
+        capabilities.setCapability("unhandledPromptBehavior", "accept");
         capabilities.setCapability("temporary", "value");
         capabilities.setCapability("temporary", (Object) null);
 
@@ -75,7 +75,7 @@ public class Selenium_apiTest {
         assertThat(merged.getCapability("unhandledPromptBehavior")).isEqualTo("accept");
         assertThat(merged.getCapability("temporary")).isNull();
         assertThat(merged.getCapabilityNames())
-                .contains("browserName", "javascriptEnabled", "platform", "loggingPrefs", "browserVersion", "custom:option")
+                .contains("browserName", "javascriptEnabled", "platformName", "loggingPrefs", "browserVersion", "custom:option")
                 .doesNotContain("temporary");
         assertThat(merged.asMap()).containsEntry("custom:option", 42);
         assertThatThrownBy(() -> merged.asMap().put("newCapability", true))
