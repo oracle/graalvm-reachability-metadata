@@ -39,7 +39,8 @@ public class AnnotationCreatorImplTest {
             annotation.addArray(ContainerAnnotation::nestedArray, nestedBuilders);
         }));
 
-        assertThat(generatedClasses).containsOnlyKeys(GENERATED_CLASS_PATH);
+        assertThat(generatedClasses.size()).isEqualTo(1);
+        assertThat(generatedClasses.containsKey(GENERATED_CLASS_PATH)).isTrue();
         byte[] classBytes = generatedClasses.get(GENERATED_CLASS_PATH);
         assertThat(classBytes).isNotEmpty();
 
