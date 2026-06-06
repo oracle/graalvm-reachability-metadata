@@ -6,6 +6,7 @@
  */
 package io_helidon_integrations_graal.helidon_graal_native_image_extension;
 
+import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -99,6 +100,19 @@ public class Helidon_graal_native_image_extensionTest {
         assertThat(interfaces).containsExactly(MarkerInterface.class);
     }
 
+    @Test
+    void nativeUtilMatchesMethodParameterLists() throws NoSuchMethodException {
+        NativeUtil util = nativeUtil(typeName -> false);
+        Method method = MethodSamples.class.getDeclaredMethod("withParameters", String.class, int.class);
+        Method noArgMethod = MethodSamples.class.getDeclaredMethod("withoutParameters");
+
+        assertThat(util.hasParams(method, String.class, int.class)).isTrue();
+        assertThat(util.hasParams(method, int.class, String.class)).isFalse();
+        assertThat(util.hasParams(method, String.class)).isFalse();
+        assertThat(util.hasParams(noArgMethod)).isTrue();
+        assertThat(util.hasParams(noArgMethod, String.class)).isFalse();
+    }
+
     private static NativeUtil nativeUtil(Function<Class<?>, Boolean> exclusion) {
         return NativeUtil.create(new NativeTrace(),
                 null,
@@ -152,5 +166,13 @@ public class Helidon_graal_native_image_extensionTest {
     }
 
     private static class DirectInterfaces implements MarkerInterface, IgnoredInterface {
+    }
+
+    private static class MethodSamples {
+        void withParameters(String value, int count) {
+        }
+
+        void withoutParameters() {
+        }
     }
 }
