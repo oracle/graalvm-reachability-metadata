@@ -151,22 +151,16 @@ class Scalatest_diagrams_3Test extends Diagrams:
     assertFalse(anchors.exists(_.contains("ignored")), anchors.toString)
 
   @Test
-  def byNameDiagrammedExpressionEvaluatesValueLazilyAndOnlyOnce(): Unit =
-    var evaluations: Int = 0
-    val expression: DiagrammedExpr[String] = DiagrammedExpr.byNameExpr(
-      {
-        evaluations += 1
-        "computed-value"
-      },
-      31
-    )
+  def diagrammedApplyExpressionKeepsTheLastValueForDuplicateQualifierAnchors(): Unit =
+    val base: DiagrammedExpr[String] = DiagrammedExpr.simpleExpr("base", 6)
+    val selectedWithSameAnchor: DiagrammedExpr[String] = DiagrammedExpr.selectExpr(base, "selected", 6)
 
-    assertEquals(31, expression.anchor)
-    assertTrue(expression.anchorValues.isEmpty)
-    assertEquals(0, evaluations)
-    assertEquals("computed-value", expression.value)
-    assertEquals("computed-value", expression.value)
-    assertEquals(1, evaluations)
+    val applied: DiagrammedExpr[String] = DiagrammedExpr.applyExpr(selectedWithSameAnchor, Nil, "result", 10)
+    val anchors: List[String] = applied.anchorValues.map(_.toString)
+
+    assertFalse(anchors.contains("AnchorValue(6,base)"), anchors.toString)
+    assertTrue(anchors.contains("AnchorValue(6,selected)"), anchors.toString)
+    assertTrue(anchors.contains("AnchorValue(10,result)"), anchors.toString)
 
   @Test
   def useDiagramMarkerCanBeObtainedFromTrait(): Unit =
