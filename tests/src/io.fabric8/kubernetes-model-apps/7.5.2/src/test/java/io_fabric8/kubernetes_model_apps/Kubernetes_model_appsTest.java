@@ -6,7 +6,9 @@
  */
 package io_fabric8.kubernetes_model_apps;
 
+import io.fabric8.kubernetes.api.builder.Visitor;
 import io.fabric8.kubernetes.api.model.Container;
+import io.fabric8.kubernetes.api.model.ContainerBuilder;
 import io.fabric8.kubernetes.api.model.HasMetadata;
 import io.fabric8.kubernetes.api.model.KubernetesResource;
 import io.fabric8.kubernetes.api.model.apps.ControllerRevision;
@@ -544,6 +546,94 @@ public class Kubernetes_model_appsTest {
         assertThat(list.getKind()).isEqualTo("ControllerRevisionList");
         assertThat(list.getItems()).extracting(ControllerRevision::getRevision).containsExactly(7L, 8L);
         assertThat(list.getItems().get(1).getAdditionalProperties()).containsEntry("promoted", Boolean.TRUE);
+    }
+
+    @Test
+    void deploymentListBuilderVisitorUpdatesNestedContainers() {
+        DeploymentList list = new DeploymentListBuilder()
+                .addNewItem()
+                    .withNewMetadata()
+                        .withName("checkout")
+                        .withNamespace("production")
+                        .addToLabels("app", "checkout")
+                    .endMetadata()
+                    .withNewSpec()
+                        .withReplicas(2)
+                        .withNewSelector()
+                            .addToMatchLabels("app", "checkout")
+                        .endSelector()
+                        .withNewTemplate()
+                            .withNewMetadata()
+                                .addToLabels("app", "checkout")
+                            .endMetadata()
+                            .withNewSpec()
+                                .addNewContainer()
+                                    .withName("api")
+                                    .withImage("example.test/checkout-api:stable")
+                                .endContainer()
+                            .endSpec()
+                        .endTemplate()
+                    .endSpec()
+                .endItem()
+                .addNewItem()
+                    .withNewMetadata()
+                        .withName("checkout-worker")
+                        .withNamespace("production")
+                        .addToLabels("app", "checkout-worker")
+                    .endMetadata()
+                    .withNewSpec()
+                        .withReplicas(1)
+                        .withNewSelector()
+                            .addToMatchLabels("app", "checkout-worker")
+                        .endSelector()
+                        .withNewTemplate()
+                            .withNewMetadata()
+                                .addToLabels("app", "checkout-worker")
+                            .endMetadata()
+                            .withNewSpec()
+                                .addNewContainer()
+                                    .withName("worker")
+                                    .withImage("example.test/checkout-worker:stable")
+                                .endContainer()
+                            .endSpec()
+                        .endTemplate()
+                    .endSpec()
+                .endItem()
+                .accept(new Visitor<ContainerBuilder>() {
+                    @Override
+                    public Class<ContainerBuilder> getType() {
+                        return ContainerBuilder.class;
+                    }
+
+                    @Override
+                    public void visit(ContainerBuilder container) {
+                        container.addNewEnv()
+                                .withName("CLUSTER_NAME")
+                                .withValue("production")
+                                .endEnv();
+                        if ("api".equals(container.getName())) {
+                            container.addToAdditionalProperties("visited-by", "container-visitor");
+                        }
+                    }
+                })
+                .build();
+
+        assertThat(list.getItems()).hasSize(2);
+        assertThat(list.getItems())
+                .extracting(item -> item.getSpec().getTemplate().getSpec().getContainers().get(0).getName())
+                .containsExactly("api", "worker");
+        assertThat(list.getItems())
+                .flatExtracting(item -> item.getSpec().getTemplate().getSpec().getContainers())
+                .allSatisfy(container -> assertThat(container.getEnv())
+                        .singleElement()
+                        .satisfies(env -> {
+                            assertThat(env.getName()).isEqualTo("CLUSTER_NAME");
+                            assertThat(env.getValue()).isEqualTo("production");
+                        }));
+        assertThat(list.getItems().get(0).getSpec().getTemplate().getSpec().getContainers().get(0)
+                .getAdditionalProperties()).containsEntry("visited-by", "container-visitor");
+        assertThat(list.getItems().get(1).getSpec().getTemplate().getSpec().getContainers().get(0)
+                .getAdditionalProperties()).doesNotContainKey("visited-by");
     }
 
     @Test
