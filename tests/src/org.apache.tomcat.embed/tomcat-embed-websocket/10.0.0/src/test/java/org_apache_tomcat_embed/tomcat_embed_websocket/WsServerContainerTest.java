@@ -11,29 +11,32 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.EnumSet;
 import java.util.EventListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterRegistration;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
-import javax.servlet.SessionCookieConfig;
-import javax.servlet.SessionTrackingMode;
-import javax.servlet.descriptor.JspConfigDescriptor;
-import javax.websocket.EncodeException;
-import javax.websocket.Encoder;
-import javax.websocket.EndpointConfig;
-import javax.websocket.server.ServerEndpoint;
-import javax.websocket.server.ServerEndpointConfig;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterRegistration;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRegistration;
+import jakarta.servlet.SessionCookieConfig;
+import jakarta.servlet.SessionTrackingMode;
+import jakarta.servlet.descriptor.JspConfigDescriptor;
+import jakarta.websocket.EncodeException;
+import jakarta.websocket.Encoder;
+import jakarta.websocket.EndpointConfig;
+import jakarta.websocket.server.ServerEndpoint;
+import jakarta.websocket.server.ServerEndpointConfig;
 
 import org.apache.tomcat.websocket.server.Constants;
 import org.apache.tomcat.websocket.server.WsSci;
@@ -273,17 +276,17 @@ public class WsServerContainerTest {
 
         @Override
         public FilterRegistration.Dynamic addFilter(String filterName, String className) {
-            return null;
+            return new NoOpFilterRegistration(filterName, className);
         }
 
         @Override
         public FilterRegistration.Dynamic addFilter(String filterName, Filter filter) {
-            return null;
+            return new NoOpFilterRegistration(filterName, filter.getClass().getName());
         }
 
         @Override
         public FilterRegistration.Dynamic addFilter(String filterName, Class<? extends Filter> filterClass) {
-            return null;
+            return new NoOpFilterRegistration(filterName, filterClass.getName());
         }
 
         @Override
@@ -381,6 +384,76 @@ public class WsServerContainerTest {
 
         @Override
         public void setResponseCharacterEncoding(String encoding) {
+        }
+    }
+
+    private static class NoOpFilterRegistration implements FilterRegistration.Dynamic {
+        private final String name;
+        private final String className;
+        private final Map<String, String> initParameters = new HashMap<>();
+
+        NoOpFilterRegistration(String name, String className) {
+            this.name = name;
+            this.className = className;
+        }
+
+        @Override
+        public void setAsyncSupported(boolean isAsyncSupported) {
+        }
+
+        @Override
+        public void addMappingForServletNames(EnumSet<DispatcherType> dispatcherTypes, boolean isMatchAfter,
+                String... servletNames) {
+        }
+
+        @Override
+        public Collection<String> getServletNameMappings() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public void addMappingForUrlPatterns(EnumSet<DispatcherType> dispatcherTypes, boolean isMatchAfter,
+                String... urlPatterns) {
+        }
+
+        @Override
+        public Collection<String> getUrlPatternMappings() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public String getClassName() {
+            return className;
+        }
+
+        @Override
+        public boolean setInitParameter(String name, String value) {
+            if (initParameters.containsKey(name)) {
+                return false;
+            }
+            initParameters.put(name, value);
+            return true;
+        }
+
+        @Override
+        public String getInitParameter(String name) {
+            return initParameters.get(name);
+        }
+
+        @Override
+        public Set<String> setInitParameters(Map<String, String> initParameters) {
+            this.initParameters.putAll(initParameters);
+            return Collections.emptySet();
+        }
+
+        @Override
+        public Map<String, String> getInitParameters() {
+            return Collections.unmodifiableMap(initParameters);
         }
     }
 }

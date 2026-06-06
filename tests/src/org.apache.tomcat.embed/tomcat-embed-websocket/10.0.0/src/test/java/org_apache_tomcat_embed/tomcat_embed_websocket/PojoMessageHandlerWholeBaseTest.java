@@ -14,21 +14,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
-import javax.websocket.ClientEndpointConfig;
-import javax.websocket.DecodeException;
-import javax.websocket.Decoder;
-import javax.websocket.DeploymentException;
-import javax.websocket.Endpoint;
-import javax.websocket.EndpointConfig;
-import javax.websocket.MessageHandler;
-import javax.websocket.SendHandler;
-import javax.websocket.SendResult;
-import javax.websocket.Session;
+import jakarta.websocket.ClientEndpointConfig;
+import jakarta.websocket.DecodeException;
+import jakarta.websocket.Decoder;
+import jakarta.websocket.DeploymentException;
+import jakarta.websocket.Endpoint;
+import jakarta.websocket.EndpointConfig;
+import jakarta.websocket.MessageHandler;
+import jakarta.websocket.SendHandler;
+import jakarta.websocket.SendResult;
+import jakarta.websocket.Session;
 
-import org.apache.tomcat.InstanceManager;
 import org.apache.tomcat.websocket.WsRemoteEndpointImplBase;
 import org.apache.tomcat.websocket.WsSession;
 import org.apache.tomcat.websocket.WsWebSocketContainer;
@@ -62,7 +59,7 @@ public class PojoMessageHandlerWholeBaseTest {
     }
 
     private static WsSession newSession(EndpointConfig endpointConfig) throws DeploymentException {
-        return new WsSession(new NoOpEndpoint(), new NoOpRemoteEndpoint(), new NullInstanceManagerWebSocketContainer(),
+        return new WsSession(new NoOpEndpoint(), new NoOpRemoteEndpoint(), new WsWebSocketContainer(),
                 URI.create("ws://localhost/test"), Collections.emptyMap(), null, null, null, Collections.emptyList(),
                 null, Collections.emptyMap(), false, endpointConfig);
     }
@@ -131,16 +128,7 @@ public class PojoMessageHandlerWholeBaseTest {
         }
     }
 
-    private static class NullInstanceManagerWebSocketContainer extends WsWebSocketContainer {
-        @Override
-        protected InstanceManager getInstanceManager(ClassLoader classLoader) {
-            return null;
-        }
-    }
-
     private static class NoOpRemoteEndpoint extends WsRemoteEndpointImplBase {
-        private final Lock lock = new ReentrantLock();
-
         @Override
         protected void doWrite(SendHandler handler, long blockingWriteTimeoutExpiry, ByteBuffer... data) {
             handler.onResult(new SendResult());
@@ -153,11 +141,6 @@ public class PojoMessageHandlerWholeBaseTest {
 
         @Override
         protected void doClose() {
-        }
-
-        @Override
-        protected Lock getLock() {
-            return lock;
         }
     }
 }

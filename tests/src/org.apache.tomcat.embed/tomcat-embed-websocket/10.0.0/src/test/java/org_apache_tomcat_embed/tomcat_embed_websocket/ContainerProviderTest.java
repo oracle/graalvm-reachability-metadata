@@ -13,8 +13,8 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Enumeration;
 
-import javax.websocket.ContainerProvider;
-import javax.websocket.WebSocketContainer;
+import jakarta.websocket.ContainerProvider;
+import jakarta.websocket.WebSocketContainer;
 
 import org.apache.tomcat.websocket.WsWebSocketContainer;
 import org.junit.jupiter.api.Test;

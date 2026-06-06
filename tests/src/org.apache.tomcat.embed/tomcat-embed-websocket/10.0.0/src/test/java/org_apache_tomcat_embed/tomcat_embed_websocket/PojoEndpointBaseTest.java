@@ -12,21 +12,19 @@ import java.net.URI;
 import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
-import javax.websocket.ClientEndpoint;
-import javax.websocket.ClientEndpointConfig;
-import javax.websocket.CloseReason;
-import javax.websocket.DeploymentException;
-import javax.websocket.Endpoint;
-import javax.websocket.EndpointConfig;
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnOpen;
-import javax.websocket.SendHandler;
-import javax.websocket.SendResult;
-import javax.websocket.Session;
+import jakarta.websocket.ClientEndpoint;
+import jakarta.websocket.ClientEndpointConfig;
+import jakarta.websocket.CloseReason;
+import jakarta.websocket.DeploymentException;
+import jakarta.websocket.Endpoint;
+import jakarta.websocket.EndpointConfig;
+import jakarta.websocket.OnClose;
+import jakarta.websocket.OnError;
+import jakarta.websocket.OnOpen;
+import jakarta.websocket.SendHandler;
+import jakarta.websocket.SendResult;
+import jakarta.websocket.Session;
 
 import org.apache.tomcat.websocket.WsRemoteEndpointImplBase;
 import org.apache.tomcat.websocket.WsSession;
@@ -40,7 +38,7 @@ public class PojoEndpointBaseTest {
     void lifecycleCallbacksInvokeAnnotatedPojoMethods() throws DeploymentException, InstantiationException {
         ServerEndpointConfigInnerConfiguratorTest.assertFallbackDefaultConfiguratorAvailable();
         InstrumentedEndpoint pojo = new InstrumentedEndpoint();
-        PojoEndpointClient endpoint = new PojoEndpointClient(pojo, List.of(), null);
+        PojoEndpointClient endpoint = new PojoEndpointClient(pojo, List.of());
         ClientEndpointConfig config = ClientEndpointConfig.Builder.create().build();
         WsSession session = newSession(config);
         CloseReason closeReason = new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "done");
@@ -99,8 +97,6 @@ public class PojoEndpointBaseTest {
     }
 
     private static class NoOpRemoteEndpoint extends WsRemoteEndpointImplBase {
-        private final Lock lock = new ReentrantLock();
-
         @Override
         protected void doWrite(SendHandler handler, long blockingWriteTimeoutExpiry, ByteBuffer... data) {
             handler.onResult(new SendResult());
@@ -113,11 +109,6 @@ public class PojoEndpointBaseTest {
 
         @Override
         protected void doClose() {
-        }
-
-        @Override
-        protected Lock getLock() {
-            return lock;
         }
     }
 }

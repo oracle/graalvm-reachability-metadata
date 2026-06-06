@@ -7,31 +7,28 @@
 package org_apache_tomcat_embed.tomcat_embed_websocket;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.net.URI;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.websocket.ClientEndpoint;
-import javax.websocket.ClientEndpointConfig;
-import javax.websocket.DeploymentException;
-import javax.websocket.Endpoint;
+import jakarta.websocket.ClientEndpoint;
+import jakarta.websocket.DeploymentException;
 
-import org.apache.tomcat.websocket.PojoClassHolder;
-import org.apache.tomcat.websocket.pojo.PojoEndpointClient;
+import org.apache.tomcat.websocket.WsWebSocketContainer;
 import org.junit.jupiter.api.Test;
 
 public class PojoClassHolderTest {
     private static final AtomicInteger CONSTRUCTIONS = new AtomicInteger();
 
     @Test
-    void getInstanceCreatesAnnotatedPojoWithPublicNoArgConstructor() throws DeploymentException {
+    void connectToServerCreatesAnnotatedPojoWithPublicNoArgConstructor() {
         CONSTRUCTIONS.set(0);
-        ClientEndpointConfig config = ClientEndpointConfig.Builder.create().build();
-        PojoClassHolder holder = new PojoClassHolder(CountingPojoEndpoint.class, config);
+        WsWebSocketContainer container = new WsWebSocketContainer();
 
-        Endpoint endpoint = holder.getInstance(null);
+        assertThatThrownBy(() -> container.connectToServer(CountingPojoEndpoint.class,
+                URI.create("http://example.invalid/socket"))).isInstanceOf(DeploymentException.class);
 
-        assertThat(endpoint).isInstanceOf(PojoEndpointClient.class);
-        assertThat(holder.getClassName()).isEqualTo(CountingPojoEndpoint.class.getName());
         assertThat(CONSTRUCTIONS).hasValue(1);
     }
 
