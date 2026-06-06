@@ -66,6 +66,23 @@ public class Helidon_metadata_hsonTest {
     }
 
     @Test
+    void parseScientificNotationNumbers() {
+        Hson.Struct struct = parseStruct("""
+                {
+                  "small": 1.25e-3,
+                  "large": -6.02E+23,
+                  "values": [3e2, -4.5E-1]
+                }
+                """);
+
+        assertThat(struct.numberValue("small")).contains(new BigDecimal("1.25e-3"));
+        assertThat(struct.doubleValue("small")).contains(0.00125D);
+        assertThat(struct.numberValue("large")).contains(new BigDecimal("-6.02E+23"));
+        assertThat(struct.doubleValue("large")).contains(-6.02E23D);
+        assertThat(struct.numberArray("values")).contains(List.of(new BigDecimal("3e2"), new BigDecimal("-4.5E-1")));
+    }
+
+    @Test
     void parseStringEscapesAndPrimitiveArrays() {
         String source = "{\"text\":\"quote\\\" slash\\/ backslash\\\\ line\\n tab\\t carriage\\r "
                 + "backspace\\b form\\f unicode" + "\\u" + "0041\","
