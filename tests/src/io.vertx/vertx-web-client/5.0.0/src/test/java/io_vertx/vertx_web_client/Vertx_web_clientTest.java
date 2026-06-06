@@ -23,7 +23,6 @@ import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.ext.web.client.WebClientSession;
-import io.vertx.ext.web.client.predicate.ResponsePredicate;
 import io.vertx.ext.web.codec.BodyCodec;
 import io.vertx.ext.web.multipart.MultipartForm;
 import java.nio.charset.StandardCharsets;
@@ -61,11 +60,10 @@ public class Vertx_web_clientTest {
                     .addQueryParam("q", "native-image")
                     .putHeader("X-Client-Test", "web-client")
                     .as(BodyCodec.jsonObject())
-                    .expect(ResponsePredicate.SC_OK)
-                    .expect(ResponsePredicate.JSON)
                     .send());
 
-            assertThat(response.statusCode()).isEqualTo(200);
+            assertOk(response);
+            assertThat(response.getHeader("content-type")).startsWith("application/json");
             assertThat(response.getHeader("x-server-test")).isEqualTo("json-response");
             JsonObject responseBody = response.body();
             assertThat(responseBody.getString("method")).isEqualTo("GET");
@@ -106,10 +104,10 @@ public class Vertx_web_clientTest {
             HttpResponse<JsonObject> response = await(client.post("/json")
                     .basicAuthentication("tester", "secret")
                     .as(BodyCodec.jsonObject())
-                    .expect(ResponsePredicate.SC_SUCCESS)
-                    .expect(ResponsePredicate.contentType("application/json"))
                     .sendJsonObject(requestBody));
 
+            assertThat(response.statusCode()).isBetween(200, 299);
+            assertThat(response.getHeader("content-type")).startsWith("application/json");
             String credentials = Base64.getEncoder()
                     .encodeToString("tester:secret".getBytes(StandardCharsets.UTF_8));
             JsonObject responseBody = response.body();
@@ -152,9 +150,9 @@ public class Vertx_web_clientTest {
             HttpResponse<JsonObject> response = await(client.post("/stream")
                     .putHeader("content-type", "text/plain")
                     .as(BodyCodec.jsonObject())
-                    .expect(ResponsePredicate.SC_OK)
                     .sendStream(sourceFile));
 
+            assertOk(response);
             assertThat(response.body().getString("contentType")).isEqualTo("text/plain");
             assertThat(response.body().getString("body")).isEqualTo("streamed-request-body");
         } finally {
@@ -194,8 +192,8 @@ public class Vertx_web_clientTest {
                     .add("project", "native-image");
             HttpResponse<JsonObject> formResponse = await(client.post("/form")
                     .as(BodyCodec.jsonObject())
-                    .expect(ResponsePredicate.SC_OK)
                     .sendForm(form));
+            assertOk(formResponse);
             assertThat(formResponse.body().getString("contentType"))
                     .startsWith("application/x-www-form-urlencoded");
             assertThat(formResponse.body().getString("body"))
@@ -209,9 +207,9 @@ public class Vertx_web_clientTest {
                     .textFileUpload("attachment", "sample.txt", upload.toString(), "text/plain");
             HttpResponse<JsonObject> multipartResponse = await(client.post("/multipart")
                     .as(BodyCodec.jsonObject())
-                    .expect(ResponsePredicate.SC_OK)
                     .sendMultipartForm(multipartForm));
 
+            assertOk(multipartResponse);
             assertThat(multipartResponse.body().getString("contentType"))
                     .startsWith("multipart/form-data");
             assertThat(multipartResponse.body().getString("body"))
@@ -247,13 +245,13 @@ public class Vertx_web_clientTest {
 
             HttpResponse<Buffer> firstResponse = await(client.get("/cached-resource")
                     .as(BodyCodec.buffer())
-                    .expect(ResponsePredicate.SC_OK)
                     .send());
             HttpResponse<Buffer> secondResponse = await(client.get("/cached-resource")
                     .as(BodyCodec.buffer())
-                    .expect(ResponsePredicate.SC_OK)
                     .send());
 
+            assertOk(firstResponse);
+            assertOk(secondResponse);
             assertThat(firstResponse.bodyAsString()).isEqualTo("response-1");
             assertThat(secondResponse.bodyAsString()).isEqualTo("response-1");
             assertThat(secondResponse.getHeader("age")).isNotNull();
@@ -294,23 +292,27 @@ public class Vertx_web_clientTest {
 
             HttpResponse<String> loginResponse = await(session.get("/login")
                     .as(BodyCodec.string())
-                    .expect(ResponsePredicate.SC_OK)
                     .send());
+            assertOk(loginResponse);
             assertThat(loginResponse.body()).isEqualTo("logged-in");
 
             HttpResponse<JsonObject> profileResponse = await(session.get("/redirect")
                     .followRedirects(true)
                     .as(BodyCodec.jsonObject())
-                    .expect(ResponsePredicate.SC_OK)
-                    .expect(ResponsePredicate.JSON)
                     .send());
 
+            assertOk(profileResponse);
+            assertThat(profileResponse.getHeader("content-type")).startsWith("application/json");
             assertThat(profileResponse.followedRedirects()).isNotEmpty();
             assertThat(profileResponse.body().getString("cookie")).contains("sid=abc123");
             assertThat(profileResponse.body().getString("sessionHeader")).isEqualTo("present");
         } finally {
             close(session, server, vertx);
         }
+    }
+
+    private static void assertOk(HttpResponse<?> response) {
+        assertThat(response.statusCode()).isEqualTo(200);
     }
 
     private static WebClient createClient(Vertx vertx, int port) {
