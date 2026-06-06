@@ -879,12 +879,14 @@ public class Transform_annotationsTest {
         @Override
         public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
             for (Element element : roundEnv.getElementsAnnotatedWith(TemplateTransformation.class)) {
-                TemplateTransformation transformation = element.getAnnotation(TemplateTransformation.class);
+                Element elementAnnotationAccess = element;
+                TemplateTransformation transformation = elementAnnotationAccess.getAnnotation(TemplateTransformation.class);
                 records.add("direct:" + qualifiedName(element) + ':' + transformation.value() + ':'
                         + transformation.outputPath() + ':' + transformation.gather());
             }
             for (Element element : roundEnv.getElementsAnnotatedWith(TemplateTransformations.class)) {
-                TemplateTransformations transformations = element.getAnnotation(TemplateTransformations.class);
+                Element elementAnnotationAccess = element;
+                TemplateTransformations transformations = elementAnnotationAccess.getAnnotation(TemplateTransformations.class);
                 recordContainer(qualifiedName(element), transformations);
             }
             return false;
