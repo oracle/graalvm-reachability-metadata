@@ -23,9 +23,9 @@ import org.jline.reader.impl.SimpleMaskingCallback;
 import org.jline.reader.impl.completer.AggregateCompleter;
 import org.jline.reader.impl.completer.ArgumentCompleter;
 import org.jline.reader.impl.completer.EnumCompleter;
-import org.jline.reader.impl.completer.FileNameCompleter;
 import org.jline.reader.impl.completer.NullCompleter;
 import org.jline.reader.impl.completer.StringsCompleter;
+import org.jline.reader.impl.completer.SystemCompleter;
 import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Size;
 import org.jline.terminal.Terminal;
@@ -38,12 +38,12 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -202,7 +202,6 @@ public class Jline_readerTest {
 
     @Test
     void lineReaderReadsScriptedInputWithConfiguredTerminalHistoryAndVariables() throws Exception {
-        byte[] input = "hello native image\n".getBytes(StandardCharsets.UTF_8);
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         DefaultHistory history = new DefaultHistory();
 
@@ -210,7 +209,7 @@ public class Jline_readerTest {
                 .name("jline-reader-test")
                 .system(false)
                 .dumb(true)
-                .streams(new ByteArrayInputStream(input), output)
+                .streams(new ByteArrayInputStream(new byte[0]), output)
                 .encoding(StandardCharsets.UTF_8)
                 .size(new Size(80, 24))
                 .build()) {
@@ -228,6 +227,7 @@ public class Jline_readerTest {
             reader.setTailTip("tail-tip");
             assertThat(reader.getTailTip()).isEqualTo("tail-tip");
             reader.setAutosuggestion(LineReader.SuggestionType.HISTORY);
+            reader.runMacro("hello native image\n");
             String line = reader.readLine("prompt> ");
 
             assertThat(line).isEqualTo("hello native image");
@@ -266,6 +266,7 @@ public class Jline_readerTest {
                 .encoding(StandardCharsets.UTF_8)
                 .build()) {
             BindingReader bindingReader = new BindingReader(terminal.reader());
+            bindingReader.runMacro("x");
 
             assertThat(bindingReader.readBinding(keyMap)).isEqualTo("insert-x");
             assertThat(bindingReader.getLastBinding()).isEqualTo("x");
@@ -273,21 +274,27 @@ public class Jline_readerTest {
     }
 
     @Test
-    void fileNameCompleterContributesFileAndDirectoryCandidates() throws Exception {
-        Path workingDirectory = temporaryDirectory.resolve("workspace");
-        Path scriptsDirectory = workingDirectory.resolve("scripts");
-        Files.createDirectories(scriptsDirectory);
-        Files.writeString(workingDirectory.resolve("status.txt"), "ready", StandardCharsets.UTF_8);
-        Files.writeString(scriptsDirectory.resolve("build.sh"), "echo build", StandardCharsets.UTF_8);
+    void systemCompleterContributesCommandAliasAndArgumentCandidates() throws Exception {
+        SystemCompleter completer = new SystemCompleter();
+        completer.add(
+                "git",
+                new ArgumentCompleter(
+                        new StringsCompleter("git"),
+                        new StringsCompleter("status", "checkout")));
+        completer.add("help", NullCompleter.INSTANCE);
+        completer.addAliases(Map.of("g", "git"));
+        completer.compile(command -> new Candidate(
+                command,
+                command.toUpperCase(),
+                "commands",
+                "run " + command,
+                null,
+                null,
+                true));
 
-        FileNameCompleter completer = new FileNameCompleter();
-        String separator = workingDirectory.getFileSystem().getSeparator();
-        String topLevelPrefix = workingDirectory.toString() + separator;
-        String scriptsCandidateValue = scriptsDirectory.toString() + separator;
-        String statusCandidateValue = workingDirectory.resolve("status.txt").toString();
-        String nestedCandidateValue = scriptsDirectory.resolve("build.sh").toString();
+        DefaultParser parser = new DefaultParser();
         try (Terminal terminal = TerminalBuilder.builder()
-                .name("jline-file-completer-test")
+                .name("jline-system-completer-test")
                 .system(false)
                 .dumb(true)
                 .streams(new ByteArrayInputStream(new byte[0]), new ByteArrayOutputStream())
@@ -295,33 +302,40 @@ public class Jline_readerTest {
                 .build()) {
             LineReader reader = LineReaderBuilder.builder()
                     .terminal(terminal)
+                    .parser(parser)
                     .completer(completer)
-                    .option(LineReader.Option.AUTO_PARAM_SLASH, true)
-                    .option(LineReader.Option.AUTO_REMOVE_SLASH, true)
                     .build();
-            DefaultParser parser = new DefaultParser().escapeChars(new char[0]);
-            List<Candidate> topLevelCandidates = new ArrayList<>();
 
-            String topLevelInput = topLevelPrefix + "s";
+            List<Candidate> commandCandidates = new ArrayList<>();
+            String commandInput = "g";
             completer.complete(
                     reader,
-                    parser.parse(topLevelInput, topLevelInput.length(), Parser.ParseContext.COMPLETE),
-                    topLevelCandidates);
+                    parser.parse(commandInput, commandInput.length(), Parser.ParseContext.COMPLETE),
+                    commandCandidates);
 
-            assertThat(candidateValues(topLevelCandidates)).contains(scriptsCandidateValue, statusCandidateValue);
-            Candidate scriptsCandidate = candidateWithValue(topLevelCandidates, scriptsCandidateValue);
-            assertThat(scriptsCandidate.complete()).isFalse();
-            assertThat(scriptsCandidate.suffix()).isEqualTo(separator);
-            assertThat(candidateWithValue(topLevelCandidates, statusCandidateValue).complete()).isTrue();
+            assertThat(candidateValues(commandCandidates)).contains("git", "g");
+            Candidate gitCandidate = candidateWithValue(commandCandidates, "git");
+            assertThat(gitCandidate.displ()).isEqualTo("GIT");
+            assertThat(gitCandidate.group()).isEqualTo("commands");
+            assertThat(gitCandidate.descr()).isEqualTo("run git");
 
-            List<Candidate> nestedCandidates = new ArrayList<>();
+            List<Candidate> argumentCandidates = new ArrayList<>();
+            String argumentInput = "git ";
             completer.complete(
                     reader,
-                    parser.parse(scriptsCandidateValue, scriptsCandidateValue.length(), Parser.ParseContext.COMPLETE),
-                    nestedCandidates);
+                    parser.parse(argumentInput, argumentInput.length(), Parser.ParseContext.COMPLETE),
+                    argumentCandidates);
 
-            assertThat(candidateValues(nestedCandidates)).containsExactly(nestedCandidateValue);
-            assertThat(candidateWithValue(nestedCandidates, nestedCandidateValue).complete()).isTrue();
+            assertThat(candidateValues(argumentCandidates)).containsExactly("status", "checkout");
+
+            List<Candidate> aliasArgumentCandidates = new ArrayList<>();
+            String aliasArgumentInput = "g ";
+            completer.complete(
+                    reader,
+                    parser.parse(aliasArgumentInput, aliasArgumentInput.length(), Parser.ParseContext.COMPLETE),
+                    aliasArgumentCandidates);
+
+            assertThat(candidateValues(aliasArgumentCandidates)).containsExactly("status", "checkout");
         }
     }
 
