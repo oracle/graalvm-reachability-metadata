@@ -225,7 +225,7 @@ public class CoreJvmcommonTest {
         assertThat(book.getAttribute("xmlns:bk")).isEqualTo(BOOK_NS)
         assertThat(book.textContent).isEqualTo("DOM content & details")
         assertThat(requireNotNull(book.parentNode).nodeName).isEqualTo("s:store")
-        assertThat(childNodes.map { it.nodetype }).containsExactly(
+        assertThat(childNodes.map { it.getNodetype() }).containsExactly(
             NodeType.TEXT_NODE,
             NodeType.CDATA_SECTION_NODE,
             NodeType.COMMENT_NODE,
@@ -453,7 +453,7 @@ public class CoreJvmcommonTest {
         fragment.appendChild(hardback)
 
         val appendedFragment = root.appendChild(fragment)
-        assertThat(appendedFragment.nodetype).isEqualTo(NodeType.DOCUMENT_FRAGMENT_NODE)
+        assertThat(appendedFragment.getNodetype()).isEqualTo(NodeType.DOCUMENT_FRAGMENT_NODE)
         assertThat(fragment.childNodes.length).isEqualTo(0)
         assertThat(root.childNodes.toList().map { it.nodeName })
             .containsExactly("review", "s:item", "s:item")
