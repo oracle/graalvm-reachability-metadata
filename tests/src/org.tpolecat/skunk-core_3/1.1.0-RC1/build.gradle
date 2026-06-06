@@ -12,10 +12,12 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
-    testImplementation "org.tpolecat:skunk-core_3:$libraryVersion"
+    testImplementation("org.tpolecat:skunk-core_3:$libraryVersion") {
+        exclude group: 'io.github.cquiroz', module: 'scala-java-locales_3'
+    }
     testImplementation 'org.assertj:assertj-core:3.22.0'
     testImplementation 'org.scala-lang:scala3-library_3:3.3.6'
-    testImplementation 'org.scala-lang:scala3-compiler_3:3.3.6'
+    testCompileOnly 'org.scala-lang:scala3-compiler_3:3.3.6'
 }
 
 java {

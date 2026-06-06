@@ -206,7 +206,7 @@ class Skunk_core_3Test {
     val applied = byAge(18)
     assertEquals(byAge, applied.fragment)
     assertEquals(18, applied.argument)
-    assertTrue(applied.toString.contains("AppledFragment"))
+    assertTrue(applied.toString.contains("AppliedFragment"))
   }
 
   @Test
@@ -237,7 +237,7 @@ class Skunk_core_3Test {
     assertTrue(root.isAncestorOf(child))
     assertTrue(child.isDescendantOf(root))
     assertEquals("top.middle.leaf", child.toString)
-    assertTrue(LTree.fromString("bad-label").isLeft)
+    assertTrue(LTree.fromString("bad label").isLeft)
 
     val treeType: Type = Type("record", List(Type.int4, Type.varchar(10)))
     assertEquals("record { int4, varchar(10) }", treeType.toString)
