@@ -173,20 +173,26 @@ public class Shrinkwrap_spiTest {
             InMemoryMemoryMapArchive target = new InMemoryMemoryMapArchive("target", configuration, ArchiveFormat.TAR);
             ArchivePath alphaPath = path("alpha.txt");
             ArchivePath betaPath = path("beta.txt");
+            ArchivePath gammaPath = path("gamma.txt");
             source.add(new TestAsset("alpha"), alphaPath);
+            source.add(new TestAsset("gamma"), gammaPath);
             target.add(new TestAsset("beta"), betaPath);
 
-            Archive<MemoryMapArchive> copy = source.shallowCopy();
+            Archive<MemoryMapArchive> copy = source.shallowCopy(path -> path.get().endsWith("alpha.txt"));
             target.merge(source);
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             target.writeTo(outputStream, archive -> archive.getName() + ":" + archive.getContent().size());
 
             assertThat(copy).isNotSameAs(source);
             assertThat(copy.getContent()).containsOnlyKeys(alphaPath);
-            assertThat(target.getContent()).containsOnlyKeys(alphaPath, betaPath);
+            assertThat(target.getContent()).containsOnlyKeys(alphaPath, betaPath, gammaPath);
             assertThat(target.toString(archive -> archive.getName() + " entries=" + archive.getContent().size()))
-                    .isEqualTo("target entries=2");
-            assertThat(new String(outputStream.toByteArray(), StandardCharsets.UTF_8)).isEqualTo("target:2");
+                    .isEqualTo("target entries=3");
+            assertThat(new String(outputStream.toByteArray(), StandardCharsets.UTF_8)).isEqualTo("target:3");
+
+            source.filter(path -> path.get().endsWith("gamma.txt"));
+
+            assertThat(source.getContent()).containsOnlyKeys(gammaPath);
         } finally {
             executorService.shutdownNow();
         }
@@ -642,8 +648,22 @@ public class Shrinkwrap_spiTest {
         }
 
         @Override
+        public MemoryMapArchive filter(Filter<ArchivePath> filter) throws IllegalArgumentException {
+            Map<ArchivePath, Node> filteredContent = getContent(filter);
+            content.clear();
+            content.putAll(filteredContent);
+            return this;
+        }
+
+        @Override
         public Archive<MemoryMapArchive> shallowCopy() {
-            return new InMemoryMemoryMapArchive(id, configuration, archiveFormat, new LinkedHashMap<>(content));
+            return shallowCopy(path -> true);
+        }
+
+        @Override
+        public Archive<MemoryMapArchive> shallowCopy(Filter<ArchivePath> filter) {
+            return new InMemoryMemoryMapArchive(
+                    id, configuration, archiveFormat, new LinkedHashMap<>(getContent(filter)));
         }
 
         @Override
