@@ -19,14 +19,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CoreServiceDiscoveryTest {
     @Test
-    void discoversDescriptorsUsingRegistryClassLoaderFallback() {
-        ServiceRegistryConfig config = ServiceRegistryConfig.builder()
-                .discoverServices(true)
-                .discoverServicesFromServiceLoader(false)
-                .build();
-        List<DescriptorHandler> metadata = ServiceDiscovery.create(config).allMetadata();
+    void discoversDescriptorsUsingContextClassLoader() {
+        List<DescriptorHandler> metadata = discoveredMetadata();
 
-        assertThat(metadata).isNotEmpty();
+        List<ServiceDescriptor<?>> descriptors = metadata.stream()
+                .map(DescriptorHandler::descriptor)
+                .toList();
+
+        assertThat(descriptors)
+                .extracting(descriptor -> descriptor.descriptorType().fqName())
+                .contains("io.helidon.service.registry.ServiceRegistry__ServiceDescriptor");
+    }
+
+    @Test
+    void discoversDescriptorsUsingRegistryClassLoaderFallback() {
+        List<DescriptorHandler> metadata = discoveredMetadata();
 
         ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
         try {
@@ -42,6 +49,17 @@ public class CoreServiceDiscoveryTest {
         } finally {
             Thread.currentThread().setContextClassLoader(originalContextClassLoader);
         }
+    }
+
+    private static List<DescriptorHandler> discoveredMetadata() {
+        ServiceRegistryConfig config = ServiceRegistryConfig.builder()
+                .discoverServices(true)
+                .discoverServicesFromServiceLoader(false)
+                .build();
+        List<DescriptorHandler> metadata = ServiceDiscovery.create(config).allMetadata();
+
+        assertThat(metadata).isNotEmpty();
+        return metadata;
     }
 
     private static final class RejectingClassLoader extends ClassLoader {
