@@ -16,6 +16,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import org.apache.camel.Category;
 import org.apache.camel.spi.Metadata;
 import org.apache.camel.spi.UriEndpoint;
 import org.apache.camel.spi.UriParam;
@@ -37,7 +38,7 @@ public class Spi_annotationsTest {
         assertThat(endpoint.firstVersion()).isEqualTo("3.0.0");
         assertThat(endpoint.consumerPrefix()).isEqualTo("consumer.");
         assertThat(endpoint.title()).isEqualTo("Rich endpoint");
-        assertThat(endpoint.label()).isEqualTo("testing,core");
+        assertThat(endpoint.category()).containsExactly(Category.CORE);
         assertThat(endpoint.producerOnly()).isTrue();
         assertThat(endpoint.consumerOnly()).isFalse();
         assertThat(endpoint.lenientProperties()).isTrue();
@@ -55,7 +56,7 @@ public class Spi_annotationsTest {
         assertThat(endpoint.alternativeSyntax()).isEmpty();
         assertThat(endpoint.firstVersion()).isEmpty();
         assertThat(endpoint.consumerPrefix()).isEmpty();
-        assertThat(endpoint.label()).isEmpty();
+        assertThat(endpoint.category()).isEmpty();
         assertThat(endpoint.producerOnly()).isFalse();
         assertThat(endpoint.consumerOnly()).isFalse();
         assertThat(endpoint.lenientProperties()).isFalse();
@@ -247,7 +248,7 @@ public class Spi_annotationsTest {
             alternativeSyntax = "rich:account/operation",
             consumerPrefix = "consumer.",
             title = "Rich endpoint",
-            label = "testing,core",
+            category = Category.CORE,
             producerOnly = true,
             lenientProperties = true,
             generateConfigurer = false)
