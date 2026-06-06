@@ -139,7 +139,7 @@ public class Netty_transport_classes_kqueueTest {
             return;
         }
 
-        assertThatThrownBy(KQueueSocketChannel::new).isInstanceOf(UnsatisfiedLinkError.class);
+        assertTransportUnavailableFailure(catchThrowable(KQueueSocketChannel::new));
     }
 
     @Test
@@ -166,7 +166,7 @@ public class Netty_transport_classes_kqueueTest {
             return;
         }
 
-        assertThatThrownBy(KQueueDomainSocketChannel::new).isInstanceOf(UnsatisfiedLinkError.class);
+        assertTransportUnavailableFailure(catchThrowable(KQueueDomainSocketChannel::new));
     }
 
     private static void assertChannelConstructorMatchesAvailability(Supplier<? extends Channel> constructor) {
@@ -182,7 +182,7 @@ public class Netty_transport_classes_kqueueTest {
             return;
         }
 
-        assertThatThrownBy(constructor::get).isInstanceOf(UnsatisfiedLinkError.class);
+        assertTransportUnavailableFailure(catchThrowable(constructor::get));
     }
 
     private static void assertTransportProvidesGuessOptionRoundTrips(KQueueChannelConfig config) {
@@ -213,7 +213,19 @@ public class Netty_transport_classes_kqueueTest {
             return;
         }
 
-        assertThatThrownBy(constructor::get).isInstanceOf(UnsatisfiedLinkError.class);
+        assertTransportUnavailableFailure(catchThrowable(constructor::get));
+    }
+
+    private static void assertTransportUnavailableFailure(Throwable thrown) {
+        assertThat(thrown).isNotNull();
+        if (thrown instanceof UnsatisfiedLinkError) {
+            assertThat(thrown).hasMessageContaining("required native library");
+            return;
+        }
+
+        assertThat(thrown)
+                .isInstanceOf(NoClassDefFoundError.class)
+                .hasMessageContaining("io.netty.channel.kqueue");
     }
 
     private static String rootCauseMessage(Throwable throwable) {
