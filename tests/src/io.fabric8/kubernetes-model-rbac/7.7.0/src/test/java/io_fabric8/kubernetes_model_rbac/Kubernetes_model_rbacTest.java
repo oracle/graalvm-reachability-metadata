@@ -9,6 +9,7 @@ package io_fabric8.kubernetes_model_rbac;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.fabric8.kubernetes.api.model.LabelSelector;
+import io.fabric8.kubernetes.api.model.ListMeta;
 import io.fabric8.kubernetes.api.model.rbac.AggregationRule;
 import io.fabric8.kubernetes.api.model.rbac.AggregationRuleBuilder;
 import io.fabric8.kubernetes.api.model.rbac.ClusterRole;
@@ -38,6 +39,13 @@ import org.junit.jupiter.api.Test;
 public class Kubernetes_model_rbacTest {
     private static final String RBAC_API_GROUP = "rbac.authorization.k8s.io";
     private static final String RBAC_API_VERSION = RBAC_API_GROUP + "/v1";
+
+    private static ListMeta listMeta(String continueToken, String resourceVersion) {
+        ListMeta metadata = new ListMeta();
+        metadata.setContinue(continueToken);
+        metadata.setResourceVersion(resourceVersion);
+        return metadata;
+    }
 
     @Test
     void roleBuilderCreatesNamespacedPolicyRulesAndSupportsEditing() {
@@ -374,19 +382,19 @@ public class Kubernetes_model_rbacTest {
 
         readOnlyRole.setAdditionalProperty("x-test", "role-value");
         RoleList roleList = new RoleListBuilder()
-                .withNewMetadata(null, null, "42", null)
+                .withMetadata(listMeta(null, "42"))
                 .addToItems(readOnlyRole, writeRole)
                 .build();
         ClusterRoleList clusterRoleList = new ClusterRoleListBuilder()
-                .withNewMetadata("next", null, null, null)
+                .withMetadata(listMeta("next", null))
                 .addToItems(clusterRole)
                 .build();
         RoleBindingList roleBindingList = new RoleBindingListBuilder()
-                .withNewMetadata(null, null, "43", null)
+                .withMetadata(listMeta(null, "43"))
                 .addToItems(roleBinding)
                 .build();
         ClusterRoleBindingList clusterRoleBindingList = new ClusterRoleBindingListBuilder()
-                .withNewMetadata(null, null, "44", null)
+                .withMetadata(listMeta(null, "44"))
                 .addToItems(clusterRoleBinding)
                 .build();
 
