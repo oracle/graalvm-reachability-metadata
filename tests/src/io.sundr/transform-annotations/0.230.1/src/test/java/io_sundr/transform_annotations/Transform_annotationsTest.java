@@ -192,6 +192,82 @@ public class Transform_annotationsTest {
     }
 
     @Test
+    void javacDiscoveredProcessorGeneratesSourcesForAnnotationSelectedTypes() {
+        GenerationResult result = generateWithDiscoveredProcessor(Map.of(
+                "sample.Marker", """
+                        package sample;
+
+                        public @interface Marker {
+                        }
+                        """,
+                "sample.TransformationPlan", """
+                        package sample;
+
+                        import io.sundr.transform.annotations.AnnotationSelector;
+                        import io.sundr.transform.annotations.PackageSelector;
+                        import io.sundr.transform.annotations.TemplateTransformation;
+                        import io.sundr.transform.annotations.TemplateTransformations;
+
+                        @TemplateTransformations(
+                                value = @TemplateTransformation("selected.vm"),
+                                annotations = @AnnotationSelector(
+                                        value = Marker.class,
+                                        packages = @PackageSelector(
+                                                value = "sample.selected",
+                                                pattern = "Included.*")))
+                        final class TransformationPlan {
+                        }
+                        """,
+                "sample.selected.IncludedService", """
+                        package sample.selected;
+
+                        import sample.Marker;
+
+                        @Marker
+                        public class IncludedService {
+                        }
+                        """,
+                "sample.selected.IgnoredHelper", """
+                        package sample.selected;
+
+                        import sample.Marker;
+
+                        @Marker
+                        public class IgnoredHelper {
+                        }
+                        """,
+                "sample.other.IncludedElsewhere", """
+                        package sample.other;
+
+                        import sample.Marker;
+
+                        @Marker
+                        public class IncludedElsewhere {
+                        }
+                        """), Map.of("sample/selected/selected.vm", """
+                package ${model.packageName};
+
+                public class Generated${model.name} {
+                    public String selectedType() {
+                        return "${model.name}";
+                    }
+                }
+                """));
+
+        assertThat(result.successful()).as(result.diagnosticText()).isTrue();
+        assertThat(result.generatedSources())
+                .containsKey("sample/selected/GeneratedIncludedService.java")
+                .doesNotContainKeys(
+                        "sample/selected/GeneratedIgnoredHelper.java",
+                        "sample/other/GeneratedIncludedElsewhere.java",
+                        "sample/GeneratedTransformationPlan.java");
+        assertThat(result.generatedSources().get("sample/selected/GeneratedIncludedService.java"))
+                .contains("package sample.selected;")
+                .contains("public class GeneratedIncludedService")
+                .contains("return \"IncludedService\";");
+    }
+
+    @Test
     void annotationTypesPublishExpectedCompileTimeContracts() {
         ContractProcessor processor = new ContractProcessor();
         CompilationResult result = compile(Map.of("sample.ContractProbe", """
