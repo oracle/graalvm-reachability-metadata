@@ -28,12 +28,13 @@ import org.typelevel.otel4s.trace.SpanContext
 import org.typelevel.otel4s.trace.SpanFinalizer
 import org.typelevel.otel4s.trace.SpanKind
 import org.typelevel.otel4s.trace.SpanOps
-import org.typelevel.otel4s.trace.Status
+import org.typelevel.otel4s.trace.StatusCode
 import org.typelevel.otel4s.trace.TraceFlags
 import org.typelevel.otel4s.trace.TraceState
 import org.typelevel.otel4s.trace.Tracer
 import org.typelevel.otel4s.trace.TracerProvider
 
+import scala.collection.immutable
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.duration.FiniteDuration
@@ -167,23 +168,23 @@ class Otel4s_core_trace_3Test {
   def attributesAndEnumerationsExposeTypedValuesHashingAndShowInstances(): Unit = {
     val stringKey: AttributeKey[String] = AttributeKey.string("http.method")
     val retryKey: AttributeKey[Long] = AttributeKey.long("retry.count")
-    val tagsKey: AttributeKey[List[String]] = AttributeKey.stringList("tags")
+    val tagsKey: AttributeKey[Seq[String]] = AttributeKey.stringSeq("tags")
     val method: Attribute[String] = stringKey("GET")
     val retry: Attribute[Long] = Attribute("retry.count", 2L)
-    val tags: Attribute[List[String]] = tagsKey(List("blue", "green"))
+    val tags: Attribute[Seq[String]] = tagsKey(Seq("blue", "green"))
 
     assertEquals("http.method", stringKey.name)
     assertSame(AttributeType.String, stringKey.`type`)
     assertEquals(AttributeKey.string("http.method"), stringKey)
     assertEquals(method, Attribute("http.method", "GET"))
     assertEquals(retryKey(2L), retry)
-    assertEquals(List("blue", "green"), tags.value)
+    assertEquals(Seq("blue", "green"), tags.value)
     assertEquals("String(http.method)", stringKey.toString)
     assertEquals("Attribute(Long(retry.count),2)", retry.toString)
 
-    assertSame(Status.Unset, Status.Unset)
-    assertSame(Status.Ok, Status.Ok)
-    assertSame(Status.Error, Status.Error)
+    assertSame(StatusCode.Unset, StatusCode.Unset)
+    assertSame(StatusCode.Ok, StatusCode.Ok)
+    assertSame(StatusCode.Error, StatusCode.Error)
     assertEquals("Internal", SpanKind.Internal.toString)
     assertEquals("Server", SpanKind.Server.toString)
     assertEquals("Client", SpanKind.Client.toString)
@@ -194,7 +195,7 @@ class Otel4s_core_trace_3Test {
   @Test
   def spanFinalizersRepresentStatusExceptionsAttributesAndComposition(): Unit = {
     val failure = new IllegalStateException("boom")
-    val errorStatus: SpanFinalizer = SpanFinalizer.setStatus(Status.Error, "failed")
+    val errorStatus: SpanFinalizer = SpanFinalizer.setStatus(StatusCode.Error, "failed")
     val exception: SpanFinalizer = SpanFinalizer.recordException(failure)
     val attributes: SpanFinalizer = SpanFinalizer.addAttributes(
       Attribute("component", "test"),
@@ -204,7 +205,7 @@ class Otel4s_core_trace_3Test {
     val multiple: SpanFinalizer.Multiple = SpanFinalizer.multiple(combined, attributes)
 
     val statusFinalizer = errorStatus.asInstanceOf[SpanFinalizer.SetStatus]
-    assertSame(Status.Error, statusFinalizer.status)
+    assertSame(StatusCode.Error, statusFinalizer.status)
     assertEquals(Some("failed"), statusFinalizer.description)
 
     val exceptionFinalizer = exception.asInstanceOf[SpanFinalizer.RecordException]
@@ -226,7 +227,7 @@ class Otel4s_core_trace_3Test {
     val abnormalCancellation: SpanFinalizer.SetStatus = SpanFinalizer.Strategy
       .reportAbnormal(cats.effect.kernel.Resource.ExitCase.Canceled)
       .asInstanceOf[SpanFinalizer.SetStatus]
-    assertSame(Status.Error, abnormalCancellation.status)
+    assertSame(StatusCode.Error, abnormalCancellation.status)
     assertEquals(Some("canceled"), abnormalCancellation.description)
     assertFalse(SpanFinalizer.Strategy.empty.isDefinedAt(cats.effect.kernel.Resource.ExitCase.Succeeded))
   }
@@ -288,8 +289,8 @@ class Otel4s_core_trace_3Test {
     assertEquals((), span.addEvent("event", Attribute("event.attr", "value")))
     assertEquals((), span.addEvent("timed", 456.millis, Attribute("event.time", 456L)))
     assertEquals((), span.recordException(new RuntimeException("recorded"), Attribute("exception", true)))
-    assertEquals((), span.setStatus(Status.Ok))
-    assertEquals((), span.setStatus(Status.Error, "description"))
+    assertEquals((), span.setStatus(StatusCode.Ok))
+    assertEquals((), span.setStatus(StatusCode.Error, "description"))
     assertEquals((), span.end)
     assertEquals((), span.end(789.millis))
 
@@ -322,7 +323,7 @@ class Otel4s_core_trace_3Test {
     assertEquals(Some(()), mapped.updateName("mapped-operation"))
     assertEquals(Some(()), mapped.addAttribute(Attribute("mapped.single", "value")))
     assertEquals(Some(()), mapped.addEvent("mapped.event", Attribute("event.attr", 7L)))
-    assertEquals(Some(()), mapped.setStatus(Status.Error, "mapped failure"))
+    assertEquals(Some(()), mapped.setStatus(StatusCode.Error, "mapped failure"))
     assertEquals(Some(()), mapped.end(250.millis))
     assertEquals(
       List(
@@ -370,6 +371,7 @@ class Otel4s_core_trace_3Test {
     val meta: Tracer.Meta[Id] = Tracer.Meta.enabled[Id]
     val currentSpanContext: Option[SpanContext] = None
     val currentSpanOrNoop: Span[Id] = new RecordingSpan
+    val currentSpanOrThrow: Span[Id] = currentSpanOrNoop
 
     def spanBuilder(name: String): SpanBuilder[Id] = {
       operations += s"spanBuilder:$name"
@@ -400,13 +402,16 @@ class Otel4s_core_trace_3Test {
       this
     }
 
-    def addAttributes(attributes: Attribute[_]*): SpanBuilder[Id] = {
+    def addAttributes(attributes: immutable.Iterable[Attribute[_]]): SpanBuilder[Id] = {
       operations += "addAttributes"
       this.attributes ++= attributes
       this
     }
 
-    def addLink(spanContext: SpanContext, attributes: Attribute[_]*): SpanBuilder[Id] = {
+    def addLink(
+        spanContext: SpanContext,
+        attributes: immutable.Iterable[Attribute[_]]
+    ): SpanBuilder[Id] = {
       operations += "addLink"
       this
     }
@@ -475,32 +480,42 @@ class Otel4s_core_trace_3Test {
       ()
     }
 
-    def addAttributes(attributes: Attribute[_]*): Id[Unit] = {
+    def addAttributes(attributes: immutable.Iterable[Attribute[_]]): Id[Unit] = {
       operations += s"addAttributes:${attributes.size}"
       ()
     }
 
-    def addEvent(name: String, attributes: Attribute[_]*): Id[Unit] = {
+    def addEvent(
+        name: String,
+        attributes: immutable.Iterable[Attribute[_]]
+    ): Id[Unit] = {
       operations += s"addEvent:$name:${attributes.size}"
       ()
     }
 
-    def addEvent(name: String, timestamp: FiniteDuration, attributes: Attribute[_]*): Id[Unit] = {
+    def addEvent(
+        name: String,
+        timestamp: FiniteDuration,
+        attributes: immutable.Iterable[Attribute[_]]
+    ): Id[Unit] = {
       operations += s"addEventAt:$name:${timestamp.toMillis}:${attributes.size}"
       ()
     }
 
-    def recordException(throwable: Throwable, attributes: Attribute[_]*): Id[Unit] = {
+    def recordException(
+        throwable: Throwable,
+        attributes: immutable.Iterable[Attribute[_]]
+    ): Id[Unit] = {
       operations += s"recordException:${throwable.getClass.getSimpleName}:${attributes.size}"
       ()
     }
 
-    def setStatus(status: Status): Id[Unit] = {
+    def setStatus(status: StatusCode): Id[Unit] = {
       operations += "setStatus"
       ()
     }
 
-    def setStatus(status: Status, description: String): Id[Unit] = {
+    def setStatus(status: StatusCode, description: String): Id[Unit] = {
       operations += s"setStatusWithDescription:$description"
       ()
     }
