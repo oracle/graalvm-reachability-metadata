@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.fabric8.kubernetes.api.model.HasMetadata;
 import io.fabric8.kubernetes.api.model.KubernetesResource;
+import io.fabric8.kubernetes.api.model.ListMetaBuilder;
 import io.fabric8.kubernetes.api.model.MicroTime;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
@@ -115,7 +116,11 @@ public class Kubernetes_model_eventsTest {
         Event started = eventNamed("checkout-0.17b4d8", "Started", "Started checkout container");
 
         EventListBuilder builder = new EventListBuilder()
-                .withNewMetadata("continue-token", 3L, "7", "rv-7")
+                .withMetadata(new ListMetaBuilder()
+                        .withContinue("continue-token")
+                        .withRemainingItemCount(3L)
+                        .withResourceVersion("7")
+                        .build())
                 .addToItems(scheduled, pulled, started)
                 .addToAdditionalProperties("source", "watch-cache");
 
@@ -358,7 +363,10 @@ public class Kubernetes_model_eventsTest {
 
         io.fabric8.kubernetes.api.model.events.v1beta1.EventList list =
                 new io.fabric8.kubernetes.api.model.events.v1beta1.EventListBuilder()
-                .withNewMetadata(null, 2L, "9", "rv-9")
+                .withMetadata(new ListMetaBuilder()
+                        .withRemainingItemCount(2L)
+                        .withResourceVersion("9")
+                        .build())
                 .withItems(ready, unhealthy)
                 .editMatchingItem(item -> "Unhealthy".equals(item.getReason()))
                     .withType("Warning")
