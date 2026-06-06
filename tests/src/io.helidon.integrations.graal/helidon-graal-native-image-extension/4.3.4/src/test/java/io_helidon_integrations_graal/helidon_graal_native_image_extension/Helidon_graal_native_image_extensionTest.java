@@ -8,6 +8,7 @@ package io_helidon_integrations_graal.helidon_graal_native_image_extension;
 
 import java.lang.reflect.Method;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
 import io.helidon.integrations.graal.nativeimage.extension.HelidonReflectionConfiguration;
@@ -61,6 +62,18 @@ public class Helidon_graal_native_image_extensionTest {
         trace.parsing(() -> "parsing native-image metadata");
         trace.trace(() -> "native-image registration");
         trace.section(() -> "metadata section");
+    }
+
+    @Test
+    void nativeTraceDoesNotEvaluateSuppliersWhenTracingIsDisabled() {
+        NativeTrace trace = new NativeTrace();
+        AtomicBoolean supplierEvaluated = new AtomicBoolean(false);
+
+        trace.parsing(() -> tracedMessage(supplierEvaluated));
+        trace.trace(() -> tracedMessage(supplierEvaluated));
+        trace.section(() -> tracedMessage(supplierEvaluated));
+
+        assertThat(supplierEvaluated).isFalse();
     }
 
     @Test
@@ -148,6 +161,11 @@ public class Helidon_graal_native_image_extensionTest {
         } else {
             System.setProperty(TEST_OPTION_PROPERTY, value);
         }
+    }
+
+    private static String tracedMessage(AtomicBoolean supplierEvaluated) {
+        supplierEvaluated.set(true);
+        return "native-image trace message";
     }
 
     private interface MarkerInterface {
