@@ -14,8 +14,6 @@ import org.junit.jupiter.api.Test
 import scala.collection.mutable
 import scala.meta._
 import scala.meta.contrib.AssociatedComments
-import scala.meta.contrib.DocToken
-import scala.meta.contrib.ScaladocParser
 import scala.meta.parsers.Parsed
 import scala.meta.transversers.Transformer
 import scala.meta.transversers.Traverser
@@ -173,7 +171,7 @@ class Scalameta_2_13Test {
   }
 
   @Test
-  def parseScaladocCommentsIntoDocumentTokens(): Unit = {
+  def tokenizeScaladocAndOrdinaryComments(): Unit = {
     val input: Input.VirtualFile = Input.VirtualFile(
       "Greeter.scala",
       """
@@ -202,25 +200,15 @@ class Scalameta_2_13Test {
       throw new AssertionError(s"Could not find ordinary comment in ${tokens.structure}")
     }
 
-    val docTokens: List[DocToken] = ScaladocParser.parseScaladoc(scaladocComment).getOrElse {
-      throw new AssertionError(s"Could not parse Scaladoc comment: ${scaladocComment.text}")
-    }
-    val description: DocToken = docTokens.find(_.kind == DocToken.Description).getOrElse {
-      throw new AssertionError(s"Could not find description token in $docTokens")
-    }
-    val param: DocToken = docTokens.find { token =>
-      token.kind == DocToken.Param && token.name.contains("name")
-    }.getOrElse {
-      throw new AssertionError(s"Could not find name parameter token in $docTokens")
-    }
-    val returns: DocToken = docTokens.find(_.kind == DocToken.Return).getOrElse {
-      throw new AssertionError(s"Could not find return token in $docTokens")
-    }
+    assertTrue(scaladocComment.text.contains("Creates greeting text."))
+    assertTrue(scaladocComment.text.contains("@param name user name"))
+    assertTrue(scaladocComment.text.contains("@return greeting text"))
+    assertEquals(1, scaladocComment.pos.startLine)
+    assertEquals(5, scaladocComment.pos.endLine)
 
-    assertTrue(description.body.exists(_.contains("Creates greeting text.")))
-    assertTrue(param.body.exists(_.contains("user name")))
-    assertTrue(returns.body.exists(_.contains("greeting text")))
-    assertEquals(None, ScaladocParser.parseScaladoc(ordinaryComment))
+    assertEquals("// ordinary implementation note", ordinaryComment.text)
+    assertEquals(10, ordinaryComment.pos.startLine)
+    assertEquals(10, ordinaryComment.pos.endLine)
   }
 
   @Test
