@@ -46,7 +46,7 @@ public class Vertx_web_commonTest {
         Buffer jsonArray = Buffer.buffer("[\"one\",2,true]");
 
         assertThat(decode(BodyCodec.string(), Buffer.buffer("hello"))).isEqualTo("hello");
-        assertThat(decode(BodyCodec.string("UTF-16"), Buffer.buffer("Grüße", "UTF-16"))).isEqualTo("Grüße");
+        assertThat(decode(BodyCodec.string("UTF-16"), Buffer.buffer("Gr\u00fc\u00dfe", "UTF-16"))).isEqualTo("Gr\u00fc\u00dfe");
         assertThat(decode(BodyCodec.buffer(), Buffer.buffer("payload")).toString()).isEqualTo("payload");
         assertThat(decode(BodyCodec.jsonObject(), jsonObject).getString("name")).isEqualTo("Ada");
         assertThat(decode(BodyCodec.jsonArray(), jsonArray)).containsExactly("one", 2, true);
