@@ -1,0 +1,1040 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e9a89-4de9-7683-8bce-6457ec32ccb7
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.pekko:pekko-parsing_3:2.0.0-M1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.0.0-M1].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42/metadata/org.apache.pekko/pekko-parsing_3/index.json
+- Entry selector: "metadata-version" = "2.0.0-M1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: {"name": "scala", "version": "3"}
+
+Context:
+- Coordinate version: 2.0.0-M1
+- Entry metadata-version: 2.0.0-M1
+- Entry test-version: 2.0.0-M1
+- Entry tested-versions: [2.0.0-M1]
+codex
+I’ll verify the artifact metadata and URL targets first, then patch only the missing fields in the selected index entry. Since Maven classifiers are preferred here, I’ll check those before falling back to the source repository.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.apache.pekko/pekko-parsing_3/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.0-M1",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "2.0.0-M1"
+    ],
+    "allowed-packages" : [
+      "org.apache.pekko.http.ccompat",
+      "org.apache.pekko.macros"
+    ]
+  },
+  {
+    "metadata-version" : "1.3.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/pekko-http",
+    "test-code-url" : "https://github.com/apache/pekko-http/tree/v$version$/http-core/src/test/scala/org/apache/pekko/http/impl/engine/parsing",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-javadoc.jar",
+    "description" : "Apache Pekko Parsing is a Scala-specific internal support module for Pekko HTTP that provides compile-time logging guards and cross-Scala-version compatibility annotations used by the HTTP parsing implementation. It is published as a JVM JAR for each Scala binary version, including Scala 3, so downstream Pekko HTTP modules can share those internal helpers without duplicating them.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "1.3.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.pekko.http.ccompat",
+      "org.apache.pekko.macros"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n 'pekko-parsing|source-code-url|test-code-url|documentation-url|repository-url|language' metadata/org.apache.pekko -g 'index.json'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42
+ succeeded in 0ms:
+metadata/org.apache.pekko/pekko-parsing_3/index.json:5:    "language" : {
+metadata/org.apache.pekko/pekko-parsing_3/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-sources.jar",
+metadata/org.apache.pekko/pekko-parsing_3/index.json:20:    "repository-url" : "https://github.com/apache/pekko-http",
+metadata/org.apache.pekko/pekko-parsing_3/index.json:21:    "test-code-url" : "https://github.com/apache/pekko-http/tree/v$version$/http-core/src/test/scala/org/apache/pekko/http/impl/engine/parsing",
+metadata/org.apache.pekko/pekko-parsing_3/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-javadoc.jar",
+metadata/org.apache.pekko/pekko-parsing_3/index.json:24:    "language" : {
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-sources.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:5:    "repository-url" : "https://github.com/apache/pekko",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:6:    "test-code-url" : "https://github.com/apache/pekko/blob/v$version$-RC1/remote/src/test/scala/org/apache/pekko/remote/serialization/ProtobufSerializerSpec.scala",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-javadoc.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:9:    "language" : {
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:24:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-sources.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:25:    "repository-url" : "https://github.com/apache/pekko",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:26:    "test-code-url" : "https://github.com/apache/pekko/blob/v$version$/remote/src/test/scala/org/apache/pekko/remote/serialization/ProtobufSerializerSpec.scala",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:27:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-javadoc.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:29:    "language" : {
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:43:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-sources.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:44:    "repository-url" : "https://github.com/apache/pekko",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:45:    "test-code-url" : "https://github.com/apache/pekko/blob/v$version$/remote/src/test/scala/org/apache/pekko/remote/serialization/ProtobufSerializerSpec.scala",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:46:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-javadoc.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:48:    "language" : {
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:61:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-sources.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:62:    "repository-url" : "https://github.com/apache/pekko",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:63:    "test-code-url" : "N/A",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:64:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-javadoc.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:66:    "language" : {
+metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_3/$version$/pekko-protobuf-v3_3-$version$-sources.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json:6:    "repository-url" : "https://github.com/apache/pekko",
+metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_3/$version$/pekko-protobuf-v3_3-$version$-javadoc.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json:10:    "language" : {
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/pekko/pekko-parsing_3/2.0.0-M1/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42
+ succeeded in 221ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/pekko/pekko-parsing_3/2.0.0-M1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/pekko/pekko-parsing_3/2.0.0-M1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="pekko-parsing_3-2.0.0-M1-javadoc.jar" title="pekko-parsing_3-2.0.0-M1-javadoc.jar">pekko-parsing_3-2.0.0-M1-javadoc.jar</a>              2026-01-14 16:30   2711871      
+<a href="pekko-parsing_3-2.0.0-M1-javadoc.jar.asc" title="pekko-parsing_3-2.0.0-M1-javadoc.jar.asc">pekko-parsing_3-2.0.0-M1-javadoc.jar.asc</a>          2026-01-14 16:30       833      
+<a href="pekko-parsing_3-2.0.0-M1-javadoc.jar.asc.md5" title="pekko-parsing_3-2.0.0-M1-javadoc.jar.asc.md5">pekko-parsing_3-2.0.0-M1-javadoc.jar.asc.md5</a>      2026-01-14 16:30        32      
+<a href="pekko-parsing_3-2.0.0-M1-javadoc.jar.asc.sha1" title="pekko-parsing_3-2.0.0-M1-javadoc.jar.asc.sha1">pekko-parsing_3-2.0.0-M1-javadoc.jar.asc.sha1</a>     2026-01-14 16:30        40      
+<a href="pekko-parsing_3-2.0.0-M1-javadoc.jar.md5" title="pekko-parsing_3-2.0.0-M1-javadoc.jar.md5">pekko-parsing_3-2.0.0-M1-javadoc.jar.md5</a>          2026-01-14 16:30        32      
+<a href="pekko-parsing_3-2.0.0-M1-javadoc.jar.sha1" title="pekko-parsing_3-2.0.0-M1-javadoc.jar.sha1">pekko-parsing_3-2.0.0-M1-javadoc.jar.sha1</a>         2026-01-14 16:30        40      
+<a href="pekko-parsing_3-2.0.0-M1-sources.jar" title="pekko-parsing_3-2.0.0-M1-sources.jar">pekko-parsing_3-2.0.0-M1-sources.jar</a>              2026-01-14 16:30      6677      
+<a href="pekko-parsing_3-2.0.0-M1-sources.jar.asc" title="pekko-parsing_3-2.0.0-M1-sources.jar.asc">pekko-parsing_3-2.0.0-M1-sources.jar.asc</a>          2026-01-14 16:30       833      
+<a href="pekko-parsing_3-2.0.0-M1-sources.jar.asc.md5" title="pekko-parsing_3-2.0.0-M1-sources.jar.asc.md5">pekko-parsing_3-2.0.0-M1-sources.jar.asc.md5</a>      2026-01-14 16:30        32      
+<a href="pekko-parsing_3-2.0.0-M1-sources.jar.asc.sha1" title="pekko-parsing_3-2.0.0-M1-sources.jar.asc.sha1">pekko-parsing_3-2.0.0-M1-sources.jar.asc.sha1</a>     2026-01-14 16:30        40      
+<a href="pekko-parsing_3-2.0.0-M1-sources.jar.md5" title="pekko-parsing_3-2.0.0-M1-sources.jar.md5">pekko-parsing_3-2.0.0-M1-sources.jar.md5</a>          2026-01-14 16:30        32      
+<a href="pekko-parsing_3-2.0.0-M1-sources.jar.sha1" title="pekko-parsing_3-2.0.0-M1-sources.jar.sha1">pekko-parsing_3-2.0.0-M1-sources.jar.sha1</a>         2026-01-14 16:30        40      
+<a href="pekko-parsing_3-2.0.0-M1.buildinfo" title="pekko-parsing_3-2.0.0-M1.buildinfo">pekko-parsing_3-2.0.0-M1.buildinfo</a>                2026-01-14 16:30       756      
+<a href="pekko-parsing_3-2.0.0-M1.buildinfo.asc" title="pekko-parsing_3-2.0.0-M1.buildinfo.asc">pekko-parsing_3-2.0.0-M1.buildinfo.asc</a>            2026-01-14 16:30       833      
+<a href="pekko-parsing_3-2.0.0-M1.buildinfo.asc.md5" title="pekko-parsing_3-2.0.0-M1.buildinfo.asc.md5">pekko-parsing_3-2.0.0-M1.buildinfo.asc.md5</a>        2026-01-14 16:30        32      
+<a href="pekko-parsing_3-2.0.0-M1.buildinfo.asc.sha1" title="pekko-parsing_3-2.0.0-M1.buildinfo.asc.sha1">pekko-parsing_3-2.0.0-M1.buildinfo.asc.sha1</a>       2026-01-14 16:30        40      
+<a href="pekko-parsing_3-2.0.0-M1.buildinfo.md5" title="pekko-parsing_3-2.0.0-M1.buildinfo.md5">pekko-parsing_3-2.0.0-M1.buildinfo.md5</a>            2026-01-14 16:30        32      
+<a href="pekko-parsing_3-2.0.0-M1.buildinfo.sha1" title="pekko-parsing_3-2.0.0-M1.buildinfo.sha1">pekko-parsing_3-2.0.0-M1.buildinfo.sha1</a>           2026-01-14 16:30        40      
+<a href="pekko-parsing_3-2.0.0-M1.jar" title="pekko-parsing_3-2.0.0-M1.jar">pekko-parsing_3-2.0.0-M1.jar</a>                      2026-01-14 16:30     11684      
+<a href="pekko-parsing_3-2.0.0-M1.jar.asc" title="pekko-parsing_3-2.0.0-M1.jar.asc">pekko-parsing_3-2.0.0-M1.jar.asc</a>                  2026-01-14 16:30       833      
+<a href="pekko-parsing_3-2.0.0-M1.jar.asc.md5" title="pekko-parsing_3-2.0.0-M1.jar.asc.md5">pekko-parsing_3-2.0.0-M1.jar.asc.md5</a>              2026-01-14 16:30        32      
+<a href="pekko-parsing_3-2.0.0-M1.jar.asc.sha1" title="pekko-parsing_3-2.0.0-M1.jar.asc.sha1">pekko-parsing_3-2.0.0-M1.jar.asc.sha1</a>             2026-01-14 16:30        40      
+<a href="pekko-parsing_3-2.0.0-M1.jar.md5" title="pekko-parsing_3-2.0.0-M1.jar.md5">pekko-parsing_3-2.0.0-M1.jar.md5</a>                  2026-01-14 16:30        32      
+<a href="pekko-parsing_3-2.0.0-M1.jar.sha1" title="pekko-parsing_3-2.0.0-M1.jar.sha1">pekko-parsing_3-2.0.0-M1.jar.sha1</a>                 2026-01-14 16:30        40      
+<a href="pekko-parsing_3-2.0.0-M1.pom" title="pekko-parsing_3-2.0.0-M1.pom">pekko-parsing_3-2.0.0-M1.pom</a>                      2026-01-14 16:30      2058      
+<a href="pekko-parsing_3-2.0.0-M1.pom.asc" title="pekko-parsing_3-2.0.0-M1.pom.asc">pekko-parsing_3-2.0.0-M1.pom.asc</a>                  2026-01-14 16:30       833      
+<a href="pekko-parsing_3-2.0.0-M1.pom.asc.md5" title="pekko-parsing_3-2.0.0-M1.pom.asc.md5">pekko-parsing_3-2.0.0-M1.pom.asc.md5</a>              2026-01-14 16:30        32      
+<a href="pekko-parsing_3-2.0.0-M1.pom.asc.sha1" title="pekko-parsing_3-2.0.0-M1.pom.asc.sha1">pekko-parsing_3-2.0.0-M1.pom.asc.sha1</a>             2026-01-14 16:30        40      
+<a href="pekko-parsing_3-2.0.0-M1.pom.md5" title="pekko-parsing_3-2.0.0-M1.pom.md5">pekko-parsing_3-2.0.0-M1.pom.md5</a>                  2026-01-14 16:30        32      
+<a href="pekko-parsing_3-2.0.0-M1.pom.sha1" title="pekko-parsing_3-2.0.0-M1.pom.sha1">pekko-parsing_3-2.0.0-M1.pom.sha1</a>                 2026-01-14 16:30        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: org.apache.pekko pekko-parsing_3 2.0.0-M1 Maven Central
+codex
+The local file already has a Scala 3 language field for the target entry, so I’ll leave that intact. Maven Central has the 2.0.0-M1 source and javadoc jars; I’m checking whether a published test classifier exists before using the tagged GitHub test path.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/2.0.0-M1/pekko-parsing_3-2.0.0-M1.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42
+exec
+/usr/bin/bash -lc "for u in \\
+  https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/2.0.0-M1/pekko-parsing_3-2.0.0-M1-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/2.0.0-M1/pekko-parsing_3-2.0.0-M1-test-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/2.0.0-M1/pekko-parsing_3-2.0.0-M1-tests.jar \\
+  https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/2.0.0-M1/pekko-parsing_3-2.0.0-M1-javadoc.jar \\
+  https://github.com/apache/pekko-http/tree/v2.0.0-M1/http-core/src/test/scala/org/apache/pekko/http/impl/engine/parsing \\
+  https://github.com/apache/pekko-http/tree/v2.0.0-M1; do
+  status="'$(curl -I -L -s -o /dev/null -w '"'%{http_code}' \""'$u")
+  printf '"'%s %s\\n' \""'$status" "$u"
+done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/pekko-http/git/ref/tags/v2.0.0-M1' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42
+ succeeded in 185ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.apache.pekko</groupId>
+    <artifactId>pekko-parsing_3</artifactId>
+    <packaging>jar</packaging>
+    <description>Apache Pekko Http: Modern, fast, asynchronous, streaming-first HTTP server and client.</description>
+    <version>2.0.0-M1</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>Apache Pekko Parsing</name>
+    <inceptionYear>2022</inceptionYear>
+    <organization>
+        <name>Apache Software Foundation</name>
+        <url>https://www.apache.org</url>
+    </organization>
+    <scm>
+        <url>https://github.com/apache/pekko-http</url>
+        <connection>git@github.com:apache/pekko-http.git</connection>
+    </scm>
+    <developers>
+        <developer>
+            <id>pekko-http-contributors</id>
+            <name>Apache Pekko HTTP Contributors</name>
+            <url>https://github.com/apache/pekko-http/graphs/contributors</url>
+            <email>dev@pekko.apache.org</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://pekko.apache.org/api/pekko-http/2.0.0-M1/</info.apiURL>
+        <info.versionScheme>semver-spec</info.versionScheme>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.3.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-actor_3</artifactId>
+            <version>2.0.0-M1</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>
+ succeeded in 182ms:
+{
+  "ref": "refs/tags/v2.0.0-M1",
+  "node_id": "REF_kwDOIV7BYLNyZWZzL3RhZ3MvdjIuMC4wLU0x",
+  "url": "https://api.github.com/repos/apache/pekko-http/git/refs/tags/v2.0.0-M1",
+  "object": {
+    "sha": "63e05c5c4a3deb84fba73da28f8278461453727f",
+    "type": "commit",
+    "url": "https://api.github.com/repos/apache/pekko-http/git/commits/63e05c5c4a3deb84fba73da28f8278461453727f"
+  }
+}
+
+ succeeded in 3029ms:
+200 https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/2.0.0-M1/pekko-parsing_3-2.0.0-M1-sources.jar
+404 https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/2.0.0-M1/pekko-parsing_3-2.0.0-M1-test-sources.jar
+404 https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/2.0.0-M1/pekko-parsing_3-2.0.0-M1-tests.jar
+200 https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/2.0.0-M1/pekko-parsing_3-2.0.0-M1-javadoc.jar
+200 https://github.com/apache/pekko-http/tree/v2.0.0-M1/http-core/src/test/scala/org/apache/pekko/http/impl/engine/parsing
+200 https://github.com/apache/pekko-http/tree/v2.0.0-M1
+
+web search: 
+web search: https://github.com/apache/pekko-http/tree/v2.0.0-M1/http-core/src/test/scala/org/apache/pekko/http/impl/engine/parsing
+web search: 
+web search: pekko-parsing_3-2.0.0-M1-sources.jar repo.maven.apache.org
+codex
+There is no Maven-published test-sources or tests jar for this artifact version, so the test URL should be the tag-specific Pekko HTTP parsing test directory. The existing 1.3.0 entry uses the same URL shape, and the 2.0.0-M1 tag/path resolves successfully.
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/src.jar" https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/2.0.0-M1/pekko-parsing_3-2.0.0-M1-sources.jar; jar tf "$tmp/src.jar" | sed -n '"'1,120p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42
+ succeeded in 0ms:
+META-INF/MANIFEST.MF
+META-INF/
+org/
+org/apache/
+org/apache/pekko/
+org/apache/pekko/macros/
+META-INF/LICENSE
+META-INF/NOTICE
+org/apache/pekko/macros/LogHelper.scala
+org/apache/pekko/macros/LogHelperMacro.scala
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/pekko-http/v2.0.0-M1/http-core/src/main/scala-3/org/apache/pekko/macros/LogHelper.scala | sed -n '1,180p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/pekko-http/v2.0.0-M1/http-core/src/main/scala/org/apache/pekko/http/ccompat/package.scala | sed -n '1,180p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42
+ succeeded in 138ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 156ms:
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * license agreements; and to You under the Apache License, version 2.0:
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * This file is part of the Apache Pekko project, which was derived from Akka.
+ */
+
+/*
+ * Copyright (C) 2018-2022 Lightbend Inc. <https://www.lightbend.com>
+ */
+
+package org.apache.pekko.http
+
+/**
+ * INTERNAL API
+ */
+package object ccompat {
+
+  type Builder[-A, +To] = scala.collection.mutable.Builder[A, To]
+}
+
+/**
+ * INTERNAL API
+ */
+package ccompat {
+  import org.apache.pekko
+  import pekko.http.scaladsl.model.Uri.Query
+  trait QuerySeqOptimized extends scala.collection.immutable.LinearSeq[(String, String)]
+      with scala.collection.StrictOptimizedLinearSeqOps[(String, String), scala.collection.immutable.LinearSeq, Query] {
+    self: Query =>
+    override protected def fromSpecific(coll: IterableOnce[(String, String)]): Query =
+      Query(coll.iterator.to(Seq): _*)
+
+    override protected def newSpecificBuilder: Builder[(String, String), Query] =
+      pekko.http.scaladsl.model.Uri.Query.newBuilder
+
+    override def empty: Query = pekko.http.scaladsl.model.Uri.Query.Empty
+  }
+}
+
+codex
+The source jar is very small for this module: it contains the Scala macro helper sources under `org/apache/pekko/macros`. I’m checking the exact source layout in the tag so the description matches the artifact rather than the broader Pekko HTTP project.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/2.0.0-M1/pekko-parsing_3-2.0.0-M1-javadoc.jar -o /tmp/pekko-parsing-javadoc.jar && jar tf /tmp/pekko-parsing-javadoc.jar | sed -n '1,120p'; rm -f /tmp/pekko-parsing-javadoc.jar" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/bin.jar" https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/2.0.0-M1/pekko-parsing_3-2.0.0-M1.jar; jar tf "$tmp/bin.jar" | sed -n '"'1,200p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/pekko-http/git/trees/63e05c5c4a3deb84fba73da28f8278461453727f?recursive=1 | rg 'pekko/macros|ccompat|http-core/src/test/scala/org/apache/pekko/http/impl/engine/parsing'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42
+ succeeded in 249ms:
+META-INF/MANIFEST.MF
+META-INF/
+META-INF/LICENSE
+META-INF/NOTICE
+org/
+org/apache/
+org/apache/pekko/
+org/apache/pekko/macros/
+org/apache/pekko/macros/LogHelper.class
+org/apache/pekko/macros/LogHelper.tasty
+org/apache/pekko/macros/LogHelperMacro$.class
+org/apache/pekko/macros/LogHelperMacro.class
+org/apache/pekko/macros/LogHelperMacro.tasty
+
+ succeeded in 519ms:
+META-INF/MANIFEST.MF
+META-INF/
+fonts/
+hljs/
+images/
+images/banner-icons/
+images/bulb/
+images/bulb/dark/
+images/bulb/light/
+images/footer-icon/
+images/footer-icon/dark/
+images/footer-icon/light/
+images/icon-buttons/
+images/icon-buttons/arrow-down/
+images/icon-buttons/arrow-down/dark/
+images/icon-buttons/arrow-down/light/
+images/icon-buttons/arrow-right/
+images/icon-buttons/arrow-right/dark/
+images/icon-buttons/arrow-right/light/
+images/icon-buttons/close/
+images/icon-buttons/close/dark/
+images/icon-buttons/close/light/
+images/icon-buttons/copy/
+images/icon-buttons/copy/dark/
+images/icon-buttons/copy/light/
+images/icon-buttons/discord/
+images/icon-buttons/discord/dark/
+images/icon-buttons/discord/light/
+images/icon-buttons/gh/
+images/icon-buttons/gh/dark/
+images/icon-buttons/gh/light/
+images/icon-buttons/gitter/
+images/icon-buttons/gitter/dark/
+images/icon-buttons/gitter/light/
+images/icon-buttons/hamburger/
+images/icon-buttons/hamburger/dark/
+images/icon-buttons/hamburger/light/
+images/icon-buttons/link/
+images/icon-buttons/link/dark/
+images/icon-buttons/link/light/
+images/icon-buttons/menu-animated-open/
+images/icon-buttons/menu-animated-open/dark/
+images/icon-buttons/menu-animated-open/light/
+images/icon-buttons/menu-animated/
+images/icon-buttons/menu-animated/dark/
+images/icon-buttons/menu-animated/light/
+images/icon-buttons/minus/
+images/icon-buttons/minus/dark/
+images/icon-buttons/minus/light/
+images/icon-buttons/moon/
+images/icon-buttons/moon/dark/
+images/icon-buttons/moon/light/
+images/icon-buttons/plus/
+images/icon-buttons/plus/dark/
+images/icon-buttons/plus/light/
+images/icon-buttons/search/
+images/icon-buttons/search/dark/
+images/icon-buttons/search/light/
+images/icon-buttons/sun/
+images/icon-buttons/sun/dark/
+images/icon-buttons/sun/light/
+images/icon-buttons/twitter/
+images/icon-buttons/twitter/dark/
+images/icon-buttons/twitter/light/
+images/info/
+images/info/dark/
+images/info/light/
+scripts/
+scripts/common/
+scripts/components/
+styles/
+styles/theme/
+styles/theme/components/
+styles/theme/components/button/
+styles/theme/layout/
+webfonts/
+META-INF/LICENSE
+META-INF/NOTICE
+favicon.ico
+fonts/FiraCode-Regular.ttf
+fonts/Inter-Bold.ttf
+fonts/Inter-Medium.ttf
+fonts/Inter-Regular.ttf
+fonts/Inter-SemiBold.ttf
+fonts/dotty-icons.ttf
+fonts/dotty-icons.woff
+hljs/LICENSE
+hljs/highlight.pack.js
+images/banner-icons/error.svg
+images/banner-icons/info.svg
+images/banner-icons/neutral.svg
+images/banner-icons/success.svg
+images/banner-icons/warning.svg
+images/bulb/dark/default.svg
+images/bulb/light/default.svg
+images/class-big.svg
+images/class-dark-big.svg
+images/class-dark.svg
+images/class.svg
+images/class_comp.svg
+images/def-big.svg
+images/def-dark-big.svg
+images/discord-icon-black.png
+images/discord-icon-white.png
+images/enum-big.svg
+images/enum-dark-big.svg
+images/enum-dark.svg
+images/enum.svg
+images/enum_comp.svg
+images/footer-icon/dark/default.svg
+images/footer-icon/light/default.svg
+images/github-icon-black.png
+images/github-icon-white.png
+images/gitter-icon-black.png
+images/gitter-icon-white.png
+images/given-big.svg
+images/given-dark-big.svg
+images/given-dark.svg
+images/given.svg
+images/icon-buttons/arrow-down/dark/active.svg
+
+ succeeded in 576ms:
+      "path": "http-core/src/main/scala/org/apache/pekko/http/ccompat",
+      "path": "http-core/src/main/scala/org/apache/pekko/http/ccompat/MapHelpers.scala",
+      "path": "http-core/src/main/scala/org/apache/pekko/http/ccompat/package.scala",
+      "path": "http-core/src/test/scala/org/apache/pekko/http/impl/engine/parsing",
+      "path": "http-core/src/test/scala/org/apache/pekko/http/impl/engine/parsing/BoyerMooreSpec.scala",
+      "path": "http-core/src/test/scala/org/apache/pekko/http/impl/engine/parsing/ContentLengthHeaderParserSpec.scala",
+      "path": "http-core/src/test/scala/org/apache/pekko/http/impl/engine/parsing/HttpHeaderParserSpec.scala",
+      "path": "http-core/src/test/scala/org/apache/pekko/http/impl/engine/parsing/HttpHeaderParserTestBed.scala",
+      "path": "http-core/src/test/scala/org/apache/pekko/http/impl/engine/parsing/RequestParserSpec.scala",
+      "path": "http-core/src/test/scala/org/apache/pekko/http/impl/engine/parsing/ResponseParserSpec.scala",
+      "path": "http-tests/src/test/scala-2.13/src/main/org/apache/pekko/http/ccompat",
+      "path": "http-tests/src/test/scala-2.13/src/main/org/apache/pekko/http/ccompat/ImplicitUtils.scala",
+      "path": "http-tests/src/test/scala-3/src/main/org/apache/pekko/http/ccompat",
+      "path": "http-tests/src/test/scala-3/src/main/org/apache/pekko/http/ccompat/ImplicitUtils.scala",
+      "path": "parsing/src/main/scala-2/org/apache/pekko/macros",
+      "path": "parsing/src/main/scala-2/org/apache/pekko/macros/LogHelperMacro.scala",
+      "path": "parsing/src/main/scala-3/org/apache/pekko/macros",
+      "path": "parsing/src/main/scala-3/org/apache/pekko/macros/LogHelperMacro.scala",
+      "path": "parsing/src/main/scala/org/apache/pekko/macros",
+      "path": "parsing/src/main/scala/org/apache/pekko/macros/LogHelper.scala",
+
+codex
+The repository tag confirms the parsing test suite directory and the module source tree under `parsing/`. I’m going to reuse the Maven source/javadoc templates and the tag-specific GitHub test template, then validate the edited JSON.
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/pekko-http/v2.0.0-M1/parsing/src/main/scala/org/apache/pekko/macros/LogHelper.scala | sed -n '1,180p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/pekko-http/v2.0.0-M1/parsing/src/main/scala-3/org/apache/pekko/macros/LogHelperMacro.scala | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/pekko-http/v2.0.0-M1/parsing/build.sbt | sed -n '1,180p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42
+ succeeded in 121ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 140ms:
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * license agreements; and to You under the Apache License, version 2.0:
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * This file is part of the Apache Pekko project, which was derived from Akka.
+ */
+
+/*
+ * Copyright (C) 2021-2022 Lightbend Inc. <https://www.lightbend.com>
+ */
+
+package org.apache.pekko.macros
+
+import org.apache.pekko.annotation.InternalApi
+
+import scala.quoted._
+
+/** INTERNAL API */
+@InternalApi
+private[pekko] trait LogHelperMacro { self: LogHelper =>
+  inline def debug(inline msg: String): Unit =
+    ${ LogHelperMacro.guard('{ isDebugEnabled }, '{ log.debug(prefixString + msg) }) }
+  inline def info(inline msg: String): Unit =
+    ${ LogHelperMacro.guard('{ isInfoEnabled }, '{ log.info(prefixString + msg) }) }
+  inline def warning(inline msg: String): Unit =
+    ${ LogHelperMacro.guard('{ isWarningEnabled }, '{ log.warning(prefixString + msg) }) }
+}
+
+/** INTERNAL API */
+@InternalApi
+private[pekko] object LogHelperMacro {
+  def guard(isEnabled: Expr[Boolean], log: Expr[Unit])(using Quotes): Expr[Unit] = '{ if ($isEnabled) $log }
+}
+
+ succeeded in 147ms:
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * license agreements; and to You under the Apache License, version 2.0:
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * This file is part of the Apache Pekko project, which was derived from Akka.
+ */
+
+/*
+ * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
+ */
+
+package org.apache.pekko.macros
+
+import org.apache.pekko
+import pekko.annotation.InternalApi
+
+/**
+ * INTERNAL API
+ *
+ * Provides access to a LoggingAdapter which each call guarded by `if (log.isXXXEnabled)` to prevent evaluating
+ * the message expression eagerly.
+ */
+@InternalApi
+private[pekko] trait LogHelper extends LogHelperMacro {
+  def log: pekko.event.LoggingAdapter
+  def isDebugEnabled: Boolean = log.isDebugEnabled
+  def isInfoEnabled: Boolean = log.isInfoEnabled
+  def isWarningEnabled: Boolean = log.isWarningEnabled
+
+  /** Override to prefix every log message with a user-defined context string */
+  def prefixString: String = ""
+}
+
+codex
+I’m applying the metadata update now. The description will stay to exactly two sentences, and I’ll keep the existing Scala 3 language marker unchanged because it is already non-blank and correct for the `_3` artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42/metadata/org.apache.pekko/pekko-parsing_3/index.json
+diff --git a/metadata/org.apache.pekko/pekko-parsing_3/index.json b/metadata/org.apache.pekko/pekko-parsing_3/index.json
+index 0c3f0f38d913fd9d830855672d234bfe8c4e0f21..51cd2fb9cbeae62b9fb8ac5cdeb39c39f8e62cab
+--- a/metadata/org.apache.pekko/pekko-parsing_3/index.json
++++ b/metadata/org.apache.pekko/pekko-parsing_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko-http",
++    "test-code-url" : "https://github.com/apache/pekko-http/tree/v$version$/http-core/src/test/scala/org/apache/pekko/http/impl/engine/parsing",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-javadoc.jar",
++    "description" : "Apache Pekko Parsing is a Scala 3 support artifact from Pekko HTTP that provides internal macro helpers used by the HTTP parsing implementation. It supplies guarded logging utilities for parser code and is published per Scala binary version, including the `_3` artifact for Scala 3.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+diff --git a/metadata/org.apache.pekko/pekko-parsing_3/index.json b/metadata/org.apache.pekko/pekko-parsing_3/index.json
+index 0c3f0f38d913fd9d830855672d234bfe8c4e0f21..51cd2fb9cbeae62b9fb8ac5cdeb39c39f8e62cab
+--- a/metadata/org.apache.pekko/pekko-parsing_3/index.json
++++ b/metadata/org.apache.pekko/pekko-parsing_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko-http",
++    "test-code-url" : "https://github.com/apache/pekko-http/tree/v$version$/http-core/src/test/scala/org/apache/pekko/http/impl/engine/parsing",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-javadoc.jar",
++    "description" : "Apache Pekko Parsing is a Scala 3 support artifact from Pekko HTTP that provides internal macro helpers used by the HTTP parsing implementation. It supplies guarded logging utilities for parser code and is published per Scala binary version, including the `_3` artifact for Scala 3.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+codex
+The file is patched. I’m doing two checks: rendered URL status for the single tested-version alias and the repository metadata validation task for this coordinate.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.apache.pekko:pekko-parsing_3:2.0.0-M1 --stacktrace' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42
+exec
+/usr/bin/bash -lc "jq . metadata/org.apache.pekko/pekko-parsing_3/index.json >/dev/null && for u in \\
+  https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/2.0.0-M1/pekko-parsing_3-2.0.0-M1-sources.jar \\
+  https://github.com/apache/pekko-http \\
+  https://github.com/apache/pekko-http/tree/v2.0.0-M1/http-core/src/test/scala/org/apache/pekko/http/impl/engine/parsing \\
+  https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/2.0.0-M1/pekko-parsing_3-2.0.0-M1-javadoc.jar; do
+  status="'$(curl -I -L -s -o /dev/null -w '"'%{http_code}' \""'$u")
+  printf '"'%s %s\\n' \""'$status" "$u"
+done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42
+ succeeded in 866ms:
+200 https://github.com/apache/pekko-http
+200 https://github.com/apache/pekko-http/tree/v2.0.0-M1/http-core/src/test/scala/org/apache/pekko/http/impl/engine/parsing
+200 https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/2.0.0-M1/pekko-parsing_3-2.0.0-M1-javadoc.jar
+
+diff --git a/metadata/org.apache.pekko/pekko-parsing_3/index.json b/metadata/org.apache.pekko/pekko-parsing_3/index.json
+index 0c3f0f38d913fd9d830855672d234bfe8c4e0f21..51cd2fb9cbeae62b9fb8ac5cdeb39c39f8e62cab
+--- a/metadata/org.apache.pekko/pekko-parsing_3/index.json
++++ b/metadata/org.apache.pekko/pekko-parsing_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko-http",
++    "test-code-url" : "https://github.com/apache/pekko-http/tree/v$version$/http-core/src/test/scala/org/apache/pekko/http/impl/engine/parsing",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-javadoc.jar",
++    "description" : "Apache Pekko Parsing is a Scala 3 support artifact from Pekko HTTP that provides internal macro helpers used by the HTTP parsing implementation. It supplies guarded logging utilities for parser code and is published per Scala binary version, including the `_3` artifact for Scala 3.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+ exited 1 in 3182ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.apache.pekko:pekko-parsing_3:2.0.0-M1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42/metadata/org.apache.pekko/pekko-parsing_3/2.0.0-M1/
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42/build/reports/problems/problems-report.html
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.apache.pekko:pekko-parsing_3:2.0.0-M1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42/metadata/org.apache.pekko/pekko-parsing_3/2.0.0-M1/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.apache.pekko:pekko-parsing_3:2.0.0-M1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42/metadata/org.apache.pekko/pekko-parsing_3/2.0.0-M1/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 2s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+The rendered URLs all returned HTTP 200. The coordinate-level metadata validator fails before checking these fields because the selected metadata directory lacks `reachability-metadata.json`, so I’m capturing the final diff and will report that validation limitation clearly.
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.apache.pekko/pekko-parsing_3/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42
+ succeeded in 0ms:
+diff --git i/metadata/org.apache.pekko/pekko-parsing_3/index.json w/metadata/org.apache.pekko/pekko-parsing_3/index.json
+index 0c3f0f38d9..51cd2fb9cb 100644
+--- i/metadata/org.apache.pekko/pekko-parsing_3/index.json
++++ w/metadata/org.apache.pekko/pekko-parsing_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko-http",
++    "test-code-url" : "https://github.com/apache/pekko-http/tree/v$version$/http-core/src/test/scala/org/apache/pekko/http/impl/engine/parsing",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-javadoc.jar",
++    "description" : "Apache Pekko Parsing is a Scala 3 support artifact from Pekko HTTP that provides internal macro helpers used by the HTTP parsing implementation. It supplies guarded logging utilities for parser code and is published per Scala binary version, including the `_3` artifact for Scala 3.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+exec
+/usr/bin/bash -lc "nl -ba metadata/org.apache.pekko/pekko-parsing_3/index.json | sed -n '1,60p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "2.0.0-M1",
+     5	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-sources.jar",
+     6	    "repository-url" : "https://github.com/apache/pekko-http",
+     7	    "test-code-url" : "https://github.com/apache/pekko-http/tree/v$version$/http-core/src/test/scala/org/apache/pekko/http/impl/engine/parsing",
+     8	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-javadoc.jar",
+     9	    "description" : "Apache Pekko Parsing is a Scala 3 support artifact from Pekko HTTP that provides internal macro helpers used by the HTTP parsing implementation. It supplies guarded logging utilities for parser code and is published per Scala binary version, including the `_3` artifact for Scala 3.",
+    10	    "language" : {
+    11	      "name" : "scala",
+    12	      "version" : "3"
+    13	    },
+    14	    "tested-versions" : [
+    15	      "2.0.0-M1"
+    16	    ],
+    17	    "allowed-packages" : [
+    18	      "org.apache.pekko.http.ccompat",
+    19	      "org.apache.pekko.macros"
+    20	    ]
+    21	  },
+    22	  {
+    23	    "metadata-version" : "1.3.0",
+    24	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-sources.jar",
+    25	    "repository-url" : "https://github.com/apache/pekko-http",
+    26	    "test-code-url" : "https://github.com/apache/pekko-http/tree/v$version$/http-core/src/test/scala/org/apache/pekko/http/impl/engine/parsing",
+    27	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-javadoc.jar",
+    28	    "description" : "Apache Pekko Parsing is a Scala-specific internal support module for Pekko HTTP that provides compile-time logging guards and cross-Scala-version compatibility annotations used by the HTTP parsing implementation. It is published as a JVM JAR for each Scala binary version, including Scala 3, so downstream Pekko HTTP modules can share those internal helpers without duplicating them.",
+    29	    "language" : {
+    30	      "name" : "scala",
+    31	      "version" : "3"
+    32	    },
+    33	    "tested-versions" : [
+    34	      "1.3.0"
+    35	    ],
+    36	    "allowed-packages" : [
+    37	      "org.apache.pekko.http.ccompat",
+    38	      "org.apache.pekko.macros"
+    39	    ]
+    40	  }
+    41	]
+
+diff --git a/metadata/org.apache.pekko/pekko-parsing_3/index.json b/metadata/org.apache.pekko/pekko-parsing_3/index.json
+index 0c3f0f38d913fd9d830855672d234bfe8c4e0f21..51cd2fb9cbeae62b9fb8ac5cdeb39c39f8e62cab
+--- a/metadata/org.apache.pekko/pekko-parsing_3/index.json
++++ b/metadata/org.apache.pekko/pekko-parsing_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko-http",
++    "test-code-url" : "https://github.com/apache/pekko-http/tree/v$version$/http-core/src/test/scala/org/apache/pekko/http/impl/engine/parsing",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-javadoc.jar",
++    "description" : "Apache Pekko Parsing is a Scala 3 support artifact from Pekko HTTP that provides internal macro helpers used by the HTTP parsing implementation. It supplies guarded logging utilities for parser code and is published per Scala binary version, including the `_3` artifact for Scala 3.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.apache.pekko/pekko-parsing_3/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42
+ succeeded in 0ms:
+ M metadata/org.apache.pekko/pekko-parsing_3/index.json
+
+diff --git a/metadata/org.apache.pekko/pekko-parsing_3/index.json b/metadata/org.apache.pekko/pekko-parsing_3/index.json
+index 0c3f0f38d913fd9d830855672d234bfe8c4e0f21..51cd2fb9cbeae62b9fb8ac5cdeb39c39f8e62cab
+--- a/metadata/org.apache.pekko/pekko-parsing_3/index.json
++++ b/metadata/org.apache.pekko/pekko-parsing_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko-http",
++    "test-code-url" : "https://github.com/apache/pekko-http/tree/v$version$/http-core/src/test/scala/org/apache/pekko/http/impl/engine/parsing",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-javadoc.jar",
++    "description" : "Apache Pekko Parsing is a Scala 3 support artifact from Pekko HTTP that provides internal macro helpers used by the HTTP parsing implementation. It supplies guarded logging utilities for parser code and is published per Scala binary version, including the `_3` artifact for Scala 3.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42/metadata/org.apache.pekko/pekko-parsing_3/index.json:5) for `metadata-version` `2.0.0-M1`.
+
+Filled:
+- `source-code-url`: Maven sources jar template
+- `repository-url`: canonical `apache/pekko-http` root
+- `test-code-url`: tagged GitHub parsing test directory template
+- `documentation-url`: Maven javadoc jar template
+- `description`: exactly two sentences
+- Left existing `language` unchanged: Scala 3
+
+Verification:
+- JSON parses with `jq`.
+- Rendered URLs for `2.0.0-M1` all returned HTTP 200.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.apache.pekko:pekko-parsing_3:2.0.0-M1 --stacktrace` fails because `metadata/org.apache.pekko/pekko-parsing_3/2.0.0-M1/reachability-metadata.json` is missing, unrelated to the index field update.
+diff --git a/metadata/org.apache.pekko/pekko-parsing_3/index.json b/metadata/org.apache.pekko/pekko-parsing_3/index.json
+index 0c3f0f38d913fd9d830855672d234bfe8c4e0f21..51cd2fb9cbeae62b9fb8ac5cdeb39c39f8e62cab
+--- a/metadata/org.apache.pekko/pekko-parsing_3/index.json
++++ b/metadata/org.apache.pekko/pekko-parsing_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko-http",
++    "test-code-url" : "https://github.com/apache/pekko-http/tree/v$version$/http-core/src/test/scala/org/apache/pekko/http/impl/engine/parsing",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-javadoc.jar",
++    "description" : "Apache Pekko Parsing is a Scala 3 support artifact from Pekko HTTP that provides internal macro helpers used by the HTTP parsing implementation. It supplies guarded logging utilities for parser code and is published per Scala binary version, including the `_3` artifact for Scala 3.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+tokens used
+45,995
+Updated [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42/metadata/org.apache.pekko/pekko-parsing_3/index.json:5) for `metadata-version` `2.0.0-M1`.
+
+Filled:
+- `source-code-url`: Maven sources jar template
+- `repository-url`: canonical `apache/pekko-http` root
+- `test-code-url`: tagged GitHub parsing test directory template
+- `documentation-url`: Maven javadoc jar template
+- `description`: exactly two sentences
+- Left existing `language` unchanged: Scala 3
+
+Verification:
+- JSON parses with `jq`.
+- Rendered URLs for `2.0.0-M1` all returned HTTP 200.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.apache.pekko:pekko-parsing_3:2.0.0-M1 --stacktrace` fails because `metadata/org.apache.pekko/pekko-parsing_3/2.0.0-M1/reachability-metadata.json` is missing, unrelated to the index field update.
+Ran agent for org.apache.pekko:pekko-parsing_3:2.0.0-M1 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42/build/agent-url-discovery-logs/org.apache.pekko-pekko-parsing_3-2.0.0-M1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6217-8e6c6b42/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 17s
+9 actionable tasks: 1 executed, 8 up-to-date
