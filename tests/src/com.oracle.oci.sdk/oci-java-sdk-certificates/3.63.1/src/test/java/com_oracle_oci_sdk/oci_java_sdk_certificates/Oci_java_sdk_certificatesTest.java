@@ -34,6 +34,8 @@ import com.oracle.bmc.certificates.responses.GetCertificateAuthorityBundleRespon
 import com.oracle.bmc.certificates.responses.GetCertificateBundleResponse;
 import com.oracle.bmc.certificates.responses.ListCertificateAuthorityBundleVersionsResponse;
 import com.oracle.bmc.certificates.responses.ListCertificateBundleVersionsResponse;
+import com.oracle.bmc.http.client.RequestInterceptor;
+import com.oracle.bmc.retrier.RetryConfiguration;
 import java.util.Date;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -253,6 +255,31 @@ public class Oci_java_sdk_certificatesTest {
                 .isEqualTo(ListCertificateAuthorityBundleVersionsRequest.SortBy.VersionNumber);
         assertThat(listAuthorityRequest.getSortOrder())
                 .isEqualTo(ListCertificateAuthorityBundleVersionsRequest.SortOrder.Asc);
+    }
+
+    @Test
+    void requestBuildersSupportInvocationCallbacksAndRetryConfiguration() {
+        RequestInterceptor interceptor = httpRequest -> assertThat(httpRequest).isNotNull();
+        RetryConfiguration retryConfiguration = RetryConfiguration.NO_RETRY_CONFIGURATION;
+
+        GetCaBundleRequest request =
+                GetCaBundleRequest.builder()
+                        .caBundleId("ca-bundle-1")
+                        .invocationCallback(interceptor)
+                        .retryConfiguration(retryConfiguration)
+                        .build();
+
+        assertThat(request.getInvocationCallback()).isSameAs(interceptor);
+        assertThat(request.getRetryConfiguration()).isSameAs(retryConfiguration);
+
+        GetCaBundleRequest requestWithoutCallback =
+                GetCaBundleRequest.builder()
+                        .caBundleId("ca-bundle-1")
+                        .invocationCallback(interceptor)
+                        .retryConfiguration(retryConfiguration)
+                        .buildWithoutInvocationCallback();
+        assertThat(requestWithoutCallback.getCaBundleId()).isEqualTo("ca-bundle-1");
+        assertThat(requestWithoutCallback.getInvocationCallback()).isNull();
     }
 
     @Test
