@@ -155,7 +155,7 @@ public class Kubernetes_model_coordinationTest {
         Lease replaced = leaseNamed("replaced", "replacement-0");
 
         LeaseListBuilder builder = new LeaseListBuilder()
-                .withNewMetadata("continue-token", 3L, "77", "self-link")
+                .withMetadata(new ListMeta("continue-token", 3L, "77", "self-link", null))
                 .addToItems(scheduler, controller)
                 .addToItems(1, cloud)
                 .addToAdditionalProperties("source", "watch-cache");
@@ -279,7 +279,7 @@ public class Kubernetes_model_coordinationTest {
 
         io.fabric8.kubernetes.api.model.coordination.v1beta1.LeaseCandidateListBuilder builder =
                 new io.fabric8.kubernetes.api.model.coordination.v1beta1.LeaseCandidateListBuilder()
-                .withNewMetadata(null, 3L, "88", null)
+                .withMetadata(new ListMeta(null, 3L, "88", null, null))
                 .withItems(apiserver)
                 .addAllToItems(List.of(scheduler, controller));
 
@@ -353,7 +353,7 @@ public class Kubernetes_model_coordinationTest {
 
         io.fabric8.kubernetes.api.model.coordination.v1alpha2.LeaseCandidateList list =
                 new io.fabric8.kubernetes.api.model.coordination.v1alpha2.LeaseCandidateListBuilder()
-                .withNewMetadata("next", 2L, "99", null)
+                .withMetadata(new ListMeta("next", 2L, "99", null, null))
                 .addToItems(candidate, standby)
                 .editLastItem()
                     .editSpec()
@@ -435,7 +435,7 @@ public class Kubernetes_model_coordinationTest {
         assertThat(lease.getSpec().getAdditionalProperties()).containsEntry("path", "setters");
         assertThat(lease.getAdditionalProperties()).containsEntry("constructed", true);
 
-        ListMeta listMetadata = new ListMeta(null, 1L, "resource-version", null);
+        ListMeta listMetadata = new ListMeta(null, 1L, "resource-version", null, null);
         LeaseList list = new LeaseList(COORDINATION_API_GROUP + "/v1", List.of(lease), "LeaseList", listMetadata);
         Lease replacement = leaseNamed("lease-from-list-setter", "list-holder-0");
         list.setItems(List.of(replacement));
