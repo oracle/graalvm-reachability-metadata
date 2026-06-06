@@ -6,9 +6,9 @@
  */
 package org_javamoney_moneta.moneta_core;
 
-import org.javamoney.moneta.spi.loader.DefaultLoaderService;
 import org.javamoney.moneta.spi.loader.LoaderService;
 import org.javamoney.moneta.spi.loader.LoaderService.UpdatePolicy;
+import org.javamoney.moneta.spi.loader.okhttp.OkHttpLoaderService;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,7 +18,7 @@ public class LoaderConfiguratorTest {
 
     @Test
     public void loadRegistersResourceFoundThroughOwningClass() {
-        LoaderService loaderService = new DefaultLoaderService();
+        LoaderService loaderService = new OkHttpLoaderService();
 
         assertThat(loaderService.isResourceRegistered(RESOURCE_ID)).isTrue();
         assertThat(loaderService.getUpdatePolicy(RESOURCE_ID)).isEqualTo(UpdatePolicy.LAZY);
