@@ -188,6 +188,30 @@ public class Oci_java_sdk_circuitbreakerTest {
     }
 
     @Test
+    void slowSuccessfulCallsOpenCircuitWhenSlowCallRateThresholdIsReached() {
+        CircuitBreakerConfiguration configuration = CircuitBreakerConfiguration.builder()
+                .failureRateThreshold(100)
+                .slowCallRateThreshold(50)
+                .slowCallDurationThreshold(Duration.ofMillis(5))
+                .waitDurationInOpenState(Duration.ofSeconds(10))
+                .minimumNumberOfCalls(2)
+                .slidingWindowSize(2)
+                .writableStackTraceEnabled(false)
+                .build();
+        OciCircuitBreaker circuitBreaker = CircuitBreakerFactory.build(configuration);
+
+        circuitBreaker.acquirePermission();
+        circuitBreaker.onSuccess(10, TimeUnit.MILLISECONDS);
+        assertThat(circuitBreaker.getState()).isEqualTo(CircuitBreaker.State.CLOSED);
+
+        circuitBreaker.acquirePermission();
+        circuitBreaker.onSuccess(10, TimeUnit.MILLISECONDS);
+
+        assertThat(circuitBreaker.getState()).isEqualTo(CircuitBreaker.State.OPEN);
+        assertThat(circuitBreaker.tryAcquirePermission()).isFalse();
+    }
+
+    @Test
     void errorHistoryIsBoundedAndRenderedInInsertionOrder() {
         CircuitBreakerConfiguration configuration = CircuitBreakerConfiguration.builder()
                 .numberOfRecordedHistoryResponses(2)
