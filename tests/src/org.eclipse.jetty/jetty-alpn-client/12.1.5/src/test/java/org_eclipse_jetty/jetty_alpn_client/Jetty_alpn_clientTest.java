@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLHandshakeException;
 
 import org.eclipse.jetty.alpn.client.ALPNClientConnection;
 import org.eclipse.jetty.alpn.client.ALPNClientConnectionFactory;
@@ -122,7 +123,7 @@ public class Jetty_alpn_clientTest {
     }
 
     @Test
-    void endOfInputUpgradesEndPointWithoutNegotiatedProtocol() throws Exception {
+    void endOfInputFailsConnectionPromiseWithoutNegotiatedProtocol() throws Exception {
         ByteArrayEndPoint endPoint = new ByteArrayEndPoint();
         RecordingPromise connectionPromise = new RecordingPromise();
         Map<String, Object> context = newContextWithConnectionPromise(connectionPromise);
@@ -134,13 +135,14 @@ public class Jetty_alpn_clientTest {
         connection.onFillable();
 
         assertThat(connection.getProtocol()).isNull();
-        assertThat(connectionFactory.createdConnections).hasSize(1);
-        RecordingConnection protocolConnection = connectionFactory.createdConnections.get(0);
-        assertThat(endPoint.getConnection()).isSameAs(protocolConnection);
-        assertThat(protocolConnection.opened).isTrue();
-        assertThat(connectionPromise.failure).isNull();
+        assertThat(connectionFactory.createdConnections).isEmpty();
+        assertThat(endPoint.getConnection()).isSameAs(connection);
+        assertThat(connectionPromise.failure)
+                .isInstanceOf(SSLHandshakeException.class)
+                .hasMessage("Abruptly closed by peer");
         assertThat(endPoint.isInputShutdown()).isTrue();
-        assertThat(endPoint.isOpen()).isTrue();
+        assertThat(endPoint.isOutputShutdown()).isTrue();
+        assertThat(endPoint.isOpen()).isFalse();
     }
 
     @Test
@@ -171,7 +173,9 @@ public class Jetty_alpn_clientTest {
         connection.onOpen();
 
         assertThat(connection.getProtocol()).isEqualTo("h2");
-        assertThat(connectionPromise.failure).isNull();
+        assertThat(connectionPromise.failure)
+                .isInstanceOf(IOException.class)
+                .hasMessage("Unable to create protocol connection");
         assertThat(endPoint.getConnection()).isSameAs(connection);
         assertThat(endPoint.isOutputShutdown()).isTrue();
         assertThat(endPoint.isOpen()).isFalse();
