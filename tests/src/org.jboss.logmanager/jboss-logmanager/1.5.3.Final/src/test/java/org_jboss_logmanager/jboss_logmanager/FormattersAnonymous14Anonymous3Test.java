@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FormattersAnonymous12Anonymous2Test {
+public class FormattersAnonymous14Anonymous3Test {
 
     @Test
     void resourceActionUsesClassLoaderResourceWhenFrameClassHasAClassLoader() throws Throwable {
@@ -47,7 +47,7 @@ public class FormattersAnonymous12Anonymous2Test {
             final ClassLoader classLoader,
             final String resourceName
     ) throws Throwable {
-        final Class<?> enclosingFormatterStepClass = Class.forName(Formatters.class.getName() + "$11");
+        final Class<?> enclosingFormatterStepClass = Class.forName(Formatters.class.getName() + "$14");
         final Class<?> resourceActionClass = Class.forName(enclosingFormatterStepClass.getName() + "$3");
         final MethodHandle constructor = MethodHandles.privateLookupIn(resourceActionClass, MethodHandles.lookup())
                 .findConstructor(
@@ -68,7 +68,7 @@ public class FormattersAnonymous12Anonymous2Test {
         private String requestedResource;
 
         private TrackingResourceClassLoader(final String expectedResource, final URL resourceUrl) {
-            super(FormattersAnonymous12Anonymous2Test.class.getClassLoader());
+            super(FormattersAnonymous14Anonymous3Test.class.getClassLoader());
             this.expectedResource = expectedResource;
             this.resourceUrl = resourceUrl;
         }
