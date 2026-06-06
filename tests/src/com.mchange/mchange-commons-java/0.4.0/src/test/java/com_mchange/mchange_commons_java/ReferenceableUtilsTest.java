@@ -7,6 +7,7 @@
 package com_mchange.mchange_commons_java;
 
 import com.mchange.v2.naming.ReferenceableUtils;
+import com.mchange.v2.naming.SecurityConfigKey;
 import org.junit.jupiter.api.Test;
 
 import javax.naming.Context;
@@ -18,8 +19,28 @@ import java.util.Hashtable;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 public class ReferenceableUtilsTest {
+    @Test
+    void assertAcceptableNameAllowsLocalJndiNamesWithDefaultGuard() {
+        String nameGuardProperty = SecurityConfigKey.NAME_GUARD_CLASS_NAME;
+        String previousNameGuardClassName = System.getProperty(nameGuardProperty);
+        try {
+            System.clearProperty(nameGuardProperty);
+
+            assertThatCode(
+                () -> ReferenceableUtils.assertAcceptableName("java:comp/env/jdbc/example", null)
+            ).doesNotThrowAnyException();
+        } finally {
+            if (previousNameGuardClassName == null) {
+                System.clearProperty(nameGuardProperty);
+            } else {
+                System.setProperty(nameGuardProperty, previousNameGuardClassName);
+            }
+        }
+    }
+
     @Test
     void referenceToObjectInstantiatesConfiguredFactoryAndDelegatesReferenceResolution() throws Exception {
         Reference reference = new Reference(String.class.getName(), CapturingObjectFactory.class.getName(), null);
