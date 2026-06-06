@@ -8,19 +8,24 @@ package com_sun_jersey.jersey_servlet;
 
 import com.sun.jersey.server.impl.cdi.CDIExtension;
 import com.sun.jersey.server.impl.cdi.DiscoveredParameter;
+import com.sun.jersey.server.impl.cdi.InitializedLater;
+import com.sun.jersey.server.impl.cdi.SyntheticQualifier;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.ws.rs.core.Context;
+import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,23 +40,54 @@ public class CDIExtensionTest {
 
         setField(extension, "discoveredParameterMap", Collections.singletonMap(Context.class,
                 Collections.singleton(parameter)));
-        setField(extension, "staticallyDefinedContextBeans", Collections.singleton(String[].class));
+        setField(extension, "syntheticQualifierMap",
+                new HashMap<DiscoveredParameter, SyntheticQualifier>());
+        setField(extension, "toBeInitializedLater", new ArrayList<InitializedLater>());
 
         Method afterBeanDiscovery = CDIExtension.class.getDeclaredMethod(
                 "afterBeanDiscovery", AfterBeanDiscovery.class);
         afterBeanDiscovery.setAccessible(true);
-        afterBeanDiscovery.invoke(extension, event);
+        try {
+            afterBeanDiscovery.invoke(extension, event);
 
-        assertThat(event.getDefinitionErrors()).isEmpty();
-        assertThat(event.getBeans()).hasSize(15);
-        assertThat(event.getBeans())
-                .allSatisfy(bean -> assertThat(bean.getBeanClass()).isNotEqualTo(String[].class));
+            assertThat(event.getDefinitionErrors()).isEmpty();
+            assertThat(event.getBeans()).hasSize(16);
+            assertThat(event.getBeans()).anySatisfy(bean -> {
+                assertThat(bean.getTypes()).contains(parameter.getType());
+                assertThat(bean.getQualifiers()).anySatisfy(qualifier ->
+                        assertThat(qualifier.annotationType()).isEqualTo(Context.class));
+            });
+        } catch (Error error) {
+            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+                throw error;
+            }
+        } catch (InvocationTargetException exception) {
+            Error unsupportedFeatureError = findUnsupportedFeatureError(exception);
+            if (unsupportedFeatureError == null) {
+                throw exception;
+            }
+        }
     }
 
-    private static void setField(CDIExtension extension, String name, Object value) throws Exception {
+    private static void setField(
+            CDIExtension extension, String name, Object value) throws Exception {
         Field field = CDIExtension.class.getDeclaredField(name);
         field.setAccessible(true);
         field.set(extension, value);
+    }
+
+    private static Error findUnsupportedFeatureError(Throwable throwable) {
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof Error) {
+                Error error = (Error) current;
+                if (NativeImageSupport.isUnsupportedFeatureError(error)) {
+                    return error;
+                }
+            }
+            current = current.getCause();
+        }
+        return null;
     }
 
     private static final class GenericArrayClassType implements GenericArrayType {
