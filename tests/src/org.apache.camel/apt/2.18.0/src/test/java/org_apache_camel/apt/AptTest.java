@@ -23,8 +23,8 @@ import javax.annotation.processing.Processor;
 import javax.lang.model.SourceVersion;
 
 import org.apache.camel.tools.apt.DocumentationHelper;
-import org.apache.camel.tools.apt.EipAnnotationProcessor;
 import org.apache.camel.tools.apt.EndpointAnnotationProcessor;
+import org.apache.camel.tools.apt.ModelAnnotationProcessor;
 import org.apache.camel.tools.apt.helper.CollectionStringBuffer;
 import org.apache.camel.tools.apt.helper.EndpointHelper;
 import org.apache.camel.tools.apt.helper.IOHelper;
@@ -43,7 +43,7 @@ public class AptTest {
     void serviceLoaderDiscoversBothAnnotationProcessors() {
         List<Processor> processors = new ArrayList<>();
         for (Processor processor : ServiceLoader.load(Processor.class)) {
-            if (processor instanceof EndpointAnnotationProcessor || processor instanceof EipAnnotationProcessor) {
+            if (processor instanceof EndpointAnnotationProcessor || processor instanceof ModelAnnotationProcessor) {
                 processors.add(processor);
             }
         }
@@ -52,17 +52,17 @@ public class AptTest {
                 .extracting(processor -> processor.getClass().getName())
                 .containsExactlyInAnyOrder(
                         EndpointAnnotationProcessor.class.getName(),
-                        EipAnnotationProcessor.class.getName());
+                        ModelAnnotationProcessor.class.getName());
         assertThat(processors)
                 .allSatisfy(processor -> assertThat(processor.getSupportedSourceVersion())
-                        .isEqualTo(SourceVersion.RELEASE_7));
+                        .isEqualTo(SourceVersion.RELEASE_8));
         assertThat(processors)
                 .filteredOn(EndpointAnnotationProcessor.class::isInstance)
                 .singleElement()
                 .satisfies(processor -> assertThat(processor.getSupportedAnnotationTypes())
                         .containsExactly("org.apache.camel.spi.*"));
         assertThat(processors)
-                .filteredOn(EipAnnotationProcessor.class::isInstance)
+                .filteredOn(ModelAnnotationProcessor.class::isInstance)
                 .singleElement()
                 .satisfies(processor -> assertThat(processor.getSupportedAnnotationTypes())
                         .containsExactlyInAnyOrder("javax.xml.bind.annotation.*", "org.apache.camel.spi.Label"));
@@ -76,9 +76,10 @@ public class AptTest {
                 "enabled",
                 "boolean",
                 "true",
-                "",
+                "false",
                 " component startup flag",
                 "Whether the component is enabled.\n@param ignored",
+                false,
                 false,
                 "common",
                 "common",
@@ -93,6 +94,7 @@ public class AptTest {
                 "8080",
                 "Port number for the endpoint.",
                 false,
+                false,
                 "path",
                 "producer",
                 false,
@@ -104,6 +106,7 @@ public class AptTest {
                 "localhost",
                 "Main <b>host</b> for {@link java.net.URI}.",
                 false,
+                false,
                 "path",
                 "producer",
                 false,
@@ -114,6 +117,7 @@ public class AptTest {
                 "false",
                 "1000",
                 "Consumer-only path must be filtered for producer-only components.",
+                false,
                 false,
                 "consumer",
                 "consumer",
@@ -132,6 +136,7 @@ public class AptTest {
                 "",
                 false,
                 false,
+                false,
                 "producer",
                 "producer",
                 true,
@@ -146,6 +151,7 @@ public class AptTest {
                 "header.",
                 "headers.",
                 true,
+                false,
                 false,
                 "common",
                 "common",
@@ -162,13 +168,14 @@ public class AptTest {
                 "",
                 false,
                 false,
+                false,
                 "consumer",
                 "consumer",
                 false,
                 Collections.emptySet()));
 
         String schema = new EndpointAnnotationProcessor().createParameterJsonSchema(
-                component, componentOptions, endpointPaths, endpointOptions);
+                component, componentOptions, endpointPaths, endpointOptions, new String[] {"sample"});
 
         assertThat(schema)
                 .contains("\"component\": {")
@@ -247,6 +254,7 @@ public class AptTest {
                 "\"",
                 "Choose a kind.",
                 Boolean.FALSE,
+                Boolean.FALSE,
                 "common",
                 "common",
                 true,
@@ -263,6 +271,7 @@ public class AptTest {
                 "java.lang.Object",
                 "\\",
                 "Target endpoint.",
+                Boolean.FALSE,
                 Boolean.FALSE,
                 "advanced",
                 "advanced",
@@ -414,6 +423,7 @@ public class AptTest {
                 "/tmp",
                 "Input directory.",
                 true,
+                false,
                 "common",
                 "file",
                 true,
@@ -429,6 +439,7 @@ public class AptTest {
                 "scheduler.",
                 true,
                 false,
+                false,
                 "consumer",
                 "consumer",
                 false,
@@ -440,6 +451,7 @@ public class AptTest {
                 "false",
                 " routes exceptions to Camel error handler",
                 "Bridge consumer errors",
+                false,
                 false,
                 "consumer",
                 "consumer",
@@ -456,9 +468,11 @@ public class AptTest {
         assertThat(path.isEnumType()).isTrue();
         assertThat(path.getEnumValuesAsHtml()).isEqualTo("inbox<br/>outbox");
         assertThat(path).isEqualTo(new EndpointPath(
-                "directory", "int", "false", "", "", false, "advanced", "advanced", false, Collections.emptySet()));
+                "directory", "int", "false", "", "", false, false, "advanced", "advanced", false,
+                Collections.emptySet()));
         assertThat(path).hasSameHashCodeAs(new EndpointPath(
-                "directory", "int", "false", "", "", false, "advanced", "advanced", false, Collections.emptySet()));
+                "directory", "int", "false", "", "", false, false, "advanced", "advanced", false,
+                Collections.emptySet()));
 
         assertThat(option.getOptionalPrefix()).isEqualTo("consumer.");
         assertThat(option.getPrefix()).isEqualTo("scheduler.");
@@ -466,14 +480,14 @@ public class AptTest {
         assertThat(option.getDocumentationWithNotes())
                 .isEqualTo("Delay between polls. Default value notice:  milliseconds");
         assertThat(option).isEqualTo(new EndpointOption(
-                "delay", "int", "false", "", "", "", "", "", false, false, "common", "common", false,
+                "delay", "int", "false", "", "", "", "", "", false, false, false, "common", "common", false,
                 Collections.emptySet()));
 
         assertThat(componentOption.getName()).isEqualTo("bridgeErrorHandler");
         assertThat(componentOption.getDocumentationWithNotes())
                 .isEqualTo("Bridge consumer errors. Default value notice:  routes exceptions to Camel error handler");
         assertThat(componentOption).isEqualTo(new ComponentOption(
-                "bridgeErrorHandler", "boolean", "false", "", "", "", false, "common", "common", false,
+                "bridgeErrorHandler", "boolean", "false", "", "", "", false, false, "common", "common", false,
                 Collections.emptySet()));
     }
 
@@ -484,6 +498,7 @@ public class AptTest {
                 "false",
                 "",
                 "Path documentation.",
+                false,
                 false,
                 "path",
                 "common",
@@ -501,6 +516,7 @@ public class AptTest {
                 "Option documentation.",
                 "",
                 "",
+                false,
                 false,
                 false,
                 group,
