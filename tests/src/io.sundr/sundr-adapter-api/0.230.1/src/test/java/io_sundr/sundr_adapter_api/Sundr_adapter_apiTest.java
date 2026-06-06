@@ -62,6 +62,20 @@ public class Sundr_adapter_apiTest {
     }
 
     @Test
+    void adapterContextExposesUnmodifiableAttributesView() {
+        AttributeKey<String> sourceAttribute = new AttributeKey<>("source", String.class);
+        Map<AttributeKey, Object> attributes = new HashMap<>();
+        attributes.put(sourceAttribute, "adapter-api");
+        AdapterContext context = AdapterContext.create(DefinitionRepository.createRepository(), attributes);
+
+        Map<AttributeKey, Object> contextAttributes = context.getAttributes();
+
+        assertThat(contextAttributes).containsEntry(sourceAttribute, "adapter-api");
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> contextAttributes.put(new AttributeKey<>("other", String.class), "value"));
+    }
+
+    @Test
     void adapterDefaultMethodsDelegateToConfiguredFunctions() {
         TestAdapter adapter = new TestAdapter();
 
