@@ -11,6 +11,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
+import io.vertx.core.file.AsyncFile;
+import io.vertx.core.file.OpenOptions;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
@@ -116,6 +118,52 @@ public class Vertx_web_clientTest {
             assertThat(responseBody.getString("message")).isEqualTo("hello");
             assertThat(responseBody.getInteger("count")).isEqualTo(3);
         } finally {
+            close(client, server, vertx);
+        }
+    }
+
+    @Test
+    void streamsRequestBodyFromReadStream() throws Exception {
+        Vertx vertx = Vertx.vertx();
+        HttpServer server = null;
+        WebClient client = null;
+        AsyncFile sourceFile = null;
+        Path streamSource = null;
+        try {
+            server = startServer(vertx, request -> request.body().onComplete(bodyResult -> {
+                if (bodyResult.failed()) {
+                    request.response().setStatusCode(500).end(bodyResult.cause().getMessage());
+                    return;
+                }
+                JsonObject responseBody = new JsonObject()
+                        .put("contentType", request.getHeader("content-type"))
+                        .put("body", bodyResult.result().toString(StandardCharsets.UTF_8.name()));
+                request.response()
+                        .putHeader("content-type", "application/json")
+                        .end(responseBody.encode());
+            }));
+            client = createClient(vertx, server.actualPort());
+            streamSource = Files.createTempFile("vertx-web-client-stream", ".txt");
+            Files.writeString(streamSource, "streamed-request-body", StandardCharsets.UTF_8);
+            sourceFile = await(vertx.fileSystem().open(
+                    streamSource.toString(),
+                    new OpenOptions().setRead(true).setWrite(false)));
+
+            HttpResponse<JsonObject> response = await(client.post("/stream")
+                    .putHeader("content-type", "text/plain")
+                    .as(BodyCodec.jsonObject())
+                    .expect(ResponsePredicate.SC_OK)
+                    .sendStream(sourceFile));
+
+            assertThat(response.body().getString("contentType")).isEqualTo("text/plain");
+            assertThat(response.body().getString("body")).isEqualTo("streamed-request-body");
+        } finally {
+            if (sourceFile != null) {
+                await(sourceFile.close());
+            }
+            if (streamSource != null) {
+                Files.deleteIfExists(streamSource);
+            }
             close(client, server, vertx);
         }
     }
