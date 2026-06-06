@@ -105,6 +105,41 @@ public class Resourcecify_annotationsTest {
                 .doesNotContainKey("sample/resourcecify/PlainSource.java");
     }
 
+    @Test
+    void resourcecifyProcessorCopiesAnnotatedInterfaceAndEnumSources(@TempDir Path sourceDirectory)
+            throws IOException {
+        String interfaceSource = """
+                package sample.resourcecify.types;
+
+                import io.sundr.resourcecify.annotations.Resourcecify;
+
+                @Resourcecify
+                public interface AnnotatedContract {
+                    String value();
+                }
+                """;
+        String enumSource = """
+                package sample.resourcecify.types;
+
+                import io.sundr.resourcecify.annotations.Resourcecify;
+
+                @Resourcecify
+                public enum AnnotatedKind {
+                    FIRST,
+                    SECOND
+                }
+                """;
+        writeSource(sourceDirectory, "sample.resourcecify.types.AnnotatedContract", interfaceSource);
+        writeSource(sourceDirectory, "sample.resourcecify.types.AnnotatedKind", enumSource);
+
+        CompilationResult result = compileWithDiscoveredProcessor(sourceDirectory);
+
+        assertThat(result.successful()).as(result.diagnosticText()).isTrue();
+        assertThat(result.generatedResources())
+                .containsEntry("sample/resourcecify/types/AnnotatedContract.java", interfaceSource)
+                .containsEntry("sample/resourcecify/types/AnnotatedKind.java", enumSource);
+    }
+
     private static Processor findResourcecifyProcessor() {
         for (Processor processor : ServiceLoader.load(Processor.class)) {
             if (PROCESSOR_CLASS_NAME.equals(processor.getClass().getName())) {
