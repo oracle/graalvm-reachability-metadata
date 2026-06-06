@@ -37,6 +37,14 @@ import io.fabric8.kubernetes.api.model.authentication.TokenRequest;
 import io.fabric8.kubernetes.api.model.authentication.TokenRequestBuilder;
 import io.fabric8.kubernetes.api.model.authentication.TokenReview;
 import io.fabric8.kubernetes.api.model.authentication.TokenReviewBuilder;
+import io.fabric8.kubernetes.api.model.authorization.v1.LocalSubjectAccessReview;
+import io.fabric8.kubernetes.api.model.authorization.v1.LocalSubjectAccessReviewBuilder;
+import io.fabric8.kubernetes.api.model.authorization.v1.SelfSubjectAccessReview;
+import io.fabric8.kubernetes.api.model.authorization.v1.SelfSubjectAccessReviewBuilder;
+import io.fabric8.kubernetes.api.model.authorization.v1.SelfSubjectRulesReview;
+import io.fabric8.kubernetes.api.model.authorization.v1.SelfSubjectRulesReviewBuilder;
+import io.fabric8.kubernetes.api.model.authorization.v1.SubjectAccessReview;
+import io.fabric8.kubernetes.api.model.authorization.v1.SubjectAccessReviewBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -740,6 +748,158 @@ public class Kubernetes_model_admissionregistrationTest {
                 .isEqualTo("system:serviceaccount:production:builder");
         assertThat(selfSubjectReview.getStatus().getUserInfo().getExtra())
                 .containsEntry("authentication.kubernetes.io/credential-id", List.of("jti=token-request-1"));
+    }
+
+    @Test
+    void authorizationReviewModelsSupportResourceNonResourceAndRuleDecisions() {
+        SubjectAccessReview accessReview = new SubjectAccessReviewBuilder()
+                .withNewMetadata()
+                    .withName("deployment-scale-review")
+                .endMetadata()
+                .withNewSpec()
+                    .withUser("system:serviceaccount:production:builder")
+                    .withUid("service-account-uid")
+                    .withGroups("system:serviceaccounts", "system:authenticated")
+                    .addToExtra("scopes", List.of("deploy"))
+                    .withNewResourceAttributes()
+                        .withGroup("apps")
+                        .withVersion("v1")
+                        .withResource("deployments")
+                        .withSubresource("scale")
+                        .withNamespace("production")
+                        .withName("checkout")
+                        .withVerb("update")
+                        .withNewFieldSelector()
+                            .withRawSelector("metadata.name=checkout")
+                        .endFieldSelector()
+                        .withNewLabelSelector()
+                            .withRawSelector("team=platform")
+                        .endLabelSelector()
+                    .endResourceAttributes()
+                .endSpec()
+                .withNewStatus()
+                    .withAllowed(true)
+                    .withDenied(false)
+                    .withReason("matching role binding allows scaling")
+                .endStatus()
+                .build();
+
+        assertThat(accessReview).isInstanceOf(HasMetadata.class);
+        assertThat(accessReview.getApiVersion()).isEqualTo("authorization.k8s.io/v1");
+        assertThat(accessReview.getKind()).isEqualTo("SubjectAccessReview");
+        assertThat(accessReview.getSpec().getUser())
+                .isEqualTo("system:serviceaccount:production:builder");
+        assertThat(accessReview.getSpec().getGroups())
+                .containsExactly("system:serviceaccounts", "system:authenticated");
+        assertThat(accessReview.getSpec().getExtra()).containsEntry("scopes", List.of("deploy"));
+        assertThat(accessReview.getSpec().getResourceAttributes().getResource()).isEqualTo("deployments");
+        assertThat(accessReview.getSpec().getResourceAttributes().getSubresource()).isEqualTo("scale");
+        assertThat(accessReview.getSpec().getResourceAttributes().getFieldSelector().getRawSelector())
+                .isEqualTo("metadata.name=checkout");
+        assertThat(accessReview.getSpec().getResourceAttributes().getLabelSelector().getRawSelector())
+                .isEqualTo("team=platform");
+        assertThat(accessReview.getStatus().getAllowed()).isTrue();
+        assertThat(accessReview.getStatus().getDenied()).isFalse();
+
+        SubjectAccessReview changedAccessReview = accessReview.toBuilder()
+                .editSpec()
+                    .editResourceAttributes()
+                        .withVerb("get")
+                    .endResourceAttributes()
+                .endSpec()
+                .editStatus()
+                    .withAllowed(false)
+                    .withDenied(true)
+                    .withReason("scale permission does not imply read permission")
+                .endStatus()
+                .build();
+        assertThat(changedAccessReview.getSpec().getResourceAttributes().getVerb()).isEqualTo("get");
+        assertThat(changedAccessReview.getStatus().getAllowed()).isFalse();
+        assertThat(changedAccessReview.getStatus().getReason()).contains("read permission");
+        assertThat(accessReview.getSpec().getResourceAttributes().getVerb()).isEqualTo("update");
+
+        SelfSubjectAccessReview selfSubjectAccessReview = new SelfSubjectAccessReviewBuilder()
+                .withNewMetadata()
+                    .withName("current-user-healthz-review")
+                .endMetadata()
+                .withNewSpec()
+                    .withNewNonResourceAttributes()
+                        .withPath("/healthz")
+                        .withVerb("get")
+                    .endNonResourceAttributes()
+                .endSpec()
+                .withNewStatus()
+                    .withAllowed(true)
+                    .withReason("non resource URL is available to authenticated users")
+                .endStatus()
+                .build();
+
+        assertThat(selfSubjectAccessReview.getApiVersion()).isEqualTo("authorization.k8s.io/v1");
+        assertThat(selfSubjectAccessReview.getKind()).isEqualTo("SelfSubjectAccessReview");
+        assertThat(selfSubjectAccessReview.getSpec().getNonResourceAttributes().getPath()).isEqualTo("/healthz");
+        assertThat(selfSubjectAccessReview.getStatus().getAllowed()).isTrue();
+
+        LocalSubjectAccessReview localSubjectAccessReview = new LocalSubjectAccessReviewBuilder()
+                .withNewMetadata()
+                    .withName("pod-reader-review")
+                    .withNamespace("production")
+                .endMetadata()
+                .withNewSpec()
+                    .withUser("developer")
+                    .withGroups("developers")
+                    .withNewResourceAttributes()
+                        .withGroup("")
+                        .withVersion("v1")
+                        .withResource("pods")
+                        .withNamespace("production")
+                        .withName("checkout")
+                        .withVerb("get")
+                    .endResourceAttributes()
+                .endSpec()
+                .withNewStatus()
+                    .withAllowed(false)
+                    .withDenied(true)
+                    .withReason("namespace role is missing")
+                .endStatus()
+                .build();
+
+        assertThat(localSubjectAccessReview.getKind()).isEqualTo("LocalSubjectAccessReview");
+        assertThat(localSubjectAccessReview.getMetadata().getNamespace()).isEqualTo("production");
+        assertThat(localSubjectAccessReview.getSpec().getResourceAttributes().getName()).isEqualTo("checkout");
+        assertThat(localSubjectAccessReview.getStatus().getDenied()).isTrue();
+
+        SelfSubjectRulesReview rulesReview = new SelfSubjectRulesReviewBuilder()
+                .withNewMetadata()
+                    .withName("current-user-rules")
+                .endMetadata()
+                .withNewSpec()
+                    .withNamespace("production")
+                .endSpec()
+                .withNewStatus()
+                    .withIncomplete(false)
+                    .addNewResourceRule()
+                        .withApiGroups("", "apps")
+                        .withResources("pods", "deployments")
+                        .withResourceNames("checkout")
+                        .withVerbs("get", "list", "watch")
+                    .endResourceRule()
+                    .addNewNonResourceRule()
+                        .withNonResourceURLs("/healthz", "/readyz")
+                        .withVerbs("get")
+                    .endNonResourceRule()
+                .endStatus()
+                .build();
+
+        assertThat(rulesReview.getApiVersion()).isEqualTo("authorization.k8s.io/v1");
+        assertThat(rulesReview.getKind()).isEqualTo("SelfSubjectRulesReview");
+        assertThat(rulesReview.getSpec().getNamespace()).isEqualTo("production");
+        assertThat(rulesReview.getStatus().getIncomplete()).isFalse();
+        assertThat(rulesReview.getStatus().getResourceRules().get(0).getResources())
+                .containsExactly("pods", "deployments");
+        assertThat(rulesReview.getStatus().getResourceRules().get(0).getVerbs())
+                .containsExactly("get", "list", "watch");
+        assertThat(rulesReview.getStatus().getNonResourceRules().get(0).getNonResourceURLs())
+                .containsExactly("/healthz", "/readyz");
     }
 
     @Test
