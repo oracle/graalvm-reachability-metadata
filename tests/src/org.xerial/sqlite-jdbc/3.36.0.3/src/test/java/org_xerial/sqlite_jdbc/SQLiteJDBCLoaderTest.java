@@ -6,6 +6,7 @@
  */
 package org_xerial.sqlite_jdbc;
 
+import java.net.URL;
 import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,17 @@ public class SQLiteJDBCLoaderTest {
             restoreProperty("org.sqlite.lib.path", previousLibPath);
             restoreProperty("org.sqlite.lib.name", previousLibName);
         }
+    }
+
+    @Test
+    public void packagedNativeLibrariesRemainReachableForOtherSupportedPlatforms() {
+        URL windowsResource = SQLiteJDBCLoader.class.getResource("/org/sqlite/native/Windows/x86_64/sqlitejdbc.dll");
+        URL linuxMuslResource = SQLiteJDBCLoader.class.getResource("/org/sqlite/native/Linux-Musl/x86_64/libsqlitejdbc.so");
+        URL macResource = SQLiteJDBCLoader.class.getResource("/org/sqlite/native/Mac/aarch64/libsqlitejdbc.jnilib");
+
+        assertThat(windowsResource).isNotNull();
+        assertThat(linuxMuslResource).isNotNull();
+        assertThat(macResource).isNotNull();
     }
 
     private static void restoreProperty(String name, String value) {
