@@ -6,33 +6,32 @@
  */
 package io_swagger.swagger_annotations;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiKeyAuthDefinition;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.Authorization;
-import io.swagger.annotations.AuthorizationScope;
-import io.swagger.annotations.BasicAuthDefinition;
-import io.swagger.annotations.Contact;
-import io.swagger.annotations.Example;
-import io.swagger.annotations.ExampleProperty;
-import io.swagger.annotations.Extension;
-import io.swagger.annotations.ExtensionProperty;
-import io.swagger.annotations.ExternalDocs;
-import io.swagger.annotations.Info;
-import io.swagger.annotations.License;
-import io.swagger.annotations.OAuth2Definition;
-import io.swagger.annotations.ResponseHeader;
-import io.swagger.annotations.Scope;
-import io.swagger.annotations.SecurityDefinition;
-import io.swagger.annotations.SwaggerDefinition;
-import io.swagger.annotations.Tag;
+import io.swagger.oas.annotations.ExternalDocumentation;
+import io.swagger.oas.annotations.Operation;
+import io.swagger.oas.annotations.Parameter;
+import io.swagger.oas.annotations.callbacks.Callback;
+import io.swagger.oas.annotations.enums.Explode;
+import io.swagger.oas.annotations.extensions.Extension;
+import io.swagger.oas.annotations.extensions.ExtensionProperty;
+import io.swagger.oas.annotations.info.Contact;
+import io.swagger.oas.annotations.info.Info;
+import io.swagger.oas.annotations.info.License;
+import io.swagger.oas.annotations.links.Link;
+import io.swagger.oas.annotations.links.LinkParameters;
+import io.swagger.oas.annotations.media.ArraySchema;
+import io.swagger.oas.annotations.media.Content;
+import io.swagger.oas.annotations.media.DiscriminatorMapping;
+import io.swagger.oas.annotations.media.ExampleObject;
+import io.swagger.oas.annotations.media.Schema;
+import io.swagger.oas.annotations.parameters.RequestBody;
+import io.swagger.oas.annotations.responses.ApiResponse;
+import io.swagger.oas.annotations.security.OAuthFlow;
+import io.swagger.oas.annotations.security.OAuthFlows;
+import io.swagger.oas.annotations.security.Scopes;
+import io.swagger.oas.annotations.security.SecurityRequirement;
+import io.swagger.oas.annotations.security.SecurityScheme;
+import io.swagger.oas.annotations.servers.Server;
+import io.swagger.oas.annotations.servers.ServerVariable;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
@@ -44,16 +43,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class Swagger_annotationsTest {
     @Test
-    void swaggerDefinitionCarriesNestedDocumentationAndSecurityMetadata() {
-        SwaggerDefinition definition = AnnotatedPetApi.class.getAnnotationsByType(SwaggerDefinition.class)[0];
+    void infoAndSecurityAnnotationsRetainDocumentationAndAuthenticationMetadata() {
+        Info info = AnnotatedPetApi.class.getAnnotationsByType(Info.class)[0];
 
-        assertThat(definition.host()).isEqualTo("api.example.test");
-        assertThat(definition.basePath()).isEqualTo("/v1");
-        assertThat(definition.consumes()).containsExactly("application/json");
-        assertThat(definition.produces()).containsExactly("application/json", "application/problem+json");
-        assertThat(definition.schemes()).containsExactly(SwaggerDefinition.Scheme.HTTP, SwaggerDefinition.Scheme.HTTPS);
-
-        Info info = definition.info();
         assertThat(info.title()).isEqualTo("Pet API");
         assertThat(info.version()).isEqualTo("1.0");
         assertThat(info.description()).isEqualTo("Endpoints for looking up pets");
@@ -63,416 +55,289 @@ public class Swagger_annotationsTest {
         assertThat(info.contact().email()).isEqualTo("support@example.test");
         assertThat(info.license().name()).isEqualTo("Apache-2.0");
         assertThat(info.license().url()).isEqualTo("https://www.apache.org/licenses/LICENSE-2.0");
-        assertThat(info.extensions()).hasSize(1);
-        assertThat(info.extensions()[0].name()).isEqualTo("x-info");
-        assertThat(info.extensions()[0].properties()[0].name()).isEqualTo("audience");
-        assertThat(info.extensions()[0].properties()[0].value()).isEqualTo("integration-tests");
-        assertThat(info.extensions()[0].properties()[0].parseValue()).isTrue();
 
-        Tag tag = definition.tags()[0];
-        assertThat(tag.name()).isEqualTo("pets");
-        assertThat(tag.description()).isEqualTo("Pet operations");
-        assertThat(tag.externalDocs().value()).isEqualTo("Pet guide");
-        assertThat(tag.externalDocs().url()).isEqualTo("https://example.test/docs/pets");
-        assertThat(tag.extensions()[0].properties()[0].value()).isEqualTo("owned-by-search-team");
+        SecurityScheme oauth = AnnotatedPetApi.class.getAnnotationsByType(SecurityScheme.class)[0];
+        assertThat(oauth.type()).isEqualTo("oauth2");
+        assertThat(oauth.name()).isEqualTo("oauth2");
+        assertThat(oauth.description()).isEqualTo("OAuth2 authorization code flow");
+        OAuthFlow authorizationCode = oauth.flows().authorizationCode();
+        assertThat(authorizationCode.authorizationUrl()).isEqualTo("https://auth.example.test/authorize");
+        assertThat(authorizationCode.tokenUrl()).isEqualTo("https://auth.example.test/token");
+        assertThat(authorizationCode.refreshUrl()).isEqualTo("https://auth.example.test/refresh");
+        assertThat(authorizationCode.scopes().name()).isEqualTo("pets:read");
+        assertThat(authorizationCode.scopes().description()).isEqualTo("Read pet records");
 
-        SecurityDefinition securityDefinition = definition.securityDefinition();
-        assertThat(securityDefinition.oAuth2Definitions()).hasSize(1);
-        OAuth2Definition oauth = securityDefinition.oAuth2Definitions()[0];
-        assertThat(oauth.key()).isEqualTo("oauth2");
-        assertThat(oauth.flow()).isEqualTo(OAuth2Definition.Flow.ACCESS_CODE);
-        assertThat(oauth.authorizationUrl()).isEqualTo("https://auth.example.test/authorize");
-        assertThat(oauth.tokenUrl()).isEqualTo("https://auth.example.test/token");
-        assertThat(oauth.scopes()[0].name()).isEqualTo("pets:read");
-
-        assertThat(securityDefinition.apiKeyAuthDefinitions()).hasSize(1);
-        ApiKeyAuthDefinition apiKey = securityDefinition.apiKeyAuthDefinitions()[0];
-        assertThat(apiKey.key()).isEqualTo("apiKey");
-        assertThat(apiKey.in()).isEqualTo(ApiKeyAuthDefinition.ApiKeyLocation.HEADER);
-        assertThat(apiKey.name()).isEqualTo("X-Api-Key");
-
-        assertThat(securityDefinition.basicAuthDefinitions()).hasSize(1);
-        BasicAuthDefinition basicAuth = securityDefinition.basicAuthDefinitions()[0];
-        assertThat(basicAuth.key()).isEqualTo("basic");
-        assertThat(basicAuth.description()).isEqualTo("Basic authentication for local tools");
-
-        assertThat(definition.externalDocs().value()).isEqualTo("Complete API documentation");
-        assertThat(definition.externalDocs().url()).isEqualTo("https://example.test/docs");
+        SecurityRequirement requirement = AnnotatedPetApi.class.getAnnotationsByType(SecurityRequirement.class)[0];
+        assertThat(requirement.name()).isEqualTo("oauth2");
+        assertThat(requirement.scopes()).containsExactly("pets:read");
     }
 
     @Test
-    void resourceAndOperationAnnotationsRetainCollectionsExamplesExtensions() throws NoSuchMethodException {
-        Api api = PetResource.class.getAnnotationsByType(Api.class)[0];
-        assertThat(api.value()).isEqualTo("/pets");
-        assertThat(api.tags()).containsExactly("pets", "search");
-        assertThat(api.produces()).isEqualTo("application/json");
-        assertThat(api.consumes()).isEqualTo("application/json");
-        assertThat(api.protocols()).isEqualTo("https");
-        assertThat(api.hidden()).isFalse();
-        assertThat(api.authorizations()[0].value()).isEqualTo("oauth2");
-        assertThat(api.authorizations()[0].scopes()[0].scope()).isEqualTo("pets:read");
-
+    void operationAnnotationsRetainParametersResponsesExamplesExtensionsAndServers() throws NoSuchMethodException {
         Method findPets = PetResource.class.getDeclaredMethod("findPets", String.class, int.class);
-        ApiOperation operation = findPets.getAnnotationsByType(ApiOperation.class)[0];
-        assertThat(operation.value()).isEqualTo("Find pets");
-        assertThat(operation.notes()).isEqualTo("Returns a bounded collection of pets matching the requested type");
-        assertThat(operation.tags()).containsExactly("pets");
-        assertThat(operation.response()).isEqualTo(Pet.class);
-        assertThat(operation.responseContainer()).isEqualTo("List");
-        assertThat(operation.responseReference()).isEqualTo("#/definitions/Pet");
-        assertThat(operation.httpMethod()).isEqualTo("GET");
-        assertThat(operation.nickname()).isEqualTo("findPetsByType");
-        assertThat(operation.produces()).isEqualTo("application/json");
-        assertThat(operation.consumes()).isEqualTo("application/json");
-        assertThat(operation.protocols()).isEqualTo("https");
-        assertThat(operation.hidden()).isFalse();
-        assertThat(operation.code()).isEqualTo(200);
-        assertThat(operation.ignoreJsonView()).isTrue();
-        assertThat(operation.authorizations()[0].scopes()[0].description()).isEqualTo("Read pet records");
-        assertThat(operation.responseHeaders()[0].name()).isEqualTo("X-Result-Count");
-        assertThat(operation.responseHeaders()[0].response()).isEqualTo(Integer.class);
-        assertThat(operation.responseHeaders()[0].responseContainer()).isEqualTo("List");
+        Operation operation = findPets.getAnnotationsByType(Operation.class)[0];
+
+        assertThat(operation.method()).isEqualTo("GET");
+        assertThat(operation.tags()).containsExactly("pets", "search");
+        assertThat(operation.summary()).isEqualTo("Find pets");
+        assertThat(operation.description())
+                .isEqualTo("Returns a bounded collection of pets matching the requested type");
+        assertThat(operation.operationId()).isEqualTo("findPetsByType");
+        assertThat(operation.deprecated()).isFalse();
+        assertThat(operation.externalDocs().description()).isEqualTo("Pet guide");
+        assertThat(operation.externalDocs().url()).isEqualTo("https://example.test/docs/pets");
+        assertThat(operation.extensions()[0].name()).isEqualTo("x-operation");
+        assertThat(operation.extensions()[0].properties()[0].name()).isEqualTo("cached");
         assertThat(operation.extensions()[0].properties()[0].value()).isEqualTo("true");
 
-        ApiResponses responses = findPets.getAnnotationsByType(ApiResponses.class)[0];
-        assertThat(responses.value()).hasSize(2);
-        assertThat(responses.value()[0].code()).isEqualTo(200);
-        assertThat(responses.value()[0].message()).isEqualTo("Pets were returned");
-        assertThat(responses.value()[0].response()).isEqualTo(Pet.class);
-        assertThat(responses.value()[0].responseContainer()).isEqualTo("List");
-        assertThat(responses.value()[0].responseHeaders()[0].name()).isEqualTo("X-Trace-Id");
-        assertThat(responses.value()[0].examples().value()[0].mediaType()).isEqualTo("application/json");
-        assertThat(responses.value()[0].examples().value()[0].value()).contains("Fido");
-        assertThat(responses.value()[1].code()).isEqualTo(404);
-        assertThat(responses.value()[1].reference()).isEqualTo("#/responses/NotFound");
+        Parameter operationParameter = operation.parameters()[0];
+        assertThat(operationParameter.name()).isEqualTo("type");
+        assertThat(operationParameter.in()).isEqualTo("query");
+        assertThat(operationParameter.description()).isEqualTo("Pet type filter");
+        assertThat(operationParameter.required()).isTrue();
+        assertThat(operationParameter.allowEmptyValue()).isFalse();
+        assertThat(operationParameter.style()).isEqualTo("form");
+        assertThat(operationParameter.explode()).isEqualTo(Explode.FALSE);
+        assertThat(operationParameter.schema().type()).isEqualTo("string");
+        assertThat(operationParameter.schema()._enum()).containsExactly("dog", "cat", "bird");
+        assertThat(operationParameter.content()[0].mediaType()).isEqualTo("text/plain");
+        assertThat(operationParameter.content()[0].examples()[0].value()).isEqualTo("dog");
 
-        ApiImplicitParams implicitParams = findPets.getAnnotationsByType(ApiImplicitParams.class)[0];
-        assertThat(implicitParams.value()).hasSize(2);
-        ApiImplicitParam filter = implicitParams.value()[0];
-        assertThat(filter.name()).isEqualTo("type");
-        assertThat(filter.value()).isEqualTo("Pet type filter");
-        assertThat(filter.defaultValue()).isEqualTo("dog");
-        assertThat(filter.allowableValues()).isEqualTo("dog,cat,bird");
-        assertThat(filter.required()).isTrue();
-        assertThat(filter.access()).isEqualTo("public");
-        assertThat(filter.allowMultiple()).isFalse();
-        assertThat(filter.dataType()).isEqualTo("string");
-        assertThat(filter.dataTypeClass()).isEqualTo(String.class);
-        assertThat(filter.paramType()).isEqualTo("query");
-        assertThat(filter.example()).isEqualTo("dog");
-        assertThat(filter.examples().value()[0].value()).isEqualTo("cat");
-        assertThat(filter.type()).isEqualTo("string");
-        assertThat(filter.format()).isEqualTo("slug");
-        assertThat(filter.allowEmptyValue()).isFalse();
-        assertThat(filter.readOnly()).isFalse();
-        assertThat(filter.collectionFormat()).isEqualTo("csv");
+        ApiResponse ok = operation.responses()[0];
+        assertThat(ok.responseCode()).isEqualTo("200");
+        assertThat(ok.description()).isEqualTo("Pets were returned");
+        assertThat(ok.content().mediaType()).isEqualTo("application/json");
+        assertThat(ok.content().schema().implementation()).isEqualTo(Pet.class);
+        assertThat(ok.content().examples()[0].name()).isEqualTo("pets");
+        assertThat(ok.content().examples()[0].value()).contains("Fido");
+        assertThat(ok.links()[0].name()).isEqualTo("firstPet");
+        assertThat(ok.links()[0].operationId()).isEqualTo("getPetById");
+        assertThat(ok.links()[0].parameters().name()).isEqualTo("id");
+        assertThat(ok.links()[0].parameters().expression()).isEqualTo("$response.body#/0/id");
+
+        assertThat(operation.responses()[1].responseCode()).isEqualTo("404");
+        assertThat(operation.responses()[1].description()).isEqualTo("No pets matched");
+        assertThat(operation.servers()[0].url()).isEqualTo("https://api.example.test/{version}");
+        assertThat(operation.servers()[0].description()).isEqualTo("Versioned production endpoint");
+        assertThat(operation.servers()[0].variables()[0].name()).isEqualTo("version");
+        assertThat(operation.servers()[0].variables()[0].allowableValues()).containsExactly("v1", "v2");
+        assertThat(operation.servers()[0].variables()[0].value()).isEqualTo("v1");
     }
 
     @Test
-    void modelPropertyAndParameterAnnotationsRetainSchemaDetails() throws NoSuchFieldException, NoSuchMethodException {
-        ApiModel model = Pet.class.getAnnotationsByType(ApiModel.class)[0];
-        assertThat(model.value()).isEqualTo("Pet");
+    void parameterAndRequestBodyAnnotationsRetainRequestMetadata() throws NoSuchMethodException {
+        Method createPet = PetResource.class.getDeclaredMethod("createPet", Pet.class, String.class);
+
+        RequestBody requestBody = createPet.getParameters()[0].getAnnotationsByType(RequestBody.class)[0];
+        assertThat(requestBody.description()).isEqualTo("Pet payload");
+        assertThat(requestBody.required()).isTrue();
+        assertThat(requestBody.content()[0].mediaType()).isEqualTo("application/json");
+        assertThat(requestBody.content()[0].schema().implementation()).isEqualTo(Pet.class);
+        assertThat(requestBody.content()[0].examples()[0].summary()).isEqualTo("New pet");
+
+        Parameter correlationId = createPet.getParameters()[1].getAnnotationsByType(Parameter.class)[0];
+        assertThat(correlationId.name()).isEqualTo("X-Correlation-Id");
+        assertThat(correlationId.in()).isEqualTo("header");
+        assertThat(correlationId.description()).isEqualTo("Correlation identifier");
+        assertThat(correlationId.required()).isFalse();
+        assertThat(correlationId.deprecated()).isFalse();
+        assertThat(correlationId.allowReserved()).isTrue();
+        assertThat(correlationId.schema().type()).isEqualTo("string");
+        assertThat(correlationId.schema().format()).isEqualTo("uuid");
+    }
+
+    @Test
+    void schemaArrayAndCallbackAnnotationsRetainModelDetails() throws NoSuchFieldException, NoSuchMethodException {
+        Schema model = Pet.class.getAnnotationsByType(Schema.class)[0];
+        assertThat(model.name()).isEqualTo("Pet");
         assertThat(model.description()).isEqualTo("A pet visible through the API");
-        assertThat(model.parent()).isEqualTo(BasePet.class);
-        assertThat(model.discriminator()).isEqualTo("kind");
-        assertThat(model.subTypes()).containsExactly(Dog.class, Cat.class);
-        assertThat(model.reference()).isEqualTo("#/definitions/Pet");
+        assertThat(model.implementation()).isEqualTo(Pet.class);
+        assertThat(model.allOf()).containsExactly(BasePet.class);
+        assertThat(model.oneOf()).containsExactly(Dog.class, Cat.class);
+        assertThat(model.requiredProperties()).containsExactly("id", "name");
+        assertThat(model.discriminatorProperty()).isEqualTo("kind");
+        assertThat(model.discriminatorMapping()[0].value()).isEqualTo("dog");
+        assertThat(model.discriminatorMapping()[0].schema()).isEqualTo(Dog.class);
+        assertThat(model.externalDocs().description()).isEqualTo("Pet schema guide");
+        assertThat(model.externalDocs().url()).isEqualTo("https://example.test/docs/schema/pet");
 
         Field nameField = Pet.class.getDeclaredField("name");
-        ApiModelProperty name = nameField.getAnnotationsByType(ApiModelProperty.class)[0];
-        assertThat(name.value()).isEqualTo("Display name");
+        Schema name = nameField.getAnnotationsByType(Schema.class)[0];
         assertThat(name.name()).isEqualTo("name");
-        assertThat(name.allowableValues()).isEqualTo("Fido,Garfield");
-        assertThat(name.access()).isEqualTo("public");
-        assertThat(name.notes()).isEqualTo("Names are shown in search results");
-        assertThat(name.dataType()).isEqualTo("string");
-        assertThat(name.required()).isTrue();
-        assertThat(name.position()).isEqualTo(1);
-        assertThat(name.hidden()).isFalse();
+        assertThat(name.title()).isEqualTo("Display name");
+        assertThat(name.description()).isEqualTo("Names are shown in search results");
+        assertThat(name.type()).isEqualTo("string");
+        assertThat(name._enum()).containsExactly("Fido", "Garfield");
         assertThat(name.example()).isEqualTo("Fido");
-        assertThat(name.accessMode()).isEqualTo(ApiModelProperty.AccessMode.READ_WRITE);
-        assertThat(name.reference()).isEqualTo("#/definitions/Pet/properties/name");
-        assertThat(name.allowEmptyValue()).isFalse();
-        assertThat(name.extensions()[0].properties()[0].name()).isEqualTo("sortable");
+        assertThat(name.required()).isTrue();
+        assertThat(name.readOnly()).isFalse();
+        assertThat(name.writeOnly()).isFalse();
+        assertThat(name.ref()).isEqualTo("#/components/schemas/Pet/properties/name");
 
-        Method getIdentifier = Pet.class.getDeclaredMethod("getIdentifier");
-        ApiModelProperty identifier = getIdentifier.getAnnotationsByType(ApiModelProperty.class)[0];
-        assertThat(identifier.name()).isEqualTo("id");
-        assertThat(identifier.accessMode()).isEqualTo(ApiModelProperty.AccessMode.READ_ONLY);
-        assertThat(identifier.hidden()).isFalse();
+        Field tagsField = Pet.class.getDeclaredField("tags");
+        ArraySchema tags = tagsField.getAnnotationsByType(ArraySchema.class)[0];
+        assertThat(tags.schema().type()).isEqualTo("string");
+        assertThat(tags.maxItems()).isEqualTo(5);
+        assertThat(tags.minItems()).isEqualTo(1);
+        assertThat(tags.uniqueItems()).isTrue();
 
-        Field sortField = PetResource.class.getDeclaredField("defaultSort");
-        ApiParam sort = sortField.getAnnotationsByType(ApiParam.class)[0];
-        assertThat(sort.name()).isEqualTo("sort");
-        assertThat(sort.value()).isEqualTo("Default sort order");
-        assertThat(sort.defaultValue()).isEqualTo("name");
-        assertThat(sort.allowableValues()).isEqualTo("name,created");
-        assertThat(sort.required()).isFalse();
-        assertThat(sort.access()).isEqualTo("public");
-        assertThat(sort.allowMultiple()).isFalse();
-        assertThat(sort.hidden()).isFalse();
-        assertThat(sort.example()).isEqualTo("name");
-        assertThat(sort.examples().value()[0].mediaType()).isEqualTo("text/plain");
-        assertThat(sort.type()).isEqualTo("string");
-        assertThat(sort.format()).isEqualTo("field-name");
-        assertThat(sort.allowEmptyValue()).isFalse();
-        assertThat(sort.readOnly()).isFalse();
-        assertThat(sort.collectionFormat()).isEqualTo("csv");
+        Method notifySubscribers = PetResource.class.getDeclaredMethod("notifySubscribers", Pet.class);
+        Callback callback = notifySubscribers.getAnnotationsByType(Callback.class)[0];
+        assertThat(callback.name()).isEqualTo("petChanged");
+        assertThat(callback.callbackUrlExpression()).isEqualTo("{$request.body#/callbackUrl}");
+        assertThat(callback.operation()[0].method()).isEqualTo("POST");
+        assertThat(callback.operation()[0].summary()).isEqualTo("Send pet update");
+        assertThat(callback.operation()[0].responses()[0].responseCode()).isEqualTo("204");
     }
 
     @Test
-    void methodParameterAnnotationsRetainRequestParameterMetadata() throws NoSuchMethodException {
-        Method findPets = PetResource.class.getDeclaredMethod("findPets", String.class, int.class);
-
-        ApiParam limit = findPets.getParameters()[1].getAnnotationsByType(ApiParam.class)[0];
-
-        assertThat(limit).isNotNull();
-        assertThat(limit.name()).isEqualTo("limit");
-        assertThat(limit.value()).isEqualTo("Maximum result count");
-        assertThat(limit.defaultValue()).isEqualTo("10");
-        assertThat(limit.allowableValues()).isEqualTo("range[1,100]");
-        assertThat(limit.required()).isTrue();
-        assertThat(limit.type()).isEqualTo("integer");
-        assertThat(limit.format()).isEqualTo("int32");
-    }
-
-    @Test
-    void visibilityAndParameterOptionAnnotationsRetainDocumentationControls()
-            throws NoSuchFieldException, NoSuchMethodException {
-        Api api = AdministrativeResource.class.getAnnotationsByType(Api.class)[0];
-        assertThat(api.value()).isEqualTo("/admin");
-        assertThat(api.hidden()).isTrue();
-
+    void hiddenDeprecatedAndEnumOptionsRemainAvailable() throws NoSuchFieldException, NoSuchMethodException {
         Method purgeCache = AdministrativeResource.class.getDeclaredMethod("purgeCache", List.class);
-        ApiOperation operation = purgeCache.getAnnotationsByType(ApiOperation.class)[0];
-        assertThat(operation.value()).isEqualTo("Purge cache");
-        assertThat(operation.hidden()).isTrue();
+        Operation operation = purgeCache.getAnnotationsByType(Operation.class)[0];
+        assertThat(operation.summary()).isEqualTo("Purge cache");
+        assertThat(operation.deprecated()).isTrue();
 
-        ApiImplicitParam implicitParam = purgeCache.getAnnotationsByType(ApiImplicitParam.class)[0];
-        assertThat(implicitParam.name()).isEqualTo("cacheName");
-        assertThat(implicitParam.allowMultiple()).isTrue();
-        assertThat(implicitParam.allowEmptyValue()).isTrue();
-        assertThat(implicitParam.readOnly()).isTrue();
-
-        ApiParam parameter = purgeCache.getParameters()[0].getAnnotationsByType(ApiParam.class)[0];
-        assertThat(parameter.name()).isEqualTo("cacheNames");
-        assertThat(parameter.allowMultiple()).isTrue();
-        assertThat(parameter.hidden()).isTrue();
-        assertThat(parameter.allowEmptyValue()).isTrue();
-        assertThat(parameter.readOnly()).isTrue();
+        Parameter implicitParameter = purgeCache.getAnnotationsByType(Parameter.class)[0];
+        assertThat(implicitParameter.name()).isEqualTo("cacheName");
+        assertThat(implicitParameter.hidden()).isTrue();
+        assertThat(implicitParameter.allowEmptyValue()).isTrue();
+        assertThat(implicitParameter.schema().deprecated()).isTrue();
 
         Field auditNoteField = AdministrativeRequest.class.getDeclaredField("auditNote");
-        ApiModelProperty auditNote = auditNoteField.getAnnotationsByType(ApiModelProperty.class)[0];
-        assertThat(auditNote.value()).isEqualTo("Internal audit note");
+        Schema auditNote = auditNoteField.getAnnotationsByType(Schema.class)[0];
+        assertThat(auditNote.description()).isEqualTo("Internal audit note");
         assertThat(auditNote.hidden()).isTrue();
-        assertThat(auditNote.allowEmptyValue()).isTrue();
+        assertThat(auditNote.writeOnly()).isTrue();
+
+        assertThat(Explode.values()).containsExactly(Explode.DEFAULT, Explode.FALSE, Explode.TRUE);
     }
 
-    @Test
-    void enumHelpersResolveWireValuesAndPreserveDeclarationOrder() {
-        assertThat(ApiKeyAuthDefinition.ApiKeyLocation.HEADER.toValue()).isEqualTo("header");
-        assertThat(ApiKeyAuthDefinition.ApiKeyLocation.QUERY.toValue()).isEqualTo("query");
-        assertThat(ApiKeyAuthDefinition.ApiKeyLocation.forValue("HEADER"))
-                .isEqualTo(ApiKeyAuthDefinition.ApiKeyLocation.HEADER);
-        assertThat(ApiKeyAuthDefinition.ApiKeyLocation.forValue("query"))
-                .isEqualTo(ApiKeyAuthDefinition.ApiKeyLocation.QUERY);
-
-        assertThat(SwaggerDefinition.Scheme.values()).containsExactly(
-                SwaggerDefinition.Scheme.DEFAULT,
-                SwaggerDefinition.Scheme.HTTP,
-                SwaggerDefinition.Scheme.HTTPS,
-                SwaggerDefinition.Scheme.WS,
-                SwaggerDefinition.Scheme.WSS);
-        assertThat(OAuth2Definition.Flow.values()).containsExactly(
-                OAuth2Definition.Flow.IMPLICIT,
-                OAuth2Definition.Flow.ACCESS_CODE,
-                OAuth2Definition.Flow.PASSWORD,
-                OAuth2Definition.Flow.APPLICATION);
-        assertThat(ApiModelProperty.AccessMode.values()).containsExactly(
-                ApiModelProperty.AccessMode.AUTO,
-                ApiModelProperty.AccessMode.READ_ONLY,
-                ApiModelProperty.AccessMode.READ_WRITE);
-    }
-
-    @SwaggerDefinition(
-            host = "api.example.test",
-            basePath = "/v1",
-            consumes = "application/json",
-            produces = {"application/json", "application/problem+json"},
-            schemes = {SwaggerDefinition.Scheme.HTTP, SwaggerDefinition.Scheme.HTTPS},
-            tags = @Tag(
-                    name = "pets",
-                    description = "Pet operations",
-                    externalDocs = @ExternalDocs(value = "Pet guide", url = "https://example.test/docs/pets"),
-                    extensions = @Extension(
-                            name = "x-tag",
-                            properties = @ExtensionProperty(name = "owner", value = "owned-by-search-team"))),
-            securityDefinition = @SecurityDefinition(
-                    oAuth2Definitions = @OAuth2Definition(
-                            key = "oauth2",
-                            description = "OAuth2 access code flow",
-                            flow = OAuth2Definition.Flow.ACCESS_CODE,
+    @Info(
+            title = "Pet API",
+            version = "1.0",
+            description = "Endpoints for looking up pets",
+            termsOfService = "https://example.test/terms",
+            contact = @Contact(
+                    name = "API Support",
+                    url = "https://example.test/support",
+                    email = "support@example.test"),
+            license = @License(
+                    name = "Apache-2.0",
+                    url = "https://www.apache.org/licenses/LICENSE-2.0"))
+    @SecurityScheme(
+            type = "oauth2",
+            name = "oauth2",
+            description = "OAuth2 authorization code flow",
+            flows = @OAuthFlows(
+                    authorizationCode = @OAuthFlow(
                             authorizationUrl = "https://auth.example.test/authorize",
                             tokenUrl = "https://auth.example.test/token",
-                            scopes = @Scope(name = "pets:read", description = "Read pet records")),
-                    apiKeyAuthDefinitions = @ApiKeyAuthDefinition(
-                            key = "apiKey",
-                            description = "Header API key",
-                            in = ApiKeyAuthDefinition.ApiKeyLocation.HEADER,
-                            name = "X-Api-Key"),
-                    basicAuthDefinitions = @BasicAuthDefinition(
-                            key = "basic",
-                            description = "Basic authentication for local tools")),
-            info = @Info(
-                    title = "Pet API",
-                    version = "1.0",
-                    description = "Endpoints for looking up pets",
-                    termsOfService = "https://example.test/terms",
-                    contact = @Contact(
-                            name = "API Support",
-                            url = "https://example.test/support",
-                            email = "support@example.test"),
-                    license = @License(
-                            name = "Apache-2.0",
-                            url = "https://www.apache.org/licenses/LICENSE-2.0"),
-                    extensions = @Extension(
-                            name = "x-info",
-                            properties = @ExtensionProperty(
-                                    name = "audience",
-                                    value = "integration-tests",
-                                    parseValue = true))),
-            externalDocs = @ExternalDocs(value = "Complete API documentation", url = "https://example.test/docs"))
+                            refreshUrl = "https://auth.example.test/refresh",
+                            scopes = @Scopes(
+                                    name = "pets:read",
+                                    description = "Read pet records"))))
+    @SecurityRequirement(name = "oauth2", scopes = "pets:read")
     private static final class AnnotatedPetApi {
     }
 
-    @Api(
-            value = "/pets",
-            tags = {"pets", "search"},
-            produces = "application/json",
-            consumes = "application/json",
-            protocols = "https",
-            authorizations = @Authorization(
-                    value = "oauth2",
-                    scopes = @AuthorizationScope(scope = "pets:read", description = "Read pet records")))
     private static final class PetResource {
-        @ApiParam(
-                name = "sort",
-                value = "Default sort order",
-                defaultValue = "name",
-                allowableValues = "name,created",
-                access = "public",
-                example = "name",
-                examples = @Example(@ExampleProperty(mediaType = "text/plain", value = "created")),
-                type = "string",
-                format = "field-name",
-                collectionFormat = "csv")
-        private final String defaultSort = "name";
-
-        @ApiOperation(
-                value = "Find pets",
-                notes = "Returns a bounded collection of pets matching the requested type",
-                tags = "pets",
-                response = Pet.class,
-                responseContainer = "List",
-                responseReference = "#/definitions/Pet",
-                httpMethod = "GET",
-                nickname = "findPetsByType",
-                produces = "application/json",
-                consumes = "application/json",
-                protocols = "https",
-                authorizations = @Authorization(
-                        value = "oauth2",
-                        scopes = @AuthorizationScope(scope = "pets:read", description = "Read pet records")),
-                responseHeaders = @ResponseHeader(
-                        name = "X-Result-Count",
-                        description = "Number of matching pets",
-                        response = Integer.class,
-                        responseContainer = "List"),
-                code = 200,
+        @Operation(
+                method = "GET",
+                tags = {"pets", "search"},
+                summary = "Find pets",
+                description = "Returns a bounded collection of pets matching the requested type",
+                operationId = "findPetsByType",
+                externalDocs = @ExternalDocumentation(
+                        description = "Pet guide",
+                        url = "https://example.test/docs/pets"),
+                parameters = @Parameter(
+                        name = "type",
+                        in = "query",
+                        description = "Pet type filter",
+                        required = true,
+                        allowEmptyValue = false,
+                        style = "form",
+                        explode = Explode.FALSE,
+                        schema = @Schema(type = "string", _enum = {"dog", "cat", "bird"}),
+                        content = @Content(
+                                mediaType = "text/plain",
+                                examples = @ExampleObject(value = "dog"))),
+                responses = {
+                        @ApiResponse(
+                                responseCode = "200",
+                                description = "Pets were returned",
+                                content = @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = Pet.class),
+                                        examples = @ExampleObject(
+                                                name = "pets",
+                                                value = "[{\"id\":\"pet-1\",\"name\":\"Fido\"}]")),
+                                links = @Link(
+                                        name = "firstPet",
+                                        operationId = "getPetById",
+                                        parameters = @LinkParameters(
+                                                name = "id",
+                                                expression = "$response.body#/0/id"))),
+                        @ApiResponse(responseCode = "404", description = "No pets matched")
+                },
+                servers = @Server(
+                        url = "https://api.example.test/{version}",
+                        description = "Versioned production endpoint",
+                        variables = @ServerVariable(
+                                name = "version",
+                                allowableValues = {"v1", "v2"},
+                                value = "v1",
+                                description = "API version")),
                 extensions = @Extension(
                         name = "x-operation",
-                        properties = @ExtensionProperty(name = "cached", value = "true")),
-                ignoreJsonView = true)
-        @ApiResponses({
-                @ApiResponse(
-                        code = 200,
-                        message = "Pets were returned",
-                        response = Pet.class,
-                        responseContainer = "List",
-                        responseHeaders = @ResponseHeader(
-                                name = "X-Trace-Id",
-                                description = "Trace identifier",
-                                response = String.class),
-                        examples = @Example(@ExampleProperty(
-                                mediaType = "application/json",
-                                value = "[{\"name\":\"Fido\"}]"))),
-                @ApiResponse(code = 404, message = "No pets matched", reference = "#/responses/NotFound")
-        })
-        @ApiImplicitParams({
-                @ApiImplicitParam(
-                        name = "type",
-                        value = "Pet type filter",
-                        defaultValue = "dog",
-                        allowableValues = "dog,cat,bird",
-                        required = true,
-                        access = "public",
-                        dataType = "string",
-                        dataTypeClass = String.class,
-                        paramType = "query",
-                        example = "dog",
-                        examples = @Example(@ExampleProperty(mediaType = "text/plain", value = "cat")),
-                        type = "string",
-                        format = "slug",
-                        collectionFormat = "csv"),
-                @ApiImplicitParam(
-                        name = "includeInactive",
-                        value = "Include inactive pets",
-                        dataTypeClass = Boolean.class,
-                        paramType = "query",
-                        type = "boolean")
-        })
-        private List<Pet> findPets(
-                String type,
-                @ApiParam(
-                        name = "limit",
-                        value = "Maximum result count",
-                        defaultValue = "10",
-                        allowableValues = "range[1,100]",
-                        required = true,
-                        type = "integer",
-                        format = "int32") int limit) {
+                        properties = @ExtensionProperty(name = "cached", value = "true")))
+        private List<Pet> findPets(String type, int limit) {
             return Collections.singletonList(new Pet("pet-1", type + '-' + limit));
+        }
+
+        private Pet createPet(
+                @RequestBody(
+                        description = "Pet payload",
+                        required = true,
+                        content = @Content(
+                                mediaType = "application/json",
+                                schema = @Schema(implementation = Pet.class),
+                                examples = @ExampleObject(summary = "New pet", value = "{\"name\":\"Fido\"}"))) Pet pet,
+                @Parameter(
+                        name = "X-Correlation-Id",
+                        in = "header",
+                        description = "Correlation identifier",
+                        allowReserved = true,
+                        schema = @Schema(type = "string", format = "uuid")) String correlationId) {
+            return pet;
+        }
+
+        @Callback(
+                name = "petChanged",
+                callbackUrlExpression = "{$request.body#/callbackUrl}",
+                operation = @Operation(
+                        method = "POST",
+                        summary = "Send pet update",
+                        responses = @ApiResponse(responseCode = "204", description = "Subscriber accepted update")))
+        private void notifySubscribers(Pet pet) {
         }
     }
 
-    @Api(value = "/admin", hidden = true)
     private static final class AdministrativeResource {
-        @ApiOperation(value = "Purge cache", hidden = true)
-        @ApiImplicitParam(
+        @Operation(summary = "Purge cache", deprecated = true)
+        @Parameter(
                 name = "cacheName",
-                value = "Cache names to purge",
-                allowMultiple = true,
-                dataTypeClass = String.class,
-                paramType = "query",
-                type = "string",
+                in = "query",
+                description = "Cache names to purge",
                 allowEmptyValue = true,
-                readOnly = true)
-        private void purgeCache(
-                @ApiParam(
-                        name = "cacheNames",
-                        value = "Cache names to purge",
-                        allowMultiple = true,
-                        hidden = true,
-                        allowEmptyValue = true,
-                        readOnly = true) List<String> cacheNames) {
+                hidden = true,
+                schema = @Schema(type = "string", deprecated = true))
+        private void purgeCache(List<String> cacheNames) {
         }
     }
 
     private static final class AdministrativeRequest {
-        @ApiModelProperty(
-                value = "Internal audit note",
-                hidden = true,
-                allowEmptyValue = true)
+        @Schema(description = "Internal audit note", hidden = true, writeOnly = true)
         private final String auditNote = "";
     }
 
@@ -491,44 +356,42 @@ public class Swagger_annotationsTest {
         }
     }
 
-    @ApiModel(
-            value = "Pet",
+    @Schema(
+            name = "Pet",
             description = "A pet visible through the API",
-            parent = BasePet.class,
-            discriminator = "kind",
-            subTypes = {Dog.class, Cat.class},
-            reference = "#/definitions/Pet")
+            implementation = Pet.class,
+            allOf = BasePet.class,
+            oneOf = {Dog.class, Cat.class},
+            requiredProperties = {"id", "name"},
+            discriminatorProperty = "kind",
+            discriminatorMapping = @DiscriminatorMapping(value = "dog", schema = Dog.class),
+            externalDocs = @ExternalDocumentation(
+                    description = "Pet schema guide",
+                    url = "https://example.test/docs/schema/pet"))
     private static class Pet extends BasePet {
         private final String identifier;
 
-        @ApiModelProperty(
-                value = "Display name",
+        @Schema(
                 name = "name",
-                allowableValues = "Fido,Garfield",
-                access = "public",
-                notes = "Names are shown in search results",
-                dataType = "string",
-                required = true,
-                position = 1,
+                title = "Display name",
+                description = "Names are shown in search results",
+                type = "string",
+                _enum = {"Fido", "Garfield"},
                 example = "Fido",
-                accessMode = ApiModelProperty.AccessMode.READ_WRITE,
-                reference = "#/definitions/Pet/properties/name",
-                extensions = @Extension(
-                        name = "x-property",
-                        properties = @ExtensionProperty(name = "sortable", value = "true")))
+                required = true,
+                ref = "#/components/schemas/Pet/properties/name")
         private final String name;
+
+        @ArraySchema(
+                schema = @Schema(type = "string"),
+                maxItems = 5,
+                minItems = 1,
+                uniqueItems = true)
+        private final List<String> tags = Collections.singletonList("friendly");
 
         private Pet(String identifier, String name) {
             this.identifier = identifier;
             this.name = name;
-        }
-
-        @ApiModelProperty(
-                value = "Stable identifier",
-                name = "id",
-                accessMode = ApiModelProperty.AccessMode.READ_ONLY)
-        private String getIdentifier() {
-            return identifier;
         }
     }
 }
