@@ -193,6 +193,49 @@ public class Oci_java_sdk_addons_saslTest {
     }
 
     @Test
+    void userPrincipalsLoginModuleUsesDefaultProfileWhenProfileIsOmitted(@TempDir Path tempDir)
+            throws Exception {
+        Path privateKeyFile = tempDir.resolve("oci_api_key.pem");
+        Path configFile = tempDir.resolve("config");
+        Files.writeString(privateKeyFile, PRIVATE_KEY, StandardCharsets.UTF_8);
+        Files.writeString(
+                configFile,
+                """
+                [DEFAULT]
+                user=ocid1.user.default
+                fingerprint=aa:bb:cc:dd
+                tenancy=ocid1.tenancy.default
+                region=us-phoenix-1
+                key_file=%s
+
+                [OTHER]
+                user=ocid1.user.other
+                fingerprint=11:22:33:44
+                tenancy=ocid1.tenancy.other
+                region=us-phoenix-1
+                key_file=%s
+                """
+                        .formatted(privateKeyFile, privateKeyFile),
+                StandardCharsets.UTF_8);
+        UserPrincipalsLoginModule loginModule = new UserPrincipalsLoginModule();
+        Subject subject = new Subject();
+
+        loginModule.initialize(
+                subject, null, Map.of(), Map.of("intent", INTENT, "config", configFile.toString()));
+
+        assertThat(subject.getPublicCredentials(String.class)).contains(INTENT);
+        assertThat(subject.getPrivateCredentials(BasicAuthenticationDetailsProvider.class))
+                .hasSize(1);
+
+        SaslClient client = createClient(subjectPasswordCallbackHandler(subject));
+        Key key = Key.parseFrom(client.evaluateChallenge(new byte[0]));
+
+        assertThat(key.getKeyId())
+                .isEqualTo("ocid1.tenancy.default/ocid1.user.default/aa:bb:cc:dd");
+        assertThat(key.getIntent()).isEqualTo(INTENT);
+    }
+
+    @Test
     void rejectsMissingIntentUnsupportedMechanismsAndInvalidChallenges() throws Exception {
         TestLoginModule loginModule = new TestLoginModule();
 
