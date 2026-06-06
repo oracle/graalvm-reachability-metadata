@@ -10,6 +10,22 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+repositories {
+    exclusiveContent {
+        forRepository {
+            maven {
+                url = uri('https://repo.maven.apache.org/maven2')
+                metadataSources {
+                    artifact()
+                }
+            }
+        }
+        filter {
+            includeModule('jakarta.websocket', 'jakarta.websocket-client-api')
+        }
+    }
+}
+
 dependencies {
     testImplementation "jakarta.websocket:jakarta.websocket-client-api:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
