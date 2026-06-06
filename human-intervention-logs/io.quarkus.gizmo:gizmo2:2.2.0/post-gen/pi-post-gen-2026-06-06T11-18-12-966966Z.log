@@ -1,0 +1,13 @@
+Completed.
+
+Changes made:
+- Removed non-metadata-related generated test:
+  - `tests/src/io.quarkus.gizmo/gizmo2/2.2.0/src/test/java/io_quarkus_gizmo/gizmo2/TestClassMakerInnerLoaderTest.java`
+  - Removed `rejectsInvalidLocalClassResource()` and its unused invalid-class constant.
+- Did not modify metadata files.
+- Wrote report:
+  - `post-gen-interventions/io.quarkus.gizmo_gizmo2_2.2.0.md`
+
+Root causes recorded:
+- Codex log failure: native-image unsupported `ClassLoader.setDefaultAssertionStatus(...)`, not metadata-related.
+- Gradle excerpt failure: `No space left on device` during dependency resolution, environmental, not metadata-related.
