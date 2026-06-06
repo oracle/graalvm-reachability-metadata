@@ -40,16 +40,19 @@ public class ResourceFileSystemInnerCompanionTest {
     private class DirectoryResourceClassLoader(
         private val root: NioPath,
     ) : ClassLoader(null) {
+        override fun findResource(name: String): URL? = resourceUrl(name)
+
         override fun findResources(name: String): Enumeration<URL> {
             val urls: List<URL> = when (name) {
                 "" -> listOf(root.toUri().toURL())
-                "META-INF/MANIFEST.MF" -> listOf(root.resolve(name).toUri().toURL())
-                else -> {
-                    val candidate: NioPath = root.resolve(name)
-                    if (Files.exists(candidate)) listOf(candidate.toUri().toURL()) else emptyList()
-                }
+                else -> listOfNotNull(resourceUrl(name))
             }
             return Collections.enumeration(urls)
+        }
+
+        private fun resourceUrl(name: String): URL? {
+            val candidate: NioPath = root.resolve(name)
+            return if (Files.exists(candidate)) candidate.toUri().toURL() else null
         }
     }
 }
