@@ -29,7 +29,7 @@ public class Vertx_uri_templateTest {
                 .set("path", "/a/b c")
                 .set("query", "q=vert.x uri")
                 .set("fragment", "section/one")
-                .set("term", "coffee ☕ and rocket 🚀")
+                .set("term", "coffee \u2615 and rocket \uD83D\uDE80")
                 .set("prefix", "abcdef");
 
         assertThat(UriTemplate.of("{scheme}://{host}{+path}{?query}{#fragment}").expandToString(variables))
