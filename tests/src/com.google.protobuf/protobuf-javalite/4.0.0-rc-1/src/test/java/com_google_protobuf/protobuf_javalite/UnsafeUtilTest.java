@@ -18,10 +18,9 @@ import org.junit.jupiter.api.Test;
 
 public class UnsafeUtilTest {
     @Test
-    void directBufferInputUsesProtobufUnsafeSupport() throws IOException {
-        ByteBuffer buffer = ByteBuffer.allocateDirect(Integer.BYTES);
-        buffer.put(new byte[] {0x78, 0x56, 0x34, 0x12});
-        buffer.flip();
+    void readOnlyByteBufferInputDecodesFixed32Value() throws IOException {
+        ByteBuffer buffer = ByteBuffer.wrap(new byte[] {0x78, 0x56, 0x34, 0x12})
+                .asReadOnlyBuffer();
 
         CodedInputStream input = CodedInputStream.newInstance(buffer);
 

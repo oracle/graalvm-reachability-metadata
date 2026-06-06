@@ -8,7 +8,9 @@ package com_google_protobuf.protobuf_javalite;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.google.protobuf.GeneratedMessageLite;
 import com.google.protobuf.StringValue;
+import java.lang.reflect.Method;
 import org.junit.jupiter.api.Test;
 
 public class GeneratedMessageLiteTest {
@@ -21,5 +23,19 @@ public class GeneratedMessageLiteTest {
         assertThat(textFormat)
                 .startsWith("# com.google.protobuf.StringValue@")
                 .contains("value: \"generated-message-lite\"");
+    }
+
+    @Test
+    void generatedAccessorLookupFindsPublicDefaultInstanceMethod() throws Exception {
+        Method helper = GeneratedMessageLite.class.getDeclaredMethod(
+                "getMethodOrDie", Class.class, String.class, Class[].class);
+        helper.setAccessible(true);
+
+        Method defaultInstanceMethod = (Method) helper.invoke(
+                null, StringValue.class, "getDefaultInstance", new Class<?>[0]);
+
+        assertThat(defaultInstanceMethod.getDeclaringClass()).isEqualTo(StringValue.class);
+        assertThat(defaultInstanceMethod.getName()).isEqualTo("getDefaultInstance");
+        assertThat(defaultInstanceMethod.invoke(null)).isSameAs(StringValue.getDefaultInstance());
     }
 }
