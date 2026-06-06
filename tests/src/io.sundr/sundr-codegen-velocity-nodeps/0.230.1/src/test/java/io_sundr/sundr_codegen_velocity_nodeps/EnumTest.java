@@ -8,6 +8,8 @@ package io_sundr.sundr_codegen_velocity_nodeps;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.sundr.deps.org.apache.commons.lang.enums.Enum;
+import io.sundr.deps.org.apache.commons.lang.enums.EnumUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -78,6 +80,23 @@ public class EnumTest {
 
         assertThat(enumList).isInstanceOf(List.class);
         assertThat((List<?>) enumList).isEmpty();
+    }
+
+    @Order(4)
+    @Test
+    public void enumUtilsReturnsRegisteredValuesForConcreteEnumsSubclass() {
+        SundrEnumValue alpha = SundrEnumValue.ALPHA;
+
+        List<?> enumList = EnumUtils.getEnumList(SundrEnumValue.class);
+        Map<?, ?> enumMap = EnumUtils.getEnumMap(SundrEnumValue.class);
+        Enum enumByName = EnumUtils.getEnum(SundrEnumValue.class, "alpha");
+
+        assertThat(enumList).hasSize(1);
+        assertThat(enumList.get(0)).isSameAs(alpha);
+        assertThat(enumMap).hasSize(1);
+        assertThat(enumMap.get("alpha")).isSameAs(alpha);
+        assertThat(enumByName).isSameAs(alpha);
+        assertThat(alpha.getName()).isEqualTo("alpha");
     }
 
     private static byte[] generatedEnumBytes() throws IOException {
@@ -186,6 +205,16 @@ public class EnumTest {
 
         private Class<?> define(byte[] classBytes) {
             return defineClass(GENERATED_ENUM_CLASS, classBytes, 0, classBytes.length);
+        }
+    }
+
+    private static final class SundrEnumValue extends Enum {
+        private static final long serialVersionUID = 1L;
+
+        private static final SundrEnumValue ALPHA = new SundrEnumValue("alpha");
+
+        private SundrEnumValue(String name) {
+            super(name);
         }
     }
 }
