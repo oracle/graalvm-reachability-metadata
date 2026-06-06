@@ -1,0 +1,747 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7906-11a13fa3
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e9b25-d57f-75a1-a536-3bc3840efa02
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.fabric8:kubernetes-model-admissionregistration:7.7.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [7.7.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7906-11a13fa3/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json
+- Entry selector: "metadata-version" = "7.7.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 7.7.0
+- Entry metadata-version: 7.7.0
+- Entry test-version: 7.7.0
+- Entry tested-versions: [7.7.0]
+codex
+I’ll inspect the existing index entry, then verify Maven and upstream URLs before editing so the templates actually resolve for `7.7.0`.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"7.7.0\")' metadata/io.fabric8/kubernetes-model-admissionregistration/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7906-11a13fa3
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "7.7.0",
+  "tested-versions": [
+    "7.7.0"
+  ],
+  "allowed-packages": [
+    "io.fabric8.kubernetes.api.model"
+  ]
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'kubernetes-model-admissionregistration|source-code-url|documentation-url|test-code-url|repository-url|description|language' metadata/io.fabric8/kubernetes-model-admissionregistration/index.json metadata/io.fabric8 -g 'index.json'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7906-11a13fa3
+ succeeded in 0ms:
+metadata/io.fabric8/kubernetes-model-admissionregistration/index.json:14:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/$version$/kubernetes-model-admissionregistration-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-admissionregistration/index.json:15:    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+metadata/io.fabric8/kubernetes-model-admissionregistration/index.json:16:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-admissionregistration/src/test",
+metadata/io.fabric8/kubernetes-model-admissionregistration/index.json:17:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/$version$/kubernetes-model-admissionregistration-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-admissionregistration/index.json:18:    "description" : "Fabric8 Kubernetes Model Admission Registration provides generated Java model classes for Kubernetes admission, admissionregistration, authentication, and authorization API resources. It is part of the Fabric8 Kubernetes Client model set and lets JVM applications serialize, deserialize, and construct those Kubernetes API objects.",
+metadata/io.fabric8/kubernetes-model-rbac/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-rbac/$version$/kubernetes-model-rbac-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-rbac/index.json:6:    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+metadata/io.fabric8/kubernetes-model-rbac/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-rbac/src/test",
+metadata/io.fabric8/kubernetes-model-rbac/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-rbac/$version$/kubernetes-model-rbac-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-rbac/index.json:9:    "description" : "Fabric8 Kubernetes Model RBAC provides Java model classes for Kubernetes role-based access control resources such as Roles, ClusterRoles, RoleBindings, and ClusterRoleBindings. It is part of the Fabric8 Kubernetes Client model set and is used to serialize, deserialize, and manipulate Kubernetes RBAC API objects in JVM applications.",
+metadata/io.fabric8/kubernetes-model-gatewayapi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-gatewayapi/$version$/kubernetes-model-gatewayapi-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-gatewayapi/index.json:6:    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+metadata/io.fabric8/kubernetes-model-gatewayapi/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-gatewayapi/src/test",
+metadata/io.fabric8/kubernetes-model-gatewayapi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-gatewayapi/$version$/kubernetes-model-gatewayapi-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-gatewayapi/index.json:9:    "description" : "Fabric8 Kubernetes Model Gateway API provides generated Java model classes and builders for the Kubernetes SIG Network Gateway API resources, including Gateway, GatewayClass, HTTPRoute, GRPCRoute, TLSRoute, TCPRoute, UDPRoute, ReferenceGrant, and related policy objects. It is part of the Fabric8 Kubernetes Client model set and lets JVM applications serialize, deserialize, and construct Gateway API resource definitions for use with Kubernetes.",
+metadata/io.fabric8/kubernetes-model-coordination/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-coordination/$version$/kubernetes-model-coordination-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-coordination/index.json:6:    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+metadata/io.fabric8/kubernetes-model-coordination/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-coordination/src/test",
+metadata/io.fabric8/kubernetes-model-coordination/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-coordination/$version$/kubernetes-model-coordination-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-coordination/index.json:9:    "description" : "Fabric8 Kubernetes Model Coordination provides Java model classes for Kubernetes coordination API resources, including Lease and LeaseCandidate types. It is part of the Fabric8 Kubernetes Client model generator output and lets JVM applications serialize, deserialize, and build coordination.k8s.io resources.",
+metadata/io.fabric8/kubernetes-model-certificates/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/fabric8/kubernetes-model-certificates/$version$/kubernetes-model-certificates-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-certificates/index.json:6:    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+metadata/io.fabric8/kubernetes-model-certificates/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-certificates/src/test",
+metadata/io.fabric8/kubernetes-model-certificates/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/fabric8/kubernetes-model-certificates/$version$/kubernetes-model-certificates-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-certificates/index.json:9:    "description" : "Fabric8 Kubernetes Model Certificates provides generated Java model classes for Kubernetes certificates API resources such as CertificateSigningRequest, ClusterTrustBundle, and PodCertificateRequest. It is part of the Fabric8 Kubernetes Client model set and is used to serialize, deserialize, and build certificate-related Kubernetes resource objects on the JVM.",
+metadata/io.fabric8/kubernetes-model-events/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/$version$/kubernetes-model-events-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-events/index.json:6:    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+metadata/io.fabric8/kubernetes-model-events/index.json:7:    "test-code-url" : "N/A",
+metadata/io.fabric8/kubernetes-model-events/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-events/$version$/kubernetes-model-events-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-events/index.json:9:    "description" : "Fabric8 Kubernetes Model Events provides Java model classes and builders for Kubernetes Events API resources. It is part of Fabric8 Kubernetes Client's generated model set and lets JVM applications serialize, deserialize, and construct Event, EventList, and EventSeries objects.",
+metadata/io.fabric8/kubernetes-model-resource/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-resource/$version$/kubernetes-model-resource-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-resource/index.json:6:    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+metadata/io.fabric8/kubernetes-model-resource/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-resource/src/test",
+metadata/io.fabric8/kubernetes-model-resource/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-resource/$version$/kubernetes-model-resource-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-resource/index.json:9:    "description" : "Fabric8 Kubernetes Model Resource provides Java model classes and builders for Kubernetes resource API objects in the Fabric8 Kubernetes Client ecosystem. It contains generated JVM classes for the resource API group so Java applications can serialize, deserialize, and manipulate those Kubernetes resource definitions.",
+metadata/io.fabric8/kubernetes-model-discovery/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-discovery/$version$/kubernetes-model-discovery-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-discovery/index.json:6:    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+metadata/io.fabric8/kubernetes-model-discovery/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-discovery/src/test",
+metadata/io.fabric8/kubernetes-model-discovery/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-discovery/$version$/kubernetes-model-discovery-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-discovery/index.json:9:    "description" : "Fabric8 Kubernetes Model Discovery provides Java model classes and builders for Kubernetes discovery API resources such as EndpointSlice. It is part of the Fabric8 Kubernetes Client model modules and is used to serialize, deserialize, and work with those discovery resources from JVM applications.",
+metadata/io.fabric8/kubernetes-model-extensions/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-extensions/$version$/kubernetes-model-extensions-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-extensions/index.json:6:    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+metadata/io.fabric8/kubernetes-model-extensions/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-itests/src/test/java",
+metadata/io.fabric8/kubernetes-model-extensions/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-extensions/$version$/kubernetes-model-extensions-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-extensions/index.json:9:    "description" : "Fabric8 Kubernetes Model Extensions provides generated Java model classes and builders for legacy Kubernetes extensions API resources such as Deployments, Ingresses, NetworkPolicies, ReplicaSets, Scales, and PodSecurityPolicies. It is part of the Fabric8 Kubernetes Java Client model set and lets JVM applications serialize, deserialize, and construct those extension API objects.",
+metadata/io.fabric8/kubernetes-model-batch/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-batch/$version$/kubernetes-model-batch-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-batch/index.json:6:    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+metadata/io.fabric8/kubernetes-model-batch/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-batch/src/test",
+metadata/io.fabric8/kubernetes-model-batch/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-batch/$version$/kubernetes-model-batch-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-batch/index.json:9:    "description" : "Fabric8 Kubernetes Model Batch provides Java model classes for Kubernetes Batch API resources such as Jobs and CronJobs. It is part of the Fabric8 Kubernetes Client model modules and is used to serialize, deserialize, and build batch API resource objects in JVM applications.",
+metadata/io.fabric8/kubernetes-model-apps/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-apps/$version$/kubernetes-model-apps-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-apps/index.json:6:    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+metadata/io.fabric8/kubernetes-model-apps/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-apps/src/test",
+metadata/io.fabric8/kubernetes-model-apps/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-apps/$version$/kubernetes-model-apps-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-apps/index.json:9:    "description" : "Fabric8 Kubernetes Model Apps provides Java model classes and builders for Kubernetes Apps API resources such as Deployments, DaemonSets, ReplicaSets, StatefulSets, and ControllerRevisions. It is part of the Fabric8 Kubernetes Client generated model modules and lets JVM applications serialize, deserialize, and construct Kubernetes Apps API objects.",
+metadata/io.fabric8/kubernetes-model-common/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-common/$version$/kubernetes-model-common-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-common/index.json:6:    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+metadata/io.fabric8/kubernetes-model-common/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-common/src/test",
+metadata/io.fabric8/kubernetes-model-common/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-common/$version$/kubernetes-model-common-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-common/index.json:9:    "description" : "Fabric8 Kubernetes Model Common provides shared Java model annotations, builder APIs, and Jackson helpers used by the Fabric8 Kubernetes and OpenShift model artifacts. It supports representing and serializing Kubernetes resource model classes consistently across the Fabric8 Kubernetes Client ecosystem.",
+metadata/io.fabric8/kubernetes-model-admissionregistration/index.json:14:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/$version$/kubernetes-model-admissionregistration-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-admissionregistration/index.json:15:    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+metadata/io.fabric8/kubernetes-model-admissionregistration/index.json:16:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-admissionregistration/src/test",
+metadata/io.fabric8/kubernetes-model-admissionregistration/index.json:17:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/$version$/kubernetes-model-admissionregistration-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-admissionregistration/index.json:18:    "description" : "Fabric8 Kubernetes Model Admission Registration provides generated Java model classes for Kubernetes admission, admissionregistration, authentication, and authorization API resources. It is part of the Fabric8 Kubernetes Client model set and lets JVM applications serialize, deserialize, and construct those Kubernetes API objects.",
+metadata/io.fabric8/kubernetes-model-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-core/$version$/kubernetes-model-core-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-core/index.json:6:    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+metadata/io.fabric8/kubernetes-model-core/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-core/src/test",
+metadata/io.fabric8/kubernetes-model-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-core/$version$/kubernetes-model-core-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-core/index.json:9:    "description" : "kubernetes-model-core provides the core Java model classes for Kubernetes API resources used by the Fabric8 Kubernetes client. It includes generated and handwritten types, builders, and serialization metadata for representing Kubernetes core objects in JVM applications.",
+metadata/io.fabric8/kubernetes-model-policy/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-policy/$version$/kubernetes-model-policy-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-policy/index.json:6:    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+metadata/io.fabric8/kubernetes-model-policy/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-policy/src/test",
+metadata/io.fabric8/kubernetes-model-policy/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-policy/$version$/kubernetes-model-policy-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-policy/index.json:9:    "description" : "Fabric8 Kubernetes Model Policy provides Java model classes for Kubernetes Policy API resources such as PodDisruptionBudget, Eviction, and legacy PodSecurityPolicy. It is part of the Fabric8 Kubernetes Client model set and is used to serialize, deserialize, and build policy resources from JVM applications.",
+metadata/io.fabric8/kubernetes-model-scheduling/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-scheduling/$version$/kubernetes-model-scheduling-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-scheduling/index.json:6:    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+metadata/io.fabric8/kubernetes-model-scheduling/index.json:7:    "test-code-url" : "N/A",
+metadata/io.fabric8/kubernetes-model-scheduling/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-scheduling/$version$/kubernetes-model-scheduling-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-scheduling/index.json:9:    "description" : "This artifact provides the Fabric8 Java model classes for Kubernetes Scheduling API resources such as PriorityClass across supported API versions. It is part of the Fabric8 Kubernetes Client model set and is used to serialize, deserialize, and build Kubernetes scheduling resource definitions in JVM applications.",
+metadata/io.fabric8/kubernetes-model-networking/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-networking/$version$/kubernetes-model-networking-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-networking/index.json:6:    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+metadata/io.fabric8/kubernetes-model-networking/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-networking/src/test",
+metadata/io.fabric8/kubernetes-model-networking/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-networking/$version$/kubernetes-model-networking-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-networking/index.json:9:    "description" : "This artifact contains Fabric8 Java model classes for the Kubernetes networking API group, generated from Kubernetes OpenAPI schemas. It provides typed representations and builders for networking resources such as NetworkPolicy, Ingress, and IngressClass for use with the Fabric8 Kubernetes Client and JVM applications.",
+metadata/io.fabric8/kubernetes-model-networking/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-networking/$version$/kubernetes-model-networking-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-networking/index.json:20:    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+metadata/io.fabric8/kubernetes-model-networking/index.json:21:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-networking/src/test",
+metadata/io.fabric8/kubernetes-model-networking/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-networking/$version$/kubernetes-model-networking-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-networking/index.json:23:    "description" : "This artifact contains Fabric8 Java model classes for the Kubernetes networking API group, generated from Kubernetes OpenAPI schemas. It provides typed representations and builders for networking resources such as NetworkPolicy, Ingress, and IngressClass for use with the Fabric8 Kubernetes Client and JVM applications.",
+metadata/io.fabric8/kubernetes-model-autoscaling/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-autoscaling/$version$/kubernetes-model-autoscaling-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-autoscaling/index.json:6:    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+metadata/io.fabric8/kubernetes-model-autoscaling/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-autoscaling/src/test",
+metadata/io.fabric8/kubernetes-model-autoscaling/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-autoscaling/$version$/kubernetes-model-autoscaling-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-autoscaling/index.json:9:    "description" : "Fabric8 Kubernetes Model Autoscaling provides generated Java model classes and builders for Kubernetes autoscaling API resources, including HorizontalPodAutoscaler, Scale, metrics, and scaling policy types. It is part of the Fabric8 Kubernetes Client model set and lets JVM applications serialize, deserialize, and construct autoscaling resource definitions for use with Kubernetes.",
+metadata/io.fabric8/kubernetes-model-node/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/fabric8/kubernetes-model-node/$version$/kubernetes-model-node-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-node/index.json:6:    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+metadata/io.fabric8/kubernetes-model-node/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/blob/v$version$/kubernetes-tests/src/test/java/io/fabric8/kubernetes/client/mock/RuntimeClassTest.java",
+metadata/io.fabric8/kubernetes-model-node/index.json:8:    "documentation-url" : "https://javadoc.io/doc/io.fabric8/kubernetes-model-node/$version$/index.html",
+metadata/io.fabric8/kubernetes-model-node/index.json:9:    "description" : "Fabric8 Kubernetes Model Node provides Java model classes for the Kubernetes node.k8s.io API group, including RuntimeClass and related list, scheduling, and overhead types. These generated models are used by the Fabric8 Kubernetes client to serialize, deserialize, and build node runtime class resources across supported API versions.",
+metadata/io.fabric8/kubernetes-model-apiextensions/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-apiextensions/$version$/kubernetes-model-apiextensions-$version$-sources.jar",
+metadata/io.fabric8/kubernetes-model-apiextensions/index.json:6:    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+metadata/io.fabric8/kubernetes-model-apiextensions/index.json:7:    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-apiextensions/src/test",
+metadata/io.fabric8/kubernetes-model-apiextensions/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-apiextensions/$version$/kubernetes-model-apiextensions-$version$-javadoc.jar",
+metadata/io.fabric8/kubernetes-model-apiextensions/index.json:9:    "description" : "Fabric8 Kubernetes Model API Extensions provides Java model classes and builders for Kubernetes API extension resources, including CustomResourceDefinition and conversion review types. It is part of the Fabric8 Kubernetes Client model set and lets JVM applications serialize, deserialize, and construct API extension objects when working with Kubernetes custom resources.",
+
+codex
+The file already has another admissionregistration entry with the same family of URLs, but the `metadata-version: 7.7.0` entry is the sparse one the request targets. I’m checking the rendered Maven/GitHub URLs now before applying those values.
+web search: 
+web search: Maven io.fabric8 kubernetes-model-admissionregistration 7.7.0 sources javadoc tests
+exec
+/usr/bin/bash -lc 'nl -ba metadata/io.fabric8/kubernetes-model-admissionregistration/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7906-11a13fa3
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "7.7.0",
+     5	    "tested-versions" : [
+     6	      "7.7.0"
+     7	    ],
+     8	    "allowed-packages" : [
+     9	      "io.fabric8.kubernetes.api.model"
+    10	    ]
+    11	  },
+    12	  {
+    13	    "metadata-version" : "7.5.2",
+    14	    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/$version$/kubernetes-model-admissionregistration-$version$-sources.jar",
+    15	    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
+    16	    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-admissionregistration/src/test",
+    17	    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/$version$/kubernetes-model-admissionregistration-$version$-javadoc.jar",
+    18	    "description" : "Fabric8 Kubernetes Model Admission Registration provides generated Java model classes for Kubernetes admission, admissionregistration, authentication, and authorization API resources. It is part of the Fabric8 Kubernetes Client model set and lets JVM applications serialize, deserialize, and construct those Kubernetes API objects.",
+    19	    "tested-versions" : [
+    20	      "7.5.2",
+    21	      "7.6.0",
+    22	      "7.6.1"
+    23	    ],
+    24	    "allowed-packages" : [
+    25	      "io.fabric8.kubernetes.api.model"
+    26	    ]
+    27	  }
+    28	]
+
+exec
+/usr/bin/bash -lc "for u in \\
+  https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/7.7.0/kubernetes-model-admissionregistration-7.7.0-sources.jar \\
+  https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/7.7.0/kubernetes-model-admissionregistration-7.7.0-javadoc.jar \\
+  https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/7.7.0/kubernetes-model-admissionregistration-7.7.0-tests.jar \\
+  https://github.com/fabric8io/kubernetes-client/tree/v7.7.0/kubernetes-model-generator/kubernetes-model-admissionregistration/src/test \\
+  https://github.com/fabric8io/kubernetes-client/tree/v7.7.0; do
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$u")
+  printf '"'%s %s\\n' \""'$code" "$u"
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7906-11a13fa3
+exec
+/usr/bin/bash -lc "curl -L -s https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/7.7.0/kubernetes-model-admissionregistration-7.7.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7906-11a13fa3
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2015 Red Hat, Inc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.fabric8</groupId>
+    <artifactId>kubernetes-model-generator</artifactId>
+    <version>7.7.0</version>
+  </parent>
+
+  <artifactId>kubernetes-model-admissionregistration</artifactId>
+  <packaging>bundle</packaging>
+  <name>Fabric8 :: Kubernetes Model :: Admission Registration, Authentication and Authorization</name>
+
+  <properties>
+    <clone-kube>true</clone-kube>
+    <osgi.import>*</osgi.import>
+    <osgi.export>
+      io.fabric8.kubernetes.api.model.admission**,
+      io.fabric8.kubernetes.api.model.authentication**,
+      io.fabric8.kubernetes.api.model.authorization**,
+      io.fabric8.kubernetes.api.model.admissionregistration**
+    </osgi.export>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.fabric8</groupId>
+      <artifactId>kubernetes-model-core</artifactId>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <profile>
+      <id>generate</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>openapi-model-generator-maven-plugin</artifactId>
+            <configuration >
+              <settings combine.self="append">
+                <schemas>
+                  <schema>${project.basedir}/../openapi/schemas/kubernetes-1.21.14.json</schema>
+                  <schema>${openapi.schema.kubernetes-latest}</schema>
+                  <schema>${project.basedir}/../openapi/schemas/admission-registration.json</schema>
+                </schemas>
+                <packageMappings combine.self="append">
+                  <io.k8s.api.authentication.v1>io.fabric8.kubernetes.api.model.authentication</io.k8s.api.authentication.v1>
+                </packageMappings>
+                <includeGenerationRegexes>
+                  <includeGenerationRegex>^io\.k8s\.api\.admission\..*$</includeGenerationRegex>
+                  <includeGenerationRegex>^io\.k8s\.api\.admissionregistration\..*$</includeGenerationRegex>
+                  <includeGenerationRegex>^io\.k8s\.api\.authentication\..*$</includeGenerationRegex>
+                  <includeGenerationRegex>^io\.k8s\.api\.authorization\..*$</includeGenerationRegex>
+                </includeGenerationRegexes>
+              </settings>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
+
+ succeeded in 2571ms:
+200 https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/7.7.0/kubernetes-model-admissionregistration-7.7.0-javadoc.jar
+404 https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/7.7.0/kubernetes-model-admissionregistration-7.7.0-tests.jar
+200 https://github.com/fabric8io/kubernetes-client/tree/v7.7.0/kubernetes-model-generator/kubernetes-model-admissionregistration/src/test
+200 https://github.com/fabric8io/kubernetes-client/tree/v7.7.0
+
+codex
+Maven has the source and javadoc artifacts for `7.7.0`; the Maven tests artifact is absent, so the repository test path is the right fallback if it resolves. The POM also confirms this is the Fabric8 Kubernetes model module for admission, admissionregistration, authentication, and authorization APIs.
+web search: 
+web search: https://github.com/fabric8io/kubernetes-client/tree/v7.7.0/kubernetes-model-generator/kubernetes-model-admissionregistration/src/test
+web search: 
+web search: repo.maven.apache.org maven2 io fabric8 kubernetes-model-admissionregistration 7.7.0 sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/io/fabric8/kubernetes-model-admissionregistration/
+web search: 
+web search: https://central.sonatype.com/artifact/io.fabric8/kubernetes-client-project
+web search: 
+web search: https://central.sonatype.com/artifact/io.fabric8/kubernetes-model-admissionregistration
+codex
+I’m going to update only the missing fields on the `7.7.0` object. I’ll mirror the existing entry style, use Maven Central source/javadoc artifacts, and leave `language` absent because this is a Java/JVM artifact rather than a Kotlin/Groovy/Scala-specific library.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7906-11a13fa3/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json
+diff --git a/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json b/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json
+index 57d96e65d974f7fd19a797b76824f699ebf6cd1a..6f45c6f2f82c8f66ddb5ab4226f3f9fc844f736d
+--- a/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json
++++ b/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "7.7.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/$version$/kubernetes-model-admissionregistration-$version$-sources.jar",
++    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
++    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-admissionregistration/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/$version$/kubernetes-model-admissionregistration-$version$-javadoc.jar",
++    "description" : "Fabric8 Kubernetes Model Admission Registration provides generated Java model classes for Kubernetes admission, admissionregistration, authentication, and authorization API resources. It is part of the Fabric8 Kubernetes Client model set and lets JVM applications serialize, deserialize, and construct those Kubernetes API objects.",
+     "tested-versions" : [
+       "7.7.0"
+     ],
+
+diff --git a/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json b/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json
+index 57d96e65d974f7fd19a797b76824f699ebf6cd1a..6f45c6f2f82c8f66ddb5ab4226f3f9fc844f736d
+--- a/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json
++++ b/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "7.7.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/$version$/kubernetes-model-admissionregistration-$version$-sources.jar",
++    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
++    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-admissionregistration/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/$version$/kubernetes-model-admissionregistration-$version$-javadoc.jar",
++    "description" : "Fabric8 Kubernetes Model Admission Registration provides generated Java model classes for Kubernetes admission, admissionregistration, authentication, and authorization API resources. It is part of the Fabric8 Kubernetes Client model set and lets JVM applications serialize, deserialize, and construct those Kubernetes API objects.",
+     "tested-versions" : [
+       "7.7.0"
+     ],
+
+codex
+The JSON is edited. I’m validating syntax and the targeted metadata entry now; if the project-level metadata check is quick enough, I’ll run that too for the specific coordinate.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"7.7.0\")' metadata/io.fabric8/kubernetes-model-admissionregistration/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7906-11a13fa3
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "7.7.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/$version$/kubernetes-model-admissionregistration-$version$-sources.jar",
+  "repository-url": "https://github.com/fabric8io/kubernetes-client",
+  "test-code-url": "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-admissionregistration/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/$version$/kubernetes-model-admissionregistration-$version$-javadoc.jar",
+  "description": "Fabric8 Kubernetes Model Admission Registration provides generated Java model classes for Kubernetes admission, admissionregistration, authentication, and authorization API resources. It is part of the Fabric8 Kubernetes Client model set and lets JVM applications serialize, deserialize, and construct those Kubernetes API objects.",
+  "tested-versions": [
+    "7.7.0"
+  ],
+  "allowed-packages": [
+    "io.fabric8.kubernetes.api.model"
+  ]
+}
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=io.fabric8:kubernetes-model-admissionregistration:7.7.0 --stacktrace' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7906-11a13fa3
+exec
+/usr/bin/bash -lc "for u in \\
+  https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/7.7.0/kubernetes-model-admissionregistration-7.7.0-sources.jar \\
+  https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/7.7.0/kubernetes-model-admissionregistration-7.7.0-javadoc.jar \\
+  https://github.com/fabric8io/kubernetes-client/tree/v7.7.0/kubernetes-model-generator/kubernetes-model-admissionregistration/src/test; do
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$u")
+  printf '"'%s %s\\n' \""'$code" "$u"
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7906-11a13fa3
+ succeeded in 776ms:
+200 https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/7.7.0/kubernetes-model-admissionregistration-7.7.0-sources.jar
+200 https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/7.7.0/kubernetes-model-admissionregistration-7.7.0-javadoc.jar
+200 https://github.com/fabric8io/kubernetes-client/tree/v7.7.0/kubernetes-model-generator/kubernetes-model-admissionregistration/src/test
+
+diff --git a/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json b/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json
+index 57d96e65d974f7fd19a797b76824f699ebf6cd1a..6f45c6f2f82c8f66ddb5ab4226f3f9fc844f736d
+--- a/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json
++++ b/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "7.7.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/$version$/kubernetes-model-admissionregistration-$version$-sources.jar",
++    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
++    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-admissionregistration/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/$version$/kubernetes-model-admissionregistration-$version$-javadoc.jar",
++    "description" : "Fabric8 Kubernetes Model Admission Registration provides generated Java model classes for Kubernetes admission, admissionregistration, authentication, and authorization API resources. It is part of the Fabric8 Kubernetes Client model set and lets JVM applications serialize, deserialize, and construct those Kubernetes API objects.",
+     "tested-versions" : [
+       "7.7.0"
+     ],
+
+codex
+The rendered URLs for `7.7.0` all returned HTTP 200. The Gradle metadata validation is still running.
+diff --git a/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json b/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json
+index 57d96e65d974f7fd19a797b76824f699ebf6cd1a..6f45c6f2f82c8f66ddb5ab4226f3f9fc844f736d
+--- a/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json
++++ b/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "7.7.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/$version$/kubernetes-model-admissionregistration-$version$-sources.jar",
++    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
++    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-admissionregistration/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/$version$/kubernetes-model-admissionregistration-$version$-javadoc.jar",
++    "description" : "Fabric8 Kubernetes Model Admission Registration provides generated Java model classes for Kubernetes admission, admissionregistration, authentication, and authorization API resources. It is part of the Fabric8 Kubernetes Client model set and lets JVM applications serialize, deserialize, and construct those Kubernetes API objects.",
+     "tested-versions" : [
+       "7.7.0"
+     ],
+
+ exited 1 in 3955ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for io.fabric8:kubernetes-model-admissionregistration:7.7.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7906-11a13fa3/metadata/io.fabric8/kubernetes-model-admissionregistration/7.7.0/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7906-11a13fa3/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - io.fabric8:kubernetes-model-admissionregistration:7.7.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7906-11a13fa3/metadata/io.fabric8/kubernetes-model-admissionregistration/7.7.0/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - io.fabric8:kubernetes-model-admissionregistration:7.7.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7906-11a13fa3/metadata/io.fabric8/kubernetes-model-admissionregistration/7.7.0/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 3s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+Gradle metadata validation reached the target coordinate but failed because `metadata/io.fabric8/kubernetes-model-admissionregistration/7.7.0/reachability-metadata.json` is missing; that is outside the requested index URL/description update. I’m doing one last diff check to ensure only the intended fields changed.
+exec
+/usr/bin/bash -lc "jq empty metadata/io.fabric8/kubernetes-model-admissionregistration/index.json && printf 'JSON OK\\n'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7906-11a13fa3
+ succeeded in 0ms:
+JSON OK
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/io.fabric8/kubernetes-model-admissionregistration/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7906-11a13fa3
+ succeeded in 0ms:
+diff --git i/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json w/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json
+index 57d96e65d9..6f45c6f2f8 100644
+--- i/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json
++++ w/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "7.7.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/$version$/kubernetes-model-admissionregistration-$version$-sources.jar",
++    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
++    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-admissionregistration/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/$version$/kubernetes-model-admissionregistration-$version$-javadoc.jar",
++    "description" : "Fabric8 Kubernetes Model Admission Registration provides generated Java model classes for Kubernetes admission, admissionregistration, authentication, and authorization API resources. It is part of the Fabric8 Kubernetes Client model set and lets JVM applications serialize, deserialize, and construct those Kubernetes API objects.",
+     "tested-versions" : [
+       "7.7.0"
+     ],
+
+diff --git a/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json b/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json
+index 57d96e65d974f7fd19a797b76824f699ebf6cd1a..6f45c6f2f82c8f66ddb5ab4226f3f9fc844f736d
+--- a/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json
++++ b/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "7.7.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/$version$/kubernetes-model-admissionregistration-$version$-sources.jar",
++    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
++    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-admissionregistration/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/$version$/kubernetes-model-admissionregistration-$version$-javadoc.jar",
++    "description" : "Fabric8 Kubernetes Model Admission Registration provides generated Java model classes for Kubernetes admission, admissionregistration, authentication, and authorization API resources. It is part of the Fabric8 Kubernetes Client model set and lets JVM applications serialize, deserialize, and construct those Kubernetes API objects.",
+     "tested-versions" : [
+       "7.7.0"
+     ],
+
+web search: 
+web search: "kubernetes-model-admissionregistration" "7.7.0"
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7906-11a13fa3/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json:4) for `metadata-version: 7.7.0`.
+
+Filled missing fields:
+- `source-code-url`: Maven sources jar template
+- `repository-url`: canonical Fabric8 Kubernetes Client repo
+- `test-code-url`: `v$version$` GitHub test suite path
+- `documentation-url`: Maven javadoc jar template
+- `description`: exactly two sentences
+- `language`: left absent, since this is not Kotlin/Groovy/Scala-specific
+
+Maven Repository identifies the artifact as `Fabric8 :: Kubernetes Model :: Admission Registration, Authentication and Authorization` and lists the Fabric8 Kubernetes Client GitHub repo as its homepage. ([mvnrepository.com](https://mvnrepository.com/artifact/io.fabric8/kubernetes-model-admissionregistration?sort=date&utm_source=openai))
+
+Verification:
+- `jq empty metadata/io.fabric8/kubernetes-model-admissionregistration/index.json` passed.
+- Rendered `7.7.0` source, javadoc, and test URLs all returned HTTP 200.
+- `./gradlew checkMetadataFiles -Pcoordinates=io.fabric8:kubernetes-model-admissionregistration:7.7.0 --stacktrace` failed because `metadata/io.fabric8/kubernetes-model-admissionregistration/7.7.0/reachability-metadata.json` is missing, unrelated to the index fields updated here.
+diff --git a/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json b/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json
+index 57d96e65d974f7fd19a797b76824f699ebf6cd1a..6f45c6f2f82c8f66ddb5ab4226f3f9fc844f736d
+--- a/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json
++++ b/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "7.7.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/$version$/kubernetes-model-admissionregistration-$version$-sources.jar",
++    "repository-url" : "https://github.com/fabric8io/kubernetes-client",
++    "test-code-url" : "https://github.com/fabric8io/kubernetes-client/tree/v$version$/kubernetes-model-generator/kubernetes-model-admissionregistration/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/fabric8/kubernetes-model-admissionregistration/$version$/kubernetes-model-admissionregistration-$version$-javadoc.jar",
++    "description" : "Fabric8 Kubernetes Model Admission Registration provides generated Java model classes for Kubernetes admission, admissionregistration, authentication, and authorization API resources. It is part of the Fabric8 Kubernetes Client model set and lets JVM applications serialize, deserialize, and construct those Kubernetes API objects.",
+     "tested-versions" : [
+       "7.7.0"
+     ],
+
+tokens used
+65,646
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7906-11a13fa3/metadata/io.fabric8/kubernetes-model-admissionregistration/index.json:4) for `metadata-version: 7.7.0`.
+
+Filled missing fields:
+- `source-code-url`: Maven sources jar template
+- `repository-url`: canonical Fabric8 Kubernetes Client repo
+- `test-code-url`: `v$version$` GitHub test suite path
+- `documentation-url`: Maven javadoc jar template
+- `description`: exactly two sentences
+- `language`: left absent, since this is not Kotlin/Groovy/Scala-specific
+
+Maven Repository identifies the artifact as `Fabric8 :: Kubernetes Model :: Admission Registration, Authentication and Authorization` and lists the Fabric8 Kubernetes Client GitHub repo as its homepage. ([mvnrepository.com](https://mvnrepository.com/artifact/io.fabric8/kubernetes-model-admissionregistration?sort=date&utm_source=openai))
+
+Verification:
+- `jq empty metadata/io.fabric8/kubernetes-model-admissionregistration/index.json` passed.
+- Rendered `7.7.0` source, javadoc, and test URLs all returned HTTP 200.
+- `./gradlew checkMetadataFiles -Pcoordinates=io.fabric8:kubernetes-model-admissionregistration:7.7.0 --stacktrace` failed because `metadata/io.fabric8/kubernetes-model-admissionregistration/7.7.0/reachability-metadata.json` is missing, unrelated to the index fields updated here.
+Ran agent for io.fabric8:kubernetes-model-admissionregistration:7.7.0 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7906-11a13fa3/build/agent-url-discovery-logs/io.fabric8-kubernetes-model-admissionregistration-7.7.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7906-11a13fa3/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 11s
+9 actionable tasks: 1 executed, 8 up-to-date
