@@ -7,11 +7,11 @@
 package io_fabric8.kubernetes_model_common;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 import io.fabric8.kubernetes.api.builder.BaseFluent;
 import io.fabric8.kubernetes.api.builder.VisitableBuilder;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.Test;
 
 public class BaseFluentTest {
@@ -27,11 +27,14 @@ public class BaseFluentTest {
     }
 
     @Test
-    void rejectsItemsWhoseBuilderDoesNotImplementVisitableBuilder() {
-        assertThatIllegalStateException()
-                .isThrownBy(() -> BaseFluent.builderOf("example"))
-                .withMessageContaining("Failed to create builder for: class java.lang.String")
-                .withCauseInstanceOf(ClassCastException.class);
+    void retriesBuilderCreationAfterReflectiveConstructionFailure() {
+        FallbackResource resource = new FallbackResource("fallback");
+        FallbackResourceBuilder.failNextConstructorCall();
+
+        VisitableBuilder<FallbackResource, ?> builder = BaseFluent.builderOf(resource);
+
+        assertThat(builder).isInstanceOf(FallbackResourceBuilder.class);
+        assertThat(builder.build()).isSameAs(resource);
     }
 
     public static final class ConfiguredResource {
@@ -72,6 +75,41 @@ public class BaseFluentTest {
 
         @Override
         public ConfiguredResource build() {
+            return resource;
+        }
+    }
+
+    public static final class FallbackResource {
+        private final String name;
+
+        public FallbackResource(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+
+    public static final class FallbackResourceBuilder extends BaseFluent<FallbackResourceBuilder>
+            implements VisitableBuilder<FallbackResource, FallbackResourceBuilder> {
+        private static final AtomicBoolean FAIL_NEXT_CONSTRUCTOR_CALL = new AtomicBoolean();
+
+        private final FallbackResource resource;
+
+        public FallbackResourceBuilder(FallbackResource resource) {
+            if (FAIL_NEXT_CONSTRUCTOR_CALL.getAndSet(false)) {
+                throw new IllegalStateException("retry builder creation");
+            }
+            this.resource = resource;
+        }
+
+        static void failNextConstructorCall() {
+            FAIL_NEXT_CONSTRUCTOR_CALL.set(true);
+        }
+
+        @Override
+        public FallbackResource build() {
             return resource;
         }
     }
