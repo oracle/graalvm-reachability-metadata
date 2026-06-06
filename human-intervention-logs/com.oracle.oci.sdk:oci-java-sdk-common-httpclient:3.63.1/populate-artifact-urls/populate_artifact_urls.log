@@ -1,0 +1,648 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e9e26-0fa7-7a82-b066-48e8dda9d96c
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.oracle.oci.sdk:oci-java-sdk-common-httpclient:3.63.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [3.63.1].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a/metadata/com.oracle.oci.sdk/oci-java-sdk-common-httpclient/index.json
+- Entry selector: "metadata-version" = "3.63.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/$version$/oci-java-sdk-common-httpclient-$version$-sources.jar
+- repository-url: https://github.com/oracle/oci-java-sdk
+- test-code-url: N/A
+- documentation-url: https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/$version$/oci-java-sdk-common-httpclient-$version$-javadoc.jar
+- description: The OCI Java SDK common HTTP client module defines the shared HTTP client API used by Oracle Cloud Infrastructure SDK components. It provides request, response, proxy, provider, serialization, stream, and PEM/PKI helper types that HTTP client implementations and SDK clients use.
+- language: <missing>
+
+Context:
+- Coordinate version: 3.63.1
+- Entry metadata-version: 3.63.1
+- Entry test-version: 3.63.1
+- Entry tested-versions: [3.63.1]
+codex
+I’ll verify the current Maven and repository URLs first, then inspect the target `index.json` so any edit stays limited to fields that are actually missing or stale under your rules.
+web search: 
+web search: Maven Central com.oracle.oci.sdk oci-java-sdk-common-httpclient 3.63.1 sources javadoc
+codex
+The search results point at Maven Central for the source and Javadoc artifacts, and the canonical project appears to be `oracle/oci-java-sdk`. I’m checking the exact Maven directory and the local JSON now, including whether any test artifact exists for this coordinate.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/com.oracle.oci.sdk/oci-java-sdk-common-httpclient/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.63.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/$version$/oci-java-sdk-common-httpclient-$version$-sources.jar",
+    "repository-url" : "https://github.com/oracle/oci-java-sdk",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/$version$/oci-java-sdk-common-httpclient-$version$-javadoc.jar",
+    "description" : "The OCI Java SDK common HTTP client module defines the shared HTTP client API used by Oracle Cloud Infrastructure SDK components. It provides request, response, proxy, provider, serialization, stream, and PEM/PKI helper types that HTTP client implementations and SDK clients use.",
+    "tested-versions" : [
+      "3.63.1"
+    ],
+    "allowed-packages" : [
+      "com.oracle.bmc.http.client"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/3.63.1/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/oracle/oci/sdk/oci-java-sdk-common-httpclient/3.63.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/oracle/oci/sdk/oci-java-sdk-common-httpclient/3.63.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="oci-java-sdk-common-httpclient-3.63.1-javadoc.jar" title="oci-java-sdk-common-httpclient-3.63.1-javadoc.jar">oci-java-sdk-common-httpclient-3.63.1-javadoc...</a>  2025-04-15 18:07    573153      
+<a href="oci-java-sdk-common-httpclient-3.63.1-javadoc.jar.asc" title="oci-java-sdk-common-httpclient-3.63.1-javadoc.jar.asc">oci-java-sdk-common-httpclient-3.63.1-javadoc...</a>  2025-04-15 18:07       438      
+<a href="oci-java-sdk-common-httpclient-3.63.1-javadoc.jar.md5" title="oci-java-sdk-common-httpclient-3.63.1-javadoc.jar.md5">oci-java-sdk-common-httpclient-3.63.1-javadoc...</a>  2025-04-15 18:07        33      
+<a href="oci-java-sdk-common-httpclient-3.63.1-javadoc.jar.sha1" title="oci-java-sdk-common-httpclient-3.63.1-javadoc.jar.sha1">oci-java-sdk-common-httpclient-3.63.1-javadoc...</a>  2025-04-15 18:07        41      
+<a href="oci-java-sdk-common-httpclient-3.63.1-sources.jar" title="oci-java-sdk-common-httpclient-3.63.1-sources.jar">oci-java-sdk-common-httpclient-3.63.1-sources...</a>  2025-04-15 18:07     76473      
+<a href="oci-java-sdk-common-httpclient-3.63.1-sources.jar.asc" title="oci-java-sdk-common-httpclient-3.63.1-sources.jar.asc">oci-java-sdk-common-httpclient-3.63.1-sources...</a>  2025-04-15 18:07       438      
+<a href="oci-java-sdk-common-httpclient-3.63.1-sources.jar.md5" title="oci-java-sdk-common-httpclient-3.63.1-sources.jar.md5">oci-java-sdk-common-httpclient-3.63.1-sources...</a>  2025-04-15 18:07        33      
+<a href="oci-java-sdk-common-httpclient-3.63.1-sources.jar.sha1" title="oci-java-sdk-common-httpclient-3.63.1-sources.jar.sha1">oci-java-sdk-common-httpclient-3.63.1-sources...</a>  2025-04-15 18:07        41      
+<a href="oci-java-sdk-common-httpclient-3.63.1.jar" title="oci-java-sdk-common-httpclient-3.63.1.jar">oci-java-sdk-common-httpclient-3.63.1.jar</a>         2025-04-15 18:07    112255      
+<a href="oci-java-sdk-common-httpclient-3.63.1.jar.asc" title="oci-java-sdk-common-httpclient-3.63.1.jar.asc">oci-java-sdk-common-httpclient-3.63.1.jar.asc</a>     2025-04-15 18:07       438      
+<a href="oci-java-sdk-common-httpclient-3.63.1.jar.md5" title="oci-java-sdk-common-httpclient-3.63.1.jar.md5">oci-java-sdk-common-httpclient-3.63.1.jar.md5</a>     2025-04-15 18:07        33      
+<a href="oci-java-sdk-common-httpclient-3.63.1.jar.sha1" title="oci-java-sdk-common-httpclient-3.63.1.jar.sha1">oci-java-sdk-common-httpclient-3.63.1.jar.sha...</a>  2025-04-15 18:07        41      
+<a href="oci-java-sdk-common-httpclient-3.63.1.pom" title="oci-java-sdk-common-httpclient-3.63.1.pom">oci-java-sdk-common-httpclient-3.63.1.pom</a>         2025-04-15 18:07      2712      
+<a href="oci-java-sdk-common-httpclient-3.63.1.pom.asc" title="oci-java-sdk-common-httpclient-3.63.1.pom.asc">oci-java-sdk-common-httpclient-3.63.1.pom.asc</a>     2025-04-15 18:07       438      
+<a href="oci-java-sdk-common-httpclient-3.63.1.pom.md5" title="oci-java-sdk-common-httpclient-3.63.1.pom.md5">oci-java-sdk-common-httpclient-3.63.1.pom.md5</a>     2025-04-15 18:07        33      
+<a href="oci-java-sdk-common-httpclient-3.63.1.pom.sha1" title="oci-java-sdk-common-httpclient-3.63.1.pom.sha1">oci-java-sdk-common-httpclient-3.63.1.pom.sha...</a>  2025-04-15 18:07        41      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+ succeeded in 107ms:
+?? metadata/com.oracle.oci.sdk/
+?? tests/src/com.oracle.oci.sdk/
+
+codex
+The target entry already contains source, repository, documentation, and description values. Maven Central’s directory for `3.63.1` contains the normal JAR, sources JAR, Javadoc JAR, and POM, but no test JAR, so I’m checking whether there is any reason to touch the existing `N/A` test-code value despite the “non-blank fields” constraint.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/3.63.1/oci-java-sdk-common-httpclient-3.63.1.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.oracle.oci.sdk</groupId>
+    <artifactId>oci-java-sdk</artifactId>
+    <version>3.63.1</version>
+  </parent>
+
+  <artifactId>oci-java-sdk-common-httpclient</artifactId>
+  <name>Oracle Cloud Infrastructure SDK - Common HTTP client</name>
+  <description>This project contains the HTTP client API of the SDK used for Oracle Cloud Infrastructure</description>
+  <url>https://docs.oracle.com/iaas/Content/API/SDKDocs/javasdk.htm</url>
+  <properties>
+    <maven-surefire-plugin.argLine>--illegal-access=warn
+      --add-opens=java.base/java.io=ALL-UNNAMED
+      --add-opens=java.base/java.lang=ALL-UNNAMED
+      --add-opens=java.base/java.lang.reflect=ALL-UNNAMED
+      --add-opens=java.base/java.net=ALL-UNNAMED
+      --add-opens=java.base/java.time=ALL-UNNAMED
+      --add-opens=java.base/java.security.cert=ALL-UNNAMED
+      --add-opens=java.base/java.util=ALL-UNNAMED
+      --add-opens=java.base/java.util.concurrent=ALL-UNNAMED
+      --add-opens=java.base/sun.security.rsa=ALL-UNNAMED
+      --add-opens=java.base/sun.security.x509=ALL-UNNAMED
+    </maven-surefire-plugin.argLine>
+  </properties>
+  
+  <profiles>
+    <profile>
+      <id>jdk-8-only</id>
+      <activation>
+        <jdk>1.8</jdk>
+      </activation>
+      <properties>
+        <maven-surefire-plugin.argLine></maven-surefire-plugin.argLine>
+      </properties>
+    </profile>
+  </profiles>
+  <build>
+    <!-- Substitutes maven properties into the SDK properties -->
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.1.2</version>
+        <executions>
+          <execution>
+            <id>check-dependencies</id>
+            <goals>
+              <goal>analyze-only</goal>
+            </goals>
+            <phase>verify</phase>
+            <configuration>
+              <failOnWarning>true</failOnWarning>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+  </dependencies>
+
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/3.63.1/oci-java-sdk-common-httpclient-3.63.1-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 18:16:20 GMT
+content-type: application/java-archive
+content-length: 76473
+cf-ray: a07968571a061e6d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 96
+etag: "e779d3c65674e5a4af70c782260607ad"
+last-modified: Tue, 15 Apr 2025 18:07:36 GMT
+x-checksum-md5: e779d3c65674e5a4af70c782260607ad
+x-checksum-sha1: 940f207c1c0a1b61f9804b2ee5a231463fec9f59
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/3.63.1/oci-java-sdk-common-httpclient-3.63.1-javadoc.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 18:16:20 GMT
+content-type: application/java-archive
+content-length: 573153
+cf-ray: a0796857be4c1a65-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 123117
+etag: "af87ff4f3f113b4530a56de557d58f03"
+last-modified: Tue, 15 Apr 2025 18:07:39 GMT
+x-checksum-md5: af87ff4f3f113b4530a56de557d58f03
+x-checksum-sha1: 84fec8bfa6cc0c125e4ad38dbb11b5434d615172
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/3.63.1/oci-java-sdk-common-httpclient-3.63.1-tests.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+ exited 22 in 266ms:
+HTTP/2 404 
+date: Sat, 06 Jun 2026 18:16:20 GMT
+content-type: text/html
+cf-ray: a0796857bbe4fcc9-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/3.63.1/oci-java-sdk-common-httpclient-3.63.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+codex
+The source and Javadoc templates render to HTTP 200 for `3.63.1`; the Maven `-tests.jar` candidate returns 404. The POM identifies this as the Oracle Cloud Infrastructure SDK common HTTP client API module, and nothing indicates Kotlin, Groovy, or Scala-specific packaging.
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://github.com/oracle/oci-java-sdk/tree/v3.63.1' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://github.com/oracle/oci-java-sdk/tree/3.63.1' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://github.com/oracle/oci-java-sdk/tree/v3.63.1/bmc-common-httpclient' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://github.com/oracle/oci-java-sdk' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+ exited 22 in 2221ms:
+HTTP/2 404 
+date: Sat, 06 Jun 2026 18:16:32 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=rQeK1%2BpZpL%2B1rtOuuog8ofvukykgpT9TCUVFpGG8yyfyzWWr7Ehi5ERUYXhrkrukRpMC8jgBeOOzPcnqw5zYu77%2BCiWXrtBpCKq6K4B9i6RNvyoyfKAph%2BD4Gi6LhxUHEnb98MlANX9rGQZRvOZN78kHlMRisyirnBD4WbygvaSTgY2PLTt80gaRv4xw7Un4z7GLFkY4JofqFlU1eqXypCVqHc%2BM8buJVcSsjTCPF3xb5MFxbcNI3wrISQQi1MQrkiPHch5iQXyu2ZrjCaRX0A%3D%3D--PFnFU7Ino%2B05SqWC--QYIPjptJo2Bm876FdwbsyA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1409784220.1780769791; expires=Sun, 06 Jun 2027 18:16:31 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 06 Jun 2027 18:16:31 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 620E:300B07:1E511B4:256B56F:6A2463FE
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 2840ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 18:16:33 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"b8348b0b790f2843f717c7472fbf324b"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=Eu95BPLKfBtFU4Lb71TkTKtI4QSo6jIdABuOklfob9qVVnb1afAfFPi0BP4xw2yqUzbPqBM5jfvTjBJcWWchzzROWm2HHc%2BUu9pikeUs4%2FkJP99iN7vp7wY7hQqfvgmDAexrt1iUK6NjAFZGwY75ILQ3B1VgvRXMPcTah6Hs1%2Fqmq%2F2yhE2NEDE6dZtCLfYXpTrlhgWv4ejtl66NyuzOMPO25287l8AAozAIGCak9ReAnp33JWZpv%2BfFZgfIipuNw9fzqOikdjSFZbnLRo%2F%2F7g%3D%3D--ZuhJ2VrGd%2Fr%2BjRRq--UNbCGKVKidN9dLOEyBrNkA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2108367073.1780769791; expires=Sun, 06 Jun 2027 18:16:31 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 06 Jun 2027 18:16:31 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6213:F123:1EB2B7D:25F96CA:6A2463FE
+
+
+ succeeded in 2985ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 18:16:33 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"bc49457679e238a297839ebd8d681858"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=9ZaPRBeaD7XdB8uhXnCETH7S8VVZUjTMHzDWXsxpcqFxBQJctivcEwGwNCOfg6MWTB2QskiMbpZ5U3Etqnva2GW%2F6Id8uoqhRRKyYl4nGtWc1mITguftgKcc6RbhguPu%2Fg6O10wE%2F8m7nOPzOLvUZR44T%2FFVmXkSEfZXIU0uQvwKI0HLth5ZvEx8n4mGU6VPW2yxKt4M0bC2ymhXVZ04kcRCeiUj8EUP3nfsKIWM1mFa3%2B95rUW2ZINwV6W8N8B6YQhsJdVtN08NdozaX1P3jQ%3D%3D--on9p7aUhPO910bca--EZvGH%2FBHWI0dvn8Me2BDlw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1323313560.1780769791; expires=Sun, 06 Jun 2027 18:16:31 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 06 Jun 2027 18:16:31 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 621C:300B07:1E511A9:256B568:6A2463FE
+
+
+ succeeded in 3297ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 18:16:34 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"9d69f381c38694c578bd65dd655f25c8"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=T4YvCl4zqHhcmeiPu0Hg05eQmoto027QAYrDYc9hU7VKeGm%2BkG3Y3jWr1Jvv8VdV9oNodHVuULZ9%2BpVNDTAbEzLC3i1aqZFua1xZaoDLfMNNLalj4PSaRXc5xJeLj4BoXIjtGXu5rlaJHYY%2FftHiNzBkVDyQNtfFmzgMFzVbbja21%2BMuWKUsvp%2Fh2m%2Fq9TgKnj2wxcur6F6C0u2eyoGZSgQIr8nPFtwAdHG2BY6HLp4cfu0Kj4DY6OZPX4pJV2CM6mgMPdm7hq9XQv46DcH1KA%3D%3D--8NUXHDCK2R3qdXOm--0znJ5ZXBNaUcsvjQ%2Fcuv5Q%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.630089536.1780769791; expires=Sun, 06 Jun 2027 18:16:31 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 06 Jun 2027 18:16:31 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 621F:172BE9:1DCE75E:24B4497:6A2463FE
+
+
+codex
+The GitHub HEAD checks are still running, so I’m polling those before deciding whether the file needs an edit. If they resolve as expected and no field qualifies as missing, I’ll leave the JSON untouched.
+codex
+The GitHub tag is `v3.63.1` and the repository root is valid. The unprefixed `3.63.1` tag is absent, so the existing Maven version templates are the better source/doc choices here.
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://github.com/oracle/oci-java-sdk/tree/v3.63.1/bmc-common-httpclient/src/test' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://github.com/oracle/oci-java-sdk/tree/v3.63.1/bmc-common-httpclient/src/test/java' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+exec
+/usr/bin/bash -lc 'curl -fsS https://api.github.com/repos/oracle/oci-java-sdk/contents/bmc-common-httpclient/src/test?ref=v3.63.1' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/3.63.1/oci-java-sdk-common-httpclient-3.63.1-sources.jar -o /tmp/oci-java-sdk-common-httpclient-3.63.1-sources.jar && jar tf /tmp/oci-java-sdk-common-httpclient-3.63.1-sources.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+ succeeded in 0ms:
+THIRD_PARTY_LICENSES.txt
+LICENSE.txt
+NOTICE.txt
+META-INF/MANIFEST.MF
+META-INF/
+com/
+com/oracle/
+com/oracle/bmc/
+com/oracle/bmc/http/
+com/oracle/bmc/http/client/
+com/oracle/bmc/http/client/io/
+com/oracle/bmc/http/client/pki/
+com/oracle/bmc/http/client/internal/
+META-INF/maven/
+META-INF/maven/com.oracle.oci.sdk/
+META-INF/maven/com.oracle.oci.sdk/oci-java-sdk-common-httpclient/
+com/oracle/bmc/http/client/HttpResponse.java
+com/oracle/bmc/http/client/pki/Pem.java
+com/oracle/bmc/http/client/KeyStoreWithPassword.java
+com/oracle/bmc/http/client/RequestInterceptor.java
+com/oracle/bmc/http/client/io/DuplicatableInputStream.java
+com/oracle/bmc/http/client/pki/PemException.java
+com/oracle/bmc/http/client/pki/OpenSslPbeSecretKeyGenerator.java
+com/oracle/bmc/http/client/pki/internal-README.md
+com/oracle/bmc/http/client/pki/OpenSslPbeSecretKeyFactory.java
+com/oracle/bmc/http/client/ProxyConfiguration.java
+com/oracle/bmc/http/client/pki/PemEncryptedKeyException.java
+com/oracle/bmc/http/client/pki/PemEncryptionException.java
+META-INF/maven/com.oracle.oci.sdk/oci-java-sdk-common-httpclient/pom.xml
+com/oracle/bmc/http/client/Serializer.java
+com/oracle/bmc/http/client/pki/Eraser.java
+com/oracle/bmc/http/client/pki/Pkcs1EncryptedPrivateKeyInfo.java
+com/oracle/bmc/http/client/pki/Hex.java
+com/oracle/bmc/http/client/Options.java
+com/oracle/bmc/http/client/StandardClientProperties.java
+com/oracle/bmc/http/client/Method.java
+com/oracle/bmc/http/client/HttpProvider.java
+com/oracle/bmc/http/client/internal/DelegationTokenClientFilterProvider.java
+com/oracle/bmc/http/client/internal/ExplicitlySetBmcModel.java
+com/oracle/bmc/http/client/InternalSdk.java
+com/oracle/bmc/http/client/pki/Sensitive.java
+com/oracle/bmc/http/client/pki/Utf8.java
+com/oracle/bmc/http/client/HttpRequest.java
+com/oracle/bmc/http/client/HttpClient.java
+com/oracle/bmc/http/client/ClientProperty.java
+META-INF/maven/com.oracle.oci.sdk/oci-java-sdk-common-httpclient/pom.properties
+com/oracle/bmc/http/client/HttpClientBuilder.java
+com/oracle/bmc/http/client/pki/Text.java
+com/oracle/bmc/http/client/internal/ClientThreadFactory.java
+
+ exited 22 in 301ms:
+curl: (22) The requested URL returned error: 404
+
+ exited 22 in 2118ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 06 Jun 2026 18:16:44 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=%2B%2F3JkrFMfMniOqPrc3uF9NdaIjGJvCwu53ZEfMyA9i%2B5ulHYcGuA6gPZ8O1MY8RGRQMtmZ5ncQdFz%2BwAlvv%2BPBMc%2FR90FJSyIAeS76QO2l5gN7ZHoNMgmnDc4oItW836DC8lvPSAtJiiGkh5rmzIx3H5%2B3wyRaIvrRnVSs62OjO0glcX2dqAC7dgtfRBmdAj83jIv7euaJHCJSpiA2NDD%2FZ%2FEP1iFHH71c8XWEZtNn0MQxDoU9XmF3UGk4aeUFpeaOOFvcqSiHaWpMEETLGTug%3D%3D--q%2BrntnmI5Fsul3em--iamN3mncgq31u50gAGhdFQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1739826582.1780769802; expires=Sun, 06 Jun 2027 18:16:42 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 06 Jun 2027 18:16:42 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 620E:300B07:1E56DBD:2572378:6A24640A
+
+
+ exited 22 in 2542ms:
+HTTP/2 404 
+date: Sat, 06 Jun 2026 18:16:44 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=8n8TlujnXdjUtjPrW5C%2Bl4SlWoBHE4xVUzwWXB7zzjfMzfUg%2B1z%2B%2FlKIaf1C2PzMq5HzYaxla0zR5bgqiPZHuiXd1c%2FQkC8IXiNsX%2FxDZRhOrhCe8y87B0Xw9XfGMnTn%2FQkUNe3I5SSFf0x5w1bp6eaAs4iX6ThXMgTvtn0ko4wRnjV%2BDx4CK2b86syunJ2gcM3G5Ts8nqHOBeKOfm5IJjYD9r36a%2BHJ%2B5MXQK4Nqlx6tyO68bwcDmMAYMDhvP6XhoPCJr2%2BlzXTOQ1CnTaH4g%3D%3D--OzPc%2FgOA2km5WSlC--lHU%2F81120wzYjeCiv2cd9A%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.851187435.1780769802; expires=Sun, 06 Jun 2027 18:16:42 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 06 Jun 2027 18:16:42 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6213:F123:1EB8662:26000B8:6A24640A
+
+curl: (22) The requested URL returned error: 404
+
+codex
+The source JAR contents are Java package sources under `com/oracle/bmc/http/client`, with no Kotlin/Groovy/Scala signals. I’m also checking whether the repository has a versioned test directory for this module, but that only matters for reporting because `test-code-url` is already non-blank.
+codex
+The `bmc-common-httpclient` module at `v3.63.1` has no `src/test` directory exposed at that path, matching the absence of a Maven tests artifact. I’m doing a final local diff check now; I don’t expect a file change because every applicable field is already non-blank and valid, and `language` should remain absent.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\"==\"3.63.1\")' metadata/com.oracle.oci.sdk/oci-java-sdk-common-httpclient/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "3.63.1",
+  "source-code-url": "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/$version$/oci-java-sdk-common-httpclient-$version$-sources.jar",
+  "repository-url": "https://github.com/oracle/oci-java-sdk",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/$version$/oci-java-sdk-common-httpclient-$version$-javadoc.jar",
+  "description": "The OCI Java SDK common HTTP client module defines the shared HTTP client API used by Oracle Cloud Infrastructure SDK components. It provides request, response, proxy, provider, serialization, stream, and PEM/PKI helper types that HTTP client implementations and SDK clients use.",
+  "tested-versions": [
+    "3.63.1"
+  ],
+  "allowed-packages": [
+    "com.oracle.bmc.http.client"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/com.oracle.oci.sdk/oci-java-sdk-common-httpclient/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -fsS https://api.github.com/repos/oracle/oci-java-sdk/contents/bmc-common-httpclient?ref=v3.63.1' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+ succeeded in 298ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "bmc-common-httpclient/pom.xml",
+    "sha": "963ee9e78e2ee7eb121987894ca47500bedd7832",
+    "size": 2756,
+    "url": "https://api.github.com/repos/oracle/oci-java-sdk/contents/bmc-common-httpclient/pom.xml?ref=v3.63.1",
+    "html_url": "https://github.com/oracle/oci-java-sdk/blob/v3.63.1/bmc-common-httpclient/pom.xml",
+    "git_url": "https://api.github.com/repos/oracle/oci-java-sdk/git/blobs/963ee9e78e2ee7eb121987894ca47500bedd7832",
+    "download_url": "https://raw.githubusercontent.com/oracle/oci-java-sdk/v3.63.1/bmc-common-httpclient/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/oracle/oci-java-sdk/contents/bmc-common-httpclient/pom.xml?ref=v3.63.1",
+      "git": "https://api.github.com/repos/oracle/oci-java-sdk/git/blobs/963ee9e78e2ee7eb121987894ca47500bedd7832",
+      "html": "https://github.com/oracle/oci-java-sdk/blob/v3.63.1/bmc-common-httpclient/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "bmc-common-httpclient/src",
+    "sha": "d8ecceaeac01008b40ccc8d1feb94510579c1b5b",
+    "size": 0,
+    "url": "https://api.github.com/repos/oracle/oci-java-sdk/contents/bmc-common-httpclient/src?ref=v3.63.1",
+    "html_url": "https://github.com/oracle/oci-java-sdk/tree/v3.63.1/bmc-common-httpclient/src",
+    "git_url": "https://api.github.com/repos/oracle/oci-java-sdk/git/trees/d8ecceaeac01008b40ccc8d1feb94510579c1b5b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/oracle/oci-java-sdk/contents/bmc-common-httpclient/src?ref=v3.63.1",
+      "git": "https://api.github.com/repos/oracle/oci-java-sdk/git/trees/d8ecceaeac01008b40ccc8d1feb94510579c1b5b",
+      "html": "https://github.com/oracle/oci-java-sdk/tree/v3.63.1/bmc-common-httpclient/src"
+    }
+  }
+]
+
+web search: 
+web search: https://github.com/oracle/oci-java-sdk
+web search: 
+web search: repo1.maven.org maven2 com oracle oci sdk oci-java-sdk-common-httpclient 3.63.1 sources.jar javadoc.jar
+web search: 
+web search: https://repo1.maven.org/maven2/com/oracle/oci/sdk/
+web search: 
+web search: https://repo1.maven.org/maven2/com/oracle/oci/sdk/
+codex
+One related detail: Maven Central has a separate `oci-java-sdk-common-httpclient-tests` artifact family. I’m verifying the `3.63.1` files for that artifact, but because the target entry’s `test-code-url` is already the non-blank sentinel `N/A`, your “fill only missing fields” rule still means I should not rewrite it.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient-tests/3.63.1/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient-tests/3.63.1/oci-java-sdk-common-httpclient-tests-3.63.1-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient-tests/3.63.1/oci-java-sdk-common-httpclient-tests-3.63.1-test-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+ exited 22 in 228ms:
+curl: (22) The requested URL returned error: 404
+
+ exited 22 in 256ms:
+HTTP/2 404 
+date: Sat, 06 Jun 2026 18:17:28 GMT
+content-type: text/html
+cf-ray: a0796a00a9c7265f-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient-tests/3.63.1/oci-java-sdk-common-httpclient-tests-3.63.1-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ exited 22 in 285ms:
+HTTP/2 404 
+date: Sat, 06 Jun 2026 18:17:28 GMT
+content-type: text/html
+cf-ray: a0796a012c49be70-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient-tests/3.63.1/oci-java-sdk-common-httpclient-tests-3.63.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+web search: 
+web search: "oci-java-sdk-common-httpclient-3.63.1-sources.jar"
+codex
+Checked the target entry in [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a/metadata/com.oracle.oci.sdk/oci-java-sdk-common-httpclient/index.json). No file changes were necessary: all requested fields are already non-blank except `language`, and this artifact is not Kotlin, Groovy, or Scala-specific, so `language` should remain absent.
+
+Verified:
+- `source-code-url` template renders to HTTP 200 for `3.63.1`.
+- `documentation-url` template renders to HTTP 200 for `3.63.1`.
+- `repository-url` is the canonical repo root.
+- Maven test JAR candidates were 404, and `test-code-url` was already non-blank as `N/A`.
+- `git diff -- metadata/com.oracle.oci.sdk/oci-java-sdk-common-httpclient/index.json` is empty.
+
+I did not run Gradle tests because no repository file changed.
+tokens used
+65,085
+Checked the target entry in [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a/metadata/com.oracle.oci.sdk/oci-java-sdk-common-httpclient/index.json). No file changes were necessary: all requested fields are already non-blank except `language`, and this artifact is not Kotlin, Groovy, or Scala-specific, so `language` should remain absent.
+
+Verified:
+- `source-code-url` template renders to HTTP 200 for `3.63.1`.
+- `documentation-url` template renders to HTTP 200 for `3.63.1`.
+- `repository-url` is the canonical repo root.
+- Maven test JAR candidates were 404, and `test-code-url` was already non-blank as `N/A`.
+- `git diff -- metadata/com.oracle.oci.sdk/oci-java-sdk-common-httpclient/index.json` is empty.
+
+I did not run Gradle tests because no repository file changed.
+Ran agent for com.oracle.oci.sdk:oci-java-sdk-common-httpclient:3.63.1 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a/build/agent-url-discovery-logs/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 53s
+9 actionable tasks: 1 executed, 8 up-to-date

@@ -1,0 +1,1812 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e9e24-7f64-7fe3-b36b-594d422bc6d4
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.oracle.oci.sdk:oci-java-sdk-common-httpclient:3.63.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "3.63.1" when "$version$" is replaced with "3.63.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "com.oracle.oci.sdk:oci-java-sdk-common-httpclient:3.63.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.63.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact against primary sources, then write the discovered metadata JSON directly with the version-tokenized URLs the index expects.
+web search: 
+web search: Maven Central com.oracle.oci.sdk oci-java-sdk-common-httpclient 3.63.1 pom
+codex
+The search results point at the OCI Java SDK family, but the exact artifact/version needs confirmation from Maven metadata and the POM so the generated URLs are not guessed.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json && sed -n '1,160p' build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+-rw-rw-r-- 1 vjovanov vjovanov 81 Jun  6 20:14 build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json
+{
+  "coordinates" : "com.oracle.oci.sdk:oci-java-sdk-common-httpclient:3.63.1"
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/3.63.1/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/oracle/oci/sdk/oci-java-sdk-common-httpclient/3.63.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/oracle/oci/sdk/oci-java-sdk-common-httpclient/3.63.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="oci-java-sdk-common-httpclient-3.63.1-javadoc.jar" title="oci-java-sdk-common-httpclient-3.63.1-javadoc.jar">oci-java-sdk-common-httpclient-3.63.1-javadoc...</a>  2025-04-15 18:07    573153      
+<a href="oci-java-sdk-common-httpclient-3.63.1-javadoc.jar.asc" title="oci-java-sdk-common-httpclient-3.63.1-javadoc.jar.asc">oci-java-sdk-common-httpclient-3.63.1-javadoc...</a>  2025-04-15 18:07       438      
+<a href="oci-java-sdk-common-httpclient-3.63.1-javadoc.jar.md5" title="oci-java-sdk-common-httpclient-3.63.1-javadoc.jar.md5">oci-java-sdk-common-httpclient-3.63.1-javadoc...</a>  2025-04-15 18:07        33      
+<a href="oci-java-sdk-common-httpclient-3.63.1-javadoc.jar.sha1" title="oci-java-sdk-common-httpclient-3.63.1-javadoc.jar.sha1">oci-java-sdk-common-httpclient-3.63.1-javadoc...</a>  2025-04-15 18:07        41      
+<a href="oci-java-sdk-common-httpclient-3.63.1-sources.jar" title="oci-java-sdk-common-httpclient-3.63.1-sources.jar">oci-java-sdk-common-httpclient-3.63.1-sources...</a>  2025-04-15 18:07     76473      
+<a href="oci-java-sdk-common-httpclient-3.63.1-sources.jar.asc" title="oci-java-sdk-common-httpclient-3.63.1-sources.jar.asc">oci-java-sdk-common-httpclient-3.63.1-sources...</a>  2025-04-15 18:07       438      
+<a href="oci-java-sdk-common-httpclient-3.63.1-sources.jar.md5" title="oci-java-sdk-common-httpclient-3.63.1-sources.jar.md5">oci-java-sdk-common-httpclient-3.63.1-sources...</a>  2025-04-15 18:07        33      
+<a href="oci-java-sdk-common-httpclient-3.63.1-sources.jar.sha1" title="oci-java-sdk-common-httpclient-3.63.1-sources.jar.sha1">oci-java-sdk-common-httpclient-3.63.1-sources...</a>  2025-04-15 18:07        41      
+<a href="oci-java-sdk-common-httpclient-3.63.1.jar" title="oci-java-sdk-common-httpclient-3.63.1.jar">oci-java-sdk-common-httpclient-3.63.1.jar</a>         2025-04-15 18:07    112255      
+<a href="oci-java-sdk-common-httpclient-3.63.1.jar.asc" title="oci-java-sdk-common-httpclient-3.63.1.jar.asc">oci-java-sdk-common-httpclient-3.63.1.jar.asc</a>     2025-04-15 18:07       438      
+<a href="oci-java-sdk-common-httpclient-3.63.1.jar.md5" title="oci-java-sdk-common-httpclient-3.63.1.jar.md5">oci-java-sdk-common-httpclient-3.63.1.jar.md5</a>     2025-04-15 18:07        33      
+<a href="oci-java-sdk-common-httpclient-3.63.1.jar.sha1" title="oci-java-sdk-common-httpclient-3.63.1.jar.sha1">oci-java-sdk-common-httpclient-3.63.1.jar.sha...</a>  2025-04-15 18:07        41      
+<a href="oci-java-sdk-common-httpclient-3.63.1.pom" title="oci-java-sdk-common-httpclient-3.63.1.pom">oci-java-sdk-common-httpclient-3.63.1.pom</a>         2025-04-15 18:07      2712      
+<a href="oci-java-sdk-common-httpclient-3.63.1.pom.asc" title="oci-java-sdk-common-httpclient-3.63.1.pom.asc">oci-java-sdk-common-httpclient-3.63.1.pom.asc</a>     2025-04-15 18:07       438      
+<a href="oci-java-sdk-common-httpclient-3.63.1.pom.md5" title="oci-java-sdk-common-httpclient-3.63.1.pom.md5">oci-java-sdk-common-httpclient-3.63.1.pom.md5</a>     2025-04-15 18:07        33      
+<a href="oci-java-sdk-common-httpclient-3.63.1.pom.sha1" title="oci-java-sdk-common-httpclient-3.63.1.pom.sha1">oci-java-sdk-common-httpclient-3.63.1.pom.sha...</a>  2025-04-15 18:07        41      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/3.63.1/oci-java-sdk-common-httpclient-3.63.1.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.oracle.oci.sdk</groupId>
+    <artifactId>oci-java-sdk</artifactId>
+    <version>3.63.1</version>
+  </parent>
+
+  <artifactId>oci-java-sdk-common-httpclient</artifactId>
+  <name>Oracle Cloud Infrastructure SDK - Common HTTP client</name>
+  <description>This project contains the HTTP client API of the SDK used for Oracle Cloud Infrastructure</description>
+  <url>https://docs.oracle.com/iaas/Content/API/SDKDocs/javasdk.htm</url>
+  <properties>
+    <maven-surefire-plugin.argLine>--illegal-access=warn
+      --add-opens=java.base/java.io=ALL-UNNAMED
+      --add-opens=java.base/java.lang=ALL-UNNAMED
+      --add-opens=java.base/java.lang.reflect=ALL-UNNAMED
+      --add-opens=java.base/java.net=ALL-UNNAMED
+      --add-opens=java.base/java.time=ALL-UNNAMED
+      --add-opens=java.base/java.security.cert=ALL-UNNAMED
+      --add-opens=java.base/java.util=ALL-UNNAMED
+      --add-opens=java.base/java.util.concurrent=ALL-UNNAMED
+      --add-opens=java.base/sun.security.rsa=ALL-UNNAMED
+      --add-opens=java.base/sun.security.x509=ALL-UNNAMED
+    </maven-surefire-plugin.argLine>
+  </properties>
+  
+  <profiles>
+    <profile>
+      <id>jdk-8-only</id>
+      <activation>
+        <jdk>1.8</jdk>
+      </activation>
+      <properties>
+        <maven-surefire-plugin.argLine></maven-surefire-plugin.argLine>
+      </properties>
+    </profile>
+  </profiles>
+  <build>
+    <!-- Substitutes maven properties into the SDK properties -->
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.1.2</version>
+        <executions>
+          <execution>
+            <id>check-dependencies</id>
+            <goals>
+              <goal>analyze-only</goal>
+            </goals>
+            <phase>verify</phase>
+            <configuration>
+              <failOnWarning>true</failOnWarning>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+  </dependencies>
+
+</project>
+codex
+Maven Central confirms the 3.63.1 JVM JAR, source JAR, and Javadoc JAR are published for this artifact; there is no test JAR in that version directory, so I’m checking the upstream tag for the test path.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk/3.63.1/oci-java-sdk-3.63.1.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.oracle.oci.sdk</groupId>
+  <artifactId>oci-java-sdk</artifactId>
+  <version>3.63.1</version>
+  <packaging>pom</packaging>
+  <name>Oracle Cloud Infrastructure SDK</name>
+  <description>This project contains the SDK used for Oracle Cloud Infrastructure</description>
+  <url>https://docs.oracle.com/iaas/Content/API/SDKDocs/javasdk.htm</url>
+  <inceptionYear>2016</inceptionYear>
+  <licenses>
+    <license>
+      <name>The Universal Permissive License (UPL), Version 1.0</name>
+      <url>http://www.oracle.com/technetwork/licenses/upl-license-2927578.html</url>
+      <distribution>repo</distribution>
+    </license>
+    <license>
+      <name>Apache License 2.0</name>
+      <url>http://apache.org/licenses/LICENSE-2.0.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>oracle</id>
+      <name>Oracle</name>
+      <organizationUrl>https://www.oracle.com</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git@github.com:oracle/oci-java-sdk.git</connection>
+    <url>https://github.com/oracle/oci-java-sdk</url>
+  </scm>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <jackson.version>2.17.1</jackson.version>
+    <jackson.databind.version>2.17.1</jackson.databind.version>
+    <jersey.version>2.35</jersey.version>
+    <apache-httpcomponents.version>4.5.13</apache-httpcomponents.version>
+    <apache-httpcomponents.httpclient.version>4.5.13</apache-httpcomponents.httpclient.version>
+    <apache-httpcomponents.httpcore.version>4.4.13</apache-httpcomponents.httpcore.version>
+    <junit.version>4.13.2</junit.version>
+    <slf4j.version>1.7.33</slf4j.version>
+    <javax.annotation.version>1.3.2</javax.annotation.version>
+    <jakarta9.annotations.version>2.1.1</jakarta9.annotations.version>
+    <jakarta.ws.rs-api.version>2.1.6</jakarta.ws.rs-api.version>
+    <!-- Update resilience4jVersion and io.vavr.version together -->
+    <resilience4jVersion>1.7.1</resilience4jVersion>
+    <io.vavr.version>0.10.4</io.vavr.version>
+    <maven-shade-plugin.version>3.5.0</maven-shade-plugin.version>
+    <mockito.version>2.18.0</mockito.version>
+    <maven-surefire-plugin.argLine />
+    <powermock.version>2.0.2</powermock.version>
+    <hk2.version>2.6.1</hk2.version>
+    <net.jodah.failsafe.version>0.9.2</net.jodah.failsafe.version>
+    <hamcrest.core.version>1.3</hamcrest.core.version>
+    <hamcrest.junit.version>2.0.0.0</hamcrest.junit.version>
+    <native.maven.plugin.version>0.10.2</native.maven.plugin.version>
+    <excluded.testcases>**/*IntegrationAutoTest.java</excluded.testcases>
+    <dev.profile.skip.javadoc>true</dev.profile.skip.javadoc>
+    <exec.skip>true</exec.skip>
+    <exec.mainClass>com.acme.Undefined</exec.mainClass>
+    <oci.codegen.version>2.119</oci.codegen.version>
+  </properties>
+  <profiles>
+    <profile>
+      <id>ziponly</id>
+      <modules>
+        <module>bmc-dist</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>dev</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>timestamp-property</id>
+                <goals>
+                  <goal>timestamp-property</goal>
+                </goals>
+                <phase>validate</phase>
+                <configuration>
+                  <name>current.year</name>
+                  <pattern>yyyy</pattern>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>replace_links</id>
+                <phase>process-sources</phase>
+                <configuration>
+                  <target>
+                    <replace dir="src/main/java" token="{{DOC_SERVER_URL}}/iaas" value="https://docs.oracle.com/iaas" />
+                    <replace dir="src/main/java" token="{{DOC_SERVER_URL}}" value="https://docs.oracle.com/iaas" />
+                    <replace dir="src/main/java" token="https://docs.cloud.oracle.com/iaas" value="https://docs.oracle.com/iaas" />
+                    <replace dir="src/main/java" token="https://docs.cloud.oracle.com" value="https://docs.oracle.com/iaas" />
+                    <replace dir="src/main/java" token="https://docs.us-phoenix-1.oraclecloud.com" value="https://docs.oracle.com/iaas" />
+                  </target>
+                  <failOnError>false</failOnError>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.theoryinpractise</groupId>
+            <artifactId>googleformatter-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>reformat-sources</id>
+                <configuration>
+                  <includeStale>false</includeStale>
+                  <sortImports>NO</sortImports>
+                  <style>AOSP</style>
+                  <filterModified>true</filterModified>
+                  <skip>false</skip>
+                  <filterModified>false</filterModified>
+                </configuration>
+                <goals>
+                  <goal>format</goal>
+                </goals>
+                <phase>process-sources</phase>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.mycila</groupId>
+            <artifactId>license-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>process-sources</phase>
+                <goals>
+                  <goal>format</goal>
+                </goals>
+                <configuration>
+                  <properties>
+                    <current.year>${current.year}</current.year>
+                  </properties>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <configuration>
+              <skipSource>${dev.profile.skip.javadoc}</skipSource>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>3.7.0</version>
+            <configuration>
+              <skip>${dev.profile.skip.javadoc}</skip>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <configuration>
+              <skip>${dev.profile.skip.javadoc}</skip>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>quick</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.theoryinpractise</groupId>
+            <artifactId>googleformatter-maven-plugin</artifactId>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>com.mycila</groupId>
+            <artifactId>license-maven-plugin</artifactId>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <configuration>
+              <skipSource>true</skipSource>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>3.7.0</version>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>jdk-17-and-above</id>
+      <activation>
+        <jdk>[17,</jdk>
+      </activation>
+      <properties>
+        <argLine>
+          --add-opens=java.base/java.lang=ALL-UNNAMED
+          --add-opens=java.base/java.lang.reflect=ALL-UNNAMED
+          --add-opens=java.base/java.util=ALL-UNNAMED
+          --add-opens=java.base/java.util.concurrent=ALL-UNNAMED
+          --add-opens=java.base/java.io=ALL-UNNAMED
+          --add-opens=java.base/java.time=ALL-UNNAMED
+          --add-opens=java.base/java.util.regex=ALL-UNNAMED
+          --add-opens=java.base/java.util.stream=ALL-UNNAMED
+          --add-opens=java.base/java.text=ALL-UNNAMED
+          --add-opens=java.base/java.security=ALL-UNNAMED
+          --add-opens=java.base/java.net=ALL-UNNAMED
+          --add-opens=java.base/java.nio.channels=ALL-UNNAMED
+        </argLine>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>3.7.0</version>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.19.1</version>
+            <configuration>
+              <excludes>
+                <exclude>**/ConfigFileDelegationTokenUtilsTest.java</exclude>
+                <exclude>**/ConfigFileAuthenticationDetailsProviderTest.java</exclude>
+                <exclude>**/X509FederationClientTest.java</exclude>
+                <exclude>**/DefaultConfiguratorTest.java</exclude>
+                <exclude>**/RequestSignerImplTest.java</exclude>
+              </excludes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>jdk-8-only</id>
+      <activation>
+        <jdk>1.8</jdk>
+      </activation>
+      <properties>
+        <maven-surefire-plugin.argLine />
+      </properties>
+    </profile>
+  </profiles>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.8.1</version>
+          <configuration>
+            <source>1.8</source>
+            <target>1.8</target>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-maven-plugin</artifactId>
+          <version>1.16</version>
+          <configuration>
+            <signature>
+              <groupId>org.codehaus.mojo.signature</groupId>
+              <artifactId>java18</artifactId>
+              <version>1.0</version>
+            </signature>
+          </configuration>
+          <executions>
+            <execution>
+              <id>animal-sniffer-check</id>
+              <phase>test</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>3.1.2</version>
+          <executions>
+            <execution>
+              <id>check-dependencies</id>
+              <goals>
+                <goal>analyze-only</goal>
+              </goals>
+              <phase>verify</phase>
+              <configuration>
+                <failOnWarning>false</failOnWarning>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>1.8</version>
+        </plugin>
+        <plugin>
+          <groupId>com.theoryinpractise</groupId>
+          <artifactId>googleformatter-maven-plugin</artifactId>
+          <version>1.7.5</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>3.6.0</version>
+        </plugin>
+        <plugin>
+          <groupId>com.mycila</groupId>
+          <artifactId>license-maven-plugin</artifactId>
+          <version>3.0</version>
+          <configuration>
+            <aggregate>true</aggregate>
+            <header>${ocijavasdk.basedir}/licenseheader.txt</header>
+            <includes>
+              <include>src/main/java/**/*.java</include>
+              <include>src/test/java/**/*.java</include>
+              <include>**/*.properties</include>
+              <include>**/*.html</include>
+            </includes>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>3.0.1</version>
+          <executions>
+            <execution>
+              <id>attach-sources</id>
+              <phase>package</phase>
+              <goals>
+                <goal>jar-no-fork</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.0.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.7.0</version>
+          <goals>
+            <goal>jar</goal>
+          </goals>
+          <executions>
+            <execution>
+              <id>aggregate</id>
+              <phase>package</phase>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <!-- Exclude classes that shouldn't be exposed to end users, ex, those in 'internal' packages -->
+            <excludePackageNames>*.internal.*</excludePackageNames>
+            <minmemory>2048m</minmemory>
+            <maxmemory>6144m</maxmemory>
+            <doclint>none</doclint>
+            <sourcepath>src/main/java</sourcepath>
+            <links>
+              <link>https://javadoc.io/doc/javax.ws.rs/javax.ws.rs-api/2.0</link>
+              <link>https://eclipse-ee4j.github.io/jersey.github.io/apidocs/${jersey.version}/jersey</link>
+            </links>
+            <additionalJOptions>--allow-script-in-comments</additionalJOptions>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+          <version>${junit.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.19.1</version>
+          <configuration>
+            <excludes>
+              <exclude>${excluded.testcases}</exclude>
+            </excludes>
+            <argLine>${maven-surefire-plugin.argLine}</argLine>
+          </configuration>
+          <executions>
+            <execution>
+              <id>run-tests</id>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>3.3.0</version>
+          <inherited>true</inherited>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>3.5.0</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>extra-enforcer-rules</artifactId>
+              <version>1.7.0</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>3.1.2</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.commonjava.maven.plugins</groupId>
+        <artifactId>directory-maven-plugin</artifactId>
+        <version>0.1</version>
+        <executions>
+          <execution>
+            <id>directories</id>
+            <goals>
+              <goal>directory-of</goal>
+            </goals>
+            <phase>initialize</phase>
+            <configuration>
+              <property>ocijavasdk.basedir</property>
+              <project>
+                <groupId>com.oracle.oci.sdk</groupId>
+                <artifactId>oci-java-sdk</artifactId>
+              </project>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.googlecode.maven-download-plugin</groupId>
+        <artifactId>download-maven-plugin</artifactId>
+        <version>1.6.8</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>3.0.1</version>
+      </plugin>
+    </plugins>
+  </reporting>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>net.jodah</groupId>
+        <artifactId>failsafe</artifactId>
+        <version>${net.jodah.failsafe.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpcore</artifactId>
+        <version>${apache-httpcomponents.httpcore.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest-core</artifactId>
+        <version>${hamcrest.core.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest-all</artifactId>
+        <version>${hamcrest.core.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest-junit</artifactId>
+        <version>${hamcrest.junit.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>java-hamcrest</artifactId>
+        <version>${hamcrest.junit.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson.databind.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.jaxrs</groupId>
+        <artifactId>jackson-jaxrs-base</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-jdk8</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-jsr310</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.resilience4j</groupId>
+        <artifactId>resilience4j-core</artifactId>
+        <version>${resilience4jVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.resilience4j</groupId>
+        <artifactId>resilience4j-circuitbreaker</artifactId>
+        <version>${resilience4jVersion}</version>
+      </dependency>
+      <!-- io.vavr is added here because it is in resilience4j-circuitbreaker, update versions together -->
+      <dependency>
+        <groupId>io.vavr</groupId>
+        <artifactId>vavr</artifactId>
+        <version>${io.vavr.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>${apache-httpcomponents.httpclient.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${mockito.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.powermock</groupId>
+        <artifactId>powermock-api-mockito2</artifactId>
+        <version>${powermock.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.powermock</groupId>
+        <artifactId>powermock-api-mockito-common</artifactId>
+        <version>1.7.4</version>
+      </dependency>
+      <dependency>
+        <groupId>org.powermock</groupId>
+        <artifactId>powermock-core</artifactId>
+        <version>${powermock.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.powermock</groupId>
+        <artifactId>powermock-module-junit4</artifactId>
+        <version>${powermock.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.annotation</groupId>
+        <artifactId>javax.annotation-api</artifactId>
+        <version>${javax.annotation.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <modules>
+    <module>bmc-enforcer-rules</module>
+    <module>bmc-bom</module>
+    <module>bmc-circuitbreaker</module>
+    <module>bmc-common-httpclient</module>
+    <module>bmc-common-httpclient-choices</module>
+    <module>bmc-common</module>
+    <!-- client modules -->
+    <module>bmc-audit</module>
+    <module>bmc-core</module>
+    <module>bmc-database</module>
+    <module>bmc-dns</module>
+    <module>bmc-email</module>
+    <module>bmc-filestorage</module>
+    <module>bmc-identity</module>
+    <module>bmc-loadbalancer</module>
+    <module>bmc-objectstorage</module>
+    <module>bmc-containerengine</module>
+    <module>bmc-resourcesearch</module>
+    <module>bmc-addons</module>
+    <module>bmc-keymanagement</module>
+    <module>bmc-announcementsservice</module>
+    <module>bmc-healthchecks</module>
+    <module>bmc-waas</module>
+    <module>bmc-streaming</module>
+    <module>bmc-monitoring</module>
+    <module>bmc-resourcemanager</module>
+    <module>bmc-ons</module>
+    <module>bmc-autoscaling</module>
+    <module>bmc-budget</module>
+    <module>bmc-workrequests</module>
+    <module>bmc-limits</module>
+    <module>bmc-functions</module>
+    <module>bmc-events</module>
+    <module>bmc-dts</module>
+    <module>bmc-oce</module>
+    <module>bmc-oda</module>
+    <module>bmc-analytics</module>
+    <module>bmc-integration</module>
+    <module>bmc-osmanagement</module>
+    <module>bmc-marketplace</module>
+    <module>bmc-apigateway</module>
+    <module>bmc-datacatalog</module>
+    <module>bmc-dataflow</module>
+    <module>bmc-datascience</module>
+    <module>bmc-nosql</module>
+    <module>bmc-secrets</module>
+    <module>bmc-vault</module>
+    <module>bmc-bds</module>
+    <module>bmc-cims</module>
+    <module>bmc-datasafe</module>
+    <module>bmc-mysql</module>
+    <module>bmc-dataintegration</module>
+    <module>bmc-ocvp</module>
+    <module>bmc-usageapi</module>
+    <module>bmc-blockchain</module>
+    <module>bmc-loggingingestion</module>
+    <module>bmc-logging</module>
+    <module>bmc-loganalytics</module>
+    <module>bmc-managementdashboard</module>
+    <module>bmc-sch</module>
+    <module>bmc-loggingsearch</module>
+    <module>bmc-managementagent</module>
+    <module>bmc-cloudguard</module>
+    <module>bmc-opsi</module>
+    <module>bmc-computeinstanceagent</module>
+    <module>bmc-optimizer</module>
+    <module>bmc-tenantmanagercontrolplane</module>
+    <module>bmc-rover</module>
+    <module>bmc-databasemanagement</module>
+    <module>bmc-artifacts</module>
+    <module>bmc-apmsynthetics</module>
+    <module>bmc-goldengate</module>
+    <module>bmc-apmcontrolplane</module>
+    <module>bmc-apmtraces</module>
+    <module>bmc-networkloadbalancer</module>
+    <module>bmc-vulnerabilityscanning</module>
+    <module>bmc-databasemigration</module>
+    <module>bmc-servicecatalog</module>
+    <module>bmc-ailanguage</module>
+    <module>bmc-operatoraccesscontrol</module>
+    <module>bmc-bastion</module>
+    <module>bmc-genericartifactscontent</module>
+    <module>bmc-jms</module>
+    <module>bmc-devops</module>
+    <module>bmc-aianomalydetection</module>
+    <module>bmc-datalabelingservice</module>
+    <module>bmc-datalabelingservicedataplane</module>
+    <module>bmc-apmconfig</module>
+    <module>bmc-waf</module>
+    <module>bmc-certificates</module>
+    <module>bmc-certificatesmanagement</module>
+    <module>bmc-usage</module>
+    <module>bmc-databasetools</module>
+    <module>bmc-servicemanagerproxy</module>
+    <module>bmc-appmgmtcontrol</module>
+    <module>bmc-ospgateway</module>
+    <module>bmc-identitydataplane</module>
+    <module>bmc-visualbuilder</module>
+    <module>bmc-osubusage</module>
+    <module>bmc-osubsubscription</module>
+    <module>bmc-osuborganizationsubscription</module>
+    <module>bmc-osubbillingschedule</module>
+    <module>bmc-dashboardservice</module>
+    <module>bmc-threatintelligence</module>
+    <module>bmc-aivision</module>
+    <module>bmc-aispeech</module>
+    <module>bmc-stackmonitoring</module>
+    <module>bmc-servicemesh</module>
+    <module>bmc-adm</module>
+    <module>bmc-licensemanager</module>
+    <module>bmc-onesubscription</module>
+    <module>bmc-governancerulescontrolplane</module>
+    <module>bmc-waa</module>
+    <module>bmc-networkfirewall</module>
+    <module>bmc-vnmonitoring</module>
+    <module>bmc-emwarehouse</module>
+    <module>bmc-lockbox</module>
+    <module>bmc-fusionapps</module>
+    <module>bmc-mediaservices</module>
+    <module>bmc-opa</module>
+    <module>bmc-opensearch</module>
+    <module>bmc-cloudmigrations</module>
+    <module>bmc-cloudbridge</module>
+    <!-- End client modules -->
+    <module>bmc-encryption</module>
+    <module>bmc-full</module>
+    <module>bmc-shaded</module>
+    <module>bmc-examples</module>
+    <module>bmc-other-examples</module>
+    <module>bmc-disasterrecovery</module>
+    <module>bmc-containerinstances</module>
+    <module>bmc-aidocument</module>
+    <module>bmc-queue</module>
+    <module>bmc-recovery</module>
+    <module>bmc-vbsinst</module>
+    <module>bmc-identitydomains</module>
+    <module>bmc-accessgovernancecp</module>
+    <module>bmc-ocicontrolcenter</module>
+    <module>bmc-osmanagementhub</module>
+    <module>bmc-fleetsoftwareupdate</module>
+    <module>bmc-computecloudatcustomer</module>
+    <module>bmc-marketplacepublisher</module>
+    <module>bmc-redis</module>
+    <module>bmc-jmsjavadownloads</module>
+    <module>bmc-psql</module>
+    <module>bmc-generativeai</module>
+    <module>bmc-generativeaiinference</module>
+    <module>bmc-capacitymanagement</module>
+    <module>bmc-globallydistributeddatabase</module>
+    <module>bmc-desktops</module>
+    <module>bmc-emaildataplane</module>
+    <module>bmc-clusterplacementgroups</module>
+    <module>bmc-marketplaceprivateoffer</module>
+    <module>bmc-resourcescheduler</module>
+    <module>bmc-demandsignal</module>
+    <module>bmc-fleetappsmanagement</module>
+    <module>bmc-delegateaccesscontrol</module>
+    <module>bmc-generativeaiagent</module>
+    <module>bmc-generativeaiagentruntime</module>
+    <module>bmc-securityattribute</module>
+    <module>bmc-zpr</module>
+    <module>bmc-dblm</module>
+    <module>bmc-mngdmac</module>
+    <module>bmc-lustrefilestorage</module>
+  </modules>
+</project>
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/oracle/oci-java-sdk/tags?per_page=100 | rg -n '3\\.63\\.1|name|zipball_url'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/3.63.1/oci-java-sdk-common-httpclient-3.63.1.jar -o /tmp/oci-common-httpclient.jar && jar tf /tmp/oci-common-httpclient.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+ succeeded in 0ms:
+META-INF/MANIFEST.MF
+META-INF/ORACLE_C.SF
+META-INF/ORACLE_C.RSA
+META-INF/
+META-INF/maven/
+META-INF/maven/com.oracle.oci.sdk/
+META-INF/maven/com.oracle.oci.sdk/oci-java-sdk-common-httpclient/
+META-INF/maven/com.oracle.oci.sdk/oci-java-sdk-common-httpclient/pom.properties
+META-INF/maven/com.oracle.oci.sdk/oci-java-sdk-common-httpclient/pom.xml
+THIRD_PARTY_LICENSES.txt
+LICENSE.txt
+NOTICE.txt
+com/
+com/oracle/
+com/oracle/bmc/
+com/oracle/bmc/http/
+com/oracle/bmc/http/client/
+com/oracle/bmc/http/client/io/
+com/oracle/bmc/http/client/pki/
+com/oracle/bmc/http/client/internal/
+com/oracle/bmc/http/client/io/DuplicatableInputStream.class
+com/oracle/bmc/http/client/pki/OpenSslPbeSecretKeyFactory.class
+com/oracle/bmc/http/client/pki/Pkcs1EncryptedPrivateKeyInfo$1.class
+com/oracle/bmc/http/client/pki/Pem$Format.class
+com/oracle/bmc/http/client/pki/Hex.class
+com/oracle/bmc/http/client/pki/Pem$Type.class
+com/oracle/bmc/http/client/pki/OpenSslPbeSecretKeyGenerator$Builder.class
+com/oracle/bmc/http/client/internal/DelegationTokenClientFilterProvider.class
+com/oracle/bmc/http/client/RequestInterceptor.class
+com/oracle/bmc/http/client/HttpProvider.class
+com/oracle/bmc/http/client/pki/Utf8$Chars.class
+com/oracle/bmc/http/client/pki/Pem$Passphrase.class
+com/oracle/bmc/http/client/pki/OpenSslPbeSecretKeyGenerator.class
+com/oracle/bmc/http/client/ProxyConfiguration$Builder.class
+com/oracle/bmc/http/client/ProxyConfiguration.class
+com/oracle/bmc/http/client/HttpResponse.class
+com/oracle/bmc/http/client/pki/Pem$1.class
+com/oracle/bmc/http/client/pki/PemException.class
+com/oracle/bmc/http/client/pki/PemEncryptedKeyException.class
+com/oracle/bmc/http/client/Options.class
+com/oracle/bmc/http/client/ProxyConfiguration$1.class
+com/oracle/bmc/http/client/StandardClientProperties.class
+com/oracle/bmc/http/client/pki/OpenSslPbeSecretKeyGenerator$1.class
+com/oracle/bmc/http/client/pki/Utf8.class
+com/oracle/bmc/http/client/pki/Utf8$1.class
+com/oracle/bmc/http/client/internal/ExplicitlySetBmcModel.class
+com/oracle/bmc/http/client/HttpClient.class
+com/oracle/bmc/http/client/KeyStoreWithPassword.class
+com/oracle/bmc/http/client/pki/Eraser.class
+com/oracle/bmc/http/client/pki/Text.class
+com/oracle/bmc/http/client/pki/Pem$CharacterPassphrase.class
+com/oracle/bmc/http/client/pki/PemEncryptionException.class
+com/oracle/bmc/http/client/internal/ClientThreadFactory$Builder.class
+com/oracle/bmc/http/client/ClientProperty.class
+com/oracle/bmc/http/client/HttpClientBuilder.class
+com/oracle/bmc/http/client/pki/Pem$Decoder.class
+com/oracle/bmc/http/client/pki/Pem$Encryption.class
+com/oracle/bmc/http/client/pki/Pem$Encryption$Builder.class
+com/oracle/bmc/http/client/pki/Pem.class
+com/oracle/bmc/http/client/Method.class
+com/oracle/bmc/http/client/Serializer.class
+com/oracle/bmc/http/client/pki/Pkcs1EncryptedPrivateKeyInfo$Builder.class
+com/oracle/bmc/http/client/pki/Sensitive.class
+com/oracle/bmc/http/client/pki/Pem$NoPassphrase.class
+com/oracle/bmc/http/client/DefaultHolder.class
+com/oracle/bmc/http/client/internal/ClientThreadFactory$1.class
+com/oracle/bmc/http/client/internal/ClientThreadFactory.class
+com/oracle/bmc/http/client/pki/Pkcs1EncryptedPrivateKeyInfo.class
+com/oracle/bmc/http/client/pki/Utf8$Wrapper.class
+com/oracle/bmc/http/client/pki/Pem$Encoder.class
+com/oracle/bmc/http/client/InternalSdk.class
+com/oracle/bmc/http/client/internal/DefaultHolder.class
+com/oracle/bmc/http/client/HttpRequest.class
+
+ succeeded in 560ms:
+3:    "name": "v3.89.0",
+4:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.89.0",
+13:    "name": "v3.88.0",
+14:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.88.0",
+23:    "name": "v3.87.0",
+24:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.87.0",
+33:    "name": "v3.86.2",
+34:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.86.2",
+43:    "name": "v3.86.1",
+44:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.86.1",
+53:    "name": "v3.86.0",
+54:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.86.0",
+63:    "name": "v3.85.0",
+64:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.85.0",
+73:    "name": "v3.84.0",
+74:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.84.0",
+83:    "name": "v3.83.0",
+84:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.83.0",
+93:    "name": "v3.82.0",
+94:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.82.0",
+103:    "name": "v3.81.3",
+104:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.81.3",
+113:    "name": "v3.81.2",
+114:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.81.2",
+123:    "name": "v3.81.1",
+124:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.81.1",
+133:    "name": "v3.81.0",
+134:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.81.0",
+143:    "name": "v3.80.3",
+144:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.80.3",
+153:    "name": "v3.80.2",
+154:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.80.2",
+163:    "name": "v3.80.1",
+164:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.80.1",
+173:    "name": "v3.80.0",
+174:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.80.0",
+183:    "name": "v3.79.0",
+184:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.79.0",
+193:    "name": "v3.78.1",
+194:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.78.1",
+203:    "name": "v3.78.0",
+204:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.78.0",
+213:    "name": "v3.77.2",
+214:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.77.2",
+223:    "name": "v3.77.1",
+224:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.77.1",
+233:    "name": "v3.77.0",
+234:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.77.0",
+243:    "name": "v3.76.1",
+244:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.76.1",
+253:    "name": "v3.76.0",
+254:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.76.0",
+263:    "name": "v3.75.0",
+264:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.75.0",
+273:    "name": "v3.74.3",
+274:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.74.3",
+283:    "name": "v3.74.2",
+284:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.74.2",
+293:    "name": "v3.74.1",
+294:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.74.1",
+303:    "name": "v3.74.0",
+304:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.74.0",
+313:    "name": "v3.73.1",
+314:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.73.1",
+323:    "name": "v3.73.0",
+324:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.73.0",
+333:    "name": "v3.72.2",
+334:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.72.2",
+343:    "name": "v3.72.1",
+344:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.72.1",
+353:    "name": "v3.72.0",
+354:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.72.0",
+363:    "name": "v3.71.0",
+364:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.71.0",
+373:    "name": "v3.70.1",
+374:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.70.1",
+383:    "name": "v3.70.0",
+384:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.70.0",
+393:    "name": "v3.69.0",
+394:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.69.0",
+403:    "name": "v3.68.2",
+404:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.68.2",
+413:    "name": "v3.68.1",
+414:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.68.1",
+423:    "name": "v3.68.0",
+424:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.68.0",
+433:    "name": "v3.67.3",
+434:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.67.3",
+443:    "name": "v3.67.2",
+444:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.67.2",
+453:    "name": "v3.67.1",
+454:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.67.1",
+463:    "name": "v3.67.0",
+464:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.67.0",
+473:    "name": "v3.66.0",
+474:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.66.0",
+483:    "name": "v3.65.1",
+484:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.65.1",
+493:    "name": "v3.65.0",
+494:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.65.0",
+503:    "name": "v3.64.0",
+504:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.64.0",
+513:    "name": "v3.63.3",
+514:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.63.3",
+523:    "name": "v3.63.2",
+524:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.63.2",
+533:    "name": "v3.63.1",
+534:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.63.1",
+535:    "tarball_url": "https://api.github.com/repos/oracle/oci-java-sdk/tarball/refs/tags/v3.63.1",
+543:    "name": "v3.63.0",
+544:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.63.0",
+553:    "name": "v3.62.1",
+554:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.62.1",
+563:    "name": "v3.62.0",
+564:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.62.0",
+573:    "name": "v3.61.0",
+574:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.61.0",
+583:    "name": "v3.60.0",
+584:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.60.0",
+593:    "name": "v3.59.0",
+594:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.59.0",
+603:    "name": "v3.58.0",
+604:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.58.0",
+613:    "name": "v3.57.2",
+614:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.57.2",
+623:    "name": "v3.57.1",
+624:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.57.1",
+633:    "name": "v3.57.0",
+634:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.57.0",
+643:    "name": "v3.56.0",
+644:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.56.0",
+653:    "name": "v3.55.3",
+654:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.55.3",
+663:    "name": "v3.55.2",
+664:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.55.2",
+673:    "name": "v3.55.1",
+674:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.55.1",
+683:    "name": "v3.55.0",
+684:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.55.0",
+693:    "name": "v3.54.0",
+694:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.54.0",
+703:    "name": "v3.53.1",
+704:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.53.1",
+713:    "name": "v3.53.0",
+714:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.53.0",
+723:    "name": "v3.52.1",
+724:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.52.1",
+733:    "name": "v3.52.0",
+734:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.52.0",
+743:    "name": "v3.51.0",
+744:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.51.0",
+753:    "name": "v3.50.2",
+754:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.50.2",
+763:    "name": "v3.50.1",
+764:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.50.1",
+773:    "name": "v3.50.0",
+774:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.50.0",
+783:    "name": "v3.49.0",
+784:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.49.0",
+793:    "name": "v3.48.0",
+794:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.48.0",
+803:    "name": "v3.47.0",
+804:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.47.0",
+813:    "name": "v3.46.1",
+814:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.46.1",
+823:    "name": "v3.46.0",
+824:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.46.0",
+833:    "name": "v3.45.0",
+834:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.45.0",
+843:    "name": "v3.44.4",
+844:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.44.4",
+853:    "name": "v3.44.3",
+854:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.44.3",
+863:    "name": "v3.44.2",
+864:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.44.2",
+873:    "name": "v3.44.1",
+874:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.44.1",
+883:    "name": "v3.44.0",
+884:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.44.0",
+893:    "name": "v3.43.2",
+894:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.43.2",
+903:    "name": "v3.43.1",
+904:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.43.1",
+913:    "name": "v3.43.0",
+914:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.43.0",
+923:    "name": "v3.42.0",
+924:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.42.0",
+933:    "name": "v3.41.3",
+934:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.41.3",
+943:    "name": "v3.41.2",
+944:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.41.2",
+953:    "name": "v3.41.1",
+954:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.41.1",
+963:    "name": "v3.41.0",
+964:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.41.0",
+973:    "name": "v3.40.0",
+974:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.40.0",
+983:    "name": "v3.39.2",
+984:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.39.2",
+993:    "name": "v3.39.1",
+994:    "zipball_url": "https://api.github.com/repos/oracle/oci-java-sdk/zipball/refs/tags/v3.39.1",
+
+codex
+The parent POM’s SCM root is `oracle/oci-java-sdk`, and the GitHub API confirms the `v3.63.1` tag exists. I’m checking the tagged module layout now so the test URL lands on the module’s actual test directory.
+exec
+/usr/bin/bash -lc "rg -n 'oci-java-sdk-common-httpclient|repo1.maven.org/maven2/.+sources.jar|javadoc.jar|test-code-url' build/discovered-artifact-metadata metadata -g '*.json' | head -120" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json:2:  "coordinates" : "com.oracle.oci.sdk:oci-java-sdk-common-httpclient:3.63.1"
+metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v$version$/src/test",
+metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.springframework/spring-context-support/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-context-support/src/test",
+metadata/org.springframework/spring-context-support/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context-support/$version$/spring-context-support-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:6:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-tx/src/test",
+metadata/org.springframework/spring-tx/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:42:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-tx/src/test",
+metadata/org.springframework/spring-tx/index.json:43:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:56:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-tx/src/test",
+metadata/org.springframework/spring-tx/index.json:57:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:6:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:92:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:94:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:95:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:109:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:111:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:112:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:126:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:128:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:129:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:143:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:145:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:160:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:162:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:177:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:179:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:180:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:194:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:196:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:197:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:211:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:213:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:214:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/org.springframework/spring-test/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/org.springframework.test/src/test/java",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/kotlin.test",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-javadoc.jar",
+metadata/org.playframework/play-configuration_3/index.json:7:    "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-configuration/src/test",
+metadata/org.playframework/play-configuration_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-configuration_3/$version$/play-configuration_3-$version$-javadoc.jar",
+metadata/com.typesafe.play/play_2.13/index.json:7:    "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play/src/test",
+metadata/com.typesafe.play/play_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play_2.13/$version$/play_2.13-$version$-javadoc.jar",
+metadata/com.softwaremill.sttp.shared/zio_3/index.json:7:    "test-code-url" : "https://github.com/softwaremill/sttp-shared/tree/v$version$/zio/src/test",
+metadata/com.softwaremill.sttp.shared/zio_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/shared/zio_3/$version$/zio_3-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/compiler/daemon/daemon-tests/test",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-javadoc.jar",
+metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+metadata/org.springframework/spring-aspects/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+metadata/org.springframework/spring-aspects/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-aspects/src/test",
+metadata/org.springframework/spring-aspects/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+metadata/com.typesafe.play/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/play/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/com.typesafe.play/play-exceptions/index.json:7:    "test-code-url" : "N/A",
+metadata/com.typesafe.play/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/play/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/org.playframework/play-server_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-server_3/$version$/play-server_3-$version$-sources.jar",
+metadata/org.playframework/play-server_3/index.json:7:    "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/transport/server/play-server/src/test",
+metadata/org.playframework/play-server_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-server_3/$version$/play-server_3-$version$-javadoc.jar",
+metadata/org.attoparser/attoparser/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/$version$/attoparser-$version$-sources.jar",
+metadata/org.attoparser/attoparser/index.json:7:    "test-code-url" : "https://github.com/attoparser/attoparser/tree/attoparser-$version$/src/test",
+metadata/org.attoparser/attoparser/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/$version$/attoparser-$version$-javadoc.jar",
+metadata/org.springframework/spring-webflux/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-webflux/$version$/spring-webflux-$version$-sources.jar",
+metadata/org.springframework/spring-webflux/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-webflux/src/test",
+metadata/org.springframework/spring-webflux/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-webflux/$version$/spring-webflux-$version$-javadoc.jar",
+metadata/com.softwaremill.sttp.shared/core_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/shared/core_3/$version$/core_3-$version$-sources.jar",
+metadata/com.softwaremill.sttp.shared/core_3/index.json:7:    "test-code-url" : "https://github.com/softwaremill/sttp-shared/tree/v$version$/core/src/test",
+metadata/com.softwaremill.sttp.shared/core_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/shared/core_3/$version$/core_3-$version$-javadoc.jar",
+metadata/io.nats/jnats/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/nats/jnats/$version$/jnats-$version$-sources.jar",
+metadata/io.nats/jnats/index.json:7:    "test-code-url" : "https://github.com/nats-io/nats.java/tree/$version$/src/test",
+metadata/io.nats/jnats/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/nats/jnats/$version$/jnats-$version$-javadoc.jar",
+metadata/com.typesafe.play/play-ws_2.13/index.json:7:    "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-integration-test/src/test/scala/play/it/libs",
+metadata/com.typesafe.play/play-ws_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-ws_2.13/$version$/play-ws_2.13-$version$-javadoc.jar",
+metadata/org.brotli/dec/index.json:7:    "test-code-url" : "https://github.com/google/brotli/tree/4363f2d74b8af198f78b08e10cd0b3ead48af590/java/org/brotli/dec",
+metadata/org.brotli/dec/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/brotli/dec/$version$/dec-$version$-javadoc.jar",
+metadata/org.playframework/play-json_3/index.json:7:    "test-code-url" : "https://github.com/playframework/play-json/tree/$version$/play-json/jvm/src/test",
+metadata/org.playframework/play-json_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-json_3/$version$/play-json_3-$version$-javadoc.jar",
+metadata/com.typesafe.play/twirl-api_2.13/index.json:7:    "test-code-url" : "https://github.com/playframework/twirl/tree/$version$/api/shared/src/test",
+metadata/com.typesafe.play/twirl-api_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/twirl-api_2.13/$version$/twirl-api_2.13-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/libraries/scripting/jvm/test",
+metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/$version$/kotlin-scripting-jvm-$version$-javadoc.jar",
+metadata/com.softwaremill.sttp.shared/fs2_3/index.json:7:    "test-code-url" : "https://github.com/softwaremill/sttp-shared/tree/v$version$/fs2/src/test/scala/sttp/capabilities/fs2",
+metadata/com.softwaremill.sttp.shared/fs2_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/shared/fs2_3/$version$/fs2_3-$version$-javadoc.jar",
+metadata/javax.portlet/portlet-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/portlet/portlet-api/$version$/portlet-api-$version$-sources.jar",
+metadata/javax.portlet/portlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.portlet/portlet-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/portlet/portlet-api/$version$/portlet-api-$version$-javadoc.jar",
+metadata/org.jboss.slf4j/slf4j-jboss-logmanager/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/$version$/slf4j-jboss-logmanager-$version$-sources.jar",
+metadata/org.jboss.slf4j/slf4j-jboss-logmanager/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.slf4j/slf4j-jboss-logmanager/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/slf4j/slf4j-jboss-logmanager/$version$/slf4j-jboss-logmanager-$version$-javadoc.jar",
+metadata/org.playframework/play-functional_3/index.json:7:    "test-code-url" : "N/A",
+metadata/org.playframework/play-functional_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-functional_3/$version$/play-functional_3-$version$-javadoc.jar",
+metadata/org.glassfish.hk2.external/javax.inject/index.json:7:    "test-code-url" : "N/A",
+metadata/org.glassfish.hk2.external/javax.inject/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/external/javax.inject/$version$/javax.inject-$version$-javadoc.jar",
+metadata/org.glassfish.jaxb/jaxb-jxc/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/$version$-RI/jaxb-ri/bundles/jxc/src/test",
+metadata/org.glassfish.jaxb/jaxb-jxc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/jaxb-jxc/$version$/jaxb-jxc-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
+metadata/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-embeddable/$version$/kotlin-scripting-compiler-embeddable-$version$-javadoc.jar",
+metadata/com.google.code.findbugs/findbugs-annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/code/findbugs/findbugs-annotations/$version$/findbugs-annotations-$version$-sources.jar",
+metadata/com.google.code.findbugs/findbugs-annotations/index.json:8:    "test-code-url": "N/A",
+metadata/com.google.code.findbugs/findbugs-annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/google/code/findbugs/findbugs-annotations/$version$/findbugs-annotations-$version$-javadoc.jar",
+metadata/com.typesafe.play/play-configuration_3/index.json:7:    "test-code-url" : "https://github.com/playframework/playframework/tree/$version$/core/play-configuration/src/test",
+metadata/com.typesafe.play/play-configuration_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/play/play-configuration_3/$version$/play-configuration_3-$version$-javadoc.jar",
+metadata/org.lz4/lz4-java/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/lz4/lz4-java/$version$/lz4-java-$version$-sources.jar",
+metadata/org.lz4/lz4-java/index.json:8:    "test-code-url": "https://github.com/lz4/lz4-java/tree/$version$/src/test",
+metadata/org.lz4/lz4-java/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/lz4/lz4-java/$version$/lz4-java-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/oracle/oci-java-sdk/contents/bmc-common-httpclient?ref=v3.63.1 | rg -n '\"name\"|\"path\"|\"html_url\"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/oracle/oci-java-sdk/contents/bmc-common-httpclient/src?ref=v3.63.1 | rg -n '\"name\"|\"path\"|\"html_url\"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+ succeeded in 286ms:
+3:    "name": "main",
+4:    "path": "bmc-common-httpclient/src/main",
+8:    "html_url": "https://github.com/oracle/oci-java-sdk/tree/v3.63.1/bmc-common-httpclient/src/main",
+
+ succeeded in 291ms:
+3:    "name": "pom.xml",
+4:    "path": "bmc-common-httpclient/pom.xml",
+8:    "html_url": "https://github.com/oracle/oci-java-sdk/blob/v3.63.1/bmc-common-httpclient/pom.xml",
+19:    "name": "src",
+20:    "path": "bmc-common-httpclient/src",
+24:    "html_url": "https://github.com/oracle/oci-java-sdk/tree/v3.63.1/bmc-common-httpclient/src",
+
+codex
+The tagged module has `src/main` but no `src/test` directory, and Maven Central did not publish a test artifact for it. I’m doing one final tree check before using `N/A` for `test-code-url`.
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/oracle/oci-java-sdk/git/trees/v3.63.1?recursive=1 | rg -n 'bmc-common-httpclient/.+test|bmc-common-httpclient/src/main|bmc-common-httpclient/pom.xml' | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/3.63.1/oci-java-sdk-common-httpclient-3.63.1-sources.jar -o /tmp/oci-common-httpclient-sources.jar && jar tf /tmp/oci-common-httpclient-sources.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/3.63.1/oci-java-sdk-common-httpclient-3.63.1-javadoc.jar -o /tmp/oci-common-httpclient-javadoc.jar && jar tf /tmp/oci-common-httpclient-javadoc.jar | sed -n '1,60p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+ succeeded in 133ms:
+THIRD_PARTY_LICENSES.txt
+LICENSE.txt
+NOTICE.txt
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/oracle/
+com/oracle/bmc/
+com/oracle/bmc/http/
+com/oracle/bmc/http/client/
+com/oracle/bmc/http/client/io/
+com/oracle/bmc/http/client/io/class-use/
+com/oracle/bmc/http/client/pki/
+com/oracle/bmc/http/client/pki/class-use/
+com/oracle/bmc/http/client/internal/
+com/oracle/bmc/http/client/internal/class-use/
+com/oracle/bmc/http/client/class-use/
+resources/
+legal/
+jquery/
+jquery/jszip-utils/
+jquery/jszip-utils/dist/
+jquery/external/
+jquery/external/jquery/
+jquery/jszip/
+jquery/jszip/dist/
+search.js
+highlight.css
+constant-values.html
+allclasses.html
+type-search-index.js
+com/oracle/bmc/http/client/io/package-summary.html
+com/oracle/bmc/http/client/io/package-use.html
+com/oracle/bmc/http/client/io/DuplicatableInputStream.html
+com/oracle/bmc/http/client/io/package-tree.html
+com/oracle/bmc/http/client/io/class-use/DuplicatableInputStream.html
+com/oracle/bmc/http/client/package-summary.html
+com/oracle/bmc/http/client/InternalSdk.html
+com/oracle/bmc/http/client/Serializer.html
+com/oracle/bmc/http/client/ProxyConfiguration.html
+com/oracle/bmc/http/client/package-use.html
+com/oracle/bmc/http/client/RequestInterceptor.html
+com/oracle/bmc/http/client/ClientProperty.html
+com/oracle/bmc/http/client/HttpProvider.html
+com/oracle/bmc/http/client/HttpResponse.html
+com/oracle/bmc/http/client/ProxyConfiguration.Builder.html
+com/oracle/bmc/http/client/HttpClientBuilder.html
+com/oracle/bmc/http/client/pki/Pem.Encryption.Builder.html
+com/oracle/bmc/http/client/pki/Pem.Encryption.html
+com/oracle/bmc/http/client/pki/package-summary.html
+com/oracle/bmc/http/client/pki/PemEncryptedKeyException.html
+com/oracle/bmc/http/client/pki/package-use.html
+com/oracle/bmc/http/client/pki/Pem.Decoder.html
+com/oracle/bmc/http/client/pki/Pem.Format.html
+com/oracle/bmc/http/client/pki/Pem.html
+com/oracle/bmc/http/client/pki/PemException.html
+com/oracle/bmc/http/client/pki/Pem.Encoder.html
+com/oracle/bmc/http/client/pki/PemEncryptionException.html
+com/oracle/bmc/http/client/pki/package-tree.html
+com/oracle/bmc/http/client/pki/class-use/Pem.Encryption.Builder.html
+
+ succeeded in 440ms:
+THIRD_PARTY_LICENSES.txt
+LICENSE.txt
+NOTICE.txt
+META-INF/MANIFEST.MF
+META-INF/
+com/
+com/oracle/
+com/oracle/bmc/
+com/oracle/bmc/http/
+com/oracle/bmc/http/client/
+com/oracle/bmc/http/client/io/
+com/oracle/bmc/http/client/pki/
+com/oracle/bmc/http/client/internal/
+META-INF/maven/
+META-INF/maven/com.oracle.oci.sdk/
+META-INF/maven/com.oracle.oci.sdk/oci-java-sdk-common-httpclient/
+com/oracle/bmc/http/client/HttpResponse.java
+com/oracle/bmc/http/client/pki/Pem.java
+com/oracle/bmc/http/client/KeyStoreWithPassword.java
+com/oracle/bmc/http/client/RequestInterceptor.java
+com/oracle/bmc/http/client/io/DuplicatableInputStream.java
+com/oracle/bmc/http/client/pki/PemException.java
+com/oracle/bmc/http/client/pki/OpenSslPbeSecretKeyGenerator.java
+com/oracle/bmc/http/client/pki/internal-README.md
+com/oracle/bmc/http/client/pki/OpenSslPbeSecretKeyFactory.java
+com/oracle/bmc/http/client/ProxyConfiguration.java
+com/oracle/bmc/http/client/pki/PemEncryptedKeyException.java
+com/oracle/bmc/http/client/pki/PemEncryptionException.java
+META-INF/maven/com.oracle.oci.sdk/oci-java-sdk-common-httpclient/pom.xml
+com/oracle/bmc/http/client/Serializer.java
+com/oracle/bmc/http/client/pki/Eraser.java
+com/oracle/bmc/http/client/pki/Pkcs1EncryptedPrivateKeyInfo.java
+com/oracle/bmc/http/client/pki/Hex.java
+com/oracle/bmc/http/client/Options.java
+com/oracle/bmc/http/client/StandardClientProperties.java
+com/oracle/bmc/http/client/Method.java
+com/oracle/bmc/http/client/HttpProvider.java
+com/oracle/bmc/http/client/internal/DelegationTokenClientFilterProvider.java
+com/oracle/bmc/http/client/internal/ExplicitlySetBmcModel.java
+com/oracle/bmc/http/client/InternalSdk.java
+com/oracle/bmc/http/client/pki/Sensitive.java
+com/oracle/bmc/http/client/pki/Utf8.java
+com/oracle/bmc/http/client/HttpRequest.java
+com/oracle/bmc/http/client/HttpClient.java
+com/oracle/bmc/http/client/ClientProperty.java
+META-INF/maven/com.oracle.oci.sdk/oci-java-sdk-common-httpclient/pom.properties
+com/oracle/bmc/http/client/HttpClientBuilder.java
+com/oracle/bmc/http/client/pki/Text.java
+com/oracle/bmc/http/client/internal/ClientThreadFactory.java
+
+ succeeded in 3647ms:
+40995:      "path": "bmc-common-httpclient/pom.xml",
+41010:      "path": "bmc-common-httpclient/src/main",
+41017:      "path": "bmc-common-httpclient/src/main/java",
+41024:      "path": "bmc-common-httpclient/src/main/java/com",
+41031:      "path": "bmc-common-httpclient/src/main/java/com/oracle",
+41038:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc",
+41045:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http",
+41052:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client",
+41059:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/ClientProperty.java",
+41067:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/HttpClient.java",
+41075:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/HttpClientBuilder.java",
+41083:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/HttpProvider.java",
+41091:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/HttpRequest.java",
+41099:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/HttpResponse.java",
+41107:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/InternalSdk.java",
+41115:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/KeyStoreWithPassword.java",
+41123:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/Method.java",
+41131:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/Options.java",
+41139:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/ProxyConfiguration.java",
+41147:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/RequestInterceptor.java",
+41155:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/Serializer.java",
+41163:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/StandardClientProperties.java",
+41171:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/internal",
+41178:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/internal/ClientThreadFactory.java",
+41186:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/internal/DelegationTokenClientFilterProvider.java",
+41194:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/internal/ExplicitlySetBmcModel.java",
+41202:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/io",
+41209:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/io/DuplicatableInputStream.java",
+41217:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/pki",
+41224:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/pki/Eraser.java",
+41232:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/pki/Hex.java",
+41240:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/pki/OpenSslPbeSecretKeyFactory.java",
+41248:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/pki/OpenSslPbeSecretKeyGenerator.java",
+41256:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/pki/Pem.java",
+41264:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/pki/PemEncryptedKeyException.java",
+41272:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/pki/PemEncryptionException.java",
+41280:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/pki/PemException.java",
+41288:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/pki/Pkcs1EncryptedPrivateKeyInfo.java",
+41296:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/pki/Sensitive.java",
+41304:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/pki/Text.java",
+41312:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/pki/Utf8.java",
+41320:      "path": "bmc-common-httpclient/src/main/java/com/oracle/bmc/http/client/pki/internal-README.md",
+
+web search: 
+web search: https://github.com/oracle/oci-java-sdk/tree/v3.63.1/bmc-common-httpclient
+web search: 
+web search: repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/3.63.1/oci-java-sdk-common-httpclient-3.63.1-sources.jar
+web search: 
+web search: mvnrepository com.oracle.oci.sdk oci-java-sdk-common-httpclient 3.63.1
+codex
+I’m going to update the JSON with Maven Central source and Javadoc JARs, `N/A` for tests, and no language or `not-for-native-image` markers because this is a regular JVM JAR with `.class` files.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json
+diff --git a/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json b/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json
+index 018f4a864bb179f2579b96fc287bd710262d5ca1..d6e2e564c8bf120e5885a45327fca15ae509b878
+--- a/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json
++++ b/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.oracle.oci.sdk:oci-java-sdk-common-httpclient:3.63.1"
++  "coordinates" : "com.oracle.oci.sdk:oci-java-sdk-common-httpclient:3.63.1",
++  "repository-url" : "https://github.com/oracle/oci-java-sdk",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/$version$/oci-java-sdk-common-httpclient-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/$version$/oci-java-sdk-common-httpclient-$version$-javadoc.jar",
++  "description" : "The OCI Java SDK common HTTP client module defines the shared HTTP client API used by Oracle Cloud Infrastructure SDK components. It provides request, response, proxy, provider, serialization, stream, and PEM/PKI helper types that HTTP client implementations and SDK clients use."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json b/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json
+index 018f4a864bb179f2579b96fc287bd710262d5ca1..d6e2e564c8bf120e5885a45327fca15ae509b878
+--- a/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json
++++ b/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.oracle.oci.sdk:oci-java-sdk-common-httpclient:3.63.1"
++  "coordinates" : "com.oracle.oci.sdk:oci-java-sdk-common-httpclient:3.63.1",
++  "repository-url" : "https://github.com/oracle/oci-java-sdk",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/$version$/oci-java-sdk-common-httpclient-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/$version$/oci-java-sdk-common-httpclient-$version$-javadoc.jar",
++  "description" : "The OCI Java SDK common HTTP client module defines the shared HTTP client API used by Oracle Cloud Infrastructure SDK components. It provides request, response, proxy, provider, serialization, stream, and PEM/PKI helper types that HTTP client implementations and SDK clients use."
+ }
+
+codex
+The file is updated. I’m validating the JSON shape and checking that the tokenized Maven URLs resolve after substituting `3.63.1`.
+exec
+/usr/bin/bash -lc "jq 'keys' build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json && jq -e '.coordinates == \"com.oracle.oci.sdk:oci-java-sdk-common-httpclient:3.63.1\" and (.language | not) and (.\"not-for-native-image\" | not)' build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+ succeeded in 0ms:
+[
+  "coordinates",
+  "description",
+  "documentation-url",
+  "repository-url",
+  "source-code-url",
+  "test-code-url"
+]
+true
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/3.63.1/oci-java-sdk-common-httpclient-3.63.1-javadoc.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 18:15:11 GMT
+content-type: application/java-archive
+content-length: 573153
+cf-ray: a07966aa6b28931a-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 123048
+etag: "af87ff4f3f113b4530a56de557d58f03"
+last-modified: Tue, 15 Apr 2025 18:07:39 GMT
+x-checksum-md5: af87ff4f3f113b4530a56de557d58f03
+x-checksum-sha1: 84fec8bfa6cc0c125e4ad38dbb11b5434d615172
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/3.63.1/oci-java-sdk-common-httpclient-3.63.1-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 18:15:11 GMT
+content-type: application/java-archive
+content-length: 76473
+cf-ray: a07966aa6e9ebb0e-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 28
+etag: "e779d3c65674e5a4af70c782260607ad"
+last-modified: Tue, 15 Apr 2025 18:07:36 GMT
+x-checksum-md5: e779d3c65674e5a4af70c782260607ad
+x-checksum-sha1: 940f207c1c0a1b61f9804b2ee5a231463fec9f59
+
+diff --git a/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json b/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json
+index 018f4a864bb179f2579b96fc287bd710262d5ca1..d6e2e564c8bf120e5885a45327fca15ae509b878
+--- a/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json
++++ b/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.oracle.oci.sdk:oci-java-sdk-common-httpclient:3.63.1"
++  "coordinates" : "com.oracle.oci.sdk:oci-java-sdk-common-httpclient:3.63.1",
++  "repository-url" : "https://github.com/oracle/oci-java-sdk",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/$version$/oci-java-sdk-common-httpclient-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/$version$/oci-java-sdk-common-httpclient-$version$-javadoc.jar",
++  "description" : "The OCI Java SDK common HTTP client module defines the shared HTTP client API used by Oracle Cloud Infrastructure SDK components. It provides request, response, proxy, provider, serialization, stream, and PEM/PKI helper types that HTTP client implementations and SDK clients use."
+ }
+
+web search: 
+web search: oracle oci-java-sdk GitHub bmc-common-httpclient
+web search: 
+web search: https://github.com/oracle/oci-java-sdk
+web search: 
+web search: https://mvnrepository.com/artifact/com.oracle.oci.sdk/oci-java-sdk-common-httpclient
+codex
+Validation passed: the JSON has only the requested keys, omits `language` and Native Image exclusion fields, and both Maven URLs return HTTP 200 for version `3.63.1`.
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json && sed -n '1,120p' build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a
+diff --git a/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json b/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json
+index 018f4a864bb179f2579b96fc287bd710262d5ca1..d6e2e564c8bf120e5885a45327fca15ae509b878
+--- a/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json
++++ b/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.oracle.oci.sdk:oci-java-sdk-common-httpclient:3.63.1"
++  "coordinates" : "com.oracle.oci.sdk:oci-java-sdk-common-httpclient:3.63.1",
++  "repository-url" : "https://github.com/oracle/oci-java-sdk",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/$version$/oci-java-sdk-common-httpclient-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/$version$/oci-java-sdk-common-httpclient-$version$-javadoc.jar",
++  "description" : "The OCI Java SDK common HTTP client module defines the shared HTTP client API used by Oracle Cloud Infrastructure SDK components. It provides request, response, proxy, provider, serialization, stream, and PEM/PKI helper types that HTTP client implementations and SDK clients use."
+ }
+
+ succeeded in 241ms:
+{
+  "coordinates" : "com.oracle.oci.sdk:oci-java-sdk-common-httpclient:3.63.1",
+  "repository-url" : "https://github.com/oracle/oci-java-sdk",
+  "source-code-url" : "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/$version$/oci-java-sdk-common-httpclient-$version$-sources.jar",
+  "test-code-url" : "N/A",
+  "documentation-url" : "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/$version$/oci-java-sdk-common-httpclient-$version$-javadoc.jar",
+  "description" : "The OCI Java SDK common HTTP client module defines the shared HTTP client API used by Oracle Cloud Infrastructure SDK components. It provides request, response, proxy, provider, serialization, stream, and PEM/PKI helper types that HTTP client implementations and SDK clients use."
+}
+
+codex
+Updated [com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json).
+
+Validation done:
+- JSON parses and contains only the requested keys.
+- Maven source and Javadoc URLs resolve with `3.63.1`.
+- No `language` field: this is not Kotlin/Groovy/Scala-specific.
+- No `not-for-native-image`: the artifact is a JVM JAR with `.class` files.
+diff --git a/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json b/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json
+index 018f4a864bb179f2579b96fc287bd710262d5ca1..d6e2e564c8bf120e5885a45327fca15ae509b878
+--- a/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json
++++ b/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.oracle.oci.sdk:oci-java-sdk-common-httpclient:3.63.1"
++  "coordinates" : "com.oracle.oci.sdk:oci-java-sdk-common-httpclient:3.63.1",
++  "repository-url" : "https://github.com/oracle/oci-java-sdk",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/$version$/oci-java-sdk-common-httpclient-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/oracle/oci/sdk/oci-java-sdk-common-httpclient/$version$/oci-java-sdk-common-httpclient-$version$-javadoc.jar",
++  "description" : "The OCI Java SDK common HTTP client module defines the shared HTTP client API used by Oracle Cloud Infrastructure SDK components. It provides request, response, proxy, provider, serialization, stream, and PEM/PKI helper types that HTTP client implementations and SDK clients use."
+ }
+
+tokens used
+85,919
+Updated [com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a/build/discovered-artifact-metadata/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.json).
+
+Validation done:
+- JSON parses and contains only the requested keys.
+- Maven source and Javadoc URLs resolve with `3.63.1`.
+- No `language` field: this is not Kotlin/Groovy/Scala-specific.
+- No `not-for-native-image`: the artifact is a JVM JAR with `.class` files.
+Ran agent for com.oracle.oci.sdk:oci-java-sdk-common-httpclient:3.63.1 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a/build/agent-artifact-discovery-logs/com.oracle.oci.sdk-oci-java-sdk-common-httpclient-3.63.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7757-d2ec540a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 41s
+9 actionable tasks: 9 executed
