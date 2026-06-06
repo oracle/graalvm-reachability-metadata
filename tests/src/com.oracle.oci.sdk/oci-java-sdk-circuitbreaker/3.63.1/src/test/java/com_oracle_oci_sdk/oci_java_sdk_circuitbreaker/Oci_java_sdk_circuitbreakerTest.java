@@ -192,6 +192,39 @@ public class Oci_java_sdk_circuitbreakerTest {
     }
 
     @Test
+    void openCircuitBreakerTransitionsToHalfOpenAndClosesAfterSuccessfulProbe()
+            throws InterruptedException {
+        CircuitBreakerConfiguration configuration =
+                CircuitBreakerConfiguration.builder()
+                        .failureRateThreshold(50)
+                        .minimumNumberOfCalls(2)
+                        .slidingWindowSize(2)
+                        .waitDurationInOpenState(Duration.ofMillis(50))
+                        .permittedNumberOfCallsInHalfOpenState(1)
+                        .build();
+        OciCircuitBreaker circuitBreaker = CircuitBreakerFactory.build(configuration);
+
+        circuitBreaker.onError(1, TimeUnit.MILLISECONDS, new IllegalStateException("first"));
+        circuitBreaker.onError(1, TimeUnit.MILLISECONDS, new IllegalStateException("second"));
+        assertThat(circuitBreaker.getState()).isEqualTo(State.OPEN);
+
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5);
+        while (circuitBreaker.getState() == State.OPEN && System.nanoTime() < deadline) {
+            Thread.sleep(10);
+        }
+
+        assertThat(circuitBreaker.getState()).isEqualTo(State.HALF_OPEN);
+        assertThat(circuitBreaker.tryAcquirePermission()).isTrue();
+        assertThat(circuitBreaker.tryAcquirePermission()).isFalse();
+
+        circuitBreaker.releasePermission();
+        assertThat(circuitBreaker.tryAcquirePermission()).isTrue();
+        circuitBreaker.onSuccess(1, TimeUnit.MILLISECONDS);
+
+        assertThat(circuitBreaker.getState()).isEqualTo(State.CLOSED);
+    }
+
+    @Test
     void noCircuitBreakerConfigurationRetainsBaseDefaultsAndEnumsAreAccessible() {
         NoCircuitBreakerConfiguration noCircuitBreakerConfiguration = new NoCircuitBreakerConfiguration();
 
