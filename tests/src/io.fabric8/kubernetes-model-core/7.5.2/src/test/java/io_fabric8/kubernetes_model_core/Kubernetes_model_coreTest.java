@@ -19,6 +19,10 @@ import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.ConfigMapBuilder;
 import io.fabric8.kubernetes.api.model.ConfigMapList;
 import io.fabric8.kubernetes.api.model.ConfigMapListBuilder;
+import io.fabric8.kubernetes.api.model.Event;
+import io.fabric8.kubernetes.api.model.EventBuilder;
+import io.fabric8.kubernetes.api.model.EventList;
+import io.fabric8.kubernetes.api.model.EventListBuilder;
 import io.fabric8.kubernetes.api.model.HasMetadata;
 import io.fabric8.kubernetes.api.model.IntOrString;
 import io.fabric8.kubernetes.api.model.KubernetesList;
@@ -621,6 +625,85 @@ public class Kubernetes_model_coreTest {
 
         assertThat(switched.getContexts().get(0).getContext().getNamespace()).isEqualTo("staging");
         assertThat(config.getContexts().get(0).getContext().getNamespace()).isEqualTo("production");
+    }
+
+    @Test
+    void eventsModelInvolvedObjectsSourcesSeriesAndLists() {
+        Event scheduled = new EventBuilder()
+                .withNewMetadata()
+                    .withName("web-0-scheduled")
+                    .withNamespace("production")
+                    .addToLabels("app", "web")
+                .endMetadata()
+                .withNewInvolvedObject()
+                    .withApiVersion("v1")
+                    .withKind("Pod")
+                    .withName("web-0")
+                    .withNamespace("production")
+                    .withUid("pod-uid")
+                    .withFieldPath("spec.containers{app}")
+                .endInvolvedObject()
+                .withReason("Scheduled")
+                .withMessage("Successfully assigned production/web-0 to worker-a")
+                .withType("Normal")
+                .withAction("Binding")
+                .withReportingComponent("default-scheduler")
+                .withReportingInstance("default-scheduler-worker-a")
+                .withCount(1)
+                .withFirstTimestamp("2026-01-01T00:00:00Z")
+                .withLastTimestamp("2026-01-01T00:00:00Z")
+                .withNewEventTime("2026-01-01T00:00:00.000001Z")
+                .withNewSource()
+                    .withComponent("default-scheduler")
+                    .withHost("worker-a")
+                .endSource()
+                .withNewRelated()
+                    .withApiVersion("v1")
+                    .withKind("Node")
+                    .withName("worker-a")
+                    .withUid("node-uid")
+                .endRelated()
+                .withNewSeries()
+                    .withCount(1)
+                    .withNewLastObservedTime("2026-01-01T00:00:00.000001Z")
+                .endSeries()
+                .addToAdditionalProperties("note", "scheduler")
+                .build();
+
+        assertThat(scheduled).isInstanceOf(HasMetadata.class);
+        assertThat(scheduled.getApiVersion()).isEqualTo("v1");
+        assertThat(scheduled.getKind()).isEqualTo("Event");
+        assertThat(scheduled.getMetadata().getName()).isEqualTo("web-0-scheduled");
+        assertThat(scheduled.getInvolvedObject().getFieldPath()).isEqualTo("spec.containers{app}");
+        assertThat(scheduled.getReason()).isEqualTo("Scheduled");
+        assertThat(scheduled.getEventTime().getTime()).isEqualTo("2026-01-01T00:00:00.000001Z");
+        assertThat(scheduled.getSource().getComponent()).isEqualTo("default-scheduler");
+        assertThat(scheduled.getRelated().getKind()).isEqualTo("Node");
+        assertThat(scheduled.getSeries().getLastObservedTime().getTime())
+                .isEqualTo("2026-01-01T00:00:00.000001Z");
+        assertThat(scheduled.getAdditionalProperties()).containsEntry("note", "scheduler");
+
+        Event repeated = scheduled.toBuilder()
+                .withCount(2)
+                .withLastTimestamp("2026-01-01T00:00:05Z")
+                .editSeries()
+                    .withCount(2)
+                    .withNewLastObservedTime("2026-01-01T00:00:05.000001Z")
+                .endSeries()
+                .build();
+        EventList events = new EventListBuilder()
+                .withNewMetadata(null, null, "72", null)
+                .withItems(scheduled, repeated)
+                .build();
+
+        assertThat(repeated.getCount()).isEqualTo(2);
+        assertThat(repeated.getSeries().getLastObservedTime().getTime())
+                .isEqualTo("2026-01-01T00:00:05.000001Z");
+        assertThat(scheduled.getCount()).isEqualTo(1);
+        assertThat(events.getApiVersion()).isEqualTo("v1");
+        assertThat(events.getKind()).isEqualTo("EventList");
+        assertThat(events.getMetadata().getResourceVersion()).isEqualTo("72");
+        assertThat(events.getItems()).extracting(Event::getCount).containsExactly(1, 2);
     }
 
     @Test
