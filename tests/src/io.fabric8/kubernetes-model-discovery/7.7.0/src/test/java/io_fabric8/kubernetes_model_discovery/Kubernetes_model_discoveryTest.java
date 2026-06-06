@@ -384,7 +384,11 @@ public class Kubernetes_model_discoveryTest {
 
         io.fabric8.kubernetes.api.model.discovery.v1beta1.EndpointSliceList betaList =
                 new io.fabric8.kubernetes.api.model.discovery.v1beta1.EndpointSliceListBuilder()
-                .withNewMetadata("continue-token", 2L, "rv-99", null)
+                .withMetadata(new ListMetaBuilder()
+                        .withContinue("continue-token")
+                        .withRemainingItemCount(2L)
+                        .withResourceVersion("rv-99")
+                        .build())
                 .addToItems(betaSlice)
                 .addNewItemLike(betaSlice)
                     .editMetadata()
