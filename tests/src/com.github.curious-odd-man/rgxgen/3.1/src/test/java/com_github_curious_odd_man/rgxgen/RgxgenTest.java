@@ -92,11 +92,13 @@ public class RgxgenTest {
         RgxGenOption.CASE_INSENSITIVE.setInProperties(properties, true);
         RgxGenOption.INFINITE_PATTERN_REPETITION.setInProperties(properties, 2);
 
-        assertThat(RgxGenOption.DOT_MATCHES_ONLY.getFromProperties(properties).isAsciiOnly()).isTrue();
+        assertThat(RgxGenOption.DOT_MATCHES_ONLY.getFromProperties(properties))
+                .hasValueSatisfying(definition -> assertThat(definition.isAsciiOnly()).isTrue());
         assertThat(RgxGenOption.WHITESPACE_DEFINITION.getFromProperties(properties))
-                .containsExactly(WhitespaceChar.FORM_FEED, WhitespaceChar.VERTICAL_TAB);
-        assertThat(RgxGenOption.CASE_INSENSITIVE.getFromProperties(properties)).isTrue();
-        assertThat(RgxGenOption.INFINITE_PATTERN_REPETITION.getFromProperties(properties)).isEqualTo(2);
+                .hasValueSatisfying(chars -> assertThat(chars)
+                        .containsExactly(WhitespaceChar.FORM_FEED, WhitespaceChar.VERTICAL_TAB));
+        assertThat(RgxGenOption.CASE_INSENSITIVE.getFromProperties(properties)).hasValue(true);
+        assertThat(RgxGenOption.INFINITE_PATTERN_REPETITION.getFromProperties(properties)).hasValue(2);
 
         RgxGen dotGenerator = RgxGen.parse(properties, ".");
         assertThat(dotGenerator.getUniqueEstimation()).contains(BigInteger.valueOf(4));
