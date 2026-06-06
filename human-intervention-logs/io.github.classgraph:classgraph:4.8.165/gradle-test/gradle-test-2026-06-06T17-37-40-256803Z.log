@@ -1,0 +1,166 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: io.github.classgraph:classgraph:4.8.165
+Command: `/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 20 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9/tests/src/io.github.classgraph/classgraph/4.8.165/src/test/java/io_github_classgraph/classgraph/JVMDriverReflectionDriverTest.java:22: warning: Unsafe is internal proprietary API and may be removed in a future release> Task :compileTestJava
+
+import sun.misc.Unsafe;
+               ^
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9/tests/src/io.github.classgraph/classgraph/4.8.165/src/test/java/io_github_classgraph/classgraph/JVMDriverReflectionDriverTest.java:118: warning: Unsafe is internal proprietary API and may be removed in a future release
+    private static Unsafe unsafe() throws ReflectiveOperationException {
+                   ^
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9/tests/src/io.github.classgraph/classgraph/4.8.165/src/test/java/io_github_classgraph/classgraph/JVMDriverReflectionDriverTest.java:119: warning: Unsafe is internal proprietary API and may be removed in a future release
+        final Field unsafeField = Unsafe.class.getDeclaredField("theUnsafe");
+                                  ^
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9/tests/src/io.github.classgraph/classgraph/4.8.165/src/test/java/io_github_classgraph/classgraph/JVMDriverReflectionDriverTest.java:121: warning: Unsafe is internal proprietary API and may be removed in a future release
+        return (Unsafe) unsafeField.get(null);
+                ^
+4 warnings
+
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::invokeCleaner has been called by nonapi.io.github.classgraph.utils.FileUtils (file:/home/vjovanov/.m2/repository/io/github/classgraph/classgraph/4.8.165/classgraph-4.8.165.jar)
+WARNING: Please consider reporting this to the maintainers of class nonapi.io.github.classgraph.utils.FileUtils
+WARNING: sun.misc.Unsafe::invokeCleaner will be removed in a future release
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by io.github.toolfactory.narcissus.LibraryLoader in an unnamed module (file:/tmp/metadata-forge-gradle/9ca035f38b9cdc51/caches/modules-2/files-2.1/io.github.toolfactory/narcissus/1.0.7/ab657109bd984dbeae7fa77b9997e6f35f1230b7/narcissus-1.0.7.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+
+> Task :test FAILED
+
+JVMDriverReflectionDriverTest > invokesJvmDriverReflectionDriverOperations() FAILED
+    io.github.toolfactory.jvm.Driver$InitializeException: Could not initialize DefaultDriver
+        at app//io.github.toolfactory.jvm.DriverAbst.refresh(DriverAbst.java:257)
+        at app//io.github.toolfactory.jvm.DriverAbst.throwException(DriverAbst.java:637)
+        at app//io.github.toolfactory.jvm.DriverAbst.refresh(DriverAbst.java:255)
+        at app//io.github.toolfactory.jvm.DriverAbst.getDeclaredConstructors(DriverAbst.java:1081)
+        at java.base@25.0.3/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+        at java.base@25.0.3/java.lang.reflect.Method.invoke(Method.java:565)
+        at app//nonapi.io.github.classgraph.reflection.JVMDriverReflectionDriver.getDeclaredConstructors(JVMDriverReflectionDriver.java:168)
+        at java.base@25.0.3/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+        at java.base@25.0.3/java.lang.reflect.Method.invoke(Method.java:565)
+        at app//io_github_classgraph.classgraph.JVMDriverReflectionDriverTest.invokeReflectionDriver(JVMDriverReflectionDriverTest.java:135)
+        at app//io_github_classgraph.classgraph.JVMDriverReflectionDriverTest.invokesJvmDriverReflectionDriverOperations(JVMDriverReflectionDriverTest.java:40)
+
+        Caused by:
+        io.github.toolfactory.jvm.util.ObjectProvider$BuildingException: Exception occurred while retrieving the implementation of class io.github.toolfactory.jvm.function.catalog.GetResourcesFunction (jvm architecture: x64, jvm version: 25, jvm vendor: Oracle Corporation)
+            at app//io.github.toolfactory.jvm.util.ObjectProvider.getOrBuildObject(ObjectProvider.java:95)
+            at app//io.github.toolfactory.jvm.DriverAbst.getOrBuildResourcesRetriever(DriverAbst.java:436)
+            at app//io.github.toolfactory.jvm.DriverAbst.refresh(DriverAbst.java:229)
+            ... 10 more
+
+            Caused by:
+            java.lang.reflect.InvocationTargetException
+                at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:74)
+                at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+                at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+                at io.github.toolfactory.jvm.util.ObjectProvider.getOrBuildObjectInternal(ObjectProvider.java:144)
+                at io.github.toolfactory.jvm.util.ObjectProvider.getOrBuildObject(ObjectProvider.java:92)
+                ... 12 more
+
+                Caused by:
+                java.lang.NoSuchMethodException: no such method: jdk.internal.loader.URLClassPath.findResources(String,boolean)Enumeration/invokeVirtual
+                    at java.base/java.lang.invoke.MemberName.makeAccessException(MemberName.java:910)
+                    at java.base/java.lang.invoke.MemberName$Factory.resolveOrFail(MemberName.java:989)
+                    at java.base/java.lang.invoke.MethodHandles$Lookup.resolveOrFail(MethodHandles.java:3591)
+                    at java.base/java.lang.invoke.MethodHandles$Lookup.findVirtual(MethodHandles.java:2610)
+                    at io.github.toolfactory.jvm.function.catalog.GetResourcesFunction$ForJava9$1.<init>(GetResourcesFunction.java:164)
+                    at io.github.toolfactory.jvm.function.catalog.GetResourcesFunction$ForJava9.buildResourceFinder(GetResourcesFunction.java:134)
+                    at io.github.toolfactory.jvm.function.catalog.GetResourcesFunction$Abst.<init>(GetResourcesFunction.java:56)
+                    at io.github.toolfactory.jvm.function.catalog.GetResourcesFunction$ForJava7.<init>(GetResourcesFunction.java:92)
+                    at io.github.toolfactory.jvm.function.catalog.GetResourcesFunction$ForJava9.<init>(GetResourcesFunction.java:123)
+                    at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+                    ... 16 more
+
+                    Caused by:
+                    java.lang.NoSuchMethodError: method resolution failed
+                        at java.base/java.lang.invoke.MethodHandleNatives.resolve(Native Method)
+                        at java.base/java.lang.invoke.MemberName$Factory.resolve(MemberName.java:957)
+                        at java.base/java.lang.invoke.MemberName$Factory.resolveOrFail(MemberName.java:986)
+                        ... 24 more
+
+16 tests completed, 1 failed
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9/tests/src/io.github.classgraph/classgraph/4.8.165/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9/tests/src/io.github.classgraph/classgraph/4.8.165/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+BUILD FAILED in 4s
+14 actionable tasks: 3 executed, 11 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for io.github.classgraph:classgraph:4.8.165 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 5s
+9 actionable tasks: 1 executed, 8 up-to-date

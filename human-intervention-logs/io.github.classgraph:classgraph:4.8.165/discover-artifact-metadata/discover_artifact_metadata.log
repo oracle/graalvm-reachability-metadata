@@ -1,0 +1,1603 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e9dbf-e0fb-7de0-a160-bfbffc668f2e
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.github.classgraph:classgraph:4.8.165
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "4.8.165" when "$version$" is replaced with "4.8.165".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "io.github.classgraph:classgraph:4.8.165".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.8.165".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from primary sources first, then update the JSON directly with the discovered URLs and Native Image applicability.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9
+ succeeded in 0ms:
+{
+  "coordinates" : "io.github.classgraph:classgraph:4.8.165"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9
+-rw-rw-r-- 1 vjovanov vjovanov 64 Jun  6 18:24 build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json
+
+exec
+/usr/bin/bash -lc 'rg -n "io.github.classgraph|classgraph" metadata build/discovered-artifact-metadata docs tests -S' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9
+ succeeded in 0ms:
+build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json:2:  "coordinates" : "io.github.classgraph:classgraph:4.8.165"
+
+web search: 
+web search: io.github.classgraph classgraph 4.8.165 maven pom scm url
+codex
+The local file only has coordinates, and there is no existing ClassGraph entry nearby. I’m checking Maven Central first for published sources/tests/javadocs, then I’ll fall back to the matching upstream tag only where Maven does not publish the artifact.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/github/classgraph/classgraph/4.8.165/classgraph-4.8.165.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.github.classgraph</groupId>
+    <artifactId>classgraph</artifactId>
+    <version>4.8.165</version>
+    <name>ClassGraph</name>
+
+    <description>The uber-fast, ultra-lightweight classpath and module scanner for JVM languages.</description>
+
+    <url>https://github.com/classgraph/classgraph</url>
+
+    <licenses>
+        <license>
+            <name>The MIT License (MIT)</name>
+            <url>http://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Luke Hutchison</name>
+            <email>luke.hutch@gmail.com</email>
+            <organization>ClassGraph</organization>
+            <organizationUrl>https://github.com/classgraph</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:classgraph/classgraph.git</connection>
+        <developerConnection>scm:git:git@github.com:classgraph/classgraph.git</developerConnection>
+        <url>https://github.com/classgraph/classgraph</url>
+        <tag>classgraph-4.8.165</tag>
+    </scm>
+
+    <issueManagement>
+        <url>https://github.com/classgraph/classgraph/issues</url>
+    </issueManagement>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+    <properties>
+        <!-- Set UTF-8 encoding for Maven plugins and output -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- Default to generating Javadoc in HTML 4.01 format -->
+        <javadoc.html.version />
+
+        <!-- Warnings are disabled, in order to suppress warning about bootstrap classpath not being set -->
+        <!-- (which arises as a result of building for JDK 7 on JDK8+, allowing for use of @FunctionalInterface) -->
+        <!-- <maven.compiler.showWarnings>true</maven.compiler.showWarnings> -->
+        <!-- <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation> -->
+    </properties>
+
+    <!-- Find dependency updates with: ./mvnw versions:display-dependency-updates -->
+    <dependencies>
+        <!-- Optional runtime dependency: -->
+        <dependency>
+            <groupId>io.github.toolfactory</groupId>
+            <artifactId>narcissus</artifactId>
+            <version>1.0.7</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.github.toolfactory</groupId>
+            <artifactId>jvm-driver</artifactId>
+            <version>9.4.3</version>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Test dependencies: -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.9.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+            <version>1.36</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-generator-annprocess</artifactId>
+            <version>1.36</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.24.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <version>2.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.url</groupId>
+            <artifactId>pax-url-aether</artifactId>
+            <version>2.6.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.6</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>2.0.7</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.1-api</artifactId>
+            <version>1.0.2.Final</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.jimfs</groupId>
+            <artifactId>jimfs</artifactId>
+            <version>1.3.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>3.0.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- "provided" dependencies (soft compile-time dependencies that do not create a runtime dependency): -->
+
+        <dependency>
+            <!-- Needed for Eclipse nullability analysis to work, but use "provided" as the scope so that we -->
+            <!-- don't add a hard dependency on the JDT annotations, because we don't use the annotations in -->
+            <!-- any of the ClassGraph code, so these annotations are not needed at runtime. -->
+            <!-- See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=552198 -->
+            <groupId>org.eclipse.jdt</groupId>
+            <artifactId>org.eclipse.jdt.annotation</artifactId>
+            <version>2.2.700</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Plugins are listed here, but configured in pluginManagement, for compatibility with Eclipse. -->
+            <!-- See: https://stackoverflow.com/a/10483284/3950982 -->
+            <!-- Find plugin updates with: ./mvnw versions:display-plugin-updates -->
+            <!-- List order of plugin execution with: ./mvnw -Prelease fr.jcgay.maven.plugins:buildplan-maven-plugin:list-phase -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.3.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.1.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.4.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>                <!--$NO-MVN-MAN-VER$ -->
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.3.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.5.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.1.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.12</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>3.0.1</version>
+            </plugin>
+
+            <!-- Override versions of the following plugins, inherited from the super-pom, with latest versions -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.3.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.1.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>3.1.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.12.1</version>
+            </plugin>
+        </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <!-- Enforce minimum Maven version, and JDK 7 API -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>animal-sniffer-enforcer-rule</artifactId>
+                            <version>1.23</version>
+                        </dependency>
+                    </dependencies>
+                    <executions>
+                        <!-- Require Maven version. -->
+                        <execution>
+                            <id>enforce-versions</id>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <requireMavenVersion>
+                                        <version>[3.6.3,)</version>
+                                    </requireMavenVersion>
+                                </rules>
+                            </configuration>
+                        </execution>
+                        <!-- Check main project for compatibility with JDK 7 API -->
+                        <execution>
+                            <id>check-signatures</id>
+                            <phase>compile</phase>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <checkSignatureRule implementation="org.codehaus.mojo.animal_sniffer.enforcer.CheckSignatureRule">
+                                        <signature>
+                                            <groupId>org.codehaus.mojo.signature</groupId>
+                                            <artifactId>java17</artifactId>
+                                            <version>1.0</version>
+                                        </signature>
+                                    </checkSignatureRule>
+                                </rules>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <executions>
+                        <!-- Copy LICENSE-ClassGraph.txt to build root -->
+                        <execution>
+                            <id>copy-license-to-target</id>
+                            <phase>process-resources</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                                <resources>
+                                    <resource>
+                                        <directory>${basedir}</directory>
+                                        <filtering>false</filtering>
+                                        <includes>
+                                            <include>LICENSE-ClassGraph.txt</include>
+                                        </includes>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>copy-license-to-javadocs</id>
+                            <phase>process-resources</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${project.build.directory}/apidocs</outputDirectory>
+                                <resources>
+                                    <resource>
+                                        <directory>${basedir}</directory>
+                                        <filtering>false</filtering>
+                                        <includes>
+                                            <include>LICENSE-ClassGraph.txt</include>
+                                        </includes>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <!-- Put module-info.class in META-INF/versions/9 to maximize backwards -->
+                            <!-- compatibility. This has to be done after the jar is created, since -->
+                            <!-- module-info.class cannot be copied to the target directory, otherwise -->
+                            <!-- this build or the following incremental build will cause Animal Sniffer -->
+                            <!-- to fail, since it depends upon ASM 5, which balks when it hits -->
+                            <!-- module-info.class with: "Execution check-signatures of goal -->
+                            <!-- org.apache.maven.plugins:maven-enforcer-plugin:3.0.0-M3:enforce failed: -->
+                            <!-- This feature requires ASM6". -->
+                            <id>add-module-info-to-jar</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <configuration>
+                                <target>
+                                    <jar update="true" destfile="${project.build.directory}/${project.build.finalName}.jar">
+                                        <zipfileset prefix="META-INF/versions/9" dir="${project.basedir}/src/module-info/io.github.classgraph" includes="module-info.class" />
+                                    </jar>
+                                </target>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <!-- Make duplicate copy of Javadoc into a subdirectory with the name of the module, -->
+                            <!-- since Eclipse (and possibly other tools) detects the presence of the module -->
+                            <!-- descriptor, and expects the Javadoc files to use modular paths (#583). -->
+                            <!-- Needs to happen before maven-gpg-plugin runs, otherwise signature will be invalid. -->
+                            <id>add-modular-javadoc</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <configuration>
+                                <target>
+                                    <jar update="true" destfile="${project.build.directory}/${project.build.finalName}-javadoc.jar">
+                                        <zipfileset prefix="io.github.classgraph" dir="${project.build.directory}/apidocs" includes="**/*" />
+                                    </jar>
+                                </target>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!-- Compile sources (main for JDK 7, test for JDK 8) -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <encoding>UTF-8</encoding>
+                        <!-- Can't use "release" option, because ClassGraph needs to be built in JDK 7 -->
+                        <!-- compatibility mode, and the @FunctionalInterface annotation was not available -->
+                        <!-- in JDK 7. If building with "source" and "target" switches, unknown annotations -->
+                        <!-- compile fine as long as they exist in the compiling JDK (in this case, JDK 8+). -->
+                        <!-- Missing annotations don't trigger a linkage error or ClassNotFoundException -->
+                        <!-- unless the annotation is actually read. -->
+                        <!-- However, note that not explicitly specifying a JDK 7 rt.jar as the bootstrap -->
+                        <!-- classpath (in order to build on a newer JDK, which does have @FunctionalInterface) -->
+                        <!-- will lead to the following build-time warning, if maven.compiler.showWarnings -->
+                        <!-- is set to true: -->
+                        <!-- "[WARNING] bootstrap class path not set in conjunction with -source 7" -->
+                        <!-- TODO: JDK 7 is no longer supported as of JDK 20. -->
+                        <source>7</source>
+                        <target>7</target>
+                        <!-- Tests use recent JDK features -->
+                        <testSource>8</testSource>
+                        <testTarget>8</testTarget>
+                        <useIncrementalCompilation>false</useIncrementalCompilation>
+                        <compilerArgs>
+                            <arg>-Xlint:all</arg>                            <!-- Max lint -->
+                            <arg>-Xlint:-options</arg>                            <!-- Remove warnings about JDK7 being deprecated sometime -->
+                            <arg>-Werror</arg>                            <!-- Stop on warnings -->
+                        </compilerArgs>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>default-testCompile</id>
+                            <phase>test-compile</phase>
+                            <goals>
+                                <goal>testCompile</goal>
+                            </goals>
+                            <configuration>
+                                <encoding>UTF-8</encoding>
+                                <!-- Tests use recent JDK features -->
+                                <source>8</source>
+                                <target>8</target>
+                                <compilerArgs>
+                                    <arg>-parameters</arg>
+                                </compilerArgs>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!-- Execute unit tests -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                </plugin>
+
+                <!-- Add src/test/perf to test sources -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>add-test-source</id>
+                            <phase>generate-test-sources</phase>
+                            <goals>
+                                <goal>add-test-source</goal>
+                            </goals>
+                            <configuration>
+                                <sources>
+                                    <source>src/test/perf</source>
+                                </sources>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!-- Create binary jar -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <configuration>
+                        <forceCreation>true</forceCreation>
+                        <archive>
+                            <forced>true</forced>
+                            <manifest>
+                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            </manifest>
+                            <manifestEntries>
+                                <!-- Add OSGi bundle attributes to manifest -->
+                                <Bundle-Category>Utilities</Bundle-Category>
+                                <Bundle-License>http://opensource.org/licenses/MIT</Bundle-License>
+                                <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+                                <Bundle-Name>ClassGraph</Bundle-Name>
+                                <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+                                <Bundle-Vendor>Luke Hutchison</Bundle-Vendor>
+                                <Bundle-Description>${project.description}</Bundle-Description>
+                                <Bundle-Version>${project.version}</Bundle-Version>
+                                <Require-Capability>osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.7))"</Require-Capability>
+                                <Export-Package>io.github.classgraph;version="${project.version}"</Export-Package>
+                                <!-- Make sure "requires" entries in the module descriptor match these imports: -->
+                                <!-- src/main/module-info/io.github.classgraph/module-info.java -->
+                                <Import-Package>javax.xml.xpath,javax.xml.namespace,javax.xml.parsers,org.w3c.dom,sun.misc;resolution:="optional",sun.nio.ch;resolution:="optional",io.github.toolfactory.narcissus;resolution:="optional",io.github.toolfactory.jvm;resolution:="optional"</Import-Package>
+                                <!-- Add the same module dependencies that are specified in module-info.java -->
+                                <Dependencies>java.xml,jdk.unsupported,java.management,java.logging</Dependencies>
+                                <!-- This is a multi-release jar, since module-info.class will be added to -->
+                                <!-- META-INF/versions/9 , so we need to set the Multi-Release entry to true -->
+                                <Multi-Release>true</Multi-Release>
+                            </manifestEntries>
+                        </archive>
+                    </configuration>
+                </plugin>
+
+                <!-- Create source jar -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!-- Create Javadoc jar -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>attach-javadocs</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                            <configuration>
+                                <source>8</source>
+                                <additionalOptions>${javadoc.html.version}</additionalOptions>
+                                <doclint>all</doclint>
+                                <excludePackageNames>nonapi.*</excludePackageNames>
+                                <show>public</show>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!-- Stage jars on Sonatype Nexus -->
+                <!-- See: http://java.dzone.com/articles/deploy-maven-central -->
+                <!-- and: http://central.sonatype.org/pages/apache-maven.html -->
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <serverId>ossrh</serverId>
+                        <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                        <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        <stagingProgressTimeoutMinutes>10</stagingProgressTimeoutMinutes>
+                    </configuration>
+                </plugin>
+
+                <!-- Deploy jars -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <configuration>
+                        <phase>deploy</phase>
+                        <goals>deploy</goals>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <!-- Activate release profile -->
+                        <releaseProfiles>release</releaseProfiles>
+                        <!-- Work around bug where releaseProfiles tag doesn't actually work yet -->
+                        <arguments>-Prelease</arguments>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <profiles>
+        <!-- Compile Javadoc to HTML5 if building with JDK 9+ -->
+        <profile>
+            <id>jdk9plus</id>
+            <properties>
+                <javadoc.html.version>-html5</javadoc.html.version>
+                <!-- coverall version 4.3.0 does not work with java 9. -->
+                <!-- See: https://github.com/trautonen/coveralls-maven-plugin/issues/112 -->
+                <coveralls.skip>true</coveralls.skip>
+            </properties>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+        </profile>
+
+        <!-- Sign jars for release (./mvnw clean release:prepare release:perform) -->
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <configuration>
+                            <gpgArguments>
+                                <arg>--pinentry-mode</arg>
+                                <arg>loopback</arg>
+                            </gpgArguments>
+                            <keyname>${gpg.keyname}</keyname>
+                            <passphraseServerId>${gpg.keyname}</passphraseServerId>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/github/classgraph/classgraph/4.8.165/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/github/classgraph/classgraph/4.8.165</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/github/classgraph/classgraph/4.8.165</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="classgraph-4.8.165-javadoc.jar" title="classgraph-4.8.165-javadoc.jar">classgraph-4.8.165-javadoc.jar</a>                    2023-11-16 16:56   1406790      
+<a href="classgraph-4.8.165-javadoc.jar.asc" title="classgraph-4.8.165-javadoc.jar.asc">classgraph-4.8.165-javadoc.jar.asc</a>                2023-11-16 16:56       488      
+<a href="classgraph-4.8.165-javadoc.jar.md5" title="classgraph-4.8.165-javadoc.jar.md5">classgraph-4.8.165-javadoc.jar.md5</a>                2023-11-16 16:56        32      
+<a href="classgraph-4.8.165-javadoc.jar.sha1" title="classgraph-4.8.165-javadoc.jar.sha1">classgraph-4.8.165-javadoc.jar.sha1</a>               2023-11-16 16:56        40      
+<a href="classgraph-4.8.165-sources.jar" title="classgraph-4.8.165-sources.jar">classgraph-4.8.165-sources.jar</a>                    2023-11-16 16:56    515566      
+<a href="classgraph-4.8.165-sources.jar.asc" title="classgraph-4.8.165-sources.jar.asc">classgraph-4.8.165-sources.jar.asc</a>                2023-11-16 16:56       488      
+<a href="classgraph-4.8.165-sources.jar.md5" title="classgraph-4.8.165-sources.jar.md5">classgraph-4.8.165-sources.jar.md5</a>                2023-11-16 16:56        32      
+<a href="classgraph-4.8.165-sources.jar.sha1" title="classgraph-4.8.165-sources.jar.sha1">classgraph-4.8.165-sources.jar.sha1</a>               2023-11-16 16:56        40      
+<a href="classgraph-4.8.165.jar" title="classgraph-4.8.165.jar">classgraph-4.8.165.jar</a>                            2023-11-16 16:56    562061      
+<a href="classgraph-4.8.165.jar.asc" title="classgraph-4.8.165.jar.asc">classgraph-4.8.165.jar.asc</a>                        2023-11-16 16:56       488      
+<a href="classgraph-4.8.165.jar.md5" title="classgraph-4.8.165.jar.md5">classgraph-4.8.165.jar.md5</a>                        2023-11-16 16:56        32      
+<a href="classgraph-4.8.165.jar.sha1" title="classgraph-4.8.165.jar.sha1">classgraph-4.8.165.jar.sha1</a>                       2023-11-16 16:56        40      
+<a href="classgraph-4.8.165.pom" title="classgraph-4.8.165.pom">classgraph-4.8.165.pom</a>                            2023-11-16 16:56     30574      
+<a href="classgraph-4.8.165.pom.asc" title="classgraph-4.8.165.pom.asc">classgraph-4.8.165.pom.asc</a>                        2023-11-16 16:56       488      
+<a href="classgraph-4.8.165.pom.md5" title="classgraph-4.8.165.pom.md5">classgraph-4.8.165.pom.md5</a>                        2023-11-16 16:56        32      
+<a href="classgraph-4.8.165.pom.sha1" title="classgraph-4.8.165.pom.sha1">classgraph-4.8.165.pom.sha1</a>                       2023-11-16 16:56        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9
+ succeeded in 261ms:
+web search: 
+web search: https://github.com/classgraph/classgraph/tree/classgraph-4.8.165
+web search: 
+web search: repo1.maven.org io github classgraph classgraph 4.8.165 classgraph-4.8.165-sources.jar
+web search: 
+web search: https://repo1.maven.org/maven2/io/github/classgraph/classgraph/
+web search: 
+web search: https://repo1.maven.org/maven2/io/github/classgraph/classgraph/
+web search: 
+web search: https://repo1.maven.org/maven2/io/github/classgraph/classgraph/4.8.165/
+codex
+Maven Central publishes the 4.8.165 binary, sources jar, javadoc jar, and POM, but no test-sources artifact. The POM’s SCM tag is `classgraph-4.8.165`, so I’m using that tag for the test tree while keeping Maven-hosted sources and docs where they exist.
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/classgraph/classgraph/git/trees/classgraph-4.8.165?recursive=1 | rg '\"path\": \"src/test|\"path\": \"README.md|\"path\": \"src/main|\"path\": \"pom.xml'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo1.maven.org/maven2/io/github/classgraph/classgraph/4.8.165/classgraph-4.8.165-tests.jar || true' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo1.maven.org/maven2/io/github/classgraph/classgraph/4.8.165/classgraph-4.8.165-test-sources.jar || true' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/classgraph/classgraph/git/ref/tags/classgraph-4.8.165' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9
+ succeeded in 218ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 06 Jun 2026 16:24:58 GMT
+content-type: text/html
+cf-ray: a078c535fe29862a-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/io/github/classgraph/classgraph/4.8.165/classgraph-4.8.165-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 226ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 06 Jun 2026 16:24:58 GMT
+content-type: text/html
+cf-ray: a078c536094fbc4a-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/io/github/classgraph/classgraph/4.8.165/classgraph-4.8.165-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 340ms:
+{
+  "ref": "refs/tags/classgraph-4.8.165",
+  "node_id": "MDM6UmVmMjMwNTAxMTA6cmVmcy90YWdzL2NsYXNzZ3JhcGgtNC44LjE2NQ==",
+  "url": "https://api.github.com/repos/classgraph/classgraph/git/refs/tags/classgraph-4.8.165",
+  "object": {
+    "sha": "f751fac2c393cd1e540a746fb18d01f901d39324",
+    "type": "tag",
+    "url": "https://api.github.com/repos/classgraph/classgraph/git/tags/f751fac2c393cd1e540a746fb18d01f901d39324"
+  }
+}
+
+ succeeded in 922ms:
+      "path": "README.md",
+      "path": "pom.xml",
+      "path": "src/main",
+      "path": "src/main/java",
+      "path": "src/main/java/io",
+      "path": "src/main/java/io/github",
+      "path": "src/main/java/io/github/classgraph",
+      "path": "src/main/java/io/github/classgraph/AnnotationClassRef.java",
+      "path": "src/main/java/io/github/classgraph/AnnotationEnumValue.java",
+      "path": "src/main/java/io/github/classgraph/AnnotationInfo.java",
+      "path": "src/main/java/io/github/classgraph/AnnotationInfoList.java",
+      "path": "src/main/java/io/github/classgraph/AnnotationParameterValue.java",
+      "path": "src/main/java/io/github/classgraph/AnnotationParameterValueList.java",
+      "path": "src/main/java/io/github/classgraph/ArrayClassInfo.java",
+      "path": "src/main/java/io/github/classgraph/ArrayTypeSignature.java",
+      "path": "src/main/java/io/github/classgraph/BaseTypeSignature.java",
+      "path": "src/main/java/io/github/classgraph/ClassGraph.java",
+      "path": "src/main/java/io/github/classgraph/ClassGraphClassLoader.java",
+      "path": "src/main/java/io/github/classgraph/ClassGraphException.java",
+      "path": "src/main/java/io/github/classgraph/ClassInfo.java",
+      "path": "src/main/java/io/github/classgraph/ClassInfoList.java",
+      "path": "src/main/java/io/github/classgraph/ClassMemberInfo.java",
+      "path": "src/main/java/io/github/classgraph/ClassRefOrTypeVariableSignature.java",
+      "path": "src/main/java/io/github/classgraph/ClassRefTypeSignature.java",
+      "path": "src/main/java/io/github/classgraph/ClassTypeSignature.java",
+      "path": "src/main/java/io/github/classgraph/Classfile.java",
+      "path": "src/main/java/io/github/classgraph/ClasspathElement.java",
+      "path": "src/main/java/io/github/classgraph/ClasspathElementDir.java",
+      "path": "src/main/java/io/github/classgraph/ClasspathElementModule.java",
+      "path": "src/main/java/io/github/classgraph/ClasspathElementZip.java",
+      "path": "src/main/java/io/github/classgraph/CloseableByteBuffer.java",
+      "path": "src/main/java/io/github/classgraph/FieldInfo.java",
+      "path": "src/main/java/io/github/classgraph/FieldInfoList.java",
+      "path": "src/main/java/io/github/classgraph/GraphvizDotfileGenerator.java",
+      "path": "src/main/java/io/github/classgraph/HasName.java",
+      "path": "src/main/java/io/github/classgraph/HierarchicalTypeSignature.java",
+      "path": "src/main/java/io/github/classgraph/InfoList.java",
+      "path": "src/main/java/io/github/classgraph/MappableInfoList.java",
+      "path": "src/main/java/io/github/classgraph/MethodInfo.java",
+      "path": "src/main/java/io/github/classgraph/MethodInfoList.java",
+      "path": "src/main/java/io/github/classgraph/MethodParameterInfo.java",
+      "path": "src/main/java/io/github/classgraph/MethodTypeSignature.java",
+      "path": "src/main/java/io/github/classgraph/ModuleInfo.java",
+      "path": "src/main/java/io/github/classgraph/ModuleInfoList.java",
+      "path": "src/main/java/io/github/classgraph/ModulePathInfo.java",
+      "path": "src/main/java/io/github/classgraph/ModuleReaderProxy.java",
+      "path": "src/main/java/io/github/classgraph/ModuleRef.java",
+      "path": "src/main/java/io/github/classgraph/ObjectTypedValueWrapper.java",
+      "path": "src/main/java/io/github/classgraph/PackageInfo.java",
+      "path": "src/main/java/io/github/classgraph/PackageInfoList.java",
+      "path": "src/main/java/io/github/classgraph/PotentiallyUnmodifiableList.java",
+      "path": "src/main/java/io/github/classgraph/ReferenceTypeSignature.java",
+      "path": "src/main/java/io/github/classgraph/Resource.java",
+      "path": "src/main/java/io/github/classgraph/ResourceList.java",
+      "path": "src/main/java/io/github/classgraph/ScanResult.java",
+      "path": "src/main/java/io/github/classgraph/ScanResultObject.java",
+      "path": "src/main/java/io/github/classgraph/Scanner.java",
+      "path": "src/main/java/io/github/classgraph/TypeArgument.java",
+      "path": "src/main/java/io/github/classgraph/TypeParameter.java",
+      "path": "src/main/java/io/github/classgraph/TypeSignature.java",
+      "path": "src/main/java/io/github/classgraph/TypeVariableSignature.java",
+      "path": "src/main/java/nonapi",
+      "path": "src/main/java/nonapi/io",
+      "path": "src/main/java/nonapi/io/github",
+      "path": "src/main/java/nonapi/io/github/classgraph",
+      "path": "src/main/java/nonapi/io/github/classgraph/classloaderhandler",
+      "path": "src/main/java/nonapi/io/github/classgraph/classloaderhandler/AntClassLoaderHandler.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classloaderhandler/ClassGraphClassLoaderHandler.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classloaderhandler/ClassLoaderHandler.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classloaderhandler/ClassLoaderHandlerRegistry.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classloaderhandler/CxfContainerClassLoaderHandler.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classloaderhandler/EquinoxClassLoaderHandler.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classloaderhandler/EquinoxContextFinderClassLoaderHandler.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classloaderhandler/FallbackClassLoaderHandler.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classloaderhandler/FelixClassLoaderHandler.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classloaderhandler/JBossClassLoaderHandler.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classloaderhandler/JPMSClassLoaderHandler.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classloaderhandler/OSGiDefaultClassLoaderHandler.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classloaderhandler/ParentLastDelegationOrderTestClassLoaderHandler.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classloaderhandler/PlexusClassWorldsClassRealmClassLoaderHandler.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classloaderhandler/QuarkusClassLoaderHandler.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classloaderhandler/README",
+      "path": "src/main/java/nonapi/io/github/classgraph/classloaderhandler/SpringBootRestartClassLoaderHandler.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classloaderhandler/TomcatWebappClassLoaderBaseHandler.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classloaderhandler/URLClassLoaderHandler.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classloaderhandler/UnoOneJarClassLoaderHandler.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classloaderhandler/WeblogicClassLoaderHandler.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classloaderhandler/WebsphereLibertyClassLoaderHandler.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classloaderhandler/WebsphereTraditionalClassLoaderHandler.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classpath",
+      "path": "src/main/java/nonapi/io/github/classgraph/classpath/CallStackReader.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classpath/ClassLoaderFinder.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classpath/ClassLoaderOrder.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classpath/ClasspathFinder.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classpath/ClasspathOrder.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classpath/ModuleFinder.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/classpath/SystemJarFinder.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/concurrency",
+      "path": "src/main/java/nonapi/io/github/classgraph/concurrency/AutoCloseableExecutorService.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/concurrency/InterruptionChecker.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/concurrency/SimpleThreadFactory.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/concurrency/SingletonMap.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/concurrency/WorkQueue.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/fastzipfilereader",
+      "path": "src/main/java/nonapi/io/github/classgraph/fastzipfilereader/FastZipEntry.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/fastzipfilereader/LogicalZipFile.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/fastzipfilereader/NestedJarHandler.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/fastzipfilereader/PhysicalZipFile.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/fastzipfilereader/ZipFileSlice.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/fileslice",
+      "path": "src/main/java/nonapi/io/github/classgraph/fileslice/ArraySlice.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/fileslice/FileSlice.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/fileslice/PathSlice.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/fileslice/Slice.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/fileslice/reader",
+      "path": "src/main/java/nonapi/io/github/classgraph/fileslice/reader/ClassfileReader.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/fileslice/reader/RandomAccessArrayReader.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/fileslice/reader/RandomAccessByteBufferReader.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/fileslice/reader/RandomAccessFileChannelReader.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/fileslice/reader/RandomAccessReader.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/fileslice/reader/SequentialReader.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/json",
+      "path": "src/main/java/nonapi/io/github/classgraph/json/ClassFieldCache.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/json/ClassFields.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/json/FieldTypeInfo.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/json/Id.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/json/JSONArray.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/json/JSONDeserializer.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/json/JSONObject.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/json/JSONParser.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/json/JSONReference.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/json/JSONSerializer.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/json/JSONUtils.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/json/ParameterizedTypeImpl.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/json/ReferenceEqualityKey.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/json/TypeResolutions.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/recycler",
+      "path": "src/main/java/nonapi/io/github/classgraph/recycler/RecycleOnClose.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/recycler/Recycler.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/recycler/Resettable.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/reflection",
+      "path": "src/main/java/nonapi/io/github/classgraph/reflection/JVMDriverReflectionDriver.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/reflection/NarcissusReflectionDriver.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/reflection/ReflectionDriver.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/reflection/ReflectionUtils.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/reflection/StandardReflectionDriver.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/scanspec",
+      "path": "src/main/java/nonapi/io/github/classgraph/scanspec/AcceptReject.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/scanspec/ScanSpec.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/types",
+      "path": "src/main/java/nonapi/io/github/classgraph/types/ParseException.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/types/Parser.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/types/TypeUtils.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/utils",
+      "path": "src/main/java/nonapi/io/github/classgraph/utils/Assert.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/utils/CollectionUtils.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/utils/FastPathResolver.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/utils/FileUtils.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/utils/JarUtils.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/utils/LogNode.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/utils/ProxyingInputStream.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/utils/StringUtils.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/utils/URLPathEncoder.java",
+      "path": "src/main/java/nonapi/io/github/classgraph/utils/VersionFinder.java",
+      "path": "src/test",
+      "path": "src/test/java",
+      "path": "src/test/java/ClassGraphGraphVizGenerator.java",
+      "path": "src/test/java/ClassInDefaultPackage.java",
+      "path": "src/test/java/DefaultPackageTest.java",
+      "path": "src/test/java/DisableRecursiveScanningTest.java",
+      "path": "src/test/java/com",
+      "path": "src/test/java/com/xyz",
+      "path": "src/test/java/com/xyz/GenerateClassGraphFigDotFile.java",
+      "path": "src/test/java/com/xyz/MetaAnnotationTest.java",
+      "path": "src/test/java/com/xyz/ScanEverything.java",
+      "path": "src/test/java/com/xyz/classgraph-fig-legend.png",
+      "path": "src/test/java/com/xyz/classgraph-fig-legend.svg",
+      "path": "src/test/java/com/xyz/classgraph-fig.dot",
+      "path": "src/test/java/com/xyz/classgraph-fig.png",
+      "path": "src/test/java/com/xyz/classgraph-fig.svg",
+      "path": "src/test/java/com/xyz/classgraph.json",
+      "path": "src/test/java/com/xyz/fig",
+      "path": "src/test/java/com/xyz/fig/Drawable.java",
+      "path": "src/test/java/com/xyz/fig/Figure.java",
+      "path": "src/test/java/com/xyz/fig/SceneGraph.java",
+      "path": "src/test/java/com/xyz/fig/UIElement.java",
+      "path": "src/test/java/com/xyz/fig/UIWidget.java",
+      "path": "src/test/java/com/xyz/fig/shape",
+      "path": "src/test/java/com/xyz/fig/shape/Circle.java",
+      "path": "src/test/java/com/xyz/fig/shape/Diamond.java",
+      "path": "src/test/java/com/xyz/fig/shape/Shape.java",
+      "path": "src/test/java/com/xyz/fig/shape/ShapeImpl.java",
+      "path": "src/test/java/com/xyz/fig/shape/Square.java",
+      "path": "src/test/java/com/xyz/fig/shape/Triangle.java",
+      "path": "src/test/java/com/xyz/meta-annotation-fig.dot",
+      "path": "src/test/java/com/xyz/meta-annotation-fig.png",
+      "path": "src/test/java/com/xyz/meta-annotation-fig.svg",
+      "path": "src/test/java/com/xyz/meta",
+      "path": "src/test/java/com/xyz/meta/A.java",
+      "path": "src/test/java/com/xyz/meta/B.java",
+      "path": "src/test/java/com/xyz/meta/C.java",
+      "path": "src/test/java/com/xyz/meta/D.java",
+      "path": "src/test/java/com/xyz/meta/E.java",
+      "path": "src/test/java/com/xyz/meta/F.java",
+      "path": "src/test/java/com/xyz/meta/G.java",
+      "path": "src/test/java/com/xyz/meta/H.java",
+      "path": "src/test/java/com/xyz/meta/I.java",
+      "path": "src/test/java/com/xyz/meta/J.java",
+      "path": "src/test/java/com/xyz/meta/K.java",
+      "path": "src/test/java/com/xyz/meta/L.java",
+      "path": "src/test/java/io",
+      "path": "src/test/java/io/github",
+      "path": "src/test/java/io/github/classgraph",
+      "path": "src/test/java/io/github/classgraph/features",
+      "path": "src/test/java/io/github/classgraph/features/AnnotationEqualityTest.java",
+      "path": "src/test/java/io/github/classgraph/features/AnnotationParamWithPrimitiveTypedArrayTest.java",
+      "path": "src/test/java/io/github/classgraph/features/ClassTypeAnnotation.java",
+      "path": "src/test/java/io/github/classgraph/features/CustomURLScheme.java",
+      "path": "src/test/java/io/github/classgraph/features/DeclaredVsNonDeclaredTest.java",
+      "path": "src/test/java/io/github/classgraph/features/EncapsulationCircumventionTest.java",
+      "path": "src/test/java/io/github/classgraph/features/EnumTest.java",
+      "path": "src/test/java/io/github/classgraph/features/MethodParameterAnnotationsTest.java",
+      "path": "src/test/java/io/github/classgraph/features/MultiReleaseJarTest.java",
+      "path": "src/test/java/io/github/classgraph/features/RecordTest.java",
+      "path": "src/test/java/io/github/classgraph/issues",
+      "path": "src/test/java/io/github/classgraph/issues/DeclaredVsNonDeclaredTest.java",
+      "path": "src/test/java/io/github/classgraph/issues/GenericInnerClassTypedField.java",
+      "path": "src/test/java/io/github/classgraph/issues/IssuesTest.java",
+      "path": "src/test/java/io/github/classgraph/issues/ResolveTypeVariableTest.java",
+      "path": "src/test/java/io/github/classgraph/issues/TestGetUniqueClasspathElements.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue100",
+      "path": "src/test/java/io/github/classgraph/issues/issue100/Issue100Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue101",
+      "path": "src/test/java/io/github/classgraph/issues/issue101/AnnotatedClass.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue101/AnnotatedInterface.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue101/ImplementsAnnotatedInterface.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue101/ImplementsNonAnnotatedSubinterface.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue101/InheritedAnnotation.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue101/InheritedMetaAnnotation.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue101/Issue101Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue101/NonAnnotatedSubclass.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue101/NonAnnotatedSubinterface.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue101/NonInheritedAnnotation.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue107",
+      "path": "src/test/java/io/github/classgraph/issues/issue107/Issue107Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue107/PackageAnnotation.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue107/package-info.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue128",
+      "path": "src/test/java/io/github/classgraph/issues/issue128/Issue128Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue140",
+      "path": "src/test/java/io/github/classgraph/issues/issue140/Issue140Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue141",
+      "path": "src/test/java/io/github/classgraph/issues/issue141/Issue141Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue146",
+      "path": "src/test/java/io/github/classgraph/issues/issue146/Issue146Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue148",
+      "path": "src/test/java/io/github/classgraph/issues/issue148/Issue148Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue148/O1.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue148/O2.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue151",
+      "path": "src/test/java/io/github/classgraph/issues/issue151/Issue151Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue152",
+      "path": "src/test/java/io/github/classgraph/issues/issue152/Issue152Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue153",
+      "path": "src/test/java/io/github/classgraph/issues/issue153/Issue153Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue166",
+      "path": "src/test/java/io/github/classgraph/issues/issue166/Issue166Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue167",
+      "path": "src/test/java/io/github/classgraph/issues/issue167/Issue167Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue167/a",
+      "path": "src/test/java/io/github/classgraph/issues/issue167/a/TestA.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue167/a/b",
+      "path": "src/test/java/io/github/classgraph/issues/issue167/a/b/TestAB.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue171",
+      "path": "src/test/java/io/github/classgraph/issues/issue171/Issue171Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue175",
+      "path": "src/test/java/io/github/classgraph/issues/issue175/Issue175Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue193",
+      "path": "src/test/java/io/github/classgraph/issues/issue193/Issue193Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue209",
+      "path": "src/test/java/io/github/classgraph/issues/issue209/Issue209Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue216",
+      "path": "src/test/java/io/github/classgraph/issues/issue216/Issue216Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue223",
+      "path": "src/test/java/io/github/classgraph/issues/issue223/Issue223Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue238",
+      "path": "src/test/java/io/github/classgraph/issues/issue238/Issue238Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue245",
+      "path": "src/test/java/io/github/classgraph/issues/issue245/Issue245Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue246",
+      "path": "src/test/java/io/github/classgraph/issues/issue246/Issue246Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue255",
+      "path": "src/test/java/io/github/classgraph/issues/issue255/Issue255Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue260",
+      "path": "src/test/java/io/github/classgraph/issues/issue260/Issue260Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue260/Outer.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue260/P.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue261",
+      "path": "src/test/java/io/github/classgraph/issues/issue261/Issue261Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue267",
+      "path": "src/test/java/io/github/classgraph/issues/issue267/ClassLoadingWorksWithParentLastLoaders.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue267/ClassLoadingWorksWithParentLastLoadersStubTest.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue277",
+      "path": "src/test/java/io/github/classgraph/issues/issue277/Issue227Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue286",
+      "path": "src/test/java/io/github/classgraph/issues/issue286/Issue286Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue289",
+      "path": "src/test/java/io/github/classgraph/issues/issue289/Issue289.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue303",
+      "path": "src/test/java/io/github/classgraph/issues/issue303/Issue303Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue305",
+      "path": "src/test/java/io/github/classgraph/issues/issue305/Issue305.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue310",
+      "path": "src/test/java/io/github/classgraph/issues/issue310/Issue310.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue314",
+      "path": "src/test/java/io/github/classgraph/issues/issue314/Issue314.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue318",
+      "path": "src/test/java/io/github/classgraph/issues/issue318/Issue318.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue329",
+      "path": "src/test/java/io/github/classgraph/issues/issue329/Issue329.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue339",
+      "path": "src/test/java/io/github/classgraph/issues/issue339/Issue339.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue340",
+      "path": "src/test/java/io/github/classgraph/issues/issue340/Issue340.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue345",
+      "path": "src/test/java/io/github/classgraph/issues/issue345/Issue345.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue348",
+      "path": "src/test/java/io/github/classgraph/issues/issue348/Issue348.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue350",
+      "path": "src/test/java/io/github/classgraph/issues/issue350/Issue350.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue352",
+      "path": "src/test/java/io/github/classgraph/issues/issue352/Issue352.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue355",
+      "path": "src/test/java/io/github/classgraph/issues/issue355/Issue355.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue364",
+      "path": "src/test/java/io/github/classgraph/issues/issue364/Issue364Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue368",
+      "path": "src/test/java/io/github/classgraph/issues/issue368/Issue368Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue37",
+      "path": "src/test/java/io/github/classgraph/issues/issue37/Issue37Annotation.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue37/Issue37Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue370",
+      "path": "src/test/java/io/github/classgraph/issues/issue370/Issue370Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue370/annotations",
+      "path": "src/test/java/io/github/classgraph/issues/issue370/annotations/ApiOperation.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue370/annotations/Extension.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue370/annotations/ExtensionProperty.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue370/impl",
+      "path": "src/test/java/io/github/classgraph/issues/issue370/impl/ClassWithAnnotation.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue38",
+      "path": "src/test/java/io/github/classgraph/issues/issue38/ImplementsSuppressWarnings.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue38/Issue38Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue38/SomeAnnotation.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue38/SomeAnnotationLiteral.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue384",
+      "path": "src/test/java/io/github/classgraph/issues/issue384/Issue384Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue387",
+      "path": "src/test/java/io/github/classgraph/issues/issue387/Issue387Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue402",
+      "path": "src/test/java/io/github/classgraph/issues/issue402/Foo.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue402/Outer.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue402/TypeAnnotationTest.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue402/X.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue407",
+      "path": "src/test/java/io/github/classgraph/issues/issue407/Issue407Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue420",
+      "path": "src/test/java/io/github/classgraph/issues/issue420/Issue420Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue431",
+      "path": "src/test/java/io/github/classgraph/issues/issue431/Issue431Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue46",
+      "path": "src/test/java/io/github/classgraph/issues/issue46/Issue46Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue468",
+      "path": "src/test/java/io/github/classgraph/issues/issue468/Issue468Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue495",
+      "path": "src/test/java/io/github/classgraph/issues/issue495/Issue495Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue600",
+      "path": "src/test/java/io/github/classgraph/issues/issue600/Issue600Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue673",
+      "path": "src/test/java/io/github/classgraph/issues/issue673/Issue673Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue694",
+      "path": "src/test/java/io/github/classgraph/issues/issue694/Issue694.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue696",
+      "path": "src/test/java/io/github/classgraph/issues/issue696/Issue696.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue706",
+      "path": "src/test/java/io/github/classgraph/issues/issue706/Issue706.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue735",
+      "path": "src/test/java/io/github/classgraph/issues/issue735/Issue735.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue739",
+      "path": "src/test/java/io/github/classgraph/issues/issue739/Issue739.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue74",
+      "path": "src/test/java/io/github/classgraph/issues/issue74/Issue74Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue741",
+      "path": "src/test/java/io/github/classgraph/issues/issue741/TypeArgumentAnnotationTest.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue741/TypeParameterAnnotationTest.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue766",
+      "path": "src/test/java/io/github/classgraph/issues/issue766/ClassgraphIssue766.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue772",
+      "path": "src/test/java/io/github/classgraph/issues/issue772/ExampleA.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue772/ExampleB.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue772/ExampleC.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue772/MethodOverrideOrderTest.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue772/MyCloseable.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue78",
+      "path": "src/test/java/io/github/classgraph/issues/issue78/Issue78Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue780",
+      "path": "src/test/java/io/github/classgraph/issues/issue780/Issue780Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue797",
+      "path": "src/test/java/io/github/classgraph/issues/issue797/Issue797Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue80",
+      "path": "src/test/java/io/github/classgraph/issues/issue80/Issue80Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue804",
+      "path": "src/test/java/io/github/classgraph/issues/issue804/Issue804Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue83",
+      "path": "src/test/java/io/github/classgraph/issues/issue83/Issue83Test.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue93",
+      "path": "src/test/java/io/github/classgraph/issues/issue93/Issue93.java",
+      "path": "src/test/java/io/github/classgraph/issues/issue99",
+      "path": "src/test/java/io/github/classgraph/issues/issue99/Issue99Test.java",
+      "path": "src/test/java/io/github/classgraph/json",
+      "path": "src/test/java/io/github/classgraph/json/AnnotationDefaultVals.java",
+      "path": "src/test/java/io/github/classgraph/json/JSONSerializationTest.java",
+      "path": "src/test/java/io/github/classgraph/test",
+      "path": "src/test/java/io/github/classgraph/test/ClassGraphTest.java",
+      "path": "src/test/java/io/github/classgraph/test/ClassInfoTest.java",
+      "path": "src/test/java/io/github/classgraph/test/accepted",
+      "path": "src/test/java/io/github/classgraph/test/accepted/Accepted.java",
+      "path": "src/test/java/io/github/classgraph/test/accepted/AcceptedInterface.java",
+      "path": "src/test/java/io/github/classgraph/test/accepted/Cls.java",
+      "path": "src/test/java/io/github/classgraph/test/accepted/ClsSub.java",
+      "path": "src/test/java/io/github/classgraph/test/accepted/ClsSubSub.java",
+      "path": "src/test/java/io/github/classgraph/test/accepted/HasFieldWithTypeCls.java",
+      "path": "src/test/java/io/github/classgraph/test/accepted/Iface.java",
+      "path": "src/test/java/io/github/classgraph/test/accepted/IfaceSub.java",
+      "path": "src/test/java/io/github/classgraph/test/accepted/IfaceSubSub.java",
+      "path": "src/test/java/io/github/classgraph/test/accepted/Impl1.java",
+      "path": "src/test/java/io/github/classgraph/test/accepted/Impl1Sub.java",
+      "path": "src/test/java/io/github/classgraph/test/accepted/Impl1SubSub.java",
+      "path": "src/test/java/io/github/classgraph/test/accepted/Impl2.java",
+      "path": "src/test/java/io/github/classgraph/test/accepted/Impl2Sub.java",
+      "path": "src/test/java/io/github/classgraph/test/accepted/Impl2SubSub.java",
+      "path": "src/test/java/io/github/classgraph/test/accepted/StaticField.java",
+      "path": "src/test/java/io/github/classgraph/test/accepted/rejectedsub",
+      "path": "src/test/java/io/github/classgraph/test/accepted/rejectedsub/RejectedSub.java",
+      "path": "src/test/java/io/github/classgraph/test/classrefannotation",
+      "path": "src/test/java/io/github/classgraph/test/classrefannotation/AnnotationClassRefTest.java",
+      "path": "src/test/java/io/github/classgraph/test/external",
+      "path": "src/test/java/io/github/classgraph/test/external/ExternalAnnotation.java",
+      "path": "src/test/java/io/github/classgraph/test/external/ExternalInterface.java",
+      "path": "src/test/java/io/github/classgraph/test/external/ExternalSuperclass.java",
+      "path": "src/test/java/io/github/classgraph/test/fieldannotation",
+      "path": "src/test/java/io/github/classgraph/test/fieldannotation/ClassWithoutFieldOrMethodAnnotations.java",
+      "path": "src/test/java/io/github/classgraph/test/fieldannotation/FieldAndMethodAnnotationTest.java",
+      "path": "src/test/java/io/github/classgraph/test/fieldinfo",
+      "path": "src/test/java/io/github/classgraph/test/fieldinfo/FieldInfoTest.java",
+      "path": "src/test/java/io/github/classgraph/test/internal",
+      "path": "src/test/java/io/github/classgraph/test/internal/InternalAnnotatedByExternal.java",
+      "path": "src/test/java/io/github/classgraph/test/internal/InternalExtendsExternal.java",
+      "path": "src/test/java/io/github/classgraph/test/internal/InternalExternalTest.java",
+      "path": "src/test/java/io/github/classgraph/test/internal/InternalImplementsExternal.java",
+      "path": "src/test/java/io/github/classgraph/test/methodannotation",
+      "path": "src/test/java/io/github/classgraph/test/methodannotation/ClassWithoutMethodAnnotations.java",
+      "path": "src/test/java/io/github/classgraph/test/methodannotation/MethodAnnotationTest.java",
+      "path": "src/test/java/io/github/classgraph/test/methodannotation2",
+      "path": "src/test/java/io/github/classgraph/test/methodannotation2/TestMethodMetaAnnotation.java",
+      "path": "src/test/java/io/github/classgraph/test/methodinfo",
+      "path": "src/test/java/io/github/classgraph/test/methodinfo/MethodInfoTest.java",
+      "path": "src/test/java/io/github/classgraph/test/parameterannotation",
+      "path": "src/test/java/io/github/classgraph/test/parameterannotation/RetentionPolicyForFunctionParameterAnnotationsTest.java",
+      "path": "src/test/java/io/github/classgraph/test/rejected",
+      "path": "src/test/java/io/github/classgraph/test/rejected/RejectedAnnotation.java",
+      "path": "src/test/java/io/github/classgraph/test/rejected/RejectedInterface.java",
+      "path": "src/test/java/io/github/classgraph/test/rejected/RejectedSubclass.java",
+      "path": "src/test/java/io/github/classgraph/test/rejected/RejectedSubinterface.java",
+      "path": "src/test/java/io/github/classgraph/test/rejected/RejectedSuperclass.java",
+      "path": "src/test/java/io/github/classgraph/test/utils",
+      "path": "src/test/java/io/github/classgraph/test/utils/LogNodeTest.java",
+      "path": "src/test/java/nonapi",
+      "path": "src/test/java/nonapi/io",
+      "path": "src/test/java/nonapi/io/github",
+      "path": "src/test/java/nonapi/io/github/classgraph",
+      "path": "src/test/java/nonapi/io/github/classgraph/classpath",
+      "path": "src/test/java/nonapi/io/github/classgraph/classpath/ClasspathFinderTest.java",
+      "path": "src/test/java/nonapi/io/github/classgraph/json",
+      "path": "src/test/java/nonapi/io/github/classgraph/json/JSONParserTest.java",
+      "path": "src/test/perf",
+      "path": "src/test/perf/io",
+      "path": "src/test/perf/io/github",
+      "path": "src/test/perf/io/github/classgraph",
+      "path": "src/test/perf/io/github/classgraph/InputStreamBenchmark.java",
+      "path": "src/test/perf/io/github/classgraph/issues",
+      "path": "src/test/perf/io/github/classgraph/issues/issue400",
+      "path": "src/test/perf/io/github/classgraph/issues/issue400/Issue400.java",
+      "path": "src/test/resources",
+      "path": "src/test/resources/class-path-manifest-entry.jar",
+      "path": "src/test/resources/file-content-test.txt",
+      "path": "src/test/resources/io",
+      "path": "src/test/resources/io/github",
+      "path": "src/test/resources/io/github/classgraph",
+      "path": "src/test/resources/io/github/classgraph/issues",
+      "path": "src/test/resources/io/github/classgraph/issues/issue146",
+      "path": "src/test/resources/io/github/classgraph/issues/issue146/CompiledWithJDK8.class",
+      "path": "src/test/resources/io/github/classgraph/issues/issue146/CompiledWithJDK8.java",
+      "path": "src/test/resources/issue100-has-field-a.zip",
+      "path": "src/test/resources/issue100-has-field-b.zip",
+      "path": "src/test/resources/issue166-jar-without-extension",
+      "path": "src/test/resources/issue175-attribute-parameter-mismatch.zip",
+      "path": "src/test/resources/issue175-corresponding-type-parameters-do-not-refer-to-the same-bare-types.zip",
+      "path": "src/test/resources/issue175-has-kotlin-enum.zip",
+      "path": "src/test/resources/issue175-missing-bare-types.zip",
+      "path": "src/test/resources/issue175-missing-bare-types2.zip",
+      "path": "src/test/resources/issue175-parameter-arity-mismatch.zip",
+      "path": "src/test/resources/issue175-result-type-could-not-reconcile.zip",
+      "path": "src/test/resources/issue175-result-types-couldnt-be-reconciled.zip",
+      "path": "src/test/resources/issue175-type-signature-mismatch.zip",
+      "path": "src/test/resources/issue209-src.zip",
+      "path": "src/test/resources/issue209.jar",
+      "path": "src/test/resources/issue255",
+      "path": "src/test/resources/issue255/test%20percent%20encoding",
+      "path": "src/test/resources/issue255/test%20percent%20encoding/issue255.txt",
+      "path": "src/test/resources/issue286.jar",
+      "path": "src/test/resources/issue340.jar",
+      "path": "src/test/resources/issue364-no-permissions.jar",
+      "path": "src/test/resources/issue364-permissions.jar",
+      "path": "src/test/resources/issue400-nested-deflated.jar",
+      "path": "src/test/resources/issue400-nested-stored.jar",
+      "path": "src/test/resources/issue468",
+      "path": "src/test/resources/issue468/x+y",
+      "path": "src/test/resources/issue468/x+y/z+w.jar",
+      "path": "src/test/resources/issue673",
+      "path": "src/test/resources/issue673/a.zip",
+      "path": "src/test/resources/issue673/b.zip",
+      "path": "src/test/resources/issue673/c.zip",
+      "path": "src/test/resources/issue766",
+      "path": "src/test/resources/issue766/ProjectWithAnnotations.iar",
+      "path": "src/test/resources/issue797.jar",
+      "path": "src/test/resources/multi-release-jar.jar",
+      "path": "src/test/resources/multi-release-jar.src.zip",
+      "path": "src/test/resources/nested-jars-level1.zip",
+      "path": "src/test/resources/record.jar",
+      "path": "src/test/resources/scalapackage.zip",
+      "path": "src/test/resources/spring-boot-fully-executable-jar.jar",
+      "path": "src/test/resources/zip64.zip",
+
+codex
+I have enough evidence now: this is a normal JVM jar with class files, not Kotlin/Groovy/Scala-specific, and not in the excluded Native Image categories. I’m updating only the requested JSON file with Maven-hosted sources/javadocs and the GitHub tag’s test tree.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json
+diff --git a/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json b/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json
+index dc84e9526ff872c8620410de319d828b7d6e26bb..ab994acdd8642a2bc2753e434349e50a718e6f03
+--- a/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json
++++ b/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.github.classgraph:classgraph:4.8.165"
++  "coordinates" : "io.github.classgraph:classgraph:4.8.165",
++  "repository-url" : "https://github.com/classgraph/classgraph",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-sources.jar",
++  "test-code-url" : "https://github.com/classgraph/classgraph/tree/classgraph-$version$/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-javadoc.jar",
++  "description" : "ClassGraph is a lightweight JVM classpath and module scanner that discovers classes, packages, annotations, resources, and type metadata without loading classes. It is useful for frameworks and tools that need runtime classpath introspection across jars, directories, modules, nested jars, and common classloader environments."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json b/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json
+index dc84e9526ff872c8620410de319d828b7d6e26bb..ab994acdd8642a2bc2753e434349e50a718e6f03
+--- a/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json
++++ b/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.github.classgraph:classgraph:4.8.165"
++  "coordinates" : "io.github.classgraph:classgraph:4.8.165",
++  "repository-url" : "https://github.com/classgraph/classgraph",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-sources.jar",
++  "test-code-url" : "https://github.com/classgraph/classgraph/tree/classgraph-$version$/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-javadoc.jar",
++  "description" : "ClassGraph is a lightweight JVM classpath and module scanner that discovers classes, packages, annotations, resources, and type metadata without loading classes. It is useful for frameworks and tools that need runtime classpath introspection across jars, directories, modules, nested jars, and common classloader environments."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9
+ succeeded in 0ms:
+{
+  "coordinates": "io.github.classgraph:classgraph:4.8.165",
+  "repository-url": "https://github.com/classgraph/classgraph",
+  "source-code-url": "https://repo1.maven.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-sources.jar",
+  "test-code-url": "https://github.com/classgraph/classgraph/tree/classgraph-$version$/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-javadoc.jar",
+  "description": "ClassGraph is a lightweight JVM classpath and module scanner that discovers classes, packages, annotations, resources, and type metadata without loading classes. It is useful for frameworks and tools that need runtime classpath introspection across jars, directories, modules, nested jars, and common classloader environments."
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/io/github/classgraph/classgraph/4.8.165/classgraph-4.8.165-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 16:25:14 GMT
+content-type: application/java-archive
+content-length: 515566
+cf-ray: a078c597480ac115-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 691605
+etag: "af89f15cf61a91cc70e1afd4921f6c8d"
+last-modified: Thu, 16 Nov 2023 16:56:33 GMT
+x-checksum-md5: af89f15cf61a91cc70e1afd4921f6c8d
+x-checksum-sha1: aba0976f5bc61bc90efd2f0f14c1c62373415308
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/io/github/classgraph/classgraph/4.8.165/classgraph-4.8.165-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/classgraph/classgraph/tree/classgraph-4.8.165/src/test' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9
+ succeeded in 385ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 16:25:14 GMT
+content-type: application/java-archive
+content-length: 1406790
+cf-ray: a078c5974edba625-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "952ac810ea08f49c79624d1ab99314a1"
+last-modified: Thu, 16 Nov 2023 16:56:34 GMT
+x-checksum-md5: 952ac810ea08f49c79624d1ab99314a1
+x-checksum-sha1: c46e74cd78a6d8d8869836cc112576d27499708e
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+diff --git a/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json b/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json
+index dc84e9526ff872c8620410de319d828b7d6e26bb..ab994acdd8642a2bc2753e434349e50a718e6f03
+--- a/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json
++++ b/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.github.classgraph:classgraph:4.8.165"
++  "coordinates" : "io.github.classgraph:classgraph:4.8.165",
++  "repository-url" : "https://github.com/classgraph/classgraph",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-sources.jar",
++  "test-code-url" : "https://github.com/classgraph/classgraph/tree/classgraph-$version$/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-javadoc.jar",
++  "description" : "ClassGraph is a lightweight JVM classpath and module scanner that discovers classes, packages, annotations, resources, and type metadata without loading classes. It is useful for frameworks and tools that need runtime classpath introspection across jars, directories, modules, nested jars, and common classloader environments."
+ }
+
+ succeeded in 898ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 16:25:14 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"4a63978849a083d3bf21d81ae8cbc332"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=jFzWEOFibiwPnW3imiMywSzfObuadKmCbkrMpof8SbmZ2lb5qomJ%2B7CWKNHDauyKZav%2BmfKUjuNYRoug7t8pYSDGs6sbjMctg%2F0rZMBJ4BZiXJwKPJfeJ1zUpdnK4ILaysMOx9mDUfrDW27io9MUeubq5xNGhGhSc2GlowtjO6isEIx2cvoCumB87b8HeKAKfPqSOLXCT1ZprDEz2luRwNLiI8lHl2SEDk9dLo6U24zoysZlG%2FOuOWH93ygjy7DLAdWHtP3MhrXsq6k1serFcw%3D%3D--mRIxdefObUFQkTdQ--scHGjc8piMmHdqwYEqVjJQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.881211555.1780763114; expires=Sun, 06 Jun 2027 16:25:14 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 06 Jun 2027 16:25:14 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 621D:172BE9:10E916D:1572673:6A2449EA
+
+
+codex
+The substituted URLs all return HTTP 200, and `jq` parsed the file successfully. I’m doing one final diff check so the close-out can be precise.
+exec
+/usr/bin/bash -lc "jq -e 'keys - [\"coordinates\", \"repository-url\", \"source-code-url\", \"test-code-url\", \"documentation-url\", \"description\", \"language\", \"not-for-native-image\", \"reason\", \"replacement\"] | length == 0' build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9
+ succeeded in 0ms:
+true
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json b/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json
+index dc84e9526ff872c8620410de319d828b7d6e26bb..ab994acdd8642a2bc2753e434349e50a718e6f03
+--- a/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json
++++ b/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.github.classgraph:classgraph:4.8.165"
++  "coordinates" : "io.github.classgraph:classgraph:4.8.165",
++  "repository-url" : "https://github.com/classgraph/classgraph",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-sources.jar",
++  "test-code-url" : "https://github.com/classgraph/classgraph/tree/classgraph-$version$/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-javadoc.jar",
++  "description" : "ClassGraph is a lightweight JVM classpath and module scanner that discovers classes, packages, annotations, resources, and type metadata without loading classes. It is useful for frameworks and tools that need runtime classpath introspection across jars, directories, modules, nested jars, and common classloader environments."
+ }
+
+exec
+/usr/bin/bash -lc "git status --short build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json && sed -n '1,120p' build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9
+ succeeded in 0ms:
+{
+  "coordinates" : "io.github.classgraph:classgraph:4.8.165",
+  "repository-url" : "https://github.com/classgraph/classgraph",
+  "source-code-url" : "https://repo1.maven.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-sources.jar",
+  "test-code-url" : "https://github.com/classgraph/classgraph/tree/classgraph-$version$/src/test",
+  "documentation-url" : "https://repo1.maven.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-javadoc.jar",
+  "description" : "ClassGraph is a lightweight JVM classpath and module scanner that discovers classes, packages, annotations, resources, and type metadata without loading classes. It is useful for frameworks and tools that need runtime classpath introspection across jars, directories, modules, nested jars, and common classloader environments."
+}
+
+diff --git a/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json b/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json
+index dc84e9526ff872c8620410de319d828b7d6e26bb..ab994acdd8642a2bc2753e434349e50a718e6f03
+--- a/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json
++++ b/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.github.classgraph:classgraph:4.8.165"
++  "coordinates" : "io.github.classgraph:classgraph:4.8.165",
++  "repository-url" : "https://github.com/classgraph/classgraph",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-sources.jar",
++  "test-code-url" : "https://github.com/classgraph/classgraph/tree/classgraph-$version$/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-javadoc.jar",
++  "description" : "ClassGraph is a lightweight JVM classpath and module scanner that discovers classes, packages, annotations, resources, and type metadata without loading classes. It is useful for frameworks and tools that need runtime classpath introspection across jars, directories, modules, nested jars, and common classloader environments."
+ }
+
+web search: 
+web search: ClassGraph GitHub classgraph 4.8.165
+web search: 
+web search: https://github.com/classgraph/classgraph
+web search: 
+web search: https://github.com/classgraph/classgraph/tree/classgraph-4.8.165/src/test
+web search: 
+web search: https://repo1.maven.org/maven2/io/github/classgraph/classgraph/4.8.165/
+codex
+Updated [io.github.classgraph-classgraph-4.8.165.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json) with the repository root, Maven-hosted sources and javadocs, the tagged GitHub test suite, and a two-sentence description. Maven Central publishes the 4.8.165 jar, sources jar, and javadoc jar, and the tagged GitHub tree has `src/test`; ClassGraph is a Java/JVM classpath and module scanner, so I left `language` and `not-for-native-image` absent. ([repo1.maven.org](https://repo1.maven.org/maven2/io/github/classgraph/classgraph/4.8.165/))
+
+Verified with `jq` and HTTP 200 checks for the substituted source, documentation, and test URLs.
+diff --git a/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json b/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json
+index dc84e9526ff872c8620410de319d828b7d6e26bb..ab994acdd8642a2bc2753e434349e50a718e6f03
+--- a/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json
++++ b/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.github.classgraph:classgraph:4.8.165"
++  "coordinates" : "io.github.classgraph:classgraph:4.8.165",
++  "repository-url" : "https://github.com/classgraph/classgraph",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-sources.jar",
++  "test-code-url" : "https://github.com/classgraph/classgraph/tree/classgraph-$version$/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/github/classgraph/classgraph/$version$/classgraph-$version$-javadoc.jar",
++  "description" : "ClassGraph is a lightweight JVM classpath and module scanner that discovers classes, packages, annotations, resources, and type metadata without loading classes. It is useful for frameworks and tools that need runtime classpath introspection across jars, directories, modules, nested jars, and common classloader environments."
+ }
+
+tokens used
+80,459
+Updated [io.github.classgraph-classgraph-4.8.165.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9/build/discovered-artifact-metadata/io.github.classgraph-classgraph-4.8.165.json) with the repository root, Maven-hosted sources and javadocs, the tagged GitHub test suite, and a two-sentence description. Maven Central publishes the 4.8.165 jar, sources jar, and javadoc jar, and the tagged GitHub tree has `src/test`; ClassGraph is a Java/JVM classpath and module scanner, so I left `language` and `not-for-native-image` absent. ([repo1.maven.org](https://repo1.maven.org/maven2/io/github/classgraph/classgraph/4.8.165/))
+
+Verified with `jq` and HTTP 200 checks for the substituted source, documentation, and test URLs.
+Ran agent for io.github.classgraph:classgraph:4.8.165 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9/build/agent-artifact-discovery-logs/io.github.classgraph-classgraph-4.8.165.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7785-29e283a9/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 42s
+9 actionable tasks: 9 executed
