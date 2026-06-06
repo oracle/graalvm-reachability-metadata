@@ -49,6 +49,19 @@ public class Sundr_adapter_apiTest {
     }
 
     @Test
+    void adapterContextCreateReplacesGlobalContext() {
+        DefinitionRepository firstRepository = DefinitionRepository.createRepository();
+        AdapterContext firstContext = AdapterContext.create(firstRepository);
+        DefinitionRepository secondRepository = DefinitionRepository.createRepository();
+
+        AdapterContext secondContext = AdapterContext.create(secondRepository);
+
+        assertThat(secondContext).isNotSameAs(firstContext);
+        assertThat(secondContext.getDefinitionRepository()).isSameAs(secondRepository);
+        assertThat(AdapterContext.getContext()).isSameAs(secondContext);
+    }
+
+    @Test
     void adapterDefaultMethodsDelegateToConfiguredFunctions() {
         TestAdapter adapter = new TestAdapter();
 
