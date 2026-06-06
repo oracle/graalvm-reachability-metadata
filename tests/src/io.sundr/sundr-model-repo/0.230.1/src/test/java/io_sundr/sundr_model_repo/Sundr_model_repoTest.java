@@ -18,6 +18,8 @@ import io.sundr.model.MethodBuilder;
 import io.sundr.model.MethodCall;
 import io.sundr.model.MethodCallBuilder;
 import io.sundr.model.Property;
+import io.sundr.model.Super;
+import io.sundr.model.This;
 import io.sundr.model.TypeDef;
 import io.sundr.model.TypeDefBuilder;
 import io.sundr.model.repo.DefinitionRepository;
@@ -149,6 +151,26 @@ public class Sundr_model_repoTest {
         assertThat(referenceNames(directCallers)).containsExactly("example.calls.Facade#helper");
         assertThat(referenceNames(transitiveCallers))
                 .containsExactlyInAnyOrder("example.calls.Facade#helper", "example.calls.Facade#load");
+    }
+
+    @Test
+    void resolvesThisAndSuperScopedMethodReferences() {
+        DefinitionRepository repository = DefinitionRepository.createRepository();
+        Method inherited = Method.newMethod("inherited", STRING);
+        Method local = Method.newMethod("local", STRING);
+        Method invokeHierarchy = new MethodBuilder(Method.newMethod("invokeHierarchy", STRING))
+                .withBlock(new Block(call("local", new This()), call("inherited", new Super())))
+                .build();
+        TypeDef base = type("example.hierarchy", "Base", inherited);
+        TypeDef child = type("example.hierarchy", "Child", invokeHierarchy, local);
+
+        repository.register(base);
+        repository.register(child);
+
+        Set<MethodReference> references = MethodReference.getDirectMethodReferences(invokeHierarchy, repository);
+
+        assertThat(referenceNames(references))
+                .containsExactlyInAnyOrder("example.hierarchy.Base#inherited", "example.hierarchy.Child#local");
     }
 
     @Test
