@@ -16,10 +16,13 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -51,6 +54,7 @@ import org.eclipse.aether.spi.connector.transport.TransportListener;
 import org.eclipse.aether.spi.connector.transport.Transporter;
 import org.eclipse.aether.spi.connector.transport.TransporterProvider;
 import org.eclipse.aether.spi.io.ChecksumProcessor;
+import org.eclipse.aether.spi.io.PathProcessor;
 import org.eclipse.aether.transfer.ArtifactNotFoundException;
 import org.eclipse.aether.transfer.NoRepositoryConnectorException;
 import org.eclipse.aether.transfer.NoRepositoryLayoutException;
@@ -280,18 +284,21 @@ public class Maven_resolver_connector_basicTest {
                 null,
                 (session, remoteRepository) -> new SimpleRepositoryLayout(),
                 new NoChecksumPolicyProvider(),
+                new NioPathProcessor(),
                 new NioChecksumProcessor(),
                 Collections.emptyMap()));
         assertThatNullPointerException().isThrownBy(() -> new BasicRepositoryConnectorFactory(
                 (session, remoteRepository) -> new InMemoryTransporter(),
                 null,
                 new NoChecksumPolicyProvider(),
+                new NioPathProcessor(),
                 new NioChecksumProcessor(),
                 Collections.emptyMap()));
         assertThatNullPointerException().isThrownBy(() -> new BasicRepositoryConnectorFactory(
                 (session, remoteRepository) -> new InMemoryTransporter(),
                 (session, remoteRepository) -> new SimpleRepositoryLayout(),
                 null,
+                new NioPathProcessor(),
                 new NioChecksumProcessor(),
                 Collections.emptyMap()));
         assertThatNullPointerException().isThrownBy(() -> new BasicRepositoryConnectorFactory(
@@ -299,11 +306,20 @@ public class Maven_resolver_connector_basicTest {
                 (session, remoteRepository) -> new SimpleRepositoryLayout(),
                 new NoChecksumPolicyProvider(),
                 null,
+                new NioChecksumProcessor(),
                 Collections.emptyMap()));
         assertThatNullPointerException().isThrownBy(() -> new BasicRepositoryConnectorFactory(
                 (session, remoteRepository) -> new InMemoryTransporter(),
                 (session, remoteRepository) -> new SimpleRepositoryLayout(),
                 new NoChecksumPolicyProvider(),
+                new NioPathProcessor(),
+                null,
+                Collections.emptyMap()));
+        assertThatNullPointerException().isThrownBy(() -> new BasicRepositoryConnectorFactory(
+                (session, remoteRepository) -> new InMemoryTransporter(),
+                (session, remoteRepository) -> new SimpleRepositoryLayout(),
+                new NoChecksumPolicyProvider(),
+                new NioPathProcessor(),
                 new NioChecksumProcessor(),
                 null));
 
@@ -352,6 +368,7 @@ public class Maven_resolver_connector_basicTest {
                 transporterProvider,
                 layoutProvider,
                 new NoChecksumPolicyProvider(),
+                new NioPathProcessor(),
                 new NioChecksumProcessor(),
                 checksumSources);
     }
@@ -589,6 +606,117 @@ public class Maven_resolver_connector_basicTest {
         public String getEffectiveChecksumPolicy(
                 RepositorySystemSession session, String policy1, String policy2) {
             return policy1 != null ? policy1 : policy2;
+        }
+    }
+
+    private static final class NioPathProcessor implements PathProcessor {
+        @Override
+        public boolean setLastModified(Path path, long value) throws IOException {
+            Files.setLastModifiedTime(path, FileTime.fromMillis(value));
+            return true;
+        }
+
+        @Override
+        public void write(Path target, String data) throws IOException {
+            createParentDirectories(target);
+            Files.writeString(target, data, StandardCharsets.UTF_8);
+        }
+
+        @Override
+        public void write(Path target, InputStream source) throws IOException {
+            createParentDirectories(target);
+            Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        @Override
+        public void writeWithBackup(Path target, String data) throws IOException {
+            write(target, data);
+        }
+
+        @Override
+        public void writeWithBackup(Path target, InputStream source) throws IOException {
+            write(target, source);
+        }
+
+        @Override
+        public long copy(Path source, Path target, ProgressListener listener) throws IOException {
+            createParentDirectories(target);
+            try (InputStream input = Files.newInputStream(source);
+                    OutputStream output = Files.newOutputStream(target)) {
+                long copiedBytes = 0L;
+                byte[] buffer = new byte[32 * 1024];
+                int bytesRead;
+                while ((bytesRead = input.read(buffer)) >= 0) {
+                    output.write(buffer, 0, bytesRead);
+                    copiedBytes += bytesRead;
+                    if (listener != null && bytesRead > 0) {
+                        try {
+                            listener.progressed(ByteBuffer.wrap(buffer, 0, bytesRead));
+                        } catch (Exception e) {
+                            // Keep file operations independent from progress listener failures.
+                        }
+                    }
+                }
+                return copiedBytes;
+            }
+        }
+
+        @Override
+        public void move(Path source, Path target) throws IOException {
+            createParentDirectories(target);
+            Files.move(source, target, StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        @Override
+        public TempFile newTempFile() throws IOException {
+            Path tempFile = Files.createTempFile("maven-resolver-test-", ".tmp");
+            return new TempFile() {
+                @Override
+                public Path getPath() {
+                    return tempFile;
+                }
+
+                @Override
+                public void close() throws IOException {
+                    Files.deleteIfExists(tempFile);
+                }
+            };
+        }
+
+        @Override
+        public CollocatedTempFile newTempFile(Path file) throws IOException {
+            createParentDirectories(file);
+            String fileName = file.getFileName().toString();
+            Path tempFile = file.resolveSibling("." + fileName + "." + UUID.randomUUID() + ".tmp");
+            return new CollocatedTempFile() {
+                private boolean moveRequested;
+
+                @Override
+                public Path getPath() {
+                    return tempFile;
+                }
+
+                @Override
+                public void move() {
+                    moveRequested = true;
+                }
+
+                @Override
+                public void close() throws IOException {
+                    if (moveRequested) {
+                        Files.move(tempFile, file, StandardCopyOption.REPLACE_EXISTING);
+                    } else {
+                        Files.deleteIfExists(tempFile);
+                    }
+                }
+            };
+        }
+
+        private static void createParentDirectories(Path target) throws IOException {
+            Path parent = target.getParent();
+            if (parent != null) {
+                Files.createDirectories(parent);
+            }
         }
     }
 
