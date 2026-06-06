@@ -166,7 +166,7 @@ public class Maven_builder_supportTest {
         assertThat(problemWithCauseMessage.getSource()).isEmpty();
         assertThat(problemWithCauseMessage.getLocation()).isEmpty();
         assertThat(problemWithCauseMessage.getMessage()).isEqualTo("message from cause");
-        assertThat(problemWithCauseMessage.toString()).isEqualTo("[ERROR] message from cause @ ");
+        assertThat(problemWithCauseMessage.toString()).isEqualTo("[ERROR] message from cause");
 
         Problem problemWithoutMessage = collector.getProblems().get(1);
         assertThat(problemWithoutMessage.getSeverity()).isEqualTo(Problem.Severity.ERROR);
