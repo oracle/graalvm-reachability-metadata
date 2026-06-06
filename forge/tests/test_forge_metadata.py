@@ -566,6 +566,16 @@ class IssueClaimPreflightTests(unittest.TestCase):
             )
         )
 
+    def test_open_blocker_preflight_allows_issue_when_override_is_enabled(self) -> None:
+        issue = {"number": 1412, "labels": []}
+        self.assertFalse(
+            forge_metadata.should_skip_issue_from_preflight(
+                issue,
+                _preflight(open_blockers=(1392,)),
+                take_blocked_issues=True,
+            )
+        )
+
     def test_incomplete_preflight_falls_back_to_fresh_checks(self) -> None:
         issue = {"number": 1412, "labels": []}
         self.assertFalse(
@@ -1348,6 +1358,17 @@ class WorkQueueSchedulerTests(unittest.TestCase):
         self.assertTrue(random_args.random_offset)
         self.assertFalse(no_random_args.random_offset)
 
+    def test_take_blocked_issues_is_disabled_by_default(self) -> None:
+        default_args = forge_metadata.parse_args(["--label", forge_metadata.LABEL_LIBRARY_NEW])
+        override_args = forge_metadata.parse_args([
+            "--label",
+            forge_metadata.LABEL_LIBRARY_NEW,
+            "--take-blocked-issues",
+        ])
+
+        self.assertFalse(default_args.take_blocked_issues)
+        self.assertTrue(override_args.take_blocked_issues)
+
     def test_review_label_environment_overrides_default_review_queues(self) -> None:
         env = {
             "FORGE_REVIEW_LABEL": forge_metadata.LABEL_PR_LIBRARY_BULK_UPDATE,
@@ -1445,6 +1466,41 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             environment_already_validated=True,
         )
         process_reviews.assert_not_called()
+
+    def test_process_work_queues_forwards_take_blocked_issues_override(self) -> None:
+        env = {
+            "FORGE_JAVAC_WORK_LIMIT": "0",
+            "FORGE_JAVA_RUN_WORK_LIMIT": "0",
+            "FORGE_NI_RUN_WORK_LIMIT": "0",
+            "FORGE_LIBRARY_UPDATE_WORK_LIMIT": "0",
+            "FORGE_WORK_LIMIT": "1",
+            "FORGE_REVIEW_LIMIT": "0",
+            "FORGE_WORK_LABEL": forge_metadata.LABEL_LIBRARY_NEW,
+        }
+
+        with patch.dict(os.environ, env, clear=True), \
+                patch.object(forge_metadata, "validate_issue_processing_environment"), \
+                patch.object(forge_metadata, "process_issues_with_label", return_value=0) as process_issues:
+            forge_metadata.process_work_queues(
+                "/tmp/reachability",
+                "/tmp/metrics",
+                "automation-user",
+                take_blocked_issues=True,
+            )
+
+        process_issues.assert_called_once_with(
+            forge_metadata.LABEL_LIBRARY_NEW,
+            1,
+            0,
+            "/tmp/reachability",
+            "/tmp/metrics",
+            forge_metadata.DEFAULT_WORK_QUEUE_STRATEGY_NAME,
+            False,
+            "automation-user",
+            forge_metadata.DEFAULT_PARALLELISM,
+            environment_already_validated=True,
+            take_blocked_issues=True,
+        )
 
     def test_process_work_queues_resolves_auth_for_review_only_queue(self) -> None:
         env = {
