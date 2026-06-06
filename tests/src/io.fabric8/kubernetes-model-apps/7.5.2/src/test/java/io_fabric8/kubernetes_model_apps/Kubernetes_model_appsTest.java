@@ -27,6 +27,8 @@ import io.fabric8.kubernetes.api.model.apps.DeploymentCondition;
 import io.fabric8.kubernetes.api.model.apps.DeploymentConditionBuilder;
 import io.fabric8.kubernetes.api.model.apps.DeploymentList;
 import io.fabric8.kubernetes.api.model.apps.DeploymentListBuilder;
+import io.fabric8.kubernetes.api.model.apps.DeploymentSpecBuilder;
+import io.fabric8.kubernetes.api.model.apps.DeploymentStatusBuilder;
 import io.fabric8.kubernetes.api.model.apps.ReplicaSet;
 import io.fabric8.kubernetes.api.model.apps.ReplicaSetBuilder;
 import io.fabric8.kubernetes.api.model.apps.ReplicaSetCondition;
@@ -634,6 +636,59 @@ public class Kubernetes_model_appsTest {
                 .getAdditionalProperties()).containsEntry("visited-by", "container-visitor");
         assertThat(list.getItems().get(1).getSpec().getTemplate().getSpec().getContainers().get(0)
                 .getAdditionalProperties()).doesNotContainKey("visited-by");
+    }
+
+    @Test
+    void editOrNewLikeUsesFallbacksOnlyForMissingDeploymentSections() {
+        Deployment deployment = new DeploymentBuilder()
+                .addToAdditionalProperties("discarded", "yes")
+                .addToAdditionalProperties("retained", "yes")
+                .editOrNewMetadata()
+                    .withName("edit-or-new")
+                    .withNamespace("production")
+                .endMetadata()
+                .editOrNewSpecLike(new DeploymentSpecBuilder()
+                        .withReplicas(2)
+                        .withMinReadySeconds(5)
+                        .withNewSelector()
+                            .addToMatchLabels("app", "edit-or-new")
+                        .endSelector()
+                        .build())
+                    .withReplicas(3)
+                .endSpec()
+                .editOrNewStatusLike(new DeploymentStatusBuilder()
+                        .withObservedGeneration(1L)
+                        .withReplicas(3)
+                        .build())
+                    .withReadyReplicas(2)
+                .endStatus()
+                .editOrNewSpecLike(new DeploymentSpecBuilder()
+                        .withReplicas(99)
+                        .withMinReadySeconds(99)
+                        .build())
+                    .withRevisionHistoryLimit(6)
+                .endSpec()
+                .editOrNewStatusLike(new DeploymentStatusBuilder()
+                        .withObservedGeneration(99L)
+                        .build())
+                    .withAvailableReplicas(2)
+                .endStatus()
+                .removeFromAdditionalProperties("discarded")
+                .build();
+
+        assertThat(deployment.getApiVersion()).isEqualTo("apps/v1");
+        assertThat(deployment.getKind()).isEqualTo("Deployment");
+        assertThat(deployment.getMetadata().getName()).isEqualTo("edit-or-new");
+        assertThat(deployment.getSpec().getReplicas()).isEqualTo(3);
+        assertThat(deployment.getSpec().getMinReadySeconds()).isEqualTo(5);
+        assertThat(deployment.getSpec().getRevisionHistoryLimit()).isEqualTo(6);
+        assertThat(deployment.getSpec().getSelector().getMatchLabels()).containsEntry("app", "edit-or-new");
+        assertThat(deployment.getStatus().getObservedGeneration()).isEqualTo(1L);
+        assertThat(deployment.getStatus().getReadyReplicas()).isEqualTo(2);
+        assertThat(deployment.getStatus().getAvailableReplicas()).isEqualTo(2);
+        assertThat(deployment.getAdditionalProperties())
+                .containsEntry("retained", "yes")
+                .doesNotContainKey("discarded");
     }
 
     @Test
