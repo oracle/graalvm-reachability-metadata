@@ -9,10 +9,13 @@ package io_fabric8.kubernetes_model_batch;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.fabric8.kubernetes.api.model.ObjectReference;
+import io.fabric8.kubernetes.api.model.ObjectReferenceBuilder;
 import io.fabric8.kubernetes.api.model.batch.v1.CronJob;
 import io.fabric8.kubernetes.api.model.batch.v1.CronJobBuilder;
 import io.fabric8.kubernetes.api.model.batch.v1.CronJobList;
 import io.fabric8.kubernetes.api.model.batch.v1.CronJobListBuilder;
+import io.fabric8.kubernetes.api.model.batch.v1.CronJobStatus;
+import io.fabric8.kubernetes.api.model.batch.v1.CronJobStatusBuilder;
 import io.fabric8.kubernetes.api.model.batch.v1.Job;
 import io.fabric8.kubernetes.api.model.batch.v1.JobBuilder;
 import io.fabric8.kubernetes.api.model.batch.v1.JobCondition;
@@ -302,6 +305,52 @@ public class Kubernetes_model_batchTest {
     }
 
     @Test
+    void cronJobStatusManagesMultipleActiveJobReferences() {
+        CronJobStatus status = new CronJobStatusBuilder()
+                .addToActive(activeJobReference("nightly-cleanup-28650060", "job-uid-1"))
+                .addToActive(activeJobReference("nightly-cleanup-28649999", "job-uid-0"))
+                .withLastScheduleTime("2026-01-01T03:00:00Z")
+                .withLastSuccessfulTime("2026-01-01T02:01:00Z")
+                .build();
+
+        CronJobStatus updated = new CronJobStatusBuilder(status)
+                .editMatchingActive(reference -> "nightly-cleanup-28650060".equals(reference.getName()))
+                .withResourceVersion("2000")
+                .endActive()
+                .removeMatchingFromActive(reference -> "nightly-cleanup-28649999".equals(reference.getName()))
+                .addNewActive()
+                .withApiVersion(BATCH_V1_API_VERSION)
+                .withKind("Job")
+                .withNamespace("ops")
+                .withName("nightly-cleanup-28650120")
+                .withUid("job-uid-2")
+                .withResourceVersion("2001")
+                .endActive()
+                .withLastScheduleTime("2026-01-02T03:00:00Z")
+                .withLastSuccessfulTime("2026-01-02T03:01:00Z")
+                .build();
+
+        assertThat(status.getActive()).hasSize(2);
+        assertThat(status.getActive()).extracting(ObjectReference::getName)
+                .containsExactly("nightly-cleanup-28650060", "nightly-cleanup-28649999");
+        assertThat(status.getActive().get(0).getResourceVersion()).isNull();
+        assertThat(status.getLastSuccessfulTime()).isEqualTo("2026-01-01T02:01:00Z");
+
+        assertThat(new CronJobStatusBuilder(status)
+                .hasMatchingActive(reference -> "nightly-cleanup-28650060".equals(reference.getName()))).isTrue();
+        ObjectReference retained = new CronJobStatusBuilder(updated)
+                .buildMatchingActive(reference -> "nightly-cleanup-28650060".equals(reference.getName()));
+        assertThat(retained.getUid()).isEqualTo("job-uid-1");
+        assertThat(retained.getResourceVersion()).isEqualTo("2000");
+        assertThat(updated.getActive()).extracting(ObjectReference::getName)
+                .containsExactly("nightly-cleanup-28650060", "nightly-cleanup-28650120");
+        assertThat(updated.getLastScheduleTime()).isEqualTo("2026-01-02T03:00:00Z");
+        assertThat(updated.getLastSuccessfulTime()).isEqualTo("2026-01-02T03:01:00Z");
+        assertThat(status.getActive()).extracting(ObjectReference::getName)
+                .containsExactly("nightly-cleanup-28650060", "nightly-cleanup-28649999");
+    }
+
+    @Test
     void standaloneJobTemplateSpecCanBeReusedAndCopied() {
         JobTemplateSpec template = new JobTemplateSpecBuilder()
                 .withNewMetadata()
@@ -553,6 +602,16 @@ public class Kubernetes_model_batchTest {
         assertThat(edited.getSpec().getSuspend()).isTrue();
         assertThat(edited.getSpec().getJobTemplate().getSpec().getBackoffLimit()).isEqualTo(1);
         assertThat(cronJob.getSpec().getJobTemplate().getSpec().getBackoffLimit()).isNull();
+    }
+
+    private static ObjectReference activeJobReference(String name, String uid) {
+        return new ObjectReferenceBuilder()
+                .withApiVersion(BATCH_V1_API_VERSION)
+                .withKind("Job")
+                .withNamespace("ops")
+                .withName(name)
+                .withUid(uid)
+                .build();
     }
 
     private static Job jobNamed(String name, String namespace, String completeStatus) {
