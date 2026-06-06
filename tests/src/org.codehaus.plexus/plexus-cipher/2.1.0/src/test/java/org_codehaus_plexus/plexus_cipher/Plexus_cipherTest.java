@@ -10,11 +10,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Base64;
 
 import org.junit.jupiter.api.Test;
-import org.sonatype.plexus.components.cipher.Base64;
 import org.sonatype.plexus.components.cipher.DefaultPlexusCipher;
 import org.sonatype.plexus.components.cipher.PBECipher;
 import org.sonatype.plexus.components.cipher.PlexusCipher;
@@ -33,7 +32,7 @@ public class Plexus_cipherTest {
 
         assertThat(encrypted).isNotBlank().isNotEqualTo(plaintext);
         assertThat(secondEncrypted).isNotBlank().isNotEqualTo(plaintext);
-        assertThat(Base64.isArrayByteBase64(encrypted.getBytes(StandardCharsets.US_ASCII))).isTrue();
+        assertThat(isBasicBase64(encrypted)).isTrue();
         assertThat(cipher.decrypt(encrypted, PASSPHRASE)).isEqualTo(plaintext);
         assertThat(cipher.decrypt(secondEncrypted, PASSPHRASE)).isEqualTo(plaintext);
     }
@@ -118,74 +117,22 @@ public class Plexus_cipherTest {
 
         String encrypted = cipher.encrypt64(plaintext, PASSPHRASE);
 
-        assertThat(Base64.isArrayByteBase64(encrypted.getBytes(StandardCharsets.US_ASCII))).isTrue();
+        assertThat(isBasicBase64(encrypted)).isTrue();
         assertThat(cipher.decrypt64(encrypted, PASSPHRASE)).isEqualTo(plaintext);
         assertMalformedCiphertextFails(() -> cipher.decrypt64("AA==", PASSPHRASE));
     }
 
     @Test
-    void base64StaticMethodsEncodeDecodeAndValidateCommonBytePatterns() {
-        byte[][] inputs = {
-                new byte[0],
-                "f".getBytes(StandardCharsets.US_ASCII),
-                "fo".getBytes(StandardCharsets.US_ASCII),
-                "foo".getBytes(StandardCharsets.US_ASCII),
-                "hello world".getBytes(StandardCharsets.UTF_8),
-                new byte[] {(byte) 0x00, (byte) 0x7f, (byte) 0x80, (byte) 0xff}
-        };
+    void pbeCipherUsesJdkBase64EncodingForEncryptedPayloads() throws Exception {
+        PBECipher cipher = new PBECipher();
+        String plaintext = "payload encoded by the current cipher implementation";
 
-        for (byte[] input : inputs) {
-            byte[] encoded = Base64.encodeBase64(input);
+        String encrypted = cipher.encrypt64(plaintext, PASSPHRASE);
+        byte[] decoded = Base64.getDecoder().decode(encrypted);
 
-            assertThat(encoded).isEqualTo(java.util.Base64.getEncoder().encode(input));
-            assertThat(Base64.isArrayByteBase64(encoded)).isTrue();
-            assertThat(Base64.decodeBase64(encoded)).isEqualTo(input);
-        }
-
-        assertThat(Base64.isBase64((byte) 'A')).isTrue();
-        assertThat(Base64.isBase64((byte) '+')).isTrue();
-        assertThat(Base64.isBase64((byte) '/')).isTrue();
-        assertThat(Base64.isBase64((byte) '=')).isTrue();
-        assertThat(Base64.isBase64((byte) '-')).isFalse();
-        assertThat(Base64.isBase64((byte) 0xff)).isFalse();
-        assertThat(Base64.isArrayByteBase64(" YWJj\r\n".getBytes(StandardCharsets.US_ASCII))).isTrue();
-        assertThat(Base64.isArrayByteBase64("YWJj!".getBytes(StandardCharsets.US_ASCII))).isFalse();
-        assertThat(Base64.decodeBase64("Y!W@J#j".getBytes(StandardCharsets.US_ASCII)))
-                .isEqualTo("abc".getBytes(StandardCharsets.US_ASCII));
-    }
-
-    @Test
-    void chunkedBase64UsesMimeLineSeparatorsAndStillDecodes() {
-        byte[] input = new byte[120];
-        for (int i = 0; i < input.length; i++) {
-            input[i] = (byte) i;
-        }
-
-        byte[] chunked = Base64.encodeBase64Chunked(input);
-        byte[] explicitlyChunked = Base64.encodeBase64(input, true);
-
-        assertThat(chunked).isEqualTo(explicitlyChunked);
-        assertThat(new String(chunked, StandardCharsets.US_ASCII)).contains("\r\n");
-        assertThat(Base64.isArrayByteBase64(chunked)).isTrue();
-        assertThat(Base64.decodeBase64(chunked)).isEqualTo(input);
-    }
-
-    @Test
-    void base64InstanceMethodsAcceptOnlyByteArrays() {
-        Base64 codec = new Base64();
-        byte[] input = "instance codec".getBytes(StandardCharsets.UTF_8);
-        byte[] encoded = codec.encode(input);
-
-        assertThat(encoded).isEqualTo(Base64.encodeBase64(input));
-        assertThat(codec.decode(encoded)).isEqualTo(input);
-        assertThat((byte[]) codec.encode((Object) input)).isEqualTo(encoded);
-        assertThat((byte[]) codec.decode((Object) encoded)).isEqualTo(input);
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> codec.encode("not bytes"))
-                .withMessage("Parameter supplied to Base64 encode is not a byte[]");
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> codec.decode("not bytes"))
-                .withMessage("Parameter supplied to Base64 decode is not a byte[]");
+        assertThat(decoded).isNotEmpty();
+        assertThat(isBasicBase64(encrypted)).isTrue();
+        assertThat(cipher.decrypt64(Base64.getEncoder().encodeToString(decoded), PASSPHRASE)).isEqualTo(plaintext);
     }
 
     @Test
@@ -202,6 +149,15 @@ public class Plexus_cipherTest {
                 assertThat(implementation).containsIgnoringCase("SHA"));
         assertThat(Arrays.asList(cipherImplementations)).anySatisfy(implementation ->
                 assertThat(implementation).containsIgnoringCase("AES"));
+    }
+
+    private static boolean isBasicBase64(String value) {
+        try {
+            byte[] decoded = Base64.getDecoder().decode(value);
+            return Base64.getEncoder().encodeToString(decoded).equals(value);
+        } catch (IllegalArgumentException expected) {
+            return false;
+        }
     }
 
     private static void assertMalformedCiphertextFails(ThrowingCallable callable) {
