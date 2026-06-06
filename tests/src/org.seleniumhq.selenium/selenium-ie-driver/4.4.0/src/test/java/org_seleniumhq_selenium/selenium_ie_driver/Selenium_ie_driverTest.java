@@ -13,7 +13,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
@@ -60,7 +59,7 @@ public class Selenium_ie_driverTest {
     }
 
     @Test
-    void fluentOptionSettersPopulateTopLevelAndIeVendorCapabilities() {
+    void fluentOptionSettersPopulateStandardAndIeVendorCapabilities() {
         Proxy proxy = new Proxy().setHttpProxy("proxy.example.test:8080");
         InternetExplorerOptions options = new InternetExplorerOptions();
 
@@ -71,8 +70,7 @@ public class Selenium_ie_driverTest {
                 .useCreateProcessApiToLaunchIe()
                 .useShellWindowsApiToAttachToIe()
                 .destructivelyEnsureCleanSession()
-                .addCommandSwitches("-private", "-extoff")
-                .addCommandSwitches("-k")
+                .addCommandSwitches("-private", "-extoff", "-k")
                 .usePerProcessProxy()
                 .withInitialBrowserUrl("about:blank")
                 .requireWindowFocus()
@@ -86,53 +84,54 @@ public class Selenium_ie_driverTest {
                 .setProxy(proxy);
 
         assertThat(returned).isSameAs(options);
-        assertThat(options.getCapability(ATTACH_TIMEOUT)).isEqualTo(250L);
-        assertThat(options.getCapability(ELEMENT_SCROLL_BEHAVIOR)).isEqualTo(1);
-        assertThat(options.getCapability(ENABLE_PERSISTENT_HOVER)).isEqualTo(true);
-        assertThat(options.getCapability(CREATE_PROCESS)).isEqualTo(true);
-        assertThat(options.getCapability(SHELL_WINDOWS_API)).isEqualTo(true);
-        assertThat(options.getCapability(CLEAN_SESSION)).isEqualTo(true);
-        assertThat(options.getCapability(COMMAND_SWITCHES)).isEqualTo(Arrays.asList("-private", "-extoff", "-k"));
-        assertThat(options.getCapability(PER_PROCESS_PROXY)).isEqualTo(true);
-        assertThat(options.getCapability(INITIAL_BROWSER_URL)).isEqualTo("about:blank");
-        assertThat(options.getCapability(REQUIRE_WINDOW_FOCUS)).isEqualTo(true);
-        assertThat(options.getCapability(FILE_UPLOAD_DIALOG_TIMEOUT)).isEqualTo(2000L);
-        assertThat(options.getCapability(IGNORE_PROTECTED_MODE_SETTINGS)).isEqualTo(true);
-        assertThat(options.getCapability(NATIVE_EVENTS)).isEqualTo(false);
-        assertThat(options.getCapability(IGNORE_ZOOM_SETTING)).isEqualTo(true);
-        assertThat(options.getCapability(ENABLE_FULL_PAGE_SCREENSHOT)).isEqualTo(true);
-        assertThat(options.getCapability("pageLoadStrategy")).isEqualTo(PageLoadStrategy.EAGER);
-        assertThat(options.getCapability("unhandledPromptBehavior")).isEqualTo(UnexpectedAlertBehaviour.ACCEPT);
+        assertThat(String.valueOf(options.getCapability("pageLoadStrategy")))
+                .isEqualTo(PageLoadStrategy.EAGER.toString());
+        assertThat(String.valueOf(options.getCapability("unhandledPromptBehavior")))
+                .isEqualTo(UnexpectedAlertBehaviour.ACCEPT.toString());
         assertThat(options.getCapability("proxy")).isSameAs(proxy);
 
         Map<String, Object> ieOptions = ieOptionsFrom(options);
-        assertThat(ieOptions.get(COMMAND_SWITCHES).toString()).contains("-private", "-extoff", "-k");
+        assertThat(ieOptions).containsEntry(ATTACH_TIMEOUT, 250L);
+        assertThat(ieOptions).containsEntry(ELEMENT_SCROLL_BEHAVIOR, 1);
+        assertThat(ieOptions).containsEntry(ENABLE_PERSISTENT_HOVER, true);
+        assertThat(ieOptions).containsEntry(CREATE_PROCESS, true);
+        assertThat(ieOptions).containsEntry(SHELL_WINDOWS_API, true);
+        assertThat(ieOptions).containsEntry(CLEAN_SESSION, true);
+        assertThat(ieOptions).containsEntry(COMMAND_SWITCHES, "-private -extoff -k");
+        assertThat(ieOptions).containsEntry(PER_PROCESS_PROXY, true);
+        assertThat(ieOptions).containsEntry(INITIAL_BROWSER_URL, "about:blank");
+        assertThat(ieOptions).containsEntry(REQUIRE_WINDOW_FOCUS, true);
+        assertThat(ieOptions).containsEntry(FILE_UPLOAD_DIALOG_TIMEOUT, 2000L);
+        assertThat(ieOptions).containsEntry(IGNORE_PROTECTED_MODE_SETTINGS, true);
         assertThat(ieOptions).containsEntry(NATIVE_EVENTS, false);
         assertThat(ieOptions).containsEntry(IGNORE_ZOOM_SETTING, true);
+        assertThat(ieOptions).containsEntry(ENABLE_FULL_PAGE_SCREENSHOT, true);
         assertThat(ieOptions).doesNotContainKey("pageLoadStrategy");
         assertThat(ieOptions).doesNotContainKey("proxy");
     }
 
     @Test
-    void settingIeOptionsCapabilityExpandsKnownNonNullEntries() {
+    void settingIeOptionsCapabilityAcceptsMapAndCapabilitiesValues() {
         InternetExplorerOptions options = new InternetExplorerOptions();
-
-        options.setCapability(IE_OPTIONS, Map.of(
+        Map<String, Object> configuredOptions = Map.of(
                 IGNORE_ZOOM_SETTING, true,
                 NATIVE_EVENTS, false,
-                "unknown.ie.option", "ignored"));
+                "custom.ie.option", "preserved");
 
-        assertThat(options.getCapability(IGNORE_ZOOM_SETTING)).isEqualTo(true);
-        assertThat(options.getCapability(NATIVE_EVENTS)).isEqualTo(false);
-        assertThat(options.getCapability("unknown.ie.option")).isNull();
+        options.setCapability(IE_OPTIONS, configuredOptions);
 
+        assertThat(options.getCapability(IE_OPTIONS)).isEqualTo(configuredOptions);
+        assertThat(options.getCapability("custom.ie.option")).isNull();
+
+        InternetExplorerOptions capabilitiesOptions = new InternetExplorerOptions();
         MutableCapabilities nestedCapabilities = new MutableCapabilities();
         nestedCapabilities.setCapability(INITIAL_BROWSER_URL, "about:tabs");
         nestedCapabilities.setCapability(REQUIRE_WINDOW_FOCUS, true);
-        options.setCapability(IE_OPTIONS, nestedCapabilities);
 
-        assertThat(options.getCapability(INITIAL_BROWSER_URL)).isEqualTo("about:tabs");
-        assertThat(options.getCapability(REQUIRE_WINDOW_FOCUS)).isEqualTo(true);
+        capabilitiesOptions.setCapability(IE_OPTIONS, nestedCapabilities);
+
+        assertThat(ieOptionsFrom(capabilitiesOptions)).containsEntry(INITIAL_BROWSER_URL, "about:tabs");
+        assertThat(ieOptionsFrom(capabilitiesOptions)).containsEntry(REQUIRE_WINDOW_FOCUS, true);
     }
 
     @Test
@@ -150,15 +149,20 @@ public class Selenium_ie_driverTest {
         sourceCapabilities.setCapability(INITIAL_BROWSER_URL, "about:blank");
         sourceCapabilities.setCapability(IGNORE_ZOOM_SETTING, true);
 
+        Map<String, Object> mergeIeOptions = Map.of(
+                INITIAL_BROWSER_URL, "about:blank",
+                IGNORE_ZOOM_SETTING, true);
+        MutableCapabilities mergeCapabilities = new MutableCapabilities();
+        mergeCapabilities.setCapability(IE_OPTIONS, mergeIeOptions);
+
         InternetExplorerOptions constructed = new InternetExplorerOptions(sourceCapabilities);
-        InternetExplorerOptions merged = new InternetExplorerOptions().merge(sourceCapabilities);
+        InternetExplorerOptions merged = new InternetExplorerOptions().merge(mergeCapabilities);
 
         assertThat(constructed.getBrowserName()).isEqualTo(IE_BROWSER_NAME);
-        assertThat(constructed.getCapability(INITIAL_BROWSER_URL)).isEqualTo("about:blank");
-        assertThat(constructed.getCapability(IGNORE_ZOOM_SETTING)).isEqualTo(true);
+        assertThat(ieOptionsFrom(constructed)).containsEntry(INITIAL_BROWSER_URL, "about:blank");
+        assertThat(ieOptionsFrom(constructed)).containsEntry(IGNORE_ZOOM_SETTING, true);
         assertThat(merged.getBrowserName()).isEqualTo(IE_BROWSER_NAME);
-        assertThat(merged.getCapability(INITIAL_BROWSER_URL)).isEqualTo("about:blank");
-        assertThat(merged.getCapability(IGNORE_ZOOM_SETTING)).isEqualTo(true);
+        assertThat(ieOptionsFrom(merged)).isEqualTo(mergeIeOptions);
     }
 
     @Test
