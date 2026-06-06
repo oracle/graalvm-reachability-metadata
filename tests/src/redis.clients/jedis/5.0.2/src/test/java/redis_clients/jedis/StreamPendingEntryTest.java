@@ -8,6 +8,10 @@ package redis_clients.jedis;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
@@ -56,6 +60,30 @@ public class StreamPendingEntryTest {
         assertThat(entry.getIdleTime()).isEqualTo(250L);
         assertThat(entry.getDeliveredTimes()).isEqualTo(4L);
         assertThat(entry.toString()).isEqualTo("1628784000001-10 consumer-b idle:250 times:4");
+    }
+
+    @Test
+    void serializesAndDeserializesPendingEntryState() throws Exception {
+        StreamEntryID entryId = new StreamEntryID(1_628_784_000_002L, 11L);
+        StreamPendingEntry entry = new StreamPendingEntry(entryId, "consumer-c", 375L, 5L);
+
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try (ObjectOutputStream output = new ObjectOutputStream(bytes)) {
+            output.writeObject(entry);
+        }
+
+        StreamPendingEntry deserializedEntry;
+        try (ObjectInputStream input = new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray()))) {
+            deserializedEntry = (StreamPendingEntry) input.readObject();
+        }
+
+        assertThat(deserializedEntry).isNotSameAs(entry);
+        assertThat(deserializedEntry.getID()).isEqualTo(entryId);
+        assertThat(deserializedEntry.getID()).isNotSameAs(entryId);
+        assertThat(deserializedEntry.getConsumerName()).isEqualTo("consumer-c");
+        assertThat(deserializedEntry.getIdleTime()).isEqualTo(375L);
+        assertThat(deserializedEntry.getDeliveredTimes()).isEqualTo(5L);
+        assertThat(deserializedEntry.toString()).isEqualTo("1628784000002-11 consumer-c idle:375 times:5");
     }
 
     private static byte[] bytes(String value) {
