@@ -11,8 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 import javax.xml.validation.Schema;
 
-import org.hibernate.jpamodelgen.util.xml.XmlParserHelper;
-import org.hibernate.jpamodelgen.util.xml.XmlParsingException;
+import org.hibernate.processor.util.xml.XmlParserHelper;
+import org.hibernate.processor.util.xml.XmlParsingException;
 import org.junit.jupiter.api.Test;
 
 public class XmlParserHelperTest {
