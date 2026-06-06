@@ -67,6 +67,34 @@ public class Helidon_service_metadataTest {
     }
 
     @Test
+    void descriptorMetadataUsesValueSemantics() {
+        DescriptorMetadata metadata = DescriptorMetadata.create(
+                TypeName.create("example.ValueDescriptor"),
+                11.0,
+                Set.of(
+                        ResolvedType.create("example.ValueContract"),
+                        ResolvedType.create("example.OtherContract")),
+                Set.of(ResolvedType.create("example.ValueFactory")));
+        DescriptorMetadata sameMetadata = DescriptorMetadata.create(
+                TypeName.create("example.ValueDescriptor"),
+                11.0,
+                Set.of(
+                        ResolvedType.create("example.OtherContract"),
+                        ResolvedType.create("example.ValueContract")),
+                Set.of(ResolvedType.create("example.ValueFactory")));
+        DescriptorMetadata differentMetadata = DescriptorMetadata.create(
+                TypeName.create("example.ValueDescriptor"),
+                12.0,
+                Set.of(ResolvedType.create("example.ValueContract")),
+                Set.of(ResolvedType.create("example.ValueFactory")));
+
+        assertThat(metadata)
+                .isEqualTo(sameMetadata)
+                .hasSameHashCodeAs(sameMetadata)
+                .isNotEqualTo(differentMetadata);
+    }
+
+    @Test
     void parsesDescriptorRegistryWithExplicitAndDefaultValues() {
         Hson.Struct weightedService = Hson.structBuilder()
                 .set("version", 1)
