@@ -8,10 +8,11 @@ package io_sundr.sundr_model_utils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.sundr.model.Argument;
 import io.sundr.model.ClassRef;
+import io.sundr.model.Field;
 import io.sundr.model.Kind;
 import io.sundr.model.Method;
-import io.sundr.model.Property;
 import io.sundr.model.RichTypeDef;
 import io.sundr.model.TypeDef;
 import io.sundr.model.TypeDefBuilder;
@@ -88,14 +89,14 @@ public class Sundr_model_utilsTest {
         Method greet = Method.newMethod(
                 "greet",
                 Types.STRING_REF,
-                Property.newProperty(Types.STRING_REF, "name"));
+                Argument.newArgument(Types.STRING_REF, "name"));
 
         List<ClassRef> imports = Parsers.parseImports(source);
         String greetBody = Parsers.parseMethodBody(source, greet);
         String sizeBody = Parsers.parseMethodBody(
                 source,
                 "size",
-                List.of(Property.newProperty(Collections.LIST.toReference(Types.STRING_REF), "values")));
+                List.of(Argument.newArgument(Collections.LIST.toReference(Types.STRING_REF), "values")));
 
         assertThat(imports)
                 .extracting(ClassRef::getFullyQualifiedName)
@@ -119,7 +120,7 @@ public class Sundr_model_utilsTest {
                 .withKind(Kind.CLASS)
                 .withPackageName("example.model")
                 .withName("Base")
-                .addToProperties(Property.newProperty(Types.STRING_REF, "name"))
+                .addToFields(Field.newField(Types.STRING_REF, "name"))
                 .build();
         TypeDef child = new TypeDefBuilder()
                 .withKind(Kind.CLASS)
@@ -127,7 +128,7 @@ public class Sundr_model_utilsTest {
                 .withName("Child")
                 .addToExtendsList(base.toReference())
                 .addToImplementsList(identifiable.toReference())
-                .addToProperties(Property.newProperty(Types.INT_REF, "count"))
+                .addToFields(Field.newField(Types.INT_REF, "count"))
                 .addToMethods(Method.newMethod("count", Types.INT_REF))
                 .build();
 
@@ -140,9 +141,9 @@ public class Sundr_model_utilsTest {
         assertThat(Assignable.isAssignable(base).from(child)).isTrue();
         assertThat(Assignable.isAssignable(identifiable).from(child)).isTrue();
         assertThat(Assignable.isAssignable(Types.PRIMITIVE_INT_REF).from(Types.INT_REF)).isTrue();
-        assertThat(Types.hasProperty(child, "count")).isTrue();
+        assertThat(Types.hasField(child, "count")).isTrue();
         assertThat(Types.hasMethod(child, "count")).isTrue();
-        assertThat(Types.allProperties(child)).extracting(Property::getName).contains("name", "count");
+        assertThat(Types.allFields(child)).extracting(Field::getName).contains("name", "count");
         assertThat(Types.unrollHierarchy(child)).extracting(TypeDef::getFullyQualifiedName)
                 .contains("example.model.Base", "example.model.Child");
     }
@@ -156,8 +157,8 @@ public class Sundr_model_utilsTest {
                 .withPackageName("example.generics")
                 .withName("Pair")
                 .withParameters(key, value)
-                .addToProperties(Property.newProperty(key.toReference(), "key"))
-                .addToProperties(Property.newProperty(value.toReference(), "value"))
+                .addToFields(Field.newField(key.toReference(), "key"))
+                .addToFields(Field.newField(value.toReference(), "value"))
                 .build();
         ClassRef pairOfStringAndInteger = pair.toReference(Types.STRING_REF, Types.INT_REF);
         DefinitionRepository.getRepository().register(pair);
@@ -167,8 +168,8 @@ public class Sundr_model_utilsTest {
 
         assertThat(mappings).containsEntry("K", Types.STRING_REF).containsEntry("V", Types.INT_REF);
         assertThat(richTypeDef.getFullyQualifiedName()).isEqualTo("example.generics.Pair");
-        assertThat(richTypeDef.getAllProperties()).extracting(Property::getName).containsExactly("key", "value");
-        assertThat(richTypeDef.getProperties()).extracting(Property::getTypeRef)
+        assertThat(richTypeDef.getAllFields()).extracting(Field::getName).containsExactly("key", "value");
+        assertThat(richTypeDef.getFields()).extracting(Field::getTypeRef)
                 .containsExactly(Types.STRING_REF, Types.INT_REF);
     }
 
@@ -203,16 +204,16 @@ public class Sundr_model_utilsTest {
 
     @Test
     void discoversPropertyAccessorsIncludingRecordComponents() {
-        Property name = Property.newProperty(Types.STRING_REF, "name");
-        Property enabled = Property.newProperty(Types.PRIMITIVE_BOOLEAN_REF, "enabled");
+        Field name = Field.newField(Types.STRING_REF, "name");
+        Field enabled = Field.newField(Types.PRIMITIVE_BOOLEAN_REF, "enabled");
         Method getName = Method.newMethod("getName", Types.STRING_REF);
-        Method setName = Method.newMethod("setName", Types.VOID, name);
+        Method setName = Method.newMethod("setName", Types.VOID, Argument.newArgument(Types.STRING_REF, "name"));
         TypeDef bean = new TypeDefBuilder()
                 .withKind(Kind.CLASS)
                 .withPackageName("example.accessors")
                 .withName("Bean")
-                .addToProperties(name)
-                .addToProperties(enabled)
+                .addToFields(name)
+                .addToFields(enabled)
                 .addToMethods(getName)
                 .addToMethods(setName)
                 .build();
@@ -221,20 +222,20 @@ public class Sundr_model_utilsTest {
                 .withPackageName("example.accessors")
                 .withName("PersonRecord")
                 .addToExtendsList(ClassRef.forName("java.lang.Record"))
-                .addToProperties(name)
+                .addToFields(name)
                 .addToMethods(Method.newMethod("name", Types.STRING_REF))
                 .build();
 
-        Method generatedBooleanGetter = Getter.forProperty(enabled);
+        Method generatedBooleanGetter = Getter.forField(enabled);
 
         assertThat(Getter.name(name)).isEqualTo("getName");
         assertThat(Getter.name(enabled)).isEqualTo("isEnabled");
         assertThat(generatedBooleanGetter.getName()).isEqualTo("isEnabled");
         assertThat(generatedBooleanGetter.getReturnType()).isEqualTo(Types.PRIMITIVE_BOOLEAN_REF);
         assertThat(Getter.is(generatedBooleanGetter)).isTrue();
-        assertThat(Getter.propertyName(getName)).isEqualTo("name");
+        assertThat(Getter.fieldName(getName)).isEqualTo("name");
         assertThat(Getter.find(bean, name)).isEqualTo(getName);
-        assertThat(Getter.findOptional(bean, Property.newProperty(Types.STRING_REF, "missing"))).isEmpty();
+        assertThat(Getter.findOptional(bean, Field.newField(Types.STRING_REF, "missing"))).isEmpty();
 
         assertThat(Setter.has(bean, name)).isTrue();
         assertThat(Setter.find(bean, name).getSignature()).isEqualTo(setName.getSignature());
@@ -252,7 +253,7 @@ public class Sundr_model_utilsTest {
                 .withKind(Kind.CLASS)
                 .withPackageName("example.old")
                 .withName("Container")
-                .addToProperties(Property.newProperty(oldWidgetRef, "widget"))
+                .addToFields(Field.newField(oldWidgetRef, "widget"))
                 .addToMethods(Method.newMethod("widget", oldWidgetRef))
                 .build();
 
@@ -264,12 +265,12 @@ public class Sundr_model_utilsTest {
                 .build();
 
         assertThat(moved.getPackageName()).isEqualTo("example.new");
-        assertThat(moved.getProperties()).extracting(property -> property.getTypeRef().toString())
+        assertThat(moved.getFields()).extracting(field -> field.getTypeRef().toString())
                 .containsExactly("example.new.Widget");
         assertThat(moved.getMethods()).extracting(method -> method.getReturnType().toString())
                 .containsExactly("example.new.Widget");
 
-        assertThat(retargeted.getProperties()).extracting(property -> property.getTypeRef().toString())
+        assertThat(retargeted.getFields()).extracting(field -> field.getTypeRef().toString())
                 .containsExactly("java.lang.String");
         assertThat(retargeted.getMethods()).extracting(method -> method.getReturnType().toString())
                 .containsExactly("java.lang.String");
