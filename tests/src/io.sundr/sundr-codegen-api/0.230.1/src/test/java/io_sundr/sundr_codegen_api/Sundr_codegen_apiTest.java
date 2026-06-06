@@ -130,6 +130,30 @@ public class Sundr_codegen_apiTest {
     }
 
     @Test
+    void codeGeneratorCanUseStrategyObjectsAndClosesOpenedWriters() {
+        List<CloseTrackingWriter> writers = new ArrayList<>();
+        Output<String> output = () -> item -> {
+            CloseTrackingWriter writer = new CloseTrackingWriter();
+            writers.add(writer);
+            return writer;
+        };
+
+        boolean generated = CodeGenerator.newGenerator(String.class)
+                .withOutput(output)
+                .withIdentifier(new StringIdentifier())
+                .withRenderer(new StringRenderer())
+                .skipping(item -> false)
+                .build()
+                .generate("payload");
+
+        assertThat(generated).isTrue();
+        assertThat(writers).hasSize(1);
+        assertThat(writers.get(0).toString()).isEqualTo("rendered:payload");
+        assertThat(writers.get(0).isClosed()).isTrue();
+        assertThat(Identifiers.getIdentifier()).isNull();
+    }
+
+    @Test
     void outputImplementationsCreateWritableDestinations(@TempDir Path tempDir) throws IOException {
         File outputFile = tempDir.resolve("generated.txt").toFile();
         FileOutput<String> fileOutput = new FileOutput<>(outputFile);
@@ -194,6 +218,20 @@ public class Sundr_codegen_apiTest {
     }
 
     private static final class TestCodeGeneratorContext implements CodeGeneratorContext {
+    }
+
+    private static final class CloseTrackingWriter extends StringWriter {
+        private boolean closed;
+
+        @Override
+        public void close() throws IOException {
+            closed = true;
+            super.close();
+        }
+
+        boolean isClosed() {
+            return closed;
+        }
     }
 
     private static final class StringIdentifier implements Identifier<String> {
