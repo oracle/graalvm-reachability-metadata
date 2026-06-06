@@ -22,9 +22,13 @@ import org.scalatest.GivenWhenThen
 import org.scalatest.Outcome
 import org.scalatest.Reporter
 import org.scalatest.Suite
+import org.scalatest.Succeeded
 import org.scalatest.Tag
 import org.scalatest.events.Event
 import org.scalatest.events.InfoProvided
+import org.scalatest.events.SuiteAborted
+import org.scalatest.events.TestCanceled
+import org.scalatest.events.TestFailed
 import org.scalatest.events.TestIgnored
 import org.scalatest.events.TestPending
 import org.scalatest.events.TestSucceeded
@@ -47,7 +51,7 @@ class Scalatest_featurespec_2_13Test {
 
     val result: RunResult = runSuite(suite)
 
-    assert(result.succeeded)
+    assert(failureEvents(result.events).isEmpty)
     assert(suite.executed.toSet == Set("add", "remove"))
     assert(succeededEvents(result.events).map(_.testName).toSet == Set(addItemTestName, removeItemTestName))
     assert(ignoredEvents(result.events).map(_.testName) == Vector(ignoredTestName))
@@ -61,7 +65,7 @@ class Scalatest_featurespec_2_13Test {
 
     val result: RunResult = runSuite(suite)
 
-    assert(result.succeeded)
+    assert(failureEvents(result.events).isEmpty)
     assert(suite.executed.toSet == Set("addition", "multiplication"))
     assert(succeededEvents(result.events).map(_.testName).toSet == Set(additionTestName, multiplicationTestName))
     assert(ignoredEvents(result.events).isEmpty)
@@ -74,7 +78,7 @@ class Scalatest_featurespec_2_13Test {
 
     val result: RunResult = runSuite(suite)
 
-    assert(result.succeeded)
+    assert(failureEvents(result.events).isEmpty)
     assert(suite.executed == Vector("pending"))
     assert(pendingEvents(result.events).map(_.testName) == Vector(pendingTestName))
     assert(succeededEvents(result.events).isEmpty)
@@ -89,7 +93,7 @@ class Scalatest_featurespec_2_13Test {
 
     val result: RunResult = runSuite(suite)
 
-    assert(result.succeeded)
+    assert(failureEvents(result.events).isEmpty)
     assert(suite.fixtureNames.asScala.toVector == Vector(upperCaseTestName))
     assert(suite.observedFixtures.asScala.toVector == Vector("feature-spec"))
     assert(succeededEvents(result.events).map(_.testName) == Vector(upperCaseTestName))
@@ -103,7 +107,7 @@ class Scalatest_featurespec_2_13Test {
 
     val result: RunResult = runSuite(suite)
 
-    assert(result.succeeded)
+    assert(failureEvents(result.events).isEmpty)
     assert(suite.fixtureNames.asScala.toVector == Vector(scenarioTestName))
     assert(suite.observedFixtures.asScala.toVector == Vector("async-feature-spec"))
     assert(succeededEvents(result.events).map(_.testName) == Vector(scenarioTestName))
@@ -116,7 +120,7 @@ class Scalatest_featurespec_2_13Test {
 
     val result: RunResult = runSuite(suite)
 
-    assert(result.succeeded)
+    assert(failureEvents(result.events).isEmpty)
     assert(suite.executed == Vector("narrative"))
     assert(succeededEvents(result.events).map(_.testName) == Vector(scenarioTestName))
     assert(recordedInfoMessages(result.events) == Vector(
@@ -132,12 +136,12 @@ class Scalatest_featurespec_2_13Test {
     Feature("Shopping cart") {
       Scenario("adds an item", ShoppingCartFeatureSpec.Fast) {
         executed = executed :+ "add"
-        assert(Vector("book", "pen").contains("book"))
+        scala.Predef.assert(Vector("book", "pen").contains("book"))
       }
 
       Scenario("removes an item") {
         executed = executed :+ "remove"
-        assert(Vector("book", "pen").filterNot(_ == "pen") == Vector("book"))
+        scala.Predef.assert(Vector("book", "pen").filterNot(_ == "pen") == Vector("book"))
       }
 
       ignore("checks out without inventory", ShoppingCartFeatureSpec.Slow) {
@@ -159,14 +163,16 @@ class Scalatest_featurespec_2_13Test {
       Scenario("adds numbers asynchronously") {
         Future.successful {
           executed = executed :+ "addition"
-          assert(2 + 3 == 5)
+          scala.Predef.assert(2 + 3 == 5)
+          Succeeded
         }
       }
 
       Scenario("multiplies numbers asynchronously") {
         Future.successful {
           executed = executed :+ "multiplication"
-          assert(4 * 6 == 24)
+          scala.Predef.assert(4 * 6 == 24)
+          Succeeded
         }
       }
     }
@@ -197,7 +203,7 @@ class Scalatest_featurespec_2_13Test {
     Feature("Synchronous fixture scenarios") {
       Scenario("upper-cases fixture text") { text: String =>
         observedFixtures.add(text)
-        assert(text.toUpperCase == "FEATURE-SPEC")
+        scala.Predef.assert(text.toUpperCase == "FEATURE-SPEC")
       }
 
       ignore("keeps ignored fixture scenarios registered") { text: String =>
@@ -222,7 +228,8 @@ class Scalatest_featurespec_2_13Test {
       Scenario("decorates fixture text asynchronously") { text: String =>
         Future.successful {
           observedFixtures.add(text)
-          assert(s"[$text]" == "[async-feature-spec]")
+          scala.Predef.assert(s"[$text]" == "[async-feature-spec]")
+          Succeeded
         }
       }
     }
@@ -237,7 +244,7 @@ class Scalatest_featurespec_2_13Test {
         When("the customer checks out")
         Then("the order summary contains the guide")
         executed = executed :+ "narrative"
-        assert(Vector("guide").mkString(",") == "guide")
+        scala.Predef.assert(Vector("guide").mkString(",") == "guide")
       }
     }
   }
@@ -259,8 +266,16 @@ class Scalatest_featurespec_2_13Test {
     }
 
     assert(completed.await(30, TimeUnit.SECONDS), s"ScalaTest suite ${suite.suiteName} did not complete")
-    RunResult(completion.get().get, reporter.events)
+    completion.get().get
+    RunResult(reporter.events)
   }
+
+  private def failureEvents(events: Vector[Event]): Vector[Event] =
+    events.collect {
+      case event: TestFailed => event
+      case event: TestCanceled => event
+      case event: SuiteAborted => event
+    }
 
   private def succeededEvents(events: Vector[Event]): Vector[TestSucceeded] =
     events.collect { case event: TestSucceeded => event }
@@ -287,5 +302,5 @@ class Scalatest_featurespec_2_13Test {
     def events: Vector[Event] = recordedEvents.asScala.toVector
   }
 
-  private final case class RunResult(succeeded: Boolean, events: Vector[Event])
+  private final case class RunResult(events: Vector[Event])
 }
