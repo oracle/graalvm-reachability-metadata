@@ -28,6 +28,7 @@ public class ServiceLoaderUtilTest {
             "jakarta_xml_bind.jakarta_xml_bind_api.contextpath.osgi";
     private static final String JAXB_CONTEXT_FACTORY_SERVICE_RESOURCE =
             "META-INF/services/jakarta.xml.bind.JAXBContextFactory";
+    private static final String DEFAULT_PACKAGE_CONTEXT_FACTORY = "DefaultPackageContextFactory";
 
     @Test
     public void loadsProviderClassUsingContextClassLoader() throws Exception {
@@ -54,6 +55,31 @@ public class ServiceLoaderUtilTest {
                 ServiceLoaderUtilInvoker::instantiateFactoryBackedContextFactory);
 
         assertThat(provider).isInstanceOf(FactoryBackedContextFactory.class);
+    }
+
+    @Test
+    public void loadsPackageLessProviderClassWithoutContextClassLoader() throws Exception {
+        JAXBContext context = withContextClassLoader(null, () -> JAXBContext.newInstance(
+                new Class<?>[] {ServiceBoundType.class},
+                Map.of(JAXBContext.JAXB_CONTEXT_FACTORY, DEFAULT_PACKAGE_CONTEXT_FACTORY)));
+
+        assertThat(context).isInstanceOf(StubJaxbContext.class);
+        assertThat(((StubJaxbContext) context).getSource())
+                .isEqualTo("default-package-classes-factory");
+    }
+
+    @Test
+    public void loadsPackageLessProviderClassWithSuppliedClassLoader() throws Exception {
+        ClassLoader classLoader = getClass().getClassLoader();
+
+        JAXBContext context = JAXBContext.newInstance(
+                OSGI_CONTEXT_PATH,
+                classLoader,
+                Map.of(JAXBContext.JAXB_CONTEXT_FACTORY, DEFAULT_PACKAGE_CONTEXT_FACTORY));
+
+        assertThat(context).isInstanceOf(StubJaxbContext.class);
+        assertThat(((StubJaxbContext) context).getSource())
+                .isEqualTo("default-package-context-path-factory");
     }
 
     @Test

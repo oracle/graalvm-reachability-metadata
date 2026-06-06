@@ -10,14 +10,11 @@ import java.util.Map;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.ServiceLoaderUtilInvoker;
 import jakarta_xml_bind.jakarta_xml_bind_api.classproperties.PropertiesBoundType;
 import jakarta_xml_bind.jakarta_xml_bind_api.factorybacked.FactoryBackedBoundType;
 import jakarta_xml_bind.jakarta_xml_bind_api.servicebound.ServiceBoundType;
-import jakarta_xml_bind.jakarta_xml_bind_api.support.FactoryBackedContextFactory;
-import jakarta_xml_bind.jakarta_xml_bind_api.support.LegacyContextFactory;
-import jakarta_xml_bind.jakarta_xml_bind_api.support.PropertiesContextFactory;
 import jakarta_xml_bind.jakarta_xml_bind_api.support.StubJaxbContext;
-import jakarta_xml_bind.jakarta_xml_bind_api.support.WrongTypeContextFactory;
 import jakarta_xml_bind.jakarta_xml_bind_api.wrongtype.WrongTypeBoundType;
 import org.junit.jupiter.api.Test;
 
@@ -31,24 +28,20 @@ public class ContextFinderTest {
             "jakarta_xml_bind.jakarta_xml_bind_api.contextpath.service";
 
     @Test
-    public void loadsThreeArgumentFactoryFromPropertiesMapForContextPath() throws Exception {
-        JAXBContext context = JAXBContext.newInstance(
+    public void invokesThreeArgumentFactoryClassForContextPath() throws Exception {
+        JAXBContext context = ServiceLoaderUtilInvoker.createContextWithPropertiesFactory(
                 PROPERTIES_CONTEXT_PATH,
                 getClass().getClassLoader(),
-                Map.of(
-                        JAXBContext.JAXB_CONTEXT_FACTORY,
-                        PropertiesContextFactory.class.getName(),
-                        "trigger",
-                        "jaxb-properties"));
+                Map.of("trigger", "jaxb-properties"));
 
         assertContextSource(context, "properties-context-path-factory");
     }
 
     @Test
-    public void loadsFactoryFromPropertiesMapForBoundClasses() throws Exception {
-        JAXBContext context = JAXBContext.newInstance(
+    public void invokesFactoryClassForBoundClasses() throws Exception {
+        JAXBContext context = ServiceLoaderUtilInvoker.createContextWithPropertiesFactory(
                 new Class<?>[] {PropertiesBoundType.class},
-                Map.of(JAXBContext.JAXB_CONTEXT_FACTORY, PropertiesContextFactory.class.getName()));
+                Map.of());
 
         assertContextSource(context, "properties-classes-factory");
     }
@@ -64,20 +57,20 @@ public class ContextFinderTest {
     }
 
     @Test
-    public void loadsLegacyTwoArgumentFactoryFromPropertiesMapForContextPath() throws Exception {
-        JAXBContext context = JAXBContext.newInstance(
+    public void invokesLegacyTwoArgumentFactoryClassForContextPath() throws Exception {
+        JAXBContext context = ServiceLoaderUtilInvoker.createContextWithLegacyFactory(
                 PROPERTIES_CONTEXT_PATH,
                 getClass().getClassLoader(),
-                Map.of(JAXBContext.JAXB_CONTEXT_FACTORY, LegacyContextFactory.class.getName()));
+                Map.of());
 
         assertContextSource(context, "legacy-context-path-factory");
     }
 
     @Test
     public void instantiatesJaxbContextFactoryImplementations() throws Exception {
-        JAXBContext context = JAXBContext.newInstance(
+        JAXBContext context = ServiceLoaderUtilInvoker.createContextWithFactoryBackedFactory(
                 new Class<?>[] {FactoryBackedBoundType.class},
-                Map.of(JAXBContext.JAXB_CONTEXT_FACTORY, FactoryBackedContextFactory.class.getName()));
+                Map.of());
 
         assertContextSource(context, "factory-backed-classes-factory");
     }
@@ -91,9 +84,9 @@ public class ContextFinderTest {
 
     @Test
     public void throwsHelpfulExceptionWhenProviderReturnsWrongType() {
-        assertThatThrownBy(() -> JAXBContext.newInstance(
+        assertThatThrownBy(() -> ServiceLoaderUtilInvoker.createContextWithWrongTypeFactory(
                 new Class<?>[] {WrongTypeBoundType.class},
-                Map.of(JAXBContext.JAXB_CONTEXT_FACTORY, WrongTypeContextFactory.class.getName())))
+                Map.of()))
                 .isInstanceOf(JAXBException.class)
                 .hasMessageContaining("ClassCastException");
     }
