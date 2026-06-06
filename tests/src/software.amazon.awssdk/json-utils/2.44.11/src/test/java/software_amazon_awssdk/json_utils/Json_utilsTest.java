@@ -125,6 +125,35 @@ public class Json_utilsTest {
     }
 
     @Test
+    void nodeToStringProducesParseableJsonRepresentation() {
+        JsonNode source = JsonNode.parser().parse("""
+            {
+              "quote": "a\\\"b",
+              "slash": "c\\\\d",
+              "numbers": [1, 2],
+              "flag": true,
+              "missing": null
+            }
+            """);
+
+        String rendered = source.toString();
+        JsonNode reparsed = JsonNode.parser().parse(rendered);
+
+        assertThat(rendered)
+            .contains("\"quote\": \"a\\\"b\"")
+            .contains("\"slash\": \"c\\\\d\"")
+            .contains("\"numbers\": [1, 2]")
+            .contains("\"flag\": true")
+            .contains("\"missing\": null");
+        assertThat(required(reparsed.field("quote")).asString()).isEqualTo("a\"b");
+        assertThat(required(reparsed.field("slash")).asString()).isEqualTo("c\\d");
+        assertThat(required(required(reparsed.field("numbers")).index(0)).asNumber()).isEqualTo("1");
+        assertThat(required(required(reparsed.field("numbers")).index(1)).asNumber()).isEqualTo("2");
+        assertThat(required(reparsed.field("flag")).asBoolean()).isTrue();
+        assertThat(required(reparsed.field("missing")).isNull()).isTrue();
+    }
+
+    @Test
     void writesJsonValuesAndParsesGeneratedBytes() {
         JsonWriter writer = JsonWriter.create()
             .writeStartObject()
