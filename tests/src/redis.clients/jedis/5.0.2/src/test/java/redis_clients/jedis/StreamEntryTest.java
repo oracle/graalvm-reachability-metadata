@@ -60,6 +60,27 @@ public class StreamEntryTest {
         assertThat(restored.toString()).isEqualTo("1628784000000-8 {event=order-shipped, region=us-west}");
     }
 
+    @Test
+    void preservesStreamEntryIdAndFieldsValueSemantics() {
+        StreamEntryID entryId = new StreamEntryID(1_628_784_000_000L, 8L);
+        StreamEntryID parsedEntryId = new StreamEntryID("1628784000000-8");
+        StreamEntryID binaryEntryId = new StreamEntryID(bytes("1628784000000-8"));
+        Map<String, String> fields = new LinkedHashMap<>();
+        fields.put("event", "order-shipped");
+        fields.put("region", "us-west");
+
+        StreamEntry entry = new StreamEntry(entryId, fields);
+
+        assertThat(entry.getID()).isEqualTo(parsedEntryId);
+        assertThat(entry.getID()).isEqualTo(binaryEntryId);
+        assertThat(entry.getID().hashCode()).isEqualTo(parsedEntryId.hashCode());
+        assertThat(entry.getID().compareTo(new StreamEntryID(1_628_784_000_000L, 9L))).isNegative();
+        assertThat(entry.getID().getTime()).isEqualTo(1_628_784_000_000L);
+        assertThat(entry.getID().getSequence()).isEqualTo(8L);
+        assertThat(entry.getFields()).isEqualTo(fields);
+        assertThat(entry.toString()).isEqualTo("1628784000000-8 {event=order-shipped, region=us-west}");
+    }
+
     private static byte[] bytes(String value) {
         return value.getBytes(StandardCharsets.UTF_8);
     }
