@@ -10,6 +10,7 @@ import ognl.AbstractMemberAccess;
 import ognl.ObjectPropertyAccessor;
 import ognl.OgnlContext;
 import ognl.OgnlException;
+import ognl.OgnlRuntime;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Member;
@@ -44,15 +45,15 @@ public class ObjectPropertyAccessorTest {
     }
 
     @Test
-    void invokesWriteMethodFallbackWhenAccessCheckRejectsRegularSetterPath() throws OgnlException {
+    void returnsNotFoundWhenAccessCheckRejectsSetterPath() throws OgnlException {
         final OgnlContext context = newContext(new SetterAccessDenyingMemberAccess());
         final ObjectPropertyAccessor accessor = new ObjectPropertyAccessor();
         final SetterOnlyFixture fixture = new SetterOnlyFixture();
 
         final Object result = accessor.setPossibleProperty(context, fixture, "alias", "updated");
 
-        assertThat(result).isNull();
-        assertThat(fixture.assignedValue()).isEqualTo("updated");
+        assertThat(result).isSameAs(OgnlRuntime.NotFound);
+        assertThat(fixture.assignedValue()).isNull();
     }
 
     private static OgnlContext newContext(AbstractMemberAccess memberAccess) {
