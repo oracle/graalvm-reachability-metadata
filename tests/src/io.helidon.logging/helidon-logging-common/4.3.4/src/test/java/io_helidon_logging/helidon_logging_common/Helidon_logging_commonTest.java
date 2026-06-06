@@ -81,6 +81,27 @@ public class Helidon_logging_commonTest {
     }
 
     @Test
+    void supplierMdcValuesAreIsolatedPerThread() throws Exception {
+        HelidonMdc.set(REQUEST_ID, () -> "request-from-parent");
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        try {
+            Future<String> workerValue = executor.submit(() -> {
+                assertThat(HelidonMdc.get(REQUEST_ID)).isEmpty();
+
+                HelidonMdc.set(REQUEST_ID, () -> "request-from-worker");
+
+                return HelidonMdc.get(REQUEST_ID).orElseThrow();
+            });
+
+            assertThat(workerValue.get(10, TimeUnit.SECONDS)).isEqualTo("request-from-worker");
+            assertThat(HelidonMdc.get(REQUEST_ID)).contains("request-from-parent");
+        } finally {
+            executor.shutdownNow();
+            assertThat(executor.awaitTermination(10, TimeUnit.SECONDS)).isTrue();
+        }
+    }
+
+    @Test
     void mdcSupplierPropagatorCapturesAndRestoresSupplierSnapshots() {
         DataPropagationProvider<Map<String, Supplier<String>>> propagator = new MdcSupplierPropagator();
         HelidonMdc.setDeferred(REQUEST_ID, () -> "captured-request");
