@@ -12,6 +12,10 @@ import com.oracle.bmc.Region;
 import com.oracle.bmc.certificatesmanagement.CertificatesManagement;
 import com.oracle.bmc.certificatesmanagement.CertificatesManagementPaginators;
 import com.oracle.bmc.certificatesmanagement.CertificatesManagementWaiters;
+import com.oracle.bmc.certificatesmanagement.model.CaBundle;
+import com.oracle.bmc.certificatesmanagement.model.CaBundleCollection;
+import com.oracle.bmc.certificatesmanagement.model.CaBundleLifecycleState;
+import com.oracle.bmc.certificatesmanagement.model.CaBundleSummary;
 import com.oracle.bmc.certificatesmanagement.model.Certificate;
 import com.oracle.bmc.certificatesmanagement.model.CertificateCollection;
 import com.oracle.bmc.certificatesmanagement.model.CertificateConfigType;
@@ -23,6 +27,8 @@ import com.oracle.bmc.certificatesmanagement.model.CertificateSubject;
 import com.oracle.bmc.certificatesmanagement.model.CertificateSubjectAlternativeName;
 import com.oracle.bmc.certificatesmanagement.model.CertificateSummary;
 import com.oracle.bmc.certificatesmanagement.model.CertificateVersionSummary;
+import com.oracle.bmc.certificatesmanagement.model.ChangeCaBundleCompartmentDetails;
+import com.oracle.bmc.certificatesmanagement.model.CreateCaBundleDetails;
 import com.oracle.bmc.certificatesmanagement.model.CreateCertificateByImportingConfigDetails;
 import com.oracle.bmc.certificatesmanagement.model.CreateCertificateDetails;
 import com.oracle.bmc.certificatesmanagement.model.CreateCertificateIssuedByInternalCaConfigDetails;
@@ -33,6 +39,7 @@ import com.oracle.bmc.certificatesmanagement.model.ObjectStorageBucketConfigDeta
 import com.oracle.bmc.certificatesmanagement.model.RevocationReason;
 import com.oracle.bmc.certificatesmanagement.model.RevocationStatus;
 import com.oracle.bmc.certificatesmanagement.model.SignatureAlgorithm;
+import com.oracle.bmc.certificatesmanagement.model.UpdateCaBundleDetails;
 import com.oracle.bmc.certificatesmanagement.model.Validity;
 import com.oracle.bmc.certificatesmanagement.model.VersionStage;
 import com.oracle.bmc.certificatesmanagement.requests.CancelCertificateAuthorityDeletionRequest;
@@ -275,6 +282,76 @@ public class Oci_java_sdk_certificatesmanagementTest {
         assertThat(certificate.toString())
                 .contains("service-cert")
                 .contains("certificateRevocationListDetails");
+    }
+
+    @Test
+    void caBundleModelsPreservePemLifecycleAndCompartmentUpdates() {
+        String rootBundlePem =
+                """
+                -----BEGIN CERTIFICATE-----
+                root
+                -----END CERTIFICATE-----
+                -----BEGIN CERTIFICATE-----
+                intermediate
+                -----END CERTIFICATE-----
+                """;
+        CreateCaBundleDetails createDetails =
+                CreateCaBundleDetails.builder()
+                        .name("trusted-roots")
+                        .description("Trust anchors for service clients")
+                        .compartmentId("ocid1.compartment.oc1..source")
+                        .caBundlePem(rootBundlePem)
+                        .freeformTags(Map.of("purpose", "trust-store"))
+                        .definedTags(Map.of("Operations", Map.of("rotation", "quarterly")))
+                        .build();
+        CaBundle caBundle =
+                CaBundle.builder()
+                        .id("ocid1.cabundle.oc1..trustedroots")
+                        .name(createDetails.getName())
+                        .description(createDetails.getDescription())
+                        .timeCreated(NOT_BEFORE)
+                        .lifecycleState(CaBundleLifecycleState.Active)
+                        .lifecycleDetails("available")
+                        .compartmentId(createDetails.getCompartmentId())
+                        .freeformTags(createDetails.getFreeformTags())
+                        .definedTags(createDetails.getDefinedTags())
+                        .build();
+        UpdateCaBundleDetails updateDetails =
+                UpdateCaBundleDetails.builder()
+                        .description("Rotated trust anchors")
+                        .caBundlePem(rootBundlePem + "\n")
+                        .freeformTags(Map.of("purpose", "rotated-trust-store"))
+                        .definedTags(createDetails.getDefinedTags())
+                        .build();
+        ChangeCaBundleCompartmentDetails changeDetails =
+                ChangeCaBundleCompartmentDetails.builder()
+                        .compartmentId("ocid1.compartment.oc1..target")
+                        .build();
+        CaBundleSummary summary =
+                CaBundleSummary.builder()
+                        .id(caBundle.getId())
+                        .name(caBundle.getName())
+                        .description(caBundle.getDescription())
+                        .timeCreated(caBundle.getTimeCreated())
+                        .lifecycleState(caBundle.getLifecycleState())
+                        .lifecycleDetails(caBundle.getLifecycleDetails())
+                        .compartmentId(caBundle.getCompartmentId())
+                        .freeformTags(caBundle.getFreeformTags())
+                        .definedTags(caBundle.getDefinedTags())
+                        .build();
+        CaBundleCollection collection =
+                CaBundleCollection.builder().items(List.of(summary)).build();
+
+        assertThat(createDetails.getCaBundlePem())
+                .contains("root")
+                .contains("intermediate");
+        assertThat(createDetails.toBuilder().build()).isEqualTo(createDetails);
+        assertThat(updateDetails.getCaBundlePem()).endsWith("\n");
+        assertThat(updateDetails.toBuilder().build()).isEqualTo(updateDetails);
+        assertThat(changeDetails.getCompartmentId()).isEqualTo("ocid1.compartment.oc1..target");
+        assertThat(caBundle.getLifecycleState()).isEqualTo(CaBundleLifecycleState.Active);
+        assertThat(caBundle.toBuilder().build()).isEqualTo(caBundle);
+        assertThat(collection.getItems()).containsExactly(summary);
     }
 
     @Test
