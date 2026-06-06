@@ -38,6 +38,26 @@ public class CollectionConverterTest {
     }
 
     @Test
+    public void instantiatesRequestedConcreteCollectionClass() throws Exception {
+        CollectionConverter converter = new CollectionConverter();
+        XmlPlexusConfiguration configuration = new XmlPlexusConfiguration("items");
+        addChild(configuration, "item", "created by the requested concrete type");
+
+        Object value = converter.fromConfiguration(
+            new DefaultConverterLookup(),
+            configuration,
+            ArrayList.class,
+            CollectionConverterTest.class,
+            CollectionConverterTest.class.getClassLoader(),
+            new LiteralExpressionEvaluator()
+        );
+
+        assertTrue(value instanceof ArrayList);
+        assertEquals(1, ((ArrayList) value).size());
+        assertEquals("created by the requested concrete type", ((ArrayList) value).get(0));
+    }
+
+    @Test
     public void createsConcreteCollectionAndResolvesChildrenByClassNameAndBasePackage() throws Exception {
         CollectionConverter converter = new CollectionConverter();
         DefaultConverterLookup converterLookup = new DefaultConverterLookup();

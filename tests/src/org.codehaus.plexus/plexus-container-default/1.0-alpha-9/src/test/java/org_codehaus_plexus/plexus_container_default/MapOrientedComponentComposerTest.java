@@ -51,17 +51,15 @@ public class MapOrientedComponentComposerTest {
     @Test
     @Order(1)
     public void rejectsComponentsThatAreNotMapOriented() throws Exception {
-        clearCompilerGeneratedClassCache();
         MapOrientedComponentComposer composer = new MapOrientedComponentComposer();
-        Object component = nonMapOrientedComponentSelectedAtRuntime();
+        ComponentDescriptor descriptor = descriptor(PlainComponent.class.getName());
+        RecordingPlexusContainer container = new RecordingPlexusContainer();
+        clearCompilerGeneratedClassCache();
 
-        CompositionException exception = assertThrows(
-            CompositionException.class,
-            () -> composer.assembleComponent(component, null, null)
-        );
+        assertMapOrientedRejection(composer, new PlainComponent(), descriptor, container);
+        assertSame(MapOrientedComponent.class, cachedMapOrientedComponentType());
 
-        assertTrue(exception.getMessage().contains(component.getClass().getName()));
-        assertTrue(exception.getMessage().contains("org.codehaus.plexus.component.MapOrientedComponent"));
+        assertMapOrientedRejection(composer, "not a map-oriented component", descriptor, container);
     }
 
     @Test
@@ -110,22 +108,39 @@ public class MapOrientedComponentComposerTest {
         assertEquals(new HashSet<>(listedDependencies), component.valueFor(set));
     }
 
+    private static void assertMapOrientedRejection(
+        MapOrientedComponentComposer composer,
+        Object component,
+        ComponentDescriptor descriptor,
+        PlexusContainer container
+    ) {
+        CompositionException exception = assertThrows(
+            CompositionException.class,
+            () -> composer.assembleComponent(component, descriptor, container)
+        );
+
+        assertTrue(exception.getMessage().contains(component.getClass().getName()));
+        assertTrue(exception.getMessage().contains("org.codehaus.plexus.component.MapOrientedComponent"));
+    }
+
     private static void clearCompilerGeneratedClassCache() throws Exception {
+        classCacheHandle().set(null);
+    }
+
+    private static Class<?> cachedMapOrientedComponentType() throws Exception {
+        return (Class<?>) classCacheHandle().get();
+    }
+
+    private static VarHandle classCacheHandle() throws Exception {
         MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(
             MapOrientedComponentComposer.class,
             MethodHandles.lookup()
         );
-        VarHandle classCache = lookup.findStaticVarHandle(
+        return lookup.findStaticVarHandle(
             MapOrientedComponentComposer.class,
             "class$org$codehaus$plexus$component$MapOrientedComponent",
             Class.class
         );
-        classCache.set(null);
-    }
-
-    private static Object nonMapOrientedComponentSelectedAtRuntime() {
-        Object[] candidates = new Object[] {new Object(), "not a map-oriented component" };
-        return candidates[(int) (System.nanoTime() & 1L)];
     }
 
     private static ComponentRequirement requirement(String role, String mappingType) {
@@ -146,6 +161,9 @@ public class MapOrientedComponentComposerTest {
         List<Object> values = new ArrayList<>();
         values.add(value);
         return values;
+    }
+
+    private static final class PlainComponent {
     }
 
     private static final class RecordingMapOrientedComponent implements MapOrientedComponent {
