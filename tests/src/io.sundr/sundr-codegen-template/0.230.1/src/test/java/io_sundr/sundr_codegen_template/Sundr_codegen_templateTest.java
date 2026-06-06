@@ -52,6 +52,13 @@ public class Sundr_codegen_templateTest {
     }
 
     @Test
+    void resolvesExtensionFromUrlPathWithoutOpeningUrl() throws IOException {
+        URL template = URI.create("https://templates.example.test/person.java.vm?cache=ignored#fragment").toURL();
+
+        assertThat(Templates.getExtension(template)).contains("vm");
+    }
+
+    @Test
     void factoryAcceptsUrlsWithConfiguredTemplateExtension() throws IOException {
         TemplateRendererFactory factory = new StringTemplateRendererFactory("tmpl", "vm");
         Path velocityTemplate = tempDir.resolve("type.vm");
