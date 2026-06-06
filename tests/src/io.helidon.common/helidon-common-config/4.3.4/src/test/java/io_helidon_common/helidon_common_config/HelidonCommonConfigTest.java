@@ -64,6 +64,24 @@ public class HelidonCommonConfigTest {
     }
 
     @Test
+    void keyEscapingTreatsDotsAndTildesAsPartOfNodeNames() {
+        Config root = Config.empty();
+        String rawName = "database.host~primary";
+        String escapedName = Config.Key.escapeName(rawName);
+        Config.Key parentKey = root.get("services").key();
+        Config.Key escapedNameKey = root.get(escapedName).key();
+        Config.Key combinedKey = parentKey.child(escapedNameKey);
+        Config child = root.get(parentKey).get(escapedNameKey);
+
+        assertThat(escapedName).isEqualTo("database~1host~0primary");
+        assertThat(Config.Key.unescapeName(escapedName)).isEqualTo(rawName);
+        assertThat(combinedKey).isEqualTo(child.key());
+        assertThat(combinedKey.toString()).isEqualTo("services.database~1host~0primary");
+        assertThat(Config.Key.unescapeName(combinedKey.name())).isEqualTo(rawName);
+        assertThat(combinedKey.parent()).isEqualTo(parentKey);
+    }
+
+    @Test
     void configValueForMissingNodeIsEmptyAndSuppliesFallbacks() {
         ConfigValue<String> value = Config.empty().get("missing.value").asString();
         Supplier<String> throwingSupplier = value.supplier();
