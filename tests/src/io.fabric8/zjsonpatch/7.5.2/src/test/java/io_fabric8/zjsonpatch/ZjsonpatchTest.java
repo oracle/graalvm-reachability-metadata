@@ -155,6 +155,30 @@ public class ZjsonpatchTest {
     }
 
     @Test
+    void rootReplacementDiffReplacesEntireDocumentWhenRootTypesDiffer() throws Exception {
+        JsonNode source = json("""
+                {
+                  "name": "document",
+                  "items": ["old"]
+                }
+                """);
+        JsonNode target = json("""
+                [
+                  {"name": "replacement"},
+                  true
+                ]
+                """);
+
+        JsonNode patch = JsonDiff.asJson(source, target);
+        JsonNode result = JsonPatch.apply(patch, source);
+
+        assertThat(result).isEqualTo(target);
+        assertThat(patch).hasSize(1);
+        JsonNode replacement = operationAtPath(patch, Operation.REPLACE, "");
+        assertThat(replacement.get(JsonDiff.VALUE)).isEqualTo(target);
+    }
+
+    @Test
     void diffFlagsCanOmitRemoveValuesAndSplitReplacementsIntoRemoveAddPairs() throws Exception {
         JsonNode source = json("""
                 {
