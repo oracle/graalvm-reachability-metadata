@@ -96,6 +96,26 @@ public class HelidonTest {
         }
     }
 
+    @Test
+    void registeringAdditionalShutdownHandlersDoesNotAddMoreLogHandlers() {
+        Logger rootLogger = Logger.getLogger("");
+        HelidonShutdownHandler firstHandler = () -> { };
+        HelidonShutdownHandler secondHandler = () -> { };
+
+        try {
+            Main.addShutdownHandler(firstHandler);
+            List<Handler> handlersAfterFirstRegistration = Arrays.asList(rootLogger.getHandlers());
+
+            Main.addShutdownHandler(secondHandler);
+
+            assertThat(Arrays.asList(rootLogger.getHandlers()))
+                    .containsExactlyElementsOf(handlersAfterFirstRegistration);
+        } finally {
+            Main.removeShutdownHandler(firstHandler);
+            Main.removeShutdownHandler(secondHandler);
+        }
+    }
+
     @Weight(1_000.0)
     public static final class RecordingStartupProvider implements HelidonStartupProvider {
         public RecordingStartupProvider() {
