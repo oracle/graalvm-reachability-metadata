@@ -9,27 +9,28 @@ package org_apache_maven_doxia.doxia_module_xhtml;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 
-import org.apache.maven.doxia.module.xhtml.StringsMap;
 import org.apache.maven.doxia.module.xhtml.XhtmlParser;
 import org.apache.maven.doxia.module.xhtml.XhtmlSink;
-import org.apache.maven.doxia.module.xhtml.decoration.render.RenderingContext;
+import org.apache.maven.doxia.module.xhtml.XhtmlSinkFactory;
+import org.apache.maven.doxia.module.xhtml.XhtmlSiteModule;
 import org.apache.maven.doxia.parser.ParseException;
 import org.apache.maven.doxia.parser.Parser;
 import org.apache.maven.doxia.sink.Sink;
+import org.apache.maven.doxia.sink.SinkEventAttributeSet;
+import org.apache.maven.doxia.sink.SinkEventAttributes;
 import org.junit.jupiter.api.Test;
 
 public class Doxia_module_xhtmlTest {
     @Test
     void sinkWritesDocumentHeadMetadataAndEscapedParagraphContent() {
         StringWriter writer = new StringWriter();
-        RenderingContext renderingContext = new RenderingContext(new File("target/site"), "guide/index.xhtml");
-        XhtmlSink sink = new XhtmlSink(writer, renderingContext);
+        XhtmlSink sink = new TestXhtmlSink(writer, "UTF-8", "en");
 
         sink.head();
         sink.title();
@@ -51,16 +52,19 @@ public class Doxia_module_xhtmlTest {
         sink.paragraph_();
         sink.section1_();
         sink.body_();
-        sink.flush();
+        sink.close();
 
         String html = writer.toString();
         assertThat(html)
                 .contains("<!DOCTYPE html PUBLIC")
-                .contains("<html xmlns=\"http://www.w3.org/1999/xhtml\">")
+                .contains("<html xmlns=\"http://www.w3.org/1999/xhtml\"")
+                .contains("lang=\"en\"")
+                .contains("xml:lang=\"en\"")
                 .contains("<head>")
                 .contains("<title>User Guide</title>")
                 .contains("<meta name=\"author\" content=\"Jane Author\" />")
                 .contains("<meta name=\"date\" content=\"2026-05-09\" />")
+                .contains("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>")
                 .contains("<body>")
                 .contains("<div class=\"section\">")
                 .contains("<h2>Overview</h2>")
@@ -68,19 +72,19 @@ public class Doxia_module_xhtmlTest {
                 .contains("<span class=\"raw\">raw html</span>")
                 .contains("</body>")
                 .contains("</html>");
-        assertThat(sink.getRenderingContext()).isSameAs(renderingContext);
     }
 
     @Test
     void sinkWritesLinksAnchorsInlineMarkupImagesListsTablesAndSpecialWhitespace() {
         StringWriter writer = new StringWriter();
-        XhtmlSink sink = new XhtmlSink(writer);
+        XhtmlSink sink = new TestXhtmlSink(writer);
 
         sink.body();
         sink.anchor("1 intro anchor");
         sink.anchor_();
         sink.paragraph();
-        sink.link("https://example.com/search?q=one&lang=en", "_blank");
+        SinkEventAttributeSet linkAttributes = attribute(SinkEventAttributes.TARGET, "_blank");
+        sink.link("https://example.com/search?q=one&lang=en", linkAttributes);
         sink.text("external");
         sink.link_();
         sink.text(" ");
@@ -96,7 +100,7 @@ public class Doxia_module_xhtmlTest {
         sink.lineBreak();
         sink.nonBreakingSpace();
         sink.paragraph_();
-        sink.verbatim(true);
+        sink.verbatim(SinkEventAttributeSet.BOXED);
         sink.text("<xml>&value</xml>");
         sink.verbatim_();
         sink.figure();
@@ -127,12 +131,12 @@ public class Doxia_module_xhtmlTest {
         sink.tableCaption();
         sink.text("Metrics");
         sink.tableCaption_();
-        sink.tableRows(new int[] {Parser.JUSTIFY_LEFT, Parser.JUSTIFY_CENTER, Parser.JUSTIFY_RIGHT}, true);
+        sink.tableRows(new int[] {Sink.JUSTIFY_LEFT, Sink.JUSTIFY_CENTER, Sink.JUSTIFY_RIGHT}, true);
         sink.tableRow();
-        sink.tableHeaderCell("25%");
+        sink.tableHeaderCell(attribute(SinkEventAttributes.WIDTH, "25%"));
         sink.text("Name");
         sink.tableHeaderCell_();
-        sink.tableCell("50%");
+        sink.tableCell(attribute(SinkEventAttributes.WIDTH, "50%"));
         sink.text("Middle");
         sink.tableCell_();
         sink.tableCell();
@@ -143,7 +147,7 @@ public class Doxia_module_xhtmlTest {
         sink.table_();
         sink.horizontalRule();
         sink.body_();
-        sink.flush();
+        sink.close();
 
         String html = writer.toString();
         assertThat(html)
@@ -151,19 +155,18 @@ public class Doxia_module_xhtmlTest {
                 .contains("target=\"_blank\"")
                 .contains("class=\"externalLink\"")
                 .contains("href=\"https://example.com/search?q=one&amp;lang=en\"")
-                .contains("href=\"#local-section\"")
+                .contains("href=\"local-section\"")
                 .contains("<b><i><tt>local link</tt></i></b>")
                 .contains("<br />")
                 .contains("&#160;")
                 .contains("<div class=\"source\"><pre>&lt;xml&gt;&amp;value&lt;/xml&gt;</pre>")
                 .contains("<img src=\"images/logo.png\" alt=\"Logo\" />")
                 .contains("<ul><li>bullet</li>")
-                .contains("<ol type=\"A\"><li>numbered</li>")
+                .contains("<ol style=\"list-style-type: upper-alpha\"><li>numbered</li>")
                 .contains("<dl><dt>term</dt>")
                 .contains("<dd>definition</dd>")
-                .contains("<table class=\"bodyTable\">")
+                .contains("<table align=\"center\" border=\"1\" class=\"bodyTable\">")
                 .contains("<caption>Metrics</caption>")
-                .contains("<tbody>")
                 .contains("<tr class=\"a\">")
                 .contains("<th")
                 .contains("width=\"25%\"")
@@ -199,27 +202,29 @@ public class Doxia_module_xhtmlTest {
                 """;
         StringWriter writer = new StringWriter();
         XhtmlParser parser = new XhtmlParser();
+        TestXhtmlSink sink = new TestXhtmlSink(writer);
 
-        parser.parse(new StringReader(xhtml), new XhtmlSink(writer));
+        parser.parse(new StringReader(xhtml), sink);
+        sink.close();
 
         String html = writer.toString();
         assertThat(parser.getType()).isEqualTo(Parser.XML_TYPE);
         assertThat(html)
                 .contains("<title>Parsed Title</title>")
-                .contains("<h2>Main &amp; Intro</h2>")
+                .contains("<h1>Main &amp; Intro</h1>")
                 .contains("<p>Before <b>bold</b> and <i>italic</i> text.</p>")
-                .contains("<h3>Details</h3>")
+                .contains("<h2>Details</h2>")
                 .contains("class=\"externalLink\"")
                 .contains("href=\"https://example.com\"")
                 .contains(">site</a>")
                 .contains("<a name=\"inside\">anchor</a>")
-                .contains("<div class=\"source\"><pre>code &amp; symbols</pre>")
+                .contains("<div><pre>code &amp; symbols</pre>")
                 .contains("<ul><li>first</li>")
                 .contains("<li>second</li>")
-                .contains("<ol type=\"1\"><li>one</li>")
-                .contains("<table class=\"bodyTable\"><tr class=\"a\">")
-                .contains("<td>head</td>")
-                .contains("<td>cell</td>")
+                .contains("<ol style=\"list-style-type: decimal\"><li>one</li>")
+                .contains("<table align=\"center\" border=\"1\" class=\"bodyTable\"><tr class=\"a\">")
+                .contains("<th align=\"left\">head</th>")
+                .contains("<td align=\"left\">cell</td>")
                 .contains("<img src=\"diagram.png\" alt=\"Diagram\" />")
                 .contains("<hr />")
                 .contains("</div>")
@@ -237,8 +242,10 @@ public class Doxia_module_xhtmlTest {
                 """;
         StringWriter writer = new StringWriter();
         XhtmlParser parser = new XhtmlParser();
+        TestXhtmlSink sink = new TestXhtmlSink(writer);
 
-        parser.parse(new StringReader(xhtml), new XhtmlSink(writer));
+        parser.parse(new StringReader(xhtml), sink);
+        sink.close();
 
         String html = writer.toString();
         assertThat(html)
@@ -248,7 +255,7 @@ public class Doxia_module_xhtmlTest {
     }
 
     @Test
-    void parserClosesNestedSectionsWhenHigherLevelHeadingStarts() throws Exception {
+    void parserPreservesTopLevelHeadingAndWrapsNestedSection() throws Exception {
         String xhtml = """
                 <html>
                   <body>
@@ -263,14 +270,15 @@ public class Doxia_module_xhtmlTest {
                 """;
         StringWriter writer = new StringWriter();
         XhtmlParser parser = new XhtmlParser();
+        TestXhtmlSink sink = new TestXhtmlSink(writer);
 
-        parser.parse(new StringReader(xhtml), new XhtmlSink(writer));
+        parser.parse(new StringReader(xhtml), sink);
+        sink.close();
 
         String html = writer.toString().replaceAll(">\\s+<", "><");
         assertThat(html).contains(
-                "<div class=\"section\"><h2>First</h2><p>one</p>"
-                        + "<div class=\"section\"><h3>Child</h3><p>two</p></div></div>"
-                        + "<div class=\"section\"><h2>Second</h2><p>three</p></div>");
+                "<body><h1>First</h1><p>one</p><div class=\"section\"><h2>Child</h2><p>two</p>"
+                        + "<h1>Second</h1><p>three</p></div></body></html>");
     }
 
     @Test
@@ -278,36 +286,65 @@ public class Doxia_module_xhtmlTest {
         XhtmlParser parser = new XhtmlParser();
 
         assertThatThrownBy(() -> parser.parse(new StringReader("<html><body><p>unfinished</body></html>"),
-                new XhtmlSink(new StringWriter())))
-                .isInstanceOf(ParseException.class)
-                .hasMessageContaining("Error parsing the model");
+                new TestXhtmlSink(new StringWriter())))
+                .isInstanceOf(ParseException.class);
     }
 
     @Test
-    void helperClassesExposeEncodingContextAndStringLookupBehavior() {
-        Map<String, String> values = new HashMap<>();
-        values.put("site.title", "Doxia XHTML");
-        StringsMap stringsMap = new StringsMap(values);
+    void factorySiteModuleAndProtectedHelpersExposeXhtmlBehavior() throws Exception {
+        XhtmlSiteModule siteModule = new XhtmlSiteModule();
+        XhtmlSinkFactory factory = new XhtmlSinkFactory();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-        RenderingContext context = new RenderingContext(
-                new File("target/site"), "guide/index.xhtml.vm", "xhtml", "xhtml");
-        context.setAttribute("skin", "default");
+        Sink sink = factory.createSink(output, "UTF-8");
+        sink.head();
+        sink.title();
+        sink.text("Factory Sink");
+        sink.title_();
+        sink.head_();
+        sink.body();
+        sink.paragraph();
+        sink.text("Created by the XHTML sink factory");
+        sink.paragraph_();
+        sink.body_();
+        sink.close();
 
-        assertThat(stringsMap.get("site.title")).isEqualTo("Doxia XHTML");
-        assertThat(stringsMap.get("missing")).isNull();
-        assertThat(context.getBasedir()).isEqualTo(new File("target/site"));
-        assertThat(context.getInputName()).isEqualTo("guide/index.xhtml.vm");
-        assertThat(context.getOutputName()).isEqualTo("guide/index.html");
-        assertThat(context.getParserId()).isEqualTo("xhtml");
-        assertThat(context.getExtension()).isEqualTo("xhtml");
-        assertThat(context.getRelativePath()).isNotNull();
-        assertThat(context.getAttribute("skin")).isEqualTo("default");
-        assertThat(context.getAttribute("unknown")).isNull();
-        assertThat(XhtmlSink.escapeHTML("<tag attr=\"value\">&</tag>"))
+        String html = output.toString(StandardCharsets.UTF_8.name());
+        assertThat(siteModule.getSourceDirectory()).isEqualTo("xhtml");
+        assertThat(siteModule.getExtension()).isEqualTo("xhtml");
+        assertThat(siteModule.getParserId()).isEqualTo("xhtml");
+        assertThat(html)
+                .contains("<title>Factory Sink</title>")
+                .contains("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>")
+                .contains("<p>Created by the XHTML sink factory</p>");
+        assertThat(TestXhtmlSink.escapeHtml("<tag attr=\"value\">&</tag>"))
                 .isEqualTo("&lt;tag attr=&quot;value&quot;&gt;&amp;&lt;/tag&gt;");
-        assertThat(XhtmlSink.encodeURL("folder/My File.xhtml?x=1&y=\u00e4"))
+        assertThat(TestXhtmlSink.encodeUrl("folder/My File.xhtml?x=1&y=\u00e4"))
                 .isEqualTo("folder/My%20File.xhtml?x=1&y=%c3%a4");
-        assertThat(XhtmlSink.encodeURL(null)).isNull();
-        assertThat(XhtmlSink.encodeFragment("Hello, Doxia 1.0!")).isEqualTo("hellodoxia10");
+        assertThat(TestXhtmlSink.encodeUrl(null)).isNull();
+    }
+
+    private static SinkEventAttributeSet attribute(String name, String value) {
+        SinkEventAttributeSet attributes = new SinkEventAttributeSet();
+        attributes.addAttribute(name, value);
+        return attributes;
+    }
+
+    private static final class TestXhtmlSink extends XhtmlSink {
+        private TestXhtmlSink(Writer writer) {
+            super(writer);
+        }
+
+        private TestXhtmlSink(Writer writer, String encoding, String languageId) {
+            super(writer, encoding, languageId);
+        }
+
+        private static String escapeHtml(String value) {
+            return escapeHTML(value);
+        }
+
+        private static String encodeUrl(String value) {
+            return encodeURL(value);
+        }
     }
 }
