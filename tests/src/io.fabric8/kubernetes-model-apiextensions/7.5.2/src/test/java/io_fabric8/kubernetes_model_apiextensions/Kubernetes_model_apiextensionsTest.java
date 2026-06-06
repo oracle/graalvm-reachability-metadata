@@ -6,9 +6,17 @@
  */
 package io_fabric8.kubernetes_model_apiextensions;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
+import io.fabric8.kubernetes.api.model.StatusBuilder;
+import io.fabric8.kubernetes.api.model.apiextensions.v1.ConversionReview;
+import io.fabric8.kubernetes.api.model.apiextensions.v1.ConversionReviewBuilder;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceColumnDefinition;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceColumnDefinitionBuilder;
+import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceConversion;
+import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceConversionBuilder;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinition;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinitionBuilder;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinitionNamesBuilder;
@@ -204,5 +212,72 @@ public class Kubernetes_model_apiextensionsTest {
                 .getSchema()
                 .getOpenAPIV3Schema()
                 .getXKubernetesPreserveUnknownFields()).isTrue();
+    }
+
+    @Test
+    void buildsWebhookConversionConfiguration() {
+        CustomResourceConversion conversion = new CustomResourceConversionBuilder()
+                .withStrategy("Webhook")
+                .withNewWebhook()
+                .withConversionReviewVersions("v1")
+                .withNewClientConfig()
+                .withCaBundle("certificate-authority-data")
+                .withNewService("conversion-webhook", "webhooks", "/convert", 443)
+                .endClientConfig()
+                .endWebhook()
+                .build();
+
+        assertThat(conversion.getStrategy()).isEqualTo("Webhook");
+        assertThat(conversion.getWebhook().getConversionReviewVersions()).containsExactly("v1");
+        assertThat(conversion.getWebhook().getClientConfig().getCaBundle())
+                .isEqualTo("certificate-authority-data");
+        assertThat(conversion.getWebhook().getClientConfig().getService().getName())
+                .isEqualTo("conversion-webhook");
+        assertThat(conversion.getWebhook().getClientConfig().getService().getNamespace())
+                .isEqualTo("webhooks");
+        assertThat(conversion.getWebhook().getClientConfig().getService().getPath())
+                .isEqualTo("/convert");
+        assertThat(conversion.getWebhook().getClientConfig().getService().getPort())
+                .isEqualTo(443);
+    }
+
+    @Test
+    void buildsConversionReviewRequestAndResponse() {
+        Map<String, Object> originalResource = resource("example.com/v1alpha1", "Widget");
+        Map<String, Object> convertedResource = resource("example.com/v1", "Widget");
+
+        ConversionReview conversionReview = new ConversionReviewBuilder()
+                .withApiVersion("apiextensions.k8s.io/v1")
+                .withKind("ConversionReview")
+                .withNewRequest()
+                .withUid("request-uid")
+                .withDesiredAPIVersion("example.com/v1")
+                .withObjects(originalResource)
+                .endRequest()
+                .withNewResponse()
+                .withUid("request-uid")
+                .withConvertedObjects(convertedResource)
+                .withResult(new StatusBuilder()
+                        .withStatus("Success")
+                        .withCode(200)
+                        .build())
+                .endResponse()
+                .build();
+
+        assertThat(conversionReview.getRequest().getUid()).isEqualTo("request-uid");
+        assertThat(conversionReview.getRequest().getDesiredAPIVersion()).isEqualTo("example.com/v1");
+        assertThat(conversionReview.getRequest().getObjects()).containsExactly(originalResource);
+        assertThat(conversionReview.getResponse().getUid()).isEqualTo("request-uid");
+        assertThat(conversionReview.getResponse().getConvertedObjects()).containsExactly(convertedResource);
+        assertThat(conversionReview.getResponse().getResult().getStatus()).isEqualTo("Success");
+        assertThat(conversionReview.getResponse().getResult().getCode()).isEqualTo(200);
+    }
+
+    private static Map<String, Object> resource(String apiVersion, String kind) {
+        Map<String, Object> resource = new LinkedHashMap<>();
+        resource.put("apiVersion", apiVersion);
+        resource.put("kind", kind);
+        resource.put("metadata", Map.of("name", "sample-widget"));
+        return resource;
     }
 }
