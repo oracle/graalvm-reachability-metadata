@@ -12,6 +12,7 @@ import io.fabric8.kubernetes.api.model.DeleteOptionsBuilder;
 import io.fabric8.kubernetes.api.model.IntOrString;
 import io.fabric8.kubernetes.api.model.KubernetesResource;
 import io.fabric8.kubernetes.api.model.LabelSelectorBuilder;
+import io.fabric8.kubernetes.api.model.ListMetaBuilder;
 import io.fabric8.kubernetes.api.model.policy.v1.Eviction;
 import io.fabric8.kubernetes.api.model.policy.v1.EvictionBuilder;
 import io.fabric8.kubernetes.api.model.policy.v1.PodDisruptionBudget;
@@ -122,7 +123,11 @@ public class Kubernetes_model_policyTest {
         PodDisruptionBudgetList list = new PodDisruptionBudgetListBuilder()
                 .withApiVersion("policy/v1")
                 .withKind("PodDisruptionBudgetList")
-                .withNewMetadata("continue-token", 123L, "42", "rv-42")
+                .withMetadata(new ListMetaBuilder()
+                        .withContinue("continue-token")
+                        .withRemainingItemCount(123L)
+                        .withResourceVersion("42")
+                        .build())
                 .addToItems(webBudget)
                 .addNewItem()
                     .withApiVersion("policy/v1")
@@ -137,7 +142,9 @@ public class Kubernetes_model_policyTest {
                 .build();
 
         assertThat(list).isInstanceOf(KubernetesResource.class);
+        assertThat(list.getMetadata().getContinue()).isEqualTo("continue-token");
         assertThat(list.getMetadata().getRemainingItemCount()).isEqualTo(123L);
+        assertThat(list.getMetadata().getResourceVersion()).isEqualTo("42");
         assertThat(list.getItems()).hasSize(2);
         assertThat(list.getItems().get(0).getMetadata().getName()).isEqualTo("web-budget");
         assertThat(list.getItems().get(1).getSpec().getMaxUnavailable().getIntVal()).isEqualTo(1);
