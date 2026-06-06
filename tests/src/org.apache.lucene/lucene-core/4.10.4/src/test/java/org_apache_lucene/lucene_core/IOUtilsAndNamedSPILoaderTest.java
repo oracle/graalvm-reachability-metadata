@@ -9,6 +9,8 @@ package org_apache_lucene.lucene_core;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 
+import org.apache.lucene.codecs.Codec;
+import org.apache.lucene.codecs.DocValuesFormat;
 import org.apache.lucene.codecs.PostingsFormat;
 import org.apache.lucene.util.IOUtils;
 import org.junit.jupiter.api.Test;
@@ -34,5 +36,23 @@ public class IOUtilsAndNamedSPILoaderTest {
         assertThat(postingsFormat.getClass().getName())
                 .isEqualTo("org.apache.lucene.codecs.lucene41.Lucene41PostingsFormat");
         assertThat(PostingsFormat.availablePostingsFormats()).contains("Lucene40", "Lucene41");
+    }
+
+    @Test
+    void loadsBuiltInCodecsThroughNamedSpiLookup() {
+        Codec codec = Codec.forName("Lucene42");
+
+        assertThat(codec.getClass().getName())
+                .isEqualTo("org.apache.lucene.codecs.lucene42.Lucene42Codec");
+        assertThat(Codec.availableCodecs()).contains("Lucene3x", "Lucene40", "Lucene41", "Lucene42", "Lucene410");
+    }
+
+    @Test
+    void loadsBuiltInDocValuesFormatsThroughNamedSpiLookup() {
+        DocValuesFormat docValuesFormat = DocValuesFormat.forName("Lucene42");
+
+        assertThat(docValuesFormat.getClass().getName())
+                .isEqualTo("org.apache.lucene.codecs.lucene42.Lucene42DocValuesFormat");
+        assertThat(DocValuesFormat.availableDocValuesFormats()).contains("Lucene42", "Lucene45", "Lucene49", "Lucene410");
     }
 }
