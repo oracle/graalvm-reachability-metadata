@@ -15,7 +15,7 @@ import cats.data.Ior
 import cats.data.IorT
 import cats.data.Kleisli
 import cats.data.OptionT
-import cats.data.StateT
+import cats.data.WriterT
 import cats.effect.SyncIO
 import cats.effect.kernel.Resource
 import cats.syntax.show._
@@ -29,6 +29,7 @@ import org.typelevel.otel4s.Attribute
 import org.typelevel.otel4s.AttributeKey
 import org.typelevel.otel4s.AttributeType
 import org.typelevel.otel4s.KindTransformer
+import org.typelevel.otel4s.baggage.Baggage
 import org.typelevel.otel4s.context.Contextual
 import org.typelevel.otel4s.context.Key
 import org.typelevel.otel4s.context.propagation.ContextPropagators
@@ -36,7 +37,6 @@ import org.typelevel.otel4s.context.propagation.PassThroughPropagator
 import org.typelevel.otel4s.context.propagation.TextMapGetter
 import org.typelevel.otel4s.context.propagation.TextMapPropagator
 import org.typelevel.otel4s.context.propagation.TextMapUpdater
-import org.typelevel.otel4s.meta.InstrumentMeta
 
 import scala.collection.immutable.SortedMap
 
@@ -300,9 +300,12 @@ class Otel4s_core_common_3Test {
     val kleisli: Kleisli[List, String, Int] = Kleisli((input: String) => List(input.length, input.length + 1))
     assertEquals(List(4, 3), kleisliTransformer.limitedMapK(kleisli)(reverseList).run("abc"))
 
-    val stateTransformer: KindTransformer[List, [A] =>> StateT[List, Int, A]] = summon[KindTransformer[List, [A] =>> StateT[List, Int, A]]]
-    val state: StateT[List, Int, String] = StateT((value: Int) => List((value + 1, "first"), (value + 2, "second")))
-    assertEquals(List((12, "second"), (11, "first")), stateTransformer.limitedMapK(state)(reverseList).run(10))
+    val writerTransformer: KindTransformer[List, [A] =>> WriterT[List, Vector[String], A]] =
+      summon[KindTransformer[List, [A] =>> WriterT[List, Vector[String], A]]]
+    val writer: WriterT[List, Vector[String], String] =
+      WriterT[List, Vector[String], String](List((Vector("first"), "one"), (Vector("second"), "two")))
+    assertEquals(List((Vector("second"), "two"), (Vector("first"), "one")), writerTransformer.limitedMapK(writer)(reverseList).run)
+    assertEquals(List((Vector.empty[String], 7)), writerTransformer.liftK(List(7)).run)
 
     val syncIOIdentity: SyncIO ~> SyncIO = new (SyncIO ~> SyncIO) {
       def apply[A](fa: SyncIO[A]): SyncIO[A] = fa.map(identity)
@@ -314,21 +317,36 @@ class Otel4s_core_common_3Test {
   }
 
   @Test
-  def instrumentMetaTracksEnabledStateUnitAndMapK(): Unit = {
-    val enabled: InstrumentMeta[Option] = InstrumentMeta.enabled[Option]
-    val disabled: InstrumentMeta[Option] = InstrumentMeta.disabled[Option]
+  def baggageTracksEntriesMetadataEqualityAndCatsInstances(): Unit = {
+    val empty: Baggage = Baggage.empty
+    assertTrue(empty.isEmpty)
+    assertEquals(0, empty.size)
+    assertEquals(None, empty.get("user.id"))
 
-    assertTrue(enabled.isEnabled)
-    assertEquals(Some(()), enabled.unit)
-    assertFalse(disabled.isEnabled)
-    assertEquals(Some(()), disabled.unit)
+    val withEntries: Baggage = empty
+      .updated("user.id", "alice", "redacted")
+      .updated("request.id", "request-1")
 
-    val optionToList: Option ~> List = new (Option ~> List) {
-      def apply[A](fa: Option[A]): List[A] = fa.toList
-    }
-    val mapped: InstrumentMeta[List] = enabled.mapK(optionToList)
-    assertTrue(mapped.isEnabled)
-    assertEquals(List(()), mapped.unit)
+    val expectedUserEntry: Baggage.Entry =
+      Baggage.Entry("alice", Some(Baggage.Metadata("redacted")))
+
+    assertFalse(withEntries.isEmpty)
+    assertEquals(2, withEntries.size)
+    assertEquals(Some(expectedUserEntry), withEntries.get("user.id"))
+    assertEquals(Some(Baggage.Entry("request-1", None)), withEntries.get("request.id"))
+    assertEquals("alice;redacted", expectedUserEntry.show)
+    assertTrue(withEntries.toString.contains("user.id=alice;redacted"))
+
+    val sameEntriesDifferentOrder: Baggage = Baggage.empty
+      .updated("request.id", "request-1")
+      .updated("user.id", "alice", Some("redacted"))
+    assertEquals(withEntries, sameEntriesDifferentOrder)
+    assertEquals(Hash[Baggage].hash(withEntries), Hash[Baggage].hash(sameEntriesDifferentOrder))
+
+    val removed: Baggage = withEntries.removed("request.id")
+    assertEquals(1, removed.size)
+    assertEquals(None, removed.get("request.id"))
+    assertEquals(Map("user.id" -> expectedUserEntry), removed.asMap)
   }
 
   private final case class HeaderCarrier(entries: Map[String, String])
