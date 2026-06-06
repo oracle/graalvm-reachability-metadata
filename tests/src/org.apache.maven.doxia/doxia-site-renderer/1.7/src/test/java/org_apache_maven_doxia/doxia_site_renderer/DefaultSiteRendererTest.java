@@ -11,8 +11,12 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+import org.apache.maven.doxia.site.decoration.DecorationModel;
+import org.apache.maven.doxia.site.decoration.PublishDate;
 import org.apache.maven.doxia.siterenderer.DefaultSiteRenderer;
+import org.apache.maven.doxia.siterenderer.RenderingContext;
 import org.apache.maven.doxia.siterenderer.SiteRenderingContext;
+import org.apache.velocity.context.Context;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.junit.jupiter.api.Test;
@@ -45,23 +49,37 @@ public class DefaultSiteRendererTest {
         }
     }
 
+    @Test
+    void documentVelocityContextIncludesBundledRendererVersion(@TempDir Path temporaryDirectory) {
+        ContextExposingSiteRenderer renderer = new ContextExposingSiteRenderer();
+        renderer.enableLogging(new ConsoleLogger(Logger.LEVEL_DISABLED, "test"));
+        SiteRenderingContext siteRenderingContext = new SiteRenderingContext();
+        DecorationModel decoration = new DecorationModel();
+        PublishDate publishDate = new PublishDate();
+        publishDate.setFormat("yyyy-MM-dd");
+        decoration.setPublishDate(publishDate);
+        siteRenderingContext.setDecoration(decoration);
+        RenderingContext renderingContext =
+                new RenderingContext(temporaryDirectory.toFile(), "index.apt", "apt", "apt");
+
+        Context context = renderer.createDocumentContext(renderingContext, siteRenderingContext);
+
+        assertThat(context.get("doxiaSiteRendererVersion"))
+                .isInstanceOf(String.class)
+                .asString()
+                .isNotBlank();
+    }
+
     private static void copyResources(DefaultSiteRenderer renderer, SiteRenderingContext context, File outputDirectory)
             throws IOException {
-        try {
-            renderer.copyResources(context, null, outputDirectory);
-        } catch (IOException e) {
-            if (!defaultResourcesWereCopied(outputDirectory.toPath())) {
-                throw e;
-            }
+        renderer.copyResources(context, outputDirectory);
+    }
+
+    private static final class ContextExposingSiteRenderer extends DefaultSiteRenderer {
+        private Context createDocumentContext(
+                RenderingContext renderingContext, SiteRenderingContext siteRenderingContext) {
+            return createDocumentVelocityContext(renderingContext, siteRenderingContext);
         }
     }
 
-    private static boolean defaultResourcesWereCopied(Path outputDirectory) {
-        for (String defaultResource : DEFAULT_RESOURCES) {
-            if (!outputDirectory.resolve(defaultResource).toFile().isFile()) {
-                return false;
-            }
-        }
-        return true;
-    }
 }
