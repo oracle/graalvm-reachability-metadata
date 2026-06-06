@@ -108,6 +108,35 @@ public class Helidon_service_metadataTest {
     }
 
     @Test
+    void parsesMultipleRegistryModulesAndIgnoresModulesWithoutServices() {
+        Hson.Struct firstService = Hson.structBuilder()
+                .set("descriptor", "example.first.FirstDescriptor")
+                .build();
+        Hson.Struct emptyModule = Hson.structBuilder()
+                .set("module", "example.empty.module")
+                .build();
+        Hson.Struct secondService = Hson.structBuilder()
+                .set("descriptor", "example.second.SecondDescriptor")
+                .build();
+        Hson.Struct firstModule = Hson.structBuilder()
+                .set("module", "example.first.module")
+                .setStructs("services", List.of(firstService))
+                .build();
+        Hson.Struct secondModule = Hson.structBuilder()
+                .set("module", "example.second.module")
+                .setStructs("services", List.of(secondService))
+                .build();
+
+        List<DescriptorMetadata> metadata = Descriptors.descriptors(
+                "memory:multi-module",
+                Hson.Array.create(List.of(firstModule, emptyModule, secondModule)));
+
+        assertThat(metadata)
+                .extracting(descriptor -> descriptor.descriptorType().fqName())
+                .containsExactly("example.first.FirstDescriptor", "example.second.SecondDescriptor");
+    }
+
+    @Test
     void writesAndParsesDescriptorRegistryHson() {
         Hson.Struct service = DescriptorMetadata.create(
                         TypeName.create("example.RoundTripDescriptor"),
