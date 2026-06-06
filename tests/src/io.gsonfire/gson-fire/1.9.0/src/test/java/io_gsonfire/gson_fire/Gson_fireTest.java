@@ -8,7 +8,7 @@ package io_gsonfire.gson_fire;
 
 import org.junit.jupiter.api.Test;
 
-class Gson_fireTest {
+public class Gson_fireTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
