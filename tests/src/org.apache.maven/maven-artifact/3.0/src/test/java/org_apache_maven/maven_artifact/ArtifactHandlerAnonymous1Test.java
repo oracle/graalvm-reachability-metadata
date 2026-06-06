@@ -16,4 +16,52 @@ public class ArtifactHandlerAnonymous1Test {
     void roleInitializesArtifactHandlerInterface() {
         assertThat(ArtifactHandler.ROLE).isEqualTo(ArtifactHandler.class.getName());
     }
+
+    @Test
+    void artifactHandlerExposesPackagingDetails() {
+        ArtifactHandler handler = new ArtifactHandler() {
+            @Override
+            public String getExtension() {
+                return "jar";
+            }
+
+            @Override
+            public String getDirectory() {
+                return "java";
+            }
+
+            @Override
+            public String getClassifier() {
+                return "sources";
+            }
+
+            @Override
+            public String getPackaging() {
+                return "jar";
+            }
+
+            @Override
+            public boolean isIncludesDependencies() {
+                return false;
+            }
+
+            @Override
+            public String getLanguage() {
+                return "java";
+            }
+
+            @Override
+            public boolean isAddedToClasspath() {
+                return true;
+            }
+        };
+
+        assertThat(handler.getExtension()).isEqualTo("jar");
+        assertThat(handler.getDirectory()).isEqualTo("java");
+        assertThat(handler.getClassifier()).isEqualTo("sources");
+        assertThat(handler.getPackaging()).isEqualTo("jar");
+        assertThat(handler.isIncludesDependencies()).isFalse();
+        assertThat(handler.getLanguage()).isEqualTo("java");
+        assertThat(handler.isAddedToClasspath()).isTrue();
+    }
 }
