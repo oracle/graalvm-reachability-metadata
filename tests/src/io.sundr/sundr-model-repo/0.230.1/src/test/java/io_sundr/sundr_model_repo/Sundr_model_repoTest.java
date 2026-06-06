@@ -83,6 +83,24 @@ public class Sundr_model_repoTest {
     }
 
     @Test
+    void resolvesMethodReferencesUsingTheSharedRepository() {
+        Method parse = Method.newMethod("parse", STRING);
+        TypeDef parser = type("example.shared", "Parser", parse);
+        Property parserProperty = Property.newProperty(parser.toReference(), "parser");
+        Method load = new MethodBuilder(Method.newMethod("load", STRING))
+                .withBlock(new Block(call("parse", parserProperty)))
+                .build();
+        TypeDef loader = type("example.shared", "Loader", load);
+
+        DefinitionRepository.getRepository().register(parser);
+        DefinitionRepository.getRepository().register(loader);
+
+        Set<MethodReference> references = MethodReference.getMethodReferences(load);
+
+        assertThat(referenceNames(references)).containsExactly("example.shared.Parser#parse");
+    }
+
+    @Test
     void scopesTheSharedRepositoryForFunctionAndCallableWork() {
         TypeDef scoped = type("example.scope", "Scoped");
         TypeDef called = type("example.scope", "Called");
