@@ -6,11 +6,42 @@
  */
 package io_sundr.builder_annotations;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
+import io.sundr.builder.annotations.Buildable;
 import org.junit.jupiter.api.Test;
 
-class Builder_annotationsTest {
+public class Builder_annotationsTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void generatedBuilderSupportsLazyCollectionFluentMethods() {
+        BuildableCatalog catalog = new BuildableCatalogBuilder()
+                .withName("metadata-tests")
+                .addToTags("builder", "native-image")
+                .removeFromTags("native-image")
+                .build();
+
+        assertThat(catalog.getName()).isEqualTo("metadata-tests");
+        assertThat(catalog.getTags()).containsExactly("builder");
+    }
+}
+
+@Buildable
+class BuildableCatalog {
+    private final String name;
+    private final List<String> tags;
+
+    public BuildableCatalog(String name, List<String> tags) {
+        this.name = name;
+        this.tags = tags;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<String> getTags() {
+        return tags;
     }
 }
