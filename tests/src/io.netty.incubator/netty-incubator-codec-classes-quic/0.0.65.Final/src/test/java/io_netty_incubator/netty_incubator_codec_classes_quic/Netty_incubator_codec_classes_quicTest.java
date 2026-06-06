@@ -273,11 +273,6 @@ public class Netty_incubator_codec_classes_quicTest {
 
     @Test
     void quicHeaderParserExtractsVersionNegotiationHeader() throws Exception {
-        if (!Quic.isAvailable()) {
-            assertNativeBackedTypeUnavailable(() -> new QuicHeaderParser(0, 4));
-            return;
-        }
-
         InetSocketAddress sender = new InetSocketAddress("127.0.0.1", 4433);
         InetSocketAddress recipient = new InetSocketAddress("127.0.0.1", 9443);
         byte[] destinationConnectionId = new byte[] {1, 2, 3, 4};
@@ -292,7 +287,7 @@ public class Netty_incubator_codec_classes_quicTest {
         packet.writeBytes(sourceConnectionId);
         packet.writeInt(1);
 
-        try (QuicHeaderParser parser = new QuicHeaderParser(0, destinationConnectionId.length)) {
+        try (QuicHeaderParser parser = new QuicHeaderParser(destinationConnectionId.length)) {
             parser.parse(sender, recipient, packet, (local, remote, payload, type, version, scid, dcid, token) -> {
                 assertThat(local).isSameAs(sender);
                 assertThat(remote).isSameAs(recipient);
