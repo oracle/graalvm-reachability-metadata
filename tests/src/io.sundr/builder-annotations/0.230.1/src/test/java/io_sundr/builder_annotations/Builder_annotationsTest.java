@@ -25,6 +25,24 @@ public class Builder_annotationsTest {
         assertThat(catalog.getName()).isEqualTo("metadata-tests");
         assertThat(catalog.getTags()).containsExactly("builder");
     }
+
+    @Test
+    void generatedEditableTypeCanCreateBuilderFromExistingInstance() {
+        EditableBuildableCatalog original = new BuildableCatalogBuilder()
+                .withName("draft")
+                .withTags("builder", "native-image")
+                .build();
+
+        BuildableCatalog updated = original.edit()
+                .withName("published")
+                .withTags("builder", "metadata")
+                .build();
+
+        assertThat(original.getName()).isEqualTo("draft");
+        assertThat(original.getTags()).containsExactly("builder", "native-image");
+        assertThat(updated.getName()).isEqualTo("published");
+        assertThat(updated.getTags()).containsExactly("builder", "metadata");
+    }
 }
 
 @Buildable
