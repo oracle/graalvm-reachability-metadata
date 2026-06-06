@@ -16,7 +16,6 @@ import software.amazon.awssdk.annotations.Immutable;
 import software.amazon.awssdk.annotations.Mutable;
 import software.amazon.awssdk.annotations.NotNull;
 import software.amazon.awssdk.annotations.NotThreadSafe;
-import software.amazon.awssdk.annotations.ReviewBeforeRelease;
 import software.amazon.awssdk.annotations.SdkInternalApi;
 import software.amazon.awssdk.annotations.SdkPreviewApi;
 import software.amazon.awssdk.annotations.SdkProtectedApi;
@@ -64,7 +63,7 @@ public class AnnotationsTest {
     }
 
     @Test
-    void reviewAndGeneratedAnnotationsCanDocumentReleaseSensitiveCode() {
+    void protectedAndGeneratedAnnotationsCanDocumentReleaseSensitiveCode() {
         ReleaseCandidateFeature feature = new ReleaseCandidateFeature("checksum-trailer");
 
         assertThat(feature.name()).isEqualTo("checksum-trailer");
@@ -95,17 +94,6 @@ public class AnnotationsTest {
                 return Generated.class;
             }
         };
-        ReviewBeforeRelease reviewBeforeRelease = new ReviewBeforeRelease() {
-            @Override
-            public String value() {
-                return "Confirm preview API status before release";
-            }
-
-            @Override
-            public Class<? extends Annotation> annotationType() {
-                return ReviewBeforeRelease.class;
-            }
-        };
         ToBuilderIgnoreField toBuilderIgnoreField = new ToBuilderIgnoreField() {
             @Override
             public String[] value() {
@@ -122,8 +110,6 @@ public class AnnotationsTest {
         assertThat(generated.date()).isEqualTo("2026-05-03T00:00:00Z");
         assertThat(generated.comments()).isEqualTo("generated for reachability metadata testing");
         assertThat(generated.annotationType()).isSameAs(Generated.class);
-        assertThat(reviewBeforeRelease.value()).isEqualTo("Confirm preview API status before release");
-        assertThat(reviewBeforeRelease.annotationType()).isSameAs(ReviewBeforeRelease.class);
         assertThat(toBuilderIgnoreField.value()).containsExactly("checksumCache", "clock");
         assertThat(toBuilderIgnoreField.annotationType()).isSameAs(ToBuilderIgnoreField.class);
     }
@@ -353,23 +339,22 @@ public class AnnotationsTest {
         }
     }
 
-    @ReviewBeforeRelease("Verify generated code is ready for release")
     @SdkProtectedApi
     static final class ReleaseCandidateFeature {
-        @ReviewBeforeRelease("Feature name is surfaced in public generated code")
+        @SdkPreviewApi
         private final String name;
 
-        @ReviewBeforeRelease("Constructor accepts release-candidate identifiers")
+        @SdkProtectedApi
         ReleaseCandidateFeature(String name) {
             this.name = name;
         }
 
-        @ReviewBeforeRelease("Ensure this feature name is final before GA")
+        @SdkPreviewApi
         String name() {
             return name;
         }
 
-        @ReviewBeforeRelease("Release note must be updated if generated text changes")
+        @SdkProtectedApi
         String reviewNote() {
             return "Review generated " + name + " before publishing";
         }
