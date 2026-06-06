@@ -15,8 +15,13 @@ class ExtensionSchemasTest {
     val message: ExtensionSchemasProto2Probe = new ExtensionSchemasProto2Probe()
 
     message.initializeEmptyPayloadSchema()
+    val liteMessage: ExtensionSchemasProto2Probe.ExtendableLiteProbe =
+      ExtensionSchemasProto2Probe.parseExtendableLiteMessageWithUnknownField()
 
     assertThat(message.getDescriptorForType.getFile.toProto.hasSyntax).isFalse
     assertThat(message.getDescriptorForType.getName).isEqualTo("ExtensionSchemasProto2Probe")
+    assertThat(liteMessage).isNotNull
+    assertThat(liteMessage.getDefaultInstanceForType)
+      .isSameAs(ExtensionSchemasProto2Probe.ExtendableLiteProbe.getDefaultInstance)
   }
 }
