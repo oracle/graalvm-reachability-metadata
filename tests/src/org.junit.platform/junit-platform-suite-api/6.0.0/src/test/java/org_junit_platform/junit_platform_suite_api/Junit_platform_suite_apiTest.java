@@ -43,7 +43,6 @@ import org.junit.platform.suite.api.SelectUris;
 import org.junit.platform.suite.api.Selects;
 import org.junit.platform.suite.api.Suite;
 import org.junit.platform.suite.api.SuiteDisplayName;
-import org.junit.platform.suite.api.UseTechnicalNames;
 
 public class Junit_platform_suite_apiTest {
     @Test
@@ -53,7 +52,6 @@ public class Junit_platform_suite_apiTest {
 
         assertThat(suite.failIfNoTests()).isFalse();
         assertThat(displayName.value()).isEqualTo("Comprehensive suite API fixture");
-        assertThat(annotationOn(ComprehensiveSuite.class, UseTechnicalNames.class)).isNotNull();
         assertThat(annotationOn(ComprehensiveSuite.class, DisableParentConfigurationParameters.class)).isNotNull();
         assertThat(annotationOn(ComprehensiveSuite.class, IncludeEngines.class).value()).containsExactly(
                 "junit-jupiter", "custom-engine");
@@ -241,7 +239,6 @@ public class Junit_platform_suite_apiTest {
 
     @Suite(failIfNoTests = false)
     @SuiteDisplayName("Comprehensive suite API fixture")
-    @UseTechnicalNames
     @DisableParentConfigurationParameters
     @ConfigurationParameter(key = "junit.jupiter.conditions.deactivate", value = "org.example.DisabledCondition")
     @ConfigurationParameter(key = "custom.suite.mode", value = "native-friendly")
