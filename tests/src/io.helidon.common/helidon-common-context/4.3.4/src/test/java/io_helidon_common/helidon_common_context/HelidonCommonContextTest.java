@@ -113,6 +113,21 @@ public class HelidonCommonContextTest {
     }
 
     @Test
+    void classifiedLookupUsesEqualClassifierKeys() {
+        Context context = Context.builder().id("classifier-equality-context").build();
+        ClassifierKey registrationKey = new ClassifierKey("tenant");
+        ClassifierKey lookupKey = new ClassifierKey("tenant");
+        ClassifierKey otherKey = new ClassifierKey("other");
+        ClassifiedValue value = new ClassifiedValue("classified-by-equality");
+
+        context.register(registrationKey, value);
+
+        assertThat(lookupKey).isNotSameAs(registrationKey).isEqualTo(registrationKey);
+        assertThat(context.get(lookupKey, ClassifiedValue.class).orElseThrow()).isSameAs(value);
+        assertThat(context.get(otherKey, ClassifiedValue.class)).isEmpty();
+    }
+
+    @Test
     void validatesNullInputsOnPublicRegistryMethods() {
         Context context = Context.builder().id("null-validation-context").build();
 
@@ -374,6 +389,9 @@ public class HelidonCommonContextTest {
         private String name() {
             return name;
         }
+    }
+
+    private record ClassifierKey(String value) {
     }
 
     private static final class ClassifiedValue {
