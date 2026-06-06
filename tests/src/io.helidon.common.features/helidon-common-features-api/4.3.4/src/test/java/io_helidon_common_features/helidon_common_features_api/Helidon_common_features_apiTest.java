@@ -70,6 +70,15 @@ public class Helidon_common_features_apiTest {
     }
 
     @Test
+    void aotDescriptorDefaultsToSupportedWithEmptyDescription() {
+        Features.Aot aot = new DefaultFeatureAot();
+
+        assertThat(aot.value()).isTrue();
+        assertThat(aot.description()).isEmpty();
+        assertThat(aot.annotationType()).isEqualTo(Features.Aot.class);
+    }
+
+    @Test
     void markerAnnotationsExposeTheirAnnotationTypes() {
         Features.Preview preview = new FeaturePreview();
         Features.Incubating incubating = new FeatureIncubating();
@@ -154,6 +163,23 @@ public class Helidon_common_features_apiTest {
     }
 
     private record FeatureAot(boolean value, String description) implements Features.Aot {
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return Features.Aot.class;
+        }
+    }
+
+    private static final class DefaultFeatureAot implements Features.Aot {
+        @Override
+        public boolean value() {
+            return true;
+        }
+
+        @Override
+        public String description() {
+            return "";
+        }
+
         @Override
         public Class<? extends Annotation> annotationType() {
             return Features.Aot.class;
