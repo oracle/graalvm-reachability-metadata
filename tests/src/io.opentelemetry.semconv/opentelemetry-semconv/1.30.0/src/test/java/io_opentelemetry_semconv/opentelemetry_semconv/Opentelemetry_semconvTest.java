@@ -44,10 +44,10 @@ import org.junit.jupiter.api.Test;
 public class Opentelemetry_semconvTest {
     @Test
     void schemaUrlsExposeSupportedSemanticConventionVersions() {
-        assertThat(SchemaUrls.V1_25_0).isEqualTo("https://opentelemetry.io/schemas/1.25.0");
-        assertThat(SchemaUrls.V1_24_0).isEqualTo("https://opentelemetry.io/schemas/1.24.0");
-        assertThat(SchemaUrls.V1_23_1).isEqualTo("https://opentelemetry.io/schemas/1.23.1");
-        assertThat(SchemaUrls.V1_22_0).isEqualTo("https://opentelemetry.io/schemas/1.22.0");
+        assertThat(SchemaUrls.V1_30_0).isEqualTo("https://opentelemetry.io/schemas/1.30.0");
+        assertThat(SchemaUrls.V1_29_0).isEqualTo("https://opentelemetry.io/schemas/1.29.0");
+        assertThat(SchemaUrls.V1_28_0).isEqualTo("https://opentelemetry.io/schemas/1.28.0");
+        assertThat(SchemaUrls.V1_27_0).isEqualTo("https://opentelemetry.io/schemas/1.27.0");
     }
 
     @Test
@@ -214,7 +214,6 @@ public class Opentelemetry_semconvTest {
                 .put(ExceptionAttributes.EXCEPTION_TYPE, "java.lang.IllegalArgumentException")
                 .put(ExceptionAttributes.EXCEPTION_MESSAGE, "bad input")
                 .put(ExceptionAttributes.EXCEPTION_STACKTRACE, "stack trace omitted")
-                .put(ExceptionAttributes.EXCEPTION_ESCAPED, true)
                 .put(OtelAttributes.OTEL_SCOPE_NAME, "io.opentelemetry.semconv.test")
                 .put(OtelAttributes.OTEL_SCOPE_VERSION, "1.0.0")
                 .put(OtelAttributes.OTEL_STATUS_CODE, OtelStatusCodeValues.ERROR)
@@ -233,7 +232,7 @@ public class Opentelemetry_semconvTest {
                 .build();
 
         assertThat(ErrorAttributes.ERROR_TYPE).isEqualTo(AttributeKey.stringKey("error.type"));
-        assertThat(ExceptionAttributes.EXCEPTION_ESCAPED).isEqualTo(AttributeKey.booleanKey("exception.escaped"));
+        assertThat(ExceptionAttributes.EXCEPTION_TYPE).isEqualTo(AttributeKey.stringKey("exception.type"));
         assertThat(OtelAttributes.OTEL_STATUS_CODE).isEqualTo(AttributeKey.stringKey("otel.status_code"));
         assertThat(JvmAttributes.JVM_THREAD_DAEMON).isEqualTo(AttributeKey.booleanKey("jvm.thread.daemon"));
         assertThat(ServiceAttributes.SERVICE_NAME).isEqualTo(AttributeKey.stringKey("service.name"));
@@ -244,7 +243,6 @@ public class Opentelemetry_semconvTest {
                 .isEqualTo("java.lang.IllegalArgumentException");
         assertThat(attributes.get(ExceptionAttributes.EXCEPTION_MESSAGE)).isEqualTo("bad input");
         assertThat(attributes.get(ExceptionAttributes.EXCEPTION_STACKTRACE)).isEqualTo("stack trace omitted");
-        assertThat(attributes.get(ExceptionAttributes.EXCEPTION_ESCAPED)).isTrue();
         assertThat(attributes.get(OtelAttributes.OTEL_SCOPE_NAME)).isEqualTo("io.opentelemetry.semconv.test");
         assertThat(attributes.get(OtelAttributes.OTEL_SCOPE_VERSION)).isEqualTo("1.0.0");
         assertThat(attributes.get(OtelAttributes.OTEL_STATUS_CODE)).isEqualTo("ERROR");
