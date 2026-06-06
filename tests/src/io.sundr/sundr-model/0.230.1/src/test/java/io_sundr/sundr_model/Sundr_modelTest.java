@@ -117,7 +117,7 @@ public class Sundr_modelTest {
         assertThat(box.getProperties()).containsExactly(value);
         assertThat(box.getMethods()).containsExactly(getter);
         assertThat(box.getInnerTypes()).containsExactly(nested);
-        assertThat(box.getAnnotations()).containsExactly(generated);
+        assertThat(box).extracting(TypeDef::getAnnotations).isEqualTo(List.of(generated));
         assertThat(box.getImports()).contains("java.io.Serializable");
         assertThat(box.getReferences()).extracting(ClassRef::getFullyQualifiedName)
                 .contains("java.io.Serializable");
