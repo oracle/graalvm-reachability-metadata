@@ -34,7 +34,16 @@
       "condition" : {
         "typeReached" : "org.apache.logging.log4j.util.ServiceLoaderUtil"
       },
-      "type" : "java.util.ServiceLoader"
+      "type" : "java.util.ServiceLoader",
+      "methods" : [
+        {
+          "name" : "load",
+          "parameterTypes" : [
+            "java.lang.Class",
+            "java.lang.ClassLoader"
+          ]
+        }
+      ]
     },
     {
       "condition" : {
@@ -44,13 +53,25 @@
     },
     {
       "condition" : {
+        "typeReached" : "org.apache.logging.log4j.LogManager"
+      },
+      "type" : "org.apache.logging.log4j.core.impl.Log4jContextFactory",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
         "typeReached" : "org.apache.logging.log4j.spi.AbstractLogger"
       },
       "type" : "org.apache.logging.log4j.message.DefaultFlowMessageFactory",
       "methods" : [
         {
           "name" : "<init>",
-          "parameterTypes" : []
+          "parameterTypes" : [ ]
         }
       ]
     },
@@ -74,7 +95,7 @@
       "methods" : [
         {
           "name" : "<init>",
-          "parameterTypes" : []
+          "parameterTypes" : [ ]
         }
       ]
     },
@@ -1150,7 +1171,15 @@
       "condition" : {
         "typeReached" : "org.apache.logging.log4j.core.config.plugins.util.PluginRegistry"
       },
-      "type" : "org.apache.logging.log4j.core.pattern.DatePatternConverter"
+      "type" : "org.apache.logging.log4j.core.pattern.DatePatternConverter",
+      "methods" : [
+        {
+          "name" : "newInstance",
+          "parameterTypes" : [
+            "java.lang.String[]"
+          ]
+        }
+      ]
     },
     {
       "condition" : {
@@ -1216,7 +1245,15 @@
       "condition" : {
         "typeReached" : "org.apache.logging.log4j.core.config.plugins.util.PluginRegistry"
       },
-      "type" : "org.apache.logging.log4j.core.pattern.LevelPatternConverter"
+      "type" : "org.apache.logging.log4j.core.pattern.LevelPatternConverter",
+      "methods" : [
+        {
+          "name" : "newInstance",
+          "parameterTypes" : [
+            "java.lang.String[]"
+          ]
+        }
+      ]
     },
     {
       "condition" : {
@@ -1228,7 +1265,15 @@
       "condition" : {
         "typeReached" : "org.apache.logging.log4j.core.config.plugins.util.PluginRegistry"
       },
-      "type" : "org.apache.logging.log4j.core.pattern.LineSeparatorPatternConverter"
+      "type" : "org.apache.logging.log4j.core.pattern.LineSeparatorPatternConverter",
+      "methods" : [
+        {
+          "name" : "newInstance",
+          "parameterTypes" : [
+            "java.lang.String[]"
+          ]
+        }
+      ]
     },
     {
       "condition" : {
@@ -1240,7 +1285,15 @@
       "condition" : {
         "typeReached" : "org.apache.logging.log4j.core.config.plugins.util.PluginRegistry"
       },
-      "type" : "org.apache.logging.log4j.core.pattern.LoggerPatternConverter"
+      "type" : "org.apache.logging.log4j.core.pattern.LoggerPatternConverter",
+      "methods" : [
+        {
+          "name" : "newInstance",
+          "parameterTypes" : [
+            "java.lang.String[]"
+          ]
+        }
+      ]
     },
     {
       "condition" : {
@@ -1252,7 +1305,15 @@
       "condition" : {
         "typeReached" : "org.apache.logging.log4j.core.config.plugins.util.PluginRegistry"
       },
-      "type" : "org.apache.logging.log4j.core.pattern.MarkerPatternConverter"
+      "type" : "org.apache.logging.log4j.core.pattern.MarkerPatternConverter",
+      "methods" : [
+        {
+          "name" : "newInstance",
+          "parameterTypes" : [
+            "java.lang.String[]"
+          ]
+        }
+      ]
     },
     {
       "condition" : {
@@ -1270,13 +1331,30 @@
       "condition" : {
         "typeReached" : "org.apache.logging.log4j.core.config.plugins.util.PluginRegistry"
       },
-      "type" : "org.apache.logging.log4j.core.pattern.MdcPatternConverter"
+      "type" : "org.apache.logging.log4j.core.pattern.MdcPatternConverter",
+      "methods" : [
+        {
+          "name" : "newInstance",
+          "parameterTypes" : [
+            "java.lang.String[]"
+          ]
+        }
+      ]
     },
     {
       "condition" : {
         "typeReached" : "org.apache.logging.log4j.core.config.plugins.util.PluginRegistry"
       },
-      "type" : "org.apache.logging.log4j.core.pattern.MessagePatternConverter"
+      "type" : "org.apache.logging.log4j.core.pattern.MessagePatternConverter",
+      "methods" : [
+        {
+          "name" : "newInstance",
+          "parameterTypes" : [
+            "org.apache.logging.log4j.core.config.Configuration",
+            "java.lang.String[]"
+          ]
+        }
+      ]
     },
     {
       "condition" : {
@@ -1354,7 +1432,15 @@
       "condition" : {
         "typeReached" : "org.apache.logging.log4j.core.config.plugins.util.PluginRegistry"
       },
-      "type" : "org.apache.logging.log4j.core.pattern.ThreadNamePatternConverter"
+      "type" : "org.apache.logging.log4j.core.pattern.ThreadNamePatternConverter",
+      "methods" : [
+        {
+          "name" : "newInstance",
+          "parameterTypes" : [
+            "java.lang.String[]"
+          ]
+        }
+      ]
     },
     {
       "condition" : {
@@ -1366,7 +1452,16 @@
       "condition" : {
         "typeReached" : "org.apache.logging.log4j.core.config.plugins.util.PluginRegistry"
       },
-      "type" : "org.apache.logging.log4j.core.pattern.ThrowablePatternConverter"
+      "type" : "org.apache.logging.log4j.core.pattern.ThrowablePatternConverter",
+      "methods" : [
+        {
+          "name" : "newInstance",
+          "parameterTypes" : [
+            "org.apache.logging.log4j.core.config.Configuration",
+            "java.lang.String[]"
+          ]
+        }
+      ]
     },
     {
       "condition" : {
@@ -1480,7 +1575,16 @@
       "condition" : {
         "typeReached" : "org.apache.logging.log4j.core.config.plugins.util.PluginRegistry"
       },
-      "type" : "org.apache.log4j.builders.appender.ConsoleAppenderBuilder"
+      "type" : "org.apache.log4j.builders.appender.ConsoleAppenderBuilder",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [
+            "java.lang.String",
+            "java.util.Properties"
+          ]
+        }
+      ]
     },
     {
       "condition" : {
@@ -1564,7 +1668,16 @@
       "condition" : {
         "typeReached" : "org.apache.logging.log4j.core.config.plugins.util.PluginRegistry"
       },
-      "type" : "org.apache.log4j.builders.layout.PatternLayoutBuilder"
+      "type" : "org.apache.log4j.builders.layout.PatternLayoutBuilder",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [
+            "java.lang.String",
+            "java.util.Properties"
+          ]
+        }
+      ]
     },
     {
       "condition" : {
@@ -1606,7 +1719,13 @@
       "condition" : {
         "typeReached" : "org.apache.logging.log4j.core.config.plugins.util.PluginRegistry"
       },
-      "type" : "org.apache.log4j.config.PropertiesConfigurationFactory"
+      "type" : "org.apache.log4j.config.PropertiesConfigurationFactory",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
     },
     {
       "condition" : {
@@ -1652,46 +1771,109 @@
     },
     {
       "condition" : {
-        "typeReached" : "org.apache.log4j.jmx.AppenderDynamicMBean"
+        "typeReached" : "org.apache.log4j.AppenderSkeleton"
       },
       "type" : "org.apache.log4j.jmx.AppenderDynamicMBean",
       "allPublicConstructors" : true
     },
     {
       "condition" : {
-        "typeReached" : "org.apache.log4j.jmx.AppenderDynamicMBean"
+        "typeReached" : "org.apache.log4j.AppenderSkeleton"
       },
       "type" : "org.apache.log4j.ConsoleAppenderBeanInfo"
     },
     {
       "condition" : {
-        "typeReached" : "org.apache.log4j.jmx.AppenderDynamicMBean"
+        "typeReached" : "org.apache.log4j.AppenderSkeleton"
+      },
+      "type" : "org.apache.log4j.ConsoleAppender",
+      "allPublicMethods" : true
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.log4j.AppenderSkeleton"
+      },
+      "type" : "org.apache.log4j.ConsoleAppender",
+      "methods" : [
+        {
+          "name" : "setTarget",
+          "parameterTypes" : [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.log4j.AppenderSkeleton"
       },
       "type" : "org.apache.log4j.WriterAppenderBeanInfo"
     },
     {
       "condition" : {
-        "typeReached" : "org.apache.log4j.jmx.AppenderDynamicMBean"
+        "typeReached" : "org.apache.log4j.AppenderSkeleton"
+      },
+      "type" : "org.apache.log4j.WriterAppender",
+      "allPublicMethods" : true
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.log4j.AppenderSkeleton"
       },
       "type" : "org.apache.log4j.AppenderSkeletonBeanInfo"
     },
     {
       "condition" : {
-        "typeReached" : "org.apache.log4j.jmx.AppenderDynamicMBean"
+        "typeReached" : "org.apache.log4j.AppenderSkeleton"
+      },
+      "type" : "org.apache.log4j.AppenderSkeleton",
+      "allPublicMethods" : true
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.log4j.AppenderSkeleton"
       },
       "type" : "org.apache.log4j.ConsoleAppenderCustomizer"
     },
     {
       "condition" : {
-        "typeReached" : "org.apache.log4j.jmx.AppenderDynamicMBean"
+        "typeReached" : "org.apache.log4j.AppenderSkeleton"
       },
       "type" : "org.apache.log4j.WriterAppenderCustomizer"
     },
     {
       "condition" : {
-        "typeReached" : "org.apache.log4j.jmx.AppenderDynamicMBean"
+        "typeReached" : "org.apache.log4j.AppenderSkeleton"
       },
       "type" : "org.apache.log4j.AppenderSkeletonCustomizer"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.log4j.PatternLayout"
+      },
+      "type" : "org.apache.log4j.jmx.LayoutDynamicMBean",
+      "allPublicConstructors" : true
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.log4j.PatternLayout"
+      },
+      "type" : "org.apache.log4j.PatternLayout",
+      "allPublicMethods" : true
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.log4j.Logger"
+      },
+      "type" : "org.apache.log4j.jmx.LoggerDynamicMBean",
+      "allPublicConstructors" : true
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.log4j.LogManager"
+      },
+      "type" : "org.apache.log4j.jmx.HierarchyDynamicMBean",
+      "allPublicConstructors" : true
     },
     {
       "condition" : {
@@ -1889,7 +2071,13 @@
       "condition" : {
         "typeReached" : "org.apache.logging.log4j.core.config.plugins.util.PluginRegistry"
       },
-      "type" : "org.apache.log4j.xml.XmlConfigurationFactory"
+      "type" : "org.apache.log4j.xml.XmlConfigurationFactory",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
     },
     {
       "condition" : {
@@ -1901,11 +2089,97 @@
       "condition" : {
         "typeReached" : "org.apache.logging.log4j.core.util.ReflectionUtil"
       },
+      "type" : "org.apache.logging.log4j.core.config.json.JsonConfigurationFactory",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.logging.log4j.core.util.ReflectionUtil"
+      },
+      "type" : "org.apache.logging.log4j.core.config.properties.PropertiesConfigurationFactory",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.logging.log4j.core.util.ReflectionUtil"
+      },
+      "type" : "org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.logging.log4j.core.util.ReflectionUtil"
+      },
+      "type" : "org.apache.logging.log4j.core.config.yaml.YamlConfigurationFactory",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.logging.log4j.core.util.ReflectionUtil"
+      },
       "type" : "org.apache.logging.log4j.core.lookup.ContextMapLookup",
       "methods" : [
         {
           "name" : "<init>",
-          "parameterTypes" : []
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.logging.log4j.core.util.Loader"
+      },
+      "type" : "com.fasterxml.jackson.core.JsonParser"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.logging.log4j.core.util.Loader"
+      },
+      "type" : "com.fasterxml.jackson.databind.JsonNode"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.logging.log4j.core.util.Loader"
+      },
+      "type" : "com.fasterxml.jackson.databind.ObjectMapper"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.logging.log4j.core.util.Loader"
+      },
+      "type" : "com.fasterxml.jackson.dataformat.yaml.YAMLFactory"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.logging.log4j.core.pattern.PatternParser"
+      },
+      "type" : "org.apache.log4j.pattern.Log4j1LevelPatternConverter",
+      "methods" : [
+        {
+          "name" : "newInstance",
+          "parameterTypes" : [
+            "java.lang.String[]"
+          ]
         }
       ]
     },
@@ -1917,7 +2191,7 @@
       "methods" : [
         {
           "name" : "<init>",
-          "parameterTypes" : []
+          "parameterTypes" : [ ]
         }
       ]
     },
@@ -1929,7 +2203,7 @@
       "methods" : [
         {
           "name" : "<init>",
-          "parameterTypes" : []
+          "parameterTypes" : [ ]
         }
       ]
     },
@@ -1941,7 +2215,7 @@
       "methods" : [
         {
           "name" : "<init>",
-          "parameterTypes" : []
+          "parameterTypes" : [ ]
         }
       ]
     },
@@ -1953,7 +2227,7 @@
       "methods" : [
         {
           "name" : "<init>",
-          "parameterTypes" : []
+          "parameterTypes" : [ ]
         }
       ]
     },
@@ -1965,7 +2239,7 @@
       "methods" : [
         {
           "name" : "<init>",
-          "parameterTypes" : []
+          "parameterTypes" : [ ]
         }
       ]
     },
@@ -1977,7 +2251,7 @@
       "methods" : [
         {
           "name" : "<init>",
-          "parameterTypes" : []
+          "parameterTypes" : [ ]
         }
       ]
     },
@@ -1989,7 +2263,7 @@
       "methods" : [
         {
           "name" : "<init>",
-          "parameterTypes" : []
+          "parameterTypes" : [ ]
         }
       ]
     },
@@ -2001,7 +2275,7 @@
       "methods" : [
         {
           "name" : "<init>",
-          "parameterTypes" : []
+          "parameterTypes" : [ ]
         }
       ]
     },
@@ -2013,7 +2287,7 @@
       "methods" : [
         {
           "name" : "<init>",
-          "parameterTypes" : []
+          "parameterTypes" : [ ]
         }
       ]
     },
@@ -2025,7 +2299,7 @@
       "methods" : [
         {
           "name" : "<init>",
-          "parameterTypes" : []
+          "parameterTypes" : [ ]
         }
       ]
     },
@@ -2037,7 +2311,7 @@
       "methods" : [
         {
           "name" : "<init>",
-          "parameterTypes" : []
+          "parameterTypes" : [ ]
         }
       ]
     },
@@ -2049,7 +2323,7 @@
       "methods" : [
         {
           "name" : "<init>",
-          "parameterTypes" : []
+          "parameterTypes" : [ ]
         }
       ]
     },
@@ -2061,7 +2335,7 @@
       "methods" : [
         {
           "name" : "<init>",
-          "parameterTypes" : []
+          "parameterTypes" : [ ]
         }
       ]
     },
@@ -2073,7 +2347,7 @@
       "methods" : [
         {
           "name" : "<init>",
-          "parameterTypes" : []
+          "parameterTypes" : [ ]
         }
       ]
     },
@@ -2085,7 +2359,7 @@
       "methods" : [
         {
           "name" : "<init>",
-          "parameterTypes" : []
+          "parameterTypes" : [ ]
         }
       ]
     },
@@ -2109,19 +2383,61 @@
     },
     {
       "condition" : {
-        "typeReached" : "org.apache.log4j.jmx.AppenderDynamicMBean"
+        "typeReached" : "org.apache.log4j.config.PropertySetter"
+      },
+      "type" : "org.apache.log4j.ConsoleAppender",
+      "methods" : [
+        {
+          "name" : "setTarget",
+          "parameterTypes" : [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.log4j.config.PropertySetter"
+      },
+      "type" : "org.apache.log4j.WriterAppender",
+      "methods" : [
+        {
+          "name" : "setImmediateFlush",
+          "parameterTypes" : [
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.log4j.config.PropertySetter"
+      },
+      "type" : "org.apache.log4j.PatternLayout",
+      "methods" : [
+        {
+          "name" : "setConversionPattern",
+          "parameterTypes" : [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.log4j.AppenderSkeleton"
       },
       "type" : "java.lang.Object"
     },
     {
       "condition" : {
-        "typeReached" : "org.apache.log4j.jmx.AppenderDynamicMBean"
+        "typeReached" : "org.apache.log4j.AppenderSkeleton"
       },
       "type" : "java.lang.ObjectBeanInfo"
     },
     {
       "condition" : {
-        "typeReached" : "org.apache.log4j.jmx.AppenderDynamicMBean"
+        "typeReached" : "org.apache.log4j.AppenderSkeleton"
       },
       "type" : "java.lang.ObjectCustomizer"
     }
@@ -2185,13 +2501,43 @@
       "condition" : {
         "typeReached" : "org.apache.logging.log4j.util.LoaderUtil"
       },
-      "glob" : "log4j2.component.properties"
+      "glob" : "log4j2.system.properties"
     },
     {
       "condition" : {
-        "typeReached" : "org.apache.logging.log4j.util.LoaderUtil"
+        "typeReached" : "org.apache.logging.log4j.core.config.ConfigurationSource"
       },
-      "glob" : "log4j2.system.properties"
+      "glob" : "log4j2*.json"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.logging.log4j.core.config.ConfigurationSource"
+      },
+      "glob" : "log4j2*.jsn"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.logging.log4j.core.config.ConfigurationSource"
+      },
+      "glob" : "log4j2*.properties"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.logging.log4j.core.config.ConfigurationSource"
+      },
+      "glob" : "log4j2*.xml"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.logging.log4j.core.config.ConfigurationSource"
+      },
+      "glob" : "log4j2*.yaml"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.logging.log4j.core.config.ConfigurationSource"
+      },
+      "glob" : "log4j2*.yml"
     }
   ]
 }
