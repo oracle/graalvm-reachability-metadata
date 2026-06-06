@@ -386,7 +386,7 @@ class Tapir_server_3Test {
       interceptors: List[Interceptor[Identity]] = defaultInterceptors
   ): ServerResponse[String] = {
     interpreter(serverEndpoints, interceptors)(serverRequest) match {
-      case RequestResult.Response(response) => response
+      case RequestResult.Response(response, _) => response
       case RequestResult.Failure(failures)  => throw new AssertionError(s"Expected response, got failures: $failures")
     }
   }
