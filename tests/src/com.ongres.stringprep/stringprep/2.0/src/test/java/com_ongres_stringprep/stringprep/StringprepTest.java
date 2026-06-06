@@ -9,9 +9,11 @@ package com_ongres_stringprep.stringprep;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.ongres.stringprep.StringPrep;
+import com.ongres.stringprep.Option;
+import com.ongres.stringprep.Profile;
+import com.ongres.stringprep.Tables;
 import java.text.Normalizer;
-import java.util.List;
+import java.util.Set;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import org.junit.jupiter.api.Test;
@@ -19,7 +21,7 @@ import org.junit.jupiter.api.Test;
 public class StringprepTest {
     @Test
     void identifiesUnassignedCodePointRanges() {
-        assertAccepted(StringPrep::unassignedCodePoints,
+        assertAccepted(Tables::unassignedCodePoints,
                 0x0221,
                 0x0234,
                 0x024F,
@@ -29,7 +31,7 @@ public class StringprepTest {
                 0xE0080,
                 0xEFFFD);
 
-        assertRejected(StringPrep::unassignedCodePoints,
+        assertRejected(Tables::unassignedCodePoints,
                 0x0020,
                 0x0220,
                 0x0222,
@@ -43,7 +45,7 @@ public class StringprepTest {
 
     @Test
     void mapsTableB1CharactersToNothing() {
-        assertAccepted(StringPrep::mapToNothing,
+        assertAccepted(Tables::mapToNothing,
                 0x00AD,
                 0x034F,
                 0x1806,
@@ -58,7 +60,7 @@ public class StringprepTest {
                 0xFE0F,
                 0xFEFF);
 
-        assertRejected(StringPrep::mapToNothing,
+        assertRejected(Tables::mapToNothing,
                 'a',
                 0x00AE,
                 0x180E,
@@ -69,37 +71,37 @@ public class StringprepTest {
 
     @Test
     void mapsCaseAndCompatibilityCharactersForNfkc() {
-        assertThat(StringPrep.mapUsedWithNfkc('A')).containsExactly('a');
-        assertThat(StringPrep.mapUsedWithNfkc(0x00DF)).containsExactly('s', 's');
-        assertThat(StringPrep.mapUsedWithNfkc(0x0130)).containsExactly('i', 0x0307);
-        assertThat(StringPrep.mapUsedWithNfkc(0x0149)).containsExactly(0x02BC, 'n');
-        assertThat(StringPrep.mapUsedWithNfkc(0x0390)).containsExactly(0x03B9, 0x0308, 0x0301);
-        assertThat(StringPrep.mapUsedWithNfkc(0x20A8)).containsExactly('r', 's');
-        assertThat(StringPrep.mapUsedWithNfkc(0x212A)).containsExactly('k');
-        assertThat(StringPrep.mapUsedWithNfkc(0xFB00)).containsExactly('f', 'f');
-        assertThat(StringPrep.mapUsedWithNfkc('z')).containsExactly('z');
+        assertThat(Tables.mapWithNfkc('A')).containsExactly('a');
+        assertThat(Tables.mapWithNfkc(0x00DF)).containsExactly('s', 's');
+        assertThat(Tables.mapWithNfkc(0x0130)).containsExactly('i', 0x0307);
+        assertThat(Tables.mapWithNfkc(0x0149)).containsExactly(0x02BC, 'n');
+        assertThat(Tables.mapWithNfkc(0x0390)).containsExactly(0x03B9, 0x0308, 0x0301);
+        assertThat(Tables.mapWithNfkc(0x20A8)).containsExactly('r', 's');
+        assertThat(Tables.mapWithNfkc(0x212A)).containsExactly('k');
+        assertThat(Tables.mapWithNfkc(0xFB00)).containsExactly('f', 'f');
+        assertThat(Tables.mapWithNfkc('z')).containsExactly('z');
     }
 
     @Test
     void mapsCaseCharactersWithoutNormalizingCompatibilityForms() {
-        assertThat(StringPrep.mapUsedWithNoNormalization('A')).containsExactly('a');
-        assertThat(StringPrep.mapUsedWithNoNormalization(0x00DF)).containsExactly('s', 's');
-        assertThat(StringPrep.mapUsedWithNoNormalization(0x0130)).containsExactly('i', 0x0307);
-        assertThat(StringPrep.mapUsedWithNoNormalization(0x0149)).containsExactly(0x02BC, 'n');
-        assertThat(StringPrep.mapUsedWithNoNormalization(0x0390)).containsExactly(0x03B9, 0x0308, 0x0301);
-        assertThat(StringPrep.mapUsedWithNoNormalization(0x212A)).containsExactly('k');
+        assertThat(Tables.mapWithoutNormalization('A')).containsExactly('a');
+        assertThat(Tables.mapWithoutNormalization(0x00DF)).containsExactly('s', 's');
+        assertThat(Tables.mapWithoutNormalization(0x0130)).containsExactly('i', 0x0307);
+        assertThat(Tables.mapWithoutNormalization(0x0149)).containsExactly(0x02BC, 'n');
+        assertThat(Tables.mapWithoutNormalization(0x0390)).containsExactly(0x03B9, 0x0308, 0x0301);
+        assertThat(Tables.mapWithoutNormalization(0x212A)).containsExactly('k');
 
-        assertThat(StringPrep.mapUsedWithNoNormalization(0x20A8)).containsExactly(0x20A8);
-        assertThat(StringPrep.mapUsedWithNoNormalization(0x2100)).containsExactly(0x2100);
-        assertThat(StringPrep.mapUsedWithNoNormalization('z')).containsExactly('z');
+        assertThat(Tables.mapWithoutNormalization(0x20A8)).containsExactly(0x20A8);
+        assertThat(Tables.mapWithoutNormalization(0x2100)).containsExactly(0x2100);
+        assertThat(Tables.mapWithoutNormalization('z')).containsExactly('z');
     }
 
     @Test
     void mapsSupplementaryPlaneCodePoints() {
-        assertThat(StringPrep.mapUsedWithNoNormalization(0x10425)).containsExactly(0x1044D);
-        assertThat(StringPrep.mapUsedWithNoNormalization(0x10426)).containsExactly(0x10426);
-        assertThat(StringPrep.mapUsedWithNfkc(0x1D7BB)).containsExactly(0x03C3);
-        assertThat(StringPrep.mapUsedWithNfkc(0x1D7BC)).containsExactly(0x1D7BC);
+        assertThat(Tables.mapWithoutNormalization(0x10425)).containsExactly(0x1044D);
+        assertThat(Tables.mapWithoutNormalization(0x10426)).containsExactly(0x10426);
+        assertThat(Tables.mapWithNfkc(0x1D7BB)).containsExactly(0x03C3);
+        assertThat(Tables.mapWithNfkc(0x1D7BC)).containsExactly(0x1D7BC);
     }
 
     @Test
@@ -116,47 +118,47 @@ public class StringprepTest {
 
     @Test
     void detectsAllProhibitedCharacterCategories() {
-        assertAccepted(StringPrep::prohibitionAsciiSpace, 0x0020);
-        assertRejected(StringPrep::prohibitionAsciiSpace, 0x0009, 0x00A0, 'A');
+        assertAccepted(Tables::prohibitionAsciiSpace, 0x0020);
+        assertRejected(Tables::prohibitionAsciiSpace, 0x0009, 0x00A0, 'A');
 
-        assertAccepted(StringPrep::prohibitionNonAsciiSpace,
+        assertAccepted(Tables::prohibitionNonAsciiSpace,
                 0x00A0, 0x1680, 0x2000, 0x200B, 0x202F, 0x205F, 0x3000);
-        assertRejected(StringPrep::prohibitionNonAsciiSpace, 0x0020, 0x200C, 0x3001);
+        assertRejected(Tables::prohibitionNonAsciiSpace, 0x0020, 0x200C, 0x3001);
 
-        assertAccepted(StringPrep::prohibitionAsciiControl, 0x0000, 0x001F, 0x007F);
-        assertRejected(StringPrep::prohibitionAsciiControl, 0x0020, 0x0080);
+        assertAccepted(Tables::prohibitionAsciiControl, 0x0000, 0x001F, 0x007F);
+        assertRejected(Tables::prohibitionAsciiControl, 0x0020, 0x0080);
 
-        assertAccepted(StringPrep::prohibitionNonAsciiControl, 0x0080, 0x009F, 0x06DD, 0x070F, 0x180E,
+        assertAccepted(Tables::prohibitionNonAsciiControl, 0x0080, 0x009F, 0x06DD, 0x070F, 0x180E,
                 0x200C, 0x200D, 0x2028, 0x2029, 0x206A, 0x206F, 0xFEFF, 0xFFF9, 0xFFFC, 0x1D173, 0x1D17A);
-        assertRejected(StringPrep::prohibitionNonAsciiControl, 0x007F, 0x00A0, 0x2069, 0x2070, 0xFFFD);
+        assertRejected(Tables::prohibitionNonAsciiControl, 0x007F, 0x00A0, 0x2069, 0x2070, 0xFFFD);
 
-        assertAccepted(StringPrep::prohibitionPrivateUse, 0xE000, 0xF8FF, 0xF0000, 0xFFFFD, 0x100000, 0x10FFFD);
-        assertRejected(StringPrep::prohibitionPrivateUse, 0xDFFF, 0xF900, 0xEFFFF, 0xFFFFE, 0x10FFFF);
+        assertAccepted(Tables::prohibitionPrivateUse, 0xE000, 0xF8FF, 0xF0000, 0xFFFFD, 0x100000, 0x10FFFD);
+        assertRejected(Tables::prohibitionPrivateUse, 0xDFFF, 0xF900, 0xEFFFF, 0xFFFFE, 0x10FFFF);
 
-        assertAccepted(StringPrep::prohibitionNonCharacterCodePoints, 0xFDD0, 0xFDEF, 0xFFFE, 0xFFFF,
+        assertAccepted(Tables::prohibitionNonCharacterCodePoints, 0xFDD0, 0xFDEF, 0xFFFE, 0xFFFF,
                 0x1FFFE, 0x1FFFF, 0x10FFFE, 0x10FFFF);
-        assertRejected(StringPrep::prohibitionNonCharacterCodePoints, 0xFDCF, 0xFDF0, 0xFFFD, 0x10000, 0x10FFFD);
+        assertRejected(Tables::prohibitionNonCharacterCodePoints, 0xFDCF, 0xFDF0, 0xFFFD, 0x10000, 0x10FFFD);
 
-        assertAccepted(StringPrep::prohibitionSurrogateCodes, 0xD800, 0xDFFF);
-        assertRejected(StringPrep::prohibitionSurrogateCodes, 0xD7FF, 0xE000);
+        assertAccepted(Tables::prohibitionSurrogateCodes, 0xD800, 0xDFFF);
+        assertRejected(Tables::prohibitionSurrogateCodes, 0xD7FF, 0xE000);
 
-        assertAccepted(StringPrep::prohibitionInappropriatePlainText, 0xFFF9, 0xFFFA, 0xFFFB, 0xFFFC, 0xFFFD);
-        assertRejected(StringPrep::prohibitionInappropriatePlainText, 0xFFF8, 0xFFFE);
+        assertAccepted(Tables::prohibitionInappropriatePlainText, 0xFFF9, 0xFFFA, 0xFFFB, 0xFFFC, 0xFFFD);
+        assertRejected(Tables::prohibitionInappropriatePlainText, 0xFFF8, 0xFFFE);
 
-        assertAccepted(StringPrep::prohibitionInappropriateCanonicalRepresentation, 0x2FF0, 0x2FFB);
-        assertRejected(StringPrep::prohibitionInappropriateCanonicalRepresentation, 0x2FEF, 0x2FFC);
+        assertAccepted(Tables::prohibitionInappropriateCanonicalRepresentation, 0x2FF0, 0x2FFB);
+        assertRejected(Tables::prohibitionInappropriateCanonicalRepresentation, 0x2FEF, 0x2FFC);
 
-        assertAccepted(StringPrep::prohibitionChangeDisplayProperties, 0x0340, 0x0341, 0x200E, 0x200F,
+        assertAccepted(Tables::prohibitionChangeDisplayProperties, 0x0340, 0x0341, 0x200E, 0x200F,
                 0x202A, 0x202B, 0x202C, 0x202D, 0x202E, 0x206A, 0x206F);
-        assertRejected(StringPrep::prohibitionChangeDisplayProperties, 0x033F, 0x0342, 0x200D, 0x2010, 0x2070);
+        assertRejected(Tables::prohibitionChangeDisplayProperties, 0x033F, 0x0342, 0x200D, 0x2010, 0x2070);
 
-        assertAccepted(StringPrep::prohibitionTaggingCharacters, 0xE0001, 0xE0020, 0xE007F);
-        assertRejected(StringPrep::prohibitionTaggingCharacters, 0xE0000, 0xE001F, 0xE0080);
+        assertAccepted(Tables::prohibitionTaggingCharacters, 0xE0001, 0xE0020, 0xE007F);
+        assertRejected(Tables::prohibitionTaggingCharacters, 0xE0000, 0xE001F, 0xE0080);
     }
 
     @Test
     void detectsBidirectionalCategories() {
-        assertAccepted(StringPrep::bidirectionalPropertyRorAL,
+        assertAccepted(Tables::bidirectionalPropertyRorAL,
                 0x05D0,
                 0x05EA,
                 0x0627,
@@ -164,14 +166,14 @@ public class StringprepTest {
                 0x200F,
                 0xFB1D,
                 0xFEFC);
-        assertRejected(StringPrep::bidirectionalPropertyRorAL,
+        assertRejected(Tables::bidirectionalPropertyRorAL,
                 'A',
                 'a',
                 0x05EF,
                 0x200E,
                 0xFEFD);
 
-        assertAccepted(StringPrep::bidirectionalPropertyL,
+        assertAccepted(Tables::bidirectionalPropertyL,
                 'A',
                 'z',
                 0x00AA,
@@ -180,7 +182,7 @@ public class StringprepTest {
                 0x212A,
                 0xFB00,
                 0x1D400);
-        assertRejected(StringPrep::bidirectionalPropertyL,
+        assertRejected(Tables::bidirectionalPropertyL,
                 0x0020,
                 0x05D0,
                 0x200F,
@@ -190,37 +192,42 @@ public class StringprepTest {
 
     @Test
     void enforcesBidirectionalRule() {
-        assertThat(StringPrep.bidirectional(List.of(0x0061, 0x0062, 0x0063))).isTrue();
-        assertThat(StringPrep.bidirectional(List.of(0x05D0, 0x05D1))).isTrue();
-        assertThat(StringPrep.bidirectional(List.of(0x05D0, 0x0030, 0x05D1))).isTrue();
-        assertThat(StringPrep.bidirectional(List.of())).isTrue();
+        Profile bidiProfile = () -> Set.of(Option.CHECK_BIDI);
 
-        assertThatThrownBy(() -> StringPrep.bidirectional(List.of(0x05D0, 0x0061, 0x05D1)))
+        assertThat(bidiProfile.prepareQuery(codePoints(0x0061, 0x0062, 0x0063))).isEqualTo("abc");
+        assertThat(bidiProfile.prepareQuery(codePoints(0x05D0, 0x05D1)))
+                .isEqualTo("\u05D0\u05D1");
+        assertThat(bidiProfile.prepareQuery(codePoints(0x05D0, 0x0030, 0x05D1)))
+                .isEqualTo("\u05D00\u05D1");
+        assertThat(bidiProfile.prepareQuery(""))
+                .isEmpty();
+
+        assertThatThrownBy(() -> bidiProfile.prepareQuery(codePoints(0x05D0, 0x0061, 0x05D1)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("RandALCat and LCat");
 
-        assertThatThrownBy(() -> StringPrep.bidirectional(List.of(0x05D0, 0x0030)))
+        assertThatThrownBy(() -> bidiProfile.prepareQuery(codePoints(0x05D0, 0x0030)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("not the first and the last");
 
-        assertThatThrownBy(() -> StringPrep.bidirectional(List.of(0x0030, 0x05D0)))
+        assertThatThrownBy(() -> bidiProfile.prepareQuery(codePoints(0x0030, 0x05D0)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("not the first and the last");
 
-        assertThatThrownBy(() -> StringPrep.bidirectional(List.of(0x0061, 0x202E, 0x0062)))
+        assertThatThrownBy(() -> bidiProfile.prepareQuery(codePoints(0x0061, 0x202E, 0x0062)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Prohibited codepoint")
-                .hasMessageContaining("position 1");
+                .hasMessageContaining("Prohibited control character")
+                .hasMessageContaining("0x202E");
     }
 
     private static String mapForNfkcProfile(String value) {
-        return mapProfile(value, StringPrep::mapUsedWithNfkc);
+        return mapProfile(value, Tables::mapWithNfkc);
     }
 
     private static String mapProfile(String value, IntFunction<int[]> mapping) {
         StringBuilder mapped = new StringBuilder();
         value.codePoints()
-                .filter(codePoint -> !StringPrep.mapToNothing(codePoint))
+                .filter(codePoint -> !Tables.mapToNothing(codePoint))
                 .forEach(codePoint -> appendCodePoints(mapped, mapping.apply(codePoint)));
         return mapped.toString();
     }
@@ -229,6 +236,12 @@ public class StringprepTest {
         for (int codePoint : codePoints) {
             builder.appendCodePoint(codePoint);
         }
+    }
+
+    private static String codePoints(int... codePoints) {
+        StringBuilder builder = new StringBuilder();
+        appendCodePoints(builder, codePoints);
+        return builder.toString();
     }
 
     private static void assertAccepted(IntPredicate predicate, int... codePoints) {
