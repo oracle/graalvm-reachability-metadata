@@ -229,6 +229,47 @@ public class Simpleclient_httpserverTest {
     }
 
     @Test
+    void httpMetricHandlerCanBeMountedOnCustomApplicationContext() throws Exception {
+        CollectorRegistry registry = new CollectorRegistry();
+        Gauge customContextGauge = Gauge.build("custom_context_metric", "Custom context metric.")
+                .register(registry);
+        customContextGauge.set(11.0);
+
+        AtomicInteger threadNumber = new AtomicInteger();
+        ExecutorService executorService = Executors.newSingleThreadExecutor(new NamedThreadFactory(threadNumber));
+        HttpServer httpServer = HttpServer.create(new InetSocketAddress(loopbackAddress(), 0), 3);
+        httpServer.setExecutor(executorService);
+        httpServer.createContext("/actuator/prometheus", new HTTPServer.HTTPMetricHandler(registry));
+        httpServer.createContext("/application", exchange -> {
+            byte[] body = "application response".getBytes(UTF_8);
+            exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, body.length);
+            try (OutputStream output = exchange.getResponseBody()) {
+                output.write(body);
+            }
+        });
+
+        try {
+            httpServer.start();
+            int port = httpServer.getAddress().getPort();
+
+            HttpResponse metrics = request(port, "GET", "/actuator/prometheus", List.of(), false);
+            assertThat(metrics.statusCode).isEqualTo(HttpURLConnection.HTTP_OK);
+            assertThat(metrics.header("Content-Type")).startsWith("text/plain");
+            assertThat(metrics.body)
+                    .contains("# HELP custom_context_metric Custom context metric.")
+                    .contains("custom_context_metric 11.0");
+
+            HttpResponse application = request(port, "GET", "/application", List.of(), false);
+            assertThat(application.statusCode).isEqualTo(HttpURLConnection.HTTP_OK);
+            assertThat(application.body).isEqualTo("application response");
+        } finally {
+            httpServer.stop(0);
+            executorService.shutdown();
+            assertThat(executorService.awaitTermination(2, TimeUnit.SECONDS)).isTrue();
+        }
+    }
+
+    @Test
     void builderUsesProvidedExecutorAndRejectsConflictingOptions() throws Exception {
         CollectorRegistry registry = new CollectorRegistry();
         Gauge executorGauge = Gauge.build("executor_backed_metric", "Executor backed metric.")
@@ -280,7 +321,16 @@ public class Simpleclient_httpserverTest {
             String path,
             List<Header> requestHeaders,
             boolean gzip) throws IOException {
-        URL url = URI.create("http://127.0.0.1:" + server.getPort() + path).toURL();
+        return request(server.getPort(), method, path, requestHeaders, gzip);
+    }
+
+    private static HttpResponse request(
+            int port,
+            String method,
+            String path,
+            List<Header> requestHeaders,
+            boolean gzip) throws IOException {
+        URL url = URI.create("http://127.0.0.1:" + port + path).toURL();
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setConnectTimeout(CONNECT_TIMEOUT_MILLIS);
         connection.setReadTimeout(READ_TIMEOUT_MILLIS);
