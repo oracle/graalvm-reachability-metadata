@@ -57,6 +57,8 @@ import org.junit.jupiter.api.io.TempDir;
 
 @Timeout(value = 20, unit = TimeUnit.SECONDS)
 public class Wagon_sshTest {
+    private static final String PREFERRED_AUTHENTICATIONS = "gssapi-with-mic,publickey,password,keyboard-interactive";
+
     @TempDir
     Path temporaryDirectory;
 
@@ -69,6 +71,7 @@ public class Wagon_sshTest {
             NullInteractiveUserInfo interactiveUserInfo = new NullInteractiveUserInfo(true);
             wagon.setKnownHostsProvider(knownHostsProvider);
             wagon.setInteractiveUserInfo(interactiveUserInfo);
+            wagon.setPreferredAuthentications(PREFERRED_AUTHENTICATIONS);
             wagon.setInteractive(false);
 
             assertThat(wagon.supportsDirectoryCopy()).isTrue();
@@ -108,6 +111,7 @@ public class Wagon_sshTest {
 
             try {
                 wagon.setKnownHostsProvider(new NullKnownHostProvider());
+                wagon.setPreferredAuthentications(PREFERRED_AUTHENTICATIONS);
                 wagon.setInteractive(false);
 
                 Repository proxiedRepository = new Repository("proxied", "scp://repository.example.test/repository");
