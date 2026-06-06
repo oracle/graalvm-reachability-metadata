@@ -302,13 +302,13 @@ public class Curator_clientTest {
 
         assertThat(createdThreadLatch.await(5, TimeUnit.SECONDS)).isTrue();
         thread.join(TimeUnit.SECONDS.toMillis(5));
-        assertThat(createdThread.get().getName()).startsWith("curator-worker-");
+        assertThat(createdThread.get().getName()).startsWith("Curator-curator-worker-");
         assertThat(createdThread.get().isDaemon()).isTrue();
 
         ExecutorService singleThreadExecutor = ThreadUtils.newSingleThreadExecutor("curator-single");
         try {
             Thread executorThread = singleThreadExecutor.submit(Thread::currentThread).get(5, TimeUnit.SECONDS);
-            assertThat(executorThread.getName()).startsWith("curator-single-");
+            assertThat(executorThread.getName()).startsWith("Curator-curator-single-");
             assertThat(executorThread.isDaemon()).isTrue();
         } finally {
             singleThreadExecutor.shutdownNow();
@@ -318,7 +318,7 @@ public class Curator_clientTest {
         ExecutorService fixedThreadPool = ThreadUtils.newFixedThreadPool(2, "curator-fixed");
         try {
             Thread executorThread = fixedThreadPool.submit(Thread::currentThread).get(5, TimeUnit.SECONDS);
-            assertThat(executorThread.getName()).startsWith("curator-fixed-");
+            assertThat(executorThread.getName()).startsWith("Curator-curator-fixed-");
             assertThat(executorThread.isDaemon()).isTrue();
         } finally {
             fixedThreadPool.shutdownNow();
@@ -330,7 +330,7 @@ public class Curator_clientTest {
         try {
             Thread scheduledThread = singleScheduledExecutor.schedule(
                     Thread::currentThread, 1, TimeUnit.MILLISECONDS).get(5, TimeUnit.SECONDS);
-            assertThat(scheduledThread.getName()).startsWith("curator-scheduled-");
+            assertThat(scheduledThread.getName()).startsWith("Curator-curator-scheduled-");
             assertThat(scheduledThread.isDaemon()).isTrue();
         } finally {
             singleScheduledExecutor.shutdownNow();
@@ -342,7 +342,7 @@ public class Curator_clientTest {
         try {
             Thread scheduledThread = fixedScheduledPool.schedule(
                     Thread::currentThread, 1, TimeUnit.MILLISECONDS).get(5, TimeUnit.SECONDS);
-            assertThat(scheduledThread.getName()).startsWith("curator-fixed-scheduled-");
+            assertThat(scheduledThread.getName()).startsWith("Curator-curator-fixed-scheduled-");
             assertThat(scheduledThread.isDaemon()).isTrue();
         } finally {
             fixedScheduledPool.shutdownNow();
