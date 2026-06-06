@@ -10,8 +10,10 @@ import io.fabric8.kubernetes.api.model.Condition;
 import io.fabric8.kubernetes.api.model.ConditionBuilder;
 import io.fabric8.kubernetes.api.model.HasMetadata;
 import io.fabric8.kubernetes.api.model.KubernetesResource;
+import io.fabric8.kubernetes.api.model.KubernetesResourceList;
 import io.fabric8.kubernetes.api.model.ListMeta;
 import io.fabric8.kubernetes.api.model.ListMetaBuilder;
+import io.fabric8.kubernetes.api.model.Namespaced;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
 import io.fabric8.kubernetes.api.model.certificates.v1.CertificateSigningRequest;
@@ -418,6 +420,68 @@ public class Kubernetes_model_certificatesTest {
         assertThat(copied.getAdditionalProperties()).containsEntry("owner", "security");
         assertThat(rebuilt.getSpec().getSignerName()).isEqualTo("example.com/rebuilt");
         assertThat(bundle.getSpec().getSignerName()).isEqualTo("example.com/constructed");
+    }
+
+    @Test
+    void certificateResourcesExposeNamespacedAndListContracts() {
+        PodCertificateRequest podRequest = new PodCertificateRequestBuilder()
+                .withNewMetadata()
+                    .withName("scoped-pod-cert")
+                    .withNamespace("tenant-a")
+                .endMetadata()
+                .withNewSpec()
+                    .withSignerName("example.com/pod-signer")
+                    .withPodName("frontend-0")
+                    .withPodUID("pod-scope-uid")
+                    .withPkixPublicKey("PUBLIC-KEY")
+                    .withProofOfPossession("PROOF")
+                .endSpec()
+                .build();
+        CertificateSigningRequest signingRequest = new CertificateSigningRequestBuilder()
+                .withNewMetadata()
+                    .withName("cluster-csr")
+                .endMetadata()
+                .withNewSpec()
+                    .withRequest(CSR_REQUEST)
+                    .withSignerName("example.com/cluster-signer")
+                    .withUsername("cluster-user")
+                .endSpec()
+                .build();
+        ClusterTrustBundle trustBundle = new ClusterTrustBundleBuilder()
+                .withNewMetadata()
+                    .withName("cluster-trust")
+                .endMetadata()
+                .withNewSpec()
+                    .withTrustBundle(TRUST_BUNDLE)
+                .endSpec()
+                .build();
+
+        assertThat(podRequest instanceof Namespaced).isTrue();
+        assertThat(signingRequest instanceof Namespaced).isFalse();
+        assertThat(trustBundle instanceof Namespaced).isFalse();
+
+        KubernetesResourceList<PodCertificateRequest> podRequests = new PodCertificateRequestListBuilder()
+                .withItems(podRequest)
+                .build();
+        KubernetesResourceList<CertificateSigningRequest> signingRequests = new CertificateSigningRequestListBuilder()
+                .withItems(signingRequest)
+                .build();
+        KubernetesResourceList<ClusterTrustBundle> trustBundles = new ClusterTrustBundleListBuilder()
+                .withItems(trustBundle)
+                .build();
+
+        assertThat(podRequests.getItems()).singleElement().satisfies(item -> {
+            assertThat(item.getMetadata().getNamespace()).isEqualTo("tenant-a");
+            assertThat(item.getSpec().getSignerName()).isEqualTo("example.com/pod-signer");
+        });
+        assertThat(signingRequests.getItems()).singleElement().satisfies(item -> {
+            assertThat(item.getMetadata().getName()).isEqualTo("cluster-csr");
+            assertThat(item.getSpec().getUsername()).isEqualTo("cluster-user");
+        });
+        assertThat(trustBundles.getItems()).singleElement().satisfies(item -> {
+            assertThat(item.getMetadata().getName()).isEqualTo("cluster-trust");
+            assertThat(item.getSpec().getTrustBundle()).isEqualTo(TRUST_BUNDLE);
+        });
     }
 
     @Test
