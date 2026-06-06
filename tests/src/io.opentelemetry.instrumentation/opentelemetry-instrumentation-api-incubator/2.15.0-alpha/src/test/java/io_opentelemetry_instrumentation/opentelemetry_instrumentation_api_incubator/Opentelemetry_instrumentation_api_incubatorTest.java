@@ -345,7 +345,7 @@ public class Opentelemetry_instrumentation_api_incubatorTest {
     }
 
     private static class CommonDatabaseGetter {
-        public String getSystem(DatabaseRequest request) {
+        public String getDbSystem(DatabaseRequest request) {
             return request.system;
         }
 
@@ -353,7 +353,7 @@ public class Opentelemetry_instrumentation_api_incubatorTest {
             return request.user;
         }
 
-        public String getName(DatabaseRequest request) {
+        public String getDbNamespace(DatabaseRequest request) {
             return request.name;
         }
 
@@ -363,14 +363,14 @@ public class Opentelemetry_instrumentation_api_incubatorTest {
     }
 
     private static final class DatabaseGetter extends CommonDatabaseGetter
-            implements DbClientAttributesGetter<DatabaseRequest> {
+            implements DbClientAttributesGetter<DatabaseRequest, Object> {
         @Override
-        public String getStatement(DatabaseRequest request) {
+        public String getDbQueryText(DatabaseRequest request) {
             return request.statement;
         }
 
         @Override
-        public String getOperation(DatabaseRequest request) {
+        public String getDbOperationName(DatabaseRequest request) {
             return request.operation;
         }
     }
