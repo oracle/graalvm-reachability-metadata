@@ -310,7 +310,7 @@ public class Reactor_netty_coreTest {
 
     @Test
     void loopResourcesCreateEventLoopGroupsAndDisposeGracefully() {
-        LoopResources loops = LoopResources.create("reactor-netty-loop-test", 1, 1, true, true);
+        LoopResources loops = LoopResources.create("reactor-netty-loop-test", 1, 1, true);
 
         try {
             EventLoopGroup clientGroup = loops.onClient(false);
