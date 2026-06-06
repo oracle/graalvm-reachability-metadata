@@ -1,0 +1,913 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e9b64-4cdc-7181-9211-7b62abe8cbc2
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.ongres.stringprep:stringprep:2.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b/metadata/com.ongres.stringprep/stringprep/index.json
+- Entry selector: "metadata-version" = "2.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2.0
+- Entry metadata-version: 2.0
+- Entry test-version: 2.0
+- Entry tested-versions: [2.0]
+codex
+I’ll verify the current index entry, then resolve the Maven metadata and upstream/tag URLs before editing only the blank fields.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/com.ongres.stringprep/stringprep/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0",
+    "tested-versions" : [
+      "2.0"
+    ],
+    "allowed-packages" : [
+      "com.ongres.stringprep"
+    ]
+  },
+  {
+    "metadata-version" : "1.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-sources.jar",
+    "repository-url" : "https://github.com/ongres/stringprep",
+    "test-code-url" : "https://github.com/ongres/stringprep/tree/$version$/stringprep/src/test/java",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-javadoc.jar",
+    "description" : "com.ongres.stringprep:stringprep is a Java implementation of StringPrep, the RFC 3454 preparation framework for internationalized strings. It provides reusable parsing and processing steps for mapping, normalization, prohibited character checks, and bidirectional checks used by StringPrep profiles.",
+    "tested-versions" : [
+      "1.1"
+    ],
+    "allowed-packages" : [
+      "com.ongres.stringprep"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"|source-code-url|repository-url|test-code-url|documentation-url|description|language|tested-versions' metadata/com.ongres.stringprep/stringprep/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b
+4:    "metadata-version" : "2.0",
+5:    "tested-versions" : [
+13:    "metadata-version" : "1.1",
+14:    "source-code-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-sources.jar",
+15:    "repository-url" : "https://github.com/ongres/stringprep",
+16:    "test-code-url" : "https://github.com/ongres/stringprep/tree/$version$/stringprep/src/test/java",
+17:    "documentation-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-javadoc.jar",
+18:    "description" : "com.ongres.stringprep:stringprep is a Java implementation of StringPrep, the RFC 3454 preparation framework for internationalized strings. It provides reusable parsing and processing steps for mapping, normalization, prohibited character checks, and bidirectional checks used by StringPrep profiles.",
+19:    "tested-versions" : [
+
+web search: 
+web search: com.ongres.stringprep stringprep 2.0 Maven Central
+codex
+The existing older entry already points at Maven sources/Javadocs and the GitHub test tree. I’m checking the 2.0 POM and artifact layout now so the new entry uses a verified 2.0 tag/template rather than copying stale values blindly.
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/2.0/stringprep-2.0-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/2.0/stringprep-2.0.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/2.0/stringprep-2.0-javadoc.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/2.0/stringprep-2.0-tests.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b
+ succeeded in 235ms:
+HTTP/2 404 
+date: Sat, 06 Jun 2026 05:25:15 GMT
+content-type: text/html
+cf-ray: a074fed2199dbe77-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/ongres/stringprep/stringprep/2.0/stringprep-2.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 337ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 05:25:15 GMT
+content-type: application/java-archive
+content-length: 29063
+cf-ray: a074fed2094b3dba-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "0f35beef7543c5bfa2fe591b3dd632b7"
+last-modified: Mon, 01 Feb 2021 19:15:30 GMT
+x-checksum-md5: 0f35beef7543c5bfa2fe591b3dd632b7
+x-checksum-sha1: a6d2c6e589bf72605831afdf11afe235df64ac4b
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 334ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 05:25:15 GMT
+content-type: application/java-archive
+content-length: 420011
+cf-ray: a074fed20d8afcc9-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "4d6f3606675686d0bf6d2fe2830fba02"
+last-modified: Mon, 01 Feb 2021 19:15:40 GMT
+x-checksum-md5: 4d6f3606675686d0bf6d2fe2830fba02
+x-checksum-sha1: 777935d9e8c43a28e308b8e4824117450b955d27
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 421ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.ongres.stringprep</groupId>
+  <artifactId>stringprep</artifactId>
+  <version>2.0</version>
+  <name>Stringprep (RFC 3454)</name>
+  <description>Preparation of Internationalized Strings ("stringprep")</description>
+  <url>https://gitlab.com/ongresinc/stringprep/stringprep</url>
+  <licenses>
+    <license>
+      <name>BSD 2-Clause "Simplified" License</name>
+      <url>https://spdx.org/licenses/BSD-2-Clause</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>com.ongres.aht</id>
+      <name>Álvaro Hernández Tortosa</name>
+      <email>aht@ongres.com</email>
+    </developer>
+    <developer>
+      <id>com.ongres.matteom</id>
+      <name>Matteo Melli</name>
+      <email>matteom@ongres.com</email>
+    </developer>
+    <developer>
+      <id>com.ongres.begona</id>
+      <name>Begoña Pérez Martín</name>
+      <email>begonapm@ongres.com</email>
+    </developer>
+    <developer>
+      <id>com.ongres.jorsol</id>
+      <name>Jorge Solórzano</name>
+      <email>jorsol@ongres.com</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git@gitlab.com:ongresinc/stringprep.git/stringprep</connection>
+    <developerConnection>scm:git:git@gitlab.com:ongresinc/stringprep.git/stringprep</developerConnection>
+    <tag>2.0</tag>
+    <url>https://gitlab.com/ongresinc/stringprep/stringprep</url>
+  </scm>
+</project>
+
+web search: 
+web search: site:gitlab.com/ongresinc/stringprep stringprep 2.0
+web search: 
+web search: https://gitlab.com/ongresinc/stringprep/stringprep
+web search: 
+web search: repo1.maven.org/maven2/com/ongres/stringprep/stringprep/2.0/
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/2.2/stringprep-2.2.pom | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.ongres.stringprep</groupId>
+  <artifactId>stringprep</artifactId>
+  <version>2.2</version>
+  <name>Stringprep (RFC 3454)</name>
+  <description>Preparation of Internationalized Strings ("stringprep")</description>
+  <url>https://github.com/ongres/stringprep</url>
+  <licenses>
+    <license>
+      <name>BSD 2-Clause "Simplified" License</name>
+      <url>https://spdx.org/licenses/BSD-2-Clause</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>com.ongres.aht</id>
+      <name>Álvaro Hernández Tortosa</name>
+      <email>aht@ongres.com</email>
+    </developer>
+    <developer>
+      <id>com.ongres.matteom</id>
+      <name>Matteo Melli</name>
+      <email>matteom@ongres.com</email>
+    </developer>
+    <developer>
+      <id>com.ongres.jorsol</id>
+      <name>Jorge Solórzano</name>
+      <email>jorsol@ongres.com</email>
+    </developer>
+  </developers>
+  <scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false" child.scm.url.inherit.append.path="false">
+    <connection>scm:git:git@github.com:ongres/stringprep.git</connection>
+    <developerConnection>scm:git:git@github.com:ongres/stringprep.git</developerConnection>
+    <tag>2.2</tag>
+    <url>https://github.com/ongres/stringprep</url>
+  </scm>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://github.com/ongres/stringprep/tree/2.0/stringprep/src/test/java' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/2.1/stringprep-2.1.pom | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://gitlab.com/ongresinc/stringprep/stringprep/-/tree/2.0/src/test/java' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b
+ succeeded in 164ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.ongres.stringprep</groupId>
+  <artifactId>stringprep</artifactId>
+  <version>2.1</version>
+  <name>Stringprep (RFC 3454)</name>
+  <description>Preparation of Internationalized Strings ("stringprep")</description>
+  <url>https://gitlab.com/ongresinc/stringprep</url>
+  <licenses>
+    <license>
+      <name>BSD 2-Clause "Simplified" License</name>
+      <url>https://spdx.org/licenses/BSD-2-Clause</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>com.ongres.aht</id>
+      <name>Álvaro Hernández Tortosa</name>
+      <email>aht@ongres.com</email>
+    </developer>
+    <developer>
+      <id>com.ongres.matteom</id>
+      <name>Matteo Melli</name>
+      <email>matteom@ongres.com</email>
+    </developer>
+    <developer>
+      <id>com.ongres.jorsol</id>
+      <name>Jorge Solórzano</name>
+      <email>jorsol@ongres.com</email>
+    </developer>
+  </developers>
+  <scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false" child.scm.url.inherit.append.path="false">
+    <connection>scm:git:git@gitlab.com:ongresinc/stringprep.git</connection>
+    <developerConnection>scm:git:git@gitlab.com:ongresinc/stringprep.git</developerConnection>
+    <url>https://gitlab.com/ongresinc/stringprep</url>
+  </scm>
+</project>
+
+ succeeded in 208ms:
+HTTP/2 302 
+date: Sat, 06 Jun 2026 05:25:29 GMT
+content-type: text/html; charset=utf-8
+content-length: 98
+location: https://gitlab.com/users/sign_in
+set-cookie: _gitlab_session=cell-1-2449c7deb705be74724ad88d70a2bf84; path=/; secure; HttpOnly; SameSite=None
+set-cookie: _cfuvid=zm5ool6JNSTFYHF15vAIWtIa_JqnJYMas.nTe.wTk5s-1780723529.1630878-1.0.1.1-c792p_SZRYOXko8HPNG0sWeCfeM8b3o7Y0sjePlSGFo; HttpOnly; SameSite=None; Secure; Path=/; Domain=gitlab.com
+cf-ray: a074ff294f2f3b52-GVA
+cf-cache-status: BYPASS
+cache-control: no-cache
+server: cloudflare
+strict-transport-security: max-age=31536000
+content-security-policy: base-uri 'self'; child-src https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://www.googletagmanager.com/ns.html https://*.zuora.com/apps/PublicHostedPageLite.do https://gitlab.com/admin/ https://gitlab.com/assets/ https://gitlab.com/-/speedscope/index.html https://gitlab.com/-/sandbox/ 'self' blob: data: https://embed.figma.com https://www.figma.com https://www.youtube.com; connect-src 'self' https://gitlab.com wss://gitlab.com https://sentry.gitlab.net https://new-sentry.gitlab.net https://customers.gitlab.com https://snowplow.trx.gitlab.net https://sourcegraph.com https://collector.prd-278964.gl-product-analytics.com https://analytics.gitlab.com snowplowprd.trx.gitlab.net; default-src 'self'; font-src 'self'; form-action 'self' https: http:; frame-ancestors 'self'; frame-src https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://www.googletagmanager.com/ns.html https://*.zuora.com/apps/PublicHostedPageLite.do https://gitlab.com/admin/ https://gitlab.com/assets/ https://gitlab.com/-/speedscope/index.html https://gitlab.com/-/sandbox/ https://embed.figma.com https://www.figma.com https://www.youtube.com; img-src 'self' data: blob: http: https:; manifest-src 'self'; media-src 'self' data: blob: http: https:; object-src 'none'; report-uri https://new-sentry.gitlab.net/api/4/security/?sentry_key=f5573e26de8f4293b285e556c35dfd6e&sentry_environment=gprd; script-src 'strict-dynamic' 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/ https://www.recaptcha.net/ https://apis.google.com https://*.zuora.com/apps/PublicHostedPageLite.do 'nonce-m0wxMwxe1tSh5skpXB7Faw=='; style-src 'self' 'unsafe-inline'; worker-src 'self' https://gitlab.com/assets/ blob: data:
+gitlab-lb: haproxy-main-51-lb-gprd
+gitlab-sv: web-gke-us-east1-d
+nel: {"max_age": 0}
+permissions-policy: interest-cohort=()
+ratelimit-limit: 500
+ratelimit-name: throttle_unauthenticated_web
+ratelimit-observed: 1
+ratelimit-remaining: 499
+ratelimit-reset: 1780723560
+referrer-policy: strict-origin-when-cross-origin
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-gitlab-meta: {"correlation_id":"a074ff294f2f3b52-GVA","version":"1"}
+x-permitted-cross-domain-policies: none
+x-request-id: a074ff294f2f3b52-GVA
+x-runtime: 0.033935
+x-ua-compatible: IE=edge
+x-xss-protection: 1; mode=block
+
+HTTP/2 403 
+date: Sat, 06 Jun 2026 05:25:29 GMT
+content-type: text/html; charset=UTF-8
+content-length: 5419
+accept-ch: Sec-CH-UA-Bitness, Sec-CH-UA-Arch, Sec-CH-UA-Full-Version, Sec-CH-UA-Mobile, Sec-CH-UA-Model, Sec-CH-UA-Platform-Version, Sec-CH-UA-Full-Version-List, Sec-CH-UA-Platform, Sec-CH-UA, UA-Bitness, UA-Arch, UA-Full-Version, UA-Mobile, UA-Model, UA-Platform-Version, UA-Platform, UA
+cf-mitigated: challenge
+content-security-policy: default-src 'none'; script-src 'nonce-vsCqeyTheMTDjG72z49ch0' 'unsafe-eval' https://challenges.cloudflare.com; script-src-attr 'none'; style-src 'unsafe-inline'; img-src 'self' https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com; frame-src 'self' https://challenges.cloudflare.com blob:; child-src 'self' https://challenges.cloudflare.com blob:; worker-src blob:; form-action http: https:; base-uri 'self'
+server: cloudflare
+critical-ch: Sec-CH-UA-Bitness, Sec-CH-UA-Arch, Sec-CH-UA-Full-Version, Sec-CH-UA-Mobile, Sec-CH-UA-Model, Sec-CH-UA-Platform-Version, Sec-CH-UA-Full-Version-List, Sec-CH-UA-Platform, Sec-CH-UA, UA-Bitness, UA-Arch, UA-Full-Version, UA-Mobile, UA-Model, UA-Platform-Version, UA-Platform, UA
+cross-origin-embedder-policy: require-corp
+nel: {"report_to":"cf-nel","success_fraction":0.01,"max_age":604800}
+cross-origin-resource-policy: same-origin
+origin-agent-cluster: ?1
+permissions-policy: accelerometer=(),camera=(),clipboard-read=(),clipboard-write=(),geolocation=(),gyroscope=(),hid=(),magnetometer=(),microphone=(),payment=(),publickey-credentials-get=(),screen-wake-lock=(),serial=(),sync-xhr=(),usb=(),xr-spatial-tracking=*
+referrer-policy: same-origin
+server-timing: chlray;desc="a074ff2a98463b52"
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+strict-transport-security: max-age=31536000
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=XKNJgg%2FU%2B4lztPAD8XYS0U2%2BTVgCU5RpCKz%2FJ7U3wMzRgF256Ec0guLe6hx%2FBHZfwYFlaUS1AtBJDqzxiX2y7SzEhlV9Wky64OgeXViNOBlQoXgHCRlZ7sT0hcBuZpwyZ8kPL0JBmn0%3D"}]}
+cross-origin-opener-policy: same-origin
+cf-ray: a074ff2a98463b52-GVA
+
+
+ succeeded in 685ms:
+HTTP/2 200 
+date: Sat, 06 Jun 2026 05:25:29 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"ac5246250838fee6da55d9ee61b45ca6"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=JK6pe6ed6hx0YVD%2B1kxDVinipgV4Lh9QKtBH2zprtqOkZrehoraaqpCH3HecNQt4%2BRmNoH%2B5qUAdaNsaMbCzl5Mod1o1Km28fPROrFPjAJmReYUjkCfMH7oJY2G7I8gqtKxdpAqc6Gg7GS%2FWnsjfikdWB9D4NJqelyrgQUz4mWWcT0G8IYG%2Fsu2lKFGZ1NjeJPsmyfTYtuztbi70lRAyi7wAjR4eH8vTkX5OSzNuy3%2BmelRvPoyit7QaQvORdekLX6IRRXcKZV3RhqWb6KazqA%3D%3D--P31aMw%2FearaqFuCN--vU1abH3rDWApho4V70OhQQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.743406001.1780723529; expires=Sun, 06 Jun 2027 05:25:29 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 06 Jun 2027 05:25:29 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 621E:5754:36CB7FE:2C49DB5:6A23AF49
+
+
+codex
+Maven Central has the 2.0 sources and Javadocs, but no `-tests.jar`. The 2.0 POM’s SCM points through GitLab, while the same project also has a GitHub repository with a working `2.0` tag and test path, so I’m verifying the canonical root choice before writing the entry.
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/ongres/stringprep | rg -n '\"html_url\"|\"description\"|\"default_branch\"|\"language\"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/ongres/stringprep/contents/stringprep/src/test/java?ref=2.0 | rg -n '\"name\"|\"path\"|\"html_url\"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/ongres/stringprep/git/ref/tags/2.0' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/ongres/stringprep/contents/stringprep/src/main/java?ref=2.0 | rg -n '\"name\"|\"path\"|\"html_url\"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b
+ succeeded in 159ms:
+3:    "name": "test",
+4:    "path": "stringprep/src/test/java/test",
+8:    "html_url": "https://github.com/ongres/stringprep/tree/2.0/stringprep/src/test/java/test",
+
+ succeeded in 151ms:
+3:    "name": "com",
+4:    "path": "stringprep/src/main/java/com",
+8:    "html_url": "https://github.com/ongres/stringprep/tree/2.0/stringprep/src/main/java/com",
+
+ succeeded in 185ms:
+14:    "html_url": "https://github.com/ongres",
+28:  "html_url": "https://github.com/ongres/stringprep",
+29:  "description": "Stringprep (RFC 3454) Java implementation",
+79:  "language": "Java",
+116:  "default_branch": "main",
+128:    "html_url": "https://github.com/ongres",
+
+ succeeded in 190ms:
+{
+  "ref": "refs/tags/2.0",
+  "node_id": "MDM6UmVmOTI2OTM5MDc6cmVmcy90YWdzLzIuMA==",
+  "url": "https://api.github.com/repos/ongres/stringprep/git/refs/tags/2.0",
+  "object": {
+    "sha": "6a1d8c2e83df34723bfe15270691e999e84de90a",
+    "type": "tag",
+    "url": "https://api.github.com/repos/ongres/stringprep/git/tags/6a1d8c2e83df34723bfe15270691e999e84de90a"
+  }
+}
+
+codex
+I’ve got verified templates for the single tested alias: Maven Central source and Javadoc JARs render at `2.0`, and the GitHub tag renders the test tree. I’m going to add only the missing fields on the `metadata-version` `2.0` entry and leave the rest untouched.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b/metadata/com.ongres.stringprep/stringprep/index.json
+diff --git a/metadata/com.ongres.stringprep/stringprep/index.json b/metadata/com.ongres.stringprep/stringprep/index.json
+index a836f31a86979346a0a7a269cfe268dbf7245117..b663126c68bd8a66e28b6b037dca7bbb5c73c7ff
+--- a/metadata/com.ongres.stringprep/stringprep/index.json
++++ b/metadata/com.ongres.stringprep/stringprep/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-sources.jar",
++    "repository-url" : "https://github.com/ongres/stringprep",
++    "test-code-url" : "https://github.com/ongres/stringprep/tree/$version$/stringprep/src/test/java",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-javadoc.jar",
++    "description" : "com.ongres.stringprep:stringprep is a Java implementation of StringPrep, the RFC 3454 preparation framework for internationalized strings. It provides reusable parsing and processing steps for mapping, normalization, prohibited character checks, and bidirectional checks used by StringPrep profiles.",
+     "tested-versions" : [
+       "2.0"
+     ],
+
+diff --git a/metadata/com.ongres.stringprep/stringprep/index.json b/metadata/com.ongres.stringprep/stringprep/index.json
+index a836f31a86979346a0a7a269cfe268dbf7245117..b663126c68bd8a66e28b6b037dca7bbb5c73c7ff
+--- a/metadata/com.ongres.stringprep/stringprep/index.json
++++ b/metadata/com.ongres.stringprep/stringprep/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-sources.jar",
++    "repository-url" : "https://github.com/ongres/stringprep",
++    "test-code-url" : "https://github.com/ongres/stringprep/tree/$version$/stringprep/src/test/java",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-javadoc.jar",
++    "description" : "com.ongres.stringprep:stringprep is a Java implementation of StringPrep, the RFC 3454 preparation framework for internationalized strings. It provides reusable parsing and processing steps for mapping, normalization, prohibited character checks, and bidirectional checks used by StringPrep profiles.",
+     "tested-versions" : [
+       "2.0"
+     ],
+
+codex
+The JSON has been patched. I’m running a focused metadata validation for `com.ongres.stringprep:stringprep:2.0` and checking the final diff.
+exec
+/usr/bin/bash -lc 'jq . metadata/com.ongres.stringprep/stringprep/index.json >/dev/null && git diff -- metadata/com.ongres.stringprep/stringprep/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b
+ succeeded in 0ms:
+diff --git i/metadata/com.ongres.stringprep/stringprep/index.json w/metadata/com.ongres.stringprep/stringprep/index.json
+index a836f31a86..b663126c68 100644
+--- i/metadata/com.ongres.stringprep/stringprep/index.json
++++ w/metadata/com.ongres.stringprep/stringprep/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-sources.jar",
++    "repository-url" : "https://github.com/ongres/stringprep",
++    "test-code-url" : "https://github.com/ongres/stringprep/tree/$version$/stringprep/src/test/java",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-javadoc.jar",
++    "description" : "com.ongres.stringprep:stringprep is a Java implementation of StringPrep, the RFC 3454 preparation framework for internationalized strings. It provides reusable parsing and processing steps for mapping, normalization, prohibited character checks, and bidirectional checks used by StringPrep profiles.",
+     "tested-versions" : [
+       "2.0"
+     ],
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=com.ongres.stringprep:stringprep:2.0 --stacktrace' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b
+diff --git a/metadata/com.ongres.stringprep/stringprep/index.json b/metadata/com.ongres.stringprep/stringprep/index.json
+index a836f31a86979346a0a7a269cfe268dbf7245117..b663126c68bd8a66e28b6b037dca7bbb5c73c7ff
+--- a/metadata/com.ongres.stringprep/stringprep/index.json
++++ b/metadata/com.ongres.stringprep/stringprep/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-sources.jar",
++    "repository-url" : "https://github.com/ongres/stringprep",
++    "test-code-url" : "https://github.com/ongres/stringprep/tree/$version$/stringprep/src/test/java",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-javadoc.jar",
++    "description" : "com.ongres.stringprep:stringprep is a Java implementation of StringPrep, the RFC 3454 preparation framework for internationalized strings. It provides reusable parsing and processing steps for mapping, normalization, prohibited character checks, and bidirectional checks used by StringPrep profiles.",
+     "tested-versions" : [
+       "2.0"
+     ],
+
+ exited 1 in 3194ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for com.ongres.stringprep:stringprep:2.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b/metadata/com.ongres.stringprep/stringprep/2.0/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - com.ongres.stringprep:stringprep:2.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b/metadata/com.ongres.stringprep/stringprep/2.0/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:146)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:131)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:45)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - com.ongres.stringprep:stringprep:2.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b/metadata/com.ongres.stringprep/stringprep/2.0/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 57 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 2s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+The focused metadata-file check failed because this coordinate’s `metadata/.../2.0/` directory lacks `reachability-metadata.json`; that is outside the requested index URL update. I’m switching to the index-level validation so the edited `index.json` shape is checked directly.
+exec
+/usr/bin/bash -lc 'find metadata/com.ongres.stringprep/stringprep -maxdepth 2 -type f -print' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b
+ succeeded in 0ms:
+metadata/com.ongres.stringprep/stringprep/index.json
+metadata/com.ongres.stringprep/stringprep/1.1/reachability-metadata.json
+
+exec
+/usr/bin/bash -lc './gradlew tasks --all | rg -n "validateIndex|index"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b
+diff --git a/metadata/com.ongres.stringprep/stringprep/index.json b/metadata/com.ongres.stringprep/stringprep/index.json
+index a836f31a86979346a0a7a269cfe268dbf7245117..b663126c68bd8a66e28b6b037dca7bbb5c73c7ff
+--- a/metadata/com.ongres.stringprep/stringprep/index.json
++++ b/metadata/com.ongres.stringprep/stringprep/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-sources.jar",
++    "repository-url" : "https://github.com/ongres/stringprep",
++    "test-code-url" : "https://github.com/ongres/stringprep/tree/$version$/stringprep/src/test/java",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-javadoc.jar",
++    "description" : "com.ongres.stringprep:stringprep is a Java implementation of StringPrep, the RFC 3454 preparation framework for internationalized strings. It provides reusable parsing and processing steps for mapping, normalization, prohibited character checks, and bidirectional checks used by StringPrep profiles.",
+     "tested-versions" : [
+       "2.0"
+     ],
+
+ succeeded in 759ms:
+53:addLibraryAsLatestMetadataIndexJson - Marks given coordinates as latest in metadata/group/artifact/index.json
+54:addLibraryMetadataIndexJson - Adds given coordinates to metadata/group/artifact/index.json without changing the latest entry
+68:generateChangedMetadataTestMatrix - Returns matrix definition populated with changed coordinates and batched tested versions from metadata index files
+82:populateArtifactURLs - Uses a coding agent command to fill source-code-url, repository-url, test-code-url, documentation-url, description, and language in matching metadata index entries.
+106:testInfra - Runs clean and pullAllowedDockerImages, then runs (validateIndexFiles, checkstyle, spotlessCheck, checkMetadataFiles, fetchExistingLibrariesWithNewerVersions, test, jacocoTestReport, listLibraryJars, generateDynamicAccessReport, generateDynamicAccessCoverageReport, generateLibraryStats, listCoordinates, generateDependencyGraph, splitTestOnlyMetadata) concurrently with isolated logs for a single coordinate.
+108:validateIndexFiles - Checks content of index.json files for matching coordinates or files
+
+codex
+The task list confirms `validateIndexFiles` is the right check for this change. I’m running it for the coordinate now.
+exec
+/usr/bin/bash -lc './gradlew validateIndexFiles -Pcoordinates=com.ongres.stringprep:stringprep:2.0 --stacktrace' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b
+diff --git a/metadata/com.ongres.stringprep/stringprep/index.json b/metadata/com.ongres.stringprep/stringprep/index.json
+index a836f31a86979346a0a7a269cfe268dbf7245117..b663126c68bd8a66e28b6b037dca7bbb5c73c7ff
+--- a/metadata/com.ongres.stringprep/stringprep/index.json
++++ b/metadata/com.ongres.stringprep/stringprep/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-sources.jar",
++    "repository-url" : "https://github.com/ongres/stringprep",
++    "test-code-url" : "https://github.com/ongres/stringprep/tree/$version$/stringprep/src/test/java",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-javadoc.jar",
++    "description" : "com.ongres.stringprep:stringprep is a Java implementation of StringPrep, the RFC 3454 preparation framework for internationalized strings. It provides reusable parsing and processing steps for mapping, normalization, prohibited character checks, and bidirectional checks used by StringPrep profiles.",
+     "tested-versions" : [
+       "2.0"
+     ],
+
+ succeeded in 426ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :validateIndexFiles
+✅ metadata/com.ongres.stringprep/stringprep/index.json: Valid
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 429ms
+9 actionable tasks: 1 executed, 8 up-to-date
+
+exec
+/usr/bin/bash -lc "nl -ba metadata/com.ongres.stringprep/stringprep/index.json | sed -n '1,35p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "2.0",
+     5	    "source-code-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-sources.jar",
+     6	    "repository-url" : "https://github.com/ongres/stringprep",
+     7	    "test-code-url" : "https://github.com/ongres/stringprep/tree/$version$/stringprep/src/test/java",
+     8	    "documentation-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-javadoc.jar",
+     9	    "description" : "com.ongres.stringprep:stringprep is a Java implementation of StringPrep, the RFC 3454 preparation framework for internationalized strings. It provides reusable parsing and processing steps for mapping, normalization, prohibited character checks, and bidirectional checks used by StringPrep profiles.",
+    10	    "tested-versions" : [
+    11	      "2.0"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "com.ongres.stringprep"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "1.1",
+    19	    "source-code-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-sources.jar",
+    20	    "repository-url" : "https://github.com/ongres/stringprep",
+    21	    "test-code-url" : "https://github.com/ongres/stringprep/tree/$version$/stringprep/src/test/java",
+    22	    "documentation-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-javadoc.jar",
+    23	    "description" : "com.ongres.stringprep:stringprep is a Java implementation of StringPrep, the RFC 3454 preparation framework for internationalized strings. It provides reusable parsing and processing steps for mapping, normalization, prohibited character checks, and bidirectional checks used by StringPrep profiles.",
+    24	    "tested-versions" : [
+    25	      "1.1"
+    26	    ],
+    27	    "allowed-packages" : [
+    28	      "com.ongres.stringprep"
+    29	    ]
+    30	  }
+    31	]
+
+diff --git a/metadata/com.ongres.stringprep/stringprep/index.json b/metadata/com.ongres.stringprep/stringprep/index.json
+index a836f31a86979346a0a7a269cfe268dbf7245117..b663126c68bd8a66e28b6b037dca7bbb5c73c7ff
+--- a/metadata/com.ongres.stringprep/stringprep/index.json
++++ b/metadata/com.ongres.stringprep/stringprep/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-sources.jar",
++    "repository-url" : "https://github.com/ongres/stringprep",
++    "test-code-url" : "https://github.com/ongres/stringprep/tree/$version$/stringprep/src/test/java",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-javadoc.jar",
++    "description" : "com.ongres.stringprep:stringprep is a Java implementation of StringPrep, the RFC 3454 preparation framework for internationalized strings. It provides reusable parsing and processing steps for mapping, normalization, prohibited character checks, and bidirectional checks used by StringPrep profiles.",
+     "tested-versions" : [
+       "2.0"
+     ],
+
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b/metadata/com.ongres.stringprep/stringprep/index.json:5) for `metadata-version` `2.0` with the missing source, repository, test, documentation, and two-sentence description fields. I did not add `language`, because this is a Java library and not Kotlin/Groovy/Scala-specific under the requested schema.
+
+Verified:
+- Maven Central `2.0` sources and Javadocs URLs render successfully.
+- GitHub `2.0` test tree renders successfully.
+- `./gradlew validateIndexFiles -Pcoordinates=com.ongres.stringprep:stringprep:2.0 --stacktrace` passed.
+
+Note: `checkMetadataFiles` fails for this coordinate because `metadata/com.ongres.stringprep/stringprep/2.0/reachability-metadata.json` is missing, which is outside the requested index update.
+diff --git a/metadata/com.ongres.stringprep/stringprep/index.json b/metadata/com.ongres.stringprep/stringprep/index.json
+index a836f31a86979346a0a7a269cfe268dbf7245117..b663126c68bd8a66e28b6b037dca7bbb5c73c7ff
+--- a/metadata/com.ongres.stringprep/stringprep/index.json
++++ b/metadata/com.ongres.stringprep/stringprep/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-sources.jar",
++    "repository-url" : "https://github.com/ongres/stringprep",
++    "test-code-url" : "https://github.com/ongres/stringprep/tree/$version$/stringprep/src/test/java",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-javadoc.jar",
++    "description" : "com.ongres.stringprep:stringprep is a Java implementation of StringPrep, the RFC 3454 preparation framework for internationalized strings. It provides reusable parsing and processing steps for mapping, normalization, prohibited character checks, and bidirectional checks used by StringPrep profiles.",
+     "tested-versions" : [
+       "2.0"
+     ],
+
+tokens used
+47,920
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b/metadata/com.ongres.stringprep/stringprep/index.json:5) for `metadata-version` `2.0` with the missing source, repository, test, documentation, and two-sentence description fields. I did not add `language`, because this is a Java library and not Kotlin/Groovy/Scala-specific under the requested schema.
+
+Verified:
+- Maven Central `2.0` sources and Javadocs URLs render successfully.
+- GitHub `2.0` test tree renders successfully.
+- `./gradlew validateIndexFiles -Pcoordinates=com.ongres.stringprep:stringprep:2.0 --stacktrace` passed.
+
+Note: `checkMetadataFiles` fails for this coordinate because `metadata/com.ongres.stringprep/stringprep/2.0/reachability-metadata.json` is missing, which is outside the requested index update.
+Ran agent for com.ongres.stringprep:stringprep:2.0 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b/build/agent-url-discovery-logs/com.ongres.stringprep-stringprep-2.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5650-363bb05b/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 13s
+9 actionable tasks: 1 executed, 8 up-to-date
