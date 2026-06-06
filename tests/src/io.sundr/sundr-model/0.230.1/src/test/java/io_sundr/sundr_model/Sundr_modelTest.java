@@ -397,6 +397,42 @@ public class Sundr_modelTest {
         assertThat(ValueRef.NULL.render()).isEqualTo("null");
     }
 
+    @Test
+    void rendersDefaultInterfaceMethodsWithExecutableBlocks() {
+        Method displayName = new MethodBuilder()
+                .withDefaultMethod()
+                .withName("displayName")
+                .withReturnType(STRING)
+                .withBlock(new Block(Return.value("anonymous")))
+                .build();
+        TypeDef named = new TypeDefBuilder()
+                .withKind(Kind.INTERFACE)
+                .withPackageName("example.api")
+                .withName("Named")
+                .withMethods(displayName)
+                .build();
+
+        String methodRender = displayName.render(named);
+        String typeRender = named.render();
+
+        assertThat(displayName.isDefaultMethod()).isTrue();
+        assertThat(methodRender)
+                .contains("default")
+                .contains("String")
+                .contains("displayName()")
+                .contains("return")
+                .contains("anonymous")
+                .contains("{")
+                .contains("}");
+        assertThat(typeRender)
+                .contains("interface Named")
+                .contains("default String displayName()")
+                .contains("anonymous")
+                .doesNotContain("class Named");
+        assertThat(displayName.getReferences()).extracting(ClassRef::getFullyQualifiedName)
+                .containsExactly("java.lang.String");
+    }
+
     private static Modifiers publicModifiers() {
         return new Modifiers(false, false, true, false, false, false, false, false, false);
     }
