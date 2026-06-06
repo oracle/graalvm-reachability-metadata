@@ -129,6 +129,34 @@ public class Oci_java_sdk_addons_oke_workload_identityTest {
     }
 
     @Test
+    void sessionTokenRequestEqualityUsesTheRequestBody() {
+        GetOkeResourcePrincipalSessionTokenDetails details =
+                GetOkeResourcePrincipalSessionTokenDetails.builder().podKey("pod-key").build();
+        GetOkeResourcePrincipalSessionTokenDetails sameDetails =
+                GetOkeResourcePrincipalSessionTokenDetails.builder().podKey("pod-key").build();
+        GetOkeResourcePrincipalSessionTokenDetails otherDetails =
+                GetOkeResourcePrincipalSessionTokenDetails.builder()
+                        .podKey("other-pod-key")
+                        .build();
+
+        GetOkeResourcePrincipalSessionTokenRequest request =
+                GetOkeResourcePrincipalSessionTokenRequest.builder()
+                        .getOkeResourcePrincipalSessionTokenDetails(details)
+                        .build();
+        GetOkeResourcePrincipalSessionTokenRequest sameRequest =
+                GetOkeResourcePrincipalSessionTokenRequest.builder().body$(sameDetails).build();
+        GetOkeResourcePrincipalSessionTokenRequest otherRequest =
+                GetOkeResourcePrincipalSessionTokenRequest.builder()
+                        .getOkeResourcePrincipalSessionTokenDetails(otherDetails)
+                        .build();
+
+        assertThat(request).isEqualTo(sameRequest);
+        assertThat(request.hashCode()).isEqualTo(sameRequest.hashCode());
+        assertThat(request).isNotEqualTo(otherRequest);
+        assertThat(request).isNotEqualTo("pod-key");
+    }
+
+    @Test
     void resourcePrincipalSessionTokenExposesTokenFromConstructors() {
         OkeResourcePrincipalSessionToken emptyToken = new OkeResourcePrincipalSessionToken();
         OkeResourcePrincipalSessionToken sessionToken =
