@@ -14,7 +14,9 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -31,6 +33,7 @@ import org.apache.hadoop.yarn.api.records.LocalResource;
 import org.apache.hadoop.yarn.api.records.LocalResourceType;
 import org.apache.hadoop.yarn.api.records.LocalResourceVisibility;
 import org.apache.hadoop.yarn.api.records.NodeId;
+import org.apache.hadoop.yarn.api.records.NodeLabel;
 import org.apache.hadoop.yarn.api.records.Priority;
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.api.records.ResourceRequest;
@@ -51,22 +54,33 @@ import org.apache.hadoop.yarn.server.api.protocolrecords.SCMUploaderCanUploadReq
 import org.apache.hadoop.yarn.server.api.protocolrecords.SCMUploaderCanUploadResponse;
 import org.apache.hadoop.yarn.server.api.protocolrecords.SCMUploaderNotifyRequest;
 import org.apache.hadoop.yarn.server.api.protocolrecords.SCMUploaderNotifyResponse;
+import org.apache.hadoop.yarn.server.api.protocolrecords.impl.pb.NMContainerStatusPBImpl;
+import org.apache.hadoop.yarn.server.api.protocolrecords.impl.pb.NodeHeartbeatRequestPBImpl;
+import org.apache.hadoop.yarn.server.api.protocolrecords.impl.pb.NodeHeartbeatResponsePBImpl;
+import org.apache.hadoop.yarn.server.api.protocolrecords.impl.pb.RegisterNodeManagerRequestPBImpl;
+import org.apache.hadoop.yarn.server.api.protocolrecords.impl.pb.RegisterNodeManagerResponsePBImpl;
+import org.apache.hadoop.yarn.server.api.protocolrecords.impl.pb.SCMUploaderCanUploadRequestPBImpl;
+import org.apache.hadoop.yarn.server.api.protocolrecords.impl.pb.SCMUploaderCanUploadResponsePBImpl;
+import org.apache.hadoop.yarn.server.api.protocolrecords.impl.pb.SCMUploaderNotifyRequestPBImpl;
+import org.apache.hadoop.yarn.server.api.protocolrecords.impl.pb.SCMUploaderNotifyResponsePBImpl;
 import org.apache.hadoop.yarn.server.api.records.MasterKey;
 import org.apache.hadoop.yarn.server.api.records.NodeAction;
 import org.apache.hadoop.yarn.server.api.records.NodeHealthStatus;
 import org.apache.hadoop.yarn.server.api.records.NodeStatus;
+import org.apache.hadoop.yarn.server.api.records.impl.pb.MasterKeyPBImpl;
+import org.apache.hadoop.yarn.server.api.records.impl.pb.NodeHealthStatusPBImpl;
+import org.apache.hadoop.yarn.server.api.records.impl.pb.NodeStatusPBImpl;
 import org.apache.hadoop.yarn.server.records.Version;
+import org.apache.hadoop.yarn.server.records.impl.pb.VersionPBImpl;
 import org.apache.hadoop.yarn.server.security.MasterKeyData;
 import org.apache.hadoop.yarn.server.security.http.RMAuthenticationFilter;
 import org.apache.hadoop.yarn.server.security.http.RMAuthenticationFilterInitializer;
 import org.apache.hadoop.yarn.server.sharedcache.SharedCacheUtil;
 import org.apache.hadoop.yarn.server.utils.BuilderUtils;
-import org.apache.hadoop.yarn.server.utils.YarnServerBuilderUtils;
 import org.apache.hadoop.yarn.server.webapp.WebPageUtils;
 import org.apache.hadoop.yarn.server.webapp.dao.AppAttemptsInfo;
 import org.apache.hadoop.yarn.server.webapp.dao.AppsInfo;
 import org.apache.hadoop.yarn.server.webapp.dao.ContainersInfo;
-import org.apache.hadoop.yarn.util.Records;
 import org.junit.jupiter.api.Test;
 
 public class Hadoop_yarn_server_commonTest {
@@ -77,7 +91,7 @@ public class Hadoop_yarn_server_commonTest {
         ApplicationId applicationId = ApplicationId.newInstance(1234L, 7);
         ContainerId containerId = containerId(applicationId, 1, 99L);
         Priority priority = Priority.newInstance(3);
-        NMContainerStatus containerStatus = NMContainerStatus.newInstance(
+        NMContainerStatus containerStatus = newNmContainerStatus(
                 containerId,
                 1,
                 ContainerState.RUNNING,
@@ -87,7 +101,7 @@ public class Hadoop_yarn_server_commonTest {
                 priority,
                 44L);
 
-        RegisterNodeManagerRequest request = RegisterNodeManagerRequest.newInstance(
+        RegisterNodeManagerRequest request = newRegisterNodeManagerRequest(
                 nodeId,
                 8042,
                 nodeResource,
@@ -123,10 +137,10 @@ public class Hadoop_yarn_server_commonTest {
                 "finished",
                 0,
                 containerCapability);
-        NodeHealthStatus healthStatus = NodeHealthStatus.newInstance(true, "all disks healthy", 99L);
+        NodeHealthStatus healthStatus = newNodeHealthStatus(true, "all disks healthy", 99L);
         ResourceUtilization containersUtilization = ResourceUtilization.newInstance(256, 512, 0.5F);
         ResourceUtilization nodeUtilization = ResourceUtilization.newInstance(1024, 2048, 1.5F);
-        NodeStatus nodeStatus = NodeStatus.newInstance(
+        NodeStatus nodeStatus = newNodeStatus(
                 NodeId.newInstance("nm.example.test", 1234),
                 5,
                 Collections.singletonList(containerStatus),
@@ -138,7 +152,7 @@ public class Hadoop_yarn_server_commonTest {
         MasterKey containerTokenKey = masterKey(17, new byte[] {1, 2, 3, 4});
         MasterKey nmTokenKey = masterKey(23, new byte[] {5, 6, 7, 8});
 
-        NodeHeartbeatRequest request = NodeHeartbeatRequest.newInstance(
+        NodeHeartbeatRequest request = newNodeHeartbeatRequest(
                 nodeStatus,
                 containerTokenKey,
                 nmTokenKey,
@@ -157,7 +171,7 @@ public class Hadoop_yarn_server_commonTest {
         assertThat(bytes(request.getLastKnownNMTokenMasterKey().getBytes()))
                 .containsExactly((byte) 5, (byte) 6, (byte) 7, (byte) 8);
 
-        NodeHeartbeatResponse response = YarnServerBuilderUtils.newNodeHeartbeatResponse(
+        NodeHeartbeatResponse response = newNodeHeartbeatResponse(
                 6,
                 NodeAction.NORMAL,
                 Collections.singletonList(runningContainer),
@@ -188,7 +202,7 @@ public class Hadoop_yarn_server_commonTest {
 
     @Test
     void registerNodeManagerResponseExposesMasterKeysAndDiagnostics() {
-        RegisterNodeManagerResponse response = Records.newRecord(RegisterNodeManagerResponse.class);
+        RegisterNodeManagerResponse response = new RegisterNodeManagerResponsePBImpl();
         MasterKey containerTokenKey = masterKey(101, new byte[] {12, 13});
         MasterKey nmTokenKey = masterKey(102, new byte[] {14, 15});
 
@@ -286,10 +300,10 @@ public class Hadoop_yarn_server_commonTest {
 
     @Test
     void sharedCacheUploaderRecordsExposeRequestAndResponseState() {
-        SCMUploaderCanUploadRequest canUploadRequest = Records.newRecord(SCMUploaderCanUploadRequest.class);
-        SCMUploaderCanUploadResponse canUploadResponse = Records.newRecord(SCMUploaderCanUploadResponse.class);
-        SCMUploaderNotifyRequest notifyRequest = Records.newRecord(SCMUploaderNotifyRequest.class);
-        SCMUploaderNotifyResponse notifyResponse = Records.newRecord(SCMUploaderNotifyResponse.class);
+        SCMUploaderCanUploadRequest canUploadRequest = new SCMUploaderCanUploadRequestPBImpl();
+        SCMUploaderCanUploadResponse canUploadResponse = new SCMUploaderCanUploadResponsePBImpl();
+        SCMUploaderNotifyRequest notifyRequest = new SCMUploaderNotifyRequestPBImpl();
+        SCMUploaderNotifyResponse notifyResponse = new SCMUploaderNotifyResponsePBImpl();
 
         canUploadRequest.setResourceKey("resource-checksum");
         canUploadResponse.setUploadable(true);
@@ -345,19 +359,19 @@ public class Hadoop_yarn_server_commonTest {
 
     @Test
     void versionsCompareCompatibilityAndMasterKeyDataPublishesEncodedSecret() {
-        Version version = Version.newInstance(2, 7);
-        Version sameMajorNewerMinor = Version.newInstance(2, 9);
-        Version differentMajor = Version.newInstance(3, 0);
+        Version version = newVersion(2, 7);
+        Version sameMajorNewerMinor = newVersion(2, 9);
+        Version differentMajor = newVersion(3, 0);
 
         assertThat(version.getMajorVersion()).isEqualTo(2);
         assertThat(version.getMinorVersion()).isEqualTo(7);
         assertThat(version.toString()).isEqualTo("2.7");
         assertThat(version.isCompatibleTo(sameMajorNewerMinor)).isTrue();
         assertThat(version.isCompatibleTo(differentMajor)).isFalse();
-        assertThat(version).isEqualTo(Version.newInstance(2, 7));
+        assertThat(version).isEqualTo(newVersion(2, 7));
 
         SecretKey secretKey = new SecretKeySpec(new byte[] {21, 22, 23, 24}, "HmacSHA1");
-        MasterKeyData keyData = new MasterKeyData(77, secretKey);
+        MasterKeyData keyData = new MasterKeyData(masterKey(77, secretKey.getEncoded()), secretKey);
 
         assertThat(keyData.getMasterKey().getKeyId()).isEqualTo(77);
         assertThat(bytes(keyData.getMasterKey().getBytes()))
@@ -389,8 +403,92 @@ public class Hadoop_yarn_server_commonTest {
         return BuilderUtils.newContainerId(applicationAttemptId, containerSequence);
     }
 
+    private static NMContainerStatus newNmContainerStatus(ContainerId containerId, int version,
+            ContainerState containerState, Resource allocatedResource, String diagnostics, int exitStatus,
+            Priority priority, long creationTime) {
+        NMContainerStatus status = new NMContainerStatusPBImpl();
+        status.setContainerId(containerId);
+        status.setVersion(version);
+        status.setContainerState(containerState);
+        status.setAllocatedResource(allocatedResource);
+        status.setDiagnostics(diagnostics);
+        status.setContainerExitStatus(exitStatus);
+        status.setPriority(priority);
+        status.setCreationTime(creationTime);
+        return status;
+    }
+
+    private static RegisterNodeManagerRequest newRegisterNodeManagerRequest(NodeId nodeId, int httpPort,
+            Resource resource, String nmVersion, List<NMContainerStatus> containerStatuses,
+            List<ApplicationId> runningApplications) {
+        RegisterNodeManagerRequest request = new RegisterNodeManagerRequestPBImpl();
+        request.setNodeId(nodeId);
+        request.setHttpPort(httpPort);
+        request.setResource(resource);
+        request.setNMVersion(nmVersion);
+        request.setContainerStatuses(containerStatuses);
+        request.setRunningApplications(runningApplications);
+        return request;
+    }
+
+    private static NodeHealthStatus newNodeHealthStatus(boolean isHealthy, String healthReport,
+            long lastHealthReportTime) {
+        NodeHealthStatus healthStatus = new NodeHealthStatusPBImpl();
+        healthStatus.setIsNodeHealthy(isHealthy);
+        healthStatus.setHealthReport(healthReport);
+        healthStatus.setLastHealthReportTime(lastHealthReportTime);
+        return healthStatus;
+    }
+
+    private static NodeStatus newNodeStatus(NodeId nodeId, int responseId,
+            List<ContainerStatus> containerStatuses, List<ApplicationId> keepAliveApplications,
+            NodeHealthStatus healthStatus, ResourceUtilization containersUtilization,
+            ResourceUtilization nodeUtilization, List<Container> increasedContainers) {
+        NodeStatus nodeStatus = new NodeStatusPBImpl();
+        nodeStatus.setNodeId(nodeId);
+        nodeStatus.setResponseId(responseId);
+        nodeStatus.setContainersStatuses(containerStatuses);
+        nodeStatus.setKeepAliveApplications(keepAliveApplications);
+        nodeStatus.setNodeHealthStatus(healthStatus);
+        nodeStatus.setContainersUtilization(containersUtilization);
+        nodeStatus.setNodeUtilization(nodeUtilization);
+        nodeStatus.setIncreasedContainers(increasedContainers);
+        return nodeStatus;
+    }
+
+    private static NodeHeartbeatRequest newNodeHeartbeatRequest(NodeStatus nodeStatus, MasterKey containerTokenKey,
+            MasterKey nmTokenKey, Set<NodeLabel> nodeLabels) {
+        NodeHeartbeatRequest request = new NodeHeartbeatRequestPBImpl();
+        request.setNodeStatus(nodeStatus);
+        request.setLastKnownContainerTokenMasterKey(containerTokenKey);
+        request.setLastKnownNMTokenMasterKey(nmTokenKey);
+        request.setNodeLabels(nodeLabels);
+        return request;
+    }
+
+    private static NodeHeartbeatResponse newNodeHeartbeatResponse(int responseId, NodeAction nodeAction,
+            List<ContainerId> containersToCleanup, List<ApplicationId> applicationsToCleanup,
+            MasterKey containerTokenKey, MasterKey nmTokenKey, long nextHeartbeatInterval) {
+        NodeHeartbeatResponse response = new NodeHeartbeatResponsePBImpl();
+        response.setResponseId(responseId);
+        response.setNodeAction(nodeAction);
+        response.addAllContainersToCleanup(containersToCleanup);
+        response.addAllApplicationsToCleanup(applicationsToCleanup);
+        response.setContainerTokenMasterKey(containerTokenKey);
+        response.setNMTokenMasterKey(nmTokenKey);
+        response.setNextHeartBeatInterval(nextHeartbeatInterval);
+        return response;
+    }
+
+    private static Version newVersion(int majorVersion, int minorVersion) {
+        Version version = new VersionPBImpl();
+        version.setMajorVersion(majorVersion);
+        version.setMinorVersion(minorVersion);
+        return version;
+    }
+
     private static MasterKey masterKey(int keyId, byte[] keyBytes) {
-        MasterKey masterKey = Records.newRecord(MasterKey.class);
+        MasterKey masterKey = new MasterKeyPBImpl();
         masterKey.setKeyId(keyId);
         masterKey.setBytes(ByteBuffer.wrap(Arrays.copyOf(keyBytes, keyBytes.length)));
         return masterKey;
