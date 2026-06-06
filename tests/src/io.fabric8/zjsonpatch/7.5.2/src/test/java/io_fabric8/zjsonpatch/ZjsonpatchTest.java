@@ -120,6 +120,41 @@ public class ZjsonpatchTest {
     }
 
     @Test
+    void defaultDiffNormalizesRepeatedValuesIntoMoveAndCopyOperations() throws Exception {
+        JsonNode source = json("""
+                {
+                  "items": ["keep", {"id": 1}, "tail"],
+                  "template": {
+                    "enabled": true,
+                    "name": "shared"
+                  }
+                }
+                """);
+        JsonNode target = json("""
+                {
+                  "items": ["keep", "tail", {"id": 1}],
+                  "template": {
+                    "enabled": true,
+                    "name": "shared"
+                  },
+                  "clone": {
+                    "enabled": true,
+                    "name": "shared"
+                  }
+                }
+                """);
+
+        JsonNode patch = JsonDiff.asJson(source, target);
+        JsonNode result = JsonPatch.apply(patch, source);
+
+        assertThat(result).isEqualTo(target);
+        JsonNode move = operationAtPath(patch, Operation.MOVE, "/items/1");
+        assertThat(move.get(JsonDiff.FROM).asText()).isEqualTo("/items/2");
+        JsonNode copy = operationAtPath(patch, Operation.COPY, "/clone");
+        assertThat(copy.get(JsonDiff.FROM).asText()).isEqualTo("/template");
+    }
+
+    @Test
     void diffFlagsCanOmitRemoveValuesAndSplitReplacementsIntoRemoveAddPairs() throws Exception {
         JsonNode source = json("""
                 {
