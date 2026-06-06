@@ -20,6 +20,8 @@ import io.fabric8.kubernetes.api.model.batch.v1.JobList;
 import io.fabric8.kubernetes.api.model.batch.v1.JobListBuilder;
 import io.fabric8.kubernetes.api.model.batch.v1.JobStatus;
 import io.fabric8.kubernetes.api.model.batch.v1.JobStatusBuilder;
+import io.fabric8.kubernetes.api.model.batch.v1.JobTemplateSpec;
+import io.fabric8.kubernetes.api.model.batch.v1.JobTemplateSpecBuilder;
 import io.fabric8.kubernetes.api.model.batch.v1.PodFailurePolicy;
 import io.fabric8.kubernetes.api.model.batch.v1.PodFailurePolicyBuilder;
 import io.fabric8.kubernetes.api.model.batch.v1.PodFailurePolicyOnExitCodesRequirement;
@@ -300,6 +302,65 @@ public class Kubernetes_model_batchTest {
     }
 
     @Test
+    void standaloneJobTemplateSpecCanBeReusedAndCopied() {
+        JobTemplateSpec template = new JobTemplateSpecBuilder()
+                .withNewMetadata()
+                .withName("backup-template")
+                .addToLabels("template", "backup")
+                .addToAnnotations("owner", "batch-team")
+                .endMetadata()
+                .withNewSpec()
+                .withActiveDeadlineSeconds(900L)
+                .withBackoffLimit(2)
+                .withCompletions(1)
+                .withParallelism(1)
+                .withTtlSecondsAfterFinished(120)
+                .withNewTemplate()
+                .withNewMetadata()
+                .addToLabels("job-template", "backup")
+                .endMetadata()
+                .withNewSpec()
+                .withRestartPolicy("OnFailure")
+                .addNewContainer()
+                .withName("backup")
+                .withImage("busybox:1.36")
+                .withArgs("sh", "-c", "echo backup")
+                .endContainer()
+                .endSpec()
+                .endTemplate()
+                .endSpec()
+                .addToAdditionalProperties("template-source", "shared")
+                .build();
+        CronJob nightly = cronJobWithTemplate("nightly-backup", "0 1 * * *", template);
+        CronJob weekly = cronJobWithTemplate("weekly-backup", "0 2 * * 0", template);
+
+        CronJob tunedWeekly = weekly.toBuilder()
+                .editSpec()
+                .editJobTemplate()
+                .editSpec()
+                .withParallelism(2)
+                .withActiveDeadlineSeconds(1800L)
+                .endSpec()
+                .endJobTemplate()
+                .endSpec()
+                .build();
+
+        assertThat(template.getMetadata().getLabels()).containsEntry("template", "backup");
+        assertThat(template.getAdditionalProperties()).containsEntry("template-source", "shared");
+        assertThat(nightly.getSpec().getJobTemplate().getMetadata().getName()).isEqualTo("backup-template");
+        assertThat(nightly.getSpec().getJobTemplate().getSpec().getActiveDeadlineSeconds()).isEqualTo(900L);
+        assertThat(nightly.getSpec().getJobTemplate().getSpec().getTemplate().getSpec().getContainers().get(0)
+                .getArgs()).containsExactly("sh", "-c", "echo backup");
+        assertThat(nightly.getSpec().getJobTemplate().getSpec().getTemplate().getMetadata().getLabels())
+                .containsEntry("job-template", "backup");
+        assertThat(weekly.getSpec().getSchedule()).isEqualTo("0 2 * * 0");
+        assertThat(tunedWeekly.getSpec().getJobTemplate().getSpec().getParallelism()).isEqualTo(2);
+        assertThat(tunedWeekly.getSpec().getJobTemplate().getSpec().getActiveDeadlineSeconds()).isEqualTo(1800L);
+        assertThat(weekly.getSpec().getJobTemplate().getSpec().getParallelism()).isEqualTo(1);
+        assertThat(template.getSpec().getActiveDeadlineSeconds()).isEqualTo(900L);
+    }
+
+    @Test
     void listBuildersSupportMatchingEditingAndRemoval() {
         Job renderJob = jobNamed("render", "ml", "False");
         Job reportJob = jobNamed("report", "ml", "True");
@@ -520,6 +581,19 @@ public class Kubernetes_model_batchTest {
                 .endSpec()
                 .withNewStatusLike(new JobStatusBuilder().withConditions(condition).build())
                 .endStatus()
+                .build();
+    }
+
+    private static CronJob cronJobWithTemplate(String name, String schedule, JobTemplateSpec template) {
+        return new CronJobBuilder()
+                .withNewMetadata()
+                .withName(name)
+                .withNamespace("ops")
+                .endMetadata()
+                .withNewSpec()
+                .withSchedule(schedule)
+                .withJobTemplate(template)
+                .endSpec()
                 .build();
     }
 
