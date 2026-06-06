@@ -82,6 +82,21 @@ public class Vertx_uri_templateTest {
     }
 
     @Test
+    void expandsTemplatesWithPercentEncodedLiteralsAndVariableNames() {
+        Variables variables = Variables.variables()
+                .set("caf%C3%A9", "au lait")
+                .set("path", "already%2Fencoded")
+                .set("fragment", "section%201");
+
+        assertThat(UriTemplate.of("/caf%C3%A9/{caf%C3%A9}{?caf%C3%A9}").expandToString(variables))
+                .isEqualTo("/caf%C3%A9/au%20lait?caf%C3%A9=au%20lait");
+        assertThat(UriTemplate.of("{+path}{#fragment}").expandToString(variables))
+                .isEqualTo("already%2Fencoded#section%201");
+        assertThat(UriTemplate.of("/{path}").expandToString(variables))
+                .isEqualTo("/already%252Fencoded");
+    }
+
+    @Test
     void createsAndMutatesVariablesFromJsonObjects() {
         JsonObject json = new JsonObject()
                 .put("user", new JsonObject()
