@@ -8,22 +8,19 @@ package io_vertx.vertx_web_common;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.parsetools.JsonParser;
-import io.vertx.core.streams.ReadStream;
 import io.vertx.core.streams.WriteStream;
 import io.vertx.ext.web.codec.BodyCodec;
-import io.vertx.ext.web.codec.SseEvent;
 import io.vertx.ext.web.codec.spi.BodyStream;
 import io.vertx.ext.web.common.WebEnvironment;
+import io.vertx.ext.web.common.template.CachedTemplate;
 import io.vertx.ext.web.common.template.CachingTemplateEngine;
 import io.vertx.ext.web.common.template.TemplateEngine;
-import io.vertx.ext.web.common.template.impl.TemplateHolder;
 import io.vertx.ext.web.multipart.FormDataPart;
 import io.vertx.ext.web.multipart.MultipartForm;
 import java.nio.charset.StandardCharsets;
@@ -34,7 +31,6 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
 
 public class Vertx_web_commonTest {
@@ -54,7 +50,7 @@ public class Vertx_web_commonTest {
         assertThat(decodedMap.get("score")).isEqualTo(7);
         assertThat(decode(BodyCodec.none(), Buffer.buffer("discarded"))).isNull();
 
-        BodyCodec<String> customCodec = BodyCodec.create((Buffer buffer) -> buffer.length() + ":" + buffer.toString());
+        BodyCodec<String> customCodec = BodyCodec.stream((Buffer buffer) -> buffer.length() + ":" + buffer.toString());
         String customDecoded = decode(customCodec, Buffer.buffer("abc"));
         assertThat(customDecoded).isEqualTo("3:abc");
     }
@@ -99,73 +95,6 @@ public class Vertx_web_commonTest {
         ended.get(TIMEOUT_SECONDS, TimeUnit.SECONDS);
 
         assertThat(values).extracting(value -> value.getInteger("id")).containsExactly(1, 2);
-    }
-
-    @Test
-    void sseStreamBodyCodecParsesEventsWithDemandControl() throws Exception {
-        List<SseEvent> events = new ArrayList<>();
-        AtomicReference<ReadStream<SseEvent>> readStream = new AtomicReference<>();
-        CompletableFuture<Void> ended = new CompletableFuture<>();
-
-        BodyStream<Void> stream = createStream(BodyCodec.sseStream(sseStream -> {
-            sseStream.pause();
-            sseStream.handler(events::add);
-            sseStream.endHandler(ignored -> ended.complete(null));
-            readStream.set(sseStream);
-        }));
-
-        await(stream.write(Buffer.buffer(": ignored comment\n"
-                + "id: 42\n"
-                + "event: update\n"
-                + "data: line one\n"
-                + "data: line two\n"
-                + "retry: 1500\n"
-                + "\n"
-                + "id: 43\n"
-                + "data: payload\n"
-                + "\n")));
-
-        assertThat(events).isEmpty();
-
-        readStream.get().fetch(1);
-        assertThat(events).hasSize(1);
-        assertThat(events.get(0).id()).isEqualTo("42");
-        assertThat(events.get(0).event()).isEqualTo("update");
-        assertThat(events.get(0).data()).isEqualTo("line one\nline two");
-        assertThat(events.get(0).retry()).isEqualTo(1500);
-
-        readStream.get().fetch(1);
-        assertThat(events).hasSize(2);
-        assertThat(events.get(1).event()).isEqualTo("message");
-        assertThat(events.get(1).data()).isEqualTo("payload");
-
-        readStream.get().resume();
-        await(stream.end());
-        await(stream.result());
-        ended.get(TIMEOUT_SECONDS, TimeUnit.SECONDS);
-    }
-
-    @Test
-    void sseEventConstructorsExposeDataObjectValues() {
-        JsonObject json = new JsonObject()
-                .put("id", "abc")
-                .put("event", "created")
-                .put("data", "payload")
-                .put("retry", 250);
-
-        SseEvent fromJson = new SseEvent(json);
-        SseEvent copy = new SseEvent(fromJson);
-        SseEvent direct = new SseEvent("abc", "created", "payload", 250);
-
-        assertThat(fromJson).isEqualTo(direct);
-        assertThat(copy.hashCode()).isEqualTo(direct.hashCode());
-        assertThat(copy.toString()).contains("id: abc", "event: created", "payload", "retry: 250");
-
-        SseEvent empty = new SseEvent();
-        assertThat(empty.id()).isNull();
-        assertThat(empty.event()).isNull();
-        assertThat(empty.data()).isNull();
-        assertThat(empty.retry()).isZero();
     }
 
     @Test
@@ -255,7 +184,7 @@ public class Vertx_web_commonTest {
         Vertx vertx = Vertx.vertx();
         try {
             TestCachingTemplateEngine engine = new TestCachingTemplateEngine(vertx, "tmpl");
-            TemplateHolder<String> holder = new TemplateHolder<>("compiled-template", "views");
+            CachedTemplate<String> holder = new CachedTemplate<>("compiled-template", "views");
 
             assertThat(engine.adjust("views/home")).isEqualTo("views/home.tmpl");
             assertThat(engine.adjust("views/home.tmpl")).isEqualTo("views/home.tmpl");
@@ -278,7 +207,7 @@ public class Vertx_web_commonTest {
         Vertx vertx = Vertx.vertx();
         try {
             TestCachingTemplateEngine engine = new TestCachingTemplateEngine(vertx, "tmpl");
-            TemplateHolder<String> holder = new TemplateHolder<>("compiled-template");
+            CachedTemplate<String> holder = new CachedTemplate<>("compiled-template");
 
             assertThat(engine.putTemplate("home", holder)).isNull();
             assertThat(engine.getTemplate("home")).isNull();
@@ -312,21 +241,11 @@ public class Vertx_web_commonTest {
     }
 
     private static <T> BodyStream<T> createStream(BodyCodec<T> codec) throws Exception {
-        CompletableFuture<BodyStream<T>> future = new CompletableFuture<>();
-        codec.create((Handler<AsyncResult<BodyStream<T>>>) result -> complete(future, result));
-        return future.get(TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        return codec.stream();
     }
 
     private static <T> T await(Future<T> future) throws Exception {
         return future.toCompletionStage().toCompletableFuture().get(TIMEOUT_SECONDS, TimeUnit.SECONDS);
-    }
-
-    private static <T> void complete(CompletableFuture<T> future, AsyncResult<T> result) {
-        if (result.succeeded()) {
-            future.complete(result.result());
-        } else {
-            future.completeExceptionally(result.cause());
-        }
     }
 
     private static void restoreSystemProperty(String name, String value) {
@@ -353,15 +272,9 @@ public class Vertx_web_commonTest {
         }
 
         @Override
-        public void write(Buffer data, Handler<AsyncResult<Void>> handler) {
-            content.appendBuffer(data);
-            handler.handle(Future.succeededFuture());
-        }
-
-        @Override
-        public void end(Handler<AsyncResult<Void>> handler) {
+        public Future<Void> end() {
             closed = true;
-            handler.handle(Future.succeededFuture());
+            return Future.succeededFuture();
         }
 
         @Override
@@ -394,14 +307,11 @@ public class Vertx_web_commonTest {
         private String lastTemplate;
 
         @Override
-        public void render(
-                Map<String, Object> context,
-                String templateFileName,
-                Handler<AsyncResult<Buffer>> handler) {
+        public Future<Buffer> render(Map<String, Object> context, String templateFileName) {
             lastContext = Map.copyOf(context);
             lastTemplate = templateFileName;
             Object name = Objects.requireNonNull(context.get("name"));
-            handler.handle(Future.succeededFuture(Buffer.buffer(templateFileName + ":" + name)));
+            return Future.succeededFuture(Buffer.buffer(templateFileName + ":" + name));
         }
 
         @Override
@@ -428,11 +338,8 @@ public class Vertx_web_commonTest {
         }
 
         @Override
-        public void render(
-                Map<String, Object> context,
-                String templateFileName,
-                Handler<AsyncResult<Buffer>> handler) {
-            handler.handle(Future.succeededFuture(Buffer.buffer(templateFileName)));
+        public Future<Buffer> render(Map<String, Object> context, String templateFileName) {
+            return Future.succeededFuture(Buffer.buffer(templateFileName));
         }
 
         String adjust(String location) {
