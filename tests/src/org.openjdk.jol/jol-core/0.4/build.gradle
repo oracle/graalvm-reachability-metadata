@@ -9,10 +9,52 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String generatedTestRuntimeResourcesDirectory = layout.buildDirectory
+        .dir("generated/test-runtime-classpath")
+        .get()
+        .asFile
+        .absolutePath
 
 dependencies {
     testImplementation "org.openjdk.jol:jol-core:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+sourceSets {
+    test {
+        resources.srcDir(generatedTestRuntimeResourcesDirectory)
+    }
+}
+
+tasks.register("writeTestRuntimeClasspath") {
+    File outputFile = layout.buildDirectory
+            .file("generated/test-runtime-classpath/test-runtime-classpath.txt")
+            .get()
+            .asFile
+
+    inputs.files(sourceSets.test.output.classesDirs)
+    inputs.files(configurations.testRuntimeClasspath)
+    outputs.file(outputFile)
+
+    doLast {
+        List<String> classpathEntries = []
+        sourceSets.test.output.classesDirs.files
+                .findAll { it.exists() }
+                .each { classpathEntries.add(it.absolutePath) }
+        File testResourcesDirectory = sourceSets.test.output.resourcesDir
+        if (testResourcesDirectory != null && testResourcesDirectory.exists()) {
+            classpathEntries.add(testResourcesDirectory.absolutePath)
+        }
+        configurations.testRuntimeClasspath.resolve()
+                .each { classpathEntries.add(it.absolutePath) }
+
+        outputFile.parentFile.mkdirs()
+        outputFile.text = classpathEntries.join(File.pathSeparator)
+    }
+}
+
+tasks.named("processTestResources") {
+    dependsOn(tasks.named("writeTestRuntimeClasspath"))
 }
 
 graalvmNative {

@@ -12,7 +12,6 @@ import org.openjdk.jol.util.HS_SA_Support;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.InputStream;
 import java.io.ObjectStreamClass;
 import java.io.PrintStream;
@@ -91,7 +90,7 @@ public class HS_SA_SupportTest {
         return new ProcessResult(process.exitValue(), new String(outputBytes, StandardCharsets.UTF_8));
     }
 
-    private static List<String> javaCommand(String mode, boolean includeCurrentInputArguments) {
+    private static List<String> javaCommand(String mode, boolean includeCurrentInputArguments) throws Exception {
         List<String> command = new ArrayList<>();
         command.add(javaExecutable());
         if (includeCurrentInputArguments) {
@@ -99,7 +98,7 @@ public class HS_SA_SupportTest {
         }
         command.addAll(hotspotServiceabilityAgentOptionList());
         command.add("-cp");
-        command.add(System.getProperty("java.class.path", ""));
+        command.add(JavaHomeSupport.testRuntimeClassPath());
         command.add(HS_SA_SupportTest.class.getName());
         command.add(mode);
         return command;
@@ -118,7 +117,7 @@ public class HS_SA_SupportTest {
     }
 
     private static String javaExecutable() {
-        return System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
+        return JavaHomeSupport.javaExecutable();
     }
 
     private static void initializeSupport() {

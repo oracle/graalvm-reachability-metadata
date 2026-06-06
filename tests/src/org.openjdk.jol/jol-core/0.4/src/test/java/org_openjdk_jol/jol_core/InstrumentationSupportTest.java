@@ -57,12 +57,17 @@ public class InstrumentationSupportTest {
         } catch (Error error) {
             rethrowIfNotNativeImageDynamicClassLoadingError(error);
         } finally {
-            System.setProperty("java.home", originalJavaHome);
+            JavaHomeSupport.restoreProperty("java.home", originalJavaHome);
         }
     }
 
     private void configureLegacyToolsJarLookup(String originalJavaHome) throws Exception {
-        Path attachModule = Path.of(originalJavaHome, "jmods", "jdk.attach.jmod");
+        String effectiveJavaHome = JavaHomeSupport.effectiveJavaHome(originalJavaHome);
+        if (effectiveJavaHome == null) {
+            return;
+        }
+
+        Path attachModule = Path.of(effectiveJavaHome, "jmods", "jdk.attach.jmod");
         if (!Files.isRegularFile(attachModule)) {
             return;
         }
@@ -111,8 +116,7 @@ public class InstrumentationSupportTest {
     private static void copyTestClass(JarOutputStream output, Class<?> type) throws Exception {
         String resourceName = type.getName().replace('.', '/') + ".class";
         output.putNextEntry(new JarEntry(resourceName));
-        try (InputStream input = InstrumentationSupportTest.class.getClassLoader()
-                .getResourceAsStream(resourceName)) {
+        try (InputStream input = JavaHomeSupport.openTestClassResource(type)) {
             assertThat(input).isNotNull();
             byte[] buffer = new byte[8192];
             int read;

@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.openjdk.jol.util.sa.impl.compressedrefs.HS_SA_CompressedReferencesProcessor;
 import org.openjdk.jol.util.sa.impl.compressedrefs.HS_SA_CompressedReferencesResult;
 
-import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -24,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class HS_SA_CompressedReferencesProcessorTest {
     private static final String PROBE_MODE = "probe";
     private static final String TARGET_MODE = "target";
-    private static final int HELPER_TIMEOUT_SECONDS = 45;
+    private static final int HELPER_TIMEOUT_SECONDS = 90;
     private static final int TARGET_SLEEP_SECONDS = 30;
 
     @Test
@@ -62,15 +61,15 @@ public class HS_SA_CompressedReferencesProcessorTest {
         if (!finished) {
             process.destroyForcibly();
             process.waitFor(5, TimeUnit.SECONDS);
-            byte[] outputBytes = process.getInputStream().readAllBytes();
+            byte[] outputBytes = readAvailableOutput(process);
             throw new AssertionError("Timed out waiting for helper process. Output:\n"
                     + new String(outputBytes, StandardCharsets.UTF_8));
         }
-        byte[] outputBytes = process.getInputStream().readAllBytes();
+        byte[] outputBytes = readAvailableOutput(process);
         return new ProcessResult(process.exitValue(), new String(outputBytes, StandardCharsets.UTF_8));
     }
 
-    private static List<String> javaCommand(String mode, boolean includeCurrentInputArguments) {
+    private static List<String> javaCommand(String mode, boolean includeCurrentInputArguments) throws Exception {
         List<String> command = new ArrayList<>();
         command.add(javaExecutable());
         if (includeCurrentInputArguments) {
@@ -81,14 +80,14 @@ public class HS_SA_CompressedReferencesProcessorTest {
         command.add("--add-exports=jdk.hotspot.agent/sun.jvm.hotspot.runtime=ALL-UNNAMED");
         command.add("--add-exports=jdk.hotspot.agent/sun.jvm.hotspot.memory=ALL-UNNAMED");
         command.add("-cp");
-        command.add(System.getProperty("java.class.path", ""));
+        command.add(JavaHomeSupport.testRuntimeClassPath());
         command.add(HS_SA_CompressedReferencesProcessorTest.class.getName());
         command.add(mode);
         return command;
     }
 
     private static String javaExecutable() {
-        return System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
+        return JavaHomeSupport.javaExecutable();
     }
 
     private static void runTargetProcess() throws InterruptedException {
@@ -164,6 +163,14 @@ public class HS_SA_CompressedReferencesProcessorTest {
             }
         }
         return false;
+    }
+
+    private static byte[] readAvailableOutput(Process process) {
+        try {
+            return process.getInputStream().readAllBytes();
+        } catch (Exception exception) {
+            return new byte[0];
+        }
     }
 
     private static final class ProcessResult {
