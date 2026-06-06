@@ -243,6 +243,84 @@ public class Kubernetes_model_autoscalingTest {
     }
 
     @Test
+    void v2MetricIdentifiersSupportSelectorMatchExpressions() {
+        MetricSpec externalMetric = new MetricSpecBuilder()
+                .withType("External")
+                .withNewExternal()
+                    .withNewMetric()
+                        .withName("queue_latency_seconds")
+                        .withNewSelector()
+                            .addNewMatchExpression()
+                                .withKey("queue")
+                                .withOperator("In")
+                                .withValues("checkout", "payments")
+                            .endMatchExpression()
+                            .addNewMatchExpression()
+                                .withKey("environment")
+                                .withOperator("NotIn")
+                                .withValues("dev")
+                            .endMatchExpression()
+                        .endSelector()
+                    .endMetric()
+                    .withNewTarget()
+                        .withType("AverageValue")
+                        .withNewAverageValue("250m")
+                    .endTarget()
+                .endExternal()
+                .build();
+        MetricSpec podsMetric = new MetricSpecBuilder()
+                .withType("Pods")
+                .withNewPods()
+                    .withNewMetric()
+                        .withName("open-connections")
+                        .withNewSelector()
+                            .addNewMatchExpression()
+                                .withKey("tier")
+                                .withOperator("Exists")
+                            .endMatchExpression()
+                        .endSelector()
+                    .endMetric()
+                    .withNewTarget()
+                        .withType("AverageValue")
+                        .withNewAverageValue("20")
+                    .endTarget()
+                .endPods()
+                .build();
+
+        HorizontalPodAutoscaler autoscaler = new HorizontalPodAutoscalerBuilder()
+                .withApiVersion("autoscaling/v2")
+                .withKind("HorizontalPodAutoscaler")
+                .withNewMetadata()
+                    .withName("selector-hpa")
+                .endMetadata()
+                .withNewSpec()
+                    .withNewScaleTargetRef("apps/v1", "Deployment", "selector-app")
+                    .withMinReplicas(1)
+                    .withMaxReplicas(6)
+                    .withMetrics(externalMetric, podsMetric)
+                .endSpec()
+                .build();
+
+        MetricSpec selectedExternalMetric = autoscaler.getSpec().getMetrics().get(0);
+        assertThat(selectedExternalMetric.getExternal().getMetric().getSelector().getMatchExpressions())
+                .extracting(requirement -> requirement.getKey())
+                .containsExactly("queue", "environment");
+        assertThat(selectedExternalMetric.getExternal().getMetric().getSelector().getMatchExpressions().get(0)
+                .getValues()).containsExactly("checkout", "payments");
+        assertThat(selectedExternalMetric.getExternal().getMetric().getSelector().getMatchExpressions().get(1)
+                .getOperator()).isEqualTo("NotIn");
+        assertThat(selectedExternalMetric.getExternal().getTarget().getAverageValue().getAmount()).isEqualTo("250");
+        assertThat(selectedExternalMetric.getExternal().getTarget().getAverageValue().getFormat()).isEqualTo("m");
+
+        MetricSpec selectedPodsMetric = autoscaler.getSpec().getMetrics().get(1);
+        assertThat(selectedPodsMetric.getPods().getMetric().getSelector().getMatchExpressions()).singleElement()
+                .satisfies(requirement -> {
+                    assertThat(requirement.getKey()).isEqualTo("tier");
+                    assertThat(requirement.getOperator()).isEqualTo("Exists");
+                });
+    }
+
+    @Test
     void v2HorizontalPodAutoscalerStatusSupportsAllCurrentMetricKinds() {
         MetricStatus objectStatus = new MetricStatusBuilder()
                 .withType("Object")
