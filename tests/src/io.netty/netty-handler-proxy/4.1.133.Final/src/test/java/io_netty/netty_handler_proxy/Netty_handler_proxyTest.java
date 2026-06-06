@@ -59,7 +59,7 @@ public class Netty_handler_proxyTest {
     @Test
     void exposesHttpProxyConfigurationAndConnectionEvent() throws Exception {
         HttpHeaders headers = new DefaultHttpHeaders().add("X-Trace-Id", "trace-123");
-        HttpProxyHandler handler = new HttpProxyHandler(unusedProxyAddress(), "user", "pass", headers, true);
+        HttpProxyHandler handler = new HttpProxyHandler(unusedProxyAddress(), "user", "pass", headers, true, true);
 
         assertThat(handler.protocol()).isEqualTo("http");
         assertThat(handler.authScheme()).isEqualTo("basic");
@@ -95,7 +95,7 @@ public class Netty_handler_proxyTest {
             writeAscii(output, "HTTP/1.1 200 Connection Established\r\nContent-Length: 0\r\n\r\n");
         })) {
             HttpHeaders headers = new DefaultHttpHeaders().add("X-Trace-Id", "trace-456");
-            HttpProxyHandler handler = new HttpProxyHandler(proxyServer.address(), "user", "pass", headers, true);
+            HttpProxyHandler handler = new HttpProxyHandler(proxyServer.address(), "user", "pass", headers, true, true);
 
             try (ClientConnection client = ClientConnection.connect(handler, HTTP_DESTINATION)) {
                 assertThat(handler.connectFuture().isSuccess()).isTrue();
