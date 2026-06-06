@@ -57,8 +57,6 @@ import org.apache.maven.scm.command.tag.TagScmResult;
 import org.apache.maven.scm.command.unedit.UnEditScmResult;
 import org.apache.maven.scm.command.update.UpdateScmResult;
 import org.apache.maven.scm.command.update.UpdateScmResultWithRevision;
-import org.apache.maven.scm.log.ScmLogDispatcher;
-import org.apache.maven.scm.log.ScmLogger;
 import org.apache.maven.scm.manager.BasicScmManager;
 import org.apache.maven.scm.manager.NoSuchScmProviderException;
 import org.apache.maven.scm.provider.AbstractScmProvider;
@@ -435,9 +433,8 @@ public class Maven_scm_apiTest {
     }
 
     @Test
-    void consumersParseProviderDatesWithConfiguredPatternsAndWarnOnInvalidInput() {
-        TestScmLogger logger = new TestScmLogger(false, false, true, false);
-        DateParsingConsumer consumer = new DateParsingConsumer(logger);
+    void consumersParseProviderDatesWithConfiguredPatternsAndHandleInvalidInput() {
+        DateParsingConsumer consumer = new DateParsingConsumer();
         consumer.consumeLine("provider output");
         assertThat(consumer.lastConsumedLine).isEqualTo("provider output");
 
@@ -448,44 +445,6 @@ public class Maven_scm_apiTest {
         assertThat(formatDate(parsedWithLocale, "yyyy-MM-dd")).isEqualTo("2024-01-02");
 
         assertThat(consumer.parseWithLocale("not-a-date", null, "yyyy-MM-dd", Locale.ENGLISH)).isNull();
-        assertThat(logger.events).hasSize(1);
-        assertThat(logger.events.get(0))
-                .startsWith("warn:skip ParseException:")
-                .contains("not-a-date", "yyyy-MM-dd", Locale.ENGLISH.toString());
-    }
-
-    @Test
-    void logDispatcherAggregatesListenersAndRoutesInfoMessagesToEnabledLoggers() {
-        ScmLogDispatcher dispatcher = new ScmLogDispatcher();
-        TestScmLogger mutedLogger = new TestScmLogger(false, false, false, false);
-        TestScmLogger infoLogger = new TestScmLogger(false, true, false, false);
-        TestScmLogger warnLogger = new TestScmLogger(false, false, true, false);
-
-        assertThat(dispatcher.isDebugEnabled()).isFalse();
-        assertThat(dispatcher.isInfoEnabled()).isFalse();
-        assertThat(dispatcher.isWarnEnabled()).isFalse();
-        assertThat(dispatcher.isErrorEnabled()).isFalse();
-
-        dispatcher.addListener(mutedLogger);
-        dispatcher.addListener(infoLogger);
-        dispatcher.addListener(warnLogger);
-
-        assertThat(dispatcher.isDebugEnabled()).isFalse();
-        assertThat(dispatcher.isInfoEnabled()).isTrue();
-        assertThat(dispatcher.isWarnEnabled()).isTrue();
-        assertThat(dispatcher.isErrorEnabled()).isFalse();
-
-        IllegalStateException failure = new IllegalStateException("repository unavailable");
-        dispatcher.info("checking repository");
-        dispatcher.info("checking working copy", failure);
-        dispatcher.info(failure);
-
-        assertThat(infoLogger.events).containsExactly(
-                "info:checking repository",
-                "info:checking working copy:repository unavailable",
-                "info:repository unavailable");
-        assertThat(mutedLogger.events).isEmpty();
-        assertThat(warnLogger.events).isEmpty();
     }
 
     @Test
@@ -523,10 +482,6 @@ public class Maven_scm_apiTest {
     private static final class DateParsingConsumer extends AbstractConsumer {
         private String lastConsumedLine;
 
-        private DateParsingConsumer(ScmLogger logger) {
-            super(logger);
-        }
-
         @Override
         public void consumeLine(String line) {
             lastConsumedLine = line;
@@ -538,117 +493,6 @@ public class Maven_scm_apiTest {
 
         private Date parseWithLocale(String date, String userPattern, String defaultPattern, Locale locale) {
             return parseDate(date, userPattern, defaultPattern, locale);
-        }
-    }
-
-    private static final class TestScmLogger implements ScmLogger {
-        private final boolean debugEnabled;
-        private final boolean infoEnabled;
-        private final boolean warnEnabled;
-        private final boolean errorEnabled;
-        private final List<String> events = new ArrayList<>();
-
-        private TestScmLogger(
-                boolean debugEnabled,
-                boolean infoEnabled,
-                boolean warnEnabled,
-                boolean errorEnabled) {
-            this.debugEnabled = debugEnabled;
-            this.infoEnabled = infoEnabled;
-            this.warnEnabled = warnEnabled;
-            this.errorEnabled = errorEnabled;
-        }
-
-        @Override
-        public boolean isDebugEnabled() {
-            return debugEnabled;
-        }
-
-        @Override
-        public void debug(String content) {
-            record("debug", content);
-        }
-
-        @Override
-        public void debug(String content, Throwable error) {
-            record("debug", content, error);
-        }
-
-        @Override
-        public void debug(Throwable error) {
-            record("debug", error);
-        }
-
-        @Override
-        public boolean isInfoEnabled() {
-            return infoEnabled;
-        }
-
-        @Override
-        public void info(String content) {
-            record("info", content);
-        }
-
-        @Override
-        public void info(String content, Throwable error) {
-            record("info", content, error);
-        }
-
-        @Override
-        public void info(Throwable error) {
-            record("info", error);
-        }
-
-        @Override
-        public boolean isWarnEnabled() {
-            return warnEnabled;
-        }
-
-        @Override
-        public void warn(String content) {
-            record("warn", content);
-        }
-
-        @Override
-        public void warn(String content, Throwable error) {
-            record("warn", content, error);
-        }
-
-        @Override
-        public void warn(Throwable error) {
-            record("warn", error);
-        }
-
-        @Override
-        public boolean isErrorEnabled() {
-            return errorEnabled;
-        }
-
-        @Override
-        public void error(String content) {
-            record("error", content);
-        }
-
-        @Override
-        public void error(String content, Throwable error) {
-            record("error", content, error);
-        }
-
-        @Override
-        public void error(Throwable error) {
-            record("error", error);
-        }
-
-        private void record(String level, String content) {
-            events.add(level + ":" + content);
-        }
-
-        private void record(String level, String content, Throwable error) {
-            events.add(level + ":" + content + ":" + error.getMessage());
-        }
-
-        private void record(String level, Throwable error) {
-            events.add(level + ":" + error.getMessage());
         }
     }
 
@@ -777,11 +621,6 @@ public class Maven_scm_apiTest {
                 CommandParameters parameters) {
             record("remoteInfo", parameters);
             return new RemoteInfoScmResult("remoteInfo", Map.of(), Map.of());
-        }
-
-        @Override
-        public void addListener(ScmLogger logger) {
-            super.addListener(logger);
         }
 
         private void record(String operation, CommandParameters parameters) {
