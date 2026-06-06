@@ -20,7 +20,6 @@ import io.opentelemetry.api.incubator.common.ExtendedAttributesBuilder;
 import io.opentelemetry.api.incubator.config.ConfigProvider;
 import io.opentelemetry.api.incubator.config.DeclarativeConfigException;
 import io.opentelemetry.api.incubator.config.DeclarativeConfigProperties;
-import io.opentelemetry.api.incubator.config.GlobalConfigProvider;
 import io.opentelemetry.api.incubator.config.InstrumentationConfigUtil;
 import io.opentelemetry.api.incubator.logs.ExtendedDefaultLoggerProvider;
 import io.opentelemetry.api.incubator.logs.ExtendedLogRecordBuilder;
@@ -640,24 +639,20 @@ public class Opentelemetry_api_incubatorTest {
     }
 
     @Test
-    void configProviderGlobalStateAndExceptionsUsePublicApi() {
+    void configProviderDefaultsAndExceptionsUsePublicApi() {
         ConfigProvider noop = ConfigProvider.noop();
-        assertThat(noop.getInstrumentationConfig()).isNull();
+        assertThat(noop.getInstrumentationConfig().getPropertyKeys()).isEmpty();
         assertThat(DeclarativeConfigProperties.empty().getPropertyKeys()).isEmpty();
         assertThat(DeclarativeConfigProperties.empty().getComponentLoader()).isNotNull();
 
-        DeclarativeConfigProperties config = new MapBackedDeclarativeConfigProperties(Map.of("enabled", true));
+        DeclarativeConfigProperties config = new MapBackedDeclarativeConfigProperties(Map.of(
+                        "general", new MapBackedDeclarativeConfigProperties(Map.of("enabled", false)),
+                        "java", new MapBackedDeclarativeConfigProperties(Map.of(
+                                        "http-client", new MapBackedDeclarativeConfigProperties(
+                                                        Map.of("enabled", true))))));
         ConfigProvider provider = () -> config;
-        GlobalConfigProvider.resetForTest();
-        try {
-            GlobalConfigProvider.set(provider);
-            assertThat(GlobalConfigProvider.get().getInstrumentationConfig().getBoolean("enabled")).isTrue();
-            assertThatThrownBy(() -> GlobalConfigProvider.set(() -> DeclarativeConfigProperties.empty()))
-                            .isInstanceOf(IllegalStateException.class)
-                            .hasMessageContaining("GlobalConfigProvider.set has already been called");
-        } finally {
-            GlobalConfigProvider.resetForTest();
-        }
+        assertThat(provider.getInstrumentationConfig("http-client").getBoolean("enabled")).isTrue();
+        assertThat(provider.getGeneralInstrumentationConfig().getBoolean("enabled")).isFalse();
 
         RuntimeException cause = new RuntimeException("cause");
         DeclarativeConfigException exception = new DeclarativeConfigException("invalid config", cause);
@@ -668,7 +663,8 @@ public class Opentelemetry_api_incubatorTest {
     void extendedOpenTelemetryDefaultConfigProviderIsNoop() {
         ExtendedOpenTelemetry openTelemetry = new MinimalExtendedOpenTelemetry();
 
-        assertThat(openTelemetry.getConfigProvider().getInstrumentationConfig()).isNull();
+        assertThat(openTelemetry.getConfigProvider().getInstrumentationConfig().getPropertyKeys())
+                        .isEmpty();
         assertThat(openTelemetry.getTracerProvider()).isInstanceOf(TracerProvider.class);
         assertThat(openTelemetry.getPropagators()).isNotNull();
         assertThat(openTelemetry.getMeterProvider()).isNotNull();
