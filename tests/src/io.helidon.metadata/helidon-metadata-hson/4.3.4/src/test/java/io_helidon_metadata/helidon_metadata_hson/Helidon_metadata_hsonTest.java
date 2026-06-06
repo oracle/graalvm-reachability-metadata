@@ -89,6 +89,37 @@ public class Helidon_metadata_hsonTest {
     }
 
     @Test
+    void typedArrayAccessorsIgnoreNullElements() {
+        Hson.Struct struct = parseStruct("""
+                {
+                  "strings": ["first", null, "second"],
+                  "numbers": [null, 1, 2.5],
+                  "booleans": [true, null, false],
+                  "structs": [{"id":"alpha"}, null, {"id":"beta"}]
+                }
+                """);
+
+        assertThat(struct.stringArray("strings")).contains(List.of("first", "second"));
+        assertThat(struct.numberArray("numbers")).contains(List.of(new BigDecimal("1"), new BigDecimal("2.5")));
+        assertThat(struct.booleanArray("booleans")).contains(List.of(true, false));
+        assertThat(struct.structArray("structs")).hasValueSatisfying(structs -> assertThat(structs)
+                .extracting(item -> item.stringValue("id").orElseThrow())
+                .containsExactly("alpha", "beta"));
+
+        Hson.Array strings = struct.arrayValue("strings").orElseThrow();
+        assertThat(strings.value()).hasSize(3);
+        assertThat(strings.value().get(1).type()).isEqualTo(Hson.Type.NULL);
+        assertThat(strings.getStrings()).containsExactly("first", "second");
+
+        Hson.Array structs = struct.arrayValue("structs").orElseThrow();
+        assertThat(structs.value()).hasSize(3);
+        assertThat(structs.value().get(1).value()).isNull();
+        assertThat(structs.getStructs())
+                .extracting(item -> item.stringValue("id").orElseThrow())
+                .containsExactly("alpha", "beta");
+    }
+
+    @Test
     void buildStructsWithAllScalarAndArraySetters() {
         Hson.Struct nested = Hson.Struct.builder()
                 .set("child", "value")
