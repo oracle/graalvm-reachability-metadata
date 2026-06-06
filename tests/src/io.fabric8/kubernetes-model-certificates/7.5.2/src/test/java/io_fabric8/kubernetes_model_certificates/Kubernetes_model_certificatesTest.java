@@ -16,6 +16,7 @@ import io.fabric8.kubernetes.api.model.ListMetaBuilder;
 import io.fabric8.kubernetes.api.model.Namespaced;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
+import io.fabric8.kubernetes.api.model.OwnerReference;
 import io.fabric8.kubernetes.api.model.certificates.v1.CertificateSigningRequest;
 import io.fabric8.kubernetes.api.model.certificates.v1.CertificateSigningRequestBuilder;
 import io.fabric8.kubernetes.api.model.certificates.v1.CertificateSigningRequestCondition;
@@ -716,6 +717,57 @@ public class Kubernetes_model_certificatesTest {
         assertThat(list.getKind()).isEqualTo("CertificateSigningRequestList");
         assertThat(list.getItems()).extracting(item -> item.getMetadata().getName())
                 .containsExactly("legacy-csr", "legacy-csr-edited");
+    }
+
+    @Test
+    void certificateResourcesSupportResourceNamesFinalizersAndOwnerReferences() {
+        CertificateSigningRequest issuer = new CertificateSigningRequestBuilder()
+                .withNewMetadata()
+                    .withName("cluster-issuer-csr")
+                    .withUid("csr-issuer-uid")
+                .endMetadata()
+                .withNewSpec()
+                    .withRequest(CSR_REQUEST)
+                    .withSignerName("example.com/cluster-issuer")
+                    .withUsername("system:serviceaccount:certificates:issuer")
+                .endSpec()
+                .build();
+        ClusterTrustBundle bundle = new ClusterTrustBundleBuilder()
+                .withNewMetadata()
+                    .withName("owned-trust-bundle")
+                .endMetadata()
+                .withNewSpec()
+                    .withSignerName("example.com/cluster-issuer")
+                    .withTrustBundle(TRUST_BUNDLE)
+                .endSpec()
+                .build();
+
+        assertThat(issuer.getPlural()).isEqualTo("certificatesigningrequests");
+        assertThat(issuer.getSingular()).isEqualTo("certificatesigningrequest");
+        assertThat(issuer.getFullResourceName()).isEqualTo("certificatesigningrequests.certificates.k8s.io");
+        assertThat(bundle.getPlural()).isEqualTo("clustertrustbundles");
+        assertThat(bundle.getFullResourceName()).isEqualTo("clustertrustbundles.certificates.k8s.io");
+        assertThat(issuer.isFinalizerValid("certificates.example.com/cleanup")).isTrue();
+
+        assertThat(issuer.addFinalizer("certificates.example.com/cleanup")).isTrue();
+        assertThat(issuer.addFinalizer("certificates.example.com/cleanup")).isFalse();
+        assertThat(issuer.hasFinalizer("certificates.example.com/cleanup")).isTrue();
+        assertThat(issuer.getFinalizers()).containsExactly("certificates.example.com/cleanup");
+        assertThat(issuer.removeFinalizer("certificates.example.com/cleanup")).isTrue();
+        assertThat(issuer.hasFinalizer("certificates.example.com/cleanup")).isFalse();
+
+        OwnerReference ownerReference = bundle.addOwnerReference(issuer);
+
+        assertThat(ownerReference.getApiVersion()).isEqualTo("certificates.k8s.io/v1");
+        assertThat(ownerReference.getKind()).isEqualTo("CertificateSigningRequest");
+        assertThat(ownerReference.getName()).isEqualTo("cluster-issuer-csr");
+        assertThat(ownerReference.getUid()).isEqualTo("csr-issuer-uid");
+        assertThat(bundle.hasOwnerReferenceFor(issuer)).isTrue();
+        assertThat(bundle.getOwnerReferenceFor("csr-issuer-uid")).hasValue(ownerReference);
+
+        bundle.removeOwnerReference(issuer);
+
+        assertThat(bundle.hasOwnerReferenceFor(issuer)).isFalse();
     }
 
     @Test
