@@ -180,6 +180,19 @@ public class Sundr_codegen_apiTest {
         assertThat(Identifiers.getIdentifier()).isNull();
     }
 
+    @Test
+    void functionBasedIdentifierScopeSupportsCallableExecution() {
+        assertThat(Identifiers.getIdentifier()).isNull();
+
+        String result = Identifiers.withIdentifier((String item) -> "function:" + item).call(() -> {
+            assertThat(Identifiers.getIdentifier().id("payload")).isEqualTo("function:payload");
+            return Identifiers.getIdentifier().id("callable");
+        });
+
+        assertThat(result).isEqualTo("function:callable");
+        assertThat(Identifiers.getIdentifier()).isNull();
+    }
+
     private static final class TestCodeGeneratorContext implements CodeGeneratorContext {
     }
 
