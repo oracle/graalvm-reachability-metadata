@@ -22,12 +22,14 @@ tasks.withType(Test).configureEach {
 }
 
 tasks.named("nativeTest") {
+    runtimeArgs.add("-Djava.home=${System.getenv('JAVA_HOME')}")
     runtimeArgs.add("-Djava.locale.providers=$localeProviders")
 }
 
 graalvmNative {
     binaries {
         test {
+            runtimeArgs("-Djava.home=${System.getenv('JAVA_HOME')}")
             buildArgs.add("-Djava.locale.providers=$localeProviders")
             buildArgs.add("--initialize-at-build-time=$numberFormatProviderClass")
         }
