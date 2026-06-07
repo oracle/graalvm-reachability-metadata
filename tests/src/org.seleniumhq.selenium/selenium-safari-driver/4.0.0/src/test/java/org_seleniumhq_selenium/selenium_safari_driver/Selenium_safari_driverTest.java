@@ -9,13 +9,12 @@ package org_seleniumhq_selenium.selenium_safari_driver;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WindowType;
 import org.openqa.selenium.safari.ConnectionClosedException;
-import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.safari.SafariDriverInfo;
 import org.openqa.selenium.safari.SafariDriverService;
 import org.openqa.selenium.safari.SafariOptions;
@@ -24,14 +23,11 @@ import org.openqa.selenium.safari.SafariTechPreviewDriverInfo;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 public class Selenium_safari_driverTest {
-    private static final String SAFARI_OPTIONS_CAPABILITY = "safari.options";
-
     @Test
     void safariOptionsExposeDefaultCapabilitiesAndSafariSpecificOptions() {
         SafariOptions options = new SafariOptions();
@@ -41,9 +37,7 @@ public class Selenium_safari_driverTest {
         assertThat(options.getAutomaticInspection()).isFalse();
         assertThat(options.getAutomaticProfiling()).isFalse();
         assertThat(options.asMap())
-                .containsEntry("browserName", "safari")
-                .containsKey(SAFARI_OPTIONS_CAPABILITY);
-        assertThat(safariOptionsMap(options)).containsEntry("technologyPreview", false);
+                .containsEntry("browserName", "safari");
 
         assertThat(options.setAutomaticInspection(true)).isSameAs(options);
         assertThat(options.setAutomaticProfiling(true)).isSameAs(options);
@@ -54,9 +48,9 @@ public class Selenium_safari_driverTest {
         assertThat(options.getAutomaticInspection()).isTrue();
         assertThat(options.getAutomaticProfiling()).isTrue();
         assertThat(options.asMap())
+                .containsEntry("browserName", "Safari Technology Preview")
                 .containsEntry("safari:automaticInspection", true)
                 .containsEntry("safari:automaticProfiling", true);
-        assertThat(safariOptionsMap(options)).containsEntry("technologyPreview", true);
     }
 
     @Test
@@ -74,54 +68,48 @@ public class Selenium_safari_driverTest {
     }
 
     @Test
-    void safariOptionsAllowTechnologyPreviewCapabilityToBeSetDirectly() {
+    void safariOptionsAllowBrowserNameCapabilityToSelectTechnologyPreview() {
         SafariOptions options = new SafariOptions();
 
-        options.setCapability("technologyPreview", true);
+        options.setCapability("browserName", "Safari Technology Preview");
         assertThat(options.getUseTechnologyPreview()).isTrue();
         assertThat(options.getBrowserName()).isEqualTo("Safari Technology Preview");
-        assertThat(safariOptionsMap(options)).containsEntry("technologyPreview", true);
-        assertThat(options.asMap()).doesNotContainKey("technologyPreview");
 
-        options.setCapability("technologyPreview", Boolean.FALSE);
+        options.setCapability("browserName", "safari");
         assertThat(options.getUseTechnologyPreview()).isFalse();
         assertThat(options.getBrowserName()).isEqualTo("safari");
-        assertThat(safariOptionsMap(options)).containsEntry("technologyPreview", false);
     }
 
     @Test
-    void safariOptionsCanBeCreatedFromCapabilitiesAndNestedSafariOptionsMap() {
+    void safariOptionsCanBeCreatedFromCapabilities() {
         SafariOptions original = new SafariOptions().setUseTechnologyPreview(true);
         assertThat(SafariOptions.fromCapabilities(original)).isSameAs(original);
 
-        MutableCapabilities nestedOptions = new MutableCapabilities();
-        nestedOptions.setCapability(SAFARI_OPTIONS_CAPABILITY, original);
-        SafariOptions fromNestedOptions = SafariOptions.fromCapabilities(nestedOptions);
-        assertThat(fromNestedOptions.getUseTechnologyPreview()).isTrue();
-        assertThat(fromNestedOptions.getBrowserName()).isEqualTo("Safari Technology Preview");
+        MutableCapabilities capabilities = new MutableCapabilities();
+        capabilities.setCapability("browserName", "Safari Technology Preview");
+        capabilities.setCapability("safari:automaticInspection", true);
+        SafariOptions fromCapabilities = SafariOptions.fromCapabilities(capabilities);
 
-        MutableCapabilities jsonLikeCapabilities = new MutableCapabilities();
-        jsonLikeCapabilities.setCapability(SAFARI_OPTIONS_CAPABILITY, ImmutableMap.of("technologyPreview", true));
-        SafariOptions fromJsonLikeMap = SafariOptions.fromCapabilities(jsonLikeCapabilities);
-
-        assertThat(fromJsonLikeMap).isNotSameAs(original);
-        assertThat(fromJsonLikeMap.getUseTechnologyPreview()).isTrue();
-        assertThat(fromJsonLikeMap.getBrowserName()).isEqualTo("Safari Technology Preview");
-        assertThat(safariOptionsMap(fromJsonLikeMap)).containsEntry("technologyPreview", true);
+        assertThat(fromCapabilities).isNotSameAs(original);
+        assertThat(fromCapabilities.getUseTechnologyPreview()).isTrue();
+        assertThat(fromCapabilities.getBrowserName()).isEqualTo("Safari Technology Preview");
+        assertThat(fromCapabilities.getAutomaticInspection()).isTrue();
     }
 
     @Test
     void safariOptionsConstructorCopiesCapabilitiesAndMergeKeepsSafariOptionsType() {
         MutableCapabilities source = new MutableCapabilities();
         source.setCapability("custom:capability", "custom-value");
-        source.setCapability(SAFARI_OPTIONS_CAPABILITY, ImmutableMap.of("technologyPreview", true));
+        source.setCapability("browserName", "Safari Technology Preview");
 
         SafariOptions copied = new SafariOptions(source);
         assertThat(copied.getCapability("custom:capability")).isEqualTo("custom-value");
         assertThat(copied.getUseTechnologyPreview()).isTrue();
 
-        Capabilities merged = copied.merge(new ImmutableCapabilities("another:capability", 42));
-        assertThat(merged).isSameAs(copied);
+        SafariOptions merged = copied.merge(new ImmutableCapabilities("another:capability", 42));
+        assertThat(merged).isNotSameAs(copied);
+        assertThat(merged.getUseTechnologyPreview()).isTrue();
+        assertThat(merged.getCapability("custom:capability")).isEqualTo("custom-value");
         assertThat(merged.getCapability("another:capability")).isEqualTo(42);
     }
 
@@ -191,9 +179,9 @@ public class Selenium_safari_driverTest {
 
         MutableCapabilities richSafariCapabilities = new MutableCapabilities();
         richSafariCapabilities.setCapability("browserName", "safari");
-        richSafariCapabilities.setCapability(SAFARI_OPTIONS_CAPABILITY, ImmutableMap.of("technologyPreview", false));
+        richSafariCapabilities.setCapability("safari:automaticInspection", true);
         richSafariCapabilities.setCapability("se:safari:techPreview", false);
-        assertThat(builder.score(richSafariCapabilities)).isEqualTo(3);
+        assertThat(builder.score(richSafariCapabilities)).isEqualTo(1);
     }
 
     @Test
@@ -219,13 +207,8 @@ public class Selenium_safari_driverTest {
 
         assertThat(exception).isInstanceOf(ConnectionClosedException.class);
         assertThat(exception.getMessage()).contains("connection closed by peer");
-        assertThat(SafariDriver.WindowType.values())
-                .containsExactly(SafariDriver.WindowType.TAB, SafariDriver.WindowType.WINDOW);
-        assertThat(SafariDriver.WindowType.valueOf("TAB")).isEqualTo(SafariDriver.WindowType.TAB);
-    }
-
-    @SuppressWarnings("unchecked")
-    private static Map<String, Object> safariOptionsMap(SafariOptions options) {
-        return (Map<String, Object>) options.asMap().get(SAFARI_OPTIONS_CAPABILITY);
+        assertThat(WindowType.values())
+                .containsExactly(WindowType.WINDOW, WindowType.TAB);
+        assertThat(WindowType.valueOf("TAB")).isEqualTo(WindowType.TAB);
     }
 }
