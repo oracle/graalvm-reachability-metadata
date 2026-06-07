@@ -114,6 +114,31 @@ public class Spring_boot_micrometer_observationTest {
     }
 
     @Test
+    void autoConfigurationPostProcessesAdditionalObservationRegistryBeans() {
+        AdditionalObservationRegistryConfiguration.reset();
+        Map<String, Object> properties = Map.of(
+                "management.observations.enable.all", "false",
+                "management.observations.enable.inventory", "true",
+                "management.observations.key-values.source", "additional-registry");
+
+        try (AnnotationConfigApplicationContext context = contextWithProperties(properties,
+                AdditionalObservationRegistryConfiguration.class, ObservationInfrastructureConfiguration.class)) {
+            ObservationRegistry registry = context.getBean("additionalObservationRegistry", ObservationRegistry.class);
+            RecordingObservationHandler handler = context.getBean(RecordingObservationHandler.class);
+
+            Observation.start("inventory.checked", registry).stop();
+            Observation disabledObservation = Observation.start("orders.checked", registry);
+            disabledObservation.stop();
+
+            assertThat(registry).isSameAs(AdditionalObservationRegistryConfiguration.getRegistry());
+            assertThat(disabledObservation.isNoop()).isTrue();
+            assertThat(handler.getStartedNames()).containsExactly("inventory.checked");
+            assertThat(handler.getStoppedKeyValues()).singleElement()
+                    .satisfies((keyValues) -> assertThat(keyValues).containsEntry("source", "additional-registry"));
+        }
+    }
+
+    @Test
     void scheduledTasksAndValueExpressionResolverAreAutoConfigured() {
         try (AnnotationConfigApplicationContext context = contextWithProperties(Map.of())) {
             ObservationRegistry registry = context.getBean(ObservationRegistry.class);
@@ -183,6 +208,26 @@ public class Spring_boot_micrometer_observationTest {
         @Bean
         RecordingObservationHandler recordingObservationHandler() {
             return new RecordingObservationHandler();
+        }
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    public static class AdditionalObservationRegistryConfiguration {
+
+        private static ObservationRegistry registry;
+
+        static void reset() {
+            registry = ObservationRegistry.create();
+        }
+
+        static ObservationRegistry getRegistry() {
+            return registry;
+        }
+
+        @Bean
+        ObservationRegistry additionalObservationRegistry() {
+            return registry;
         }
 
     }
