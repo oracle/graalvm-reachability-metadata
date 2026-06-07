@@ -357,6 +357,7 @@ public class Plexus_compiler_apiTest {
 
         assertThat(AbstractCompiler.getPathString(Arrays.asList("first", "second")))
                 .isEqualTo("first" + File.pathSeparator + "second" + File.pathSeparator);
+        assertThat(compiler.getCompilerId()).isEqualTo("test");
         assertThat(compiler.createCommandLine(configuration)).containsExactly("javac", "-d", "target/classes");
         assertThatThrownBy(() -> compiler.performCompile(configuration))
                 .isInstanceOf(CompilerNotImplementedException.class)
@@ -511,6 +512,11 @@ public class Plexus_compiler_apiTest {
                 String outputFileEnding,
                 String outputFile) {
             super(compilerOutputStyle, inputFileEnding, outputFileEnding, outputFile);
+        }
+
+        @Override
+        public String getCompilerId() {
+            return "test";
         }
 
         @Override
