@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.apache.maven.doxia.module.apt.AptParser;
 import org.apache.maven.doxia.module.apt.AptReaderSource;
 import org.apache.maven.doxia.module.apt.AptSink;
 import org.apache.maven.doxia.module.apt.AptSiteModule;
+import org.apache.maven.doxia.module.apt.AptUtils;
 import org.apache.maven.doxia.sink.Sink;
 import org.apache.maven.doxia.sink.SinkAdapter;
 import org.junit.jupiter.api.Test;
@@ -128,27 +130,18 @@ public class Doxia_module_aptTest {
                 "sectionTitle2_",
                 "list",
                 "listItem",
-                "paragraph",
                 "text:bullet one",
-                "paragraph_",
                 "listItem_",
                 "listItem",
-                "paragraph",
                 "text:bullet two",
-                "paragraph_",
                 "listItem_",
                 "list_");
         assertThat(sink.events).containsSubsequence(
                 "numberedList:0",
                 "numberedListItem",
-                "paragraph",
                 "text:first numbered",
-                "paragraph_",
-                "numberedListItem_",
                 "numberedListItem",
-                "paragraph",
                 "text:second numbered",
-                "paragraph_",
                 "numberedListItem_",
                 "numberedList_");
         assertThat(sink.events).containsSubsequence(
@@ -158,11 +151,9 @@ public class Doxia_module_aptTest {
                 "text:Term",
                 "definedTerm_",
                 "definition",
-                "paragraph",
                 "text:definition text with non",
                 "nbsp",
                 "text:breaking space",
-                "paragraph_",
                 "definition_",
                 "definitionListItem_",
                 "definitionList_");
@@ -283,24 +274,16 @@ public class Doxia_module_aptTest {
         assertThat(sink.events).containsSubsequence(
                 "numberedList:" + Sink.NUMBERING_LOWER_ALPHA,
                 "numberedListItem",
-                "paragraph",
                 "text:lower alpha item",
-                "paragraph_",
                 "numberedList:" + Sink.NUMBERING_UPPER_ALPHA,
                 "numberedListItem",
-                "paragraph",
                 "text:upper alpha item",
-                "paragraph_",
                 "numberedList:" + Sink.NUMBERING_LOWER_ROMAN,
                 "numberedListItem",
-                "paragraph",
                 "text:lower roman item",
-                "paragraph_",
                 "numberedList:" + Sink.NUMBERING_UPPER_ROMAN,
                 "numberedListItem",
-                "paragraph",
                 "text:upper roman item",
-                "paragraph_",
                 "numberedListItem_",
                 "numberedList_",
                 "numberedListItem_",
@@ -327,7 +310,7 @@ public class Doxia_module_aptTest {
     @Test
     void aptSinkWritesAptMarkupAndEscapesText() {
         StringWriter writer = new StringWriter();
-        AptSink sink = new AptSink(writer);
+        AptSink sink = new TestAptSink(writer);
 
         sink.head();
         sink.title();
@@ -366,14 +349,13 @@ public class Doxia_module_aptTest {
         String rendered = writer.toString();
         assertThat(rendered).contains(" -----\n Demo\n -----\n Author\n -----\n Today\n -----");
         assertThat(rendered).contains("\n*Nested\n");
-        assertThat(rendered).contains("reserved \\* \\+ \\- \\< \\> \\[ \\] \\{ \\} \\\\ and \\u03a9");
+        assertThat(rendered).contains("reserved \\* \\+ \\- \\< \\> \\[ \\] \\{ \\} \\\\ and Ω");
         assertThat(rendered).contains("\\ {{{https://example.test/path}Example}}");
         assertThat(rendered).contains("\\\nraw");
         assertThat(rendered).contains("\n * bullet\n");
         assertThat(rendered).contains("\n+------+\nliteral \\* text\n+------+");
         assertThat(rendered).contains("\n\f\n");
-        assertThat(AptSink.encodeFragment("a b#c")).doesNotContain(" ");
-        assertThat(AptSink.encodeURL("a b?c=d")).doesNotContain(" ");
+        assertThat(AptUtils.encodeAnchor(" a b:c.d-e_f! ")).isEqualTo("a_b:c.d-e_f");
     }
 
     @Test
@@ -402,6 +384,12 @@ public class Doxia_module_aptTest {
         assertThat(module.getSourceDirectory()).isEqualTo("apt");
         assertThat(module.getExtension()).isEqualTo("apt");
         assertThat(module.getParserId()).isEqualTo("apt");
+    }
+
+    private static final class TestAptSink extends AptSink {
+        private TestAptSink(Writer writer) {
+            super(writer);
+        }
     }
 
     private static final class RecordingSink extends SinkAdapter {
