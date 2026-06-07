@@ -152,6 +152,34 @@ public class Xnio_nioTest {
     }
 
     @Test
+    void oneWayPipeTransfersDataFromSinkToSource() throws Exception {
+        XnioWorker worker = createWorker();
+        AtomicReference<StreamSourceChannel> source = new AtomicReference<>();
+        AtomicReference<StreamSinkChannel> sink = new AtomicReference<>();
+        CountDownLatch pipeCreated = new CountDownLatch(2);
+        try {
+            worker.createOneWayPipe(channel -> {
+                source.set(channel);
+                pipeCreated.countDown();
+            }, channel -> {
+                sink.set(channel);
+                pipeCreated.countDown();
+            }, OptionMap.EMPTY);
+
+            assertThat(pipeCreated.await(IO_TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
+            assertThat(source.get()).isNotNull();
+            assertThat(sink.get()).isNotNull();
+
+            writeText(sink.get(), "one-way nio pipe");
+            assertThat(readText(source.get(), "one-way nio pipe".length())).isEqualTo("one-way nio pipe");
+        } finally {
+            IoUtils.safeClose(source.get());
+            IoUtils.safeClose(sink.get());
+            shutdownWorker(worker);
+        }
+    }
+
+    @Test
     void workerManagementBeanReportsNioWorkerConfiguration() throws Exception {
         XnioWorker worker = createWorker();
         try {
