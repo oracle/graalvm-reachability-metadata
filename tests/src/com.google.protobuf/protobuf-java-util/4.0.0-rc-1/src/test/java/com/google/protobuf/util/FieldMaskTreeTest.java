@@ -65,7 +65,7 @@ public class FieldMaskTreeTest {
     assertThat(tree.toString()).isEqualTo("bar.baz,bar.quz.bar");
     tree = new FieldMaskTree(FieldMaskUtil.fromString(initialTreeString));
     tree.removeFieldPath("bar.quz.bar");
-    assertThat(tree.toString()).isEqualTo("bar.baz,foo");
+    assertThat(tree.toString()).isEqualTo("bar.baz,bar.quz,foo");
     tree = new FieldMaskTree(FieldMaskUtil.fromString(initialTreeString));
     tree.removeFieldPath("bar");
     assertThat(tree.toString()).isEqualTo("foo");

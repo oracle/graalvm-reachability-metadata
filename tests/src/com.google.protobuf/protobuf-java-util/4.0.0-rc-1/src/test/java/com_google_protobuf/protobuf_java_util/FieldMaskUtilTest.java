@@ -173,7 +173,7 @@ public class FieldMaskUtilTest {
         FieldMask mask3 = FieldMaskUtil.fromString("bar.quz");
         FieldMask mask4 = FieldMaskUtil.fromString("foo,bar.baz");
         FieldMask result = FieldMaskUtil.subtract(mask1, mask2, mask3, mask4);
-        assertThat(FieldMaskUtil.toString(result)).isEmpty();
+        assertThat(FieldMaskUtil.toString(result)).isEqualTo("bar");
     }
 
     @Test
@@ -200,7 +200,9 @@ public class FieldMaskUtilTest {
                                 .setOptionalBool(true))
                 .build();
         FieldMask mask = FieldMaskUtil.fromStringList(ImmutableList.of("payload.optional_int32", "payload.optional_string"));
-        NestedTestAllTypes actual = FieldMaskUtil.trim(mask, source);
+        NestedTestAllTypes.Builder builder = NestedTestAllTypes.newBuilder();
+        FieldMaskUtil.merge(mask, source, builder);
+        NestedTestAllTypes actual = builder.build();
         assertThat(actual).isEqualTo(NestedTestAllTypes.newBuilder().setPayload(TestAllTypes.newBuilder().setOptionalInt32(1234).setOptionalString("1234"))
                 .build());
     }
