@@ -8,7 +8,7 @@ package io_awspring_cloud.spring_cloud_aws_sqs;
 
 import org.junit.jupiter.api.Test;
 
-class Spring_cloud_aws_sqsTest {
+public class Spring_cloud_aws_sqsTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
