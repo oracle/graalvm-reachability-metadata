@@ -12,6 +12,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.barchart.udt.CCC;
 import com.barchart.udt.FactoryInterfaceUDT;
 import com.barchart.udt.FactoryUDT;
+import com.barchart.udt.SocketUDT;
+import com.barchart.udt.TypeUDT;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import org.junit.jupiter.api.Test;
 
 public class FactoryUDTTest {
@@ -40,5 +44,40 @@ public class FactoryUDTTest {
         assertThatThrownBy(() -> new FactoryUDT<>(String.class))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("CCC");
+    }
+
+    @Test
+    void socketOptionSnapshotIncludesNamedOptions() throws Exception {
+        final SocketUDT socket = new SocketUDT(TypeUDT.STREAM);
+        try {
+            socket.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), 0));
+
+            final String snapshot = socket.toStringOptions();
+
+            assertThat(snapshot)
+                    .contains("Maximum_Transfer_Unit = ")
+                    .contains("Protocol_Send_Buffer_Size = ")
+                    .contains("Protocol_Receive_Buffer_Size = ")
+                    .contains("Is_Address_Reuse_Enabled = ")
+                    .contains("Maximum_Bandwidth = ");
+        } finally {
+            socket.close();
+        }
+    }
+
+    @Test
+    void socketBooleanOptionsCanBeConfigured() throws Exception {
+        final SocketUDT socket = new SocketUDT(TypeUDT.STREAM);
+        try {
+            socket.setReuseAddress(true);
+            socket.setBlocking(false);
+            socket.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), 0));
+
+            assertThat(socket.getReuseAddress()).isTrue();
+            assertThat(socket.isBlocking()).isFalse();
+            assertThat(socket.isNonBlocking()).isTrue();
+        } finally {
+            socket.close();
+        }
     }
 }
