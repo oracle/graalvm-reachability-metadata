@@ -1,0 +1,1163 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7692-343eec18/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7692-343eec18/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7692-343eec18
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e9fd1-fc32-70e1-8a2b-0118634139ca
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.springframework.boot:spring-boot-micrometer-observation:4.0.6
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "4.0.6" when "$version$" is replaced with "4.0.6".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7692-343eec18/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "org.springframework.boot:spring-boot-micrometer-observation:4.0.6".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.0.6".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven/Spring sources first, then update the JSON directly with the repo, source, tests, docs, and applicability fields.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7692-343eec18
+ succeeded in 0ms:
+{
+  "coordinates" : "org.springframework.boot:spring-boot-micrometer-observation:4.0.6"
+}
+
+exec
+/usr/bin/bash -lc "rg 'spring-boot-micrometer-observation|source-code-url|test-code-url|documentation-url' -n build/discovered-artifact-metadata metadata | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7692-343eec18
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json:2:  "coordinates" : "org.springframework.boot:spring-boot-micrometer-observation:4.0.6"
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-tests.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-tests.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-javadoc.jar",
+metadata/io.smallrye.reactive/mutiny/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/reactive/mutiny/$version$/mutiny-$version$-sources.jar",
+metadata/io.smallrye.reactive/mutiny/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-mutiny/tree/$version$/implementation/src/test",
+metadata/io.smallrye.reactive/mutiny/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/reactive/mutiny/$version$/mutiny-$version$-javadoc.jar",
+metadata/io.getquill/quill-engine_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_3/$version$/quill-engine_3-$version$-sources.jar",
+metadata/io.getquill/quill-engine_3/index.json:7:    "test-code-url" : "N/A",
+metadata/io.getquill/quill-engine_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_3/$version$/quill-engine_3-$version$-javadoc.jar",
+metadata/io.getquill/quill-engine_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_2.13/$version$/quill-engine_2.13-$version$-sources.jar",
+metadata/io.getquill/quill-engine_2.13/index.json:7:    "test-code-url" : "N/A",
+metadata/io.getquill/quill-engine_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_2.13/$version$/quill-engine_2.13-$version$-javadoc.jar",
+metadata/io.getquill/quill-util_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-util_3/$version$/quill-util_3-$version$-sources.jar",
+metadata/io.getquill/quill-util_3/index.json:7:    "test-code-url" : "N/A",
+metadata/io.getquill/quill-util_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-util_3/$version$/quill-util_3-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:24:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:26:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:27:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:43:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:45:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:46:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-tck-tests/$version$/jakarta.json-tck-tests-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-javadoc.jar",
+metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v$version$/src/test",
+metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:7:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:8:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:28:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:30:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:31:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:43:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:45:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:46:    "documentation-url" : "https://github.com/wildfly-security/wildfly-openssl/blob/$version$/README.md",
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:7:    "test-code-url": "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient_caffeine/src/test/java",
+metadata/io.prometheus/simpleclient_caffeine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+metadata/com.google.re2j/re2j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:7:    "test-code-url" : "https://github.com/google/re2j/tree/re2j-$version$/javatests",
+metadata/com.google.re2j/re2j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-sources.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:7:    "test-code-url" : "https://github.com/profunktor/redis4cats/tree/v$version$/modules/core/src/test",
+metadata/dev.profunktor/redis4cats-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-javadoc.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:24:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-sources.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:26:    "test-code-url" : "https://github.com/profunktor/redis4cats/tree/v$version$/modules/core/src/test",
+metadata/dev.profunktor/redis4cats-core_3/index.json:27:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-javadoc.jar",
+metadata/org.springframework/spring-context-support/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context-support/$version$/spring-context-support-$version$-sources.jar",
+metadata/org.springframework/spring-context-support/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-context-support/src/test",
+metadata/org.springframework/spring-context-support/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context-support/$version$/spring-context-support-$version$-javadoc.jar",
+metadata/org.playframework.twirl/twirl-api_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/playframework/twirl/twirl-api_3/$version$/twirl-api_3-$version$-sources.jar",
+metadata/org.playframework.twirl/twirl-api_3/index.json:7:    "test-code-url" : "https://github.com/playframework/twirl/tree/$version$/api/shared/src/test",
+metadata/org.playframework.twirl/twirl-api_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/playframework/twirl/twirl-api_3/$version$/twirl-api_3-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient/src/test",
+metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+metadata/com.squareup.moshi/moshi-adapters/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-adapters/$version$/moshi-adapters-$version$-sources.jar",
+metadata/com.squareup.moshi/moshi-adapters/index.json:7:    "test-code-url" : "https://github.com/square/moshi/tree/$version$/moshi-adapters/src/test",
+metadata/com.squareup.moshi/moshi-adapters/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-adapters/$version$/moshi-adapters-$version$-javadoc.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -20' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7692-343eec18
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7692-343eec18
+build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json
+
+web search: 
+web search: Maven Central org.springframework.boot spring-boot-micrometer-observation 4.0.6
+web search: 
+web search: https://docs.spring.io/spring-boot/appendix/auto-configuration-classes/spring-boot-micrometer-observation.html
+web search: 
+web search: https://docs.spring.io/spring-boot/appendix/auto-configuration-classes/spring-boot-micrometer-observation.html
+codex
+The Spring docs expose the exact module path under the `v4.0.6` tag, and Maven Central should be the preferred source/javadoc location if those jars are published. I’m checking the artifact directory now to distinguish Maven-published sources from repository-only tests.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/4.0.6/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7692-343eec18
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/springframework/boot/spring-boot-micrometer-observation/4.0.6</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/springframework/boot/spring-boot-micrometer-observation/4.0.6</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="spring-boot-micrometer-observation-4.0.6-javadoc.jar" title="spring-boot-micrometer-observation-4.0.6-javadoc.jar">spring-boot-micrometer-observation-4.0.6-java...</a>  2026-04-23 15:18    135670      
+<a href="spring-boot-micrometer-observation-4.0.6-javadoc.jar.asc" title="spring-boot-micrometer-observation-4.0.6-javadoc.jar.asc">spring-boot-micrometer-observation-4.0.6-java...</a>  2026-04-23 15:18       833      
+<a href="spring-boot-micrometer-observation-4.0.6-javadoc.jar.md5" title="spring-boot-micrometer-observation-4.0.6-javadoc.jar.md5">spring-boot-micrometer-observation-4.0.6-java...</a>  2026-04-23 15:18        32      
+<a href="spring-boot-micrometer-observation-4.0.6-javadoc.jar.sha1" title="spring-boot-micrometer-observation-4.0.6-javadoc.jar.sha1">spring-boot-micrometer-observation-4.0.6-java...</a>  2026-04-23 15:18        40      
+<a href="spring-boot-micrometer-observation-4.0.6-sources.jar" title="spring-boot-micrometer-observation-4.0.6-sources.jar">spring-boot-micrometer-observation-4.0.6-sour...</a>  2026-04-23 15:18     19810      
+<a href="spring-boot-micrometer-observation-4.0.6-sources.jar.asc" title="spring-boot-micrometer-observation-4.0.6-sources.jar.asc">spring-boot-micrometer-observation-4.0.6-sour...</a>  2026-04-23 15:18       833      
+<a href="spring-boot-micrometer-observation-4.0.6-sources.jar.md5" title="spring-boot-micrometer-observation-4.0.6-sources.jar.md5">spring-boot-micrometer-observation-4.0.6-sour...</a>  2026-04-23 15:18        32      
+<a href="spring-boot-micrometer-observation-4.0.6-sources.jar.sha1" title="spring-boot-micrometer-observation-4.0.6-sources.jar.sha1">spring-boot-micrometer-observation-4.0.6-sour...</a>  2026-04-23 15:18        40      
+<a href="spring-boot-micrometer-observation-4.0.6.jar" title="spring-boot-micrometer-observation-4.0.6.jar">spring-boot-micrometer-observation-4.0.6.jar</a>      2026-04-23 15:18     28846      
+<a href="spring-boot-micrometer-observation-4.0.6.jar.asc" title="spring-boot-micrometer-observation-4.0.6.jar.asc">spring-boot-micrometer-observation-4.0.6.jar....</a>  2026-04-23 15:18       833      
+<a href="spring-boot-micrometer-observation-4.0.6.jar.md5" title="spring-boot-micrometer-observation-4.0.6.jar.md5">spring-boot-micrometer-observation-4.0.6.jar....</a>  2026-04-23 15:18        32      
+<a href="spring-boot-micrometer-observation-4.0.6.jar.sha1" title="spring-boot-micrometer-observation-4.0.6.jar.sha1">spring-boot-micrometer-observation-4.0.6.jar....</a>  2026-04-23 15:18        40      
+<a href="spring-boot-micrometer-observation-4.0.6.module" title="spring-boot-micrometer-observation-4.0.6.module">spring-boot-micrometer-observation-4.0.6.modu...</a>  2026-04-23 15:18      4437      
+<a href="spring-boot-micrometer-observation-4.0.6.module.asc" title="spring-boot-micrometer-observation-4.0.6.module.asc">spring-boot-micrometer-observation-4.0.6.modu...</a>  2026-04-23 15:18       833      
+<a href="spring-boot-micrometer-observation-4.0.6.module.md5" title="spring-boot-micrometer-observation-4.0.6.module.md5">spring-boot-micrometer-observation-4.0.6.modu...</a>  2026-04-23 15:18        32      
+<a href="spring-boot-micrometer-observation-4.0.6.module.sha1" title="spring-boot-micrometer-observation-4.0.6.module.sha1">spring-boot-micrometer-observation-4.0.6.modu...</a>  2026-04-23 15:18        40      
+<a href="spring-boot-micrometer-observation-4.0.6.pom" title="spring-boot-micrometer-observation-4.0.6.pom">spring-boot-micrometer-observation-4.0.6.pom</a>      2026-04-23 15:18      2265      
+<a href="spring-boot-micrometer-observation-4.0.6.pom.asc" title="spring-boot-micrometer-observation-4.0.6.pom.asc">spring-boot-micrometer-observation-4.0.6.pom....</a>  2026-04-23 15:18       833      
+<a href="spring-boot-micrometer-observation-4.0.6.pom.md5" title="spring-boot-micrometer-observation-4.0.6.pom.md5">spring-boot-micrometer-observation-4.0.6.pom....</a>  2026-04-23 15:18        32      
+<a href="spring-boot-micrometer-observation-4.0.6.pom.sha1" title="spring-boot-micrometer-observation-4.0.6.pom.sha1">spring-boot-micrometer-observation-4.0.6.pom....</a>  2026-04-23 15:18        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/4.0.6/spring-boot-micrometer-observation-4.0.6.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7692-343eec18
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-micrometer-observation</artifactId>
+  <version>4.0.6</version>
+  <name>spring-boot-micrometer-observation</name>
+  <description>Spring Boot Observation</description>
+  <url>https://spring.io/projects/spring-boot</url>
+  <organization>
+    <name>VMware, Inc.</name>
+    <url>https://spring.io</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Spring</name>
+      <email>ask@spring.io</email>
+      <organization>VMware, Inc.</organization>
+      <organizationUrl>https://www.spring.io</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/spring-projects/spring-boot.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/spring-projects/spring-boot.git</developerConnection>
+    <url>https://github.com/spring-projects/spring-boot</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/spring-projects/spring-boot/issues</url>
+  </issueManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot</artifactId>
+      <version>4.0.6</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-observation</artifactId>
+      <version>1.16.5</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "for u in \\
+  https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/4.0.6/spring-boot-micrometer-observation-4.0.6-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/4.0.6/spring-boot-micrometer-observation-4.0.6-tests.jar \\
+  https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/4.0.6/spring-boot-micrometer-observation-4.0.6-test.jar \\
+  https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/4.0.6/spring-boot-micrometer-observation-4.0.6-test-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/4.0.6/spring-boot-micrometer-observation-4.0.6-javadoc.jar; do
+  printf '%s -> ' \""'$u"
+  curl -fsSI "$u" | awk '"'NR==1 {print "'$2}'"' || true
+done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7692-343eec18
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/spring-projects/spring-boot/v4.0.6/settings.gradle | rg -n "spring-boot-micrometer-observation|include" -C 1' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7692-343eec18
+ succeeded in 183ms:
+36-	}
+37:	includeBuild("gradle/plugins")
+38-}
+--
+59-
+60:include "platform:spring-boot-dependencies"
+61:include "platform:spring-boot-internal-dependencies"
+62-
+63:include "test-support:spring-boot-test-support"
+64:include "test-support:spring-boot-docker-test-support"
+65:include "test-support:spring-boot-gradle-test-support"
+66-
+67:include "configuration-metadata:spring-boot-configuration-metadata"
+68:include "configuration-metadata:spring-boot-configuration-metadata-changelog-generator"
+69:include "configuration-metadata:spring-boot-configuration-processor"
+70-
+71:include "core:spring-boot"
+72:include "core:spring-boot-autoconfigure"
+73:include "core:spring-boot-autoconfigure-processor"
+74:include "core:spring-boot-docker-compose"
+75:include "core:spring-boot-properties-migrator"
+76:include "core:spring-boot-test"
+77:include "core:spring-boot-test-autoconfigure"
+78:include "core:spring-boot-testcontainers"
+79-
+80:include "module:spring-boot-activemq"
+81:include "module:spring-boot-actuator"
+82:include "module:spring-boot-actuator-autoconfigure"
+83:include "module:spring-boot-amqp"
+84:include "module:spring-boot-artemis"
+85:include "module:spring-boot-autoconfigure-classic"
+86:include "module:spring-boot-autoconfigure-classic-modules"
+87:include "module:spring-boot-batch"
+88:include "module:spring-boot-batch-jdbc"
+89:include "module:spring-boot-cache"
+90:include "module:spring-boot-cache-test"
+91:include "module:spring-boot-cassandra"
+92:include "module:spring-boot-cloudfoundry"
+93:include "module:spring-boot-couchbase"
+94:include "module:spring-boot-data-cassandra"
+95:include "module:spring-boot-data-cassandra-test"
+96:include "module:spring-boot-data-commons"
+97:include "module:spring-boot-data-couchbase"
+98:include "module:spring-boot-data-couchbase-test"
+99:include "module:spring-boot-data-elasticsearch"
+100:include "module:spring-boot-data-elasticsearch-test"
+101:include "module:spring-boot-data-jdbc"
+102:include "module:spring-boot-data-jdbc-test"
+103:include "module:spring-boot-data-jpa"
+104:include "module:spring-boot-data-jpa-test"
+105:include "module:spring-boot-data-ldap"
+106:include "module:spring-boot-data-ldap-test"
+107:include "module:spring-boot-data-mongodb"
+108:include "module:spring-boot-data-mongodb-test"
+109:include "module:spring-boot-data-neo4j"
+110:include "module:spring-boot-data-neo4j-test"
+111:include "module:spring-boot-data-r2dbc"
+112:include "module:spring-boot-data-r2dbc-test"
+113:include "module:spring-boot-data-redis"
+114:include "module:spring-boot-data-redis-test"
+115:include "module:spring-boot-data-rest"
+116:include "module:spring-boot-devtools"
+117:include "module:spring-boot-elasticsearch"
+118:include "module:spring-boot-flyway"
+119:include "module:spring-boot-freemarker"
+120:include "module:spring-boot-graphql"
+121:include "module:spring-boot-graphql-test"
+122:include "module:spring-boot-groovy-templates"
+123:include "module:spring-boot-gson"
+124:include "module:spring-boot-h2console"
+125:include "module:spring-boot-hateoas"
+126:include "module:spring-boot-hazelcast"
+127:include "module:spring-boot-health"
+128:include "module:spring-boot-hibernate"
+129:include "module:spring-boot-http-client"
+130:include "module:spring-boot-http-codec"
+131:include "module:spring-boot-http-converter"
+132:include "module:spring-boot-integration"
+133:include "module:spring-boot-jackson"
+134:include "module:spring-boot-jackson2"
+135:include "module:spring-boot-jdbc"
+136:include "module:spring-boot-jdbc-test"
+137:include "module:spring-boot-jersey"
+138:include "module:spring-boot-jetty"
+139:include "module:spring-boot-jms"
+140:include "module:spring-boot-jooq"
+141:include "module:spring-boot-jooq-test"
+142:include "module:spring-boot-jpa"
+143:include "module:spring-boot-jpa-test"
+144:include "module:spring-boot-jsonb"
+145:include "module:spring-boot-kafka"
+146:include "module:spring-boot-kotlinx-serialization-json"
+147:include "module:spring-boot-ldap"
+148:include "module:spring-boot-liquibase"
+149:include "module:spring-boot-mail"
+150:include "module:spring-boot-micrometer-metrics"
+151:include "module:spring-boot-micrometer-metrics-test"
+152:include "module:spring-boot-micrometer-observation"
+153:include "module:spring-boot-micrometer-tracing"
+154:include "module:spring-boot-micrometer-tracing-brave"
+155:include "module:spring-boot-micrometer-tracing-opentelemetry"
+156:include "module:spring-boot-micrometer-tracing-test"
+157:include "module:spring-boot-mongodb"
+158:include "module:spring-boot-mustache"
+159:include "module:spring-boot-neo4j"
+160:include "module:spring-boot-netty"
+161:include "module:spring-boot-opentelemetry"
+162:include "module:spring-boot-persistence"
+163:include "module:spring-boot-pulsar"
+164:include "module:spring-boot-quartz"
+165:include "module:spring-boot-r2dbc"
+166:include "module:spring-boot-reactor"
+167:include "module:spring-boot-reactor-netty"
+168:include "module:spring-boot-restclient"
+169:include "module:spring-boot-restclient-test"
+170:include "module:spring-boot-restdocs"
+171:include "module:spring-boot-resttestclient"
+172:include "module:spring-boot-rsocket"
+173:include "module:spring-boot-rsocket-test"
+174:include "module:spring-boot-security"
+175:include "module:spring-boot-security-test"
+176:include "module:spring-boot-security-oauth2-authorization-server"
+177:include "module:spring-boot-security-oauth2-client"
+178:include "module:spring-boot-security-oauth2-resource-server"
+179:include "module:spring-boot-security-saml2"
+180:include "module:spring-boot-sendgrid"
+181:include "module:spring-boot-servlet"
+182:include "module:spring-boot-session"
+183:include "module:spring-boot-session-data-redis"
+184:include "module:spring-boot-session-jdbc"
+185:include "module:spring-boot-sql"
+186:include "module:spring-boot-test-classic-modules"
+187:include "module:spring-boot-thymeleaf"
+188:include "module:spring-boot-tomcat"
+189:include "module:spring-boot-transaction"
+190:include "module:spring-boot-validation"
+191:include "module:spring-boot-web-server"
+192:include "module:spring-boot-webclient"
+193:include "module:spring-boot-webclient-test"
+194:include "module:spring-boot-webflux"
+195:include "module:spring-boot-webflux-test"
+196:include "module:spring-boot-webmvc"
+197:include "module:spring-boot-webmvc-test"
+198:include "module:spring-boot-webtestclient"
+199:include "module:spring-boot-webservices"
+200:include "module:spring-boot-webservices-test"
+201:include "module:spring-boot-websocket"
+202:include "module:spring-boot-zipkin"
+203-
+204:include "starter:spring-boot-starter"
+205:include "starter:spring-boot-starter-activemq"
+206:include "starter:spring-boot-starter-activemq-test"
+207:include "starter:spring-boot-starter-actuator"
+208:include "starter:spring-boot-starter-actuator-test"
+209:include "starter:spring-boot-starter-amqp"
+210:include "starter:spring-boot-starter-amqp-test"
+211:include "starter:spring-boot-starter-artemis"
+212:include "starter:spring-boot-starter-artemis-test"
+213:include "starter:spring-boot-starter-aspectj"
+214:include "starter:spring-boot-starter-aspectj-test"
+215:include "starter:spring-boot-starter-batch"
+216:include "starter:spring-boot-starter-batch-jdbc"
+217:include "starter:spring-boot-starter-batch-jdbc-test"
+218:include "starter:spring-boot-starter-batch-test"
+219:include "starter:spring-boot-starter-cache"
+220:include "starter:spring-boot-starter-cache-test"
+221:include "starter:spring-boot-starter-cassandra"
+222:include "starter:spring-boot-starter-cassandra-test"
+223:include "starter:spring-boot-starter-classic"
+224:include "starter:spring-boot-starter-cloudfoundry"
+225:include "starter:spring-boot-starter-cloudfoundry-test"
+226:include "starter:spring-boot-starter-couchbase"
+227:include "starter:spring-boot-starter-couchbase-test"
+228:include "starter:spring-boot-starter-data-cassandra"
+229:include "starter:spring-boot-starter-data-cassandra-test"
+230:include "starter:spring-boot-starter-data-cassandra-reactive"
+231:include "starter:spring-boot-starter-data-cassandra-reactive-test"
+232:include "starter:spring-boot-starter-data-couchbase"
+233:include "starter:spring-boot-starter-data-couchbase-test"
+234:include "starter:spring-boot-starter-data-couchbase-reactive"
+235:include "starter:spring-boot-starter-data-couchbase-reactive-test"
+236:include "starter:spring-boot-starter-data-elasticsearch"
+237:include "starter:spring-boot-starter-data-elasticsearch-test"
+238:include "starter:spring-boot-starter-data-jdbc"
+239:include "starter:spring-boot-starter-data-jdbc-test"
+240:include "starter:spring-boot-starter-data-jpa"
+241:include "starter:spring-boot-starter-data-jpa-test"
+242:include "starter:spring-boot-starter-data-ldap"
+243:include "starter:spring-boot-starter-data-ldap-test"
+244:include "starter:spring-boot-starter-data-mongodb"
+245:include "starter:spring-boot-starter-data-mongodb-test"
+246:include "starter:spring-boot-starter-data-mongodb-reactive"
+247:include "starter:spring-boot-starter-data-mongodb-reactive-test"
+248:include "starter:spring-boot-starter-data-neo4j"
+249:include "starter:spring-boot-starter-data-neo4j-test"
+250:include "starter:spring-boot-starter-data-r2dbc"
+251:include "starter:spring-boot-starter-data-r2dbc-test"
+252:include "starter:spring-boot-starter-data-redis"
+253:include "starter:spring-boot-starter-data-redis-test"
+254:include "starter:spring-boot-starter-data-redis-reactive"
+255:include "starter:spring-boot-starter-data-redis-reactive-test"
+256:include "starter:spring-boot-starter-data-rest"
+257:include "starter:spring-boot-starter-data-rest-test"
+258:include "starter:spring-boot-starter-elasticsearch"
+259:include "starter:spring-boot-starter-elasticsearch-test"
+260:include "starter:spring-boot-starter-flyway"
+261:include "starter:spring-boot-starter-flyway-test"
+262:include "starter:spring-boot-starter-freemarker"
+263:include "starter:spring-boot-starter-freemarker-test"
+264:include "starter:spring-boot-starter-graphql"
+265:include "starter:spring-boot-starter-graphql-test"
+266:include "starter:spring-boot-starter-groovy-templates"
+267:include "starter:spring-boot-starter-groovy-templates-test"
+268:include "starter:spring-boot-starter-gson"
+269:include "starter:spring-boot-starter-gson-test"
+270:include "starter:spring-boot-starter-hateoas"
+271:include "starter:spring-boot-starter-hateoas-test"
+272:include "starter:spring-boot-starter-hazelcast"
+273:include "starter:spring-boot-starter-hazelcast-test"
+274:include "starter:spring-boot-starter-integration"
+275:include "starter:spring-boot-starter-integration-test"
+276:include "starter:spring-boot-starter-jackson"
+277:include "starter:spring-boot-starter-jackson-test"
+278:include "starter:spring-boot-starter-jdbc"
+279:include "starter:spring-boot-starter-jdbc-test"
+280:include "starter:spring-boot-starter-jersey"
+281:include "starter:spring-boot-starter-jersey-test"
+282:include "starter:spring-boot-starter-jetty"
+283:include "starter:spring-boot-starter-jetty-runtime"
+284:include "starter:spring-boot-starter-jms"
+285:include "starter:spring-boot-starter-jms-test"
+286:include "starter:spring-boot-starter-jooq"
+287:include "starter:spring-boot-starter-jooq-test"
+288:include "starter:spring-boot-starter-json"
+289:include "starter:spring-boot-starter-jsonb"
+290:include "starter:spring-boot-starter-jsonb-test"
+291:include "starter:spring-boot-starter-kafka"
+292:include "starter:spring-boot-starter-kafka-test"
+293:include "starter:spring-boot-starter-kotlinx-serialization-json"
+294:include "starter:spring-boot-starter-kotlinx-serialization-json-test"
+295:include "starter:spring-boot-starter-ldap"
+296:include "starter:spring-boot-starter-ldap-test"
+297:include "starter:spring-boot-starter-liquibase"
+298:include "starter:spring-boot-starter-liquibase-test"
+299:include "starter:spring-boot-starter-log4j2"
+300:include "starter:spring-boot-starter-logback"
+301:include "starter:spring-boot-starter-logging"
+302:include "starter:spring-boot-starter-mail"
+303:include "starter:spring-boot-starter-mail-test"
+304:include "starter:spring-boot-starter-micrometer-metrics"
+305:include "starter:spring-boot-starter-micrometer-metrics-test"
+306:include "starter:spring-boot-starter-mongodb"
+307:include "starter:spring-boot-starter-mongodb-test"
+308:include "starter:spring-boot-starter-mustache"
+309:include "starter:spring-boot-starter-mustache-test"
+310:include "starter:spring-boot-starter-neo4j"
+311:include "starter:spring-boot-starter-neo4j-test"
+312:include "starter:spring-boot-starter-oauth2-authorization-server"
+313:include "starter:spring-boot-starter-oauth2-client"
+314:include "starter:spring-boot-starter-oauth2-resource-server"
+315:include "starter:spring-boot-starter-opentelemetry"
+316:include "starter:spring-boot-starter-opentelemetry-test"
+317:include "starter:spring-boot-starter-parent"
+318:include "starter:spring-boot-starter-pulsar"
+319:include "starter:spring-boot-starter-pulsar-test"
+320:include "starter:spring-boot-starter-quartz"
+321:include "starter:spring-boot-starter-quartz-test"
+322:include "starter:spring-boot-starter-r2dbc"
+323:include "starter:spring-boot-starter-r2dbc-test"
+324:include "starter:spring-boot-starter-reactor-netty"
+325:include "starter:spring-boot-starter-restclient"
+326:include "starter:spring-boot-starter-restclient-test"
+327:include "starter:spring-boot-starter-restdocs"
+328:include "starter:spring-boot-starter-rsocket"
+329:include "starter:spring-boot-starter-rsocket-test"
+330:include "starter:spring-boot-starter-security"
+331:include "starter:spring-boot-starter-security-test"
+332:include "starter:spring-boot-starter-security-oauth2-authorization-server"
+333:include "starter:spring-boot-starter-security-oauth2-authorization-server-test"
+334:include "starter:spring-boot-starter-security-oauth2-client"
+335:include "starter:spring-boot-starter-security-oauth2-client-test"
+336:include "starter:spring-boot-starter-security-oauth2-resource-server"
+337:include "starter:spring-boot-starter-security-oauth2-resource-server-test"
+338:include "starter:spring-boot-starter-security-saml2"
+339:include "starter:spring-boot-starter-security-saml2-test"
+340:include "starter:spring-boot-starter-sendgrid"
+341:include "starter:spring-boot-starter-sendgrid-test"
+342:include "starter:spring-boot-starter-session-data-redis"
+343:include "starter:spring-boot-starter-session-data-redis-test"
+344:include "starter:spring-boot-starter-session-jdbc"
+345:include "starter:spring-boot-starter-session-jdbc-test"
+346:include "starter:spring-boot-starter-test"
+347:include "starter:spring-boot-starter-test-classic"
+348:include "starter:spring-boot-starter-thymeleaf"
+349:include "starter:spring-boot-starter-thymeleaf-test"
+350:include "starter:spring-boot-starter-tomcat"
+351:include "starter:spring-boot-starter-tomcat-runtime"
+352:include "starter:spring-boot-starter-validation"
+353:include "starter:spring-boot-starter-validation-test"
+354:include "starter:spring-boot-starter-web"
+355:include "starter:spring-boot-starter-web-services"
+356:include "starter:spring-boot-starter-webclient"
+357:include "starter:spring-boot-starter-webclient-test"
+358:include "starter:spring-boot-starter-webflux"
+359:include "starter:spring-boot-starter-webflux-test"
+360:include "starter:spring-boot-starter-webmvc"
+361:include "starter:spring-boot-starter-webmvc-test"
+362:include "starter:spring-boot-starter-webservices"
+363:include "starter:spring-boot-starter-webservices-test"
+364:include "starter:spring-boot-starter-websocket"
+365:include "starter:spring-boot-starter-websocket-test"
+366:include "starter:spring-boot-starter-zipkin"
+367:include "starter:spring-boot-starter-zipkin-test"
+368-
+369:include "loader:spring-boot-jarmode-tools"
+370:include "loader:spring-boot-loader"
+371:include "loader:spring-boot-loader-tools"
+372-
+373:include "buildpack:spring-boot-buildpack-platform"
+374-
+375:include "build-plugin:spring-boot-antlib"
+376:include "build-plugin:spring-boot-gradle-plugin"
+377:include "build-plugin:spring-boot-maven-plugin"
+378-
+379:include "cli:spring-boot-cli"
+380-
+381:include "documentation:spring-boot-actuator-docs"
+382:include "documentation:spring-boot-docs"
+383-
+384:include ":smoke-test:spring-boot-smoke-test-activemq"
+385:include ":smoke-test:spring-boot-smoke-test-activemq-embedded"
+386:include ":smoke-test:spring-boot-smoke-test-actuator"
+387:include ":smoke-test:spring-boot-smoke-test-actuator-custom-security"
+388:include ":smoke-test:spring-boot-smoke-test-actuator-extension"
+389:include ":smoke-test:spring-boot-smoke-test-actuator-log4j2"
+390:include ":smoke-test:spring-boot-smoke-test-actuator-noweb"
+391:include ":smoke-test:spring-boot-smoke-test-actuator-ui"
+392:include ":smoke-test:spring-boot-smoke-test-amqp"
+393:include ":smoke-test:spring-boot-smoke-test-ant"
+394:include ":smoke-test:spring-boot-smoke-test-artemis"
+395:include ":smoke-test:spring-boot-smoke-test-aspectj"
+396:include ":smoke-test:spring-boot-smoke-test-autoconfigure-classic"
+397:include ":smoke-test:spring-boot-smoke-test-batch"
+398:include ":smoke-test:spring-boot-smoke-test-batch-jdbc"
+399:include ":smoke-test:spring-boot-smoke-test-bootstrap-registry"
+400:include ":smoke-test:spring-boot-smoke-test-cache"
+401:include ":smoke-test:spring-boot-smoke-test-config"
+402:include ":smoke-test:spring-boot-smoke-test-data-cassandra"
+403:include ":smoke-test:spring-boot-smoke-test-data-couchbase"
+404:include ":smoke-test:spring-boot-smoke-test-data-elasticsearch"
+405:include ":smoke-test:spring-boot-smoke-test-data-jdbc"
+406:include ":smoke-test:spring-boot-smoke-test-data-jpa"
+407:include ":smoke-test:spring-boot-smoke-test-data-ldap"
+408:include ":smoke-test:spring-boot-smoke-test-data-mongodb"
+409:include ":smoke-test:spring-boot-smoke-test-data-r2dbc"
+410:include ":smoke-test:spring-boot-smoke-test-data-r2dbc-flyway"
+411:include ":smoke-test:spring-boot-smoke-test-data-r2dbc-liquibase"
+412:include ":smoke-test:spring-boot-smoke-test-data-redis"
+413:include ":smoke-test:spring-boot-smoke-test-data-rest"
+414:include ":smoke-test:spring-boot-smoke-test-devtools"
+415:include ":smoke-test:spring-boot-smoke-test-flyway"
+416:include ":smoke-test:spring-boot-smoke-test-graphql"
+417:include ":smoke-test:spring-boot-smoke-test-hateoas"
+418:include ":smoke-test:spring-boot-smoke-test-hibernate"
+419:include ":smoke-test:spring-boot-smoke-test-integration"
+420:include ":smoke-test:spring-boot-smoke-test-jackson2-mixed"
+421:include ":smoke-test:spring-boot-smoke-test-jackson2-only"
+422:include ":smoke-test:spring-boot-smoke-test-jersey"
+423:include ":smoke-test:spring-boot-smoke-test-jetty"
+424:include ":smoke-test:spring-boot-smoke-test-jetty-jsp"
+425:include ":smoke-test:spring-boot-smoke-test-jetty-ssl"
+426:include ":smoke-test:spring-boot-smoke-test-kafka"
+427:include ":smoke-test:spring-boot-smoke-test-liquibase"
+428:include ":smoke-test:spring-boot-smoke-test-log4j2"
+429:include ":smoke-test:spring-boot-smoke-test-logback"
+430:include ":smoke-test:spring-boot-smoke-test-oauth2-authorization-server"
+431:include ":smoke-test:spring-boot-smoke-test-oauth2-client"
+432:include ":smoke-test:spring-boot-smoke-test-oauth2-resource-server"
+433:include ":smoke-test:spring-boot-smoke-test-parent-context"
+434:include ":smoke-test:spring-boot-smoke-test-profile"
+435:include ":smoke-test:spring-boot-smoke-test-prometheus"
+436:include ":smoke-test:spring-boot-smoke-test-property-validation"
+437:include ":smoke-test:spring-boot-smoke-test-pulsar"
+438:include ":smoke-test:spring-boot-smoke-test-quartz"
+439:include ":smoke-test:spring-boot-smoke-test-reactive-oauth2-client"
+440:include ":smoke-test:spring-boot-smoke-test-reactive-oauth2-resource-server"
+441:include ":smoke-test:spring-boot-smoke-test-restclient"
+442:include ":smoke-test:spring-boot-smoke-test-rsocket"
+443:include ":smoke-test:spring-boot-smoke-test-saml2-service-provider"
+444:include ":smoke-test:spring-boot-smoke-test-secure"
+445:include ":smoke-test:spring-boot-smoke-test-secure-jersey"
+446:include ":smoke-test:spring-boot-smoke-test-secure-webflux"
+447:include ":smoke-test:spring-boot-smoke-test-servlet"
+448:include ":smoke-test:spring-boot-smoke-test-session-jdbc"
+449:include ":smoke-test:spring-boot-smoke-test-session-data-redis"
+450:include ":smoke-test:spring-boot-smoke-test-session-data-redis-webflux"
+451:include ":smoke-test:spring-boot-smoke-test-simple"
+452:include ":smoke-test:spring-boot-smoke-test-structured-logging"
+453:include ":smoke-test:spring-boot-smoke-test-structured-logging-log4j2"
+454:include ":smoke-test:spring-boot-smoke-test-test"
+455:include ":smoke-test:spring-boot-smoke-test-test-nomockito"
+456:include ":smoke-test:spring-boot-smoke-test-testng"
+457:include ":smoke-test:spring-boot-smoke-test-tomcat"
+458:include ":smoke-test:spring-boot-smoke-test-tomcat-jsp"
+459:include ":smoke-test:spring-boot-smoke-test-tomcat-multi-connectors"
+460:include ":smoke-test:spring-boot-smoke-test-tomcat-ssl"
+461:include ":smoke-test:spring-boot-smoke-test-traditional"
+462:include ":smoke-test:spring-boot-smoke-test-war"
+463:include ":smoke-test:spring-boot-smoke-test-web-application-type"
+464:include ":smoke-test:spring-boot-smoke-test-web-freemarker"
+465:include ":smoke-test:spring-boot-smoke-test-web-groovy-templates"
+466:include ":smoke-test:spring-boot-smoke-test-web-jsp"
+467:include ":smoke-test:spring-boot-smoke-test-web-method-security"
+468:include ":smoke-test:spring-boot-smoke-test-web-mustache"
+469:include ":smoke-test:spring-boot-smoke-test-web-secure"
+470:include ":smoke-test:spring-boot-smoke-test-web-secure-custom"
+471:include ":smoke-test:spring-boot-smoke-test-web-secure-jdbc"
+472:include ":smoke-test:spring-boot-smoke-test-web-static"
+473:include ":smoke-test:spring-boot-smoke-test-web-thymeleaf"
+474:include ":smoke-test:spring-boot-smoke-test-webflux"
+475:include ":smoke-test:spring-boot-smoke-test-webflux-coroutines"
+476:include ":smoke-test:spring-boot-smoke-test-webservices"
+477:include ":smoke-test:spring-boot-smoke-test-websocket-jetty"
+478:include ":smoke-test:spring-boot-smoke-test-websocket-tomcat"
+479:include ":smoke-test:spring-boot-smoke-test-xml"
+480-
+481:include ":integration-test:spring-boot-actuator-integration-tests"
+482:include ":integration-test:spring-boot-configuration-processor-integration-tests"
+483:include ":integration-test:spring-boot-integration-tests"
+484:include ":integration-test:spring-boot-loader-integration-tests"
+485:include ":integration-test:spring-boot-server-integration-tests"
+486:include ":integration-test:spring-boot-sni-integration-tests"
+487:include ":integration-test:spring-boot-test-integration-tests"
+488-
+489:include ":system-test:spring-boot-deployment-system-tests"
+490:include ":system-test:spring-boot-image-system-tests"
+
+ succeeded in 964ms:
+curl: (22) The requested URL returned error: 404
+404
+https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/4.0.6/spring-boot-micrometer-observation-4.0.6-test.jar -> curl: (22) The requested URL returned error: 404
+404
+https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/4.0.6/spring-boot-micrometer-observation-4.0.6-test-sources.jar -> curl: (22) The requested URL returned error: 404
+404
+https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/4.0.6/spring-boot-micrometer-observation-4.0.6-javadoc.jar -> 200
+
+codex
+Maven Central has the main jar, sources jar, and javadoc jar for `4.0.6`, but no test-classifier jar in the conventional forms. I’m using the Spring Boot tag for the test suite path and checking whether the module is a normal JVM jar with class files.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-micrometer-observation?ref=v4.0.6' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7692-343eec18
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/4.0.6/spring-boot-micrometer-observation-4.0.6.module' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7692-343eec18
+ succeeded in 0ms:
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "org.springframework.boot",
+    "module": "spring-boot-micrometer-observation",
+    "version": "4.0.6",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "9.4.1"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot",
+          "version": {
+            "requires": "4.0.6"
+          }
+        },
+        {
+          "group": "io.micrometer",
+          "module": "micrometer-observation",
+          "version": {
+            "requires": "1.16.5"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "spring-boot-micrometer-observation-4.0.6.jar",
+          "url": "spring-boot-micrometer-observation-4.0.6.jar",
+          "size": 28846,
+          "sha512": "9aa92c7d05989b2d1297b2b0ec3b1744fdc90632b54b944a53fdc6387edaa36d2ec17578633afe81fb03399bf34a24ed4a51049955c0a339bf49a67b8a1532f6",
+          "sha256": "3684b47955ab80ba796918a07610b7957f4a66366c3b67b51bf8eb4cdc6df7f6",
+          "sha1": "ab486802d7623d00f02ee9838d94af66636b440c",
+          "md5": "785b644088878e6e9d96f228362e932d"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot",
+          "version": {
+            "requires": "4.0.6"
+          }
+        },
+        {
+          "group": "io.micrometer",
+          "module": "micrometer-observation",
+          "version": {
+            "requires": "1.16.5"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "spring-boot-micrometer-observation-4.0.6.jar",
+          "url": "spring-boot-micrometer-observation-4.0.6.jar",
+          "size": 28846,
+          "sha512": "9aa92c7d05989b2d1297b2b0ec3b1744fdc90632b54b944a53fdc6387edaa36d2ec17578633afe81fb03399bf34a24ed4a51049955c0a339bf49a67b8a1532f6",
+          "sha256": "3684b47955ab80ba796918a07610b7957f4a66366c3b67b51bf8eb4cdc6df7f6",
+          "sha1": "ab486802d7623d00f02ee9838d94af66636b440c",
+          "md5": "785b644088878e6e9d96f228362e932d"
+        }
+      ]
+    },
+    {
+      "name": "javadocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "spring-boot-micrometer-observation-4.0.6-javadoc.jar",
+          "url": "spring-boot-micrometer-observation-4.0.6-javadoc.jar",
+          "size": 135670,
+          "sha512": "e8cc966406712b986d2d4926fda670cd3fb4bf790fb08d993a74f1c1030e24373945d644a93c5e9e32661497d4691ad4ae426d34fc2934583c624f5dd71c5834",
+          "sha256": "0f966fba94180e4f781c930d983b95b106519ab597137f0181398476dee8675b",
+          "sha1": "f9b9ddbbcd5209f817dc581762d0fbcdd0414aa0",
+          "md5": "93aca42379d7a08934e0f23d5095674c"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "spring-boot-micrometer-observation-4.0.6-sources.jar",
+          "url": "spring-boot-micrometer-observation-4.0.6-sources.jar",
+          "size": 19810,
+          "sha512": "bd2faeb364421df4d51b42b9da26bb0b80765412010f434f435a8b05e04bbe476ca870d60fed3be55fa836d60762359ad64ce1c6554d173aad37071a3dd93613",
+          "sha256": "321bfd25a7aee2f8ba353508c31cf7f5cbb3079e2a2d03e500d5a540668468af",
+          "sha1": "07c4e4b456fd0f540b4f23a78841f48b0114a3c1",
+          "md5": "7b024a1a84bfd205daa343557caa22da"
+        }
+      ]
+    }
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/artifact.jar" https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/4.0.6/spring-boot-micrometer-observation-4.0.6.jar; jar tf "$tmp/artifact.jar" | sed -n '"'1,120p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7692-343eec18
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-micrometer-observation/src?ref=v4.0.6' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7692-343eec18
+ succeeded in 188ms:
+[
+  {
+    "name": "build.gradle",
+    "path": "module/spring-boot-micrometer-observation/build.gradle",
+    "sha": "1c49cb122389fdc4540a08a95f75a0fddbd1fa2c",
+    "size": 1342,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-micrometer-observation/build.gradle?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/blob/v4.0.6/module/spring-boot-micrometer-observation/build.gradle",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/blobs/1c49cb122389fdc4540a08a95f75a0fddbd1fa2c",
+    "download_url": "https://raw.githubusercontent.com/spring-projects/spring-boot/v4.0.6/module/spring-boot-micrometer-observation/build.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-micrometer-observation/build.gradle?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/blobs/1c49cb122389fdc4540a08a95f75a0fddbd1fa2c",
+      "html": "https://github.com/spring-projects/spring-boot/blob/v4.0.6/module/spring-boot-micrometer-observation/build.gradle"
+    }
+  },
+  {
+    "name": "src",
+    "path": "module/spring-boot-micrometer-observation/src",
+    "sha": "da1f3c3604e80e03b32de9081c4f26f875ff1e17",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-micrometer-observation/src?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-micrometer-observation/src",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/da1f3c3604e80e03b32de9081c4f26f875ff1e17",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-micrometer-observation/src?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/da1f3c3604e80e03b32de9081c4f26f875ff1e17",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-micrometer-observation/src"
+    }
+  }
+]
+
+ succeeded in 126ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/LICENSE.txt
+META-INF/NOTICE.txt
+META-INF/spring-autoconfigure-metadata.properties
+META-INF/spring-configuration-metadata.json
+org/
+org/springframework/
+org/springframework/boot/
+org/springframework/boot/micrometer/
+org/springframework/boot/micrometer/observation/
+org/springframework/boot/micrometer/observation/autoconfigure/
+org/springframework/boot/micrometer/observation/autoconfigure/ObservationAutoConfiguration$ObservedAspectConfiguration.class
+org/springframework/boot/micrometer/observation/autoconfigure/ObservationAutoConfiguration.class
+org/springframework/boot/micrometer/observation/autoconfigure/ObservationHandlerGroup.class
+org/springframework/boot/micrometer/observation/autoconfigure/ObservationHandlerGroups.class
+org/springframework/boot/micrometer/observation/autoconfigure/ObservationProperties$Http$Client$ClientRequests.class
+org/springframework/boot/micrometer/observation/autoconfigure/ObservationProperties$Http$Client.class
+org/springframework/boot/micrometer/observation/autoconfigure/ObservationProperties$Http$Server$ServerRequests.class
+org/springframework/boot/micrometer/observation/autoconfigure/ObservationProperties$Http$Server.class
+org/springframework/boot/micrometer/observation/autoconfigure/ObservationProperties$Http.class
+org/springframework/boot/micrometer/observation/autoconfigure/ObservationProperties.class
+org/springframework/boot/micrometer/observation/autoconfigure/ObservationRegistryConfigurer.class
+org/springframework/boot/micrometer/observation/autoconfigure/ObservationRegistryCustomizer.class
+org/springframework/boot/micrometer/observation/autoconfigure/ObservationRegistryPostProcessor.class
+org/springframework/boot/micrometer/observation/autoconfigure/PropertiesObservationFilterPredicate.class
+org/springframework/boot/micrometer/observation/autoconfigure/ScheduledTasksObservationAutoConfiguration$ObservabilitySchedulingConfigurer.class
+org/springframework/boot/micrometer/observation/autoconfigure/ScheduledTasksObservationAutoConfiguration.class
+org/springframework/boot/micrometer/observation/autoconfigure/SpelValueExpressionResolver.class
+org/springframework/boot/micrometer/observation/autoconfigure/package-info.class
+META-INF/additional-spring-configuration-metadata.json
+META-INF/spring/
+META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
+
+ succeeded in 163ms:
+[
+  {
+    "name": "main",
+    "path": "module/spring-boot-micrometer-observation/src/main",
+    "sha": "a8ed135296a97f030c9d39d6d13a66f0a5a03873",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-micrometer-observation/src/main?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-micrometer-observation/src/main",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/a8ed135296a97f030c9d39d6d13a66f0a5a03873",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-micrometer-observation/src/main?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/a8ed135296a97f030c9d39d6d13a66f0a5a03873",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-micrometer-observation/src/main"
+    }
+  },
+  {
+    "name": "test",
+    "path": "module/spring-boot-micrometer-observation/src/test",
+    "sha": "ec8c19289848f04360333ae410a43d90ec751d0e",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-micrometer-observation/src/test?ref=v4.0.6",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-micrometer-observation/src/test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/ec8c19289848f04360333ae410a43d90ec751d0e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-micrometer-observation/src/test?ref=v4.0.6",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/ec8c19289848f04360333ae410a43d90ec751d0e",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-micrometer-observation/src/test"
+    }
+  }
+]
+
+web search: 
+web search: https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-micrometer-observation/src/test
+web search: 
+web search: repo.maven.apache.org maven2 org springframework boot spring-boot-micrometer-observation 4.0.6 sources javadoc jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/springframework/boot/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/springframework/boot/
+web search: 
+web search: "spring-boot-micrometer-observation-4.0.6-sources.jar"
+web search: 
+web search: central.sonatype.com artifact org.springframework.boot spring-boot-micrometer-observation 4.0.6
+codex
+I found the metadata values with enough confidence. I’m writing the JSON now with Maven Central for sources/javadoc, GitHub’s `v$version$` test path, and no language or not-for-native-image fields because the artifact is a regular JVM jar with `.class` files.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7692-343eec18/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json
+index 4a3fc0715458ddc741b69ffde4f65bab7f581b41..74e41be50e8d9d15fb8849a7c985127e341e61a9
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-micrometer-observation:4.0.6"
++  "coordinates" : "org.springframework.boot:spring-boot-micrometer-observation:4.0.6",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/$version$/spring-boot-micrometer-observation-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-micrometer-observation/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/$version$/spring-boot-micrometer-observation-$version$-javadoc.jar",
++  "description" : "Spring Boot Micrometer Observation provides auto-configuration and support classes for Micrometer's observation infrastructure in Spring Boot applications. It configures observation registries, customizers, filters, and related properties so applications can collect and organize observations used by metrics and tracing integrations."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json
+index 4a3fc0715458ddc741b69ffde4f65bab7f581b41..74e41be50e8d9d15fb8849a7c985127e341e61a9
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-micrometer-observation:4.0.6"
++  "coordinates" : "org.springframework.boot:spring-boot-micrometer-observation:4.0.6",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/$version$/spring-boot-micrometer-observation-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-micrometer-observation/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/$version$/spring-boot-micrometer-observation-$version$-javadoc.jar",
++  "description" : "Spring Boot Micrometer Observation provides auto-configuration and support classes for Micrometer's observation infrastructure in Spring Boot applications. It configures observation registries, customizers, filters, and related properties so applications can collect and organize observations used by metrics and tracing integrations."
+ }
+
+codex
+The file is updated. I’m doing a quick validation pass: JSON parse, allowed-key check, and URL existence after substituting `4.0.6`.
+exec
+/usr/bin/bash -lc "jq 'keys' build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7692-343eec18
+ succeeded in 0ms:
+[
+  "coordinates",
+  "description",
+  "documentation-url",
+  "repository-url",
+  "source-code-url",
+  "test-code-url"
+]
+
+exec
+/usr/bin/bash -lc "for u in \\
+  https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/4.0.6/spring-boot-micrometer-observation-4.0.6-sources.jar \\
+  https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot-micrometer-observation/src/test \\
+  https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/4.0.6/spring-boot-micrometer-observation-4.0.6-javadoc.jar; do
+  printf '%s -> ' \""'$u"
+  curl -fsSI -L "$u" | awk '"'toupper("'$0) ~ /''^HTTP'"\\// {code="'$2} END {print code}'"' || true
+done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7692-343eec18
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7692-343eec18
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json
+index 4a3fc0715458ddc741b69ffde4f65bab7f581b41..74e41be50e8d9d15fb8849a7c985127e341e61a9
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-micrometer-observation:4.0.6"
++  "coordinates" : "org.springframework.boot:spring-boot-micrometer-observation:4.0.6",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/$version$/spring-boot-micrometer-observation-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-micrometer-observation/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/$version$/spring-boot-micrometer-observation-$version$-javadoc.jar",
++  "description" : "Spring Boot Micrometer Observation provides auto-configuration and support classes for Micrometer's observation infrastructure in Spring Boot applications. It configures observation registries, customizers, filters, and related properties so applications can collect and organize observations used by metrics and tracing integrations."
+ }
+
+ succeeded in 474ms:
+200
+https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/4.0.6/spring-boot-micrometer-observation-4.0.6-javadoc.jar -> 200
+
+codex
+The validation passed: the three substituted URLs all return 200, and the JSON contains only the requested top-level keys. I’m checking the final file content once more since this generated path may not be tracked by Git.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7692-343eec18
+ succeeded in 0ms:
+{
+  "coordinates" : "org.springframework.boot:spring-boot-micrometer-observation:4.0.6",
+  "repository-url" : "https://github.com/spring-projects/spring-boot",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/$version$/spring-boot-micrometer-observation-$version$-sources.jar",
+  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-micrometer-observation/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/$version$/spring-boot-micrometer-observation-$version$-javadoc.jar",
+  "description" : "Spring Boot Micrometer Observation provides auto-configuration and support classes for Micrometer's observation infrastructure in Spring Boot applications. It configures observation registries, customizers, filters, and related properties so applications can collect and organize observations used by metrics and tracing integrations."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7692-343eec18
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json
+index 4a3fc0715458ddc741b69ffde4f65bab7f581b41..74e41be50e8d9d15fb8849a7c985127e341e61a9
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-micrometer-observation:4.0.6"
++  "coordinates" : "org.springframework.boot:spring-boot-micrometer-observation:4.0.6",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/$version$/spring-boot-micrometer-observation-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-micrometer-observation/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/$version$/spring-boot-micrometer-observation-$version$-javadoc.jar",
++  "description" : "Spring Boot Micrometer Observation provides auto-configuration and support classes for Micrometer's observation infrastructure in Spring Boot applications. It configures observation registries, customizers, filters, and related properties so applications can collect and organize observations used by metrics and tracing integrations."
+ }
+
+ succeeded in 334ms:
+codex
+Updated [org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7692-343eec18/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json).
+
+Validation passed: the JSON parses, contains only the requested keys, and the substituted source, test, and documentation URLs for `4.0.6` all returned `200`. I left `language` absent and did not set `not-for-native-image` because the artifact is a normal JVM jar with `.class` files.
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json
+index 4a3fc0715458ddc741b69ffde4f65bab7f581b41..74e41be50e8d9d15fb8849a7c985127e341e61a9
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-micrometer-observation:4.0.6"
++  "coordinates" : "org.springframework.boot:spring-boot-micrometer-observation:4.0.6",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/$version$/spring-boot-micrometer-observation-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-micrometer-observation/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-micrometer-observation/$version$/spring-boot-micrometer-observation-$version$-javadoc.jar",
++  "description" : "Spring Boot Micrometer Observation provides auto-configuration and support classes for Micrometer's observation infrastructure in Spring Boot applications. It configures observation registries, customizers, filters, and related properties so applications can collect and organize observations used by metrics and tracing integrations."
+ }
+
+tokens used
+87,853
+Updated [org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7692-343eec18/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.json).
+
+Validation passed: the JSON parses, contains only the requested keys, and the substituted source, test, and documentation URLs for `4.0.6` all returned `200`. I left `language` absent and did not set `not-for-native-image` because the artifact is a normal JVM jar with `.class` files.
+Ran agent for org.springframework.boot:spring-boot-micrometer-observation:4.0.6 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7692-343eec18/build/agent-artifact-discovery-logs/org.springframework.boot-spring-boot-micrometer-observation-4.0.6.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7692-343eec18/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 42s
+9 actionable tasks: 9 executed
