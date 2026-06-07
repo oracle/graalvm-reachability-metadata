@@ -23,12 +23,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ClassInjectorInnerUsingReflectionInnerDispatcherInnerIndirectTest {
     @Test
     void injectsGeneratedTypeIntoCustomClassLoader() throws Exception {
-        if (!ClassInjector.UsingReflection.isAvailable()) {
-            assertThat(ClassInjector.UsingReflection.isAvailable()).isFalse();
-            return;
-        }
         try {
-            injectGeneratedTypeIntoCustomClassLoader();
+            boolean reflectionInjectionAvailable = ClassInjector.UsingReflection.isAvailable();
+            if (reflectionInjectionAvailable) {
+                injectGeneratedTypeIntoCustomClassLoader();
+            } else {
+                assertThat(reflectionInjectionAvailable).isFalse();
+            }
         } catch (Error error) {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
