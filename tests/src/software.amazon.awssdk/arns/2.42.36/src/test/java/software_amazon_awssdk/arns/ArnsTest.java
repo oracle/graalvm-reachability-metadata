@@ -48,6 +48,22 @@ public class ArnsTest {
     }
 
     @Test
+    void builderCreatesArnWhenOptionalRegionAndAccountAreOmitted() {
+        Arn arn = Arn.builder()
+                     .partition("aws")
+                     .service("s3")
+                     .resource("customer-bucket")
+                     .build();
+
+        assertThat(arn.partition()).isEqualTo("aws");
+        assertThat(arn.service()).isEqualTo("s3");
+        assertThat(arn.region()).isEmpty();
+        assertThat(arn.accountId()).isEmpty();
+        assertThat(arn.resourceAsString()).isEqualTo("customer-bucket");
+        assertThat(arn.toString()).isEqualTo("arn:aws:s3:::customer-bucket");
+    }
+
+    @Test
     void tryFromStringReturnsOptionalInsteadOfThrowingForSupportedInputs() {
         Optional<Arn> parsedArn = Arn.tryFromString("arn:aws-us-gov:iam::123456789012:role/Admin");
 
