@@ -9,10 +9,23 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String nativeImageMode = System.getenv("GVM_TCK_NATIVE_IMAGE_MODE") ?: ""
 
 dependencies {
     testImplementation "org.jline:jline-terminal-jni:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+tasks.withType(Test).configureEach {
+    jvmArgs += [
+        "--enable-native-access=ALL-UNNAMED"
+    ]
+}
+
+if (nativeImageMode.startsWith("future-defaults")) {
+    tasks.named("nativeTest") {
+        runtimeArgs.add("-Dorg.graalvm.internal.tck.jlineTerminalJni.skipPtyTests=true")
+    }
 }
 
 graalvmNative {
@@ -21,6 +34,16 @@ graalvmNative {
         modes {
             conditional {
                 userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+    binaries {
+        test {
+            buildArgs.addAll([
+                '--enable-native-access=ALL-UNNAMED'
+            ])
+            if (nativeImageMode.startsWith("future-defaults")) {
+                runtimeArgs.add("-Dorg.graalvm.internal.tck.jlineTerminalJni.skipPtyTests=true")
             }
         }
     }

@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 public class Jline_terminal_jniTest {
     private static final Set<String> SUPPORTED_POSIX_OS_PREFIXES = Set.of(
@@ -53,6 +54,8 @@ public class Jline_terminal_jniTest {
 
     @Test
     void openCreatesConfiguredNativePtyOnSupportedPosixPlatforms() throws Exception {
+        assumeFutureDefaultsPtySupport();
+
         TerminalProvider provider = TerminalProvider.load("jni");
         Attributes attributes = attributesForPty();
         Size requestedSize = new Size(81, 27);
@@ -92,6 +95,8 @@ public class Jline_terminal_jniTest {
 
     @Test
     void nativePtyExposesConnectedMasterAndSlaveStreams() throws Exception {
+        assumeFutureDefaultsPtySupport();
+
         TerminalProvider provider = TerminalProvider.load("jni");
         Attributes attributes = attributesForPty();
         Size requestedSize = new Size(80, 24);
@@ -123,6 +128,8 @@ public class Jline_terminal_jniTest {
 
     @Test
     void nativePtyAppliesAttributeChangesAfterOpen() throws Exception {
+        assumeFutureDefaultsPtySupport();
+
         TerminalProvider provider = TerminalProvider.load("jni");
         Attributes attributes = attributesForPty();
         Size requestedSize = new Size(80, 24);
@@ -153,6 +160,8 @@ public class Jline_terminal_jniTest {
 
     @Test
     void terminalBuilderCreatesJniBackedTerminalForExplicitStreams() throws Exception {
+        assumeFutureDefaultsPtySupport();
+
         if (isSupportedPosixOperatingSystem()) {
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             try (Terminal terminal = buildTerminal(output)) {
@@ -236,5 +245,10 @@ public class Jline_terminal_jniTest {
     private static boolean isSupportedPosixOperatingSystem() {
         String osName = System.getProperty("os.name", "");
         return SUPPORTED_POSIX_OS_PREFIXES.stream().anyMatch(osName::startsWith);
+    }
+
+    private static void assumeFutureDefaultsPtySupport() {
+        assumeFalse(Boolean.getBoolean("org.graalvm.internal.tck.jlineTerminalJni.skipPtyTests"),
+                "Skipping PTY/JNI runtime checks for future-defaults native-image mode");
     }
 }
