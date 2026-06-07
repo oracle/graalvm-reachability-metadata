@@ -179,6 +179,28 @@ public class Spring_boot_servletTest {
     }
 
     @Test
+    void orderedFormContentFilterExposesFormBodyParametersForPutRequests() throws ServletException, IOException {
+        OrderedFormContentFilter filter = new OrderedFormContentFilter();
+        MockHttpServletRequest request = new MockHttpServletRequest("PUT", "/orders/42");
+        request.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        request.setContentType("application/x-www-form-urlencoded");
+        request.setContent("name=espresso&size=small&size=large".getBytes(StandardCharsets.UTF_8));
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        List<String> observedNames = new ArrayList<>();
+        List<String> observedSizes = new ArrayList<>();
+
+        filter.doFilter(request, response, (servletRequest, servletResponse) -> {
+            HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
+            observedNames.add(httpRequest.getParameter("name"));
+            observedSizes.addAll(List.of(httpRequest.getParameterValues("size")));
+        });
+
+        assertThat(observedNames).containsExactly("espresso");
+        assertThat(observedSizes).containsExactly("small", "large");
+        assertThat(request.getMethod()).isEqualTo("PUT");
+    }
+
+    @Test
     void applicationContextHeaderFilterAddsContextIdBeforeContinuingChain() throws ServletException, IOException {
         StaticApplicationContext applicationContext = new StaticApplicationContext();
         applicationContext.setId("test-application");
