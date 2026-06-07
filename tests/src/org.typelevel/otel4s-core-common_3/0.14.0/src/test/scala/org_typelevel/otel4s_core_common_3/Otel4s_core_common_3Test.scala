@@ -15,7 +15,7 @@ import cats.data.Ior
 import cats.data.IorT
 import cats.data.Kleisli
 import cats.data.OptionT
-import cats.data.StateT
+import cats.data.WriterT
 import cats.effect.SyncIO
 import cats.effect.kernel.Resource
 import cats.syntax.show._
@@ -25,18 +25,16 @@ import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.typelevel.otel4s.AnyValue
 import org.typelevel.otel4s.Attribute
 import org.typelevel.otel4s.AttributeKey
 import org.typelevel.otel4s.AttributeType
+import org.typelevel.otel4s.Attributes
 import org.typelevel.otel4s.KindTransformer
-import org.typelevel.otel4s.context.Contextual
-import org.typelevel.otel4s.context.Key
 import org.typelevel.otel4s.context.propagation.ContextPropagators
-import org.typelevel.otel4s.context.propagation.PassThroughPropagator
 import org.typelevel.otel4s.context.propagation.TextMapGetter
 import org.typelevel.otel4s.context.propagation.TextMapPropagator
 import org.typelevel.otel4s.context.propagation.TextMapUpdater
-import org.typelevel.otel4s.meta.InstrumentMeta
 
 import scala.collection.immutable.SortedMap
 
@@ -113,81 +111,58 @@ class Otel4s_core_common_3Test {
   }
 
   @Test
-  def contextualSyntaxAndPassThroughPropagatorRoundTripSelectedFields(): Unit = {
-    implicit val contextual: Contextual.Keyed[TestContext, TestKey] = testContextual
-    implicit val provider: Key.Provider[SyncIO, TestKey] = testKeyProvider
+  def attributesCollectionBuildsDeduplicatesAndUsesTypeAwareLookup(): Unit = {
+    final case class User(id: Int, group: String)
 
-    val numberKey: TestKey[Int] = new TestKey[Int]("number")
-    val otherNumberKey: TestKey[Int] = new TestKey[Int]("number")
-    val namedContext: TestContext = contextual.updated(contextual.root)(numberKey, 42)
-    assertEquals(Some(42), contextual.get(namedContext)(numberKey))
-    assertEquals(42, contextual.getOrElse(namedContext)(numberKey, 0))
-    assertEquals(7, contextual.getOrElse(contextual.root)(numberKey, 7))
-    assertEquals("Key(number)", numberKey.show)
-    assertTrue(Hash[TestKey[Int]].eqv(numberKey, numberKey))
-    assertFalse(Hash[TestKey[Int]].eqv(numberKey, otherNumberKey))
+    implicit val userAttributes: Attributes.Make[User] = user =>
+      Attributes(Attribute.from[Int, Long]("user.id", user.id), Attribute("user.group", user.group))
 
-    val propagator: TextMapPropagator[TestContext] =
-      PassThroughPropagator[TestContext, TestKey]("traceparent", "baggage", "traceparent")
-    val inbound: Map[String, String] = Map(
-      "traceparent" -> "00-4bf92f3577b34da6a3ce929d0e0e4736",
-      "baggage" -> "user=alice",
-      "unrelated" -> "ignored"
-    )
+    val methodKey: AttributeKey[String] = AttributeKey.string("http.method")
+    val statusKey: AttributeKey[Long] = AttributeKey.long("http.status_code")
+    val initial: Attributes = Attributes(methodKey("GET"), statusKey(200))
+    val replaced: Attributes = initial.added(methodKey, "POST")
+    val combined: Attributes = replaced ++ Attributes.from(User(7, "admin"))
 
-    val extracted: TestContext = propagator.extract(contextual.root, inbound)
-    val injected: Map[String, String] = propagator.inject(extracted, Map.empty[String, String])
-
-    assertEquals(List("traceparent", "baggage"), propagator.fields.toList)
-    assertEquals(Map("traceparent" -> "00-4bf92f3577b34da6a3ce929d0e0e4736", "baggage" -> "user=alice"), injected)
-    assertTrue(propagator.toString.contains("traceparent"))
-
-    val emptyPropagator: TextMapPropagator[TestContext] = PassThroughPropagator[TestContext, TestKey](Nil)
-    assertEquals(Nil, emptyPropagator.fields.toList)
-    assertEquals(contextual.root, emptyPropagator.extract(contextual.root, inbound))
-    assertEquals(Map("existing" -> "kept"), emptyPropagator.inject(contextual.root, Map("existing" -> "kept")))
+    assertEquals(4, combined.size)
+    assertEquals(Some("POST"), combined.get(methodKey).map(_.value))
+    assertEquals(Some(200L), combined.get[Long]("http.status_code").map(_.value))
+    assertEquals(None, combined.get[String]("http.status_code"))
+    assertEquals(Some(7L), combined.get[Long]("user.id").map(_.value))
+    assertEquals(Some("admin"), combined.get[String]("user.group").map(_.value))
+    assertTrue(combined.show.contains("String(user.group)=admin"))
+    assertEquals(combined, Attributes.newBuilder.addAll(combined).result())
+    assertEquals(combined, Monoid[Attributes].combine(Attributes.empty, combined))
   }
 
   @Test
-  def contextualSyntaxProvidesTypedContextOperationsWithLazyDefaults(): Unit = {
-    import org.typelevel.otel4s.context.syntax._
+  def anyValuesPreserveNestedValuesEqualityAndRendering(): Unit = {
+    val bytes: Array[Byte] = Array[Byte](1, 2, 3)
+    val byteValue: AnyValue.ByteArrayValue = AnyValue.bytes(bytes)
+    bytes(0) = 9
 
-    final case class SyntaxContext(values: Map[TestKey[_], Any])
-
-    implicit val contextual: Contextual.Keyed[SyntaxContext, TestKey] =
-      new Contextual[SyntaxContext] {
-        type Key[A] = TestKey[A]
-
-        def get[A](ctx: SyntaxContext)(key: TestKey[A]): Option[A] =
-          ctx.values.get(key).map(_.asInstanceOf[A])
-
-        def updated[A](ctx: SyntaxContext)(key: TestKey[A], value: A): SyntaxContext =
-          ctx.copy(values = ctx.values.updated(key, value))
-
-        val root: SyntaxContext = SyntaxContext(Map.empty)
-      }
-
-    val stringKey: TestKey[String] = new TestKey[String]("request-id")
-    val numberKey: TestKey[Int] = new TestKey[Int]("attempt")
-    val root: SyntaxContext = Contextual[SyntaxContext].root
-    val withRequestId: SyntaxContext = root.updated(stringKey, "request-123")
-    val withAttempt: SyntaxContext = withRequestId.updated(numberKey, 2)
-
-    assertEquals(Some("request-123"), withAttempt.get(stringKey))
-    assertEquals(Some(2), withAttempt.get(numberKey))
-    assertEquals("request-123", withAttempt.getOrElse(stringKey, "fallback"))
-
-    var defaultEvaluated: Boolean = false
-    val existing: String = withAttempt.getOrElse(
-      stringKey, {
-        defaultEvaluated = true
-        "unused"
-      }
+    val nested: AnyValue = AnyValue.map(
+      Map(
+        "name" -> AnyValue.string("alice"),
+        "active" -> AnyValue.boolean(true),
+        "score" -> AnyValue.double(4.5d),
+        "ids" -> AnyValue.seq(List(AnyValue.long(1L), byteValue, AnyValue.empty))
+      )
+    )
+    val sameNested: AnyValue = AnyValue.map(
+      Map(
+        "name" -> AnyValue.string("alice"),
+        "active" -> AnyValue.boolean(true),
+        "score" -> AnyValue.double(4.5d),
+        "ids" -> AnyValue.seq(List(AnyValue.long(1L), AnyValue.bytes(Array[Byte](1, 2, 3)), AnyValue.empty))
+      )
     )
 
-    assertEquals("request-123", existing)
-    assertFalse(defaultEvaluated)
-    assertEquals("fallback", root.getOrElse(stringKey, "fallback"))
+    assertEquals(nested, sameNested)
+    assertEquals(Hash[AnyValue].hash(nested), Hash[AnyValue].hash(sameNested))
+    assertTrue(byteValue.value.isReadOnly)
+    assertEquals(1.toByte, byteValue.value.get(0))
+    assertTrue(nested.show.contains("MapValue"))
+    assertTrue(nested.show.contains("ByteArrayValue(AQID)"))
   }
 
   @Test
@@ -300,9 +275,10 @@ class Otel4s_core_common_3Test {
     val kleisli: Kleisli[List, String, Int] = Kleisli((input: String) => List(input.length, input.length + 1))
     assertEquals(List(4, 3), kleisliTransformer.limitedMapK(kleisli)(reverseList).run("abc"))
 
-    val stateTransformer: KindTransformer[List, [A] =>> StateT[List, Int, A]] = summon[KindTransformer[List, [A] =>> StateT[List, Int, A]]]
-    val state: StateT[List, Int, String] = StateT((value: Int) => List((value + 1, "first"), (value + 2, "second")))
-    assertEquals(List((12, "second"), (11, "first")), stateTransformer.limitedMapK(state)(reverseList).run(10))
+    val writerTransformer: KindTransformer[List, [A] =>> WriterT[List, Vector[String], A]] = summon[KindTransformer[List, [A] =>> WriterT[List, Vector[String], A]]]
+    val writer: WriterT[List, Vector[String], Int] = WriterT(List((Vector("first"), 1), (Vector("second"), 2)))
+    assertEquals(List((Vector("second"), 2), (Vector("first"), 1)), writerTransformer.limitedMapK(writer)(reverseList).run)
+    assertEquals(List((Vector.empty[String], 7)), writerTransformer.liftK(List(7)).run)
 
     val syncIOIdentity: SyncIO ~> SyncIO = new (SyncIO ~> SyncIO) {
       def apply[A](fa: SyncIO[A]): SyncIO[A] = fa.map(identity)
@@ -313,47 +289,7 @@ class Otel4s_core_common_3Test {
     assertEquals(5, resourceTransformer.liftK(SyncIO(5)).use(value => SyncIO(value)).unsafeRunSync())
   }
 
-  @Test
-  def instrumentMetaTracksEnabledStateUnitAndMapK(): Unit = {
-    val enabled: InstrumentMeta[Option] = InstrumentMeta.enabled[Option]
-    val disabled: InstrumentMeta[Option] = InstrumentMeta.disabled[Option]
-
-    assertTrue(enabled.isEnabled)
-    assertEquals(Some(()), enabled.unit)
-    assertFalse(disabled.isEnabled)
-    assertEquals(Some(()), disabled.unit)
-
-    val optionToList: Option ~> List = new (Option ~> List) {
-      def apply[A](fa: Option[A]): List[A] = fa.toList
-    }
-    val mapped: InstrumentMeta[List] = enabled.mapK(optionToList)
-    assertTrue(mapped.isEnabled)
-    assertEquals(List(()), mapped.unit)
-  }
-
   private final case class HeaderCarrier(entries: Map[String, String])
-
-  private final class TestKey[A](val name: String) extends Key[A]
-
-  private type TestContext = Map[TestKey[_], Any]
-
-  private def testContextual: Contextual.Keyed[TestContext, TestKey] =
-    new Contextual[TestContext] {
-      type Key[A] = TestKey[A]
-
-      def get[A](ctx: TestContext)(key: TestKey[A]): Option[A] =
-        ctx.get(key).map(_.asInstanceOf[A])
-
-      def updated[A](ctx: TestContext)(key: TestKey[A], value: A): TestContext =
-        ctx.updated(key, value)
-
-      val root: TestContext = Map.empty
-    }
-
-  private def testKeyProvider: Key.Provider[SyncIO, TestKey] =
-    new Key.Provider[SyncIO, TestKey] {
-      def uniqueKey[A](name: String): SyncIO[TestKey[A]] = SyncIO(new TestKey[A](name))
-    }
 
   private final case class RecordingPropagator(
       field: String,
