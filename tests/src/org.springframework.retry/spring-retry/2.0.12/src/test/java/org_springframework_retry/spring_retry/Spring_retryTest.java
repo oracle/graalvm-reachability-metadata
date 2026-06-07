@@ -34,9 +34,11 @@ import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.backoff.Sleeper;
 import org.springframework.retry.policy.AlwaysRetryPolicy;
 import org.springframework.retry.policy.CompositeRetryPolicy;
+import org.springframework.retry.policy.ExceptionClassifierRetryPolicy;
 import org.springframework.retry.policy.MapRetryContextCache;
 import org.springframework.retry.policy.NeverRetryPolicy;
 import org.springframework.retry.policy.SimpleRetryPolicy;
+import org.springframework.retry.policy.TimeoutRetryPolicy;
 import org.springframework.retry.stats.DefaultStatisticsRepository;
 import org.springframework.retry.stats.ExponentialAverageRetryStatistics;
 import org.springframework.retry.support.DefaultRetryState;
@@ -182,6 +184,49 @@ public class Spring_retryTest {
 
         assertThat(patternClassifier.classify("invoice.created")).isEqualTo("invoice-route");
         assertThat(patternClassifier.classify("unknown.created")).isEqualTo("default-route");
+    }
+
+    @Test
+    void exceptionClassifierRetryPolicyChoosesDelegatePolicyFromThrowableType() {
+        ExceptionClassifierRetryPolicy retryPolicy = new ExceptionClassifierRetryPolicy();
+        RetryPolicy retryablePolicy = new SimpleRetryPolicy(2);
+        RetryPolicy fatalPolicy = new NeverRetryPolicy();
+        retryPolicy.setExceptionClassifier(throwable -> {
+            if (throwable instanceof TemporaryServiceException) {
+                return retryablePolicy;
+            }
+            return fatalPolicy;
+        });
+
+        RetryContext retryableContext = retryPolicy.open(null);
+        assertThat(retryPolicy.canRetry(retryableContext)).isTrue();
+        retryPolicy.registerThrowable(retryableContext, new TemporaryServiceException("first"));
+        assertThat(retryPolicy.canRetry(retryableContext)).isTrue();
+        retryPolicy.registerThrowable(retryableContext, new TemporaryServiceException("second"));
+        assertThat(retryPolicy.canRetry(retryableContext)).isFalse();
+        retryPolicy.close(retryableContext);
+
+        RetryContext fatalContext = retryPolicy.open(null);
+        assertThat(retryPolicy.canRetry(fatalContext)).isTrue();
+        retryPolicy.registerThrowable(fatalContext, new OptimisticLockingFailure());
+        assertThat(retryPolicy.canRetry(fatalContext)).isFalse();
+        retryPolicy.close(fatalContext);
+    }
+
+    @Test
+    void timeoutRetryPolicyStopsRetryingAfterConfiguredDeadline() throws InterruptedException {
+        TimeoutRetryPolicy retryPolicy = new TimeoutRetryPolicy();
+        retryPolicy.setTimeout(10);
+        RetryContext context = retryPolicy.open(null);
+
+        assertThat(retryPolicy.canRetry(context)).isTrue();
+        retryPolicy.registerThrowable(context, new TemporaryServiceException("first"));
+        Thread.sleep(25);
+
+        assertThat(retryPolicy.canRetry(context)).isFalse();
+        assertThat(context.getRetryCount()).isEqualTo(1);
+        assertThat(context.getLastThrowable()).isInstanceOf(TemporaryServiceException.class);
+        retryPolicy.close(context);
     }
 
     @Test
