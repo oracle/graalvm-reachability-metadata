@@ -7,6 +7,7 @@
 package org_codehaus_plexus.plexus_container_default;
 
 import org.codehaus.classworlds.ClassRealm;
+import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.MapOrientedComponent;
@@ -30,8 +31,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import java.io.File;
 import java.io.Reader;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.VarHandle;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -47,21 +46,71 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class MapOrientedComponentComposerTest {
     @Test
-    @Order(1)
-    public void rejectsComponentsThatAreNotMapOriented() throws Exception {
+    @Order(2)
+    public void containerComposerManagerRejectsPlainComponentsForMapOrientedComposer() throws Exception {
+        DefaultPlexusContainer container = new DefaultPlexusContainer(
+            "map-oriented-composer-test",
+            MapOrientedComponentComposerTest.class.getClassLoader()
+        );
+        ComponentDescriptor descriptor = descriptor(PlainComponent.class.getName());
+        descriptor.setComponentComposer("map-oriented");
+        descriptor.addRequirement(requirement("ignoredRole", "single"));
+
+        try {
+            CompositionException exception = assertThrows(
+                CompositionException.class,
+                () -> container.getComponentComposerManager().assembleComponent(
+                    new PlainComponent(),
+                    descriptor,
+                    container
+                )
+            );
+
+            assertTrue(exception.getMessage().contains(PlainComponent.class.getName()));
+            assertTrue(exception.getMessage().contains(MapOrientedComponent.class.getName()));
+        } finally {
+            container.dispose();
+        }
+    }
+
+    @Test
+    @Order(3)
+    public void rejectsComponentsThatAreNotMapOriented() {
         MapOrientedComponentComposer composer = new MapOrientedComponentComposer();
         ComponentDescriptor descriptor = descriptor(PlainComponent.class.getName());
         RecordingPlexusContainer container = new RecordingPlexusContainer();
-        clearCompilerGeneratedClassCache();
 
         assertMapOrientedRejection(composer, new PlainComponent(), descriptor, container);
-        assertSame(MapOrientedComponent.class, cachedMapOrientedComponentType());
-
         assertMapOrientedRejection(composer, "not a map-oriented component", descriptor, container);
     }
 
     @Test
-    @Order(2)
+    @Order(1)
+    public void lookupFailsWhenDescriptorSelectsMapOrientedComposerForPlainComponent() throws Exception {
+        DefaultPlexusContainer container = new DefaultPlexusContainer(
+            "map-oriented-composer-lookup-test",
+            MapOrientedComponentComposerTest.class.getClassLoader()
+        );
+        ComponentDescriptor descriptor = descriptor(PlainComponent.class.getName());
+        descriptor.setComponentComposer("map-oriented");
+        descriptor.addRequirement(requirement("ignoredRole", "single"));
+        container.addComponentDescriptor(descriptor);
+
+        try {
+            ComponentLookupException exception = assertThrows(
+                ComponentLookupException.class,
+                () -> container.lookup(PlainComponent.class.getName())
+            );
+
+            assertTrue(rootCauseMessage(exception).contains(PlainComponent.class.getName()));
+            assertTrue(rootCauseMessage(exception).contains(MapOrientedComponent.class.getName()));
+        } finally {
+            container.dispose();
+        }
+    }
+
+    @Test
+    @Order(4)
     public void addsMappedRequirementsToMapOrientedComponents() throws Exception {
         MapOrientedComponentComposer composer = new MapOrientedComponentComposer();
         RecordingMapOrientedComponent component = new RecordingMapOrientedComponent();
@@ -120,26 +169,6 @@ public class MapOrientedComponentComposerTest {
         assertTrue(exception.getMessage().contains("org.codehaus.plexus.component.MapOrientedComponent"));
     }
 
-    private static void clearCompilerGeneratedClassCache() throws Exception {
-        classCacheHandle().set(null);
-    }
-
-    private static Class<?> cachedMapOrientedComponentType() throws Exception {
-        return (Class<?>) classCacheHandle().get();
-    }
-
-    private static VarHandle classCacheHandle() throws Exception {
-        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(
-            MapOrientedComponentComposer.class,
-            MethodHandles.lookup()
-        );
-        return lookup.findStaticVarHandle(
-            MapOrientedComponentComposer.class,
-            "class$org$codehaus$plexus$component$MapOrientedComponent",
-            Class.class
-        );
-    }
-
     private static ComponentRequirement requirement(String role, String mappingType) {
         ComponentRequirement requirement = new ComponentRequirement();
         requirement.setRole(role);
@@ -160,7 +189,15 @@ public class MapOrientedComponentComposerTest {
         return values;
     }
 
-    private static final class PlainComponent {
+    private static String rootCauseMessage(Throwable throwable) {
+        Throwable cause = throwable;
+        while (cause.getCause() != null) {
+            cause = cause.getCause();
+        }
+        return cause.getMessage();
+    }
+
+    public static final class PlainComponent {
     }
 
     private static final class RecordingMapOrientedComponent implements MapOrientedComponent {

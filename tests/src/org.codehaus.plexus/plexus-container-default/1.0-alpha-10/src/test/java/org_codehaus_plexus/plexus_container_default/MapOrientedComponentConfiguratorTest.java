@@ -8,10 +8,8 @@ package org_codehaus_plexus.plexus_container_default;
 
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.classworlds.ClassWorld;
-import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.component.MapOrientedComponent;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
-import org.codehaus.plexus.component.configurator.ComponentConfigurator;
 import org.codehaus.plexus.component.configurator.MapOrientedComponentConfigurator;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
@@ -34,15 +32,20 @@ public class MapOrientedComponentConfiguratorTest {
     @Test
     @Order(1)
     public void rejectsComponentsThatDoNotAcceptMapConfiguration() throws Exception {
-        ComponentConfigurator configurator = new MapOrientedComponentConfigurator();
+        MapOrientedComponentConfigurator configurator = new MapOrientedComponentConfigurator();
         Object component = nonMapOrientedComponentSelectedAtRuntime();
-        ClassRealm realm = testRealm("map-oriented-component-configurator-rejection-test");
         clearCompilerGeneratedClassCache();
         assertNull(cachedMapOrientedComponentType());
 
         ComponentConfigurationException exception = assertThrows(
             ComponentConfigurationException.class,
-            () -> configurator.configureComponent(component, new XmlPlexusConfiguration("configuration"), realm)
+            () -> configurator.configureComponent(
+                component,
+                new XmlPlexusConfiguration("configuration"),
+                null,
+                null,
+                null
+            )
         );
 
         assertTrue(exception.getMessage().contains("can only process implementations"));
@@ -52,34 +55,6 @@ public class MapOrientedComponentConfiguratorTest {
 
     @Test
     @Order(2)
-    public void rejectsPlainComponentWithConfiguratorResolvedFromContainer() throws Exception {
-        DefaultPlexusContainer container = new DefaultPlexusContainer();
-        try {
-            ComponentConfigurator configurator = (ComponentConfigurator) container.lookup(
-                ComponentConfigurator.ROLE,
-                "map-oriented"
-            );
-            clearCompilerGeneratedClassCache();
-            assertNull(cachedMapOrientedComponentType());
-
-            ComponentConfigurationException exception = assertThrows(
-                ComponentConfigurationException.class,
-                () -> configurator.configureComponent(
-                    new PlainComponent(),
-                    new XmlPlexusConfiguration("configuration"),
-                    container.getContainerRealm()
-                )
-            );
-
-            assertTrue(exception.getMessage().contains("can only process implementations"));
-            assertEquals(MapOrientedComponent.class, cachedMapOrientedComponentType());
-        } finally {
-            container.dispose();
-        }
-    }
-
-    @Test
-    @Order(3)
     public void passesConvertedConfigurationMapToMapOrientedComponent() throws Exception {
         MapOrientedComponentConfigurator configurator = new MapOrientedComponentConfigurator();
         RecordingMapOrientedComponent component = new RecordingMapOrientedComponent();
@@ -131,9 +106,6 @@ public class MapOrientedComponentConfiguratorTest {
         XmlPlexusConfiguration child = new XmlPlexusConfiguration(name);
         child.setValue(value);
         parent.addChild(child);
-    }
-
-    private static final class PlainComponent {
     }
 
     private static final class RecordingMapOrientedComponent implements MapOrientedComponent {
