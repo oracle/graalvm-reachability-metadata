@@ -10,6 +10,7 @@ import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -120,6 +121,44 @@ public class Woodstox_coreTest {
         } finally {
             reader.close();
         }
+    }
+
+    @Test
+    void streamFilterExposesOnlyAcceptedElements() throws Exception {
+        String xml = """
+                <catalog>
+                  <book id="b1"><title>First</title></book>
+                  <magazine id="m1"/>
+                  <book id="b2"><title>Second</title></book>
+                </catalog>
+                """;
+
+        XMLInputFactory inputFactory = newInputFactory();
+        XMLStreamReader sourceReader = inputFactory.createXMLStreamReader(new StringReader(xml));
+        XMLStreamReader filteredReader = inputFactory.createFilteredReader(sourceReader, reader ->
+                reader.getEventType() == XMLStreamConstants.START_ELEMENT
+                        && "book".equals(reader.getLocalName()));
+        List<String> bookIds = new ArrayList<>();
+
+        try {
+            if (filteredReader.getEventType() == XMLStreamConstants.START_ELEMENT) {
+                assertThat(filteredReader.getLocalName()).isEqualTo("book");
+                bookIds.add(filteredReader.getAttributeValue(null, "id"));
+            }
+            while (filteredReader.hasNext()) {
+                int event = filteredReader.next();
+                if (event == XMLStreamConstants.END_DOCUMENT) {
+                    break;
+                }
+                assertThat(event).isEqualTo(XMLStreamConstants.START_ELEMENT);
+                assertThat(filteredReader.getLocalName()).isEqualTo("book");
+                bookIds.add(filteredReader.getAttributeValue(null, "id"));
+            }
+        } finally {
+            filteredReader.close();
+        }
+
+        assertThat(bookIds).containsExactly("b1", "b2");
     }
 
     @Test
