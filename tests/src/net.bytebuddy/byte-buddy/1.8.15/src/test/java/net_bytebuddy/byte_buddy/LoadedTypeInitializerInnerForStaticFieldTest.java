@@ -6,16 +6,12 @@
  */
 package net_bytebuddy.byte_buddy;
 
-import net.bytebuddy.ByteBuddy;
-import net.bytebuddy.ClassFileVersion;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
-import net.bytebuddy.implementation.FixedValue;
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.Callable;
 
-import static net.bytebuddy.matcher.ElementMatchers.named;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class LoadedTypeInitializerInnerForStaticFieldTest {
@@ -24,14 +20,8 @@ public class LoadedTypeInitializerInnerForStaticFieldTest {
         try {
             Object fixedValue = new Object();
 
-            Class<? extends Callable> dynamicType = new ByteBuddy(ClassFileVersion.JAVA_V8)
-                    .subclass(Object.class)
-                    .implement(Callable.class)
-                    .name("net_bytebuddy.byte_buddy.generated.StaticFieldCallable")
-                    .method(named("call"))
-                    .intercept(FixedValue.reference(fixedValue, "fixedValue"))
-                    .make()
-                    .load(getClass().getClassLoader(), ClassLoadingStrategy.Default.WRAPPER)
+            Class<? extends Callable> dynamicType = GeneratedTypeFixtures.staticFieldCallable(fixedValue)
+                    .load(getClass().getClassLoader(), ClassLoadingStrategy.Default.WRAPPER.allowExistingTypes())
                     .getLoaded()
                     .asSubclass(Callable.class);
 

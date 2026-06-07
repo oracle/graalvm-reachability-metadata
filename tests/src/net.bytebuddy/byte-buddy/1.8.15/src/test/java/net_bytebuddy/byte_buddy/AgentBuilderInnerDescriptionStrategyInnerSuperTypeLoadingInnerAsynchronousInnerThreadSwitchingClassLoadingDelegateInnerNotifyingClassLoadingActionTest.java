@@ -7,16 +7,13 @@
 package net_bytebuddy.byte_buddy;
 
 import net.bytebuddy.ByteBuddy;
-import net.bytebuddy.ClassFileVersion;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.description.type.TypeDescription;
-import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.loading.ByteArrayClassLoader;
 import net.bytebuddy.pool.TypePool;
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,27 +21,16 @@ import java.util.concurrent.Executors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AgentBuilderInnerDescriptionStrategyInnerSuperTypeLoadingInnerAsynchronousInnerThreadSwitchingClassLoadingDelegateInnerNotifyingClassLoadingActionTest {
-    private static final String GENERATED_PACKAGE = "net_bytebuddy.byte_buddy.generated.agentbuilder";
-
-    private static final String SUPER_TYPE_NAME = GENERATED_PACKAGE + ".LockHeldSuperType";
-
-    private static final String SUB_TYPE_NAME = GENERATED_PACKAGE + ".LockHeldSubType";
+    private static final String SUPER_TYPE_NAME = GeneratedTypeFixtures.LOCK_HELD_SUPER_TYPE;
+    private static final String SUB_TYPE_NAME = GeneratedTypeFixtures.LOCK_HELD_SUB_TYPE;
 
     @Test
     void loadsSuperTypeAsynchronouslyWhenCurrentThreadOwnsClassLoaderMonitor() {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         try {
-            DynamicType.Unloaded<?> superType = new ByteBuddy(ClassFileVersion.JAVA_V8)
-                    .subclass(Object.class)
-                    .name(SUPER_TYPE_NAME)
-                    .make();
-            DynamicType.Unloaded<?> subType = new ByteBuddy(ClassFileVersion.JAVA_V8)
-                    .subclass(superType.getTypeDescription())
-                    .name(SUB_TYPE_NAME)
-                    .make();
-            Map<String, byte[]> typeDefinitions = new LinkedHashMap<String, byte[]>();
-            typeDefinitions.put(superType.getTypeDescription().getName(), superType.getBytes());
-            typeDefinitions.put(subType.getTypeDescription().getName(), subType.getBytes());
+            Map<String, byte[]> typeDefinitions = GeneratedTypeFixtures.agentBuilderTypeDefinitions(
+                    SUPER_TYPE_NAME,
+                    SUB_TYPE_NAME);
             ClassLoader classLoader = new ByteArrayClassLoader(
                     getClass().getClassLoader(),
                     typeDefinitions,
