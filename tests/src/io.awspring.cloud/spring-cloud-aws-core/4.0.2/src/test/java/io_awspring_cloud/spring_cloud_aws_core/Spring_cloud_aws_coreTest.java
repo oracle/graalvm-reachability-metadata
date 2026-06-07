@@ -15,10 +15,13 @@ import io.awspring.cloud.core.config.AwsPropertySource;
 import io.awspring.cloud.core.region.StaticRegionProvider;
 import io.awspring.cloud.core.support.JacksonPresent;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.aot.hint.RuntimeHints;
+import org.springframework.aot.hint.RuntimeHintsRegistrar;
 import org.springframework.aot.hint.predicate.RuntimeHintsPredicates;
+import org.springframework.core.io.support.SpringFactoriesLoader;
 import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.core.client.config.SdkAdvancedClientOption;
 import software.amazon.awssdk.regions.Region;
@@ -77,6 +80,17 @@ public class Spring_cloud_aws_coreTest {
         assertThat(RuntimeHintsPredicates.resource()
                 .forResource("io/awspring/cloud/core/SpringCloudClientConfiguration.properties"))
                 .accepts(hints);
+    }
+
+    @Test
+    void runtimeHintsRegistrarIsLoadedFromSpringAotFactories() {
+        ClassLoader classLoader = getClass().getClassLoader();
+
+        List<RuntimeHintsRegistrar> registrars = SpringFactoriesLoader
+                .forResourceLocation("META-INF/spring/aot.factories", classLoader)
+                .load(RuntimeHintsRegistrar.class);
+
+        assertThat(registrars).hasAtLeastOneElementOfType(AWSCoreRuntimeHints.class);
     }
 
     @Test
