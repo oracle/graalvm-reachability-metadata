@@ -25,6 +25,7 @@ import jakarta.servlet.Registration;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRegistration;
 import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
 
@@ -159,6 +160,22 @@ public class Spring_boot_servletTest {
         assertThat(formContentFilter.getOrder()).isEqualTo(12);
         assertThat(hiddenHttpMethodFilter.getOrder()).isEqualTo(13);
         assertThat(requestContextFilter.getOrder()).isEqualTo(14);
+    }
+
+    @Test
+    void orderedHiddenHttpMethodFilterOverridesPostMethodBeforeContinuingChain() throws ServletException, IOException {
+        OrderedHiddenHttpMethodFilter filter = new OrderedHiddenHttpMethodFilter();
+        MockHttpServletRequest request = new MockHttpServletRequest("POST", "/orders/42");
+        request.setContentType("application/x-www-form-urlencoded");
+        request.addParameter("_method", "PATCH");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        List<String> observedMethods = new ArrayList<>();
+
+        filter.doFilter(request, response, (servletRequest, servletResponse) -> observedMethods
+                .add(((HttpServletRequest) servletRequest).getMethod()));
+
+        assertThat(observedMethods).containsExactly("PATCH");
+        assertThat(request.getMethod()).isEqualTo("POST");
     }
 
     @Test
