@@ -19,19 +19,19 @@ public class ClassRealmTest {
     private static final String REALM_ID = "direct-realm";
 
     @Test
-    void loadRealmClassLoadsClassThroughRealmClassLoader() throws Exception {
+    void loadClassLoadsClassThroughRealmClassLoader() throws Exception {
         ClassRealm realm = newRealm();
 
-        Class<?> loadedClass = realm.loadRealmClass(ClassRealmTest.class.getName());
+        Class<?> loadedClass = realm.loadClass(ClassRealmTest.class.getName());
 
         assertThat(loadedClass).isSameAs(ClassRealmTest.class);
     }
 
     @Test
-    void getRealmResourceLoadsResourceThroughRealmClassLoader() throws Exception {
+    void getResourceLoadsResourceThroughRealmClassLoader() throws Exception {
         ClassRealm realm = newRealm();
 
-        URL resource = realm.getRealmResource("classworlds.conf");
+        URL resource = realm.getResource("classworlds.conf");
 
         assertThat(resource).isNotNull();
     }

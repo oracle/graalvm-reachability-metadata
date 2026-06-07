@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.classworlds.strategy.DefaultStrategy;
+import org.codehaus.plexus.classworlds.strategy.SelfFirstStrategy;
 import org.junit.jupiter.api.Test;
 
 public class DefaultStrategyTest {
@@ -22,7 +22,7 @@ public class DefaultStrategyTest {
 
         Class<?> loadedClass = realm.loadClass(ClassWorld.class.getName());
 
-        assertThat(realm.getStrategy()).isInstanceOf(DefaultStrategy.class);
+        assertThat(realm.getStrategy()).isInstanceOf(SelfFirstStrategy.class);
         assertThat(loadedClass).isSameAs(ClassWorld.class);
     }
 }

@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -18,7 +19,7 @@ import java.util.List;
 
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.classworlds.strategy.ForeignStrategy;
+import org.codehaus.plexus.classworlds.strategy.SelfFirstStrategy;
 import org.junit.jupiter.api.Test;
 
 public class ForeignStrategyTest {
@@ -27,10 +28,12 @@ public class ForeignStrategyTest {
     private static final String RESOURCE_NAME = "foreign/resource.txt";
 
     @Test
-    void loadClassConsultsForeignClassLoaderFirst() throws Exception {
-        ClassLoader foreignClassLoader = new ClassLoader(ForeignStrategyTest.class.getClassLoader()) {
+    void loadClassConsultsImportedClassLoaderFirst() throws Exception {
+        ClassLoader foreignClassLoader = new ClassLoader(
+                ForeignStrategyTest.class.getClassLoader()) {
         };
-        ForeignStrategy strategy = newForeignStrategy(foreignClassLoader);
+        SelfFirstStrategy strategy = newSelfFirstStrategy(
+                foreignClassLoader, ForeignLoadTarget.class.getPackageName());
 
         Class<?> loadedClass = strategy.loadClass(CLASS_NAME);
 
@@ -38,31 +41,33 @@ public class ForeignStrategyTest {
     }
 
     @Test
-    void getResourceConsultsForeignClassLoaderFirst() throws Exception {
+    void getResourceConsultsImportedClassLoaderFirst() throws Exception {
         RecordingClassLoader foreignClassLoader = new RecordingClassLoader();
-        ForeignStrategy strategy = newForeignStrategy(foreignClassLoader);
+        SelfFirstStrategy strategy = newSelfFirstStrategy(foreignClassLoader, "foreign");
 
-        URL resource = strategy.getResource("/" + RESOURCE_NAME);
+        URL resource = strategy.getResource(RESOURCE_NAME);
 
         assertThat(resource).isEqualTo(foreignClassLoader.resource);
         assertThat(foreignClassLoader.resourceLookups).containsExactly(RESOURCE_NAME);
     }
 
     @Test
-    void findResourcesIncludesResourcesFromForeignClassLoader() throws Exception {
+    void getResourcesIncludesResourcesFromImportedClassLoader() throws Exception {
         RecordingClassLoader foreignClassLoader = new RecordingClassLoader();
-        ForeignStrategy strategy = newForeignStrategy(foreignClassLoader);
+        SelfFirstStrategy strategy = newSelfFirstStrategy(foreignClassLoader, "foreign");
 
-        List<URL> resources = resources(strategy.findResources("/" + RESOURCE_NAME));
+        List<URL> resources = resources(strategy.getResources(RESOURCE_NAME));
 
         assertThat(resources).containsExactly(foreignClassLoader.enumeratedResource);
         assertThat(foreignClassLoader.resourcesLookups).containsExactly(RESOURCE_NAME);
     }
 
-    private static ForeignStrategy newForeignStrategy(ClassLoader foreignClassLoader) throws Exception {
+    private static SelfFirstStrategy newSelfFirstStrategy(
+            ClassLoader foreignClassLoader, String importedPackage) throws Exception {
         ClassWorld world = new ClassWorld();
         ClassRealm realm = world.newRealm(REALM_ID);
-        return new ForeignStrategy(realm, foreignClassLoader);
+        realm.importFrom(foreignClassLoader, importedPackage);
+        return new SelfFirstStrategy(realm);
     }
 
     private static List<URL> resources(Enumeration<?> enumeration) {
@@ -75,7 +80,7 @@ public class ForeignStrategyTest {
 
     private static URL fileUrl(String path) {
         try {
-            return new URL("file", "", path);
+            return Path.of(path).toUri().toURL();
         } catch (MalformedURLException e) {
             throw new IllegalStateException(e);
         }
