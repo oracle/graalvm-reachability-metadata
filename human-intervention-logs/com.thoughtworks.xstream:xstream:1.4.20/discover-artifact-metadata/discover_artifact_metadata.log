@@ -1,0 +1,1319 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ea279-0486-7a21-9e3a-0a03c2d9c26f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.thoughtworks.xstream:xstream:1.4.20
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "1.4.20" when "$version$" is replaced with "1.4.20".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "com.thoughtworks.xstream:xstream:1.4.20".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.4.20".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the repo’s existing metadata patterns first, then verify XStream’s upstream URLs and Maven artifacts before editing the requested JSON.
+exec
+/usr/bin/bash -lc "ls -l build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json && sed -n '1,160p' build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+ succeeded in 0ms:
+-rw-rw-r-- 1 vjovanov vjovanov 64 Jun  7 16:25 build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
+{
+  "coordinates" : "com.thoughtworks.xstream:xstream:1.4.20"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"description\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+ succeeded in 0ms:
+metadata/io.prometheus/simpleclient_caffeine/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:7:    "test-code-url": "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient_caffeine/src/test/java",
+metadata/io.prometheus/simpleclient_caffeine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:9:    "description": "simpleclient_caffeine adds a Prometheus Java client collector for Caffeine caches. It exports cache statistics such as hits, misses, requests, evictions, estimated size, and load timing as Prometheus metrics labeled by cache name.",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:20:    "description" : "ParaNamer is a Java library that exposes constructor and method parameter names at runtime. It can read parameter names from generated metadata, annotations, debug symbols, or bytecode so frameworks can bind arguments without manual name declarations.",
+metadata/io.prometheus/simpleclient/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient/src/test",
+metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient/index.json:9:    "description" : "Prometheus Simpleclient is the legacy Java client core used to define and register application metrics such as counters, gauges, histograms, and summaries for Prometheus scraping. It provides the central Collector and CollectorRegistry APIs used by the 0.16.x simpleclient modules while keeping runtime dependencies minimal.",
+metadata/org.apache.hadoop/hadoop-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-annotations/$version$/hadoop-annotations-$version$-sources.jar",
+metadata/org.apache.hadoop/hadoop-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.hadoop/hadoop-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-annotations/$version$/hadoop-annotations-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-annotations/index.json:9:    "description" : "Apache Hadoop Annotations provides Java annotations for declaring the intended audience and stability of Hadoop APIs. It also includes doclet tools that include or exclude annotated API elements when generating public or private Javadocs.",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_agent",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:9:    "description" : "This artifact provides the Prometheus Java client SpanContextSupplier implementation for applications using the OpenTelemetry Java agent. It reads the current OpenTelemetry span context from the agent-shaded OpenTelemetry API so Prometheus exemplars can include valid trace and span IDs and sampled state.",
+metadata/com.google.truth/truth/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-sources.jar",
+metadata/com.google.truth/truth/index.json:7:    "test-code-url" : "https://github.com/google/truth/tree/release_1_1_3/core/src/test/java?version=$version$",
+metadata/com.google.truth/truth/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-javadoc.jar",
+metadata/com.google.truth/truth/index.json:9:    "description" : "Truth is a Java assertion framework that provides fluent assertions and readable failure messages for tests. It includes built-in subjects for common JDK and Guava types and extension points for defining custom assertions.",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:7:    "test-code-url" : "N/A",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:9:    "description" : "This artifact defines common tracing interfaces used by Prometheus Java client exemplars to obtain the current trace and span context. It exposes the SpanContextSupplier contract for trace ID, span ID, and sampling state so tracer-specific integrations can share a common API.",
+metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-web-proxy/$version$/hadoop-yarn-server-web-proxy-$version$-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-web-proxy/$version$/hadoop-yarn-server-web-proxy-$version$-test-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-web-proxy/$version$/hadoop-yarn-server-web-proxy-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:9:    "description" : "Apache Hadoop YARN Web Proxy provides the server-side proxy component for YARN application web interfaces. It routes users through a trusted proxy to application master web UIs, reducing direct exposure to untrusted application-provided links and helping YARN manage web access.",
+metadata/com.alibaba/fastjson/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/alibaba/fastjson/$version$/fastjson-$version$-sources.jar",
+metadata/com.alibaba/fastjson/index.json:7:    "test-code-url" : "https://github.com/alibaba/fastjson/tree/$version$/src/test",
+metadata/com.alibaba/fastjson/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/alibaba/fastjson/$version$/fastjson-$version$-javadoc.jar",
+metadata/com.alibaba/fastjson/index.json:9:    "description" : "Fastjson is a Java JSON library that parses JSON text into Java objects and serializes Java objects back to JSON. It supports arbitrary Java object graphs, generics, custom representations, JSONPath, and integrations with common Java frameworks.",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_sdk/src/test",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:9:    "description" : "simpleclient_tracer_otel connects the Prometheus Java simpleclient exemplar support to OpenTelemetry by reading the current trace and span context from the OpenTelemetry API. It lets Prometheus metrics include exemplars correlated with OpenTelemetry traces while remaining optional when OpenTelemetry is not available.",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-jvm-graal-ffi-jvm/$version$/mordant-jvm-graal-ffi-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:8:    "documentation-url" : "https://github.com/ajalt/mordant/blob/$version$/mordant-jvm-graal-ffi/README.md",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:9:    "description" : "Mordant is a Kotlin multiplatform library for rendering styled terminal output, including colors, tables, widgets, Markdown, input, and animations. The mordant-jvm-graal-ffi-jvm artifact provides Mordant's JVM terminal interface for GraalVM Native Image by binding native terminal functionality through GraalVM foreign function interfaces.",
+metadata/io.smallrye.reactive/mutiny/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/reactive/mutiny/$version$/mutiny-$version$-sources.jar",
+metadata/io.smallrye.reactive/mutiny/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-mutiny/tree/$version$/implementation/src/test",
+metadata/io.smallrye.reactive/mutiny/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/reactive/mutiny/$version$/mutiny-$version$-javadoc.jar",
+metadata/io.smallrye.reactive/mutiny/index.json:9:    "description" : "SmallRye Mutiny is a Java reactive programming library centered on Uni and Multi types for composing asynchronous single-value and stream-based pipelines. It provides fluent operators for transforming, combining, retrying, and observing events in event-driven, message-based, network, data-streaming, and reactive applications.",
+metadata/io.prometheus/simpleclient_httpserver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_httpserver/$version$/simpleclient_httpserver-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_httpserver/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient_httpserver/src/test",
+metadata/io.prometheus/simpleclient_httpserver/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_httpserver/$version$/simpleclient_httpserver-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_httpserver/index.json:9:    "description" : "simpleclient_httpserver exposes Prometheus simpleclient metrics over the JDK built-in HTTP server. It provides an HTTPServer exporter and request handler that serve CollectorRegistry data in Prometheus text format for scraping.",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:9:    "description" : "Mordant Core is a Kotlin multiplatform library for rendering styled terminal output, including ANSI colors, text styling, widgets, tables, input handling, and terminal capability detection. The mordant-core-jvm artifact provides the JVM variant of the core APIs for command-line applications that need rich terminal rendering and interaction.",
+metadata/net.postgis/postgis-geometry/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+metadata/net.postgis/postgis-geometry/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/postgis-geometry/src/test",
+metadata/net.postgis/postgis-geometry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+metadata/net.postgis/postgis-geometry/index.json:9:    "description" : "PostGIS Geometry provides Java model classes for representing PostGIS geometry values such as points, lines, polygons, and geometry collections. It supports parsing and serializing those values in PostGIS-related text and binary forms so JDBC applications can move spatial values between Java and a PostGIS database.",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-yaml-provider/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-yaml-provider/$version$/jackson-jakarta-rs-yaml-provider-$version$-sources.jar",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-yaml-provider/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-jakarta-rs-providers/tree/jackson-jakarta-rs-providers-$version$/yaml/src/test",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-yaml-provider/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-yaml-provider/$version$/jackson-jakarta-rs-yaml-provider-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-yaml-provider/index.json:9:    "description" : "Jackson Jakarta-RS YAML Provider integrates Jackson data binding with Jakarta RESTful Web Services implementations to read and write YAML request and response bodies. It supplies YAML MessageBodyReader and MessageBodyWriter providers, including JAXB-annotation-aware support, for frameworks such as Jersey and RESTEasy.",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-yaml-provider/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-yaml-provider/$version$/jackson-jakarta-rs-yaml-provider-$version$-sources.jar",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-yaml-provider/index.json:21:    "test-code-url" : "https://github.com/FasterXML/jackson-jakarta-rs-providers/tree/jackson-jakarta-rs-providers-$version$/yaml/src/test",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-yaml-provider/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-yaml-provider/$version$/jackson-jakarta-rs-yaml-provider-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-yaml-provider/index.json:23:    "description" : "Jackson Jakarta-RS YAML Provider integrates Jackson data binding with Jakarta RESTful Web Services implementations to read and write YAML request and response bodies. It supplies YAML MessageBodyReader and MessageBodyWriter providers, including JAXB-annotation-aware support, for frameworks such as Jersey and RESTEasy.",
+metadata/net.postgis/postgis-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+metadata/net.postgis/postgis-jdbc/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/jdbc/src/test",
+metadata/net.postgis/postgis-jdbc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+metadata/net.postgis/postgis-jdbc/index.json:9:    "description" : "PostGIS JDBC provides PostgreSQL JDBC driver extensions that register PostGIS geometry and geography data types with Java JDBC connections. It builds on postgis-geometry and the PostgreSQL JDBC driver so applications can read, write, parse, and serialize spatial values in PostGIS databases.",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-test-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:8:    "description" : "Apache Hadoop YARN Server Common contains shared server-side services, protocol helpers, and utility classes used by YARN ResourceManager, NodeManager, and related server components. It supports coordination of cluster resource management features such as node registration, container lifecycle handling, shared cache management, and server configuration within Hadoop YARN.",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:22:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-test-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:24:    "description" : "Apache Hadoop YARN Server Common contains shared server-side services, protocol helpers, and utility classes used by YARN ResourceManager, NodeManager, and related server components. It supports coordination of cluster resource management features such as node registration, container lifecycle handling, shared cache management, and server configuration within Hadoop YARN.",
+
+exec
+/usr/bin/bash -lc "rg -n \"com\\.thoughtworks\\.xstream|xstream\" metadata build/discovered-artifact-metadata docs -S" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json:2:  "coordinates" : "com.thoughtworks.xstream:xstream:1.4.20"
+metadata/io.github.x-stream/mxparser/index.json:15:      "io.github.xstream.mxparser"
+
+web search: 
+web search: Maven Central com.thoughtworks.xstream xstream 1.4.20 sources javadoc test-sources
+web search: 
+web search: https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/
+web search: 
+web search: https://central.sonatype.com/artifact/com.thoughtworks.xstream/xstream/1.4.20
+codex
+The Maven Central listing shows `sources`, `javadoc`, and a `tests.jar` for `1.4.20`, so the Maven URLs can cover source, tests, and docs directly. I’m checking the POM/SCM now for the canonical repository root instead of relying on the Central UI’s link rendering.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20.pom | rg -n '<url>|<scm>|<connection>|<developerConnection>|<tag>|<name>|<description>'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+ succeeded in 0ms:
+21:  <name>XStream Core</name>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <!--
+     Copyright (C) 2006 Joe Walnes.
+     Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 XStream committers.
+     All rights reserved.
+     
+     The software in this package is published under the terms of the BSD
+     style license a copy of which has been included with this distribution in
+     the LICENSE.txt file.
+     
+     Created on 29. July 2006 by Mauro Talevi
+     -->
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.thoughtworks.xstream</groupId>
+    <artifactId>xstream-parent</artifactId>
+    <version>1.4.20</version>
+  </parent>
+  <artifactId>xstream</artifactId>
+  <packaging>jar</packaging>
+  <name>XStream Core</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jdom</groupId>
+      <artifactId>jdom</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.jdom</groupId>
+      <artifactId>jdom2</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>stax</groupId>
+      <artifactId>stax</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>stax</groupId>
+      <artifactId>stax-api</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>xom</groupId>
+      <artifactId>xom</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>io.github.x-stream</groupId>
+      <artifactId>mxparser</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>net.sf.kxml</groupId>
+      <artifactId>kxml2-min</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+<!-- Registers itself as Service like Xpp3
+    <dependency>
+      <groupId>net.sf.kxml</groupId>
+      <artifactId>kxml2</artifactId>
+      <optional>true</optional>
+    </dependency>
+-->
+
+    <dependency>
+      <groupId>xpp3</groupId>
+      <artifactId>xpp3_min</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib-nodep</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.jettison</groupId>
+      <artifactId>jettison</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>activation</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <scope>provided</scope><!-- only required for compilation with Java 11 or higher, but only used by Java 7 or below -->
+    </dependency>
+
+    <!-- test-scoped -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>jmock</groupId>
+      <artifactId>jmock</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.megginson.sax</groupId>
+      <artifactId>xml-writer</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.sun.xml.ws</groupId>
+      <artifactId>jaxws-rt</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.xml.ws</groupId>
+          <artifactId>jaxws-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.istack</groupId>
+          <artifactId>istack-commons-runtime</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.xml.bind</groupId>
+          <artifactId>jaxb-impl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.xml.messaging.saaj</groupId>
+          <artifactId>saaj-impl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.xml.stream.buffer</groupId>
+          <artifactId>streambuffer</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.xml.ws</groupId>
+          <artifactId>policy</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.org.apache.xml.internal</groupId>
+          <artifactId>resolver</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.glassfish.gmbal</groupId>
+          <artifactId>gmbal-api-only</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jvnet</groupId>
+          <artifactId>mimepull</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jvnet.staxex</groupId>
+          <artifactId>stax-ex</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>complete-test-classpath</id>
+            <phase>process-test-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>target/lib</outputDirectory>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>proxytoys</groupId>
+                  <artifactId>proxytoys</artifactId>
+                  <version>0.2.1</version>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
+            <id>collect-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-tests.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+ succeeded in 323ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 14:25:20 GMT
+content-type: application/java-archive
+content-length: 9967
+cf-ray: a08053535f6f0204-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "abd1edf9e61302ffdcd8d5ec48b07574"
+last-modified: Fri, 23 Dec 2022 23:23:21 GMT
+x-checksum-md5: abd1edf9e61302ffdcd8d5ec48b07574
+x-checksum-sha1: 68ec5a4ae43a622a6e59da098c8e5b6b3bbeed5b
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+The artifact POM itself is only the module POM, so the SCM and project description are likely inherited from the parent POM. I’m reading that parent and checking the upstream tag naming before writing the JSON.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream-parent/1.4.20/xstream-parent-1.4.20.pom | rg -n '<url>|<scm>|<connection>|<developerConnection>|<tag>|<name>|<description>' -C 2" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+ succeeded in 0ms:
+16-  <packaging>pom</packaging>
+17-  <version>1.4.20</version>
+18:  <name>XStream Parent</name>
+19:  <url>http://x-stream.github.io</url>
+20:  <description>
+21-    XStream is a serialization library from Java objects to XML and back.
+22-  </description>
+--
+24-  <inceptionYear>2004</inceptionYear>
+25-  <organization>
+26:    <name>XStream</name>
+27:    <url>http://x-stream.github.io</url>
+28-  </organization>
+29-
+--
+31-    <developer>
+32-      <id>xstream</id>
+33:      <name>XStream Committers</name>
+34:      <url>http://x-stream.github.io/team.html</url>
+35-    </developer>
+36-  </developers>
+--
+357-  <licenses>
+358-    <license>
+359:      <name>BSD-3-Clause</name>
+360:      <url>http://x-stream.github.io/license.html</url>
+361-      <distribution>repo</distribution>
+362-    </license>
+--
+365-  <issueManagement>
+366-    <system>github</system>
+367:    <url>https://github.com/x-stream/xstream/issues/</url>
+368-  </issueManagement>
+369-  <ciManagement>
+370-    <system>Travis</system>
+371:    <url>https://travis-ci.org/x-stream/xstream</url>
+372-  </ciManagement>
+373-  <mailingLists>
+374-    <mailingList>
+375:      <name>XStream Users List</name>
+376-      <subscribe>xstream-user+subscribe@googlegroups.com</subscribe>
+377-      <unsubscribe>xstream-user+unsubscribe@googlegroups.com</unsubscribe>
+--
+384-    </mailingList>
+385-    <mailingList>
+386:      <name>XStream Notifications List</name>
+387-      <subscribe>xstream-notifications+subscribe@googlegroups.com</subscribe>
+388-      <unsubscribe>xstream-notifications+unsubscribe@googlegroups.com</unsubscribe>
+--
+394-    </mailingList>
+395-    <mailingList>
+396:      <name>Former (pre-2015-06) Development List</name>
+397-      <archive>http://news.gmane.org/gmane.comp.java.xstream.dev</archive>
+398-      <otherArchives>
+--
+401-    </mailingList>
+402-    <mailingList>
+403:      <name>Former (pre-2015-06) Announcements List</name>
+404-      <archive>http://markmail.org/search/list:org.codehaus.xstream.announce</archive>
+405-    </mailingList>
+--
+1005-            <systemProperties>
+1006-              <property>
+1007:                <name>java.awt.headless</name>
+1008-                <value>true</value>
+1009-              </property>
+--
+1096-    <repository>
+1097-      <id>ossrh-staging</id>
+1098:      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+1099-    </repository>
+1100-    <snapshotRepository>
+1101-      <id>ossrh-snapshots</id>
+1102:      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+1103-    </snapshotRepository>
+1104-    <!--site>
+1105-      <id>github</id>
+1106:      <url>scm:git:ssh://git@github.com/x-stream/x-stream.github.io.git</url>
+1107-    </site-->
+1108-  </distributionManagement>
+1109-
+1110:  <scm>
+1111:    <url>http://github.com/x-stream/xstream</url>
+1112:    <developerConnection>scm:git:ssh://git@github.com/x-stream/xstream.git</developerConnection>
+1113:    <connection>scm:git:ssh://git@github.com/x-stream/xstream.git</connection>
+1114:    <tag>v-1.4.x</tag>
+1115-  </scm>
+1116-  
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream-parent/1.4.20/xstream-parent-1.4.20.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <!--
+     Copyright (C) 2006 Joe Walnes.
+     Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 XStream committers.
+     All rights reserved.
+     
+     The software in this package is published under the terms of the BSD
+     style license a copy of which has been included with this distribution in
+     the LICENSE.txt file.
+     
+     Created on 29. July 2006 by Mauro Talevi
+     -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.thoughtworks.xstream</groupId>
+  <artifactId>xstream-parent</artifactId>
+  <packaging>pom</packaging>
+  <version>1.4.20</version>
+  <name>XStream Parent</name>
+  <url>http://x-stream.github.io</url>
+  <description>
+    XStream is a serialization library from Java objects to XML and back.
+  </description>
+
+  <inceptionYear>2004</inceptionYear>
+  <organization>
+    <name>XStream</name>
+    <url>http://x-stream.github.io</url>
+  </organization>
+
+  <developers>
+    <developer>
+      <id>xstream</id>
+      <name>XStream Committers</name>
+      <url>http://x-stream.github.io/team.html</url>
+    </developer>
+  </developers>
+
+  <profiles>
+    <profile>
+      <id>jdk12-ge</id>
+      <activation>
+        <jdk>[12,)</jdk>
+      </activation>
+      <properties>
+        <version.java.5>1.7</version.java.5>
+        <version.java.6>1.7</version.java.6>
+        <version.java.source>1.7</version.java.source>
+        <version.java.target>1.7</version.java.target>
+      </properties>
+    </profile>
+    <profile>
+      <id>jdk9-ge-jdk12</id>
+      <activation>
+        <jdk>[9,12)</jdk>
+      </activation>
+      <properties>
+        <version.java.5>1.6</version.java.5>
+        <version.java.source>1.6</version.java.source>
+        <version.java.target>1.6</version.java.target>
+      </properties>
+    </profile>
+    <profile>
+      <id>jdk9-ge</id>
+      <activation>
+        <jdk>[9,)</jdk>
+      </activation>
+      <properties>
+        <version.plugin.maven.enforcer>3.0.0-M1</version.plugin.maven.enforcer>
+      </properties>
+    </profile>
+    <profile>
+      <id>jdk8-ge</id>
+      <activation>
+        <jdk>[1.8,)</jdk>
+      </activation>
+      <properties>
+        <javadoc.xdoclint>-Xdoclint:-missing</javadoc.xdoclint>
+        <version.plugin.felix.bundle>2.5.4</version.plugin.felix.bundle>
+      </properties>
+    </profile>
+    <profile>
+      <id>jdk8</id>
+      <activation>
+        <jdk>1.8</jdk>
+      </activation>
+      <properties>
+        <version.java.source>1.4</version.java.source>
+        <version.java.target>1.4</version.java.target>
+      </properties>
+    </profile>
+    <profile>
+      <id>jdk6</id>
+      <activation>
+        <jdk>1.6</jdk>
+      </activation>
+      <properties>
+        <version.org.openjdk.jmh>1.16</version.org.openjdk.jmh>
+      </properties>
+    </profile>
+    <profile>
+      <!-- build with Maven 3.2.5 !!! -->
+      <id>jdk6-ge</id>
+      <activation>
+        <jdk>[1.6,)</jdk>
+      </activation>
+      <modules>
+        <!--module>xstream-its</module--><!-- requires installed repo -->
+        <module>xstream-jmh</module>
+        <module>xstream-distribution</module>
+      </modules>
+    </profile>
+    <profile>
+      <!-- build with Maven 3.0.5 !!! -->
+      <id>jdk5</id>
+      <activation>
+        <jdk>1.5</jdk>
+      </activation>
+      <properties>
+        <version.hsqldb>1.8.0.10</version.hsqldb>
+        <version.org.hibernate.core>3.6.6.Final</version.org.hibernate.core>
+      </properties>
+    </profile>
+    <profile>
+      <!-- build with Maven 2.0.10 !!! -->
+      <id>jdk4</id>
+      <activation>
+        <jdk>1.4</jdk>
+      </activation>
+      <properties>
+        <version.java.source>1.3</version.java.source>
+        <version.java.target>1.3</version.java.target>
+        <version.plugin.maven.enforcer>1.0-beta-1</version.plugin.maven.enforcer>
+        <link.javadoc.javase>http://docs.oracle.com/javase/1.4.2/docs/api/</link.javadoc.javase>
+        <!-- repeat Hibernate version dependencies, JDK intervals in activation is not supported with M2.0.x -->
+        <version.hsqldb>1.8.0.10</version.hsqldb>
+        <version.org.hibernate.core>3.3.2.GA</version.org.hibernate.core>
+        <version.org.hibernate.envers>3.6.6.Final</version.org.hibernate.envers><!-- not usable with JDK 1.4 -->
+      </properties>
+    </profile>
+    <profile>
+      <id>java</id>
+      <activation>
+        <file>
+          <exists>src/java</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>include-license</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>add-resource</goal>
+                </goals>
+                <configuration>
+                  <resources>
+                    <resource>
+                      <directory>${project.build.directory}/generated-resources</directory>
+                    </resource>
+                  </resources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy-license</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <copy file="../LICENSE.txt" tofile="${project.build.directory}/generated-resources/META-INF/LICENSE" overwrite="false" failonerror="true" />
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <!-- overwrite codehaus-parent -->
+            <version>${version.plugin.maven.enforcer}</version>
+            <executions>
+              <execution>
+                <id>enforce-java-version</id>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <requireJavaVersion>
+                      <version>${version.java.enforced}</version>
+                    </requireJavaVersion>
+                  </rules>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>java-test</id>
+      <activation>
+        <file>
+          <exists>src/test</exists>
+        </file>
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/x-stream/xstream.git '*1.4.20*'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-sources.jar && curl -fsSIL https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+ succeeded in 109ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 14:25:25 GMT
+content-type: application/java-archive
+content-length: 2128484
+cf-ray: a0805375f863be89-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2019437
+etag: "11c876ce19920587ba8c9df2a5df544d"
+last-modified: Fri, 23 Dec 2022 23:23:09 GMT
+x-checksum-md5: 11c876ce19920587ba8c9df2a5df544d
+x-checksum-sha1: f09777214fa6e897865381e948d60c53afc17b35
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 262ms:
+exec
+/usr/bin/bash -lc 'git ls-remote --heads https://github.com/x-stream/xstream.git' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://github.com/x-stream/xstream/tree/v-1.4.x' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+exec
+/usr/bin/bash -lc 'git ls-remote --tags https://github.com/x-stream/xstream.git | tail -80' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://github.com/x-stream/xstream/tree/v-1.4.20' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+ succeeded in 256ms:
+faa7627a956b33a92da67649b8c6e642ee153a2d	refs/heads/dependabot/maven/commons-codec-commons-codec-1.22.0
+7357b57f7165d7daed00989c53e6ac8c6f008a14	refs/heads/dependabot/maven/io.github.git-commit-id-git-commit-id-maven-plugin-9.2.0
+a07ee891e5a4446be22b5e5691f493c93d454ac4	refs/heads/dependabot/maven/org.apache.maven.plugins-maven-dependency-plugin-3.11.0
+2c8fc6ea6681441e1d1798d3fb4747c4ccb31cb2	refs/heads/dependabot/maven/org.apache.maven.plugins-maven-enforcer-plugin-3.6.3
+e25b21aafbd5dbbe24d1d5795b60891895f819ee	refs/heads/dependabot/maven/org.apache.maven.plugins-maven-failsafe-plugin-3.5.6
+03f73a84c1f4965f10f18cda701c1883f3f28942	refs/heads/dependabot/maven/org.apache.maven.plugins-maven-site-plugin-3.22.0
+f2f319fe8b3a1f0c7d60e5ac03e243c821d4b091	refs/heads/dependabot/maven/org.codehaus.jettison-jettison-1.5.5
+1c0ef0a282565aa7521877c323cceef9bd942437	refs/heads/dependabot/maven/org.hibernate.orm-hibernate-core-7.4.0.Final
+ae92386ec7b6e01ebb94c40d547d205f778a9c70	refs/heads/dependabot/maven/org.hibernate.orm-hibernate-envers-7.4.0.Final
+68ab0fe51c7de60964fa4a49187ae4bf1a8b7101	refs/heads/dependabot/maven/version.plugin.maven.surefire-3.5.6
+6ffaa7b36a0e7fadd429b9ec307379640cee903e	refs/heads/dependabot/maven/xom-xom-1.4.4
+a0f1637e977e6f682f483873b5877e6fe18247b8	refs/heads/master
+8c543bfd8569d6430085d8f75033a48277bf20b2	refs/heads/unsafe
+66fcb137355fe2959a383151da9bd7643eb34f15	refs/heads/v-1.4.x
+
+ succeeded in 258ms:
+3fb078fe95a718a3a41bf926491eb9fd5b06046e	refs/tags/XSTREAM_0_3
+8f16b1e3bcd8a9611aa3ad39804aba1ff6736362	refs/tags/XSTREAM_0_3^{}
+9494bc442359e81cf7cf0cafdddd3be580ad3a93	refs/tags/XSTREAM_0_4
+65f1fb83154b67ae417637d0b674e278c7e5f8fe	refs/tags/XSTREAM_0_4^{}
+16ef434c8ee5e11c71e639ab8f4e65bfe8bc968a	refs/tags/XSTREAM_0_5
+b116b47b2a9b7f9b68fedf8c40daf98b077660b4	refs/tags/XSTREAM_0_5^{}
+5ff1612126ee87cdc19f744ba6c4dd42deed390e	refs/tags/XSTREAM_0_6
+6ce6678e233dbb02d46bc87ee4ea15876c1b8365	refs/tags/XSTREAM_0_6^{}
+9558654acec69c644f60422c245ff1f5f57b5069	refs/tags/XSTREAM_0_6_RC1
+62c22adf2104bfe531b80b46b468d29b46aabfbb	refs/tags/XSTREAM_0_6_RC1^{}
+4398df832746d1b72de0e9042de0e486e4b98aaf	refs/tags/XSTREAM_1_0_1
+c1bb7484d85ca2290cf16097e394434391307673	refs/tags/XSTREAM_1_0_1^{}
+97f9ec66790b3ff9bce0195f807abbf2a3b000eb	refs/tags/XSTREAM_1_0_2
+8e0dbbdbc462da0bd459e28381ac76bf7c6bc8ee	refs/tags/XSTREAM_1_0_2^{}
+81903b0a4f3982f2426c09f345b5a60896efff44	refs/tags/XSTREAM_1_0_RC1
+161829e174498b6003cf8221da5d470afca05649	refs/tags/XSTREAM_1_0_RC1^{}
+84a8f46cc0940e99d845ca1f130a21a51d0adf0f	refs/tags/XSTREAM_1_1
+be610b807efda705f45d12a5d6090bf844fcdfff	refs/tags/XSTREAM_1_1^{}
+8958bdc30de3fac10e676313d1de2102bc00fca4	refs/tags/XSTREAM_1_1_1
+afda6dede96f611ac6485ed53280bfee292f5692	refs/tags/XSTREAM_1_1_1^{}
+a33d490c796fcbeb16f9d5903e581835f4980ba5	refs/tags/XSTREAM_1_1_2
+7ed86c98735a02d25caf8bb7a6532fcb3390e92e	refs/tags/XSTREAM_1_1_2^{}
+69c31f8a555f51325fd2b6cc8d3b756583c0a5b6	refs/tags/XSTREAM_1_1_3
+92acd5f00520a1885e5b6f627102ab0a455daa1f	refs/tags/XSTREAM_1_1_3^{}
+80c3dd61ce233db8cfb6c4a478b31f6a1088124c	refs/tags/XSTREAM_1_2
+cf2ecd483d39f0eca8f98ec4f2bccb273d5c3538	refs/tags/XSTREAM_1_2^{}
+b7021913641ec536cdb75a3028da09b90976d11f	refs/tags/XSTREAM_1_2_1
+de03e6dced96663a579575dcbb71b3ca9576e173	refs/tags/XSTREAM_1_2_1^{}
+882b3b19b2a491a566060f53f3e15f61404af844	refs/tags/XSTREAM_1_2_2
+2c2109f23be2c7094cb20da06d1cf8ae767ca1b3	refs/tags/XSTREAM_1_2_2^{}
+c96604476ca84217e03e9e23fabfbf7973f54e8c	refs/tags/XSTREAM_1_3
+94fcafc045f3b7b9a969c7d5cc6ad5eaa43fcb1a	refs/tags/XSTREAM_1_3^{}
+0f5257eea12bdd52900fe2345a0a274157c79312	refs/tags/XSTREAM_1_3_1
+ff23674bfa2d25b56c826e488df9e41a3fa99cec	refs/tags/XSTREAM_1_3_1^{}
+c073c0cc555ad6bb2fd9698b26449d7eb7800ae5	refs/tags/XSTREAM_1_4
+4b5fb281ce97d021e23c302099f571042e00e9f3	refs/tags/XSTREAM_1_4^{}
+01f16cb03298d38d75674447ea5707ba6b26e1de	refs/tags/XSTREAM_1_4_1
+5b97cd3e49b65df1de6b601f9b3a8373ef523428	refs/tags/XSTREAM_1_4_1^{}
+2d4732e113f58b60d531a937df3c3611e4b87437	refs/tags/XSTREAM_1_4_10
+4d9499729007ef6090a9989db60099c72f8eb983	refs/tags/XSTREAM_1_4_10^{}
+668004ac197c431ed74205a9ffa5321b3725de96	refs/tags/XSTREAM_1_4_11
+807e21fb3ec55061b3becb835df10b0d20279f11	refs/tags/XSTREAM_1_4_11^{}
+8830486ec94920d3f92063ef2f441621a0914dd4	refs/tags/XSTREAM_1_4_11_1
+54529d8561c7fc959c8c394c0526bf45cc0c1528	refs/tags/XSTREAM_1_4_11_1^{}
+69c86f31d1e68d3bcad0c68a48a23d9f63f7204a	refs/tags/XSTREAM_1_4_12
+6ec37c8d0129ce73d3264958d1deb38eeb08eea5	refs/tags/XSTREAM_1_4_12^{}
+383af9601a6f9e6626d59c086d051ab449fbc687	refs/tags/XSTREAM_1_4_13
+cba30d7f75cb0f7e2fd66c03989e51f7c8521232	refs/tags/XSTREAM_1_4_13^{}
+0d69497a630040c584115fc8f270606067226bbb	refs/tags/XSTREAM_1_4_14
+b9f6f5924681f1d37484df4197712bb768f7ec44	refs/tags/XSTREAM_1_4_14^{}
+258b739c1f5e374670fac9b9319d57fb5a4d6dce	refs/tags/XSTREAM_1_4_15
+f04bbec461f2c2a6f1e2cf41770f42c64aae24a4	refs/tags/XSTREAM_1_4_15^{}
+2015467bc79213519e3a49c657029d47ef06957a	refs/tags/XSTREAM_1_4_16
+3dd9cc610199802e4f13bd49b02a9f99adaba145	refs/tags/XSTREAM_1_4_16^{}
+f8f9e9fe563755da47d643ffe06b82123faf1cb7	refs/tags/XSTREAM_1_4_17
+25eaa5034fca7a492605936ea880132c98bec237	refs/tags/XSTREAM_1_4_17^{}
+dbcc8f7ce65b9fbd64cee27fbcf7dcb0900c3e7c	refs/tags/XSTREAM_1_4_18
+b9ad1c02724c2b1636a8794c8e1bcd630f46c0b3	refs/tags/XSTREAM_1_4_18^{}
+fe5a890cfb0fcd0aaeefcee14d9cba6289a684e5	refs/tags/XSTREAM_1_4_19
+61a00fa225dc99488013869b57b772af8e2fea03	refs/tags/XSTREAM_1_4_19^{}
+989dffbc5954225a7bf539483d0118d6cfb200b0	refs/tags/XSTREAM_1_4_2
+852891a5ebe48b0302ccff8b25d02df4cb7fd056	refs/tags/XSTREAM_1_4_2^{}
+6207a7df71526dc31ce5257cc72b13e457624982	refs/tags/XSTREAM_1_4_20
+f124f777fb8831430f930816a9e18813788c69cb	refs/tags/XSTREAM_1_4_20^{}
+2805deb559b1d9455631e22c0d548e6d14f18e6c	refs/tags/XSTREAM_1_4_21
+e62d2eeea1a627e85caef287e76a9c09078c1798	refs/tags/XSTREAM_1_4_21^{}
+a367b1972ddec4851ab49eb876342d27d27386ed	refs/tags/XSTREAM_1_4_3
+1b7a2f6cac924bed53b876a2d10aff69aff46b51	refs/tags/XSTREAM_1_4_3^{}
+0662257924cd71845f09b1d51b5bcf11aa6d7d57	refs/tags/XSTREAM_1_4_4
+c4c71226515fa42809a48d9ae702756e2831f379	refs/tags/XSTREAM_1_4_4^{}
+eb9a533bbd5fdb73f2d92352a70af841efdd694d	refs/tags/XSTREAM_1_4_5
+6263a53e8b8c4d1b092a32fa1abcadb6acfce45b	refs/tags/XSTREAM_1_4_5^{}
+fcacaa872eb4f72df6abb8e7f48f0b6b84aa5fd0	refs/tags/XSTREAM_1_4_6
+768c6e417a75e7732fc591bee844e5e81af56a7d	refs/tags/XSTREAM_1_4_6^{}
+f29ff75ab517b477a621a0e8011c481081cae2d1	refs/tags/XSTREAM_1_4_7
+6acae3f1c9a6ab94e78d0bb0e39429c120fcd718	refs/tags/XSTREAM_1_4_7^{}
+a5da4d49927952aef25d7e071e5ff385776ef9c1	refs/tags/XSTREAM_1_4_8
+da0f1b833c27ffe37257d39400029b50757d4ff0	refs/tags/XSTREAM_1_4_8^{}
+11431fdc6ea76102471bb8b4b1e3ebc9eb292c91	refs/tags/XSTREAM_1_4_9
+f66bbea1b383e705988abf8d06ea9782a73f24d4	refs/tags/XSTREAM_1_4_9^{}
+
+ exited 22 in 352ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 07 Jun 2026 14:25:30 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=hatx%2Fe9aHGvq08WlaCYRUcOsAZ7%2BabmWLS5WGhHjFfCdTs7igu3meNYvbjpLzy9Dl1Pasz3tPEvQW9hS88Rr0myp6TtW%2FBfD00xb5yBvFuxX2p7%2FvMS2tTUj%2BhCq1lIAwjnElykHIAVyuetQq3ibfTRW1TGO%2BZm7YkACTSDTKTONUm3SrQ0RbAnavwb%2FuHjs6%2F0K%2B%2FKFL0RhUrfHtJGBk7tVMm%2BN9OxEVJ2plKmnmerqSKtrsW42t9LYdnTEbACr1foly1WmfKqrOUPE8WAzag%3D%3D--EPKl66wXDk%2F8Earp--NiuaHNUaRXRYQfzGpVBRoQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.698966582.1780842329; expires=Mon, 07 Jun 2027 14:25:29 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 07 Jun 2027 14:25:29 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6232:27778A:562BC85:41CD6FA:6A257F59
+
+
+ succeeded in 623ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 14:25:30 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"a3dcac741f0726711978bf362c034066"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=2XV%2FKraG%2FntixCrSLWaTezbc3hs%2FcbEw%2FSNeficpybFUt94h2XuF6vwrY9meabjNh13xJBmDc4Ts6rk%2Bvvu4Aq5K4Ysl%2Fv3LZdzyCaqy%2F7PkPBhbYlI0hfVXMG%2F6RBWRDkTfDVjPM3VrP%2B6V%2BBOWN%2B1SEvVOaJKI%2BEhcS2BVQ9JJPnwmp6hjD%2FQdOoEVDGY9OxlL4nBdfylvdPT8nGaN4MqFfeyFiFDaIcv85v61VyMqVTvxi%2FYtCqv1GN8NhBtslGMWo%2FKj%2BnEmTsJM%2FfQsbg%3D%3D--CZB44DY%2FmmC8BMJo--pCb6wVy5REVRxrHfcXn3Qw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1772350435.1780842329; expires=Mon, 07 Jun 2027 14:25:29 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 07 Jun 2027 14:25:29 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6231:27778A:562BC49:41CD6CF:6A257F59
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/ | rg -n 'tests|test-sources|sources|javadoc|\\.jar'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+ succeeded in 0ms:
+22:<a href="xstream-1.4.20-javadoc.jar" title="xstream-1.4.20-javadoc.jar">xstream-1.4.20-javadoc.jar</a>                        2022-12-23 23:23   2128484      
+23:<a href="xstream-1.4.20-javadoc.jar.asc" title="xstream-1.4.20-javadoc.jar.asc">xstream-1.4.20-javadoc.jar.asc</a>                    2022-12-23 23:23       833      
+24:<a href="xstream-1.4.20-javadoc.jar.md5" title="xstream-1.4.20-javadoc.jar.md5">xstream-1.4.20-javadoc.jar.md5</a>                    2022-12-23 23:23        32      
+25:<a href="xstream-1.4.20-javadoc.jar.sha1" title="xstream-1.4.20-javadoc.jar.sha1">xstream-1.4.20-javadoc.jar.sha1</a>                   2022-12-23 23:23        40      
+26:<a href="xstream-1.4.20-sources.jar" title="xstream-1.4.20-sources.jar">xstream-1.4.20-sources.jar</a>                        2022-12-23 23:23    455474      
+27:<a href="xstream-1.4.20-sources.jar.asc" title="xstream-1.4.20-sources.jar.asc">xstream-1.4.20-sources.jar.asc</a>                    2022-12-23 23:23       833      
+28:<a href="xstream-1.4.20-sources.jar.md5" title="xstream-1.4.20-sources.jar.md5">xstream-1.4.20-sources.jar.md5</a>                    2022-12-23 23:23        32      
+29:<a href="xstream-1.4.20-sources.jar.sha1" title="xstream-1.4.20-sources.jar.sha1">xstream-1.4.20-sources.jar.sha1</a>                   2022-12-23 23:23        40      
+30:<a href="xstream-1.4.20-tests.jar" title="xstream-1.4.20-tests.jar">xstream-1.4.20-tests.jar</a>                          2022-12-23 23:23      9967      
+31:<a href="xstream-1.4.20-tests.jar.asc" title="xstream-1.4.20-tests.jar.asc">xstream-1.4.20-tests.jar.asc</a>                      2022-12-23 23:23       833      
+32:<a href="xstream-1.4.20-tests.jar.md5" title="xstream-1.4.20-tests.jar.md5">xstream-1.4.20-tests.jar.md5</a>                      2022-12-23 23:23        32      
+33:<a href="xstream-1.4.20-tests.jar.sha1" title="xstream-1.4.20-tests.jar.sha1">xstream-1.4.20-tests.jar.sha1</a>                     2022-12-23 23:23        40      
+34:<a href="xstream-1.4.20.jar" title="xstream-1.4.20.jar">xstream-1.4.20.jar</a>                                2022-12-23 23:23    644649      
+35:<a href="xstream-1.4.20.jar.asc" title="xstream-1.4.20.jar.asc">xstream-1.4.20.jar.asc</a>                            2022-12-23 23:23       833      
+36:<a href="xstream-1.4.20.jar.md5" title="xstream-1.4.20.jar.md5">xstream-1.4.20.jar.md5</a>                            2022-12-23 23:23        32      
+37:<a href="xstream-1.4.20.jar.sha1" title="xstream-1.4.20.jar.sha1">xstream-1.4.20.jar.sha1</a>                           2022-12-23 23:23        40      
+
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-test-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://github.com/x-stream/xstream/tree/XSTREAM_1_4_20/xstream/src/test' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://github.com/x-stream/xstream/tree/XSTREAM_1_4_20/xstream/src/java' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+ exited 22 in 271ms:
+HTTP/2 404 
+date: Sun, 07 Jun 2026 14:25:37 GMT
+content-type: text/html
+cf-ray: a08053bcc82ebc68-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 469ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 14:25:37 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"2bd426340f378598cb87d3637bb21a79"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=tYIV5z8Vihj0ZdqYM%2FlQWdta4q5dvF59MTvjU5bZCXauw4en%2FzgGvHdyLbv0zUxsLATw5Qga7IM5SsvAPOT8Zz0thphl82Jkx8IIGwN080MBIe%2FxHYzdSyfS9S2ZOJra%2Bgx2or7yBADJ0sseY8YBry77MD8s3tcxlidSKWLO86JDkhMNn%2BjYYeepgdBpGz1jwdq83YlOlBrz%2BVHXtm5K9YogkMxCxTnN5Vfz3XgbVBl2%2BQD7C0oRz3lcOQUsthnaSQ3dYbxe35sTXyCBa8IJXw%3D%3D--%2F7jNk%2BTZRNSQuSSx--rOREC86%2FR0ANRuDlDlEWgQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.683931752.1780842336; expires=Mon, 07 Jun 2027 14:25:36 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 07 Jun 2027 14:25:36 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6208:2A8784:55C12EC:41951AF:6A257F60
+
+
+ succeeded in 465ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 14:25:37 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"c74517425dd7122ddf03683b44d6ab0f"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=oQsOrgB5qzrH5gJ%2BresFryiTHA7kVVXjgAZxdUAbMftcy3mhWcpY%2BMTzk4six8lidfj3tode6Lu7z9TgO50AYsjZu9jW0%2BqTWJo%2Bw3RFe1BriwKsl1dLnpE7vQ%2FHHUZBRvj%2BekzKE56ufJlF5OJD%2FnTLzCTGcQKQyuUy%2FC0QtoE45IR2fIfRgKT7lTSMmqDnkLfwTwtt3AImhcg7qd7pJ0kT6N3xcphlyUv%2F05GzikDYqaM51CtVb%2F6NEBAvbXdoHkIw6RUjx9mC9iyQFVYNfQ%3D%3D--HVfC0RVhDdBGDmW8--mk9H%2BbVWwGGpEWe4FH0DCw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2089526076.1780842336; expires=Mon, 07 Jun 2027 14:25:36 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 07 Jun 2027 14:25:36 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6204:DC53B:57C5F52:4313ED4:6A257F60
+
+
+exec
+/usr/bin/bash -lc "rg -n 'tests\\.jar|test-sources\\.jar' metadata build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+ succeeded in 0ms:
+metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-web-proxy/$version$/hadoop-yarn-server-web-proxy-$version$-test-sources.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-container/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-container/$version$/arquillian-junit-container-$version$-test-sources.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-core/$version$/arquillian-junit-core-$version$-test-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-test-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:22:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-test-sources.jar",
+metadata/commons-io/commons-io/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-test-sources.jar",
+metadata/commons-io/commons-io/index.json:26:    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-test-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/org.web3j/core/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/web3j/core/$version$/core-$version$-tests.jar",
+metadata/org.web3j/core/index.json:28:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/web3j/core/$version$/core-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
+metadata/org.apache.hadoop/hadoop-mapreduce-client-shuffle/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-mapreduce-client-shuffle/$version$/hadoop-mapreduce-client-shuffle-$version$-test-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-registry/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-registry/$version$/hadoop-yarn-registry-$version$-test-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.apache.hadoop/hadoop-auth/index.json:57:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-auth/$version$/hadoop-auth-$version$-test-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-tests.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-tests.jar",
+metadata/org.apache.parquet/parquet-format-structures/index.json:35:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-format-structures/$version$/parquet-format-structures-$version$-tests.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-tests.jar",
+metadata/org.apache.parquet/parquet-column/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-column/$version$/parquet-column-$version$-tests.jar",
+metadata/org.apache.parquet/parquet-encoding/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/parquet/parquet-encoding/$version$/parquet-encoding-$version$-tests.jar",
+metadata/org.immutables/value/index.json:8:    "test-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/$version$/value-$version$-tests.jar",
+metadata/org.immutables/value/index.json:23:    "test-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/$version$/value-$version$-tests.jar",
+metadata/org.immutables/value/index.json:40:    "test-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/$version$/value-$version$-tests.jar",
+metadata/io.vertx/vertx-core/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:56:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:70:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:84:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:98:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:112:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-web-common/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-web-common/$version$/vertx-web-common-$version$-tests.jar",
+metadata/io.vertx/vertx-uri-template/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-uri-template/$version$/vertx-uri-template-$version$-test-sources.jar",
+metadata/io.vertx/vertx-sql-client/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-test-sources.jar",
+metadata/org.apache.logging.log4j/log4j-1.2-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-test-sources.jar",
+metadata/com.querydsl/querydsl-codegen/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/querydsl/querydsl-codegen/$version$/querydsl-codegen-$version$-test-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-tests.jar",
+metadata/io.vertx/vertx-web-client/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-web-client/$version$/vertx-web-client-$version$-test-sources.jar",
+metadata/io.vertx/vertx-web-client/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-web-client/$version$/vertx-web-client-$version$-test-sources.jar",
+metadata/com.querydsl/querydsl-core/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/querydsl/querydsl-core/$version$/querydsl-core-$version$-test-sources.jar",
+metadata/org.apache.logging.log4j/log4j-slf4j-impl/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-slf4j-impl/$version$/log4j-slf4j-impl-$version$-test-sources.jar",
+metadata/com.google.api.grpc/grpc-google-common-protos/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-tests.jar",
+metadata/com.querydsl/querydsl-jpa/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/querydsl/querydsl-jpa/$version$/querydsl-jpa-$version$-test-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-tests.jar",
+metadata/com.univocity/univocity-parsers/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/univocity/univocity-parsers/$version$/univocity-parsers-$version$-tests.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-v1/$version$/grpc-google-cloud-spanner-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-v1/$version$/grpc-google-cloud-spanner-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-secretmanager-v1beta1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-secretmanager-v1beta1/$version$/proto-google-cloud-secretmanager-v1beta1-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-executor-v1/$version$/proto-google-cloud-spanner-executor-v1-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-tests.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-admin-database-v1/$version$/grpc-google-cloud-spanner-admin-database-v1-$version$-tests.jar",
+metadata/commons-cli/commons-cli/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/$version$/commons-cli-$version$-test-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-v1/$version$/proto-google-cloud-spanner-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-monitoring-v3/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-monitoring-v3/$version$/proto-google-cloud-monitoring-v3-$version$-tests.jar",
+metadata/org.apache.commons/commons-compress/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-test-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1beta2/$version$/proto-google-cloud-bigquerystorage-v1beta2-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:35:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:49:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:63:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:91:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:105:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:119:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-tests.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-test-sources.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:40:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-test-sources.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:68:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-test-sources.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:82:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-test-sources.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:96:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-test-sources.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:110:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-test-sources.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:124:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-test-sources.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:138:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-test-sources.jar",
+metadata/com.google.api.grpc/proto-google-common-protos/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-common-protos/$version$/proto-google-common-protos-$version$-tests.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:35:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:49:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1beta1/$version$/proto-google-cloud-bigquerystorage-v1beta1-$version$-tests.jar",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-tests.jar -o /tmp/xstream-1.4.20-tests.jar && jar tf /tmp/xstream-1.4.20-tests.jar | head -80' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/thoughtworks/
+com/thoughtworks/acceptance/
+com/thoughtworks/acceptance/AbstractAcceptanceTest.class
+META-INF/maven/
+META-INF/maven/com.thoughtworks.xstream/
+META-INF/maven/com.thoughtworks.xstream/xstream/
+META-INF/maven/com.thoughtworks.xstream/xstream/pom.xml
+META-INF/maven/com.thoughtworks.xstream/xstream/pom.properties
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-sources.jar -o /tmp/xstream-1.4.20-sources.jar && jar tf /tmp/xstream-1.4.20-sources.jar | head -40 && jar tf /tmp/xstream-1.4.20-sources.jar | rg '"'^com/thoughtworks/xstream/XStream'"\\.java"'$|''^META-INF/MANIFEST'"\\.MF"'$'"'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20.jar -o /tmp/xstream-1.4.20.jar && jar tf /tmp/xstream-1.4.20.jar | rg '"'^com/thoughtworks/xstream/.*'"\\.class"'$'"' | head -10" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+ succeeded in 149ms:
+com/thoughtworks/xstream/XStream$4.class
+com/thoughtworks/xstream/XStream$2.class
+com/thoughtworks/xstream/XStreamException.class
+com/thoughtworks/xstream/XStream$1.class
+com/thoughtworks/xstream/persistence/AbstractFilePersistenceStrategy$XmlMapEntriesIterator.class
+com/thoughtworks/xstream/persistence/AbstractFilePersistenceStrategy.class
+com/thoughtworks/xstream/persistence/PersistenceStrategy.class
+com/thoughtworks/xstream/persistence/XmlArrayList.class
+com/thoughtworks/xstream/persistence/AbstractFilePersistenceStrategy$ValidFilenameFilter.class
+com/thoughtworks/xstream/persistence/XmlMap$XmlMapEntries.class
+
+ succeeded in 171ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/thoughtworks/
+com/thoughtworks/xstream/
+com/thoughtworks/xstream/persistence/
+com/thoughtworks/xstream/converters/
+com/thoughtworks/xstream/converters/reflection/
+com/thoughtworks/xstream/converters/time/
+com/thoughtworks/xstream/converters/basic/
+com/thoughtworks/xstream/converters/extended/
+com/thoughtworks/xstream/converters/javabean/
+com/thoughtworks/xstream/converters/collections/
+com/thoughtworks/xstream/converters/enums/
+com/thoughtworks/xstream/annotations/
+com/thoughtworks/xstream/security/
+com/thoughtworks/xstream/core/
+com/thoughtworks/xstream/core/util/
+com/thoughtworks/xstream/mapper/
+com/thoughtworks/xstream/io/
+com/thoughtworks/xstream/io/path/
+com/thoughtworks/xstream/io/binary/
+com/thoughtworks/xstream/io/naming/
+com/thoughtworks/xstream/io/copy/
+com/thoughtworks/xstream/io/json/
+com/thoughtworks/xstream/io/xml/
+com/thoughtworks/xstream/io/xml/xppdom/
+com/thoughtworks/xstream/XStreamException.java
+com/thoughtworks/xstream/MarshallingStrategy.java
+com/thoughtworks/xstream/persistence/XmlArrayList.java
+com/thoughtworks/xstream/persistence/FileStreamStrategy.java
+com/thoughtworks/xstream/persistence/XmlSet.java
+com/thoughtworks/xstream/persistence/PersistenceStrategy.java
+com/thoughtworks/xstream/persistence/AbstractFilePersistenceStrategy.java
+com/thoughtworks/xstream/persistence/XmlMap.java
+com/thoughtworks/xstream/persistence/StreamStrategy.java
+com/thoughtworks/xstream/persistence/FilePersistenceStrategy.java
+com/thoughtworks/xstream/InitializationException.java
+com/thoughtworks/xstream/XStreamer.java
+com/thoughtworks/xstream/converters/reflection/ObjectAccessException.java
+META-INF/MANIFEST.MF
+com/thoughtworks/xstream/XStream.java
+
+codex
+I found the exact release tag as `XSTREAM_1_4_20`, but Maven Central is preferable here because it publishes `sources.jar`, `tests.jar`, and `javadoc.jar` for this version. I’m updating the JSON with the Maven artifacts and the canonical GitHub repository root; no language field or native-image exclusion is warranted because this is a JVM JAR with class files.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
+diff --git a/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json b/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
+index 91bb16f5946c1b3ee778c366d2c860942038259b..22d0eb6d5c6c9a153e222d814f8ca34bdf987e75
+--- a/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
++++ b/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.thoughtworks.xstream:xstream:1.4.20"
++  "coordinates" : "com.thoughtworks.xstream:xstream:1.4.20",
++  "repository-url" : "https://github.com/x-stream/xstream",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/$version$/xstream-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/$version$/xstream-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/$version$/xstream-$version$-javadoc.jar",
++  "description" : "XStream is a Java serialization library that converts object graphs to XML and reconstructs them back into Java objects. It provides converters, mappers, annotations, and XML/JSON driver integrations for controlling how objects are represented, secured, and persisted."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json b/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
+index 91bb16f5946c1b3ee778c366d2c860942038259b..22d0eb6d5c6c9a153e222d814f8ca34bdf987e75
+--- a/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
++++ b/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.thoughtworks.xstream:xstream:1.4.20"
++  "coordinates" : "com.thoughtworks.xstream:xstream:1.4.20",
++  "repository-url" : "https://github.com/x-stream/xstream",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/$version$/xstream-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/$version$/xstream-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/$version$/xstream-$version$-javadoc.jar",
++  "description" : "XStream is a Java serialization library that converts object graphs to XML and reconstructs them back into Java objects. It provides converters, mappers, annotations, and XML/JSON driver integrations for controlling how objects are represented, secured, and persisted."
+ }
+
+codex
+The file is edited. I’m doing a quick structural check and confirming the substituted URLs return successfully.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+ succeeded in 0ms:
+{
+  "coordinates": "com.thoughtworks.xstream:xstream:1.4.20",
+  "repository-url": "https://github.com/x-stream/xstream",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/$version$/xstream-$version$-sources.jar",
+  "test-code-url": "https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/$version$/xstream-$version$-tests.jar",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/$version$/xstream-$version$-javadoc.jar",
+  "description": "XStream is a Java serialization library that converts object graphs to XML and reconstructs them back into Java objects. It provides converters, mappers, annotations, and XML/JSON driver integrations for controlling how objects are represented, secured, and persisted."
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-tests.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 14:25:58 GMT
+content-type: application/java-archive
+content-length: 9967
+cf-ray: a0805443d9714f9a-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 38
+etag: "abd1edf9e61302ffdcd8d5ec48b07574"
+last-modified: Fri, 23 Dec 2022 23:23:21 GMT
+x-checksum-md5: abd1edf9e61302ffdcd8d5ec48b07574
+x-checksum-sha1: 68ec5a4ae43a622a6e59da098c8e5b6b3bbeed5b
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 14:25:58 GMT
+content-type: application/java-archive
+content-length: 455474
+cf-ray: a0805443db75739d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 712366
+etag: "8996203d5eb82f734d991d7328f5b62a"
+last-modified: Fri, 23 Dec 2022 23:23:16 GMT
+x-checksum-md5: 8996203d5eb82f734d991d7328f5b62a
+x-checksum-sha1: b2db9ac96424951253e3d8bd4d4435e0fb8f5f8b
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 14:25:58 GMT
+content-type: application/java-archive
+content-length: 2128484
+cf-ray: a0805443dafbbe5e-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2019470
+etag: "11c876ce19920587ba8c9df2a5df544d"
+last-modified: Fri, 23 Dec 2022 23:23:09 GMT
+x-checksum-md5: 11c876ce19920587ba8c9df2a5df544d
+x-checksum-sha1: f09777214fa6e897865381e948d60c53afc17b35
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+diff --git a/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json b/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
+index 91bb16f5946c1b3ee778c366d2c860942038259b..22d0eb6d5c6c9a153e222d814f8ca34bdf987e75
+--- a/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
++++ b/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.thoughtworks.xstream:xstream:1.4.20"
++  "coordinates" : "com.thoughtworks.xstream:xstream:1.4.20",
++  "repository-url" : "https://github.com/x-stream/xstream",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/$version$/xstream-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/$version$/xstream-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/$version$/xstream-$version$-javadoc.jar",
++  "description" : "XStream is a Java serialization library that converts object graphs to XML and reconstructs them back into Java objects. It provides converters, mappers, annotations, and XML/JSON driver integrations for controlling how objects are represented, secured, and persisted."
+ }
+
+web search: 
+web search: com.thoughtworks.xstream xstream 1.4.20 Maven Central sources javadoc tests
+codex
+Updated [com.thoughtworks.xstream-xstream-1.4.20.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json) with the GitHub repository root, Maven Central source/test/doc artifacts, and a two-sentence description. XStream’s own site points to GitHub for its source repository, and Maven Central lists `com.thoughtworks.xstream:xstream:1.4.20` as a Central artifact. ([x-stream.github.io](https://x-stream.github.io/repository.html?utm_source=openai))
+
+I also verified the JSON parses with `jq` and the substituted Maven URLs for sources, tests, and javadocs return HTTP 200. No `language` or `not-for-native-image` fields were added.
+diff --git a/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json b/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
+index 91bb16f5946c1b3ee778c366d2c860942038259b..22d0eb6d5c6c9a153e222d814f8ca34bdf987e75
+--- a/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
++++ b/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.thoughtworks.xstream:xstream:1.4.20"
++  "coordinates" : "com.thoughtworks.xstream:xstream:1.4.20",
++  "repository-url" : "https://github.com/x-stream/xstream",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/$version$/xstream-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/$version$/xstream-$version$-tests.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/xstream/xstream/$version$/xstream-$version$-javadoc.jar",
++  "description" : "XStream is a Java serialization library that converts object graphs to XML and reconstructs them back into Java objects. It provides converters, mappers, annotations, and XML/JSON driver integrations for controlling how objects are represented, secured, and persisted."
+ }
+
+tokens used
+68,356
+Updated [com.thoughtworks.xstream-xstream-1.4.20.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json) with the GitHub repository root, Maven Central source/test/doc artifacts, and a two-sentence description. XStream’s own site points to GitHub for its source repository, and Maven Central lists `com.thoughtworks.xstream:xstream:1.4.20` as a Central artifact. ([x-stream.github.io](https://x-stream.github.io/repository.html?utm_source=openai))
+
+I also verified the JSON parses with `jq` and the substituted Maven URLs for sources, tests, and javadocs return HTTP 200. No `language` or `not-for-native-image` fields were added.
+Ran agent for com.thoughtworks.xstream:xstream:1.4.20 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49/build/agent-artifact-discovery-logs/com.thoughtworks.xstream-xstream-1.4.20.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1352-202a5f49/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 32s
+9 actionable tasks: 9 executed
