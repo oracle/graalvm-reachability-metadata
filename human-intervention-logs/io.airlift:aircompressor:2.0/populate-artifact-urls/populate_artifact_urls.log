@@ -1,0 +1,766 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7017-a0803443
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ea0f6-298f-7970-acb6-3bdd0fb75427
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.airlift:aircompressor:2.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7017-a0803443/metadata/io.airlift/aircompressor/index.json
+- Entry selector: "metadata-version" = "2.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2.0
+- Entry metadata-version: 2.0
+- Entry test-version: 2.0
+- Entry tested-versions: [2.0]
+codex
+I’ll inspect the existing index entry first, then verify the version-specific Maven/GitHub URLs before editing only the missing fields.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/io.airlift/aircompressor/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7017-a0803443
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0",
+    "tested-versions" : [
+      "2.0"
+    ],
+    "allowed-packages" : [
+      "io.airlift.compress"
+    ]
+  },
+  {
+    "metadata-version" : "0.21",
+    "source-code-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-sources.jar",
+    "repository-url" : "https://github.com/airlift/aircompressor",
+    "test-code-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-test-sources.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-javadoc.jar",
+    "description" : "Aircompressor provides pure-Java implementations of compression codecs including LZ4, Zstandard, Snappy, and LZO. It also exposes Hadoop CompressionCodec integrations and stream and block compressors and decompressors for JVM applications.",
+    "tested-versions" : [
+      "0.21",
+      "0.22",
+      "0.23",
+      "0.24",
+      "0.25",
+      "0.26",
+      "0.27"
+    ],
+    "allowed-packages" : [
+      "io.airlift.compress"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7017-a0803443
+ succeeded in 163ms:
+codex
+The target entry only has version and package data; the older `0.21` entry already uses Maven Central templates. I’m checking whether the same artifact templates actually exist for `2.0` rather than copying them blindly.
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/io/airlift/aircompressor/2.0/aircompressor-2.0-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7017-a0803443
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/io/airlift/aircompressor/2.0/aircompressor-2.0-test-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7017-a0803443
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/airlift/aircompressor/2.0/aircompressor-2.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7017-a0803443
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/io/airlift/aircompressor/2.0/aircompressor-2.0-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7017-a0803443
+ succeeded in 218ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 07:22:44 GMT
+content-type: application/java-archive
+content-length: 2572296
+cf-ray: a07de84cdbb170cb-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "5a7ad8e28507790c5fe37a4b87da591d"
+last-modified: Mon, 12 Aug 2024 00:49:57 GMT
+x-checksum-md5: 5a7ad8e28507790c5fe37a4b87da591d
+x-checksum-sha1: a51cf976fa42a0e86dd2639cefd9f3c594e950e7
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 167ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.airlift</groupId>
+        <artifactId>airbase</artifactId>
+        <version>163</version>
+    </parent>
+
+    <groupId>io.airlift</groupId>
+    <artifactId>aircompressor</artifactId>
+    <version>2.0</version>
+    <packaging>jar</packaging>
+
+    <name>aircompressor</name>
+
+    <description>Compression algorithms</description>
+    <url>https://github.com/airlift/aircompressor</url>
+
+    <inceptionYear>2011</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git://github.com/airlift/aircompressor.git</connection>
+        <developerConnection>scm:git:git@github.com:airlift/aircompressor.git</developerConnection>
+        <tag>2.0</tag>
+        <url>https://github.com/airlift/aircompressor/tree/master</url>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>sonatype-nexus-staging</id>
+            <name>Nexus Release Repository</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <properties>
+        <air.java.version>22</air.java.version>
+        <project.build.targetJdk>22</project.build.targetJdk>
+        <air.check.skip-extended>true</air.check.skip-extended>
+        <air.check.skip-license>false</air.check.skip-license>
+        <air.check.fail-checkstyle>true</air.check.fail-checkstyle>
+        <air.check.skip-checkstyle>false</air.check.skip-checkstyle>
+
+        <air.test.parallel>methods</air.test.parallel>
+        <air.test.thread-count>4</air.test.thread-count>
+        <air.test.jvmsize>2G</air.test.jvmsize>
+
+        <!-- do not run tests on release -->
+        <air.release.preparation-goals>clean verify -DskipTests</air.release.preparation-goals>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.trino.hadoop</groupId>
+            <artifactId>hadoop-apache</artifactId>
+            <version>3.3.5-3</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.luben</groupId>
+            <artifactId>zstd-jni</artifactId>
+            <version>1.5.6-4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.anarres.lzo</groupId>
+            <artifactId>lzo-hadoop</artifactId>
+            <version>1.0.6</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.code.findbugs</groupId>
+                    <artifactId>annotations</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.code.findbugs</groupId>
+                    <artifactId>jsr305</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.lz4</groupId>
+            <artifactId>lz4-java</artifactId>
+            <version>1.8.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-generator-annprocess</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.xerial.snappy</groupId>
+            <artifactId>snappy-java</artifactId>
+            <version>1.1.10.6</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <target>${project.build.targetJdk}</target>
+                        <release combine.self="override" />
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>
+
+ succeeded in 348ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 07:22:45 GMT
+content-type: application/java-archive
+content-length: 393346
+cf-ray: a07de84d1972039d-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "c959f0335c51fd7c4ddd1145ce67b343"
+last-modified: Mon, 12 Aug 2024 00:49:57 GMT
+x-checksum-md5: c959f0335c51fd7c4ddd1145ce67b343
+x-checksum-sha1: 886e8b651ec44988b2e9659edf02b52586133194
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 404ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 07:22:45 GMT
+content-type: application/java-archive
+content-length: 476355
+cf-ray: a07de84d1d0bbac6-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "1c2bf269e433af6641a3216035637813"
+last-modified: Mon, 12 Aug 2024 00:49:58 GMT
+x-checksum-md5: 1c2bf269e433af6641a3216035637813
+x-checksum-sha1: 82fd181ea386f9dae573f0c58a565e6835c1728c
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: https://repo1.maven.org/maven2/io/airlift/aircompressor/2.0/aircompressor-2.0.pom
+web search: 
+web search: Maven Central io.airlift aircompressor 2.0 sources test-sources javadoc GitHub
+codex
+Maven Central has the `2.0` sources, test-sources, and javadoc jars, so those are the best URLs here. The POM points the project homepage at the canonical GitHub root, and the library is plain Java rather than Kotlin/Groovy/Scala-specific.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7017-a0803443/metadata/io.airlift/aircompressor/index.json
+diff --git a/metadata/io.airlift/aircompressor/index.json b/metadata/io.airlift/aircompressor/index.json
+index 60c05ccd58b72c4525cc53c34bdf3445c71a03de..47f8de3558bc73eba3382790f6313638aac9cb6f
+--- a/metadata/io.airlift/aircompressor/index.json
++++ b/metadata/io.airlift/aircompressor/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-sources.jar",
++    "repository-url" : "https://github.com/airlift/aircompressor",
++    "test-code-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-test-sources.jar",
++    "documentation-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-javadoc.jar",
++    "description" : "Aircompressor is a Java compression library that implements codecs such as LZ4, Zstandard, Snappy, and LZO. It provides stream and block compressor/decompressor APIs plus Hadoop CompressionCodec integrations for JVM applications.",
+     "tested-versions" : [
+       "2.0"
+     ],
+
+diff --git a/metadata/io.airlift/aircompressor/index.json b/metadata/io.airlift/aircompressor/index.json
+index 60c05ccd58b72c4525cc53c34bdf3445c71a03de..47f8de3558bc73eba3382790f6313638aac9cb6f
+--- a/metadata/io.airlift/aircompressor/index.json
++++ b/metadata/io.airlift/aircompressor/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-sources.jar",
++    "repository-url" : "https://github.com/airlift/aircompressor",
++    "test-code-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-test-sources.jar",
++    "documentation-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-javadoc.jar",
++    "description" : "Aircompressor is a Java compression library that implements codecs such as LZ4, Zstandard, Snappy, and LZO. It provides stream and block compressor/decompressor APIs plus Hadoop CompressionCodec integrations for JVM applications.",
+     "tested-versions" : [
+       "2.0"
+     ],
+
+codex
+The JSON entry is updated now. I’m going to do a quick structural check and run the targeted metadata validation for `io.airlift:aircompressor:2.0`.
+exec
+/usr/bin/bash -lc 'jq . metadata/io.airlift/aircompressor/index.json >/dev/null' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7017-a0803443
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/io.airlift/aircompressor/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7017-a0803443
+ succeeded in 0ms:
+diff --git i/metadata/io.airlift/aircompressor/index.json w/metadata/io.airlift/aircompressor/index.json
+index 60c05ccd58..47f8de3558 100644
+--- i/metadata/io.airlift/aircompressor/index.json
++++ w/metadata/io.airlift/aircompressor/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-sources.jar",
++    "repository-url" : "https://github.com/airlift/aircompressor",
++    "test-code-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-test-sources.jar",
++    "documentation-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-javadoc.jar",
++    "description" : "Aircompressor is a Java compression library that implements codecs such as LZ4, Zstandard, Snappy, and LZO. It provides stream and block compressor/decompressor APIs plus Hadoop CompressionCodec integrations for JVM applications.",
+     "tested-versions" : [
+       "2.0"
+     ],
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=io.airlift:aircompressor:2.0 --stacktrace' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7017-a0803443
+diff --git a/metadata/io.airlift/aircompressor/index.json b/metadata/io.airlift/aircompressor/index.json
+index 60c05ccd58b72c4525cc53c34bdf3445c71a03de..47f8de3558bc73eba3382790f6313638aac9cb6f
+--- a/metadata/io.airlift/aircompressor/index.json
++++ b/metadata/io.airlift/aircompressor/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-sources.jar",
++    "repository-url" : "https://github.com/airlift/aircompressor",
++    "test-code-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-test-sources.jar",
++    "documentation-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-javadoc.jar",
++    "description" : "Aircompressor is a Java compression library that implements codecs such as LZ4, Zstandard, Snappy, and LZO. It provides stream and block compressor/decompressor APIs plus Hadoop CompressionCodec integrations for JVM applications.",
+     "tested-versions" : [
+       "2.0"
+     ],
+
+ exited 1 in 7299ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for io.airlift:aircompressor:2.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7017-a0803443/metadata/io.airlift/aircompressor/2.0/
+
+FAILURE: Build failed with an exception.
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7017-a0803443/build/reports/problems/problems-report.html
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - io.airlift:aircompressor:2.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7017-a0803443/metadata/io.airlift/aircompressor/2.0/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:146)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:131)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:45)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - io.airlift:aircompressor:2.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7017-a0803443/metadata/io.airlift/aircompressor/2.0/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 57 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 6s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+The JSON parses cleanly. The targeted metadata check fails before validating URL content because this coordinate has no `metadata/io.airlift/aircompressor/2.0/reachability-metadata.json`; that pre-existing missing metadata file is outside the requested URL/description update, so I’m doing a final diff review instead.
+exec
+/usr/bin/bash -lc 'find metadata/io.airlift/aircompressor -maxdepth 2 -type f -print | sort' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7017-a0803443
+ succeeded in 0ms:
+metadata/io.airlift/aircompressor/0.21/reachability-metadata.json
+metadata/io.airlift/aircompressor/index.json
+
+exec
+/usr/bin/bash -lc 'git diff --stat -- metadata/io.airlift/aircompressor/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7017-a0803443
+exec
+/usr/bin/bash -lc 'git diff --check -- metadata/io.airlift/aircompressor/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7017-a0803443
+ succeeded in 0ms:
+ succeeded in 0ms:
+ metadata/io.airlift/aircompressor/index.json | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/metadata/io.airlift/aircompressor/index.json b/metadata/io.airlift/aircompressor/index.json
+index 60c05ccd58b72c4525cc53c34bdf3445c71a03de..47f8de3558bc73eba3382790f6313638aac9cb6f
+--- a/metadata/io.airlift/aircompressor/index.json
++++ b/metadata/io.airlift/aircompressor/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-sources.jar",
++    "repository-url" : "https://github.com/airlift/aircompressor",
++    "test-code-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-test-sources.jar",
++    "documentation-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-javadoc.jar",
++    "description" : "Aircompressor is a Java compression library that implements codecs such as LZ4, Zstandard, Snappy, and LZO. It provides stream and block compressor/decompressor APIs plus Hadoop CompressionCodec integrations for JVM applications.",
+     "tested-versions" : [
+       "2.0"
+     ],
+
+exec
+/usr/bin/bash -lc "nl -ba metadata/io.airlift/aircompressor/index.json | sed -n '1,22p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7017-a0803443
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "2.0",
+     5	    "source-code-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-sources.jar",
+     6	    "repository-url" : "https://github.com/airlift/aircompressor",
+     7	    "test-code-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-test-sources.jar",
+     8	    "documentation-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-javadoc.jar",
+     9	    "description" : "Aircompressor is a Java compression library that implements codecs such as LZ4, Zstandard, Snappy, and LZO. It provides stream and block compressor/decompressor APIs plus Hadoop CompressionCodec integrations for JVM applications.",
+    10	    "tested-versions" : [
+    11	      "2.0"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "io.airlift.compress"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "0.21",
+    19	    "source-code-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-sources.jar",
+    20	    "repository-url" : "https://github.com/airlift/aircompressor",
+    21	    "test-code-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-test-sources.jar",
+    22	    "documentation-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-javadoc.jar",
+
+diff --git a/metadata/io.airlift/aircompressor/index.json b/metadata/io.airlift/aircompressor/index.json
+index 60c05ccd58b72c4525cc53c34bdf3445c71a03de..47f8de3558bc73eba3382790f6313638aac9cb6f
+--- a/metadata/io.airlift/aircompressor/index.json
++++ b/metadata/io.airlift/aircompressor/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-sources.jar",
++    "repository-url" : "https://github.com/airlift/aircompressor",
++    "test-code-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-test-sources.jar",
++    "documentation-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-javadoc.jar",
++    "description" : "Aircompressor is a Java compression library that implements codecs such as LZ4, Zstandard, Snappy, and LZO. It provides stream and block compressor/decompressor APIs plus Hadoop CompressionCodec integrations for JVM applications.",
+     "tested-versions" : [
+       "2.0"
+     ],
+
+codex
+Updated [metadata/io.airlift/aircompressor/index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7017-a0803443/metadata/io.airlift/aircompressor/index.json:4) for metadata version `2.0`.
+
+Filled:
+- `source-code-url`, `test-code-url`, and `documentation-url` with Maven Central `$version$` templates verified for `2.0`
+- `repository-url` with canonical root `https://github.com/airlift/aircompressor`
+- `description` with exactly two sentences
+
+No `language` field was added because this is not Kotlin, Groovy, or Scala-specific.
+
+Verification:
+- `jq` JSON parse: passed
+- `git diff --check`: passed
+- `./gradlew checkMetadataFiles -Pcoordinates=io.airlift:aircompressor:2.0 --stacktrace`: failed because `metadata/io.airlift/aircompressor/2.0/reachability-metadata.json` is missing, which predates and is outside this URL/description update.
+diff --git a/metadata/io.airlift/aircompressor/index.json b/metadata/io.airlift/aircompressor/index.json
+index 60c05ccd58b72c4525cc53c34bdf3445c71a03de..47f8de3558bc73eba3382790f6313638aac9cb6f
+--- a/metadata/io.airlift/aircompressor/index.json
++++ b/metadata/io.airlift/aircompressor/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-sources.jar",
++    "repository-url" : "https://github.com/airlift/aircompressor",
++    "test-code-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-test-sources.jar",
++    "documentation-url" : "https://repo1.maven.org/maven2/io/airlift/aircompressor/$version$/aircompressor-$version$-javadoc.jar",
++    "description" : "Aircompressor is a Java compression library that implements codecs such as LZ4, Zstandard, Snappy, and LZO. It provides stream and block compressor/decompressor APIs plus Hadoop CompressionCodec integrations for JVM applications.",
+     "tested-versions" : [
+       "2.0"
+     ],
+
+tokens used
+27,043
+Updated [metadata/io.airlift/aircompressor/index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7017-a0803443/metadata/io.airlift/aircompressor/index.json:4) for metadata version `2.0`.
+
+Filled:
+- `source-code-url`, `test-code-url`, and `documentation-url` with Maven Central `$version$` templates verified for `2.0`
+- `repository-url` with canonical root `https://github.com/airlift/aircompressor`
+- `description` with exactly two sentences
+
+No `language` field was added because this is not Kotlin, Groovy, or Scala-specific.
+
+Verification:
+- `jq` JSON parse: passed
+- `git diff --check`: passed
+- `./gradlew checkMetadataFiles -Pcoordinates=io.airlift:aircompressor:2.0 --stacktrace`: failed because `metadata/io.airlift/aircompressor/2.0/reachability-metadata.json` is missing, which predates and is outside this URL/description update.
+Ran agent for io.airlift:aircompressor:2.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7017-a0803443/build/agent-url-discovery-logs/io.airlift-aircompressor-2.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7017-a0803443/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 56s
+9 actionable tasks: 1 executed, 8 up-to-date
