@@ -15,8 +15,11 @@ import org.jetbrains.kotlin.cli.common.config.KotlinSourceRoot
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSourceLocation
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
+import org.jetbrains.kotlin.cli.common.modules.ModuleXmlParser
 import org.jetbrains.kotlin.cli.jvm.K2JVMCompiler
 import org.jetbrains.kotlin.config.ApiVersion
+import org.jetbrains.kotlin.modules.JavaRootPath
+import org.jetbrains.kotlin.modules.Module as KotlinModule
 import org.jetbrains.kotlin.config.CommonConfigurationKeys
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.config.JVMConfigurationKeys
@@ -102,6 +105,51 @@ public class KotlinCompilerEmbeddableTest {
         assertThat(configuration.getBoolean(JVMConfigurationKeys.NO_JDK)).isTrue()
         assertThat(configuration.getList(CLIConfigurationKeys.CONTENT_ROOTS)).containsExactly(sourceRoot)
         assertThat(sourceRoot.path).isEqualTo(sourceFile.toString())
+    }
+
+    @Test
+    fun parsesCompilerModuleScript(@TempDir temporaryDirectory: Path) {
+        val moduleOutput = "build/classes"
+        val sourcePath = "src/main/kotlin/Sample.kt"
+        val commonSourcePath = "src/commonMain/kotlin/Common.kt"
+        val javaSourcePath = "src/main/java"
+        val classpathPath = "libs/dependency.jar"
+        val friendPath = "friend-classes"
+        val modularJdkPath = "jdk-modules"
+        val moduleScript = writeSource(
+            temporaryDirectory.resolve("modules.xml"),
+            """
+            <modules>
+                <module
+                    name="module-script-sample"
+                    type="${ModuleXmlParser.TYPE_PRODUCTION}"
+                    outputDir="$moduleOutput"
+                >
+                    <sources path="$sourcePath" />
+                    <commonSources path="$commonSourcePath" />
+                    <javaSourceRoots path="$javaSourcePath" packagePrefix="sample.generated" />
+                    <classpath path="$classpathPath" />
+                    <friendDir path="$friendPath" />
+                    <modularJdkRoot path="$modularJdkPath" />
+                </module>
+            </modules>
+            """,
+        )
+
+        val moduleChunk = ModuleXmlParser.parseModuleScript(moduleScript.toString(), MessageCollector.NONE)
+        val module = moduleChunk.modules.single() as KotlinModule
+        val javaSourceRoot = module.getJavaSourceRoots().single() as JavaRootPath
+
+        assertThat(module.getModuleName()).isEqualTo("module-script-sample")
+        assertThat(module.getModuleType()).isEqualTo(ModuleXmlParser.TYPE_PRODUCTION)
+        assertThat(module.getOutputDirectory()).isEqualTo(moduleOutput)
+        assertThat(module.getSourceFiles()).containsExactly(sourcePath)
+        assertThat(module.getCommonSourceFiles()).containsExactly(commonSourcePath)
+        assertThat(module.getClasspathRoots()).containsExactly(classpathPath)
+        assertThat(module.getFriendPaths()).containsExactly(friendPath)
+        assertThat(module.modularJdkRoot).isEqualTo(modularJdkPath)
+        assertThat(javaSourceRoot.path).isEqualTo(javaSourcePath)
+        assertThat(javaSourceRoot.packagePrefix).isEqualTo("sample.generated")
     }
 
     @Test
