@@ -13,10 +13,15 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import io.micrometer.common.KeyValue;
+import io.micrometer.common.KeyValues;
 import io.micrometer.common.annotation.ValueExpressionResolver;
+import io.micrometer.observation.GlobalObservationConvention;
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.Observation.Context;
+import io.micrometer.observation.ObservationConvention;
+import io.micrometer.observation.ObservationFilter;
 import io.micrometer.observation.ObservationHandler;
+import io.micrometer.observation.ObservationPredicate;
 import io.micrometer.observation.ObservationRegistry;
 import org.junit.jupiter.api.Test;
 
@@ -123,6 +128,36 @@ public class Spring_boot_micrometer_observationTest {
         }
     }
 
+    @Test
+    void autoConfigurationRegistersObservationPredicatesGlobalConventionsAndFilters() {
+        try (AnnotationConfigApplicationContext context = contextWithProperties(Map.of(),
+                ObservationInfrastructureConfiguration.class, AdditionalObservationComponentsConfiguration.class)) {
+            ObservationRegistry registry = context.getBean(ObservationRegistry.class);
+            RecordingObservationHandler handler = context.getBean(RecordingObservationHandler.class);
+
+            Observation skippedObservation = Observation.start("repository.skipped", registry);
+            skippedObservation.stop();
+
+            RepositoryObservationContext repositoryContext = new RepositoryObservationContext("orders", "tenant-a");
+            Observation repositoryObservation = Observation.createNotStarted(
+                    (ObservationConvention<RepositoryObservationContext>) null,
+                    new DefaultRepositoryObservationConvention(), () -> repositoryContext, registry).start();
+            repositoryObservation.stop();
+
+            assertThat(skippedObservation.isNoop()).isTrue();
+            assertThat(repositoryContext.getName()).isEqualTo("repository.operation");
+            assertThat(repositoryContext.getContextualName()).isEqualTo("Repository orders");
+            assertThat(repositoryContext.getLowCardinalityKeyValue("repository").getValue()).isEqualTo("orders");
+            assertThat(repositoryContext.getLowCardinalityKeyValue("filtered").getValue()).isEqualTo("true");
+            assertThat(repositoryContext.getHighCardinalityKeyValue("tenant").getValue()).isEqualTo("tenant-a");
+            assertThat(handler.getStartedNames()).containsExactly("repository.operation");
+            assertThat(handler.getStoppedKeyValues()).singleElement().satisfies((keyValues) -> {
+                assertThat(keyValues).containsEntry("repository", "orders");
+                assertThat(keyValues).containsEntry("filtered", "true");
+            });
+        }
+    }
+
     private static AnnotationConfigApplicationContext contextWithProperties(Map<String, Object> properties,
             Class<?>... configurationClasses) {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
@@ -148,6 +183,26 @@ public class Spring_boot_micrometer_observationTest {
         @Bean
         RecordingObservationHandler recordingObservationHandler() {
             return new RecordingObservationHandler();
+        }
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    public static class AdditionalObservationComponentsConfiguration {
+
+        @Bean
+        ObservationPredicate skippedRepositoryObservationPredicate() {
+            return (name, context) -> !"repository.skipped".equals(name);
+        }
+
+        @Bean
+        GlobalObservationConvention<RepositoryObservationContext> repositoryObservationConvention() {
+            return new RepositoryObservationConvention();
+        }
+
+        @Bean
+        ObservationFilter filteredKeyValueObservationFilter() {
+            return (context) -> context.addLowCardinalityKeyValue(KeyValue.of("filtered", "true"));
         }
 
     }
@@ -180,6 +235,69 @@ public class Spring_boot_micrometer_observationTest {
                         .addLowCardinalityKeyValue(KeyValue.of("customized", "true")));
             }
 
+        }
+
+    }
+
+    public static final class RepositoryObservationContext extends Context {
+
+        private final String repository;
+
+        private final String tenant;
+
+        RepositoryObservationContext(String repository, String tenant) {
+            this.repository = repository;
+            this.tenant = tenant;
+        }
+
+    }
+
+    private static final class DefaultRepositoryObservationConvention
+            implements ObservationConvention<RepositoryObservationContext> {
+
+        @Override
+        public String getName() {
+            return "repository.default";
+        }
+
+        @Override
+        public KeyValues getLowCardinalityKeyValues(RepositoryObservationContext context) {
+            return KeyValues.of("repository", "default");
+        }
+
+        @Override
+        public boolean supportsContext(Context context) {
+            return context instanceof RepositoryObservationContext;
+        }
+
+    }
+
+    private static final class RepositoryObservationConvention
+            implements GlobalObservationConvention<RepositoryObservationContext> {
+
+        @Override
+        public String getName() {
+            return "repository.operation";
+        }
+
+        @Override
+        public String getContextualName(RepositoryObservationContext context) {
+            return "Repository " + context.repository;
+        }
+
+        @Override
+        public KeyValues getLowCardinalityKeyValues(RepositoryObservationContext context) {
+            return KeyValues.of("repository", context.repository);
+        }
+
+        @Override
+        public KeyValues getHighCardinalityKeyValues(RepositoryObservationContext context) {
+            return KeyValues.of("tenant", context.tenant);
+        }
+
+        @Override
+        public boolean supportsContext(Context context) {
+            return context instanceof RepositoryObservationContext;
         }
 
     }
