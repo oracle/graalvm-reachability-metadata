@@ -20,6 +20,19 @@ public class MimeTypesFactoryTest {
     public void createsMimeTypesFromPackageResourcePath() throws Exception {
         MimeTypes mimeTypes = MimeTypesFactory.create("tika-mimetypes.xml");
 
+        assertCommonTypes(mimeTypes);
+    }
+
+    @Test
+    public void createsMimeTypesWithExplicitClassLoader() throws Exception {
+        ClassLoader classLoader = MimeTypesFactoryTest.class.getClassLoader();
+        MimeTypes mimeTypes = MimeTypesFactory.create(
+                "tika-mimetypes.xml", "custom-mimetypes.xml", classLoader);
+
+        assertCommonTypes(mimeTypes);
+    }
+
+    private static void assertCommonTypes(MimeTypes mimeTypes) throws Exception {
         MimeType pdf = mimeTypes.getRegisteredMimeType("application/pdf");
         assertThat(pdf).isNotNull();
         assertThat(pdf.getExtension()).isEqualTo(".pdf");

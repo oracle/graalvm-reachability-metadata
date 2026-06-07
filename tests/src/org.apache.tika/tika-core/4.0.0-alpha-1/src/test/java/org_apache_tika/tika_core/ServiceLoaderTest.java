@@ -22,7 +22,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import org.apache.tika.config.LoadErrorHandler;
 import org.apache.tika.config.ServiceLoader;
 
 public class ServiceLoaderTest {
@@ -48,7 +47,7 @@ public class ServiceLoaderTest {
         Path serviceFile = createServiceFile(TestService.class, TestServiceProvider.class);
         ServiceLoader serviceLoader = new ServiceLoader(new ServiceResourceClassLoader(
                 ServiceLoaderTest.class.getClassLoader(),
-                List.of(serviceFile.toUri().toURL())), LoadErrorHandler.THROW);
+                List.of(serviceFile.toUri().toURL())), true);
 
         List<TestService> providers = serviceLoader.loadStaticServiceProviders(TestService.class);
 
