@@ -8,7 +8,7 @@ package org_springframework.spring_messaging;
 
 import org.junit.jupiter.api.Test;
 
-class Spring_messagingTest {
+public class Spring_messagingTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
