@@ -37,9 +37,9 @@ public class ReflectiveTypeAdapterFactoryAnonymous1Test {
     }
 
     public static final class InventoryItem {
-        private String name;
-        private int quantity;
-        private boolean available;
+        public String name;
+        public int quantity;
+        public boolean available;
 
         public InventoryItem() {
         }

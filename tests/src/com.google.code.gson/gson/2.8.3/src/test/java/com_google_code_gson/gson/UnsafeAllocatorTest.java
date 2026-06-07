@@ -27,8 +27,8 @@ public class UnsafeAllocatorTest {
 
     public static final class ConstructorOnlyMessage {
         private final transient boolean constructorInvoked;
-        private String label;
-        private int priority;
+        public String label;
+        public int priority;
 
         public ConstructorOnlyMessage(String label, int priority) {
             this.constructorInvoked = true;
