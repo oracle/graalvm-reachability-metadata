@@ -1,0 +1,794 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e9f85-07b8-7eb1-adf1-94b0a9cb9a72
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.springframework.boot:spring-boot:4.0.6
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "4.0.6" when "$version$" is replaced with "4.0.6".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "org.springframework.boot:spring-boot:4.0.6".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.0.6".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact against Maven and Spring’s upstream repository, then write the JSON file in the requested shape.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf
+ succeeded in 0ms:
+{
+  "coordinates" : "org.springframework.boot:spring-boot:4.0.6"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf
+-rw-rw-r-- 1 vjovanov vjovanov 67 Jun  7 02:39 build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json
+
+exec
+/usr/bin/bash -lc "rg -n 'org.springframework.boot:spring-boot|spring-boot' build/discovered-artifact-metadata metadata -g '*.json'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json:2:  "coordinates" : "org.springframework.boot:spring-boot:4.0.6"
+metadata/io.github.resilience4j/resilience4j-spring-boot3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/resilience4j/resilience4j-spring-boot3/$version$/resilience4j-spring-boot3-$version$-sources.jar",
+metadata/io.github.resilience4j/resilience4j-spring-boot3/index.json:7:    "test-code-url" : "https://github.com/resilience4j/resilience4j/tree/v$version$/resilience4j-spring-boot3/src/test",
+metadata/io.github.resilience4j/resilience4j-spring-boot3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/resilience4j/resilience4j-spring-boot3/$version$/resilience4j-spring-boot3-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-netty/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-netty/$version$/spring-boot-netty-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-netty/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-boot",
+metadata/org.springframework.boot/spring-boot-netty/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-netty/src/test",
+metadata/org.springframework.boot/spring-boot-netty/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-netty/$version$/spring-boot-netty-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-amqp/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-amqp/$version$/spring-boot-amqp-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-amqp/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-boot",
+metadata/org.springframework.boot/spring-boot-amqp/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-amqp/src/test",
+metadata/org.springframework.boot/spring-boot-amqp/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-amqp/$version$/spring-boot-amqp-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-starter-json/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-json:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-reactor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-reactor/$version$/spring-boot-reactor-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-reactor/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-boot",
+metadata/org.springframework.boot/spring-boot-reactor/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-reactor/src/test/java",
+metadata/org.springframework.boot/spring-boot-reactor/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-reactor/$version$/spring-boot-reactor-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-starter/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter:2.6.3 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter/index.json:5:    "replacement": "Use the class-bearing dependencies such as org.springframework.boot:spring-boot:2.6.3 and org.springframework.boot:spring-boot-autoconfigure:2.6.3."
+metadata/org.springframework.boot/spring-boot-starter-data-jdbc/index.json:4:    "reason": "The published spring-boot-starter-data-jdbc-4.0.6 JAR contains only META-INF/MANIFEST.MF, LICENSE.txt, and NOTICE.txt and no JVM class files; it is a dependency starter whose runtime classes are supplied by dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-data-jdbc/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework.boot:spring-boot-data-jdbc:4.0.6 and org.springframework.boot:spring-boot-jdbc:4.0.6 for reachability metadata."
+metadata/org.springframework.boot/spring-boot-kafka/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-kafka/$version$/spring-boot-kafka-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-kafka/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-boot",
+metadata/org.springframework.boot/spring-boot-kafka/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-kafka/src/test",
+metadata/org.springframework.boot/spring-boot-kafka/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-kafka/$version$/spring-boot-kafka-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-jdbc/$version$/spring-boot-jdbc-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-jdbc/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-boot",
+metadata/org.springframework.boot/spring-boot-jdbc/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-jdbc/src/test/java",
+metadata/org.springframework.boot/spring-boot-jdbc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-jdbc/$version$/spring-boot-jdbc-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-starter-actuator/index.json:5:    "replacement": "org.springframework.boot:spring-boot-actuator-autoconfigure:2.6.3 and org.springframework.boot:spring-boot-actuator:2.6.3"
+metadata/org.springframework.boot/spring-boot-web-server/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-web-server/$version$/spring-boot-web-server-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-web-server/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-boot",
+metadata/org.springframework.boot/spring-boot-web-server/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-web-server/src/test",
+metadata/org.springframework.boot/spring-boot-web-server/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-web-server/$version$/spring-boot-web-server-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-starter-data-jpa/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-data-jpa:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-data-jpa/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework.data:spring-data-jpa:2.7.18, org.hibernate:hibernate-core:5.6.15.Final, and org.springframework.boot:spring-boot-autoconfigure:2.7.18."
+metadata/org.springframework.boot/spring-boot-http-client/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-http-client/$version$/spring-boot-http-client-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-http-client/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-boot",
+metadata/org.springframework.boot/spring-boot-http-client/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-http-client/src/test",
+metadata/org.springframework.boot/spring-boot-http-client/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-http-client/$version$/spring-boot-http-client-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-webflux/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-webflux/$version$/spring-boot-webflux-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-webflux/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-boot",
+metadata/org.springframework.boot/spring-boot-webflux/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-webflux/src/test",
+metadata/org.springframework.boot/spring-boot-webflux/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-webflux/$version$/spring-boot-webflux-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-actuator-autoconfigure/$version$/spring-boot-actuator-autoconfigure-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-boot",
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-actuator-autoconfigure/src/test",
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-actuator-autoconfigure/$version$/spring-boot-actuator-autoconfigure-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-starter-tomcat/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-tomcat:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-restclient/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-restclient/$version$/spring-boot-restclient-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-restclient/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-boot",
+metadata/org.springframework.boot/spring-boot-restclient/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-restclient/src/test",
+metadata/org.springframework.boot/spring-boot-restclient/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-restclient/$version$/spring-boot-restclient-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-starter-data-redis/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-data-redis:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-data-redis/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework.data:spring-data-redis:2.7.18, io.lettuce:lettuce-core:6.1.10.RELEASE, and org.springframework.boot:spring-boot-autoconfigure:2.7.18."
+metadata/org.springframework.boot/spring-boot-transaction/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/$version$/spring-boot-transaction-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-transaction/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-boot",
+metadata/org.springframework.boot/spring-boot-transaction/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-transaction/src/test",
+metadata/org.springframework.boot/spring-boot-transaction/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-transaction/$version$/spring-boot-transaction-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-health/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-health/$version$/spring-boot-health-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-health/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-boot",
+metadata/org.springframework.boot/spring-boot-health/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-health/src/test",
+metadata/org.springframework.boot/spring-boot-health/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-health/$version$/spring-boot-health-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-reactor-netty/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-reactor-netty/$version$/spring-boot-reactor-netty-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-reactor-netty/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-boot",
+metadata/org.springframework.boot/spring-boot-reactor-netty/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-reactor-netty/src/test",
+metadata/org.springframework.boot/spring-boot-reactor-netty/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-reactor-netty/$version$/spring-boot-reactor-netty-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-boot",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-tools/spring-boot-configuration-processor/src/test",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-starter-jackson/index.json:4:    "reason": "The published spring-boot-starter-jackson-4.0.2 JAR contains only META-INF/MANIFEST.MF, LICENSE.txt, and NOTICE.txt and no JVM class files; the implementation classes are supplied by dependencies such as org.springframework.boot:spring-boot-jackson.",
+metadata/org.springframework.boot/spring-boot-starter-jackson/index.json:5:    "replacement": "Use the class-bearing dependency org.springframework.boot:spring-boot-jackson:4.0.2 for Spring Boot Jackson integration metadata."
+metadata/org.springframework.boot/spring-boot-starter-aop/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-aop:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-aop/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework:spring-aop:5.3.31, org.aspectj:aspectjweaver:1.9.7, and org.springframework.boot:spring-boot-autoconfigure:2.7.18."
+metadata/org.springframework.boot/spring-boot-starter-test/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-test:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose test classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-test/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework.boot:spring-boot-test:2.7.18, org.springframework.boot:spring-boot-test-autoconfigure:2.7.18, org.junit.jupiter:junit-jupiter:5.8.2, org.mockito:mockito-core:4.5.1, and org.hamcrest:hamcrest:2.2."
+metadata/org.springframework.boot/spring-boot-starter-aspectj/index.json:4:    "reason": "The published spring-boot-starter-aspectj-4.0.6 JAR contains only META-INF/MANIFEST.MF, LICENSE.txt, and NOTICE.txt and no JVM class files; it is a dependency starter whose runtime classes are supplied by dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-validation/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-validation:3.4.3 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-validation/index.json:5:    "replacement": "Use class-bearing dependencies such as org.hibernate.validator:hibernate-validator:8.0.2.Final, org.apache.tomcat.embed:tomcat-embed-el:10.1.36, org.springframework.boot:spring-boot:3.4.3, and org.springframework.boot:spring-boot-autoconfigure:3.4.3."
+metadata/org.springframework.boot/spring-boot-starter-web/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-web:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-web/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework:spring-web:5.3.31, org.springframework:spring-webmvc:5.3.31, org.springframework.boot:spring-boot:2.7.18, org.springframework.boot:spring-boot-autoconfigure:2.7.18, and org.apache.tomcat.embed:tomcat-embed-core:9.0.83."
+metadata/org.springframework.boot/spring-boot-starter-amqp/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-amqp:4.0.2 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-amqp/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework.boot:spring-boot-amqp:4.0.2, org.springframework.amqp:spring-rabbit:4.0.2, and org.springframework.boot:spring-boot-autoconfigure:4.0.2."
+metadata/org.springframework.boot/spring-boot-starter-flyway/index.json:4:    "reason": "The published spring-boot-starter-flyway-4.0.6 JAR contains only META-INF/MANIFEST.MF, LICENSE.txt, and NOTICE.txt and no JVM class files; it is a dependency starter whose runtime classes are supplied by dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-flyway/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework.boot:spring-boot-flyway:4.0.6, org.flywaydb:flyway-core:11.14.1, and org.springframework.boot:spring-boot-jdbc:4.0.6 for reachability metadata."
+metadata/org.springframework.boot/spring-boot-validation/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-validation/$version$/spring-boot-validation-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-validation/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-boot",
+metadata/org.springframework.boot/spring-boot-validation/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-validation/src/test/java",
+metadata/org.springframework.boot/spring-boot-validation/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-validation/$version$/spring-boot-validation-$version$-javadoc.jar",
+metadata/library-and-framework-list.json:2007:    "artifact": "org.springframework.boot:spring-boot-starter-actuator",
+metadata/library-and-framework-list.json:2013:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/health/HealthEndpointWebExtensionRuntimeHints.java"
+metadata/library-and-framework-list.json:2023:    "artifact": "org.springframework.boot:spring-boot-starter-amqp",
+metadata/library-and-framework-list.json:2039:    "artifact": "org.springframework.boot:spring-boot-starter-cache",
+metadata/library-and-framework-list.json:2055:    "artifact": "org.springframework.boot:spring-boot-starter-data-jdbc",
+metadata/library-and-framework-list.json:2071:    "artifact": "org.springframework.boot:spring-boot-starter-data-jpa",
+metadata/library-and-framework-list.json:2089:    "artifact": "org.springframework.boot:spring-boot-starter-data-mongodb",
+metadata/library-and-framework-list.json:2108:    "artifact": "org.springframework.boot:spring-boot-starter-data-mongodb-reactive",
+metadata/library-and-framework-list.json:2127:    "artifact": "org.springframework.boot:spring-boot-starter-data-r2dbc",
+metadata/library-and-framework-list.json:2143:    "artifact": "org.springframework.boot:spring-boot-starter-data-redis",
+metadata/library-and-framework-list.json:2160:    "artifact": "org.springframework.boot:spring-boot-starter-data-redis-reactive",
+metadata/library-and-framework-list.json:2177:    "artifact": "org.springframework.boot:spring-boot-starter-data-rest",
+metadata/library-and-framework-list.json:2194:    "artifact": "org.springframework.boot:spring-boot-starter-freemarker",
+metadata/library-and-framework-list.json:2200:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/template/TemplateRuntimeHints.java"
+metadata/library-and-framework-list.json:2210:    "artifact": "org.springframework.boot:spring-boot-starter-graphql",
+metadata/library-and-framework-list.json:2227:    "artifact": "org.springframework.boot:spring-boot-starter-hateoas",
+metadata/library-and-framework-list.json:2246:    "artifact": "org.springframework.boot:spring-boot-starter-integration",
+metadata/library-and-framework-list.json:2266:    "artifact": "org.springframework.boot:spring-boot-starter-jdbc",
+metadata/library-and-framework-list.json:2282:    "artifact": "org.springframework.boot:spring-boot-starter-jetty",
+metadata/library-and-framework-list.json:2283:    "description": "Starter for using Jetty as the embedded servlet container. An alternative to spring-boot-starter-tomcat",
+metadata/library-and-framework-list.json:2288:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/WebResourcesRuntimeHints.java"
+metadata/library-and-framework-list.json:2298:    "artifact": "org.springframework.boot:spring-boot-starter-json",
+metadata/library-and-framework-list.json:2304:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/jackson/JsonMixinModuleEntriesBeanRegistrationAotProcessor.java",
+metadata/library-and-framework-list.json:2305:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/json/JacksonRuntimeHints.java"
+metadata/library-and-framework-list.json:2315:    "artifact": "org.springframework.boot:spring-boot-starter-logging",
+metadata/library-and-framework-list.json:2321:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/logging/java/JavaLoggingSystemRuntimeHints.java",
+metadata/library-and-framework-list.json:2322:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/logging/logback/LogbackRuntimeHints.java"
+metadata/library-and-framework-list.json:2332:    "artifact": "org.springframework.boot:spring-boot-starter-mail",
+metadata/library-and-framework-list.json:2348:    "artifact": "org.springframework.boot:spring-boot-starter-mustache",
+metadata/library-and-framework-list.json:2354:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/template/TemplateRuntimeHints.java"
+metadata/library-and-framework-list.json:2364:    "artifact": "org.springframework.boot:spring-boot-starter-oauth2-client",
+metadata/library-and-framework-list.json:2380:    "artifact": "org.springframework.boot:spring-boot-starter-oauth2-resource-server",
+metadata/library-and-framework-list.json:2396:    "artifact": "org.springframework.boot:spring-boot-starter-quartz",
+metadata/library-and-framework-list.json:2412:    "artifact": "org.springframework.boot:spring-boot-starter-reactor-netty",
+metadata/library-and-framework-list.json:2429:    "artifact": "org.springframework.boot:spring-boot-starter-rsocket",
+metadata/library-and-framework-list.json:2446:    "artifact": "org.springframework.boot:spring-boot-starter-security",
+metadata/library-and-framework-list.json:2463:    "artifact": "org.springframework.boot:spring-boot-starter-test",
+metadata/library-and-framework-list.json:2479:    "artifact": "org.springframework.boot:spring-boot-starter-thymeleaf",
+metadata/library-and-framework-list.json:2485:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/template/TemplateRuntimeHints.java"
+metadata/library-and-framework-list.json:2495:    "artifact": "org.springframework.boot:spring-boot-starter-tomcat",
+metadata/library-and-framework-list.json:2496:    "description": "Starter for using Tomcat as the embedded servlet container. Default servlet container starter used by spring-boot-starter-web",
+metadata/library-and-framework-list.json:2501:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/WebResourcesRuntimeHints.java"
+metadata/library-and-framework-list.json:2511:    "artifact": "org.springframework.boot:spring-boot-starter-undertow",
+metadata/library-and-framework-list.json:2512:    "description": "Starter for using Undertow as the embedded servlet container. An alternative to spring-boot-starter-tomcat",
+metadata/library-and-framework-list.json:2517:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/WebResourcesRuntimeHints.java"
+metadata/library-and-framework-list.json:2527:    "artifact": "org.springframework.boot:spring-boot-starter-validation",
+metadata/library-and-framework-list.json:2543:    "artifact": "org.springframework.boot:spring-boot-starter-web",
+metadata/library-and-framework-list.json:2551:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/web/client/ClientHttpRequestFactoriesRuntimeHints.java",
+metadata/library-and-framework-list.json:2552:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/WebResourcesRuntimeHints.java"
+metadata/library-and-framework-list.json:2562:    "artifact": "org.springframework.boot:spring-boot-starter-webflux",
+metadata/library-and-framework-list.json:2570:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/WebResourcesRuntimeHints.java"
+metadata/library-and-framework-list.json:2580:    "artifact": "org.springframework.boot:spring-boot-starter-websocket",
+
+web search: 
+web search: Maven Central org.springframework.boot spring-boot 4.0.6
+codex
+The local file is just the coordinate placeholder. Existing Spring Boot 4 entries in this repo use Maven source/Javadoc jars and GitHub tag paths under `module/...`, so I’m checking the exact `spring-boot` artifact layout and whether a tests artifact exists before editing.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/4.0.6/spring-boot-4.0.6.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot</artifactId>
+  <version>4.0.6</version>
+  <name>spring-boot</name>
+  <description>Spring Boot</description>
+  <url>https://spring.io/projects/spring-boot</url>
+  <organization>
+    <name>VMware, Inc.</name>
+    <url>https://spring.io</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Spring</name>
+      <email>ask@spring.io</email>
+      <organization>VMware, Inc.</organization>
+      <organizationUrl>https://www.spring.io</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/spring-projects/spring-boot.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/spring-projects/spring-boot.git</developerConnection>
+    <url>https://github.com/spring-projects/spring-boot</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/spring-projects/spring-boot/issues</url>
+  </issueManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>7.0.7</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>7.0.7</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/4.0.6/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/4.0.6/spring-boot-4.0.6-sources.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/4.0.6/spring-boot-4.0.6-javadoc.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/4.0.6/spring-boot-4.0.6-tests.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/spring-projects/spring-boot/tree/v4.0.6/module/spring-boot/src/test' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf
+ succeeded in 282ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/springframework/boot/spring-boot/4.0.6</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/springframework/boot/spring-boot/4.0.6</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="spring-boot-4.0.6-javadoc.jar" title="spring-boot-4.0.6-javadoc.jar">spring-boot-4.0.6-javadoc.jar</a>                     2026-04-23 15:18   1827437      
+<a href="spring-boot-4.0.6-javadoc.jar.asc" title="spring-boot-4.0.6-javadoc.jar.asc">spring-boot-4.0.6-javadoc.jar.asc</a>                 2026-04-23 15:18       833      
+<a href="spring-boot-4.0.6-javadoc.jar.md5" title="spring-boot-4.0.6-javadoc.jar.md5">spring-boot-4.0.6-javadoc.jar.md5</a>                 2026-04-23 15:18        32      
+<a href="spring-boot-4.0.6-javadoc.jar.sha1" title="spring-boot-4.0.6-javadoc.jar.sha1">spring-boot-4.0.6-javadoc.jar.sha1</a>                2026-04-23 15:18        40      
+<a href="spring-boot-4.0.6-sources.jar" title="spring-boot-4.0.6-sources.jar">spring-boot-4.0.6-sources.jar</a>                     2026-04-23 15:18    851544      
+<a href="spring-boot-4.0.6-sources.jar.asc" title="spring-boot-4.0.6-sources.jar.asc">spring-boot-4.0.6-sources.jar.asc</a>                 2026-04-23 15:18       833      
+<a href="spring-boot-4.0.6-sources.jar.md5" title="spring-boot-4.0.6-sources.jar.md5">spring-boot-4.0.6-sources.jar.md5</a>                 2026-04-23 15:18        32      
+<a href="spring-boot-4.0.6-sources.jar.sha1" title="spring-boot-4.0.6-sources.jar.sha1">spring-boot-4.0.6-sources.jar.sha1</a>                2026-04-23 15:18        40      
+<a href="spring-boot-4.0.6.jar" title="spring-boot-4.0.6.jar">spring-boot-4.0.6.jar</a>                             2026-04-23 15:18   1372467      
+<a href="spring-boot-4.0.6.jar.asc" title="spring-boot-4.0.6.jar.asc">spring-boot-4.0.6.jar.asc</a>                         2026-04-23 15:18       833      
+<a href="spring-boot-4.0.6.jar.md5" title="spring-boot-4.0.6.jar.md5">spring-boot-4.0.6.jar.md5</a>                         2026-04-23 15:18        32      
+<a href="spring-boot-4.0.6.jar.sha1" title="spring-boot-4.0.6.jar.sha1">spring-boot-4.0.6.jar.sha1</a>                        2026-04-23 15:18        40      
+<a href="spring-boot-4.0.6.module" title="spring-boot-4.0.6.module">spring-boot-4.0.6.module</a>                          2026-04-23 15:18      4434      
+<a href="spring-boot-4.0.6.module.asc" title="spring-boot-4.0.6.module.asc">spring-boot-4.0.6.module.asc</a>                      2026-04-23 15:18       833      
+<a href="spring-boot-4.0.6.module.md5" title="spring-boot-4.0.6.module.md5">spring-boot-4.0.6.module.md5</a>                      2026-04-23 15:18        32      
+<a href="spring-boot-4.0.6.module.sha1" title="spring-boot-4.0.6.module.sha1">spring-boot-4.0.6.module.sha1</a>                     2026-04-23 15:18        40      
+<a href="spring-boot-4.0.6.pom" title="spring-boot-4.0.6.pom">spring-boot-4.0.6.pom</a>                             2026-04-23 15:18      2195      
+<a href="spring-boot-4.0.6.pom.asc" title="spring-boot-4.0.6.pom.asc">spring-boot-4.0.6.pom.asc</a>                         2026-04-23 15:18       833      
+<a href="spring-boot-4.0.6.pom.md5" title="spring-boot-4.0.6.pom.md5">spring-boot-4.0.6.pom.md5</a>                         2026-04-23 15:18        32      
+<a href="spring-boot-4.0.6.pom.sha1" title="spring-boot-4.0.6.pom.sha1">spring-boot-4.0.6.pom.sha1</a>                        2026-04-23 15:18        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ exited 22 in 350ms:
+HTTP/2 404 
+date: Sun, 07 Jun 2026 00:39:33 GMT
+content-type: text/html
+cf-ray: a07b99af6b3fc4a5-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/springframework/boot/spring-boot/4.0.6/spring-boot-4.0.6-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ exited 22 in 383ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 07 Jun 2026 00:39:33 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=TierJ0FErYVrDGJQb%2FqedjNSr4crdO%2FoTS1PLnEIWKiLpOrg7R8YZBqNgwnCjWIbc6NNWCZf%2BURU8z4kHxTHIqJNjkj9v9xEu6ITarJi9lqR4c94s5Y3pQ7NbwVYZNhtB3xcsdTinqefNhoEOrjjsVNsHLFK%2F8vacs3ddsVGk0QvjD5JkIbiRDbtjYb6DsGTuzNgiynYZrmJirSBpY1gZT7NmRt5aIvS46%2FjXsN%2Bi25pS%2FTSXRzgfmJYTriteh7or00AjSI732q%2FztrGNliGzg%3D%3D--V2pWmrSpSVfNTpvh--Nj0RFLn361etCMU5all42A%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.78757787.1780792772; expires=Mon, 07 Jun 2027 00:39:32 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 07 Jun 2027 00:39:32 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6204:88A0F:3093FFB:269E840:6A24BDC4
+
+
+codex
+Maven Central has the 4.0.6 main JAR, sources JAR, and Javadoc JAR, but no `tests.jar`. The POM’s SCM points to `spring-projects/spring-boot`; I’m resolving the correct tagged source-tree path for tests now because the guessed `module/spring-boot/src/test` path is not present for this artifact.
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/spring-projects/spring-boot/git/trees/v4.0.6?recursive=1 | rg '\"path\": \".*spring-boot.*/src/test' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/spring-projects/spring-boot/contents?ref=v4.0.6 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 403
+
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 403
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/spring-projects/spring-boot/git/trees/v4.0.6?recursive=1 | rg '\"path\": \".*/spring-boot/src/(main|test)' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 403
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/4.0.6/spring-boot-4.0.6-sources.jar -o /tmp/spring-boot-4.0.6-sources.jar && jar tf /tmp/spring-boot-4.0.6-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf
+ succeeded in 161ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/LICENSE.txt
+META-INF/NOTICE.txt
+log4j2.springboot
+META-INF/additional-spring-configuration-metadata.json
+META-INF/spring.factories
+META-INF/services/
+META-INF/services/ch.qos.logback.classic.spi.Configurator
+META-INF/services/org.apache.logging.log4j.util.PropertySource
+META-INF/spring/
+META-INF/spring/aot.factories
+org/
+org/springframework/
+org/springframework/boot/
+org/springframework/boot/logging/
+org/springframework/boot/logging/java/
+org/springframework/boot/logging/java/logging-file.properties
+org/springframework/boot/logging/java/logging.properties
+org/springframework/boot/logging/log4j2/
+org/springframework/boot/logging/log4j2/log4j2-file.xml
+org/springframework/boot/logging/log4j2/log4j2.xml
+org/springframework/boot/logging/logback/
+org/springframework/boot/logging/logback/base.xml
+org/springframework/boot/logging/logback/console-appender.xml
+org/springframework/boot/logging/logback/defaults.xml
+org/springframework/boot/logging/logback/file-appender.xml
+org/springframework/boot/logging/logback/structured-console-appender.xml
+org/springframework/boot/logging/logback/structured-file-appender.xml
+org/springframework/boot/AotInitializerNotFoundException.java
+org/springframework/boot/ApplicationArguments.java
+org/springframework/boot/ApplicationContextFactory.java
+org/springframework/boot/ApplicationEnvironment.java
+org/springframework/boot/ApplicationInfoPropertySource.java
+org/springframework/boot/ApplicationProperties.java
+org/springframework/boot/ApplicationRunner.java
+org/springframework/boot/Banner.java
+org/springframework/boot/BeanDefinitionLoader.java
+org/springframework/boot/ClearCachesApplicationListener.java
+org/springframework/boot/CommandLineRunner.java
+org/springframework/boot/DefaultApplicationArguments.java
+org/springframework/boot/DefaultApplicationContextFactory.java
+org/springframework/boot/EnvironmentConverter.java
+org/springframework/boot/EnvironmentPostProcessor.java
+org/springframework/boot/ExitCodeEvent.java
+org/springframework/boot/ExitCodeExceptionMapper.java
+org/springframework/boot/ExitCodeGenerator.java
+org/springframework/boot/ExitCodeGenerators.java
+org/springframework/boot/LazyInitializationBeanFactoryPostProcessor.java
+org/springframework/boot/LazyInitializationExcludeFilter.java
+org/springframework/boot/ResourceBanner.java
+org/springframework/boot/Runner.java
+org/springframework/boot/SpringApplication.java
+org/springframework/boot/SpringApplicationAotProcessor.java
+org/springframework/boot/SpringApplicationBannerPrinter.java
+org/springframework/boot/SpringApplicationHook.java
+org/springframework/boot/SpringApplicationRunListener.java
+org/springframework/boot/SpringApplicationRunListeners.java
+org/springframework/boot/SpringApplicationShutdownHandlers.java
+org/springframework/boot/SpringApplicationShutdownHook.java
+org/springframework/boot/SpringBootBanner.java
+org/springframework/boot/SpringBootConfiguration.java
+org/springframework/boot/SpringBootExceptionHandler.java
+org/springframework/boot/SpringBootExceptionReporter.java
+org/springframework/boot/StartupInfoLogger.java
+org/springframework/boot/WebApplicationType.java
+org/springframework/boot/package-info.java
+org/springframework/boot/admin/
+org/springframework/boot/admin/SpringApplicationAdminMXBean.java
+org/springframework/boot/admin/SpringApplicationAdminMXBeanRegistrar.java
+org/springframework/boot/admin/package-info.java
+org/springframework/boot/ansi/
+org/springframework/boot/ansi/Ansi8BitColor.java
+org/springframework/boot/ansi/AnsiBackground.java
+org/springframework/boot/ansi/AnsiColor.java
+org/springframework/boot/ansi/AnsiElement.java
+org/springframework/boot/ansi/AnsiOutput.java
+org/springframework/boot/ansi/AnsiPropertySource.java
+org/springframework/boot/ansi/AnsiStyle.java
+org/springframework/boot/ansi/package-info.java
+org/springframework/boot/availability/
+org/springframework/boot/availability/ApplicationAvailability.java
+org/springframework/boot/availability/ApplicationAvailabilityBean.java
+org/springframework/boot/availability/AvailabilityChangeEvent.java
+org/springframework/boot/availability/AvailabilityState.java
+org/springframework/boot/availability/LivenessState.java
+org/springframework/boot/availability/ReadinessState.java
+org/springframework/boot/availability/package-info.java
+org/springframework/boot/bootstrap/
+org/springframework/boot/bootstrap/BootstrapContext.java
+org/springframework/boot/bootstrap/BootstrapContextClosedEvent.java
+org/springframework/boot/bootstrap/BootstrapRegistry.java
+org/springframework/boot/bootstrap/BootstrapRegistryInitializer.java
+org/springframework/boot/bootstrap/ConfigurableBootstrapContext.java
+org/springframework/boot/bootstrap/DefaultBootstrapContext.java
+org/springframework/boot/bootstrap/package-info.java
+org/springframework/boot/builder/
+org/springframework/boot/builder/ParentContextApplicationContextInitializer.java
+org/springframework/boot/builder/ParentContextCloserApplicationListener.java
+org/springframework/boot/builder/SpringApplicationBuilder.java
+org/springframework/boot/builder/package-info.java
+org/springframework/boot/cloud/
+org/springframework/boot/cloud/CloudFoundryVcapEnvironmentPostProcessor.java
+org/springframework/boot/cloud/CloudPlatform.java
+org/springframework/boot/cloud/package-info.java
+org/springframework/boot/context/
+org/springframework/boot/context/ApplicationPidFileWriter.java
+org/springframework/boot/context/ConfigurationWarningsApplicationContextInitializer.java
+org/springframework/boot/context/ContextIdApplicationContextInitializer.java
+org/springframework/boot/context/FileEncodingApplicationListener.java
+org/springframework/boot/context/TypeExcludeFilter.java
+org/springframework/boot/context/package-info.java
+org/springframework/boot/context/annotation/
+org/springframework/boot/context/annotation/Configurations.java
+org/springframework/boot/context/annotation/DeterminableImports.java
+org/springframework/boot/context/annotation/ImportCandidates.java
+org/springframework/boot/context/annotation/UserConfigurations.java
+org/springframework/boot/context/annotation/package-info.java
+org/springframework/boot/context/config/
+org/springframework/boot/context/config/ConfigData.java
+
+codex
+The source JAR confirms this is a class-bearing JVM artifact, so it remains a Native Image metadata target and does not need `not-for-native-image`. GitHub’s API rate-limited the anonymous tree request, so I’m switching to direct tag archive/HTML checks to avoid guessing the test path.
+exec
+/usr/bin/bash -lc "curl -fsSL -H 'User-Agent: codex-local' https://api.github.com/repos/spring-projects/spring-boot/contents?ref=v4.0.6 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 403
+
+exec
+/usr/bin/bash -lc "for p in spring-boot-project/spring-boot/src/test module/spring-boot/src/test core/spring-boot/src/test; do printf '%s ' \""'$p"; curl -o /dev/null -s -L -w '"'%{http_code}\\n' \"https://github.com/spring-projects/spring-boot/tree/v4.0.6/"'$p"; done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf
+exec
+/usr/bin/bash -lc "rm -rf /tmp/spring-boot-v4.0.6-tree && mkdir -p /tmp/spring-boot-v4.0.6-tree && curl -fsSL https://github.com/spring-projects/spring-boot/archive/refs/tags/v4.0.6.tar.gz | tar -xz -C /tmp/spring-boot-v4.0.6-tree --strip-components=1 && find /tmp/spring-boot-v4.0.6-tree -path '*/spring-boot/src/test*' -maxdepth 6 -type d | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/4.0.6/spring-boot-4.0.6.jar -o /tmp/spring-boot-4.0.6.jar && jar tf /tmp/spring-boot-4.0.6.jar | rg '\\.class"'$'"' | sed -n '1,40p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf
+ succeeded in 213ms:
+org/springframework/boot/AotInitializerNotFoundException.class
+org/springframework/boot/ApplicationArguments.class
+org/springframework/boot/ApplicationContextFactory.class
+org/springframework/boot/ApplicationEnvironment.class
+org/springframework/boot/ApplicationInfoPropertySource.class
+org/springframework/boot/ApplicationProperties$ApplicationPropertiesRuntimeHints.class
+org/springframework/boot/ApplicationProperties.class
+org/springframework/boot/ApplicationRunner.class
+org/springframework/boot/Banner$Mode.class
+org/springframework/boot/Banner.class
+org/springframework/boot/BeanDefinitionLoader$ClassExcludeFilter.class
+org/springframework/boot/BeanDefinitionLoader$GroovyBeanDefinitionSource.class
+org/springframework/boot/BeanDefinitionLoader.class
+org/springframework/boot/ClearCachesApplicationListener.class
+org/springframework/boot/CommandLineRunner.class
+org/springframework/boot/DefaultApplicationArguments$Source.class
+org/springframework/boot/DefaultApplicationArguments.class
+org/springframework/boot/DefaultApplicationContextFactory.class
+org/springframework/boot/EnvironmentConverter.class
+org/springframework/boot/EnvironmentPostProcessor.class
+org/springframework/boot/ExitCodeEvent.class
+org/springframework/boot/ExitCodeExceptionMapper.class
+org/springframework/boot/ExitCodeGenerator.class
+org/springframework/boot/ExitCodeGenerators$MappedExitCodeGenerator.class
+org/springframework/boot/ExitCodeGenerators.class
+org/springframework/boot/LazyInitializationBeanFactoryPostProcessor$InfrastructureRoleLazyInitializationExcludeFilter.class
+org/springframework/boot/LazyInitializationBeanFactoryPostProcessor.class
+org/springframework/boot/LazyInitializationExcludeFilter.class
+org/springframework/boot/ResourceBanner$MapWithNullsPropertySource.class
+org/springframework/boot/ResourceBanner.class
+org/springframework/boot/Runner.class
+org/springframework/boot/SpringApplication$AbandonedRunException.class
+org/springframework/boot/SpringApplication$Augmented$RunListener.class
+org/springframework/boot/SpringApplication$Augmented.class
+org/springframework/boot/SpringApplication$CoordinatedRestoreAtCheckpointStartup.class
+org/springframework/boot/SpringApplication$FactoryAwareOrderSourceProvider.class
+org/springframework/boot/SpringApplication$KeepAlive.class
+org/springframework/boot/SpringApplication$NativeImageRequirementsException.class
+org/springframework/boot/SpringApplication$PropertySourceOrderingBeanFactoryPostProcessor.class
+org/springframework/boot/SpringApplication$Running.class
+
+ succeeded in 1251ms:
+404
+module/spring-boot/src/test 404
+core/spring-boot/src/test 200
+
+ succeeded in 1289ms:
+/tmp/spring-boot-v4.0.6-tree/core/spring-boot/src/test
+/tmp/spring-boot-v4.0.6-tree/core/spring-boot/src/test/resources
+/tmp/spring-boot-v4.0.6-tree/core/spring-boot/src/test/resources/org
+/tmp/spring-boot-v4.0.6-tree/core/spring-boot/src/test/java
+/tmp/spring-boot-v4.0.6-tree/core/spring-boot/src/test/java/org
+/tmp/spring-boot-v4.0.6-tree/core/spring-boot/src/test/java/sampleconfig
+/tmp/spring-boot-v4.0.6-tree/core/spring-boot/src/test/kotlin
+/tmp/spring-boot-v4.0.6-tree/core/spring-boot/src/test/kotlin/org
+/tmp/spring-boot-v4.0.6-tree/core/spring-boot/src/testFixtures
+/tmp/spring-boot-v4.0.6-tree/core/spring-boot/src/testFixtures/java
+/tmp/spring-boot-v4.0.6-tree/core/spring-boot/src/testFixtures/java/org
+
+web search: 
+web search: https://github.com/spring-projects/spring-boot/tree/v4.0.6/core/spring-boot/src/test
+web search: 
+web search: repo.maven.apache.org maven2 org springframework boot spring-boot 4.0.6 spring-boot-4.0.6-sources.jar javadoc.jar
+web search: 
+web search: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot/4.0.6
+codex
+I found the tagged test suite at `core/spring-boot/src/test`. I’m going to keep Maven Central for sources and Javadocs, use that GitHub tag path for tests, omit language-specific and not-for-native-image fields, and add a two-sentence description.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json
+index b56522d680f43b8fb9a49900bf7ed78ca61855cb..543d8bf4035d5dc3a740af9900de1f74b2b92ab7
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot:4.0.6"
++  "coordinates" : "org.springframework.boot:spring-boot:4.0.6",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/$version$/spring-boot-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/core/spring-boot/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/$version$/spring-boot-$version$-javadoc.jar",
++  "description" : "Spring Boot provides core APIs for creating standalone Spring applications with convention-based startup, configuration, logging, and application lifecycle support. The spring-boot artifact contains SpringApplication, runners, banner and logging infrastructure, AOT support, and related classes used by higher-level Spring Boot modules and applications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json
+index b56522d680f43b8fb9a49900bf7ed78ca61855cb..543d8bf4035d5dc3a740af9900de1f74b2b92ab7
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot:4.0.6"
++  "coordinates" : "org.springframework.boot:spring-boot:4.0.6",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/$version$/spring-boot-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/core/spring-boot/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/$version$/spring-boot-$version$-javadoc.jar",
++  "description" : "Spring Boot provides core APIs for creating standalone Spring applications with convention-based startup, configuration, logging, and application lifecycle support. The spring-boot artifact contains SpringApplication, runners, banner and logging infrastructure, AOT support, and related classes used by higher-level Spring Boot modules and applications."
+ }
+
+codex
+The JSON has been written. I’m doing a final validation pass: syntax, allowed keys, URL substitution, and endpoint availability for the 4.0.6 URLs.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf
+ succeeded in 0ms:
+{
+  "coordinates": "org.springframework.boot:spring-boot:4.0.6",
+  "repository-url": "https://github.com/spring-projects/spring-boot",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/$version$/spring-boot-$version$-sources.jar",
+  "test-code-url": "https://github.com/spring-projects/spring-boot/tree/v$version$/core/spring-boot/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/$version$/spring-boot-$version$-javadoc.jar",
+  "description": "Spring Boot provides core APIs for creating standalone Spring applications with convention-based startup, configuration, logging, and application lifecycle support. The spring-boot artifact contains SpringApplication, runners, banner and logging infrastructure, AOT support, and related classes used by higher-level Spring Boot modules and applications."
+}
+
+exec
+/usr/bin/bash -lc "jq -r 'keys_unsorted[]' build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf
+ succeeded in 0ms:
+coordinates
+repository-url
+source-code-url
+test-code-url
+documentation-url
+description
+
+exec
+/usr/bin/bash -lc "jq -r '.description' build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json | awk -F'. ' '{ print NF }'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf
+ succeeded in 0ms:
+42
+
+exec
+/usr/bin/bash -lc 'for key in source-code-url test-code-url documentation-url; do url=$(jq -r --arg key "$key" '"'.["'$key]'"' build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json | sed 's/\\"'$version'"\\"'$/4.0.6/g'"'); printf '%s %s ' \""'$key" "$url"; curl -o /dev/null -s -L -w '"'%{http_code}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json
+index b56522d680f43b8fb9a49900bf7ed78ca61855cb..543d8bf4035d5dc3a740af9900de1f74b2b92ab7
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot:4.0.6"
++  "coordinates" : "org.springframework.boot:spring-boot:4.0.6",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/$version$/spring-boot-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/core/spring-boot/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/$version$/spring-boot-$version$-javadoc.jar",
++  "description" : "Spring Boot provides core APIs for creating standalone Spring applications with convention-based startup, configuration, logging, and application lifecycle support. The spring-boot artifact contains SpringApplication, runners, banner and logging infrastructure, AOT support, and related classes used by higher-level Spring Boot modules and applications."
+ }
+
+ succeeded in 1104ms:
+200
+test-code-url https://github.com/spring-projects/spring-boot/tree/v4.0.6/core/spring-boot/src/test 200
+documentation-url https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/4.0.6/spring-boot-4.0.6-javadoc.jar 200
+
+web search: 
+web search: Spring Boot reference documentation SpringApplication standalone Spring applications
+web search: 
+web search: github.com/spring-projects/spring-boot/tree/v4.0.6/core/spring-boot/src/test
+web search: 
+web search: central.sonatype.com artifact org.springframework.boot spring-boot 4.0.6
+codex
+Validation passed for JSON syntax, allowed keys, and the substituted 4.0.6 source, test, and documentation URLs all returning HTTP 200.
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json
+index b56522d680f43b8fb9a49900bf7ed78ca61855cb..543d8bf4035d5dc3a740af9900de1f74b2b92ab7
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot:4.0.6"
++  "coordinates" : "org.springframework.boot:spring-boot:4.0.6",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/$version$/spring-boot-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/core/spring-boot/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/$version$/spring-boot-$version$-javadoc.jar",
++  "description" : "Spring Boot provides core APIs for creating standalone Spring applications with convention-based startup, configuration, logging, and application lifecycle support. The spring-boot artifact contains SpringApplication, runners, banner and logging infrastructure, AOT support, and related classes used by higher-level Spring Boot modules and applications."
+ }
+
+ succeeded in 333ms:
+codex
+The target file lives under `build/`, so Git is not showing it in the normal diff/status output, but the on-disk file was updated directly and validated.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf
+ succeeded in 0ms:
+{
+  "coordinates" : "org.springframework.boot:spring-boot:4.0.6",
+  "repository-url" : "https://github.com/spring-projects/spring-boot",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/$version$/spring-boot-$version$-sources.jar",
+  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/core/spring-boot/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/$version$/spring-boot-$version$-javadoc.jar",
+  "description" : "Spring Boot provides core APIs for creating standalone Spring applications with convention-based startup, configuration, logging, and application lifecycle support. The spring-boot artifact contains SpringApplication, runners, banner and logging infrastructure, AOT support, and related classes used by higher-level Spring Boot modules and applications."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json
+index b56522d680f43b8fb9a49900bf7ed78ca61855cb..543d8bf4035d5dc3a740af9900de1f74b2b92ab7
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot:4.0.6"
++  "coordinates" : "org.springframework.boot:spring-boot:4.0.6",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/$version$/spring-boot-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/core/spring-boot/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/$version$/spring-boot-$version$-javadoc.jar",
++  "description" : "Spring Boot provides core APIs for creating standalone Spring applications with convention-based startup, configuration, logging, and application lifecycle support. The spring-boot artifact contains SpringApplication, runners, banner and logging infrastructure, AOT support, and related classes used by higher-level Spring Boot modules and applications."
+ }
+
+codex
+Updated [org.springframework.boot-spring-boot-4.0.6.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json:1).
+
+I set Maven Central sources/Javadoc URLs, the Spring Boot repository root, and the tagged GitHub test path. I omitted `language` and `not-for-native-image` because this is not language-specific and the published JAR contains JVM class files.
+
+Validation done: JSON parses with `jq`, only requested keys are present, and the `$version$`-substituted source, test, and documentation URLs all returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json
+index b56522d680f43b8fb9a49900bf7ed78ca61855cb..543d8bf4035d5dc3a740af9900de1f74b2b92ab7
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot:4.0.6"
++  "coordinates" : "org.springframework.boot:spring-boot:4.0.6",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/$version$/spring-boot-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/core/spring-boot/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/$version$/spring-boot-$version$-javadoc.jar",
++  "description" : "Spring Boot provides core APIs for creating standalone Spring applications with convention-based startup, configuration, logging, and application lifecycle support. The spring-boot artifact contains SpringApplication, runners, banner and logging infrastructure, AOT support, and related classes used by higher-level Spring Boot modules and applications."
+ }
+
+tokens used
+73,531
+Updated [org.springframework.boot-spring-boot-4.0.6.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-4.0.6.json:1).
+
+I set Maven Central sources/Javadoc URLs, the Spring Boot repository root, and the tagged GitHub test path. I omitted `language` and `not-for-native-image` because this is not language-specific and the published JAR contains JVM class files.
+
+Validation done: JSON parses with `jq`, only requested keys are present, and the `$version$`-substituted source, test, and documentation URLs all returned HTTP 200.
+Ran agent for org.springframework.boot:spring-boot:4.0.6 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf/build/agent-artifact-discovery-logs/org.springframework.boot-spring-boot-4.0.6.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7698-cd1d13cf/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 44s
+9 actionable tasks: 9 executed
