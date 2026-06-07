@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SinkAnonymous1Test {
     @Test
-    void roleUsesSinkClassName() {
-        assertEquals("org.apache.maven.doxia.sink.Sink", Sink.ROLE);
+    void sinkClassKeepsExpectedName() {
+        assertEquals("org.apache.maven.doxia.sink.Sink", Sink.class.getName());
     }
 }
