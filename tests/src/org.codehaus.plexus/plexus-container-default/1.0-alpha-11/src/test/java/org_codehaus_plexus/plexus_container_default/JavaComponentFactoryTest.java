@@ -6,8 +6,8 @@
  */
 package org_codehaus_plexus.plexus_container_default;
 
-import org.codehaus.classworlds.ClassRealm;
-import org.codehaus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.factory.java.JavaComponentFactory;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.junit.jupiter.api.Test;
@@ -21,11 +21,10 @@ public class JavaComponentFactoryTest {
         descriptor.setRole(SampleComponent.class.getName());
         descriptor.setImplementation(SampleComponent.class.getName());
 
-        ClassWorld classWorld = new ClassWorld();
-        ClassRealm realm = classWorld.newRealm(
+        ClassRealm realm = new ClassWorld(
             "java-component-factory-test",
             JavaComponentFactoryTest.class.getClassLoader()
-        );
+        ).getRealm("java-component-factory-test");
 
         Object component = new JavaComponentFactory().newInstance(descriptor, realm, null);
 

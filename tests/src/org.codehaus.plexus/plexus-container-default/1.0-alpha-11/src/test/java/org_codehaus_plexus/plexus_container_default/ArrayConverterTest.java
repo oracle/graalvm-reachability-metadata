@@ -6,6 +6,9 @@
  */
 package org_codehaus_plexus.plexus_container_default;
 
+import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.classworlds.realm.NoSuchRealmException;
 import org.codehaus.plexus.component.configurator.converters.composite.ArrayConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.DefaultConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
@@ -34,7 +37,7 @@ public class ArrayConverterTest {
             configuration,
             String[].class,
             String.class,
-            ArrayConverterTest.class.getClassLoader(),
+            testRealm("array-converter-test"),
             new LiteralExpressionEvaluator()
         );
 
@@ -56,6 +59,10 @@ public class ArrayConverterTest {
 
         assertTrue(collection instanceof ArrayList);
         assertTrue(collection.isEmpty());
+    }
+
+    private static ClassRealm testRealm(String id) throws NoSuchRealmException {
+        return new ClassWorld(id, ArrayConverterTest.class.getClassLoader()).getRealm(id);
     }
 
     private static void addChild(XmlPlexusConfiguration parent, String name, String value) {

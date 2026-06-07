@@ -15,10 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DefaultPlexusContainerTest {
     @Test
     void constructorInitializesCoreRealmAndContainerContext() throws Exception {
-        DefaultPlexusContainer container = new DefaultPlexusContainer(
-            "test-container",
-            DefaultPlexusContainerTest.class.getClassLoader()
-        );
+        DefaultPlexusContainer container = new DefaultPlexusContainer("test-container", null);
 
         try {
             container.setReloadingEnabled(true);
@@ -35,10 +32,7 @@ public class DefaultPlexusContainerTest {
 
     @Test
     void createAndAutowireInstantiatesNamedComponentFromContainerRealm() throws Exception {
-        DefaultPlexusContainer container = new DefaultPlexusContainer(
-            "autowire-container",
-            DefaultPlexusContainerTest.class.getClassLoader()
-        );
+        DefaultPlexusContainer container = new DefaultPlexusContainer("autowire-container", null);
 
         try {
             Object component = container.createAndAutowire(SimpleAutowirableComponent.class.getName());

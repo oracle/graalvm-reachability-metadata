@@ -6,6 +6,9 @@
  */
 package org_codehaus_plexus.plexus_container_default;
 
+import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.classworlds.realm.NoSuchRealmException;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.ConfigurationListener;
 import org.codehaus.plexus.component.configurator.converters.ConfigurationConverter;
@@ -48,7 +51,7 @@ public class CollectionConverterTest {
             configuration,
             ArrayList.class,
             CollectionConverterTest.class,
-            CollectionConverterTest.class.getClassLoader(),
+            testRealm("collection-converter-concrete-test"),
             new LiteralExpressionEvaluator()
         );
 
@@ -71,7 +74,7 @@ public class CollectionConverterTest {
             configuration,
             List.class,
             CollectionConverterTest.class,
-            CollectionConverterTest.class.getClassLoader(),
+            testRealm("collection-converter-children-test"),
             new LiteralExpressionEvaluator()
         );
 
@@ -80,6 +83,10 @@ public class CollectionConverterTest {
         assertEquals(2, collection.size());
         assertTrue(collection.contains("loaded from fully qualified child element"));
         assertTrue(collection.contains(new NamedElement("loaded from base package child element")));
+    }
+
+    private static ClassRealm testRealm(String id) throws NoSuchRealmException {
+        return new ClassWorld(id, CollectionConverterTest.class.getClassLoader()).getRealm(id);
     }
 
     private static void addChild(XmlPlexusConfiguration parent, String name, String value) {
@@ -121,7 +128,7 @@ public class CollectionConverterTest {
 
         @Override
         public Object fromConfiguration(ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
-                                        Class baseType, ClassLoader classLoader,
+                                        Class baseType, ClassRealm classRealm,
                                         ExpressionEvaluator expressionEvaluator)
             throws ComponentConfigurationException {
             try {
@@ -133,10 +140,10 @@ public class CollectionConverterTest {
 
         @Override
         public Object fromConfiguration(ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
-                                        Class baseType, ClassLoader classLoader,
+                                        Class baseType, ClassRealm classRealm,
                                         ExpressionEvaluator expressionEvaluator, ConfigurationListener listener)
             throws ComponentConfigurationException {
-            return fromConfiguration(converterLookup, configuration, type, baseType, classLoader, expressionEvaluator);
+            return fromConfiguration(converterLookup, configuration, type, baseType, classRealm, expressionEvaluator);
         }
     }
 

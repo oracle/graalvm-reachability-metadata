@@ -6,19 +6,29 @@
  */
 package org_codehaus_plexus.plexus_container_default;
 
-import org.codehaus.classworlds.ClassRealm;
+import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.ComponentLookupManager;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
+import org.codehaus.plexus.component.composition.ComponentComposerManager;
 import org.codehaus.plexus.component.composition.CompositionException;
 import org.codehaus.plexus.component.composition.FieldComponentComposer;
+import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
+import org.codehaus.plexus.component.factory.ComponentFactoryManager;
+import org.codehaus.plexus.component.manager.ComponentManagerManager;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
 import org.codehaus.plexus.context.Context;
+import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
 import org.junit.jupiter.api.Test;
@@ -169,6 +179,10 @@ public class FieldComponentComposerTest {
         }
 
         @Override
+        public void setName(String name) {
+        }
+
+        @Override
         public Date getCreationDate() {
             return new Date(0L);
         }
@@ -187,6 +201,14 @@ public class FieldComponentComposerTest {
             return lookup(role + roleHint);
         }
 
+        public Object lookup(Class componentClass) throws ComponentLookupException {
+            return lookup(componentClass.getName());
+        }
+
+        public Object lookup(Class role, String roleHint) throws ComponentLookupException {
+            return lookup(role.getName(), roleHint);
+        }
+
         @Override
         public Map lookupMap(String role) throws ComponentLookupException {
             Map dependencies = maps.get(role);
@@ -203,6 +225,14 @@ public class FieldComponentComposerTest {
                 throw new ComponentLookupException("Missing list: " + role);
             }
             return dependencies;
+        }
+
+        public Map lookupMap(Class role) throws ComponentLookupException {
+            return lookupMap(role.getName());
+        }
+
+        public List lookupList(Class role) throws ComponentLookupException {
+            return lookupList(role.getName());
         }
 
         @Override
@@ -293,11 +323,9 @@ public class FieldComponentComposerTest {
             throw new UnsupportedOperationException();
         }
 
-        @Override
         public void initialize() throws PlexusContainerException {
         }
 
-        @Override
         public void start() throws PlexusContainerException {
         }
 
@@ -314,7 +342,6 @@ public class FieldComponentComposerTest {
         public void addContextValue(Object key, Object value) {
         }
 
-        @Override
         public void setConfigurationResource(Reader configuration) throws PlexusConfigurationResourceException {
             throw new UnsupportedOperationException();
         }
@@ -349,6 +376,23 @@ public class FieldComponentComposerTest {
             return null;
         }
 
+        public ClassWorld getClassWorld() {
+            return null;
+        }
+
+        public List discoverComponents(ClassRealm classRealm)
+            throws PlexusConfigurationException, ComponentRepositoryException {
+            return new ArrayList();
+        }
+
+        @Override
+        public void setParentPlexusContainer(PlexusContainer parentContainer) {
+        }
+
+        public PlexusContainer getParentContainer() {
+            return null;
+        }
+
         @Override
         public Object autowire(Object component) throws CompositionException {
             throw new UnsupportedOperationException();
@@ -369,8 +413,66 @@ public class FieldComponentComposerTest {
             return false;
         }
 
-        @Override
+        public ComponentRepository getComponentRepository() {
+            return null;
+        }
+
+        public void setComponentRepository(ComponentRepository componentRepository) {
+        }
+
+        public LifecycleHandlerManager getLifecycleHandlerManager() {
+            return null;
+        }
+
+        public void setLifecycleHandlerManager(LifecycleHandlerManager lifecycleHandlerManager) {
+        }
+
+        public ComponentManagerManager getComponentManagerManager() {
+            return null;
+        }
+
+        public void setComponentManagerManager(ComponentManagerManager componentManagerManager) {
+        }
+
+        public ComponentDiscovererManager getComponentDiscovererManager() {
+            return null;
+        }
+
+        public void setComponentDiscovererManager(ComponentDiscovererManager componentDiscovererManager) {
+        }
+
+        public ComponentFactoryManager getComponentFactoryManager() {
+            return null;
+        }
+
+        public void setComponentFactoryManager(ComponentFactoryManager componentFactoryManager) {
+        }
+
+        public ComponentLookupManager getComponentLookupManager() {
+            return null;
+        }
+
+        public void setComponentLookupManager(ComponentLookupManager componentLookupManager) {
+        }
+
+        public ComponentComposerManager getComponentComposerManager() {
+            return null;
+        }
+
+        public void setComponentComposerManager(ComponentComposerManager componentComposerManager) {
+        }
+
         public LoggerManager getLoggerManager() {
+            return null;
+        }
+
+        public void setLoggerManager(LoggerManager loggerManager) {
+        }
+
+        public void setConfiguration(PlexusConfiguration configuration) {
+        }
+
+        public PlexusConfiguration getConfiguration() {
             return null;
         }
     }
