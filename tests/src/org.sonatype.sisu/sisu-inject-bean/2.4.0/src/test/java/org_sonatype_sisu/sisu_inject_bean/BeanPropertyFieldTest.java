@@ -8,10 +8,10 @@ package org_sonatype_sisu.sisu_inject_bean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.eclipse.sisu.bean.BeanProperties;
+import org.eclipse.sisu.bean.BeanProperty;
+import org.eclipse.sisu.bean.IgnoreSetters;
 import org.junit.jupiter.api.Test;
-import org.sonatype.guice.bean.reflect.BeanProperties;
-import org.sonatype.guice.bean.reflect.BeanProperty;
-import org.sonatype.guice.bean.reflect.IgnoreSetters;
 
 public class BeanPropertyFieldTest {
     @Test

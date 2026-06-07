@@ -11,8 +11,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.eclipse.sisu.space.QualifiedTypeBinder;
 import org.junit.jupiter.api.Test;
-import org.sonatype.guice.bean.binders.QualifiedTypeBinder;
 
 import com.google.inject.Binder;
 import com.google.inject.Binding;
