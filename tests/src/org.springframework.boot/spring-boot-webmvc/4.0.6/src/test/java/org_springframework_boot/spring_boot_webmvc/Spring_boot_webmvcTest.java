@@ -9,6 +9,8 @@ package org_springframework_boot.spring_boot_webmvc;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.Principal;
 import java.time.Duration;
 import java.util.Collection;
@@ -37,11 +39,13 @@ import jakarta.servlet.http.HttpUpgradeHandler;
 import jakarta.servlet.http.Part;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.ErrorProperties.IncludeAttribute;
+import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.error.ErrorAttributeOptions.Include;
 import org.springframework.boot.webmvc.autoconfigure.DispatcherServletPath;
@@ -51,10 +55,12 @@ import org.springframework.boot.webmvc.autoconfigure.WebMvcProperties;
 import org.springframework.boot.webmvc.autoconfigure.WebMvcProperties.MatchingStrategy;
 import org.springframework.boot.webmvc.autoconfigure.WebMvcRegistrations;
 import org.springframework.boot.webmvc.autoconfigure.error.BasicErrorController;
+import org.springframework.boot.webmvc.autoconfigure.error.DefaultErrorViewResolver;
 import org.springframework.boot.webmvc.error.DefaultErrorAttributes;
 import org.springframework.boot.webmvc.error.ErrorAttributes;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -66,6 +72,7 @@ import org.springframework.validation.DefaultMessageCodesResolver;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.ModelAndView;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -277,6 +284,34 @@ public class Spring_boot_webmvcTest {
                 .containsEntry("stackTraceIncluded", true)
                 .containsEntry("pathIncluded", true)
                 .containsEntry("bindingErrorsIncluded", false);
+    }
+
+    @Test
+    void defaultErrorViewResolverUsesStaticErrorPageForStatusCode(@TempDir Path directory) throws IOException {
+        Path staticLocation = Files.createDirectories(directory.resolve("static"));
+        Path errorDirectory = Files.createDirectories(staticLocation.resolve("error"));
+        Files.writeString(errorDirectory.resolve("404.html"), "<html><body>Not found</body></html>");
+        StaticApplicationContext applicationContext = new StaticApplicationContext();
+        try {
+            WebProperties.Resources resources = new WebProperties.Resources();
+            String staticLocationUri = staticLocation.toUri().toString();
+            resources.setStaticLocations(new String[] { staticLocationUri.endsWith("/") ? staticLocationUri
+                    : staticLocationUri + "/" });
+            DefaultErrorViewResolver resolver = new DefaultErrorViewResolver(applicationContext, resources);
+            Map<String, Object> model = Map.of("status", HttpStatus.NOT_FOUND.value(), "path", "/missing");
+
+            ModelAndView modelAndView = resolver.resolveErrorView(new SimpleHttpServletRequest("/missing"),
+                    HttpStatus.NOT_FOUND, model);
+
+            assertThat(modelAndView).isNotNull();
+            assertThat(modelAndView.getView()).isNotNull();
+            assertThat(modelAndView.getViewName()).isNull();
+            assertThat(modelAndView.getModel()).containsEntry("status", HttpStatus.NOT_FOUND.value())
+                    .containsEntry("path", "/missing");
+        }
+        finally {
+            applicationContext.close();
+        }
     }
 
     @Configuration(proxyBeanMethods = false)
