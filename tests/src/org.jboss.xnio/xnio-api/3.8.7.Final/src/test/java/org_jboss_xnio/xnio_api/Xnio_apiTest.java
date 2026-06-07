@@ -44,6 +44,8 @@ import org.xnio.Pooled;
 import org.xnio.Property;
 import org.xnio.Sequence;
 import org.xnio.SslClientAuthMode;
+import org.xnio.streams.LimitedInputStream;
+import org.xnio.streams.LimitedOutputStream;
 import org.xnio.streams.Streams;
 
 public class Xnio_apiTest {
@@ -229,6 +231,32 @@ public class Xnio_apiTest {
         assertThat(channel.isOpen()).isFalse();
         assertThat(attachment.closed).isTrue();
         assertThat(IoUtils.nullCloseable()).isNotNull();
+    }
+
+    @Test
+    void limitedStreamsExposeConfiguredByteRangesAndRejectOverflowWrites() throws IOException {
+        byte[] source = "abcdef".getBytes(StandardCharsets.UTF_8);
+        try (LimitedInputStream input = new LimitedInputStream(new ByteArrayInputStream(source), 5)) {
+            assertThat(input.markSupported()).isTrue();
+            assertThat(input.available()).isEqualTo(5);
+
+            input.mark(source.length);
+            assertThat(input.readNBytes(3)).containsExactly((byte) 'a', (byte) 'b', (byte) 'c');
+            input.reset();
+            assertThat(input.readNBytes(8)).containsExactly((byte) 'a', (byte) 'b', (byte) 'c', (byte) 'd',
+                    (byte) 'e');
+            assertThat(input.read()).isEqualTo(-1);
+        }
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        try (LimitedOutputStream limitedOutput = new LimitedOutputStream(output, 4)) {
+            limitedOutput.write("abc".getBytes(StandardCharsets.UTF_8));
+            limitedOutput.write('d');
+            assertThatThrownBy(() -> limitedOutput.write('e')).isInstanceOf(IOException.class);
+            limitedOutput.flush();
+        }
+
+        assertThat(output.toString(StandardCharsets.UTF_8)).isEqualTo("abcd");
     }
 
     @Test
