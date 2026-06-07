@@ -6,55 +6,37 @@
  */
 package org_apache_maven.maven_project;
 
-import org.apache.maven.model.Profile;
-import org.apache.maven.profiles.DefaultProfileManager;
-import org.apache.maven.project.DefaultMavenProjectBuilder;
+import org.apache.maven.project.DefaultProjectBuilderConfiguration;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectBuilder;
+import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.PlexusContainer;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DefaultMavenProjectBuilderTest {
+    private PlexusContainer container;
+
+    @AfterEach
+    void disposeContainer() {
+        if (container != null) {
+            container.dispose();
+        }
+    }
+
     @Test
-    void buildStandaloneSuperProjectLoadsBundledSuperPomResource() {
-        DefaultMavenProjectBuilder builder = new DefaultMavenProjectBuilder();
-        builder.initialize();
+    void buildStandaloneSuperProjectLoadsBundledSuperPomResource() throws Exception {
+        container = new DefaultPlexusContainer();
+        MavenProjectBuilder builder = (MavenProjectBuilder) container.lookup(
+                MavenProjectBuilder.class.getName());
 
-        SuperPomProfilesLoadedException exception = assertThrows(
-                SuperPomProfilesLoadedException.class,
-                () -> builder.buildStandaloneSuperProject(null, new SuperPomCapturingProfileManager()));
+        MavenProject project = builder.buildStandaloneSuperProject(
+                new DefaultProjectBuilderConfiguration());
 
-        assertThat(exception.getProfileIds()).containsExactly("release-profile");
-    }
-
-    private static final class SuperPomCapturingProfileManager extends DefaultProfileManager {
-        private SuperPomCapturingProfileManager() {
-            super(null);
-        }
-
-        @Override
-        public void addProfiles(List profiles) {
-            List profileIds = new ArrayList();
-            for (Object profileObject : profiles) {
-                Profile profile = (Profile) profileObject;
-                profileIds.add(profile.getId());
-            }
-            throw new SuperPomProfilesLoadedException(profileIds);
-        }
-    }
-
-    private static final class SuperPomProfilesLoadedException extends RuntimeException {
-        private final List profileIds;
-
-        private SuperPomProfilesLoadedException(List profileIds) {
-            this.profileIds = profileIds;
-        }
-
-        private List getProfileIds() {
-            return profileIds;
-        }
+        assertThat(project.isExecutionRoot()).isTrue();
+        assertThat(project.getModel().getModelVersion()).isEqualTo("4.0.0");
+        assertThat(project.getBuild().getDirectory()).isEqualTo("${project.basedir}/target");
     }
 }

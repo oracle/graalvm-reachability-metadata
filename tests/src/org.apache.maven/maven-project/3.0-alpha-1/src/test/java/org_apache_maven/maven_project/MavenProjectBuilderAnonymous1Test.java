@@ -13,7 +13,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MavenProjectBuilderAnonymous1Test {
     @Test
-    void roleInitializesThroughSyntheticClassLiteralHelper() {
-        assertThat(MavenProjectBuilder.ROLE).isEqualTo("org.apache.maven.project.MavenProjectBuilder");
+    void exposesProjectBuilderContractDefaults() {
+        assertThat(MavenProjectBuilder.class.getName())
+                .isEqualTo("org.apache.maven.project.MavenProjectBuilder");
+        assertThat(MavenProjectBuilder.STRICT_MODEL_PARSING).isTrue();
     }
 }
