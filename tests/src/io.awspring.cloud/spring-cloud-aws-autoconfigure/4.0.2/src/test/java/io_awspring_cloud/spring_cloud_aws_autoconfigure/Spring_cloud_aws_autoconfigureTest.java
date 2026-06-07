@@ -8,9 +8,9 @@ package io_awspring_cloud.spring_cloud_aws_autoconfigure;
 
 import org.junit.jupiter.api.Test;
 
-class Spring_cloud_aws_autoconfigureTest {
+public class Spring_cloud_aws_autoconfigureTest {
     @Test
-    void test() throws Exception {
+    void test() {
         System.out.println("This is just a placeholder, implement your test");
     }
 }
