@@ -25,6 +25,7 @@ import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusLanguageDriverAutoConfiguration;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
+import com.baomidou.mybatisplus.autoconfigure.MybatisPlusPropertiesCustomizer;
 import com.baomidou.mybatisplus.autoconfigure.SafetyEncryptProcessor;
 import com.baomidou.mybatisplus.autoconfigure.SpringBootVFS;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
@@ -92,6 +93,24 @@ public class Mybatis_plus_boot_starterTest {
             assertThat(mapper.deleteById(1L)).isEqualTo(1);
             assertThat(mapper.selectById(1L)).isNull();
         });
+    }
+
+    @Test
+    void propertiesCustomizerBeanContributesSettingsBeforeSqlSessionTemplateCreation() {
+        new ApplicationContextRunner()
+                .withConfiguration(AutoConfigurations.of(MybatisPlusAutoConfiguration.class))
+                .withUserConfiguration(PropertiesCustomizerConfiguration.class)
+                .run((context) -> {
+                    assertThat(context.getStartupFailure()).isNull();
+                    assertThat(context).hasSingleBean(MybatisPlusProperties.class);
+                    assertThat(context).hasSingleBean(SqlSessionFactory.class);
+                    assertThat(context).hasSingleBean(SqlSessionTemplate.class);
+
+                    MybatisPlusProperties properties = context.getBean(MybatisPlusProperties.class);
+                    SqlSessionTemplate sqlSessionTemplate = context.getBean(SqlSessionTemplate.class);
+                    assertThat(properties.getExecutorType()).isEqualTo(ExecutorType.REUSE);
+                    assertThat(sqlSessionTemplate.getExecutorType()).isEqualTo(ExecutorType.REUSE);
+                });
     }
 
     @Test
@@ -193,6 +212,24 @@ public class Mybatis_plus_boot_starterTest {
             MapperFactoryBean<AccountMapper> factoryBean = new MapperFactoryBean<>(AccountMapper.class);
             factoryBean.setSqlSessionFactory(sqlSessionFactory);
             return factoryBean;
+        }
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    static class PropertiesCustomizerConfiguration {
+
+        @Bean
+        DataSource dataSource() {
+            JdbcDataSource dataSource = new JdbcDataSource();
+            dataSource.setURL("jdbc:h2:mem:mp_customizer_" + UUID.randomUUID() + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
+            dataSource.setUser("sa");
+            dataSource.setPassword("");
+            return dataSource;
+        }
+
+        @Bean
+        MybatisPlusPropertiesCustomizer executorTypePropertiesCustomizer() {
+            return (properties) -> properties.setExecutorType(ExecutorType.REUSE);
         }
     }
 
