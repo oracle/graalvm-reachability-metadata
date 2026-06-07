@@ -327,8 +327,22 @@ public class Jdbc_v2Test {
         assertThat(array.getBaseType()).isEqualTo(Types.VARCHAR);
         assertThat((Object[]) array.getArray()).containsExactly("one", "two", "three");
         assertThat((Object[]) array.getArray(1, 2)).containsExactly("two", "three");
+        try (ResultSet resultSet = array.getResultSet()) {
+            ResultSetMetaData metadata = resultSet.getMetaData();
+
+            assertThat(metadata.getColumnCount()).isEqualTo(2);
+            assertThat(metadata.getColumnName(1)).isEqualTo("INDEX");
+            assertThat(metadata.getColumnName(2)).isEqualTo("VALUE");
+            assertThat(resultSet.isBeforeFirst()).isTrue();
+            assertThat(resultSet.next()).isTrue();
+            assertThat(resultSet.getInt("INDEX")).isEqualTo(1);
+            assertThat(resultSet.getString("VALUE")).isEqualTo("one");
+            assertThat(resultSet.next()).isTrue();
+            assertThat(resultSet.getObject(1)).isEqualTo(2);
+            assertThat(resultSet.getObject(2, String.class)).isEqualTo("two");
+        }
         assertThatThrownBy(() -> array.getArray(Map.of())).isInstanceOf(SQLFeatureNotSupportedException.class);
-        assertThatThrownBy(array::getResultSet).isInstanceOf(SQLFeatureNotSupportedException.class);
+        assertThatThrownBy(() -> array.getResultSet(Map.of())).isInstanceOf(SQLFeatureNotSupportedException.class);
         assertThatThrownBy(() -> array.getArray(-1, 1)).isInstanceOf(SQLException.class);
         array.free();
         assertThatThrownBy(array::getArray).isInstanceOf(SQLException.class);
