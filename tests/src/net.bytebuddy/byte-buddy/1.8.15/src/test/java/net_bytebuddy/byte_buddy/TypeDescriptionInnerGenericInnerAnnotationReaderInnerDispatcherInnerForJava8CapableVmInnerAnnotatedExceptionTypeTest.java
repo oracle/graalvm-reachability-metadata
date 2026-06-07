@@ -29,7 +29,11 @@ public class TypeDescriptionInnerGenericInnerAnnotationReaderInnerDispatcherInne
 
         assertThat(exceptionTypes).hasSize(1);
         assertThat(exceptionType.asErasure().represents(MarkedException.class)).isTrue();
-        assertThat(exceptionType.getDeclaredAnnotations().isAnnotationPresent(ExceptionTypeMarker.class)).isTrue();
+        assertThat(((java.util.function.Supplier<net.bytebuddy.description.annotation.AnnotationList>) exceptionType::getDeclaredAnnotations)
+                .get()
+                .ofType(ExceptionTypeMarker.class)
+                .getAnnotationType()
+                .represents(ExceptionTypeMarker.class)).isTrue();
     }
 
     @Target(ElementType.TYPE_USE)

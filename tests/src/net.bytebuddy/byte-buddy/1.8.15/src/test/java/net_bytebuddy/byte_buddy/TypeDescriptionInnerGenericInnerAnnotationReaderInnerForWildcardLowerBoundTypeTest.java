@@ -34,7 +34,11 @@ public class TypeDescriptionInnerGenericInnerAnnotationReaderInnerForWildcardLow
         assertThat(parameterizedType.asErasure().represents(List.class)).isTrue();
         assertThat(wildcardType.getSort().isWildcard()).isTrue();
         assertThat(lowerBound.asErasure().represents(String.class)).isTrue();
-        assertThat(lowerBound.getDeclaredAnnotations().isAnnotationPresent(WildcardLowerBoundMarker.class)).isTrue();
+        assertThat(((java.util.function.Supplier<net.bytebuddy.description.annotation.AnnotationList>) lowerBound::getDeclaredAnnotations)
+                .get()
+                .ofType(WildcardLowerBoundMarker.class)
+                .getAnnotationType()
+                .represents(WildcardLowerBoundMarker.class)).isTrue();
     }
 
     @Target(ElementType.TYPE_USE)

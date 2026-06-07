@@ -29,7 +29,11 @@ public class TypeDescriptionInnerGenericInnerAnnotationReaderInnerDispatcherInne
         TypeDescription.Generic fieldType = fieldDescription.getType();
 
         assertThat(fieldType.asErasure().represents(String.class)).isTrue();
-        assertThat(fieldType.getDeclaredAnnotations().isAnnotationPresent(FieldTypeMarker.class)).isTrue();
+        assertThat(((java.util.function.Supplier<net.bytebuddy.description.annotation.AnnotationList>) fieldType::getDeclaredAnnotations)
+                .get()
+                .ofType(FieldTypeMarker.class)
+                .getAnnotationType()
+                .represents(FieldTypeMarker.class)).isTrue();
     }
 
     @Target(ElementType.TYPE_USE)

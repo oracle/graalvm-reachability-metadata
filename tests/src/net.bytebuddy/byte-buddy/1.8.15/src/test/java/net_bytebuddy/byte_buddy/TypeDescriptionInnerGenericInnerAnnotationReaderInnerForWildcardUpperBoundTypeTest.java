@@ -34,7 +34,11 @@ public class TypeDescriptionInnerGenericInnerAnnotationReaderInnerForWildcardUpp
         assertThat(parameterizedType.asErasure().represents(List.class)).isTrue();
         assertThat(wildcardType.getSort().isWildcard()).isTrue();
         assertThat(upperBound.asErasure().represents(Number.class)).isTrue();
-        assertThat(upperBound.getDeclaredAnnotations().isAnnotationPresent(WildcardUpperBoundMarker.class)).isTrue();
+        assertThat(((java.util.function.Supplier<net.bytebuddy.description.annotation.AnnotationList>) upperBound::getDeclaredAnnotations)
+                .get()
+                .ofType(WildcardUpperBoundMarker.class)
+                .getAnnotationType()
+                .represents(WildcardUpperBoundMarker.class)).isTrue();
     }
 
     @Target(ElementType.TYPE_USE)

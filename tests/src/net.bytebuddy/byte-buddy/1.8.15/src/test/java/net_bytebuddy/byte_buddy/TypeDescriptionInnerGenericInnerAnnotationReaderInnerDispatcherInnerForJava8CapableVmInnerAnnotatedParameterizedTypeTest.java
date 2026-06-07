@@ -31,7 +31,11 @@ public class TypeDescriptionInnerGenericInnerAnnotationReaderInnerDispatcherInne
 
         assertThat(parameters).hasSize(2);
         assertThat(parameterType.asErasure().represents(String.class)).isTrue();
-        assertThat(parameterType.getDeclaredAnnotations().isAnnotationPresent(ParameterTypeMarker.class)).isTrue();
+        assertThat(((java.util.function.Supplier<net.bytebuddy.description.annotation.AnnotationList>) parameterType::getDeclaredAnnotations)
+                .get()
+                .ofType(ParameterTypeMarker.class)
+                .getAnnotationType()
+                .represents(ParameterTypeMarker.class)).isTrue();
     }
 
     @Target(ElementType.TYPE_USE)

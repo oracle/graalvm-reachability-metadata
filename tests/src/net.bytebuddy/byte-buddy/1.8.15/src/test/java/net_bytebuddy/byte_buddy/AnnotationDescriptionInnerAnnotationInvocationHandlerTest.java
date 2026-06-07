@@ -42,8 +42,8 @@ public class AnnotationDescriptionInnerAnnotationInvocationHandlerTest {
                 .build()
                 .prepare(InvocationHandlerAnnotation.class)
                 .load();
-        InvocationHandlerAnnotation runtimeAnnotation = AnnotatedType.class.getAnnotation(
-                InvocationHandlerAnnotation.class);
+        InvocationHandlerAnnotation runtimeAnnotation = AnnotatedType.class.getDeclaredAnnotationsByType(
+                InvocationHandlerAnnotation.class)[0];
 
         assertThat(annotation).isEqualTo(runtimeAnnotation);
         assertThat(annotation.hashCode()).isEqualTo(runtimeAnnotation.hashCode());

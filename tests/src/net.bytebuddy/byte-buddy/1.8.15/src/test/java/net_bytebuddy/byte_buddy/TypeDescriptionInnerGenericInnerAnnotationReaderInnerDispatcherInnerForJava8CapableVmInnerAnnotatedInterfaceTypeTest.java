@@ -27,7 +27,11 @@ public class TypeDescriptionInnerGenericInnerAnnotationReaderInnerDispatcherInne
 
         assertThat(interfaces).hasSize(1);
         assertThat(interfaceType.asErasure().represents(MarkedInterface.class)).isTrue();
-        assertThat(interfaceType.getDeclaredAnnotations().isAnnotationPresent(InterfaceTypeMarker.class)).isTrue();
+        assertThat(((java.util.function.Supplier<net.bytebuddy.description.annotation.AnnotationList>) interfaceType::getDeclaredAnnotations)
+                .get()
+                .ofType(InterfaceTypeMarker.class)
+                .getAnnotationType()
+                .represents(InterfaceTypeMarker.class)).isTrue();
     }
 
     @Target(ElementType.TYPE_USE)

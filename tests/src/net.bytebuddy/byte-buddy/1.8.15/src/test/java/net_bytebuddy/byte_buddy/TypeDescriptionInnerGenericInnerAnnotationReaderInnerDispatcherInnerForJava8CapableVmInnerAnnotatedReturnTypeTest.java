@@ -26,7 +26,11 @@ public class TypeDescriptionInnerGenericInnerAnnotationReaderInnerDispatcherInne
         TypeDescription.Generic returnType = new MethodDescription.ForLoadedMethod(method).getReturnType();
 
         assertThat(returnType.asErasure().represents(String.class)).isTrue();
-        assertThat(returnType.getDeclaredAnnotations().isAnnotationPresent(ReturnTypeMarker.class)).isTrue();
+        assertThat(((java.util.function.Supplier<net.bytebuddy.description.annotation.AnnotationList>) returnType::getDeclaredAnnotations)
+                .get()
+                .ofType(ReturnTypeMarker.class)
+                .getAnnotationType()
+                .represents(ReturnTypeMarker.class)).isTrue();
     }
 
     @Target(ElementType.TYPE_USE)

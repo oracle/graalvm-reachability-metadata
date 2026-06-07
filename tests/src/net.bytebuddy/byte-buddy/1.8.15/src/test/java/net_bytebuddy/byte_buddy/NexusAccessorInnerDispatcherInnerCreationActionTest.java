@@ -14,8 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.opentest4j.TestAbortedException;
 
 import java.io.InputStream;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -63,9 +61,7 @@ public class NexusAccessorInnerDispatcherInnerCreationActionTest {
     @Test
     void fallsBackToSystemNexusWhenClassFileCannotBeLocatedForInjection() throws Exception {
         try {
-            URL byteBuddyLocation = Nexus.class.getProtectionDomain().getCodeSource().getLocation();
             ResourceHidingClassLoader classLoader = new ResourceHidingClassLoader(
-                    new URL[] {byteBuddyLocation},
                     NexusAccessorInnerDispatcherInnerCreationActionTest.class.getClassLoader());
             try {
                 Class<?> nexusAccessorType = Class.forName(
@@ -89,9 +85,12 @@ public class NexusAccessorInnerDispatcherInnerCreationActionTest {
         }
     }
 
-    private static class ResourceHidingClassLoader extends URLClassLoader {
-        ResourceHidingClassLoader(URL[] urls, ClassLoader parent) {
-            super(urls, parent);
+    private static class ResourceHidingClassLoader extends ClassLoader {
+        private final ClassLoader sourceClassLoader;
+
+        ResourceHidingClassLoader(ClassLoader parent) {
+            super(parent);
+            sourceClassLoader = parent;
         }
 
         @Override
@@ -100,7 +99,7 @@ public class NexusAccessorInnerDispatcherInnerCreationActionTest {
                 if (ISOLATED_TYPES.contains(name)) {
                     Class<?> type = findLoadedClass(name);
                     if (type == null) {
-                        type = findClass(name);
+                        type = defineIsolatedClass(name);
                     }
                     if (resolve) {
                         resolveClass(type);
@@ -111,8 +110,23 @@ public class NexusAccessorInnerDispatcherInnerCreationActionTest {
             }
         }
 
+        private Class<?> defineIsolatedClass(String name) throws ClassNotFoundException {
+            String resourceName = name.replace('.', '/') + ".class";
+            try (InputStream resource = sourceClassLoader.getResourceAsStream(resourceName)) {
+                if (resource == null) {
+                    throw new ClassNotFoundException(name);
+                }
+                byte[] classBytes = resource.readAllBytes();
+                return defineClass(name, classBytes, 0, classBytes.length);
+            } catch (ClassNotFoundException exception) {
+                throw exception;
+            } catch (Exception exception) {
+                throw new ClassNotFoundException(name, exception);
+            }
+        }
+
         @Override
-        public URL getResource(String name) {
+        public java.net.URL getResource(String name) {
             return NEXUS_RESOURCE.equals(name)
                     ? null
                     : super.getResource(name);
@@ -123,6 +137,10 @@ public class NexusAccessorInnerDispatcherInnerCreationActionTest {
             return NEXUS_RESOURCE.equals(name)
                     ? null
                     : super.getResourceAsStream(name);
+        }
+
+        void close() {
+            /* no resources to close */
         }
     }
 

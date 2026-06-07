@@ -31,7 +31,11 @@ public class TypeDescriptionInnerGenericInnerAnnotationReaderInnerForOwnerTypeTe
 
         assertThat(nestedType.asErasure().represents(Owner.Nested.class)).isTrue();
         assertThat(ownerType.asErasure().represents(Owner.class)).isTrue();
-        assertThat(ownerType.getDeclaredAnnotations().isAnnotationPresent(OwnerTypeMarker.class)).isTrue();
+        assertThat(((java.util.function.Supplier<net.bytebuddy.description.annotation.AnnotationList>) ownerType::getDeclaredAnnotations)
+                .get()
+                .ofType(OwnerTypeMarker.class)
+                .getAnnotationType()
+                .represents(OwnerTypeMarker.class)).isTrue();
     }
 
     @Target(ElementType.TYPE_USE)

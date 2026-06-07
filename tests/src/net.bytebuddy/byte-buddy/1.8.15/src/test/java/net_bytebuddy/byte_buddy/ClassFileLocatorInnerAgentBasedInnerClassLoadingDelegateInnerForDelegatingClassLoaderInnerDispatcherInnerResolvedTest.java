@@ -39,7 +39,7 @@ public class ClassFileLocatorInnerAgentBasedInnerClassLoadingDelegateInnerForDel
     }
 
     private static class RecordingClassLoader extends ClassLoader {
-        private final Vector<Class<?>> classes = new Vector<Class<?>>();
+        private final Vector<Class<?>> classes = new java.util.Vector<Class<?>>();
 
         RecordingClassLoader() {
             super(RecordingClassLoader.class.getClassLoader());

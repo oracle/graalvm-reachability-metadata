@@ -24,7 +24,11 @@ public class TypeDescriptionInnerGenericInnerAnnotationReaderInnerDispatcherInne
         TypeDescription.Generic superClass = typeDescription.getSuperClass();
 
         assertThat(superClass.asErasure().represents(MarkedSuperClass.class)).isTrue();
-        assertThat(superClass.getDeclaredAnnotations().isAnnotationPresent(SuperClassMarker.class)).isTrue();
+        assertThat(((java.util.function.Supplier<net.bytebuddy.description.annotation.AnnotationList>) superClass::getDeclaredAnnotations)
+                .get()
+                .ofType(SuperClassMarker.class)
+                .getAnnotationType()
+                .represents(SuperClassMarker.class)).isTrue();
     }
 
     @Target(ElementType.TYPE_USE)

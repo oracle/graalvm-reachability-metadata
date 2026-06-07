@@ -25,7 +25,11 @@ public class TypeDescriptionInnerGenericInnerAnnotationReaderInnerForTypeVariabl
 
         assertThat(typeVariable.getSymbol()).isEqualTo("T");
         assertThat(bound.asErasure().represents(Number.class)).isTrue();
-        assertThat(bound.getDeclaredAnnotations().isAnnotationPresent(FormalTypeVariableBoundMarker.class)).isTrue();
+        assertThat(((java.util.function.Supplier<net.bytebuddy.description.annotation.AnnotationList>) bound::getDeclaredAnnotations)
+                .get()
+                .ofType(FormalTypeVariableBoundMarker.class)
+                .getAnnotationType()
+                .represents(FormalTypeVariableBoundMarker.class)).isTrue();
     }
 
     @Target(ElementType.TYPE_USE)

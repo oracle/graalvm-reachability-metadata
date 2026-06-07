@@ -32,7 +32,11 @@ public class TypeDescriptionInnerGenericInnerAnnotationReaderInnerForTypeArgumen
 
         assertThat(parameterizedType.asErasure().represents(List.class)).isTrue();
         assertThat(typeArgument.asErasure().represents(String.class)).isTrue();
-        assertThat(typeArgument.getDeclaredAnnotations().isAnnotationPresent(TypeArgumentMarker.class)).isTrue();
+        assertThat(((java.util.function.Supplier<net.bytebuddy.description.annotation.AnnotationList>) typeArgument::getDeclaredAnnotations)
+                .get()
+                .ofType(TypeArgumentMarker.class)
+                .getAnnotationType()
+                .represents(TypeArgumentMarker.class)).isTrue();
     }
 
     @Target(ElementType.TYPE_USE)

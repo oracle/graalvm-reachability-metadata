@@ -31,7 +31,11 @@ public class TypeDescriptionInnerGenericInnerAnnotationReaderInnerForComponentTy
 
         assertThat(arrayType.asErasure().represents(String[].class)).isTrue();
         assertThat(componentType.asErasure().represents(String.class)).isTrue();
-        assertThat(componentType.getDeclaredAnnotations().isAnnotationPresent(ComponentMarker.class)).isTrue();
+        assertThat(((java.util.function.Supplier<net.bytebuddy.description.annotation.AnnotationList>) componentType::getDeclaredAnnotations)
+                .get()
+                .ofType(ComponentMarker.class)
+                .getAnnotationType()
+                .represents(ComponentMarker.class)).isTrue();
     }
 
     @Target(ElementType.TYPE_USE)

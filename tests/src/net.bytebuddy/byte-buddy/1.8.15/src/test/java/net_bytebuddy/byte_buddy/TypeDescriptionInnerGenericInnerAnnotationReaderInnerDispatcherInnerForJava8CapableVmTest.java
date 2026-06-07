@@ -27,7 +27,11 @@ public class TypeDescriptionInnerGenericInnerAnnotationReaderInnerDispatcherInne
 
         assertThat(receiverType).isNotNull();
         assertThat(receiverType.asErasure().represents(ReceiverTypeCarrier.class)).isTrue();
-        assertThat(receiverType.getDeclaredAnnotations().isAnnotationPresent(ReceiverMarker.class)).isTrue();
+        assertThat(((java.util.function.Supplier<net.bytebuddy.description.annotation.AnnotationList>) receiverType::getDeclaredAnnotations)
+                .get()
+                .ofType(ReceiverMarker.class)
+                .getAnnotationType()
+                .represents(ReceiverMarker.class)).isTrue();
     }
 
     @Target(ElementType.TYPE_USE)

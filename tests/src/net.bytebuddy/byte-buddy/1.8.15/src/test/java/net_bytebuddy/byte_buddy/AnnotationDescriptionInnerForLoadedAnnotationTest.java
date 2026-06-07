@@ -23,7 +23,7 @@ public class AnnotationDescriptionInnerForLoadedAnnotationTest {
     @Test
     void describesLoadedNestedAnnotationAsAnnotationValue() throws Exception {
         NestedAnnotation annotation = AnnotatedCarrier.class
-                .getAnnotation(CarrierAnnotation.class)
+                .getDeclaredAnnotationsByType(CarrierAnnotation.class)[0]
                 .nested();
 
         AnnotationValue<?, ?> value = AnnotationDescription.ForLoadedAnnotation.asValue(
@@ -40,7 +40,7 @@ public class AnnotationDescriptionInnerForLoadedAnnotationTest {
 
     @Test
     void readsAnnotationPropertyUsingLatentMethodDescription() {
-        CarrierAnnotation annotation = AnnotatedCarrier.class.getAnnotation(CarrierAnnotation.class);
+        CarrierAnnotation annotation = AnnotatedCarrier.class.getDeclaredAnnotationsByType(CarrierAnnotation.class)[0];
         AnnotationDescription description = AnnotationDescription.ForLoadedAnnotation.of(annotation);
         MethodDescription.InDefinedShape property = new MethodDescription.Latent(
                 TypeDescription.ForLoadedType.of(CarrierAnnotation.class),

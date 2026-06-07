@@ -1,0 +1,517 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-6f61ab0c
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ea0bd-0531-7c50-acae-aae8520803ac
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: net.bytebuddy:byte-buddy:1.8.15
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [1.8.15].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-6f61ab0c/metadata/net.bytebuddy/byte-buddy/index.json
+- Entry selector: "metadata-version" = "1.8.15"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy/$version$/byte-buddy-$version$-sources.jar
+- repository-url: https://github.com/raphw/byte-buddy
+- test-code-url: https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-dep/src/test
+- documentation-url: https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy/$version$/byte-buddy-$version$-javadoc.jar
+- description: Byte Buddy is a Java library for creating and modifying Java classes at run time without requiring a compiler. This artifact packages Byte Buddy with ASM dependencies shaded into Byte Buddy's namespace so applications can use runtime bytecode generation with fewer dependency conflicts.
+- language: <missing>
+
+Context:
+- Coordinate version: 1.8.15
+- Entry metadata-version: 1.8.15
+- Entry test-version: 1.8.15
+- Entry tested-versions: [1.8.15]
+codex
+I’ll verify the existing versioned URLs against the actual artifacts/tags first, then inspect the JSON entry and only patch fields that are missing under the rules.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"|source-code-url|repository-url|test-code-url|documentation-url|description|language|tested-versions|test-version' metadata/net.bytebuddy/byte-buddy/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-6f61ab0c
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-6f61ab0c
+4:    "metadata-version" : "1.8.15",
+5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy/$version$/byte-buddy-$version$-sources.jar",
+6:    "repository-url" : "https://github.com/raphw/byte-buddy",
+7:    "test-code-url" : "https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-dep/src/test",
+8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy/$version$/byte-buddy-$version$-javadoc.jar",
+9:    "description" : "Byte Buddy is a Java library for creating and modifying Java classes at run time without requiring a compiler. This artifact packages Byte Buddy with ASM dependencies shaded into Byte Buddy's namespace so applications can use runtime bytecode generation with fewer dependency conflicts.",
+10:    "tested-versions" : [
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy/1.8.15/byte-buddy-1.8.15-sources.jar \\
+  https://github.com/raphw/byte-buddy \\
+  https://github.com/raphw/byte-buddy/tree/byte-buddy-1.8.15/byte-buddy-dep/src/test \\
+  https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy/1.8.15/byte-buddy-1.8.15-javadoc.jar; do
+  printf '%s\\n' \""'$url"
+  curl -L -I --max-time 20 -o /dev/null -w '"'%{http_code} %{url_effective}\\n' \""'$url"
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-6f61ab0c
+ succeeded in 1207ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+200 https://github.com/raphw/byte-buddy
+https://github.com/raphw/byte-buddy/tree/byte-buddy-1.8.15/byte-buddy-dep/src/test
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+200 https://github.com/raphw/byte-buddy/tree/byte-buddy-1.8.15/byte-buddy-dep/src/test
+https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy/1.8.15/byte-buddy-1.8.15-javadoc.jar
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0 11.6M    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+200 https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy/1.8.15/byte-buddy-1.8.15-javadoc.jar
+
+codex
+The entry already has non-blank source, repository, test, documentation, and description fields. I’m waiting on the URL checks so I can confirm whether any existing template is stale or invalid before deciding whether a patch is actually needed.
+web search: 
+web search: https://github.com/raphw/byte-buddy/tree/byte-buddy-1.8.15/byte-buddy-dep/src/test
+web search: 
+web search: Maven Central net.bytebuddy byte-buddy 1.8.15 sources javadoc jar
+codex
+Maven Central exposes the sources and javadoc artifacts for `1.8.15`, and the GitHub tag path for the test suite resolves. I’m also checking whether Maven publishes a tests/test-sources artifact so we do not miss a preferred test URL.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"1.8.15\")' metadata/net.bytebuddy/byte-buddy/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-6f61ab0c
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "1.8.15",
+  "source-code-url": "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy/$version$/byte-buddy-$version$-sources.jar",
+  "repository-url": "https://github.com/raphw/byte-buddy",
+  "test-code-url": "https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-dep/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy/$version$/byte-buddy-$version$-javadoc.jar",
+  "description": "Byte Buddy is a Java library for creating and modifying Java classes at run time without requiring a compiler. This artifact packages Byte Buddy with ASM dependencies shaded into Byte Buddy's namespace so applications can use runtime bytecode generation with fewer dependency conflicts.",
+  "tested-versions": [
+    "1.8.15"
+  ],
+  "allowed-packages": [
+    "net.bytebuddy"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/net.bytebuddy/byte-buddy/index.json && git diff -- metadata/net.bytebuddy/byte-buddy/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-6f61ab0c
+ succeeded in 0ms:
+?? metadata/net.bytebuddy/byte-buddy/index.json
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy/1.8.15/byte-buddy-1.8.15-tests.jar \\
+  https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy/1.8.15/byte-buddy-1.8.15-test-sources.jar; do
+  printf '%s\\n' \""'$url"
+  curl -L -I --max-time 20 -o /dev/null -w '"'%{http_code} %{url_effective}\\n' \""'$url"
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-6f61ab0c
+ succeeded in 678ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+404 https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy/1.8.15/byte-buddy-1.8.15-tests.jar
+https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy/1.8.15/byte-buddy-1.8.15-test-sources.jar
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+404 https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy/1.8.15/byte-buddy-1.8.15-test-sources.jar
+
+web search: 
+web search: https://github.com/raphw/byte-buddy/tree/byte-buddy-1.8.15/byte-buddy-dep/src/test
+web search: 
+web search: https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy/1.8.15/byte-buddy-1.8.15-sources.jar
+web search: 
+web search: https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy/1.8.15/
+exec
+/usr/bin/bash -lc "curl -L --max-time 20 -s https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy/1.8.15/byte-buddy-1.8.15.pom | sed -n '1,180p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-6f61ab0c
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>byte-buddy-parent</artifactId>
+    <groupId>net.bytebuddy</groupId>
+    <version>1.8.15</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>byte-buddy</artifactId>
+  <name>Byte Buddy (without dependencies)</name>
+  <description>Byte Buddy is a Java library for creating Java classes at run time.
+        This artifact is a build of Byte Buddy with all ASM dependencies repackaged into its own name space.</description>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>${version.plugin.shade}</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <shadedArtifactAttached>false</shadedArtifactAttached>
+              <createDependencyReducedPom>true</createDependencyReducedPom>
+              <createSourcesJar>true</createSourcesJar>
+              <shadeSourcesContent>true</shadeSourcesContent>
+              <relocations>
+                <relocation>
+                  <pattern>${shade.source}</pattern>
+                  <shadedPattern>${shade.target}</shadedPattern>
+                </relocation>
+              </relocations>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>module-info.class</exclude>
+                  </excludes>
+                </filter>
+                <filter>
+                  <artifact>org.ow2.asm:asm-commons</artifact>
+                  <includes>
+                    <include>org/objectweb/asm/commons/Remapper.class</include>
+                    <include>org/objectweb/asm/commons/ClassRemapper.class</include>
+                    <include>org/objectweb/asm/commons/FieldRemapper.class</include>
+                    <include>org/objectweb/asm/commons/MethodRemapper.class</include>
+                    <include>org/objectweb/asm/commons/AnnotationRemapper.class</include>
+                    <include>org/objectweb/asm/commons/ModuleRemapper.class</include>
+                    <include>org/objectweb/asm/commons/SimpleRemapper.class</include>
+                  </includes>
+                </filter>
+              </filters>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>${version.asm}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-commons</artifactId>
+            <version>${version.asm}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.pitest</groupId>
+        <artifactId>pitest-maven</artifactId>
+        <version>${version.plugin.pitest}</version>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${version.plugin.jar}</version>
+        <configuration>
+          <archive>
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>${version.plugin.bundle}</version>
+        <executions>
+          <execution>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <instructions>
+            <Export-Package>net.bytebuddy,
+                            net.bytebuddy.agent.builder,
+                            net.bytebuddy.asm,
+                            net.bytebuddy.build,
+                            net.bytebuddy.description,
+                            net.bytebuddy.description.annotation,
+                            net.bytebuddy.description.enumeration,
+                            net.bytebuddy.description.field,
+                            net.bytebuddy.description.method,
+                            net.bytebuddy.description.modifier,
+                            net.bytebuddy.description.type,
+                            net.bytebuddy.dynamic,
+                            net.bytebuddy.dynamic.loading,
+                            net.bytebuddy.dynamic.scaffold,
+                            net.bytebuddy.dynamic.scaffold.inline,
+                            net.bytebuddy.dynamic.scaffold.subclass,
+                            net.bytebuddy.implementation,
+                            net.bytebuddy.implementation.attribute,
+                            net.bytebuddy.implementation.auxiliary,
+                            net.bytebuddy.implementation.bind,
+                            net.bytebuddy.implementation.bind.annotation,
+                            net.bytebuddy.implementation.bytecode,
+                            net.bytebuddy.implementation.bytecode.assign,
+                            net.bytebuddy.implementation.bytecode.assign.primitive,
+                            net.bytebuddy.implementation.bytecode.assign.reference,
+                            net.bytebuddy.implementation.bytecode.collection,
+                            net.bytebuddy.implementation.bytecode.constant,
+                            net.bytebuddy.implementation.bytecode.member,
+                            net.bytebuddy.matcher,
+                            net.bytebuddy.pool,
+                            net.bytebuddy.utility,
+                            net.bytebuddy.utility.privilege,
+                            net.bytebuddy.utility.visitor,
+                            ${shade.target}</Export-Package>
+            <Automatic-Module-Name>${project.groupId}</Automatic-Module-Name>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <profile>
+      <id>extras</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.10.4</version>
+            <executions>
+              <execution>
+                <id>attach-javadoc</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+                <configuration>
+                  <includeDependencySources>true</includeDependencySources>
+                  <dependencySourceIncludes>
+                    <dependencySourceInclude>net.bytebuddy:byte-buddy-dep</dependencySourceInclude>
+                  </dependencySourceIncludes>
+                  <detectJavaApiLink>true</detectJavaApiLink>
+                  <links>
+                    <link>http://asm.ow2.io/javadoc</link>
+                  </links>
+                </configuration>
+              </execution>
+              <execution>
+                <id>aggregate-javadoc</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>aggregate</goal>
+                </goals>
+                <configuration>
+                  <doctitle>Byte Buddy (full API), version 1.8.15</doctitle>
+                  <failOnError>false</failOnError>
+                  <includeDependencySources>true</includeDependencySources>
+                  <dependencySourceIncludes>
+                    <dependencySourceInclude>net.bytebuddy:byte-buddy-dep</dependencySourceInclude>
+                  </dependencySourceIncludes>
+                  <detectJavaApiLink>true</detectJavaApiLink>
+
+exec
+/usr/bin/bash -lc "curl -L --max-time 20 -s https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-dep/1.8.15/byte-buddy-dep-1.8.15.pom | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-6f61ab0c
+ succeeded in 252ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>net.bytebuddy</groupId>
+        <artifactId>byte-buddy-parent</artifactId>
+        <version>1.8.15</version>
+    </parent>
+
+    <artifactId>byte-buddy-dep</artifactId>
+    <packaging>jar</packaging>
+
+    <name>Byte Buddy (with dependencies)</name>
+    <description>
+        Byte Buddy is a Java library for creating Java classes at run time.
+        This artifact is a build of Byte Buddy with a remaining dependency onto ASM.
+        You should never depend on this module without repackaging Byte Buddy and ASM into your own namespace.
+    </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>${version.asm}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-commons</artifactId>
+            <version>${version.asm}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.ow2.asm</groupId>
+                    <artifactId>asm-analysis</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.ow2.asm</groupId>
+                    <artifactId>asm-tree</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${version.junit}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${version.mockito}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.bytebuddy</groupId>
+                    <artifactId>byte-buddy</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.bytebuddy</groupId>
+                    <artifactId>byte-buddy-agent</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-util</artifactId>
+            <version>${version.asm}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-analysis</artifactId>
+            <version>${version.asm}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>byte-buddy-agent</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy-maven-plugin</artifactId>
+                <version>1.8.11</version>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>transform</goal>
+                        </goals>
+                        <configuration>
+                            <initialization>
+                                <entryPoint>REDEFINE</entryPoint>
+                            </initialization>
+                            <transformations>
+                                <transformation>
+                                    <groupId>net.bytebuddy</groupId>
+                                    <artifactId>byte-buddy</artifactId>
+                                    <version>1.8.11</version>
+                                    <plugin>net.bytebuddy.build.HashCodeAndEqualsPlugin$WithNonNullableFields</plugin>
+                                </transformation>
+                            </transformations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+codex
+Checked [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-6f61ab0c/metadata/net.bytebuddy/byte-buddy/index.json:4). No file change was needed: all target fields except `language` were already non-blank and valid for `1.8.15`, and `net.bytebuddy:byte-buddy` is not Kotlin, Groovy, or Scala-specific, so `language` must remain absent.
+
+Selected values:
+- `repository-url`: `https://github.com/raphw/byte-buddy`
+- `source-code-url`: Maven sources jar template already present
+- `test-code-url`: GitHub tag test suite template already present; Maven `tests` and `test-sources` jars returned 404
+- `documentation-url`: Maven javadoc jar template already present
+- `description`: already exactly two sentences and appropriate
+
+Verification: rendered URLs for `1.8.15` returned HTTP 200, JSON parsed with `jq`.
+tokens used
+48,313
+Checked [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-6f61ab0c/metadata/net.bytebuddy/byte-buddy/index.json:4). No file change was needed: all target fields except `language` were already non-blank and valid for `1.8.15`, and `net.bytebuddy:byte-buddy` is not Kotlin, Groovy, or Scala-specific, so `language` must remain absent.
+
+Selected values:
+- `repository-url`: `https://github.com/raphw/byte-buddy`
+- `source-code-url`: Maven sources jar template already present
+- `test-code-url`: GitHub tag test suite template already present; Maven `tests` and `test-sources` jars returned 404
+- `documentation-url`: Maven javadoc jar template already present
+- `description`: already exactly two sentences and appropriate
+
+Verification: rendered URLs for `1.8.15` returned HTTP 200, JSON parsed with `jq`.
+Ran agent for net.bytebuddy:byte-buddy:1.8.15 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-6f61ab0c/build/agent-url-discovery-logs/net.bytebuddy-byte-buddy-1.8.15.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1458-6f61ab0c/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 7s
+9 actionable tasks: 1 executed, 8 up-to-date
