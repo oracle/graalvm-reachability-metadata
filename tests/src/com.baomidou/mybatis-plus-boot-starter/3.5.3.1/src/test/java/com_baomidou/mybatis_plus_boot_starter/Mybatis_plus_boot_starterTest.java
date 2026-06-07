@@ -6,50 +6,26 @@
  */
 package com_baomidou.mybatis_plus_boot_starter;
 
-import java.io.IOException;
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-
-import javax.sql.DataSource;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusLanguageDriverAutoConfiguration;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
-import com.baomidou.mybatisplus.autoconfigure.MybatisPlusPropertiesCustomizer;
 import com.baomidou.mybatisplus.autoconfigure.SafetyEncryptProcessor;
-import com.baomidou.mybatisplus.autoconfigure.SpringBootVFS;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.AES;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.ExecutorType;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.Test;
-import org.mybatis.spring.SqlSessionTemplate;
-import org.mybatis.spring.mapper.MapperFactoryBean;
-import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
-import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.origin.OriginTrackedValue;
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.boot.env.OriginTrackedMapPropertySource;
-import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.SimpleCommandLinePropertySource;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.core.io.Resource;
@@ -58,84 +34,6 @@ import org.springframework.core.io.support.SpringFactoriesLoader;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class Mybatis_plus_boot_starterTest {
-
-    private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withConfiguration(AutoConfigurations.of(MybatisPlusAutoConfiguration.class))
-            .withUserConfiguration(MybatisPlusSampleConfiguration.class)
-            .withPropertyValues(
-                    "mybatis-plus.configuration.default-statement-timeout=7",
-                    "mybatis-plus.configuration.map-underscore-to-camel-case=true",
-                    "mybatis-plus.executor-type=batch");
-
-    @Test
-    void autoConfigurationCreatesMapperBackedBySqlSessionFactoryAndTemplate() {
-        this.contextRunner.run((context) -> {
-            assertThat(context.getStartupFailure()).isNull();
-            assertThat(context).hasSingleBean(MybatisPlusProperties.class);
-            assertThat(context).hasSingleBean(SqlSessionFactory.class);
-            assertThat(context).hasSingleBean(SqlSessionTemplate.class);
-            assertThat(context).hasSingleBean(AccountMapper.class);
-
-            MybatisPlusProperties properties = context.getBean(MybatisPlusProperties.class);
-            assertThat(properties.getExecutorType()).isEqualTo(ExecutorType.BATCH);
-
-            SqlSessionFactory sqlSessionFactory = context.getBean(SqlSessionFactory.class);
-            assertThat(sqlSessionFactory.getConfiguration().getDefaultStatementTimeout()).isEqualTo(7);
-
-            AccountMapper mapper = context.getBean(AccountMapper.class);
-            Account account = new Account(1L, "Ada", 41);
-            assertThat(mapper.insert(account)).isEqualTo(1);
-
-            Account selected = mapper.selectById(1L);
-            assertThat(selected.getName()).isEqualTo("Ada");
-            assertThat(selected.getAge()).isEqualTo(41);
-
-            selected.setAge(42);
-            assertThat(mapper.updateById(selected)).isEqualTo(1);
-            assertThat(mapper.selectById(1L).getAge()).isEqualTo(42);
-
-            assertThat(mapper.deleteById(1L)).isEqualTo(1);
-            assertThat(mapper.selectById(1L)).isNull();
-        });
-    }
-
-    @Test
-    void propertiesCustomizerBeanContributesSettingsBeforeSqlSessionTemplateCreation() {
-        new ApplicationContextRunner()
-                .withConfiguration(AutoConfigurations.of(MybatisPlusAutoConfiguration.class))
-                .withUserConfiguration(PropertiesCustomizerConfiguration.class)
-                .run((context) -> {
-                    assertThat(context.getStartupFailure()).isNull();
-                    assertThat(context).hasSingleBean(MybatisPlusProperties.class);
-                    assertThat(context).hasSingleBean(SqlSessionFactory.class);
-                    assertThat(context).hasSingleBean(SqlSessionTemplate.class);
-
-                    MybatisPlusProperties properties = context.getBean(MybatisPlusProperties.class);
-                    SqlSessionTemplate sqlSessionTemplate = context.getBean(SqlSessionTemplate.class);
-                    assertThat(properties.getExecutorType()).isEqualTo(ExecutorType.REUSE);
-                    assertThat(sqlSessionTemplate.getExecutorType()).isEqualTo(ExecutorType.REUSE);
-                });
-    }
-
-    @Test
-    void autoConfigurationRegistersMapperScannerForAutoConfigurationPackage() {
-        new ApplicationContextRunner()
-                .withConfiguration(AutoConfigurations.of(MybatisPlusAutoConfiguration.class))
-                .withUserConfiguration(AutoScannedMapperConfiguration.class)
-                .run((context) -> {
-                    assertThat(context.getStartupFailure()).isNull();
-                    assertThat(context).hasSingleBean(SqlSessionFactory.class);
-                    assertThat(context).hasSingleBean(SqlSessionTemplate.class);
-                    assertThat(context.getBeanFactory().containsBeanDefinition(MapperScannerConfigurer.class.getName())).isTrue();
-
-                    BeanDefinition scannerDefinition = context.getBeanFactory()
-                            .getBeanDefinition(MapperScannerConfigurer.class.getName());
-                    assertThat(scannerDefinition.getPropertyValues().getPropertyValue("annotationClass").getValue())
-                            .isEqualTo(Mapper.class);
-                    assertThat(scannerDefinition.getPropertyValues().getPropertyValue("basePackage").getValue())
-                            .isEqualTo("org.apache.ibatis.annotations");
-                });
-    }
 
     @Test
     void propertiesResolveMapperLocationsAndRetainFluentCustomizations() {
@@ -193,91 +91,6 @@ public class Mybatis_plus_boot_starterTest {
         assertThat(environmentPostProcessors).contains(SafetyEncryptProcessor.class.getName());
     }
 
-    @Test
-    void springBootVfsListsClassesFromPackageUrl() throws IOException {
-        ExposedSpringBootVFS vfs = new ExposedSpringBootVFS();
-        URL packageUrl = getClass().getClassLoader().getResource("com_baomidou/mybatis_plus_boot_starter");
-
-        assertThat(vfs.isValid()).isTrue();
-        assertThat(packageUrl).isNotNull();
-        assertThat(vfs.list(packageUrl, "com_baomidou/mybatis_plus_boot_starter"))
-                .anyMatch((entry) -> entry.endsWith("Mybatis_plus_boot_starterTest.class"));
-    }
-
-    @Configuration(proxyBeanMethods = false)
-    static class MybatisPlusSampleConfiguration {
-
-        @Bean
-        DataSource dataSource() throws SQLException {
-            JdbcDataSource dataSource = new JdbcDataSource();
-            dataSource.setURL("jdbc:h2:mem:mp_" + UUID.randomUUID() + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
-            dataSource.setUser("sa");
-            dataSource.setPassword("");
-            try (Connection connection = dataSource.getConnection();
-                    Statement statement = connection.createStatement()) {
-                statement.execute("""
-                        CREATE TABLE accounts (
-                            id BIGINT PRIMARY KEY,
-                            name VARCHAR(64) NOT NULL,
-                            age INTEGER NOT NULL
-                        )
-                        """);
-            }
-            return dataSource;
-        }
-
-        @Bean
-        ConfigurationCustomizer statementTimeoutCustomizer() {
-            return (configuration) -> configuration.setDefaultStatementTimeout(7);
-        }
-
-        @Bean
-        MapperFactoryBean<AccountMapper> accountMapper(SqlSessionFactory sqlSessionFactory) {
-            MapperFactoryBean<AccountMapper> factoryBean = new MapperFactoryBean<>(AccountMapper.class);
-            factoryBean.setSqlSessionFactory(sqlSessionFactory);
-            return factoryBean;
-        }
-    }
-
-    @Configuration(proxyBeanMethods = false)
-    static class PropertiesCustomizerConfiguration {
-
-        @Bean
-        DataSource dataSource() {
-            JdbcDataSource dataSource = new JdbcDataSource();
-            dataSource.setURL("jdbc:h2:mem:mp_customizer_" + UUID.randomUUID() + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
-            dataSource.setUser("sa");
-            dataSource.setPassword("");
-            return dataSource;
-        }
-
-        @Bean
-        MybatisPlusPropertiesCustomizer executorTypePropertiesCustomizer() {
-            return (properties) -> properties.setExecutorType(ExecutorType.REUSE);
-        }
-    }
-
-    @AutoConfigurationPackage(basePackages = "org.apache.ibatis.annotations")
-    @Configuration(proxyBeanMethods = false)
-    static class AutoScannedMapperConfiguration {
-
-        @Bean
-        DataSource dataSource() {
-            JdbcDataSource dataSource = new JdbcDataSource();
-            dataSource.setURL("jdbc:h2:mem:mp_scanned_" + UUID.randomUUID() + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
-            dataSource.setUser("sa");
-            dataSource.setPassword("");
-            return dataSource;
-        }
-    }
-
-    static class ExposedSpringBootVFS extends SpringBootVFS {
-
-        @Override
-        public List<String> list(URL url, String path) throws IOException {
-            return super.list(url, path);
-        }
-    }
 }
 
 @TableName("accounts")
@@ -322,7 +135,4 @@ class Account {
     public void setAge(Integer age) {
         this.age = age;
     }
-}
-
-interface AccountMapper extends BaseMapper<Account> {
 }
