@@ -8,19 +8,30 @@ package com_networknt.json_schema_validator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import com.networknt.schema.AbsoluteIri;
-import com.networknt.schema.resource.ClasspathSchemaLoader;
+import com.networknt.schema.resource.ClasspathResourceLoader;
 import com.networknt.schema.resource.InputStreamSource;
 import org.junit.jupiter.api.Test;
 
-public class ClasspathSchemaLoaderTest {
+public class ClasspathResourceLoaderTest {
+    private static final String SCHEMA = """
+            {
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" }
+              }
+            }
+            """;
+
     @Test
     void loadsClasspathSchemaWhenResourcePathStartsWithSlash() throws Exception {
-        ClasspathSchemaLoader loader = new ClasspathSchemaLoader();
-        InputStreamSource source = loader.getSchema(
+        ClasspathResourceLoader loader = new ClasspathResourceLoader(ClasspathResourceLoaderTest::schemaClassLoader);
+        InputStreamSource source = loader.getResource(
                 AbsoluteIri.of("classpath:/schemas/classpath-loader-schema.json"));
 
         assertThat(source).isNotNull();
@@ -33,8 +44,8 @@ public class ClasspathSchemaLoaderTest {
 
     @Test
     void loadsClasspathSchemaWhenResourcePathHasNoLeadingSlash() throws Exception {
-        ClasspathSchemaLoader loader = new ClasspathSchemaLoader();
-        InputStreamSource source = loader.getSchema(
+        ClasspathResourceLoader loader = new ClasspathResourceLoader(ClasspathResourceLoaderTest::schemaClassLoader);
+        InputStreamSource source = loader.getResource(
                 AbsoluteIri.of("resource:schemas/classpath-loader-schema.json"));
 
         assertThat(source).isNotNull();
@@ -43,5 +54,17 @@ public class ClasspathSchemaLoaderTest {
 
             assertThat(schema).contains("properties", "name", "string");
         }
+    }
+
+    private static ClassLoader schemaClassLoader() {
+        return new ClassLoader(ClasspathResourceLoaderTest.class.getClassLoader()) {
+            @Override
+            public InputStream getResourceAsStream(String name) {
+                if ("schemas/classpath-loader-schema.json".equals(name)) {
+                    return new ByteArrayInputStream(SCHEMA.getBytes(StandardCharsets.UTF_8));
+                }
+                return super.getResourceAsStream(name);
+            }
+        };
     }
 }

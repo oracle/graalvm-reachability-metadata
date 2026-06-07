@@ -20,9 +20,9 @@ public class ResourceBundleMessageSourceTest {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource(
                 DefaultMessageSource.BUNDLE_BASE_NAME);
 
-        String message = messageSource.getMessage("type", Locale.ROOT, "$.enabled", "boolean", "string");
+        String message = messageSource.getMessage("type", Locale.ROOT, "boolean", "string");
 
-        assertThat(message).isEqualTo("$.enabled: boolean found, string expected");
+        assertThat(message).isEqualTo("boolean found, string expected");
     }
 
     @Test
