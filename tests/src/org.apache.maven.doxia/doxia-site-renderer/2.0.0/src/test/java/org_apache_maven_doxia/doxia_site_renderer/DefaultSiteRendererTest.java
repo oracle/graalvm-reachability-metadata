@@ -8,59 +8,53 @@ package org_apache_maven_doxia.doxia_site_renderer;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 
-import org.apache.maven.doxia.site.decoration.DecorationModel;
-import org.apache.maven.doxia.site.decoration.PublishDate;
+import org.apache.maven.doxia.site.PublishDate;
+import org.apache.maven.doxia.site.SiteModel;
 import org.apache.maven.doxia.siterenderer.DefaultSiteRenderer;
-import org.apache.maven.doxia.siterenderer.RenderingContext;
+import org.apache.maven.doxia.siterenderer.DocumentRenderingContext;
 import org.apache.maven.doxia.siterenderer.SiteRenderingContext;
 import org.apache.velocity.context.Context;
-import org.codehaus.plexus.logging.Logger;
-import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DefaultSiteRendererTest {
-    private static final List<String> DEFAULT_RESOURCES = List.of(
-            "images/expanded.gif",
-            "images/collapsed.gif",
-            "images/logos/maven-feather.png",
-            "images/logos/build-by-maven-white.png",
-            "images/logos/build-by-maven-black.png",
-            "css/maven-base.css",
-            "css/print.css");
-
     @Test
-    void copyResourcesCopiesBundledDefaultTemplateResources(@TempDir Path temporaryDirectory) throws Exception {
-        DefaultSiteRenderer renderer = new DefaultSiteRenderer();
-        renderer.enableLogging(new ConsoleLogger(Logger.LEVEL_DISABLED, "test"));
-        SiteRenderingContext context = new SiteRenderingContext();
-        context.setUsingDefaultTemplate(true);
+    void copyDirectoryCopiesNestedResources(@TempDir Path temporaryDirectory) throws Exception {
+        ContextExposingSiteRenderer renderer = new ContextExposingSiteRenderer();
+        Path resourcesDirectory = temporaryDirectory.resolve("resources");
+        Path stylesheet = resourcesDirectory.resolve("css/site.css");
+        Path image = resourcesDirectory.resolve("images/logo.txt");
+        Files.createDirectories(stylesheet.getParent());
+        Files.createDirectories(image.getParent());
+        Files.writeString(stylesheet, "body { color: black; }", StandardCharsets.UTF_8);
+        Files.writeString(image, "logo", StandardCharsets.UTF_8);
         File outputDirectory = temporaryDirectory.resolve("site").toFile();
 
-        copyResources(renderer, context, outputDirectory);
+        renderer.copyDirectory(resourcesDirectory.toFile(), outputDirectory);
 
-        for (String defaultResource : DEFAULT_RESOURCES) {
-            assertThat(outputDirectory.toPath().resolve(defaultResource)).isRegularFile();
-        }
+        assertThat(outputDirectory.toPath().resolve("css/site.css"))
+                .isRegularFile()
+                .content(StandardCharsets.UTF_8)
+                .isEqualTo("body { color: black; }");
+        assertThat(outputDirectory.toPath().resolve("images/logo.txt"))
+                .isRegularFile()
+                .content(StandardCharsets.UTF_8)
+                .isEqualTo("logo");
     }
 
     @Test
     void documentVelocityContextIncludesBundledRendererVersion(@TempDir Path temporaryDirectory) {
         ContextExposingSiteRenderer renderer = new ContextExposingSiteRenderer();
-        renderer.enableLogging(new ConsoleLogger(Logger.LEVEL_DISABLED, "test"));
         SiteRenderingContext siteRenderingContext = new SiteRenderingContext();
-        DecorationModel decoration = new DecorationModel();
-        PublishDate publishDate = new PublishDate();
-        publishDate.setFormat("yyyy-MM-dd");
-        decoration.setPublishDate(publishDate);
-        siteRenderingContext.setDecoration(decoration);
-        RenderingContext renderingContext =
-                new RenderingContext(temporaryDirectory.toFile(), "index.apt", "apt", "apt");
+        siteRenderingContext.setSiteModel(createSiteModel());
+        DocumentRenderingContext renderingContext =
+                new DocumentRenderingContext(temporaryDirectory.toFile(), "", "index.apt", "apt", "apt", true);
 
         Context context = renderer.createDocumentContext(renderingContext, siteRenderingContext);
 
@@ -70,16 +64,24 @@ public class DefaultSiteRendererTest {
                 .isNotBlank();
     }
 
-    private static void copyResources(DefaultSiteRenderer renderer, SiteRenderingContext context, File outputDirectory)
-            throws IOException {
-        renderer.copyResources(context, outputDirectory);
+    private static SiteModel createSiteModel() {
+        SiteModel siteModel = new SiteModel();
+        PublishDate publishDate = new PublishDate();
+        publishDate.setFormat("yyyy-MM-dd");
+        publishDate.setTimezone("UTC");
+        siteModel.setPublishDate(publishDate);
+        return siteModel;
     }
 
     private static final class ContextExposingSiteRenderer extends DefaultSiteRenderer {
         private Context createDocumentContext(
-                RenderingContext renderingContext, SiteRenderingContext siteRenderingContext) {
+                DocumentRenderingContext renderingContext, SiteRenderingContext siteRenderingContext) {
             return createDocumentVelocityContext(renderingContext, siteRenderingContext);
         }
-    }
 
+        @Override
+        public void copyDirectory(File source, File destination) throws IOException {
+            super.copyDirectory(source, destination);
+        }
+    }
 }

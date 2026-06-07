@@ -6,14 +6,15 @@
  */
 package org_apache_maven_doxia.doxia_site_renderer;
 
-import org.apache.maven.doxia.siterenderer.Renderer;
+import org.apache.maven.doxia.siterenderer.DefaultSiteRenderer;
+import org.apache.maven.doxia.siterenderer.SiteRenderer;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class RendererAnonymous1Test {
     @Test
-    void rendererRoleUsesRendererClassName() {
-        assertThat(Renderer.ROLE).isEqualTo(Renderer.class.getName());
+    void defaultSiteRendererImplementsSiteRendererApi() {
+        assertThat(SiteRenderer.class).isAssignableFrom(DefaultSiteRenderer.class);
     }
 }
