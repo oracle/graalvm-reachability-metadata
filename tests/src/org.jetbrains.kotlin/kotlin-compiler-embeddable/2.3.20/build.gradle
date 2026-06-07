@@ -25,6 +25,15 @@ compileTestKotlin {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs(
+                    "--exclude-config",
+                    ".*kotlin-compiler-embeddable.*",
+                    ".*META-INF/native-image/org\\.jline/.*")
+        }
+    }
+
     agent {
         defaultMode = "conditional"
         modes {
