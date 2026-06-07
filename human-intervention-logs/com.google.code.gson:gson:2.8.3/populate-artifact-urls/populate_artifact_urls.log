@@ -1,0 +1,1174 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019e9fe5-7243-7673-8c34-04aa870044f1
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.google.code.gson:gson:2.8.3
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.8.3].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131/metadata/com.google.code.gson/gson/index.json
+- Entry selector: "metadata-version" = "2.8.3"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2.8.3
+- Entry metadata-version: 2.8.3
+- Entry test-version: 2.8.3
+- Entry tested-versions: [2.8.3]
+codex
+I’ll verify the artifact URLs before touching the metadata, then update only the missing fields in the selected `index.json` entry. I’m also checking local patterns first so the values match how this repository models Maven-hosted sources/tests/docs.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"2\\.8\\.3\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/com.google.code.gson/gson/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131
+4:    "metadata-version" : "2.8.3",
+14:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-sources.jar",
+15:    "repository-url" : "https://github.com/google/gson",
+16:    "test-code-url" : "https://github.com/google/gson/tree/gson-$version$/src/test",
+17:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-javadoc.jar",
+18:    "description" : "Gson is a Java library for converting Java objects to and from JSON. It provides object mapping, tree, and streaming APIs for JSON serialization and deserialization.",
+28:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-sources.jar",
+29:    "repository-url" : "https://github.com/google/gson",
+30:    "test-code-url" : "https://github.com/google/gson/tree/gson-$version$/src/test",
+31:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-javadoc.jar",
+32:    "description" : "Gson is a Java library for converting Java objects to and from JSON. It provides object mapping, tree, and streaming APIs for JSON serialization and deserialization.",
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/com.google.code.gson/gson/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.8.3",
+    "tested-versions" : [
+      "2.8.3"
+    ],
+    "allowed-packages" : [
+      "com.google.gson"
+    ]
+  },
+  {
+    "metadata-version" : "2.3",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-sources.jar",
+    "repository-url" : "https://github.com/google/gson",
+    "test-code-url" : "https://github.com/google/gson/tree/gson-$version$/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-javadoc.jar",
+    "description" : "Gson is a Java library for converting Java objects to and from JSON. It provides object mapping, tree, and streaming APIs for JSON serialization and deserialization.",
+    "tested-versions" : [
+      "2.3"
+    ],
+    "allowed-packages" : [
+      "com.google.gson"
+    ]
+  },
+  {
+    "metadata-version" : "2.2.4",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-sources.jar",
+    "repository-url" : "https://github.com/google/gson",
+    "test-code-url" : "https://github.com/google/gson/tree/gson-$version$/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-javadoc.jar",
+    "description" : "Gson is a Java library for converting Java objects to and from JSON. It provides object mapping, tree, and streaming APIs for JSON serialization and deserialization.",
+    "tested-versions" : [
+      "2.2.4"
+    ],
+    "allowed-packages" : [
+      "com.google.gson"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n 'repo1\\.maven\\.org|sources\\.jar|test.*jar|javadoc\\.jar|\"documentation-url\"' metadata -g 'index.json' | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131
+ succeeded in 0ms:
+metadata/io.prometheus/simpleclient_caffeine/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-javadoc.jar",
+metadata/net.postgis/postgis-geometry/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+metadata/net.postgis/postgis-geometry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+metadata/net.postgis/postgis-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+metadata/net.postgis/postgis-jdbc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+metadata/com.comcast/ip4s-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-sources.jar",
+metadata/com.comcast/ip4s-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-sources.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-tests.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.springframework/spring-context-support/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context-support/$version$/spring-context-support-$version$-sources.jar",
+metadata/org.springframework/spring-context-support/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context-support/$version$/spring-context-support-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:40:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:43:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:54:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:57:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:92:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:95:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:109:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:112:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:126:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:129:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:143:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:146:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/javadoc-api/org/springframework/expression/package-summary.html",
+metadata/org.springframework/spring-expression/index.json:160:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:163:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/javadoc-api/org/springframework/expression/package-summary.html",
+metadata/org.springframework/spring-expression/index.json:177:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:180:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:194:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:197:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:211:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:214:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-test/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
+metadata/org.springframework/spring-test/index.json:8:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/javadoc-api/org/springframework/test/package-summary.html",
+metadata/org.springframework/spring-aspects/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+metadata/org.springframework/spring-aspects/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+metadata/org.springframework/spring-webflux/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-webflux/$version$/spring-webflux-$version$-sources.jar",
+metadata/org.springframework/spring-webflux/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-webflux/$version$/spring-webflux-$version$-javadoc.jar",
+metadata/org.springframework/spring-aop/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aop/$version$/spring-aop-$version$-sources.jar",
+metadata/org.springframework/spring-aop/index.json:8:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/javadoc-api/org/springframework/aop/package-summary.html",
+metadata/org.springframework/spring-aop/index.json:26:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aop/$version$/spring-aop-$version$-sources.jar",
+metadata/org.springframework/spring-aop/index.json:29:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/reference/html/core.html#aop",
+metadata/org.springframework/spring-aop/index.json:44:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aop/$version$/spring-aop-$version$-sources.jar",
+metadata/org.springframework/spring-aop/index.json:47:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aop/$version$/spring-aop-$version$-javadoc.jar",
+metadata/org.springframework/spring-aop/index.json:78:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aop/$version$/spring-aop-$version$-sources.jar",
+metadata/org.springframework/spring-aop/index.json:81:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aop/$version$/spring-aop-$version$-javadoc.jar",
+metadata/org.springframework/spring-aop/index.json:97:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aop/$version$/spring-aop-$version$-sources.jar",
+metadata/org.springframework/spring-aop/index.json:100:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aop/$version$/spring-aop-$version$-javadoc.jar",
+metadata/org.springframework/spring-jcl/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-sources.jar",
+metadata/org.springframework/spring-jcl/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-javadoc.jar",
+metadata/org.springframework/spring-context/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context/$version$/spring-context-$version$-sources.jar",
+metadata/org.springframework/spring-context/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context/$version$/spring-context-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-yaml-provider/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-yaml-provider/$version$/jackson-jakarta-rs-yaml-provider-$version$-sources.jar",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-yaml-provider/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-yaml-provider/$version$/jackson-jakarta-rs-yaml-provider-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-yaml-provider/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-yaml-provider/$version$/jackson-jakarta-rs-yaml-provider-$version$-sources.jar",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-yaml-provider/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-yaml-provider/$version$/jackson-jakarta-rs-yaml-provider-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-json-provider/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-json-provider/$version$/jackson-jakarta-rs-json-provider-$version$-sources.jar",
+
+web search: 
+web search: Maven Central com.google.code.gson gson 2.8.3 sources javadoc tests jar
+web search: 
+web search: https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.3/
+web search: 
+web search: https://github.com/google/gson/tree/gson-2.8.3/src/test
+web search: 
+web search: site:github.com/google/gson/tree 2.8.3 gson tag
+codex
+Local patterns already use Maven source and Javadoc jars for Gson, which is consistent with the artifact preference. The existing sibling entries point tests at a `gson-$version$` tag, but GitHub does not have that tag for `2.8.3`, so I’m checking the release tag shape before writing the first entry.
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.3/gson-2.8.3-javadoc.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 02:25:11 GMT
+content-type: application/java-archive
+content-length: 262646
+cf-ray: a07c346c9db7343e-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 5532
+etag: "b26cc38373c506abc793c75ab8c9d528"
+last-modified: Fri, 27 Apr 2018 22:36:19 GMT
+x-checksum-md5: b26cc38373c506abc793c75ab8c9d528
+x-checksum-sha1: 204f60a06ac8e459140f77d9af7fa86b7af83271
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.3/gson-2.8.3-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 02:25:11 GMT
+content-type: application/java-archive
+content-length: 154622
+cf-ray: a07c346c9f78bc44-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 220154
+etag: "601b261feefa0e48ce97e4b95b31fad3"
+last-modified: Fri, 27 Apr 2018 22:36:19 GMT
+x-checksum-md5: 601b261feefa0e48ce97e4b95b31fad3
+x-checksum-sha1: 458370786ad1a6129be4f0ea6ac12780bedae2d5
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.3/gson-2.8.3-tests.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/google/gson.git 'refs/tags/*2.8.3*'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131
+ succeeded in 278ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 07 Jun 2026 02:25:11 GMT
+content-type: text/html
+cf-ray: a07c346c991acd00-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/google/code/gson/gson/2.8.3/gson-2.8.3-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 278ms:
+ab6e5cd21c1950a1dd77f84e18a6574de29638b2	refs/tags/gson-parent-2.8.3
+4ed639e88291228b384201ea60b9a0b433e8bfa8	refs/tags/gson-parent-2.8.3^{}
+
+codex
+The Maven source and Javadoc artifacts both return `200`; Maven has no `tests.jar` for this coordinate. I found the matching source tag as `gson-parent-2.8.3`, so I’m verifying the tagged test directory now.
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/google/gson | sed -n '1,16p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/google/gson/tree/gson-parent-2.8.3/src/test | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/google/gson/tree/gson-parent-2.8.3 | sed -n '1,16p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131
+ succeeded in 449ms:
+HTTP/2 404 
+date: Sun, 07 Jun 2026 02:25:16 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=rFFEsr6VBXSC839yhRQr5dQe70zqhPgLHO%2BQQgWN%2F4ouXMM8o6csS89fX9tej2MA8VBpgUcurl: (22) The requested URL returned error: 404
+JH0Q8tgt%2F%2BqTwk1ARj3naTlo7gwReqJ8fn%2FEUvqj%2F1nGV9RMsbf8iaXeBT8vVE0wjcva10Q1PpRtJ%2F%2FPoitH3oo1DM%2FWuegBxTlJgPb%2F4JRlXh%2FNtODpiFt38lkLQhmtzY7bjj%2FIculQ12nKsmvtZR9xtL6z3Ui3AK%2BR4MJHmjy8yNbnKTgIbcxE1BnZRT9IkdrN1sphOIJJf9Tg%3D%3D--CkO7fuKp1n5SvpjQ--LXrLUCBKvtlB7uW%2F%2FA%2Bc%2Bw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.586398563.1780799116; expires=Mon, 07 Jun 2027 02:25:16 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 07 Jun 2027 02:25:16 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 621A:43732:648F54:546613:6A24D68C
+
+
+ succeeded in 545ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 02:25:17 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"0ca99aa114e8910b9e044cea5c531f5e"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=97M%2BQIJ%2FFJFff2AWaP9VlG2pMA3eri6BTjG81cmdbCDhPCWtJ25i7n2VDTRIEFQppLnfSS7WQ8l5iO7VyO%2FBnIFF54pSXGCJFOLk%2BUPnzTXH7HJmckth63c03YQhRCuCuW9qUT36tQLGr7mHgnUkTXNm1nYO0CfZ%2FKn3hro5hugextCSO3nTrdeyQhg5cTTRet1Dizk8Ibjb8dTj7jqtk4suybQmvQs%2F4C1XNO9jBcM9qxGt%2Bc43K3YUHQa8Ek9Q7Us9UnTb1FeSpg07BLei6w%3D%3D--n6%2FTOUTyEQrv%2FDIv--fcXzGyZyil3gx5Ost5osiQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2107583753.1780799116; expires=Mon, 07 Jun 2027 02:25:16 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+
+ succeeded in 752ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 02:25:17 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"6825c4f5cad6e25a7425c0712b132b9f"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=gyb7ja3tZeq2axkhkKl8WOnlHo9kMMEKVvDncysanfkZ6JJT4QVfHUrtgpmOfQVGUc7EkdkPp%2FQ0i1xpmZvL5HF4lLv3Gp4NyAQvq3yW7SLTCJnOYn2i%2FFezXzEXZJJGmP4XWHcjEsjeM7tIc8jApgx7L5WiDGlWHvyfiAAiI5GTTMB360igwCgXJ7oJyUGzv2DnT5ywXYghCG2q%2B2A4RN%2BmiX30v9Ml3Y0bStA64deR90djyZDsdqt%2B4kbjFneix356C9O6uWfGl9xNMatL8A%3D%3D--TXjAh7%2BB%2FY8Iy50U--2Wrnzp1KMwmhV5AhgAbElA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2142983388.1780799116; expires=Mon, 07 Jun 2027 02:25:16 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+
+codex
+The tagged root exists, but `src/test` does not on that tag. I’m checking the tagged repository layout so the test URL points at the actual test suite location rather than copying the stale sibling-entry pattern.
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/google/gson/contents?ref=gson-parent-2.8.3' | sed -n '1,200p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/google/gson/git/trees/gson-parent-2.8.3?recursive=1' | rg '\"path\": \".*(test|Test).*\"' | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/google/gson/git/trees/gson-parent-2.8.3?recursive=1' | rg '\"path\": \"(gson|extras|proto|metrics|test).*\"' | head -120" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131
+ succeeded in 169ms:
+[
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "b1bdb7f26e0732ce7c74557c06518bb727d26832",
+    "size": 130,
+    "url": "https://api.github.com/repos/google/gson/contents/.gitignore?ref=gson-parent-2.8.3",
+    "html_url": "https://github.com/google/gson/blob/gson-parent-2.8.3/.gitignore",
+    "git_url": "https://api.github.com/repos/google/gson/git/blobs/b1bdb7f26e0732ce7c74557c06518bb727d26832",
+    "download_url": "https://raw.githubusercontent.com/google/gson/gson-parent-2.8.3/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/google/gson/contents/.gitignore?ref=gson-parent-2.8.3",
+      "git": "https://api.github.com/repos/google/gson/git/blobs/b1bdb7f26e0732ce7c74557c06518bb727d26832",
+      "html": "https://github.com/google/gson/blob/gson-parent-2.8.3/.gitignore"
+    }
+  },
+  {
+    "name": ".travis.yml",
+    "path": ".travis.yml",
+    "sha": "963e19f6ed2aa44074c25e1228c8b2aae97549c2",
+    "size": 240,
+    "url": "https://api.github.com/repos/google/gson/contents/.travis.yml?ref=gson-parent-2.8.3",
+    "html_url": "https://github.com/google/gson/blob/gson-parent-2.8.3/.travis.yml",
+    "git_url": "https://api.github.com/repos/google/gson/git/blobs/963e19f6ed2aa44074c25e1228c8b2aae97549c2",
+    "download_url": "https://raw.githubusercontent.com/google/gson/gson-parent-2.8.3/.travis.yml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/google/gson/contents/.travis.yml?ref=gson-parent-2.8.3",
+      "git": "https://api.github.com/repos/google/gson/git/blobs/963e19f6ed2aa44074c25e1228c8b2aae97549c2",
+      "html": "https://github.com/google/gson/blob/gson-parent-2.8.3/.travis.yml"
+    }
+  },
+  {
+    "name": "CHANGELOG.md",
+    "path": "CHANGELOG.md",
+    "sha": "12949841bad6369fc773a4252067c9aa1ae4902a",
+    "size": 15893,
+    "url": "https://api.github.com/repos/google/gson/contents/CHANGELOG.md?ref=gson-parent-2.8.3",
+    "html_url": "https://github.com/google/gson/blob/gson-parent-2.8.3/CHANGELOG.md",
+    "git_url": "https://api.github.com/repos/google/gson/git/blobs/12949841bad6369fc773a4252067c9aa1ae4902a",
+    "download_url": "https://raw.githubusercontent.com/google/gson/gson-parent-2.8.3/CHANGELOG.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/google/gson/contents/CHANGELOG.md?ref=gson-parent-2.8.3",
+      "git": "https://api.github.com/repos/google/gson/git/blobs/12949841bad6369fc773a4252067c9aa1ae4902a",
+      "html": "https://github.com/google/gson/blob/gson-parent-2.8.3/CHANGELOG.md"
+    }
+  },
+  {
+    "name": "GsonDesignDocument.md",
+    "path": "GsonDesignDocument.md",
+    "sha": "2c3702ee1331f051ef093d7a2fd93dd81323e2dd",
+    "size": 6732,
+    "url": "https://api.github.com/repos/google/gson/contents/GsonDesignDocument.md?ref=gson-parent-2.8.3",
+    "html_url": "https://github.com/google/gson/blob/gson-parent-2.8.3/GsonDesignDocument.md",
+    "git_url": "https://api.github.com/repos/google/gson/git/blobs/2c3702ee1331f051ef093d7a2fd93dd81323e2dd",
+    "download_url": "https://raw.githubusercontent.com/google/gson/gson-parent-2.8.3/GsonDesignDocument.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/google/gson/contents/GsonDesignDocument.md?ref=gson-parent-2.8.3",
+      "git": "https://api.github.com/repos/google/gson/git/blobs/2c3702ee1331f051ef093d7a2fd93dd81323e2dd",
+      "html": "https://github.com/google/gson/blob/gson-parent-2.8.3/GsonDesignDocument.md"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+    "size": 11358,
+    "url": "https://api.github.com/repos/google/gson/contents/LICENSE?ref=gson-parent-2.8.3",
+    "html_url": "https://github.com/google/gson/blob/gson-parent-2.8.3/LICENSE",
+    "git_url": "https://api.github.com/repos/google/gson/git/blobs/d645695673349e3947e8e5ae42332d0ac3164cd7",
+    "download_url": "https://raw.githubusercontent.com/google/gson/gson-parent-2.8.3/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/google/gson/contents/LICENSE?ref=gson-parent-2.8.3",
+      "git": "https://api.github.com/repos/google/gson/git/blobs/d645695673349e3947e8e5ae42332d0ac3164cd7",
+      "html": "https://github.com/google/gson/blob/gson-parent-2.8.3/LICENSE"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "8733722a1a877b16760a2a7ea45a8fcaf032a331",
+    "size": 3688,
+    "url": "https://api.github.com/repos/google/gson/contents/README.md?ref=gson-parent-2.8.3",
+    "html_url": "https://github.com/google/gson/blob/gson-parent-2.8.3/README.md",
+    "git_url": "https://api.github.com/repos/google/gson/git/blobs/8733722a1a877b16760a2a7ea45a8fcaf032a331",
+    "download_url": "https://raw.githubusercontent.com/google/gson/gson-parent-2.8.3/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/google/gson/contents/README.md?ref=gson-parent-2.8.3",
+      "git": "https://api.github.com/repos/google/gson/git/blobs/8733722a1a877b16760a2a7ea45a8fcaf032a331",
+      "html": "https://github.com/google/gson/blob/gson-parent-2.8.3/README.md"
+    }
+  },
+  {
+    "name": "ReleaseProcess.md",
+    "path": "ReleaseProcess.md",
+    "sha": "f34f47ecc17afc7feeabb5b884dac533d6342e40",
+    "size": 5411,
+    "url": "https://api.github.com/repos/google/gson/contents/ReleaseProcess.md?ref=gson-parent-2.8.3",
+    "html_url": "https://github.com/google/gson/blob/gson-parent-2.8.3/ReleaseProcess.md",
+    "git_url": "https://api.github.com/repos/google/gson/git/blobs/f34f47ecc17afc7feeabb5b884dac533d6342e40",
+    "download_url": "https://raw.githubusercontent.com/google/gson/gson-parent-2.8.3/ReleaseProcess.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/google/gson/contents/ReleaseProcess.md?ref=gson-parent-2.8.3",
+      "git": "https://api.github.com/repos/google/gson/git/blobs/f34f47ecc17afc7feeabb5b884dac533d6342e40",
+      "html": "https://github.com/google/gson/blob/gson-parent-2.8.3/ReleaseProcess.md"
+    }
+  },
+  {
+    "name": "UserGuide.md",
+    "path": "UserGuide.md",
+    "sha": "4feaf11c6721c941fb14c63fd3ae7a41cc2e5497",
+    "size": 30683,
+    "url": "https://api.github.com/repos/google/gson/contents/UserGuide.md?ref=gson-parent-2.8.3",
+    "html_url": "https://github.com/google/gson/blob/gson-parent-2.8.3/UserGuide.md",
+    "git_url": "https://api.github.com/repos/google/gson/git/blobs/4feaf11c6721c941fb14c63fd3ae7a41cc2e5497",
+    "download_url": "https://raw.githubusercontent.com/google/gson/gson-parent-2.8.3/UserGuide.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/google/gson/contents/UserGuide.md?ref=gson-parent-2.8.3",
+      "git": "https://api.github.com/repos/google/gson/git/blobs/4feaf11c6721c941fb14c63fd3ae7a41cc2e5497",
+      "html": "https://github.com/google/gson/blob/gson-parent-2.8.3/UserGuide.md"
+    }
+  },
+  {
+    "name": "codegen",
+    "path": "codegen",
+    "sha": "1181b3a2747f115128cc1aa39fda8cd7874c030d",
+    "size": 0,
+    "url": "https://api.github.com/repos/google/gson/contents/codegen?ref=gson-parent-2.8.3",
+    "html_url": "https://github.com/google/gson/tree/gson-parent-2.8.3/codegen",
+    "git_url": "https://api.github.com/repos/google/gson/git/trees/1181b3a2747f115128cc1aa39fda8cd7874c030d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/google/gson/contents/codegen?ref=gson-parent-2.8.3",
+      "git": "https://api.github.com/repos/google/gson/git/trees/1181b3a2747f115128cc1aa39fda8cd7874c030d",
+      "html": "https://github.com/google/gson/tree/gson-parent-2.8.3/codegen"
+    }
+  },
+  {
+    "name": "examples",
+    "path": "examples",
+    "sha": "fcb8bde6989fc1df23fb8ec2958ef8f0ee933e27",
+    "size": 0,
+    "url": "https://api.github.com/repos/google/gson/contents/examples?ref=gson-parent-2.8.3",
+    "html_url": "https://github.com/google/gson/tree/gson-parent-2.8.3/examples",
+    "git_url": "https://api.github.com/repos/google/gson/git/trees/fcb8bde6989fc1df23fb8ec2958ef8f0ee933e27",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/google/gson/contents/examples?ref=gson-parent-2.8.3",
+      "git": "https://api.github.com/repos/google/gson/git/trees/fcb8bde6989fc1df23fb8ec2958ef8f0ee933e27",
+      "html": "https://github.com/google/gson/tree/gson-parent-2.8.3/examples"
+    }
+  },
+  {
+    "name": "extras",
+    "path": "extras",
+    "sha": "aed13ff1017ad6443e61480f66b9ffd62daa499a",
+    "size": 0,
+    "url": "https://api.github.com/repos/google/gson/contents/extras?ref=gson-parent-2.8.3",
+    "html_url": "https://github.com/google/gson/tree/gson-parent-2.8.3/extras",
+    "git_url": "https://api.github.com/repos/google/gson/git/trees/aed13ff1017ad6443e61480f66b9ffd62daa499a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/google/gson/contents/extras?ref=gson-parent-2.8.3",
+      "git": "https://api.github.com/repos/google/gson/git/trees/aed13ff1017ad6443e61480f66b9ffd62daa499a",
+      "html": "https://github.com/google/gson/tree/gson-parent-2.8.3/extras"
+    }
+  },
+  {
+    "name": "gson",
+    "path": "gson",
+    "sha": "0cdf243f3c05ec2854c587ec314602c34aadc92f",
+    "size": 0,
+    "url": "https://api.github.com/repos/google/gson/contents/gson?ref=gson-parent-2.8.3",
+    "html_url": "https://github.com/google/gson/tree/gson-parent-2.8.3/gson",
+    "git_url": "https://api.github.com/repos/google/gson/git/trees/0cdf243f3c05ec2854c587ec314602c34aadc92f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/google/gson/contents/gson?ref=gson-parent-2.8.3",
+      "git": "https://api.github.com/repos/google/gson/git/trees/0cdf243f3c05ec2854c587ec314602c34aadc92f",
+      "html": "https://github.com/google/gson/tree/gson-parent-2.8.3/gson"
+    }
+  },
+  {
+    "name": "lib",
+    "path": "lib",
+    "sha": "ab3c3cef7bc772316e057aac30347a8f1c5770b3",
+    "size": 0,
+    "url": "https://api.github.com/repos/google/gson/contents/lib?ref=gson-parent-2.8.3",
+    "html_url": "https://github.com/google/gson/tree/gson-parent-2.8.3/lib",
+
+ succeeded in 273ms:
+      "path": "extras",
+      "path": "extras/pom.xml",
+      "path": "extras/src",
+      "path": "extras/src/main",
+      "path": "extras/src/main/java",
+      "path": "extras/src/main/java/com",
+      "path": "extras/src/main/java/com/google",
+      "path": "extras/src/main/java/com/google/gson",
+      "path": "extras/src/main/java/com/google/gson/extras",
+      "path": "extras/src/main/java/com/google/gson/extras/examples",
+      "path": "extras/src/main/java/com/google/gson/extras/examples/rawcollections",
+      "path": "extras/src/main/java/com/google/gson/extras/examples/rawcollections/RawCollectionsExample.java",
+      "path": "extras/src/main/java/com/google/gson/graph",
+      "path": "extras/src/main/java/com/google/gson/graph/GraphAdapterBuilder.java",
+      "path": "extras/src/main/java/com/google/gson/interceptors",
+      "path": "extras/src/main/java/com/google/gson/interceptors/Intercept.java",
+      "path": "extras/src/main/java/com/google/gson/interceptors/InterceptorFactory.java",
+      "path": "extras/src/main/java/com/google/gson/interceptors/JsonPostDeserializer.java",
+      "path": "extras/src/main/java/com/google/gson/typeadapters",
+      "path": "extras/src/main/java/com/google/gson/typeadapters/PostConstructAdapterFactory.java",
+      "path": "extras/src/main/java/com/google/gson/typeadapters/RuntimeTypeAdapterFactory.java",
+      "path": "extras/src/main/java/com/google/gson/typeadapters/UtcDateTypeAdapter.java",
+      "path": "extras/src/test",
+      "path": "extras/src/test/java",
+      "path": "extras/src/test/java/com",
+      "path": "extras/src/test/java/com/google",
+      "path": "extras/src/test/java/com/google/gson",
+      "path": "extras/src/test/java/com/google/gson/graph",
+      "path": "extras/src/test/java/com/google/gson/graph/GraphAdapterBuilderTest.java",
+      "path": "extras/src/test/java/com/google/gson/interceptors",
+      "path": "extras/src/test/java/com/google/gson/interceptors/InterceptorTest.java",
+      "path": "extras/src/test/java/com/google/gson/typeadapters",
+      "path": "extras/src/test/java/com/google/gson/typeadapters/PostConstructAdapterFactoryTest.java",
+      "path": "extras/src/test/java/com/google/gson/typeadapters/RuntimeTypeAdapterFactoryTest.java",
+      "path": "extras/src/test/java/com/google/gson/typeadapters/UtcDateTypeAdapterTest.java",
+      "path": "gson",
+      "path": "gson/Gson 2.1 notes.txt",
+      "path": "gson/LICENSE",
+      "path": "gson/README",
+      "path": "gson/assembly-descriptor.xml",
+      "path": "gson/bnd.bnd",
+      "path": "gson/docs",
+      "path": "gson/docs/javadocs",
+      "path": "gson/docs/javadocs/allclasses-frame.html",
+      "path": "gson/docs/javadocs/allclasses-noframe.html",
+      "path": "gson/docs/javadocs/com",
+      "path": "gson/docs/javadocs/com/google",
+      "path": "gson/docs/javadocs/com/google/gson",
+      "path": "gson/docs/javadocs/com/google/gson/ExclusionStrategy.html",
+      "path": "gson/docs/javadocs/com/google/gson/FieldAttributes.html",
+      "path": "gson/docs/javadocs/com/google/gson/FieldNamingPolicy.html",
+      "path": "gson/docs/javadocs/com/google/gson/FieldNamingStrategy.html",
+      "path": "gson/docs/javadocs/com/google/gson/Gson.html",
+      "path": "gson/docs/javadocs/com/google/gson/GsonBuilder.html",
+      "path": "gson/docs/javadocs/com/google/gson/InstanceCreator.html",
+      "path": "gson/docs/javadocs/com/google/gson/JsonArray.html",
+      "path": "gson/docs/javadocs/com/google/gson/JsonDeserializationContext.html",
+      "path": "gson/docs/javadocs/com/google/gson/JsonDeserializer.html",
+      "path": "gson/docs/javadocs/com/google/gson/JsonElement.html",
+      "path": "gson/docs/javadocs/com/google/gson/JsonIOException.html",
+      "path": "gson/docs/javadocs/com/google/gson/JsonNull.html",
+      "path": "gson/docs/javadocs/com/google/gson/JsonObject.html",
+      "path": "gson/docs/javadocs/com/google/gson/JsonParseException.html",
+      "path": "gson/docs/javadocs/com/google/gson/JsonParser.html",
+      "path": "gson/docs/javadocs/com/google/gson/JsonPrimitive.html",
+      "path": "gson/docs/javadocs/com/google/gson/JsonSerializationContext.html",
+      "path": "gson/docs/javadocs/com/google/gson/JsonSerializer.html",
+      "path": "gson/docs/javadocs/com/google/gson/JsonStreamParser.html",
+      "path": "gson/docs/javadocs/com/google/gson/JsonSyntaxException.html",
+      "path": "gson/docs/javadocs/com/google/gson/LongSerializationPolicy.html",
+      "path": "gson/docs/javadocs/com/google/gson/TypeAdapter.html",
+      "path": "gson/docs/javadocs/com/google/gson/TypeAdapterFactory.html",
+      "path": "gson/docs/javadocs/com/google/gson/annotations",
+      "path": "gson/docs/javadocs/com/google/gson/annotations/Expose.html",
+      "path": "gson/docs/javadocs/com/google/gson/annotations/JsonAdapter.html",
+      "path": "gson/docs/javadocs/com/google/gson/annotations/SerializedName.html",
+      "path": "gson/docs/javadocs/com/google/gson/annotations/Since.html",
+      "path": "gson/docs/javadocs/com/google/gson/annotations/Until.html",
+      "path": "gson/docs/javadocs/com/google/gson/annotations/class-use",
+      "path": "gson/docs/javadocs/com/google/gson/annotations/class-use/Expose.html",
+      "path": "gson/docs/javadocs/com/google/gson/annotations/class-use/JsonAdapter.html",
+      "path": "gson/docs/javadocs/com/google/gson/annotations/class-use/SerializedName.html",
+      "path": "gson/docs/javadocs/com/google/gson/annotations/class-use/Since.html",
+      "path": "gson/docs/javadocs/com/google/gson/annotations/class-use/Until.html",
+      "path": "gson/docs/javadocs/com/google/gson/annotations/package-frame.html",
+      "path": "gson/docs/javadocs/com/google/gson/annotations/package-summary.html",
+      "path": "gson/docs/javadocs/com/google/gson/annotations/package-tree.html",
+      "path": "gson/docs/javadocs/com/google/gson/annotations/package-use.html",
+      "path": "gson/docs/javadocs/com/google/gson/class-use",
+      "path": "gson/docs/javadocs/com/google/gson/class-use/ExclusionStrategy.html",
+      "path": "gson/docs/javadocs/com/google/gson/class-use/FieldAttributes.html",
+      "path": "gson/docs/javadocs/com/google/gson/class-use/FieldNamingPolicy.html",
+      "path": "gson/docs/javadocs/com/google/gson/class-use/FieldNamingStrategy.html",
+      "path": "gson/docs/javadocs/com/google/gson/class-use/Gson.html",
+      "path": "gson/docs/javadocs/com/google/gson/class-use/GsonBuilder.html",
+      "path": "gson/docs/javadocs/com/google/gson/class-use/InstanceCreator.html",
+      "path": "gson/docs/javadocs/com/google/gson/class-use/JsonArray.html",
+      "path": "gson/docs/javadocs/com/google/gson/class-use/JsonDeserializationContext.html",
+      "path": "gson/docs/javadocs/com/google/gson/class-use/JsonDeserializer.html",
+      "path": "gson/docs/javadocs/com/google/gson/class-use/JsonElement.html",
+      "path": "gson/docs/javadocs/com/google/gson/class-use/JsonIOException.html",
+      "path": "gson/docs/javadocs/com/google/gson/class-use/JsonNull.html",
+      "path": "gson/docs/javadocs/com/google/gson/class-use/JsonObject.html",
+      "path": "gson/docs/javadocs/com/google/gson/class-use/JsonParseException.html",
+      "path": "gson/docs/javadocs/com/google/gson/class-use/JsonParser.html",
+      "path": "gson/docs/javadocs/com/google/gson/class-use/JsonPrimitive.html",
+      "path": "gson/docs/javadocs/com/google/gson/class-use/JsonSerializationContext.html",
+      "path": "gson/docs/javadocs/com/google/gson/class-use/JsonSerializer.html",
+      "path": "gson/docs/javadocs/com/google/gson/class-use/JsonStreamParser.html",
+      "path": "gson/docs/javadocs/com/google/gson/class-use/JsonSyntaxException.html",
+      "path": "gson/docs/javadocs/com/google/gson/class-use/LongSerializationPolicy.html",
+      "path": "gson/docs/javadocs/com/google/gson/class-use/TypeAdapter.html",
+      "path": "gson/docs/javadocs/com/google/gson/class-use/TypeAdapterFactory.html",
+      "path": "gson/docs/javadocs/com/google/gson/package-frame.html",
+      "path": "gson/docs/javadocs/com/google/gson/package-summary.html",
+      "path": "gson/docs/javadocs/com/google/gson/package-tree.html",
+      "path": "gson/docs/javadocs/com/google/gson/package-use.html",
+      "path": "gson/docs/javadocs/com/google/gson/reflect",
+      "path": "gson/docs/javadocs/com/google/gson/reflect/TypeToken.html",
+      "path": "gson/docs/javadocs/com/google/gson/reflect/class-use",
+curl: (23) Failure writing output to destination
+
+ succeeded in 291ms:
+      "path": "codegen/src/test",
+      "path": "codegen/src/test/java",
+      "path": "codegen/src/test/java/com",
+      "path": "codegen/src/test/java/com/google",
+      "path": "codegen/src/test/java/com/google/gson",
+      "path": "codegen/src/test/java/com/google/gson/codegen",
+      "path": "codegen/src/test/java/com/google/gson/codegen/functional",
+      "path": "codegen/src/test/java/com/google/gson/codegen/functional/CodeGenFunctionalTest.java",
+      "path": "codegen/src/test/java/com/google/gson/codegen/functional/Order.java",
+      "path": "extras/src/test",
+      "path": "extras/src/test/java",
+      "path": "extras/src/test/java/com",
+      "path": "extras/src/test/java/com/google",
+      "path": "extras/src/test/java/com/google/gson",
+      "path": "extras/src/test/java/com/google/gson/graph",
+      "path": "extras/src/test/java/com/google/gson/graph/GraphAdapterBuilderTest.java",
+      "path": "extras/src/test/java/com/google/gson/interceptors",
+      "path": "extras/src/test/java/com/google/gson/interceptors/InterceptorTest.java",
+      "path": "extras/src/test/java/com/google/gson/typeadapters",
+      "path": "extras/src/test/java/com/google/gson/typeadapters/PostConstructAdapterFactoryTest.java",
+      "path": "extras/src/test/java/com/google/gson/typeadapters/RuntimeTypeAdapterFactoryTest.java",
+      "path": "extras/src/test/java/com/google/gson/typeadapters/UtcDateTypeAdapterTest.java",
+      "path": "gson/src/test",
+      "path": "gson/src/test/java",
+      "path": "gson/src/test/java/com",
+      "path": "gson/src/test/java/com/google",
+      "path": "gson/src/test/java/com/google/gson",
+      "path": "gson/src/test/java/com/google/gson/CommentsTest.java",
+      "path": "gson/src/test/java/com/google/gson/DefaultDateTypeAdapterTest.java",
+      "path": "gson/src/test/java/com/google/gson/DefaultInetAddressTypeAdapterTest.java",
+      "path": "gson/src/test/java/com/google/gson/DefaultMapJsonSerializerTest.java",
+      "path": "gson/src/test/java/com/google/gson/ExposeAnnotationExclusionStrategyTest.java",
+      "path": "gson/src/test/java/com/google/gson/FieldAttributesTest.java",
+      "path": "gson/src/test/java/com/google/gson/GenericArrayTypeTest.java",
+      "path": "gson/src/test/java/com/google/gson/GsonBuilderTest.java",
+      "path": "gson/src/test/java/com/google/gson/GsonTest.java",
+      "path": "gson/src/test/java/com/google/gson/GsonTypeAdapterTest.java",
+      "path": "gson/src/test/java/com/google/gson/InnerClassExclusionStrategyTest.java",
+      "path": "gson/src/test/java/com/google/gson/JavaSerializationTest.java",
+      "path": "gson/src/test/java/com/google/gson/JsonArrayTest.java",
+      "path": "gson/src/test/java/com/google/gson/JsonNullTest.java",
+      "path": "gson/src/test/java/com/google/gson/JsonObjectTest.java",
+      "path": "gson/src/test/java/com/google/gson/JsonParserTest.java",
+      "path": "gson/src/test/java/com/google/gson/JsonPrimitiveTest.java",
+      "path": "gson/src/test/java/com/google/gson/JsonStreamParserTest.java",
+      "path": "gson/src/test/java/com/google/gson/LongSerializationPolicyTest.java",
+      "path": "gson/src/test/java/com/google/gson/MixedStreamTest.java",
+      "path": "gson/src/test/java/com/google/gson/MockExclusionStrategy.java",
+      "path": "gson/src/test/java/com/google/gson/ObjectTypeAdapterTest.java",
+      "path": "gson/src/test/java/com/google/gson/OverrideCoreTypeAdaptersTest.java",
+      "path": "gson/src/test/java/com/google/gson/ParameterizedTypeFixtures.java",
+      "path": "gson/src/test/java/com/google/gson/ParameterizedTypeTest.java",
+      "path": "gson/src/test/java/com/google/gson/PrimitiveTypeAdapter.java",
+      "path": "gson/src/test/java/com/google/gson/VersionExclusionStrategyTest.java",
+      "path": "gson/src/test/java/com/google/gson/common",
+      "path": "gson/src/test/java/com/google/gson/common/MoreAsserts.java",
+      "path": "gson/src/test/java/com/google/gson/common/TestTypes.java",
+      "path": "gson/src/test/java/com/google/gson/functional",
+      "path": "gson/src/test/java/com/google/gson/functional/ArrayTest.java",
+      "path": "gson/src/test/java/com/google/gson/functional/CircularReferenceTest.java",
+      "path": "gson/src/test/java/com/google/gson/functional/CollectionTest.java",
+      "path": "gson/src/test/java/com/google/gson/functional/ConcurrencyTest.java",
+      "path": "gson/src/test/java/com/google/gson/functional/CustomDeserializerTest.java",
+      "path": "gson/src/test/java/com/google/gson/functional/CustomSerializerTest.java",
+      "path": "gson/src/test/java/com/google/gson/functional/CustomTypeAdaptersTest.java",
+      "path": "gson/src/test/java/com/google/gson/functional/DefaultTypeAdaptersTest.java",
+      "path": "gson/src/test/java/com/google/gson/functional/DelegateTypeAdapterTest.java",
+      "path": "gson/src/test/java/com/google/gson/functional/EnumTest.java",
+      "path": "gson/src/test/java/com/google/gson/functional/EscapingTest.java",
+      "path": "gson/src/test/java/com/google/gson/functional/ExclusionStrategyFunctionalTest.java",
+      "path": "gson/src/test/java/com/google/gson/functional/ExposeFieldsTest.java",
+      "path": "gson/src/test/java/com/google/gson/functional/FieldExclusionTest.java",
+      "path": "gson/src/test/java/com/google/gson/functional/FieldNamingTest.java",
+      "path": "gson/src/test/java/com/google/gson/functional/InheritanceTest.java",
+      "path": "gson/src/test/java/com/google/gson/functional/InstanceCreatorTest.java",
+      "path": "gson/src/test/java/com/google/gson/functional/InterfaceTest.java",
+      "path": "gson/src/test/java/com/google/gson/functional/InternationalizationTest.java",
+      "path": "gson/src/test/java/com/google/gson/functional/JavaUtilConcurrentAtomicTest.java",
+      "path": "gson/src/test/java/com/google/gson/functional/JavaUtilTest.java",
+      "path": "gson/src/test/java/com/google/gson/functional/JsonAdapterAnnotationOnClassesTest.java",
+
+codex
+I found the actual module test path at `gson/src/test` under the `gson-parent-2.8.3` tag. I’m going to add the Maven source/Javadoc templates, the canonical repository root, the corrected tagged test path, and the two-sentence description to the `2.8.3` entry only.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131/metadata/com.google.code.gson/gson/index.json
+diff --git a/metadata/com.google.code.gson/gson/index.json b/metadata/com.google.code.gson/gson/index.json
+index 46baa0232776c8478d5f1879756e77facfb21939..fc4966214cdeb50dfdec2d075ed80f0da64e4e0c
+--- a/metadata/com.google.code.gson/gson/index.json
++++ b/metadata/com.google.code.gson/gson/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.8.3",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-sources.jar",
++    "repository-url" : "https://github.com/google/gson",
++    "test-code-url" : "https://github.com/google/gson/tree/gson-parent-$version$/gson/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-javadoc.jar",
++    "description" : "Gson is a Java library for converting Java objects to and from JSON. It provides object mapping, tree, and streaming APIs for JSON serialization and deserialization.",
+     "tested-versions" : [
+       "2.8.3"
+     ],
+
+diff --git a/metadata/com.google.code.gson/gson/index.json b/metadata/com.google.code.gson/gson/index.json
+index 46baa0232776c8478d5f1879756e77facfb21939..fc4966214cdeb50dfdec2d075ed80f0da64e4e0c
+--- a/metadata/com.google.code.gson/gson/index.json
++++ b/metadata/com.google.code.gson/gson/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.8.3",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-sources.jar",
++    "repository-url" : "https://github.com/google/gson",
++    "test-code-url" : "https://github.com/google/gson/tree/gson-parent-$version$/gson/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-javadoc.jar",
++    "description" : "Gson is a Java library for converting Java objects to and from JSON. It provides object mapping, tree, and streaming APIs for JSON serialization and deserialization.",
+     "tested-versions" : [
+       "2.8.3"
+     ],
+
+codex
+The file is patched. I’m doing two checks now: rendered URL reachability for the templates and repository metadata validation for the edited coordinate.
+exec
+/usr/bin/bash -lc "python3 -m json.tool metadata/com.google.code.gson/gson/index.json >/dev/null && echo 'json ok'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131
+ succeeded in 0ms:
+json ok
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/google/gson/tree/gson-parent-2.8.3/gson/src/test | sed -n '1,16p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=com.google.code.gson:gson:2.8.3 --stacktrace' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131
+ succeeded in 467ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 02:25:38 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"042c5e6af1e52ccc6bd39815f1418236"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=zuyhLE9%2BfzrLB1a%2BmI5aBHvSF2rJlJXYRfBtRYZiLjgErgrHGsJzE2dvdsTitm5zO7l%2FWrHEX7kbg%2Bj3qRiF1eEYuDzLn7XbhrWNNXVNXoc38eafytBq%2B3%2BWoZ4sxCVbTWR2dim90Mg2jGpVDZWAPPoUghdnDgrwOWbgDSdN4GWDK4szdaGargBnYO8Nnnd%2Bv5Kvvm8F45C5racRZZMmah4szfQqK9CcU%2FR5Kfw0YZEe8xMft%2Bhe%2B4T807vaL8YtL4Cw0PcaaxgiDi1MrwDIvA%3D%3D--TgpFvVGsoQqYQiXl--GL0bDAgQ7DwxnPHPvb3AMA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.698277187.1780799138; expires=Mon, 07 Jun 2027 02:25:38 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+
+diff --git a/metadata/com.google.code.gson/gson/index.json b/metadata/com.google.code.gson/gson/index.json
+index 46baa0232776c8478d5f1879756e77facfb21939..fc4966214cdeb50dfdec2d075ed80f0da64e4e0c
+--- a/metadata/com.google.code.gson/gson/index.json
++++ b/metadata/com.google.code.gson/gson/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.8.3",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-sources.jar",
++    "repository-url" : "https://github.com/google/gson",
++    "test-code-url" : "https://github.com/google/gson/tree/gson-parent-$version$/gson/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-javadoc.jar",
++    "description" : "Gson is a Java library for converting Java objects to and from JSON. It provides object mapping, tree, and streaming APIs for JSON serialization and deserialization.",
+     "tested-versions" : [
+       "2.8.3"
+     ],
+
+ exited 1 in 3195ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131/build/reports/problems/problems-report.html
+Metadata files check failed for com.google.code.gson:gson:2.8.3: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131/metadata/com.google.code.gson/gson/2.8.3/
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - com.google.code.gson:gson:2.8.3: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131/metadata/com.google.code.gson/gson/2.8.3/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - com.google.code.gson:gson:2.8.3: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131/metadata/com.google.code.gson/gson/2.8.3/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 2s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+The JSON parse check passed and the rendered test URL returns `200`. The repository metadata task fails for a pre-existing content issue in this coordinate: `metadata/com.google.code.gson/gson/2.8.3/` has no `reachability-metadata.json`, which is outside the requested URL-field update.
+exec
+/usr/bin/bash -lc 'git diff -- metadata/com.google.code.gson/gson/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131
+ succeeded in 0ms:
+diff --git i/metadata/com.google.code.gson/gson/index.json w/metadata/com.google.code.gson/gson/index.json
+index 46baa02327..fc4966214c 100644
+--- i/metadata/com.google.code.gson/gson/index.json
++++ w/metadata/com.google.code.gson/gson/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.8.3",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-sources.jar",
++    "repository-url" : "https://github.com/google/gson",
++    "test-code-url" : "https://github.com/google/gson/tree/gson-parent-$version$/gson/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-javadoc.jar",
++    "description" : "Gson is a Java library for converting Java objects to and from JSON. It provides object mapping, tree, and streaming APIs for JSON serialization and deserialization.",
+     "tested-versions" : [
+       "2.8.3"
+     ],
+
+exec
+/usr/bin/bash -lc 'find metadata/com.google.code.gson/gson -maxdepth 2 -type f | sort' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131
+ succeeded in 0ms:
+metadata/com.google.code.gson/gson/2.2.4/reachability-metadata.json
+metadata/com.google.code.gson/gson/2.3/reachability-metadata.json
+metadata/com.google.code.gson/gson/index.json
+
+exec
+/usr/bin/bash -lc "nl -ba metadata/com.google.code.gson/gson/index.json | sed -n '1,24p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "2.8.3",
+     5	    "source-code-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-sources.jar",
+     6	    "repository-url" : "https://github.com/google/gson",
+     7	    "test-code-url" : "https://github.com/google/gson/tree/gson-parent-$version$/gson/src/test",
+     8	    "documentation-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-javadoc.jar",
+     9	    "description" : "Gson is a Java library for converting Java objects to and from JSON. It provides object mapping, tree, and streaming APIs for JSON serialization and deserialization.",
+    10	    "tested-versions" : [
+    11	      "2.8.3"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "com.google.gson"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "2.3",
+    19	    "source-code-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-sources.jar",
+    20	    "repository-url" : "https://github.com/google/gson",
+    21	    "test-code-url" : "https://github.com/google/gson/tree/gson-$version$/src/test",
+    22	    "documentation-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-javadoc.jar",
+    23	    "description" : "Gson is a Java library for converting Java objects to and from JSON. It provides object mapping, tree, and streaming APIs for JSON serialization and deserialization.",
+    24	    "tested-versions" : [
+
+diff --git a/metadata/com.google.code.gson/gson/index.json b/metadata/com.google.code.gson/gson/index.json
+index 46baa0232776c8478d5f1879756e77facfb21939..fc4966214cdeb50dfdec2d075ed80f0da64e4e0c
+--- a/metadata/com.google.code.gson/gson/index.json
++++ b/metadata/com.google.code.gson/gson/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.8.3",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-sources.jar",
++    "repository-url" : "https://github.com/google/gson",
++    "test-code-url" : "https://github.com/google/gson/tree/gson-parent-$version$/gson/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-javadoc.jar",
++    "description" : "Gson is a Java library for converting Java objects to and from JSON. It provides object mapping, tree, and streaming APIs for JSON serialization and deserialization.",
+     "tested-versions" : [
+       "2.8.3"
+     ],
+
+web search: 
+web search: https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.3/
+web search: 
+web search: https://github.com/google/gson/tree/gson-parent-2.8.3/gson/src/test
+web search: 
+web search: api.github.com repos google gson git trees gson-parent-2.8.3 recursive gson/src/test
+web search: 
+web search: https://github.com/google/gson
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131/metadata/com.google.code.gson/gson/index.json:5) for `metadata-version` `2.8.3`.
+
+Set:
+```json
+"source-code-url": "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-sources.jar",
+"repository-url": "https://github.com/google/gson",
+"test-code-url": "https://github.com/google/gson/tree/gson-parent-$version$/gson/src/test",
+"documentation-url": "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-javadoc.jar",
+"description": "Gson is a Java library for converting Java objects to and from JSON. It provides object mapping, tree, and streaming APIs for JSON serialization and deserialization."
+```
+
+Maven Central lists the `2.8.3` sources and Javadoc jars, and the GitHub repository describes Gson as a Java JSON serialization/deserialization library. ([repo1.maven.org](https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.3/)) No `language` field was added because this is not a Kotlin, Groovy, or Scala-specific artifact.
+
+Verification:
+- `python3 -m json.tool metadata/com.google.code.gson/gson/index.json` passed.
+- Rendered test URL returned `200`.
+- `./gradlew checkMetadataFiles -Pcoordinates=com.google.code.gson:gson:2.8.3 --stacktrace` failed because `metadata/com.google.code.gson/gson/2.8.3/reachability-metadata.json` is missing, which predates this URL metadata update.
+diff --git a/metadata/com.google.code.gson/gson/index.json b/metadata/com.google.code.gson/gson/index.json
+index 46baa0232776c8478d5f1879756e77facfb21939..fc4966214cdeb50dfdec2d075ed80f0da64e4e0c
+--- a/metadata/com.google.code.gson/gson/index.json
++++ b/metadata/com.google.code.gson/gson/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.8.3",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-sources.jar",
++    "repository-url" : "https://github.com/google/gson",
++    "test-code-url" : "https://github.com/google/gson/tree/gson-parent-$version$/gson/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-javadoc.jar",
++    "description" : "Gson is a Java library for converting Java objects to and from JSON. It provides object mapping, tree, and streaming APIs for JSON serialization and deserialization.",
+     "tested-versions" : [
+       "2.8.3"
+     ],
+
+tokens used
+78,439
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131/metadata/com.google.code.gson/gson/index.json:5) for `metadata-version` `2.8.3`.
+
+Set:
+```json
+"source-code-url": "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-sources.jar",
+"repository-url": "https://github.com/google/gson",
+"test-code-url": "https://github.com/google/gson/tree/gson-parent-$version$/gson/src/test",
+"documentation-url": "https://repo1.maven.org/maven2/com/google/code/gson/gson/$version$/gson-$version$-javadoc.jar",
+"description": "Gson is a Java library for converting Java objects to and from JSON. It provides object mapping, tree, and streaming APIs for JSON serialization and deserialization."
+```
+
+Maven Central lists the `2.8.3` sources and Javadoc jars, and the GitHub repository describes Gson as a Java JSON serialization/deserialization library. ([repo1.maven.org](https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.3/)) No `language` field was added because this is not a Kotlin, Groovy, or Scala-specific artifact.
+
+Verification:
+- `python3 -m json.tool metadata/com.google.code.gson/gson/index.json` passed.
+- Rendered test URL returned `200`.
+- `./gradlew checkMetadataFiles -Pcoordinates=com.google.code.gson:gson:2.8.3 --stacktrace` failed because `metadata/com.google.code.gson/gson/2.8.3/reachability-metadata.json` is missing, which predates this URL metadata update.
+Ran agent for com.google.code.gson:gson:2.8.3 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131/build/agent-url-discovery-logs/com.google.code.gson-gson-2.8.3.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8081-79cd1131/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 37s
+9 actionable tasks: 1 executed, 8 up-to-date
