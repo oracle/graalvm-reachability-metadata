@@ -66,7 +66,12 @@ from ai_workflows.drivers.fix_ni_run import (
 from ai_workflows.drivers.improve_library_coverage import (
     main as run_improve_library_coverage_workflow,
 )
-from ai_workflows.core.workflow_strategy import RUN_STATUS_CHUNK_READY, RUN_STATUS_FAILURE
+from ai_workflows.core.workflow_strategy import (
+    RUN_STATUS_CHUNK_READY,
+    RUN_STATUS_FAILURE,
+    RUN_STATUS_SUCCESS,
+    SUCCESS_WITH_INTERVENTION_STATUS,
+)
 from git_scripts.common_git import (
     GITHUB_TRANSIENT_RETRY_ATTEMPTS,
     GitHubRateLimitExceeded,
@@ -241,6 +246,47 @@ HUMAN_INTERVENTION_LABEL_COLOR = "B60205"
 HUMAN_INTERVENTION_LABEL_DESCRIPTION = (
     "Requires manual follow-up because automated processing needs human attention"
 )
+HUMAN_INTERVENTION_NON_FAILURE_STATUSES = {
+    RUN_STATUS_SUCCESS,
+    RUN_STATUS_CHUNK_READY,
+    SUCCESS_WITH_INTERVENTION_STATUS,
+}
+HUMAN_INTERVENTION_SEMANTIC_FAILURE_PATTERNS = (
+    "analysis: stage=",
+    "coverage_did_not_reach_zero_uncovered_calls",
+    "generated-test-quality",
+    "metadata-gap-exhausted",
+    "native-test gate failed",
+    "post-generation-fix",
+    "scaffold placeholder quality gate",
+    "suspicious generated test target requires human review",
+    "test_failures_prevented_reaching_nativeTest",
+)
+HUMAN_INTERVENTION_TRANSIENT_FAILURE_PATTERNS = (
+    "api rate limit",
+    "bad gateway",
+    "connection reset",
+    "connection timed out",
+    "could not get resource",
+    "could not head",
+    "could not resolve all files",
+    "docker registry",
+    "github api transient failure",
+    "http 502",
+    "http 503",
+    "http 504",
+    "i/o timeout",
+    "maven repository",
+    "network is unreachable",
+    "rate limit",
+    "registry unavailable",
+    "remote end hung up",
+    "service unavailable",
+    "temporary failure",
+    "tls handshake timeout",
+    "too many requests",
+)
+FAILED_RUN_EVIDENCE_LOG_TAIL_BYTES = 200_000
 NOT_FOR_NATIVE_IMAGE_LABEL_COLOR = "5319E7"
 NOT_FOR_NATIVE_IMAGE_LABEL_DESCRIPTION = (
     "Artifact is tracked but is not applicable to GraalVM Native Image reachability metadata"
@@ -3081,20 +3127,70 @@ def _load_dynamic_access_snapshot_from_report(claimed_issue: ClaimedIssue) -> Dy
     )
 
 
+def _read_failed_run_evidence_log_tail(log_path: str) -> str:
+    """Read the actual bounded tail of a failed-run log."""
+    log_size: int = os.path.getsize(log_path)
+    start_offset: int = max(0, log_size - FAILED_RUN_EVIDENCE_LOG_TAIL_BYTES)
+    with open(log_path, "rb") as log_file:
+        log_file.seek(start_offset)
+        return log_file.read().decode("utf-8", errors="replace")
+
+
+def _collect_failed_run_evidence_text(
+        claimed_issue: ClaimedIssue,
+        run_metrics: dict | None,
+        started_at: float | None,
+) -> str:
+    """Collect bounded failed-run evidence for policy classification. §FS-human-intervention-policy"""
+    evidence_parts: list[str] = []
+    if isinstance(run_metrics, dict):
+        evidence_parts.append(json.dumps(run_metrics, sort_keys=True))
+
+    for log_path in collect_issue_log_paths(claimed_issue, started_at):
+        try:
+            evidence_parts.append(_read_failed_run_evidence_log_tail(log_path))
+        except OSError:
+            continue
+
+    return "\n".join(evidence_parts).lower()
+
+
+def _failed_run_has_transient_evidence(evidence_text: str) -> bool:
+    """Return True when failure evidence points to external or transient infrastructure."""
+    return any(
+        pattern.lower() in evidence_text
+        for pattern in HUMAN_INTERVENTION_TRANSIENT_FAILURE_PATTERNS
+    )
+
+
+def _failed_run_has_semantic_human_intervention_evidence(
+        run_metrics: dict | None,
+        coverage_snapshot: DynamicAccessCoverageSnapshot | None,
+        evidence_text: str,
+) -> bool:
+    """Return True when failed-run evidence supports the issue-side label."""
+    if coverage_snapshot is not None and coverage_snapshot.total_calls > 0:
+        return True
+
+    if isinstance(run_metrics, dict):
+        metrics = run_metrics.get("metrics")
+        if isinstance(metrics, dict) and int(metrics.get("generated_loc", 0) or 0) > 0:
+            return True
+
+    return any(
+        pattern.lower() in evidence_text
+        for pattern in HUMAN_INTERVENTION_SEMANTIC_FAILURE_PATTERNS
+    )
+
+
 def resolve_human_intervention_candidate(
         claimed_issue: ClaimedIssue,
         workflow_success: bool = True,
+        started_at: float | None = None,
 ) -> HumanInterventionCandidate | None:
     """Return follow-up data when an issue run needs human intervention."""
     if claimed_issue.label not in {LABEL_LIBRARY_NEW, LABEL_LIBRARY_UPDATE}:
-        if workflow_success:
-            return None
-        return HumanInterventionCandidate(
-            strategy_name=None,
-            workflow_status=RUN_STATUS_FAILURE,
-            coverage=None,
-            reason="job_failed",
-        )
+        return None
 
     run_metrics = _load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
     if not workflow_success:
@@ -3105,8 +3201,33 @@ def resolve_human_intervention_candidate(
             strategy_name = run_metrics.get("strategy_name")
             workflow_status = str(run_metrics.get("status") or RUN_STATUS_FAILURE)
             coverage_snapshot = _load_dynamic_access_snapshot_from_metrics(run_metrics)
+        if workflow_status in HUMAN_INTERVENTION_NON_FAILURE_STATUSES:
+            return None
         if coverage_snapshot is None:
             coverage_snapshot = _load_dynamic_access_snapshot_from_report(claimed_issue)
+        evidence_text = _collect_failed_run_evidence_text(claimed_issue, run_metrics, started_at)
+        if _failed_run_has_transient_evidence(evidence_text):
+            log_stage(
+                "human-intervention",
+                (
+                    f"Not labeling issue #{claimed_issue.issue['number']}: failed-run evidence "
+                    "matches external or transient infrastructure."
+                ),
+            )
+            return None
+        if not _failed_run_has_semantic_human_intervention_evidence(
+                run_metrics,
+                coverage_snapshot,
+                evidence_text,
+        ):
+            log_stage(
+                "human-intervention",
+                (
+                    f"Not labeling issue #{claimed_issue.issue['number']}: failed-run evidence "
+                    "does not identify a semantic generated-result, metadata, or library problem."
+                ),
+            )
+            return None
         return HumanInterventionCandidate(
             strategy_name=strategy_name,
             workflow_status=workflow_status,
@@ -3908,6 +4029,49 @@ def ensure_preserved_branch_link_in_comment(
     )
 
 
+def build_failed_run_diagnostic_comment(
+        claimed_issue: ClaimedIssue,
+        started_at: float | None,
+        preservation_result: FailurePreservationResult | None,
+) -> str:
+    """Build a non-labeling failed-run diagnostic comment. §FS-human-intervention-policy"""
+    log_paths = collect_issue_log_paths(claimed_issue, started_at)
+    preserved_work_section = "Preserved work branch: unavailable"
+    if preservation_result is not None:
+        preserved_work_section = (
+            f"Preserved work branch: {preservation_result.branch_url}\n"
+            f"Branch name: `{preservation_result.branch_name}`"
+        )
+
+    return (
+        "Automation failed\n\n"
+        f"The automated `{claimed_issue.label}` job failed for `{claimed_issue.issue_coordinates}`. "
+        "Forge did not find evidence that this failure requires the `human-intervention` label, so the "
+        "issue was returned to the normal queue with diagnostics preserved.\n\n"
+        f"{preserved_work_section}\n\n"
+        "Relevant logs:\n"
+        f"{_format_log_path_list(log_paths)}\n\n"
+        "Suggested follow-up:\n"
+        "- Retry the workflow if the failure came from a transient service or runner condition.\n"
+        "- Inspect the preserved branch and logs if the same failure repeats."
+    )
+
+
+def post_failed_run_diagnostic_comment(issue_number: int, comment_body: str | None) -> None:
+    """Post a failed-run diagnostic without applying `human-intervention`."""
+    if is_user_interrupt_requested() or not comment_body:
+        return
+
+    try:
+        post_issue_comment(issue_number, comment_body)
+    except Exception as exc:
+        print(
+            f"ERROR: Failed to post failed-run diagnostic comment to issue #{issue_number}: {exc!r}",
+            file=sys.stderr,
+        )
+        traceback.print_exc()
+
+
 def post_human_intervention_comment_and_label(issue_number: int, comment_body: str | None) -> None:
     """Post the human-intervention comment and always attempt to apply the label."""
     if is_user_interrupt_requested():
@@ -3943,7 +4107,7 @@ def maybe_apply_human_intervention_follow_up(
     if is_user_interrupt_requested():
         return False
 
-    candidate = resolve_human_intervention_candidate(claimed_issue, workflow_success)
+    candidate = resolve_human_intervention_candidate(claimed_issue, workflow_success, started_at)
     if candidate is None:
         return False
 
@@ -3977,14 +4141,21 @@ def apply_failed_run_follow_up(
     if is_user_interrupt_requested():
         raise KeyboardInterrupt
 
-    candidate = resolve_human_intervention_candidate(claimed_issue, workflow_success=False)
+    candidate = resolve_human_intervention_candidate(
+        claimed_issue,
+        workflow_success=False,
+        started_at=started_at,
+    )
     if candidate is None:
-        candidate = HumanInterventionCandidate(
-            strategy_name=None,
-            workflow_status=RUN_STATUS_FAILURE,
-            coverage=None,
-            reason="job_failed",
+        comment_body = build_failed_run_diagnostic_comment(
+            claimed_issue,
+            started_at,
+            preservation_result,
         )
+        if is_user_interrupt_requested():
+            raise KeyboardInterrupt
+        post_failed_run_diagnostic_comment(claimed_issue.issue["number"], comment_body)
+        return
 
     try:
         comment_body = run_codex_failed_generation_analysis(
