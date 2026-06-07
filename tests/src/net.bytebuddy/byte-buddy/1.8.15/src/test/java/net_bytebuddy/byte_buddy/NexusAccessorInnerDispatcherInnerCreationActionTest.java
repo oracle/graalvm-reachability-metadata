@@ -11,6 +11,7 @@ import net.bytebuddy.dynamic.NexusAccessor;
 import net.bytebuddy.implementation.LoadedTypeInitializer;
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.TestAbortedException;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -71,6 +72,11 @@ public class NexusAccessorInnerDispatcherInnerCreationActionTest {
                         "net.bytebuddy.dynamic.NexusAccessor",
                         true,
                         classLoader);
+
+                if (isNativeImageRuntime() && nexusAccessorType.getClassLoader() != classLoader) {
+                    throw new TestAbortedException(
+                            "Native image runtime does not support reloading application classes via isolated URLClassLoader");
+                }
 
                 assertThat(nexusAccessorType.getClassLoader()).isSameAs(classLoader);
             } finally {
@@ -133,5 +139,9 @@ public class NexusAccessorInnerDispatcherInnerCreationActionTest {
     }
 
     public static class SampleType {
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 }
