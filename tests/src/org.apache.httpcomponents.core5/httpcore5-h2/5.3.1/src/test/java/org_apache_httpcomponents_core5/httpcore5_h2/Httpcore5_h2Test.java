@@ -201,8 +201,8 @@ public class Httpcore5_h2Test {
                 new BasicHeader("accept", "text/plain"),
                 new BasicHeader("x-unicode", "h\u00e4llo"),
                 new BasicHeader("authorization", "secret", true));
-        HPackEncoder encoder = new HPackEncoder(StandardCharsets.UTF_8);
-        HPackDecoder decoder = new HPackDecoder(StandardCharsets.UTF_8);
+        HPackEncoder encoder = new HPackEncoder(512, StandardCharsets.UTF_8);
+        HPackDecoder decoder = new HPackDecoder(512, StandardCharsets.UTF_8);
         encoder.setMaxTableSize(512);
         decoder.setMaxTableSize(512);
 
@@ -229,7 +229,7 @@ public class Httpcore5_h2Test {
                 "secret");
         assertThat(decoded.get(6).isSensitive()).isTrue();
 
-        HPackDecoder constrainedDecoder = new HPackDecoder(StandardCharsets.UTF_8);
+        HPackDecoder constrainedDecoder = new HPackDecoder(512, StandardCharsets.UTF_8);
         constrainedDecoder.setMaxListSize(1);
         assertThatThrownBy(() -> constrainedDecoder.decodeHeaders(
                 ByteBuffer.wrap(encoded.array(), 0, encoded.length())))
@@ -309,12 +309,12 @@ public class Httpcore5_h2Test {
                 new BasicHeader("Connection", "close"))))
                 .isInstanceOf(ProtocolException.class)
                 .hasMessageContaining("contains uppercase characters");
-        BasicHttpRequest invalidTe = new BasicHttpRequest(Method.GET, "/");
-        invalidTe.setScheme("https");
-        invalidTe.addHeader("TE", "gzip");
-        assertThatThrownBy(() -> converter.convert(invalidTe))
+        BasicHttpRequest invalidPseudoHeader = new BasicHttpRequest(Method.GET, "/");
+        invalidPseudoHeader.setScheme("https");
+        invalidPseudoHeader.addHeader(":path", "/other");
+        assertThatThrownBy(() -> converter.convert(invalidPseudoHeader))
                 .isInstanceOf(ProtocolException.class)
-                .hasMessageContaining("illegal for HTTP/2 messages");
+                .hasMessageContaining("Header name ':path' is invalid");
     }
 
     @Test
