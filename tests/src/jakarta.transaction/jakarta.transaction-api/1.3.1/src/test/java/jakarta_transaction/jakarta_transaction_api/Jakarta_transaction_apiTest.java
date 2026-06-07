@@ -222,6 +222,40 @@ public class Jakarta_transaction_apiTest {
         assertThat(xid.getBranchQualifier().length).isLessThanOrEqualTo(Xid.MAXBQUALSIZE);
     }
 
+    @Test
+    void xaResourceLifecycleSupportsTimeoutRecoveryAndResourceManagerIdentity() throws Exception {
+        Xid xid = new FixedXid(77, new byte[] {7, 8, 9}, new byte[] {10});
+        RecordingXaResource resource = new RecordingXaResource("resource-manager");
+        RecordingXaResource sameResourceManager = new RecordingXaResource("resource-manager");
+        RecordingXaResource differentResourceManager = new RecordingXaResource("other-resource-manager");
+
+        assertThat(resource.setTransactionTimeout(15)).isTrue();
+        assertThat(resource.getTransactionTimeout()).isEqualTo(15);
+        resource.start(xid, XAResource.TMNOFLAGS);
+        resource.end(xid, XAResource.TMSUSPEND);
+        resource.start(xid, XAResource.TMRESUME);
+        resource.end(xid, XAResource.TMSUCCESS);
+
+        assertThat(resource.prepare(xid)).isEqualTo(XAResource.XA_OK);
+        resource.commit(xid, false);
+        resource.forget(xid);
+
+        assertThat(resource.recover(XAResource.TMSTARTRSCAN | XAResource.TMENDRSCAN)).containsExactly(xid);
+        assertThat(resource.isSameRM(sameResourceManager)).isTrue();
+        assertThat(resource.isSameRM(differentResourceManager)).isFalse();
+        assertThat(resource.events).containsExactly(
+                "timeout:15",
+                "get-timeout",
+                "start:77:" + XAResource.TMNOFLAGS,
+                "end:77:" + XAResource.TMSUSPEND,
+                "start:77:" + XAResource.TMRESUME,
+                "end:77:" + XAResource.TMSUCCESS,
+                "prepare:77",
+                "commit:77:false",
+                "forget:77",
+                "recover:" + (XAResource.TMSTARTRSCAN | XAResource.TMENDRSCAN));
+    }
+
     @Transactional
     @TransactionScoped
     private static final class AnnotatedComponent {
@@ -510,6 +544,77 @@ public class Jakarta_transaction_apiTest {
             if (isFinished()) {
                 throw new IllegalStateException("Transaction is already complete");
             }
+        }
+    }
+
+    private static final class RecordingXaResource implements XAResource {
+        private final String resourceManagerId;
+        private final List<String> events = new ArrayList<>();
+        private int timeoutSeconds;
+        private Xid recoverableXid;
+
+        RecordingXaResource(String resourceManagerId) {
+            this.resourceManagerId = resourceManagerId;
+        }
+
+        @Override
+        public void commit(Xid xid, boolean onePhase) throws XAException {
+            events.add("commit:" + xid.getFormatId() + ":" + onePhase);
+        }
+
+        @Override
+        public void end(Xid xid, int flags) throws XAException {
+            events.add("end:" + xid.getFormatId() + ":" + flags);
+        }
+
+        @Override
+        public void forget(Xid xid) throws XAException {
+            events.add("forget:" + xid.getFormatId());
+        }
+
+        @Override
+        public int getTransactionTimeout() throws XAException {
+            events.add("get-timeout");
+            return timeoutSeconds;
+        }
+
+        @Override
+        public boolean isSameRM(XAResource xaResource) throws XAException {
+            if (!(xaResource instanceof RecordingXaResource)) {
+                return false;
+            }
+            RecordingXaResource other = (RecordingXaResource) xaResource;
+            return resourceManagerId.equals(other.resourceManagerId);
+        }
+
+        @Override
+        public int prepare(Xid xid) throws XAException {
+            events.add("prepare:" + xid.getFormatId());
+            return XAResource.XA_OK;
+        }
+
+        @Override
+        public Xid[] recover(int flag) throws XAException {
+            events.add("recover:" + flag);
+            return new Xid[] {recoverableXid};
+        }
+
+        @Override
+        public void rollback(Xid xid) throws XAException {
+            events.add("rollback:" + xid.getFormatId());
+        }
+
+        @Override
+        public boolean setTransactionTimeout(int seconds) throws XAException {
+            timeoutSeconds = seconds;
+            events.add("timeout:" + seconds);
+            return true;
+        }
+
+        @Override
+        public void start(Xid xid, int flags) throws XAException {
+            recoverableXid = xid;
+            events.add("start:" + xid.getFormatId() + ":" + flags);
         }
     }
 
