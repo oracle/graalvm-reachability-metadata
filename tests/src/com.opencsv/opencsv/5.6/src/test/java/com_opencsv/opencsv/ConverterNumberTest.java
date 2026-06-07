@@ -18,11 +18,27 @@ import com.opencsv.exceptions.CsvBadConverterException;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import java.io.StringReader;
 import java.math.BigDecimal;
+import java.text.FieldPosition;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
+import java.text.spi.NumberFormatProvider;
 import java.util.List;
 import java.util.Locale;
 import org.junit.jupiter.api.Test;
 
 public class ConverterNumberTest {
+    private static final String LOCALE_PROVIDERS_PROPERTY = "java.locale.providers";
+    private static final Locale NON_DECIMAL_FORMAT_LOCALE = Locale.forLanguageTag("qaa-QA");
+
+    static {
+        String localeProviders = System.getProperty(LOCALE_PROVIDERS_PROPERTY);
+        if (localeProviders == null || localeProviders.isBlank()) {
+            System.setProperty(LOCALE_PROVIDERS_PROPERTY, "SPI,CLDR");
+        } else if (!localeProviders.contains("SPI")) {
+            System.setProperty(LOCALE_PROVIDERS_PROPERTY, "SPI," + localeProviders);
+        }
+    }
+
     @Test
     void parsesLocalizedNumberFieldUsingAnnotatedBean() {
         List<LocalizedNumberBean> beans = new CsvToBeanBuilder<LocalizedNumberBean>(
@@ -49,6 +65,14 @@ public class ConverterNumberTest {
 
         assertThatExceptionOfType(CsvBadConverterException.class)
                 .isThrownBy(() -> strategy.setType(InvalidReadFormatBean.class));
+    }
+
+    @Test
+    void reportsNonDecimalNumberFormatProvider() {
+        String locale = NON_DECIMAL_FORMAT_LOCALE.toLanguageTag();
+
+        assertThatExceptionOfType(CsvBadConverterException.class)
+                .isThrownBy(() -> new ConverterNumber(BigDecimal.class, locale, locale, Locale.ENGLISH, "0", "0"));
     }
 
     @Test
@@ -86,5 +110,50 @@ public class ConverterNumberTest {
         @CsvBindByName(column = "amount")
         @CsvNumber("#,##0.00.00")
         public BigDecimal amount;
+    }
+
+    public static class NonDecimalNumberFormatProvider extends NumberFormatProvider {
+        @Override
+        public Locale[] getAvailableLocales() {
+            return new Locale[] {NON_DECIMAL_FORMAT_LOCALE};
+        }
+
+        @Override
+        public NumberFormat getCurrencyInstance(Locale locale) {
+            return getNumberInstance(locale);
+        }
+
+        @Override
+        public NumberFormat getIntegerInstance(Locale locale) {
+            return getNumberInstance(locale);
+        }
+
+        @Override
+        public NumberFormat getNumberInstance(Locale locale) {
+            return new NonDecimalNumberFormat();
+        }
+
+        @Override
+        public NumberFormat getPercentInstance(Locale locale) {
+            return getNumberInstance(locale);
+        }
+    }
+
+    private static class NonDecimalNumberFormat extends NumberFormat {
+        @Override
+        public StringBuffer format(double number, StringBuffer toAppendTo, FieldPosition pos) {
+            return toAppendTo.append(number);
+        }
+
+        @Override
+        public StringBuffer format(long number, StringBuffer toAppendTo, FieldPosition pos) {
+            return toAppendTo.append(number);
+        }
+
+        @Override
+        public Number parse(String source, ParsePosition parsePosition) {
+            parsePosition.setIndex(source.length());
+            return BigDecimal.ZERO;
+        }
     }
 }

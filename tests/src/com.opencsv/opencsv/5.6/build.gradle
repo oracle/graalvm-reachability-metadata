@@ -9,13 +9,30 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String localeProviders = "SPI,CLDR"
+String numberFormatProviderClass = "com_opencsv.opencsv.ConverterNumberTest\$NonDecimalNumberFormatProvider"
 
 dependencies {
     testImplementation "com.opencsv:opencsv:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.withType(Test).configureEach {
+    systemProperty "java.locale.providers", localeProviders
+}
+
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Djava.locale.providers=$localeProviders")
+}
+
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add("-Djava.locale.providers=$localeProviders")
+            buildArgs.add("--initialize-at-build-time=$numberFormatProviderClass")
+        }
+    }
+
     agent {
         defaultMode = "conditional"
         modes {
