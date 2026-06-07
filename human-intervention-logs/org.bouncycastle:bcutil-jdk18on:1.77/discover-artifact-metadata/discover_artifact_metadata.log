@@ -1,0 +1,690 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.130.0
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ea3c8-45e4-7471-8eae-a57dba059934
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.bouncycastle:bcutil-jdk18on:1.77
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "1.77" when "$version$" is replaced with "1.77".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "org.bouncycastle:bcutil-jdk18on:1.77".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.77".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and the upstream Bouncy Castle repository, then update the JSON in place with version-tokenized URLs.
+exec
+/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org\\.bouncycastle|bcutil' || true" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b
+ succeeded in 0ms:
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b
+build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json
+
+exec
+/bin/bash -lc "rg '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"not-for-native-image\"' build/discovered-artifact-metadata -g '*.json' | head -80" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b
+ succeeded in 0ms:
+web search: 
+web search: Maven Central org.bouncycastle bcutil-jdk18on 1.77 pom scm source jar javadoc jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk18on/1.77/
+web search: 
+web search: site:github.com/bcgit/bc-java/releases 1.77 Bouncy Castle bc-java tag
+codex
+Maven Central confirms this is a normal `jar` with published sources and Javadocs, so I’m checking upstream only for the test suite path and the exact release tag naming.
+exec
+/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b
+ succeeded in 0ms:
+{
+  "coordinates" : "org.bouncycastle:bcutil-jdk18on:1.77"
+}
+
+exec
+/bin/bash -lc "rg 'bcutil-jdk18on|bouncycastle|javadoc.io|repo1.maven.org/maven2/.+sources.jar' -n metadata build docs forge -g '*.json' -g '*.md' | head -120" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json:2:  "coordinates" : "org.bouncycastle:bcutil-jdk18on:1.77"
+metadata/org.latencyutils/LatencyUtils/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/latencyutils/LatencyUtils/$version$/LatencyUtils-$version$-sources.jar",
+metadata/org.attoparser/attoparser/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/$version$/attoparser-$version$-sources.jar",
+metadata/com.github.jnr/jnr-x86asm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/jnr/jnr-x86asm/$version$/jnr-x86asm-$version$-sources.jar",
+metadata/com.github.jnr/jnr-a64asm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/jnr/jnr-a64asm/$version$/jnr-a64asm-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/2021-03-30T02-06-56-9a47743/java-dataloader-2021-03-30T02-06-56-9a47743-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:35:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:64:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:82:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/$version$/java-dataloader-$version$-sources.jar",
+metadata/com.google.protobuf/protobuf-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java/$version$/protobuf-java-$version$-sources.jar",
+metadata/org.jline/jline/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/jline/jline/$version$/jline-$version$-sources.jar",
+metadata/net.jcip/jcip-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/net/jcip/jcip-annotations/$version$/jcip-annotations-$version$-sources.jar",
+metadata/net.jcip/jcip-annotations/index.json:8:    "documentation-url" : "https://javadoc.io/doc/net.jcip/jcip-annotations/$version$/index.html",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:24:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:43:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/$version$/neo4j-bolt-connection-netty-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/$version$/snakeyaml-engine-$version$-sources.jar",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/$version$/graphql-java-extended-validation-$version$-sources.jar",
+metadata/org.neo4j.bolt/neo4j-bolt-connection/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection/$version$/neo4j-bolt-connection-$version$-sources.jar",
+metadata/com.ongres.stringprep/stringprep/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/ongres/stringprep/stringprep/$version$/stringprep-$version$-sources.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/com.graphql-java/graphql-java/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/$version$/graphql-java-$version$-sources.jar",
+metadata/com.graphql-java/graphql-java/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/$version$/graphql-java-$version$-sources.jar",
+metadata/com.graphql-java/graphql-java/index.json:66:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/$version$/graphql-java-$version$-sources.jar",
+metadata/com.graphql-java/graphql-java/index.json:80:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/$version$/graphql-java-$version$-sources.jar",
+metadata/org.neo4j.bolt/neo4j-bolt-connection-routed/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-routed/$version$/neo4j-bolt-connection-routed-$version$-sources.jar",
+metadata/org.jline/jline-console/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+metadata/org.jline/jline-console/index.json:55:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/$version$/protobuf-java-util-$version$-sources.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/$version$/protobuf-java-util-$version$-sources.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:49:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/$version$/protobuf-java-util-$version$-sources.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:65:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/$version$/protobuf-java-util-$version$-sources.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:89:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/$version$/protobuf-java-util-$version$-sources.jar",
+metadata/org.eclipse.collections/eclipse-collections-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/collections/eclipse-collections-api/$version$/eclipse-collections-api-$version$-sources.jar",
+metadata/org.neo4j.bolt/neo4j-bolt-connection-pooled/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-pooled/$version$/neo4j-bolt-connection-pooled-$version$-sources.jar",
+metadata/org.jline/jline-terminal-jna/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/$version$/jline-terminal-jna-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/com.sun.xml.bind.external/relaxng-datatype/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/xml/bind/external/relaxng-datatype/$version$/relaxng-datatype-$version$-sources.jar",
+metadata/javax.interceptor/javax.interceptor-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/interceptor/javax.interceptor-api/$version$/javax.interceptor-api-$version$-sources.jar",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-sources.jar",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-sources.jar",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:35:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-sources.jar",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:49:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/$version$/graphql-java-extended-scalars-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/org.glassfish.web/javax.el/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/$version$/javax.el-$version$-sources.jar",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/$version$/mariadb-java-client-$version$-sources.jar",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:40:    "source-code-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/$version$/mariadb-java-client-$version$-sources.jar",
+metadata/javax.persistence/javax.persistence-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/persistence/javax.persistence-api/$version$/javax.persistence-api-$version$-sources.jar",
+metadata/com.barchart.udt/barchart-udt-bundle/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/barchart/udt/barchart-udt-bundle/$version$/barchart-udt-bundle-$version$-sources.jar",
+metadata/javax.persistence/persistence-api/index.json:8:    "documentation-url" : "https://javadoc.io/doc/javax.persistence/persistence-api/$version$",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:45:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-sources.jar",
+metadata/com.google.android/annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/android/annotations/$version$/annotations-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:28:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:42:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:56:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:73:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:87:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:101:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:115:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:118:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-ldap-model/$version$/",
+metadata/org.apache.directory.api/api-ldap-model/index.json:129:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.parboiled/parboiled_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/parboiled/parboiled_2.13/$version$/parboiled_2.13-$version$-sources.jar",
+metadata/io.grpc/grpc-googleapis/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-googleapis/$version$/grpc-googleapis-$version$-sources.jar",
+metadata/io.grpc/grpc-rls/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-rls/$version$/grpc-rls-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-impl-base/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-impl-base/$version$/arquillian-container-test-impl-base-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-impl-base/index.json:37:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-impl-base/$version$/arquillian-container-test-impl-base-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-spi/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-spi/$version$/arquillian-container-spi-$version$-sources.jar",
+metadata/io.grpc/grpc-netty/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-netty/$version$/grpc-netty-$version$-sources.jar",
+metadata/org.parboiled/parboiled_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/parboiled/parboiled_3/$version$/parboiled_3-$version$-sources.jar",
+metadata/io.grpc/grpc-grpclb/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-grpclb/$version$/grpc-grpclb-$version$-sources.jar",
+metadata/io.grpc/grpc-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-api/$version$/grpc-api-$version$-sources.jar",
+metadata/io.grpc/grpc-context/index.json:63:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-context/$version$/grpc-context-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:54:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:56:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:68:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:70:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:82:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:84:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:96:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:98:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:110:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:112:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-sources.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-sources.jar",
+metadata/com.google.api/api-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/api-common/$version$/api-common-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-java/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-java/$version$/plexus-java-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-java/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-java/$version$/plexus-java-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-java/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-java/$version$/plexus-java-$version$-sources.jar",
+metadata/com.mysql/mysql-connector-j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/$version$/mysql-connector-j-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:37:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/$version$/",
+metadata/org.codehaus.plexus/plexus-utils/index.json:62:    "documentation-url" : "https://javadoc.io/doc/org.codehaus.plexus/plexus-utils/$version$",
+metadata/org.codehaus.plexus/plexus-utils/index.json:216:    "documentation-url" : "https://javadoc.io/doc/org.codehaus.plexus/plexus-utils/$version$",
+metadata/org.codehaus.plexus/plexus-utils/index.json:230:    "documentation-url" : "https://javadoc.io/doc/org.codehaus.plexus/plexus-utils/$version$",
+metadata/org.codehaus.plexus/plexus-utils/index.json:244:    "documentation-url" : "https://javadoc.io/doc/org.codehaus.plexus/plexus-utils/$version$",
+metadata/org.codehaus.plexus/plexus-utils/index.json:258:    "documentation-url" : "https://javadoc.io/doc/org.codehaus.plexus/plexus-utils/$version$",
+metadata/org.codehaus.plexus/plexus-interpolation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interpolation/$version$/plexus-interpolation-$version$-sources.jar",
+metadata/io.grpc/grpc-core/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-core/$version$/grpc-core-$version$-sources.jar",
+metadata/io.grpc/grpc-opentelemetry/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-opentelemetry/$version$/grpc-opentelemetry-$version$-sources.jar",
+metadata/io.netty/netty-transport-udt/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-transport-udt/4.1.74.Final/netty-transport-udt-4.1.74.Final-sources.jar",
+metadata/io.netty/netty-transport-udt/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-transport-udt/4.1.74.Final/netty-transport-udt-4.1.74.Final-test-sources.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:48:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/$version$/spring-security-crypto-$version$-sources.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:100:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/$version$/spring-security-crypto-$version$-sources.jar",
+metadata/com.fasterxml/aalto-xml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/aalto-xml/$version$/aalto-xml-$version$-sources.jar",
+metadata/org.eclipse.angus/angus-activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/angus-activation/$version$/angus-activation-$version$-sources.jar",
+metadata/javax.portlet/portlet-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/portlet/portlet-api/$version$/portlet-api-$version$-sources.jar",
+metadata/org.codehaus.jettison/jettison/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/jettison/jettison/$version$/jettison-$version$-sources.jar",
+metadata/com.fasterxml/classmate/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/classmate/$version$/classmate-$version$-sources.jar",
+
+exec
+/bin/bash -lc "git ls-remote --tags https://github.com/bcgit/bc-java.git 'refs/tags/*77*' | head -40" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b
+ succeeded in 416ms:
+4f3a8b216b3b6285f2cad52c05987dd5c48886c4	refs/tags/r1rv77
+f1367f0b89962b29460eea381a12063fa7cd2428	refs/tags/r1rv77^{}
+
+web search: 
+web search: repo1.maven.org org bouncycastle bcutil-jdk18on 1.77 sources jar javadoc jar
+web search: 
+web search: bcgit bc-java GitHub r1rv77 util/src/test
+web search: 
+web search: https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk18on/1.77/bcutil-jdk18on-1.77.pom
+web search: 
+web search: https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk18on/1.77/
+web search: 
+web search: https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk18on/1.77/
+codex
+The release tag is `r1rv77`; I’m validating the exact URLs now so the JSON contains resolvable values after `$version$` substitution.
+exec
+/bin/bash -lc "for url in \\
+  https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk18on/1.77/bcutil-jdk18on-1.77-sources.jar \\
+  https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk18on/1.77/bcutil-jdk18on-1.77-test-sources.jar \\
+  https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk18on/1.77/bcutil-jdk18on-1.77-javadoc.jar \\
+  https://github.com/bcgit/bc-java/tree/r1rv77/util/src/test \\
+  https://github.com/bcgit/bc-java/tree/r1rv77/util/src/main/java; do
+  printf '%s -> ' \""'$url"
+  curl -fsSI -L "$url" | awk '"'toupper("'$0) ~ /''^HTTP'"\\// {code="'$2} END {print code ? code : "NOHTTP"}'"' || true
+done" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/bcgit/bc-java/contents/util/src/test?ref=r1rv77 | sed -n '1,80p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b
+exec
+/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk18on/1.77/bcutil-jdk18on-1.77.pom' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.bouncycastle</groupId>
+  <artifactId>bcutil-jdk18on</artifactId>
+  <packaging>jar</packaging>
+  <name>Bouncy Castle ASN.1 Extension and Utility APIs</name>
+  <version>1.77</version>
+  <description>The Bouncy Castle Java APIs for ASN.1 extension and utility APIs used to support bcpkix and bctls. This jar contains APIs for JDK 1.8 and up.</description>
+  <url>https://www.bouncycastle.org/java.html</url>
+  <licenses>
+    <license>
+      <name>Bouncy Castle Licence</name>
+      <url>https://www.bouncycastle.org/licence.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://github.com/bcgit/bc-java</url>
+  </scm>
+  <issueManagement>
+     <system>GitHub</system>
+     <url>https://github.com/bcgit/bc-java/issues</url>
+  </issueManagement>
+  <developers>
+    <developer>
+      <id>feedback-crypto</id>
+      <name>The Legion of the Bouncy Castle Inc.</name>
+      <email>feedback-crypto@bouncycastle.org</email>
+    </developer>
+  </developers>
+  <dependencies>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk18on</artifactId>
+      <version>1.77</version>
+      <type>jar</type>
+    </dependency>
+  </dependencies>
+</project>
+
+ succeeded in 223ms:
+[
+  {
+    "name": "java",
+    "path": "util/src/test/java",
+    "sha": "5998bf85eaf6da38ed2654d66faad43272050ac7",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/util/src/test/java?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/util/src/test/java",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/5998bf85eaf6da38ed2654d66faad43272050ac7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/util/src/test/java?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/5998bf85eaf6da38ed2654d66faad43272050ac7",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/util/src/test/java"
+    }
+  },
+  {
+    "name": "jdk1.1",
+    "path": "util/src/test/jdk1.1",
+    "sha": "c09a3188cafee6822e5a72e9f83e33eb41eb3613",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/util/src/test/jdk1.1?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/util/src/test/jdk1.1",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/c09a3188cafee6822e5a72e9f83e33eb41eb3613",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/util/src/test/jdk1.1?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/c09a3188cafee6822e5a72e9f83e33eb41eb3613",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/util/src/test/jdk1.1"
+    }
+  },
+  {
+    "name": "jdk1.4",
+    "path": "util/src/test/jdk1.4",
+    "sha": "3a9451397d1dd0b2b83d12b2c43f6534299dba1f",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/util/src/test/jdk1.4?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/util/src/test/jdk1.4",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/3a9451397d1dd0b2b83d12b2c43f6534299dba1f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/util/src/test/jdk1.4?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/3a9451397d1dd0b2b83d12b2c43f6534299dba1f",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/util/src/test/jdk1.4"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "util/src/test/resources",
+    "sha": "107892b9ac549b11b601133ba0877a161bcb0456",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/util/src/test/resources?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/util/src/test/resources",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/107892b9ac549b11b601133ba0877a161bcb0456",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/util/src/test/resources?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/107892b9ac549b11b601133ba0877a161bcb0456",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/util/src/test/resources"
+    }
+  }
+]
+
+ succeeded in 1729ms:
+curl: (22) The requested URL returned error: 404
+404
+https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk18on/1.77/bcutil-jdk18on-1.77-javadoc.jar -> 200
+https://github.com/bcgit/bc-java/tree/r1rv77/util/src/test -> 200
+https://github.com/bcgit/bc-java/tree/r1rv77/util/src/main/java -> 200
+
+web search: 
+web search: Bouncy Castle bcutil-jdk18on 1.77 Maven Central
+exec
+/bin/bash -lc "for url in \\
+  https://javadoc.io/doc/org.bouncycastle/bcutil-jdk18on/1.77/ \\
+  https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk18on/1.77/bcutil-jdk18on-1.77-javadoc.jar; do
+  printf '%s -> ' \""'$url"
+  curl -fsSI -L "$url" | awk '"'toupper("'$0) ~ /''^HTTP'"\\// {code="'$2} END {print code ? code : "NOHTTP"}'"' || true
+done" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/bcgit/bc-java/contents/util/src/main/java?ref=r1rv77 | sed -n '1,80p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b
+exec
+/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk18on/1.77/ | sed -n '1,160p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/bouncycastle/bcutil-jdk18on/1.77</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/bouncycastle/bcutil-jdk18on/1.77</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="bcutil-jdk18on-1.77-javadoc.jar" title="bcutil-jdk18on-1.77-javadoc.jar">bcutil-jdk18on-1.77-javadoc.jar</a>                   2023-11-15 04:25   2115420      
+<a href="bcutil-jdk18on-1.77-javadoc.jar.asc" title="bcutil-jdk18on-1.77-javadoc.jar.asc">bcutil-jdk18on-1.77-javadoc.jar.asc</a>               2023-11-15 04:25       659      
+<a href="bcutil-jdk18on-1.77-javadoc.jar.asc.md5" title="bcutil-jdk18on-1.77-javadoc.jar.asc.md5">bcutil-jdk18on-1.77-javadoc.jar.asc.md5</a>           2023-11-15 04:25        32      
+<a href="bcutil-jdk18on-1.77-javadoc.jar.asc.sha1" title="bcutil-jdk18on-1.77-javadoc.jar.asc.sha1">bcutil-jdk18on-1.77-javadoc.jar.asc.sha1</a>          2023-11-15 04:25        40      
+<a href="bcutil-jdk18on-1.77-javadoc.jar.asc.sha256" title="bcutil-jdk18on-1.77-javadoc.jar.asc.sha256">bcutil-jdk18on-1.77-javadoc.jar.asc.sha256</a>        2023-11-15 04:25        64      
+<a href="bcutil-jdk18on-1.77-javadoc.jar.asc.sha512" title="bcutil-jdk18on-1.77-javadoc.jar.asc.sha512">bcutil-jdk18on-1.77-javadoc.jar.asc.sha512</a>        2023-11-15 04:25       128      
+<a href="bcutil-jdk18on-1.77-javadoc.jar.md5" title="bcutil-jdk18on-1.77-javadoc.jar.md5">bcutil-jdk18on-1.77-javadoc.jar.md5</a>               2023-11-15 04:25        32      
+<a href="bcutil-jdk18on-1.77-javadoc.jar.sha1" title="bcutil-jdk18on-1.77-javadoc.jar.sha1">bcutil-jdk18on-1.77-javadoc.jar.sha1</a>              2023-11-15 04:25        40      
+<a href="bcutil-jdk18on-1.77-javadoc.jar.sha256" title="bcutil-jdk18on-1.77-javadoc.jar.sha256">bcutil-jdk18on-1.77-javadoc.jar.sha256</a>            2023-11-15 04:25        64      
+<a href="bcutil-jdk18on-1.77-javadoc.jar.sha512" title="bcutil-jdk18on-1.77-javadoc.jar.sha512">bcutil-jdk18on-1.77-javadoc.jar.sha512</a>            2023-11-15 04:25       128      
+<a href="bcutil-jdk18on-1.77-sources.jar" title="bcutil-jdk18on-1.77-sources.jar">bcutil-jdk18on-1.77-sources.jar</a>                   2023-11-15 04:25    496786      
+<a href="bcutil-jdk18on-1.77-sources.jar.asc" title="bcutil-jdk18on-1.77-sources.jar.asc">bcutil-jdk18on-1.77-sources.jar.asc</a>               2023-11-15 04:25       659      
+<a href="bcutil-jdk18on-1.77-sources.jar.asc.md5" title="bcutil-jdk18on-1.77-sources.jar.asc.md5">bcutil-jdk18on-1.77-sources.jar.asc.md5</a>           2023-11-15 04:25        32      
+<a href="bcutil-jdk18on-1.77-sources.jar.asc.sha1" title="bcutil-jdk18on-1.77-sources.jar.asc.sha1">bcutil-jdk18on-1.77-sources.jar.asc.sha1</a>          2023-11-15 04:25        40      
+<a href="bcutil-jdk18on-1.77-sources.jar.asc.sha256" title="bcutil-jdk18on-1.77-sources.jar.asc.sha256">bcutil-jdk18on-1.77-sources.jar.asc.sha256</a>        2023-11-15 04:25        64      
+<a href="bcutil-jdk18on-1.77-sources.jar.asc.sha512" title="bcutil-jdk18on-1.77-sources.jar.asc.sha512">bcutil-jdk18on-1.77-sources.jar.asc.sha512</a>        2023-11-15 04:25       128      
+<a href="bcutil-jdk18on-1.77-sources.jar.md5" title="bcutil-jdk18on-1.77-sources.jar.md5">bcutil-jdk18on-1.77-sources.jar.md5</a>               2023-11-15 04:25        32      
+<a href="bcutil-jdk18on-1.77-sources.jar.sha1" title="bcutil-jdk18on-1.77-sources.jar.sha1">bcutil-jdk18on-1.77-sources.jar.sha1</a>              2023-11-15 04:25        40      
+<a href="bcutil-jdk18on-1.77-sources.jar.sha256" title="bcutil-jdk18on-1.77-sources.jar.sha256">bcutil-jdk18on-1.77-sources.jar.sha256</a>            2023-11-15 04:25        64      
+<a href="bcutil-jdk18on-1.77-sources.jar.sha512" title="bcutil-jdk18on-1.77-sources.jar.sha512">bcutil-jdk18on-1.77-sources.jar.sha512</a>            2023-11-15 04:25       128      
+<a href="bcutil-jdk18on-1.77.jar" title="bcutil-jdk18on-1.77.jar">bcutil-jdk18on-1.77.jar</a>                           2023-11-15 04:25    681002      
+<a href="bcutil-jdk18on-1.77.jar.asc" title="bcutil-jdk18on-1.77.jar.asc">bcutil-jdk18on-1.77.jar.asc</a>                       2023-11-15 04:25       659      
+<a href="bcutil-jdk18on-1.77.jar.asc.md5" title="bcutil-jdk18on-1.77.jar.asc.md5">bcutil-jdk18on-1.77.jar.asc.md5</a>                   2023-11-15 04:25        32      
+<a href="bcutil-jdk18on-1.77.jar.asc.sha1" title="bcutil-jdk18on-1.77.jar.asc.sha1">bcutil-jdk18on-1.77.jar.asc.sha1</a>                  2023-11-15 04:25        40      
+<a href="bcutil-jdk18on-1.77.jar.asc.sha256" title="bcutil-jdk18on-1.77.jar.asc.sha256">bcutil-jdk18on-1.77.jar.asc.sha256</a>                2023-11-15 04:25        64      
+<a href="bcutil-jdk18on-1.77.jar.asc.sha512" title="bcutil-jdk18on-1.77.jar.asc.sha512">bcutil-jdk18on-1.77.jar.asc.sha512</a>                2023-11-15 04:25       128      
+<a href="bcutil-jdk18on-1.77.jar.md5" title="bcutil-jdk18on-1.77.jar.md5">bcutil-jdk18on-1.77.jar.md5</a>                       2023-11-15 04:25        32      
+<a href="bcutil-jdk18on-1.77.jar.sha1" title="bcutil-jdk18on-1.77.jar.sha1">bcutil-jdk18on-1.77.jar.sha1</a>                      2023-11-15 04:25        40      
+<a href="bcutil-jdk18on-1.77.jar.sha256" title="bcutil-jdk18on-1.77.jar.sha256">bcutil-jdk18on-1.77.jar.sha256</a>                    2023-11-15 04:25        64      
+<a href="bcutil-jdk18on-1.77.jar.sha512" title="bcutil-jdk18on-1.77.jar.sha512">bcutil-jdk18on-1.77.jar.sha512</a>                    2023-11-15 04:25       128      
+<a href="bcutil-jdk18on-1.77.pom" title="bcutil-jdk18on-1.77.pom">bcutil-jdk18on-1.77.pom</a>                           2023-11-15 04:25      1320      
+<a href="bcutil-jdk18on-1.77.pom.asc" title="bcutil-jdk18on-1.77.pom.asc">bcutil-jdk18on-1.77.pom.asc</a>                       2023-11-15 04:25       659      
+<a href="bcutil-jdk18on-1.77.pom.asc.md5" title="bcutil-jdk18on-1.77.pom.asc.md5">bcutil-jdk18on-1.77.pom.asc.md5</a>                   2023-11-15 04:25        32      
+<a href="bcutil-jdk18on-1.77.pom.asc.sha1" title="bcutil-jdk18on-1.77.pom.asc.sha1">bcutil-jdk18on-1.77.pom.asc.sha1</a>                  2023-11-15 04:25        40      
+<a href="bcutil-jdk18on-1.77.pom.asc.sha256" title="bcutil-jdk18on-1.77.pom.asc.sha256">bcutil-jdk18on-1.77.pom.asc.sha256</a>                2023-11-15 04:25        64      
+<a href="bcutil-jdk18on-1.77.pom.asc.sha512" title="bcutil-jdk18on-1.77.pom.asc.sha512">bcutil-jdk18on-1.77.pom.asc.sha512</a>                2023-11-15 04:25       128      
+<a href="bcutil-jdk18on-1.77.pom.md5" title="bcutil-jdk18on-1.77.pom.md5">bcutil-jdk18on-1.77.pom.md5</a>                       2023-11-15 04:25        32      
+<a href="bcutil-jdk18on-1.77.pom.sha1" title="bcutil-jdk18on-1.77.pom.sha1">bcutil-jdk18on-1.77.pom.sha1</a>                      2023-11-15 04:25        40      
+<a href="bcutil-jdk18on-1.77.pom.sha256" title="bcutil-jdk18on-1.77.pom.sha256">bcutil-jdk18on-1.77.pom.sha256</a>                    2023-11-15 04:25        64      
+<a href="bcutil-jdk18on-1.77.pom.sha512" title="bcutil-jdk18on-1.77.pom.sha512">bcutil-jdk18on-1.77.pom.sha512</a>                    2023-11-15 04:25       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 220ms:
+[
+  {
+    "name": "org",
+    "path": "util/src/main/java/org",
+    "sha": "3ec74b9f13af39ce7e6c499126077ae6d42aff90",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/util/src/main/java/org?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/util/src/main/java/org",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/3ec74b9f13af39ce7e6c499126077ae6d42aff90",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/util/src/main/java/org?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/3ec74b9f13af39ce7e6c499126077ae6d42aff90",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/util/src/main/java/org"
+    }
+  }
+]
+
+ succeeded in 561ms:
+200
+https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk18on/1.77/bcutil-jdk18on-1.77-javadoc.jar -> 200
+
+codex
+I have enough to make the edit: Maven supplies the source and Javadoc artifacts, Maven does not publish test sources for this artifact, and the upstream tests are under `util/src/test` at tag `r1rv77`.
+exec
+/bin/bash -lc "curl -fsSI -L https://github.com/bcgit/bc-java | awk 'toupper("'$0) ~ /''^HTTP'"\\// {code="'$2} END {print code ? code : "NOHTTP"}'"'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b
+exec
+/bin/bash -lc 'tmp=$(mktemp); curl -fsSL https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk18on/1.77/bcutil-jdk18on-1.77.jar -o "$tmp"; jar tf "$tmp" | rg '"'\\.class"'$'"' | head -20; rm -f \""'$tmp"' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b
+ succeeded in 343ms:
+META-INF/versions/9/module-info.class
+org/bouncycastle/asn1/bsi/BSIObjectIdentifiers.class
+org/bouncycastle/asn1/cmc/BodyPartID.class
+org/bouncycastle/asn1/cmc/BodyPartList.class
+org/bouncycastle/asn1/cmc/BodyPartPath.class
+org/bouncycastle/asn1/cmc/BodyPartReference.class
+org/bouncycastle/asn1/cmc/CMCFailInfo.class
+org/bouncycastle/asn1/cmc/CMCObjectIdentifiers.class
+org/bouncycastle/asn1/cmc/CMCPublicationInfo.class
+org/bouncycastle/asn1/cmc/CMCStatus.class
+org/bouncycastle/asn1/cmc/CMCStatusInfo$OtherInfo.class
+org/bouncycastle/asn1/cmc/CMCStatusInfo.class
+org/bouncycastle/asn1/cmc/CMCStatusInfoBuilder.class
+org/bouncycastle/asn1/cmc/CMCStatusInfoV2.class
+org/bouncycastle/asn1/cmc/CMCStatusInfoV2Builder.class
+org/bouncycastle/asn1/cmc/CMCUnsignedData.class
+org/bouncycastle/asn1/cmc/CertificationRequest$1.class
+org/bouncycastle/asn1/cmc/CertificationRequest$CertificationRequestInfo.class
+org/bouncycastle/asn1/cmc/CertificationRequest.class
+org/bouncycastle/asn1/cmc/ControlsProcessed.class
+
+ succeeded in 767ms:
+200
+
+codex
+I’m updating the discovered artifact JSON now, leaving out `language` and `not-for-native-image` because this is a regular JVM jar with class files and not a Kotlin, Groovy, or Scala artifact.
+apply patch
+patch: completed
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json
+diff --git a/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json b/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json
+index cb133fbc0f5711f9f05c9ba40353058fdb8e50fa..ceaaa89efc1b3c7dc76bef08e95f89afa1e5a27f
+--- a/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json
++++ b/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.bouncycastle:bcutil-jdk18on:1.77"
++  "coordinates" : "org.bouncycastle:bcutil-jdk18on:1.77",
++  "repository-url" : "https://github.com/bcgit/bc-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk18on/$version$/bcutil-jdk18on-$version$-sources.jar",
++  "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/util/src/test",
++  "documentation-url" : "https://javadoc.io/doc/org.bouncycastle/bcutil-jdk18on/$version$/",
++  "description" : "Bouncy Castle bcutil-jdk18on provides ASN.1 extension and utility APIs used by the Bouncy Castle PKIX and TLS components. This artifact targets JDK 8 and later and packages JVM classes for Java applications that use Bouncy Castle."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json b/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json
+index cb133fbc0f5711f9f05c9ba40353058fdb8e50fa..ceaaa89efc1b3c7dc76bef08e95f89afa1e5a27f
+--- a/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json
++++ b/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.bouncycastle:bcutil-jdk18on:1.77"
++  "coordinates" : "org.bouncycastle:bcutil-jdk18on:1.77",
++  "repository-url" : "https://github.com/bcgit/bc-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk18on/$version$/bcutil-jdk18on-$version$-sources.jar",
++  "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/util/src/test",
++  "documentation-url" : "https://javadoc.io/doc/org.bouncycastle/bcutil-jdk18on/$version$/",
++  "description" : "Bouncy Castle bcutil-jdk18on provides ASN.1 extension and utility APIs used by the Bouncy Castle PKIX and TLS components. This artifact targets JDK 8 and later and packages JVM classes for Java applications that use Bouncy Castle."
+ }
+
+exec
+/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b
+ succeeded in 0ms:
+{
+  "coordinates": "org.bouncycastle:bcutil-jdk18on:1.77",
+  "repository-url": "https://github.com/bcgit/bc-java",
+  "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk18on/$version$/bcutil-jdk18on-$version$-sources.jar",
+  "test-code-url": "https://github.com/bcgit/bc-java/tree/r1rv77/util/src/test",
+  "documentation-url": "https://javadoc.io/doc/org.bouncycastle/bcutil-jdk18on/$version$/",
+  "description": "Bouncy Castle bcutil-jdk18on provides ASN.1 extension and utility APIs used by the Bouncy Castle PKIX and TLS components. This artifact targets JDK 8 and later and packages JVM classes for Java applications that use Bouncy Castle."
+}
+
+exec
+/bin/bash -lc "for url in \\
+  \"https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk18on/1.77/bcutil-jdk18on-1.77-sources.jar\" \\
+  \"https://github.com/bcgit/bc-java/tree/r1rv77/util/src/test\" \\
+  \"https://javadoc.io/doc/org.bouncycastle/bcutil-jdk18on/1.77/\"; do
+  printf '%s -> ' \""'$url"
+  curl -fsSI -L "$url" | awk '"'toupper("'$0) ~ /''^HTTP'"\\// {code="'$2} END {print code ? code : "NOHTTP"}'"' || true
+done" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b
+diff --git a/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json b/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json
+index cb133fbc0f5711f9f05c9ba40353058fdb8e50fa..ceaaa89efc1b3c7dc76bef08e95f89afa1e5a27f
+--- a/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json
++++ b/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.bouncycastle:bcutil-jdk18on:1.77"
++  "coordinates" : "org.bouncycastle:bcutil-jdk18on:1.77",
++  "repository-url" : "https://github.com/bcgit/bc-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk18on/$version$/bcutil-jdk18on-$version$-sources.jar",
++  "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/util/src/test",
++  "documentation-url" : "https://javadoc.io/doc/org.bouncycastle/bcutil-jdk18on/$version$/",
++  "description" : "Bouncy Castle bcutil-jdk18on provides ASN.1 extension and utility APIs used by the Bouncy Castle PKIX and TLS components. This artifact targets JDK 8 and later and packages JVM classes for Java applications that use Bouncy Castle."
+ }
+
+ succeeded in 1348ms:
+200
+https://javadoc.io/doc/org.bouncycastle/bcutil-jdk18on/1.77/ -> 200
+
+diff --git a/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json b/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json
+index cb133fbc0f5711f9f05c9ba40353058fdb8e50fa..ceaaa89efc1b3c7dc76bef08e95f89afa1e5a27f
+--- a/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json
++++ b/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.bouncycastle:bcutil-jdk18on:1.77"
++  "coordinates" : "org.bouncycastle:bcutil-jdk18on:1.77",
++  "repository-url" : "https://github.com/bcgit/bc-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk18on/$version$/bcutil-jdk18on-$version$-sources.jar",
++  "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/util/src/test",
++  "documentation-url" : "https://javadoc.io/doc/org.bouncycastle/bcutil-jdk18on/$version$/",
++  "description" : "Bouncy Castle bcutil-jdk18on provides ASN.1 extension and utility APIs used by the Bouncy Castle PKIX and TLS components. This artifact targets JDK 8 and later and packages JVM classes for Java applications that use Bouncy Castle."
+ }
+
+codex
+The JSON parses cleanly and the three rendered URLs return HTTP 200. I’m doing one final diff check before closing this out.
+exec
+/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json b/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json
+index cb133fbc0f5711f9f05c9ba40353058fdb8e50fa..ceaaa89efc1b3c7dc76bef08e95f89afa1e5a27f
+--- a/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json
++++ b/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.bouncycastle:bcutil-jdk18on:1.77"
++  "coordinates" : "org.bouncycastle:bcutil-jdk18on:1.77",
++  "repository-url" : "https://github.com/bcgit/bc-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk18on/$version$/bcutil-jdk18on-$version$-sources.jar",
++  "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/util/src/test",
++  "documentation-url" : "https://javadoc.io/doc/org.bouncycastle/bcutil-jdk18on/$version$/",
++  "description" : "Bouncy Castle bcutil-jdk18on provides ASN.1 extension and utility APIs used by the Bouncy Castle PKIX and TLS components. This artifact targets JDK 8 and later and packages JVM classes for Java applications that use Bouncy Castle."
+ }
+
+codex
+`git diff` is empty because this file is under `build/` and likely untracked or ignored; I’m checking the worktree status so I can report that accurately.
+exec
+/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b
+ succeeded in 0ms:
+{
+  "coordinates" : "org.bouncycastle:bcutil-jdk18on:1.77",
+  "repository-url" : "https://github.com/bcgit/bc-java",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk18on/$version$/bcutil-jdk18on-$version$-sources.jar",
+  "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/util/src/test",
+  "documentation-url" : "https://javadoc.io/doc/org.bouncycastle/bcutil-jdk18on/$version$/",
+  "description" : "Bouncy Castle bcutil-jdk18on provides ASN.1 extension and utility APIs used by the Bouncy Castle PKIX and TLS components. This artifact targets JDK 8 and later and packages JVM classes for Java applications that use Bouncy Castle."
+}
+
+exec
+/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b
+diff --git a/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json b/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json
+index cb133fbc0f5711f9f05c9ba40353058fdb8e50fa..ceaaa89efc1b3c7dc76bef08e95f89afa1e5a27f
+--- a/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json
++++ b/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.bouncycastle:bcutil-jdk18on:1.77"
++  "coordinates" : "org.bouncycastle:bcutil-jdk18on:1.77",
++  "repository-url" : "https://github.com/bcgit/bc-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk18on/$version$/bcutil-jdk18on-$version$-sources.jar",
++  "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/util/src/test",
++  "documentation-url" : "https://javadoc.io/doc/org.bouncycastle/bcutil-jdk18on/$version$/",
++  "description" : "Bouncy Castle bcutil-jdk18on provides ASN.1 extension and utility APIs used by the Bouncy Castle PKIX and TLS components. This artifact targets JDK 8 and later and packages JVM classes for Java applications that use Bouncy Castle."
+ }
+
+ succeeded in 205ms:
+!! build/
+
+codex
+Updated [org.bouncycastle-bcutil-jdk18on-1.77.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json).
+
+I left `language` absent and did not set `not-for-native-image`: this is a regular JVM jar with class files, not a Kotlin/Groovy/Scala or non-JVM artifact. Verified the JSON parses with `jq`, and the rendered source, test, and documentation URLs return HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json b/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json
+index cb133fbc0f5711f9f05c9ba40353058fdb8e50fa..ceaaa89efc1b3c7dc76bef08e95f89afa1e5a27f
+--- a/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json
++++ b/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.bouncycastle:bcutil-jdk18on:1.77"
++  "coordinates" : "org.bouncycastle:bcutil-jdk18on:1.77",
++  "repository-url" : "https://github.com/bcgit/bc-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk18on/$version$/bcutil-jdk18on-$version$-sources.jar",
++  "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/util/src/test",
++  "documentation-url" : "https://javadoc.io/doc/org.bouncycastle/bcutil-jdk18on/$version$/",
++  "description" : "Bouncy Castle bcutil-jdk18on provides ASN.1 extension and utility APIs used by the Bouncy Castle PKIX and TLS components. This artifact targets JDK 8 and later and packages JVM classes for Java applications that use Bouncy Castle."
+ }
+
+tokens used
+70,729
+Updated [org.bouncycastle-bcutil-jdk18on-1.77.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b/build/discovered-artifact-metadata/org.bouncycastle-bcutil-jdk18on-1.77.json).
+
+I left `language` absent and did not set `not-for-native-image`: this is a regular JVM jar with class files, not a Kotlin/Groovy/Scala or non-JVM artifact. Verified the JSON parses with `jq`, and the rendered source, test, and documentation URLs return HTTP 200.
+Ran agent for org.bouncycastle:bcutil-jdk18on:1.77 (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b/build/agent-artifact-discovery-logs/org.bouncycastle-bcutil-jdk18on-1.77.log
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1504-01be332b/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 37s
+9 actionable tasks: 9 executed
