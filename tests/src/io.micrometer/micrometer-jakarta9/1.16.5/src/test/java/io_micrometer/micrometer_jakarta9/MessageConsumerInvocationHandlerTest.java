@@ -7,6 +7,7 @@
 package io_micrometer.micrometer_jakarta9;
 
 import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.micrometer.jakarta9.instrument.jms.JmsInstrumentation;
 import io.micrometer.observation.ObservationRegistry;
@@ -45,6 +46,26 @@ public class MessageConsumerInvocationHandlerTest {
         assertThat(instrumentedConsumer).isNotSameAs(targetConsumer);
         assertThat(instrumentedConsumer.getMessageSelector()).isEqualTo("orders = true");
         assertThat(targetConsumer.getMessageSelectorCalls).isEqualTo(1);
+    }
+
+    @Test
+    void instrumentedConsumerWrapsMessageListenerBeforeDelegatingToTarget() throws JMSException {
+        RecordingMessageConsumer targetConsumer = new RecordingMessageConsumer("orders = true");
+        Session session = JmsInstrumentation.instrumentSession(new RecordingSession(targetConsumer),
+                ObservationRegistry.create());
+        MessageConsumer instrumentedConsumer = session.createConsumer(null);
+        AtomicBoolean delegateCalled = new AtomicBoolean();
+        MessageListener delegate = message -> delegateCalled.set(true);
+
+        instrumentedConsumer.setMessageListener(delegate);
+        MessageListener observedListener = targetConsumer.getMessageListener();
+
+        assertThat(observedListener).isNotNull();
+        assertThat(observedListener).isNotSameAs(delegate);
+
+        observedListener.onMessage(null);
+
+        assertThat(delegateCalled).isTrue();
     }
 
     private static final class RecordingMessageConsumer implements MessageConsumer {
