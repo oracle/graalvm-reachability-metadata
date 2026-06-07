@@ -10,7 +10,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.atomikos.util.SerializableObjectFactory;
 import java.util.Base64;
-import java.util.Hashtable;
 import javax.naming.BinaryRefAddr;
 import javax.naming.Reference;
 import org.graalvm.internal.tck.NativeImageSupport;
@@ -53,17 +52,43 @@ public class SerializableObjectFactoryAnonymous1Test {
                     null
             );
             final Object restored = new SerializableObjectFactory()
-                    .getObjectInstance(reference, null, null, new Hashtable<>());
+                    .getObjectInstance(reference, null, null, null);
 
             assertThat(restored.getClass().getName()).isEqualTo(CONTEXT_ONLY_CLASS_NAME);
             assertThat(restored).hasToString("context-only:atomikos");
-        } catch (Error error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-                throw error;
+        } catch (Throwable throwable) {
+            if (!isUnsupportedNativeImageDynamicClassLoadingFailure(throwable)) {
+                rethrow(throwable);
             }
         } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
         }
+    }
+
+    private static boolean isUnsupportedNativeImageDynamicClassLoadingFailure(Throwable throwable) {
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof Error error && NativeImageSupport.isUnsupportedFeatureError(error)) {
+                return true;
+            }
+            if ("runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))
+                    && current instanceof ClassNotFoundException classNotFoundException
+                    && CONTEXT_ONLY_CLASS_NAME.equals(classNotFoundException.getMessage())) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
+    }
+
+    private static void rethrow(Throwable throwable) throws Exception {
+        if (throwable instanceof Exception exception) {
+            throw exception;
+        }
+        if (throwable instanceof Error error) {
+            throw error;
+        }
+        throw new AssertionError(throwable);
     }
 
     private static byte[] decode(String bytes) {

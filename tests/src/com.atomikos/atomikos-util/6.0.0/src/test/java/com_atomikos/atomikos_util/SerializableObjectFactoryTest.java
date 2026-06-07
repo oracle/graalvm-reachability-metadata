@@ -10,7 +10,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.atomikos.util.SerializableObjectFactory;
 import java.io.Serializable;
-import java.util.Hashtable;
 import javax.naming.Reference;
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +19,7 @@ public class SerializableObjectFactoryTest {
         SerializablePayload payload = new SerializablePayload("transaction-service", 42);
 
         Reference reference = SerializableObjectFactory.createReference(payload);
-        Object restored = new SerializableObjectFactory().getObjectInstance(reference, null, null, new Hashtable<>());
+        Object restored = new SerializableObjectFactory().getObjectInstance(reference, null, null, null);
 
         assertThat(reference.getClassName()).isEqualTo(SerializablePayload.class.getName());
         assertThat(restored).isEqualTo(payload);
