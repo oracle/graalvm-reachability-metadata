@@ -9,6 +9,7 @@ package com_google_protobuf.protobuf_javalite;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.protobuf.CodedInputStream;
+import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.DescriptorProtos.DescriptorProto;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
@@ -21,6 +22,7 @@ import com.google.protobuf.GeneratedMessageV3;
 import com.google.protobuf.MapEntry;
 import com.google.protobuf.MapField;
 import com.google.protobuf.Message;
+import com.google.protobuf.WireFormat;
 import com.google.protobuf.WireFormat.FieldType;
 import java.io.File;
 import java.net.URL;
@@ -63,13 +65,32 @@ public class UnsafeUtilInnerAndroid32MemoryAccessorTest {
         List<URL> urls = new ArrayList<>();
         File android32MemoryJar = findClassPathFile(ANDROID_32_MEMORY_JAR);
         urls.add(android32MemoryJar.toURI().toURL());
+        addMatchingClassPathEntries(urls, "protobuf-javalite-");
+        addMatchingClassPathEntries(urls, "protobuf-java-");
         for (String entry : classPathEntries()) {
             File file = new File(entry);
-            if (!entry.isEmpty() && !file.getName().equals(ANDROID_32_MEMORY_JAR)) {
+            if (!entry.isEmpty()
+                    && !file.getName().equals(ANDROID_32_MEMORY_JAR)
+                    && !isPrioritizedProtobufRuntime(file)) {
                 urls.add(file.toURI().toURL());
             }
         }
         return urls.toArray(URL[]::new);
+    }
+
+    private static void addMatchingClassPathEntries(List<URL> urls, String fileNamePrefix)
+            throws Exception {
+        for (String entry : classPathEntries()) {
+            File file = new File(entry);
+            if (!entry.isEmpty() && file.getName().startsWith(fileNamePrefix)) {
+                urls.add(file.toURI().toURL());
+            }
+        }
+    }
+
+    private static boolean isPrioritizedProtobufRuntime(File file) {
+        return file.getName().startsWith("protobuf-javalite-")
+                || file.getName().startsWith("protobuf-java-");
     }
 
     private static File findClassPathFile(String fileName) {
@@ -129,10 +150,14 @@ public class UnsafeUtilInnerAndroid32MemoryAccessorTest {
         public String call() throws Exception {
             GeneratedFullMessage message = new GeneratedFullMessage();
 
-            message.mergeEmptyPayloadThroughGeneratedMessageV3Schema();
+            message.mergeMapPayloadThroughGeneratedMessageV3Schema();
 
             if (message.getDefaultInstanceForType() != GeneratedFullMessage.getDefaultInstance()) {
                 throw new AssertionError("Unexpected default instance.");
+            }
+            String value = message.getMetadataValue("color");
+            if (!"blue".equals(value)) {
+                throw new AssertionError("Unexpected parsed map value: " + value);
             }
             return message.getDescriptorForType().getFullName();
         }
@@ -167,9 +192,37 @@ public class UnsafeUtilInnerAndroid32MemoryAccessorTest {
             return DEFAULT_INSTANCE;
         }
 
-        void mergeEmptyPayloadThroughGeneratedMessageV3Schema() throws Exception {
-            CodedInputStream input = CodedInputStream.newInstance(new byte[0]);
+        void mergeMapPayloadThroughGeneratedMessageV3Schema() throws Exception {
+            CodedInputStream input = CodedInputStream.newInstance(mapPayload("color", "blue"));
             mergeFromAndMakeImmutableInternal(input, ExtensionRegistryLite.getEmptyRegistry());
+        }
+
+        String getMetadataValue(String key) {
+            return metadata_.getMap().get(key);
+        }
+
+        private static byte[] mapPayload(String key, String value) throws Exception {
+            byte[] entry = mapEntryPayload(key, value);
+            byte[] payload = new byte[CodedOutputStream.computeTagSize(1)
+                    + CodedOutputStream.computeUInt32SizeNoTag(entry.length)
+                    + entry.length];
+            CodedOutputStream output = CodedOutputStream.newInstance(payload);
+            output.writeTag(1, WireFormat.WIRETYPE_LENGTH_DELIMITED);
+            output.writeUInt32NoTag(entry.length);
+            output.writeRawBytes(entry);
+            output.checkNoSpaceLeft();
+            return payload;
+        }
+
+        private static byte[] mapEntryPayload(String key, String value) throws Exception {
+            int size = CodedOutputStream.computeStringSize(1, key)
+                    + CodedOutputStream.computeStringSize(2, value);
+            byte[] payload = new byte[size];
+            CodedOutputStream output = CodedOutputStream.newInstance(payload);
+            output.writeString(1, key);
+            output.writeString(2, value);
+            output.checkNoSpaceLeft();
+            return payload;
         }
 
         @Override
