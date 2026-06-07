@@ -12,14 +12,14 @@ import com.sun.net.httpserver.HttpServer;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
 import org.junit.jupiter.api.Test;
-import zipkin2.Call;
-import zipkin2.Callback;
-import zipkin2.CheckResult;
 import zipkin2.Span;
-import zipkin2.codec.Encoding;
 import zipkin2.codec.SpanBytesDecoder;
 import zipkin2.codec.SpanBytesEncoder;
 import zipkin2.reporter.AsyncReporter;
+import zipkin2.reporter.Call;
+import zipkin2.reporter.Callback;
+import zipkin2.reporter.CheckResult;
+import zipkin2.reporter.Encoding;
 import zipkin2.reporter.okhttp3.OkHttpSender;
 
 import java.io.ByteArrayInputStream;
