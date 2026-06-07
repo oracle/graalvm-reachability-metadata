@@ -25,13 +25,17 @@ import org.springframework.classify.SubclassClassifier;
 import org.springframework.retry.RetryCallback;
 import org.springframework.retry.RetryContext;
 import org.springframework.retry.RetryListener;
+import org.springframework.retry.RetryPolicy;
 import org.springframework.retry.RetryStatistics;
 import org.springframework.retry.backoff.BackOffContext;
 import org.springframework.retry.backoff.BackOffPolicy;
 import org.springframework.retry.backoff.BackOffPolicyBuilder;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.backoff.Sleeper;
+import org.springframework.retry.policy.AlwaysRetryPolicy;
+import org.springframework.retry.policy.CompositeRetryPolicy;
 import org.springframework.retry.policy.MapRetryContextCache;
+import org.springframework.retry.policy.NeverRetryPolicy;
 import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.stats.DefaultStatisticsRepository;
 import org.springframework.retry.stats.ExponentialAverageRetryStatistics;
@@ -181,6 +185,31 @@ public class Spring_retryTest {
     }
 
     @Test
+    void compositeRetryPolicyCoordinatesChildPoliciesWithPessimisticAndOptimisticModes() {
+        CompositeRetryPolicy pessimisticPolicy = compositeRetryPolicy(false, new AlwaysRetryPolicy(),
+                new NeverRetryPolicy());
+        RetryContext pessimisticContext = pessimisticPolicy.open(null);
+
+        assertThat(pessimisticPolicy.canRetry(pessimisticContext)).isTrue();
+        pessimisticPolicy.registerThrowable(pessimisticContext, new IllegalStateException("first failure"));
+        assertThat(pessimisticContext.getRetryCount()).isEqualTo(1);
+        assertThat(pessimisticContext.getLastThrowable()).isInstanceOf(IllegalStateException.class);
+        assertThat(pessimisticPolicy.canRetry(pessimisticContext)).isFalse();
+        pessimisticPolicy.close(pessimisticContext);
+
+        CompositeRetryPolicy optimisticPolicy = compositeRetryPolicy(true, new AlwaysRetryPolicy(),
+                new NeverRetryPolicy());
+        RetryContext optimisticContext = optimisticPolicy.open(null);
+
+        assertThat(optimisticPolicy.canRetry(optimisticContext)).isTrue();
+        optimisticPolicy.registerThrowable(optimisticContext, new IllegalStateException("first failure"));
+        assertThat(optimisticContext.getRetryCount()).isEqualTo(1);
+        assertThat(optimisticContext.getLastThrowable()).isInstanceOf(IllegalStateException.class);
+        assertThat(optimisticPolicy.canRetry(optimisticContext)).isTrue();
+        optimisticPolicy.close(optimisticContext);
+    }
+
+    @Test
     void statisticsRepositoryAccumulatesNamedRetryOutcomes() {
         DefaultStatisticsRepository repository = new DefaultStatisticsRepository();
 
@@ -236,6 +265,13 @@ public class Spring_retryTest {
 
         assertThat(contextCache.containsKey("order-42")).isFalse();
         retryPolicy.close(context);
+    }
+
+    private static CompositeRetryPolicy compositeRetryPolicy(boolean optimistic, RetryPolicy... policies) {
+        CompositeRetryPolicy compositeRetryPolicy = new CompositeRetryPolicy();
+        compositeRetryPolicy.setOptimistic(optimistic);
+        compositeRetryPolicy.setPolicies(policies);
+        return compositeRetryPolicy;
     }
 
     private static final class RecordingRetryListener implements RetryListener {
