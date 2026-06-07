@@ -422,7 +422,8 @@ public class Oci_java_sdk_certificatesTest {
                 .isEqualTo(
                         GetCertificateBundleRequest.CertificateBundleType
                                 .CertificateContentPublicOnly);
-        assertThat(CertificatesClient.SERVICE.getServiceName()).isEqualTo("CERTIFICATES");
+        assertThat(CertificatesClient.SERVICE.getServiceName())
+                .isEqualTo(CertificatesClient.class.getName());
         assertThat(CertificatesClient.SERVICE.getServiceEndpointTemplate())
                 .isEqualTo("https://certificates.{region}.oci.{secondLevelDomain}");
 
