@@ -1,0 +1,540 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-d9e4f6d1/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-d9e4f6d1/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-d9e4f6d1
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ea1ee-944a-7c71-bc95-627642ae37c1
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.scala-lang:scala-library:2.11.8
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "2.11.8" when "$version$" is replaced with "2.11.8".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-d9e4f6d1/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "org.scala-lang:scala-library:2.11.8".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.11.8".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven Central and the upstream Scala repository, then update the JSON directly with the repository’s existing formatting conventions.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-d9e4f6d1
+ succeeded in 0ms:
+{
+  "coordinates" : "org.scala-lang:scala-library:2.11.8"
+}
+
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"' metadata build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-d9e4f6d1
+ succeeded in 0ms:
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-sources.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:    "test-code-url" : "https://download.eclipse.org/jakartaee/authentication/3.0/jakarta-authentication-tck-$version$.zip",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/src/test",
+metadata/org.apache.thrift/libthrift/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/test",
+metadata/org.apache.thrift/libthrift/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/soap/jakarta.xml.soap-api/$version$/jakarta.xml.soap-api-$version$-sources.jar",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:    "test-code-url" : "https://github.com/jakartaee/saaj-api/tree/$version$/api/src/test",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/soap/jakarta.xml.soap-api/$version$/jakarta.xml.soap-api-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r$version$/junit-jupiter-engine/src/test",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:    "test-code-url" : "https://github.com/junit-team/junit5/tree/r5.9.2/junit-jupiter-params/src/test/java",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-sources.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala",
+metadata/com.typesafe.slick/slick_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:    "language" : {
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-sources.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala/slick/test/jdbc/hikaricp",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:    "language" : {
+metadata/org.awaitility/awaitility/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-mustmatchers_3/$version$/scalatest-mustmatchers_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/dotty/scalatest-test/src/test/scala/org/scalatest/matchers/must",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-mustmatchers_3/$version$/scalatest-mustmatchers_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:    "language" : {
+metadata/com.aayushatharva.brotli4j/service/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/wordspec-test/src/test/scala/org/scalatest/wordspec",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:    "language" : {
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:    "test-code-url" : "N/A",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:    "language" : {
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-matchers-core_2.13/$version$/scalatest-matchers-core_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest/matchers",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-matchers-core_2.13/$version$/scalatest-matchers-core_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:    "language" : {
+metadata/org.scalatest/scalatest-diagrams_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/diagrams-test/src/test/scala/org/scalatest/diagrams",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:    "language" : {
+metadata/org.scalatest/scalatest-diagrams_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:    "test-code-url" : "N/A",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:    "language" : {
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_3/$version$/scalatest-shouldmatchers_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/dotty/scalatest-test/src/test/scala/org/scalatest/matchers/should",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_3/$version$/scalatest-shouldmatchers_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:    "language" : {
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/$version$/scalatest-featurespec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/featurespec-test",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/$version$/scalatest-featurespec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:    "language" : {
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-featurespec_2.13/$version$/scalatest-featurespec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:    "test-code-url" : "N/A",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-featurespec_2.13/$version$/scalatest-featurespec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:    "language" : {
+metadata/org.scalatest/scalatest-compatible/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-sources.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-compatible/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg --files build/discovered-artifact-metadata metadata | rg 'scala|org.scala-lang|discovered-artifact' | head -50" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-d9e4f6d1
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
+metadata/org.scalatest/scalatest-mustmatchers_3/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json
+metadata/org.scalatest/scalatest_2.13/index.json
+metadata/org.scalatest/scalatest-wordspec_2.13/3.3.0-SNAP2/reachability-metadata.json
+metadata/org.scalatest/scalatest-wordspec_2.13/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json
+metadata/org.scalatest/scalatest-diagrams_3/3.3.0-SNAP4/reachability-metadata.json
+metadata/org.scalatest/scalatest-diagrams_3/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-diagrams_3/index.json
+metadata/org.scalatest/scalatest-shouldmatchers_3/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-refspec_2.13/index.json
+metadata/org.scalatest/scalatest-mustmatchers_2.13/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-featurespec_3/index.json
+metadata/org.scalatest/scalatest-funspec_3/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-funspec_3/index.json
+metadata/org.scalatest/scalatest-matchers-core_2.13/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json
+metadata/org.scalatest/scalatest-featurespec_2.13/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json
+metadata/org.scalatest/scalatest-compatible/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-compatible/index.json
+metadata/org.scalatest/scalatest-funsuite_3/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-funsuite_3/index.json
+metadata/org.scalatest/scalatest-funsuite_2.13/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json
+metadata/org.scalatest/scalatest-funspec_2.13/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-funspec_2.13/index.json
+metadata/org.scalatest/scalatest-flatspec_3/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-flatspec_3/index.json
+metadata/org.scalatest/scalatest-freespec_2.13/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-freespec_2.13/index.json
+metadata/org.scalatest/scalatest-wordspec_3/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-wordspec_3/index.json
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/2.11.4/reachability-metadata.json
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json
+metadata/org.scalacheck/scalacheck_2.13/1.19.0/reachability-metadata.json
+metadata/org.scalacheck/scalacheck_2.13/index.json
+metadata/org.scalacheck/scalacheck_2.13/1.18.1/reachability-metadata.json
+metadata/com.github.pureconfig/pureconfig-generic-scala3_3/0.17.10/reachability-metadata.json
+metadata/com.github.pureconfig/pureconfig-generic-scala3_3/index.json
+metadata/org.scala-lang/scalap/2.13.13/reachability-metadata.json
+
+web search: 
+web search: Maven Central org.scala-lang scala-library 2.11.8 sources javadoc tests jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/scala-lang/scala-library/2.11.8/
+codex
+Maven Central confirms the 2.11.8 main jar, sources jar, and javadoc jar are published; I do not see a tests jar in that Maven directory, so I’m using the tagged upstream test tree for `test-code-url`.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/org.scalatest/scalatest-wordspec_2.13/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-d9e4f6d1
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.2.19",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/scalatest/scalatest",
+    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/wordspec-test/src/test/scala/org/scalatest/wordspec",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+    "description" : "ScalaTest WordSpec provides the WordSpec style for writing behavior-driven ScalaTest suites using nested words and sentences to describe a system under test. It includes synchronous, asynchronous, and fixture-based suite classes that integrate with ScalaTest assertions, matchers, tagging, and test lifecycle features.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "3.2.19",
+      "3.2.20",
+      "3.3.0-alpha.1",
+      "3.3.0-alpha.2",
+      "3.3.0-SNAP3",
+      "3.3.0-SNAP4"
+    ],
+    "allowed-packages" : [
+      "org.scalatest.wordspec",
+      "org.scalatest"
+    ]
+  },
+  {
+    "metadata-version" : "3.3.0-SNAP2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/scalatest/scalatest",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+    "description" : "ScalaTest WordSpec provides the WordSpec style for writing behavior-driven ScalaTest suites using nested words and sentences to describe the system under test. It includes synchronous, asynchronous, and fixture-based suite classes that integrate with ScalaTest assertions, matchers, tagging, and lifecycle features.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "3.3.0-SNAP2"
+    ],
+    "allowed-packages" : [
+      "org.scalatest.wordspec",
+      "org.scalatest"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg '\"repository-url\" : \"https://github.com/.+\\.git\"' metadata build/discovered-artifact-metadata -g '*.json' | head -20" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-d9e4f6d1
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/2.11.8/scala-library-2.11.8-tests.jar || true' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-d9e4f6d1
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/scala/scala/tree/v2.11.8/test >/dev/null && echo OK' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-d9e4f6d1
+ succeeded in 234ms:
+HTTP/2 404 
+date: Sun, 07 Jun 2026 11:54:11 GMT
+content-type: text/html
+cf-ray: a07f75ec1d28a032-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/scala-lang/scala-library/2.11.8/scala-library-2.11.8-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 546ms:
+OK
+
+codex
+The local index examples use Maven artifact URLs for sources and javadocs, and GitHub repository roots without `.git`. I’m going to keep this new JSON aligned with that style.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/2.11.8/scala-library-2.11.8.pom | sed -n '1,160p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-d9e4f6d1
+ succeeded in 0ms:
+<?xml version="1.0"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.scala-lang</groupId>
+  <artifactId>scala-library</artifactId>
+  <packaging>jar</packaging>
+  <version>2.11.8</version>
+  <name>Scala Library</name>
+  <description>Standard library for the Scala Programming Language</description>
+  <url>http://www.scala-lang.org/</url>
+  <inceptionYear>2002</inceptionYear>
+  <organization>
+    <name>LAMP/EPFL</name>
+    <url>http://lamp.epfl.ch/</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>BSD 3-Clause</name>
+      <url>http://www.scala-lang.org/license.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:git:git://github.com/scala/scala.git</connection>
+    <url>https://github.com/scala/scala.git</url>
+  </scm>
+  <issueManagement>
+    <system>JIRA</system>
+    <url>https://issues.scala-lang.org/</url>
+  </issueManagement>
+  <properties>
+    <info.apiURL>http://www.scala-lang.org/api/2.11.8/</info.apiURL>
+  </properties>
+  <dependencies>
+   </dependencies>
+  <developers>
+    <developer>
+      <id>lamp</id>
+      <name>EPFL LAMP</name>
+    </developer>
+    <developer>
+      <id>Lightbend</id>
+      <name>Lightbend, Inc.</name>
+    </developer>
+  </developers>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/2.11.8/scala-library-2.11.8-javadoc.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-d9e4f6d1
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 11:54:17 GMT
+content-type: application/java-archive
+content-length: 21970519
+cf-ray: a07f7610f92724c0-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 692581
+etag: "2175559daa9be39737652246853d3bd8"
+last-modified: Fri, 04 Mar 2016 15:26:36 GMT
+x-checksum-md5: 2175559daa9be39737652246853d3bd8
+x-checksum-sha1: 11b4ba4c0a60f74d3cc02a034098543006418271
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/2.11.8/scala-library-2.11.8-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-d9e4f6d1
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 11:54:17 GMT
+content-type: application/java-archive
+content-length: 911686
+cf-ray: a07f7610ff325da5-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 435830
+etag: "492b59b6ee87b414260e66396a4c9b62"
+last-modified: Fri, 04 Mar 2016 15:26:34 GMT
+x-checksum-md5: 492b59b6ee87b414260e66396a4c9b62
+x-checksum-sha1: 17178a95c4b47c0a9745cfb8d01924359824fd7c
+
+exec
+/usr/bin/bash -lc 'git ls-remote --tags https://github.com/scala/scala.git refs/tags/v2.11.8' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-d9e4f6d1
+ succeeded in 266ms:
+112e6a3fd9f521886b31f3eec4ef5a4d87269b24	refs/tags/v2.11.8
+
+codex
+I’ve got enough evidence now: Scala 2.11.8 is a JVM `jar`, has Maven sources and javadocs, has no Maven tests jar, and maps to the upstream `v2.11.8` Git tag. I’m updating only the requested JSON keys.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-d9e4f6d1/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
+diff --git a/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json b/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
+index c2c6ffaea0aecfef0026fcce94702b21e094efa6..16250a9a84f39f6a0a4f1ce190e0aa972ddcb074
+--- a/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
++++ b/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scala-lang:scala-library:2.11.8"
++  "coordinates" : "org.scala-lang:scala-library:2.11.8",
++  "repository-url" : "https://github.com/scala/scala",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/$version$/scala-library-$version$-sources.jar",
++  "test-code-url" : "https://github.com/scala/scala/tree/v$version$/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/$version$/scala-library-$version$-javadoc.jar",
++  "description" : "Scala Library is the standard runtime library for Scala 2, providing core APIs and language support used by Scala programs on the JVM. It supplies the JVM classes that compiled Scala 2.11 applications depend on at runtime, including collections, functions, options, futures, and standard utility types.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json b/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
+index c2c6ffaea0aecfef0026fcce94702b21e094efa6..16250a9a84f39f6a0a4f1ce190e0aa972ddcb074
+--- a/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
++++ b/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scala-lang:scala-library:2.11.8"
++  "coordinates" : "org.scala-lang:scala-library:2.11.8",
++  "repository-url" : "https://github.com/scala/scala",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/$version$/scala-library-$version$-sources.jar",
++  "test-code-url" : "https://github.com/scala/scala/tree/v$version$/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/$version$/scala-library-$version$-javadoc.jar",
++  "description" : "Scala Library is the standard runtime library for Scala 2, providing core APIs and language support used by Scala programs on the JVM. It supplies the JVM classes that compiled Scala 2.11 applications depend on at runtime, including collections, functions, options, futures, and standard utility types.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+codex
+The file is patched. I’m doing a quick validation pass for JSON syntax and the substituted URLs.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-d9e4f6d1
+ succeeded in 0ms:
+{
+  "coordinates": "org.scala-lang:scala-library:2.11.8",
+  "repository-url": "https://github.com/scala/scala",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/$version$/scala-library-$version$-sources.jar",
+  "test-code-url": "https://github.com/scala/scala/tree/v$version$/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/$version$/scala-library-$version$-javadoc.jar",
+  "description": "Scala Library is the standard runtime library for Scala 2, providing core APIs and language support used by Scala programs on the JVM. It supplies the JVM classes that compiled Scala 2.11 applications depend on at runtime, including collections, functions, options, futures, and standard utility types.",
+  "language": {
+    "name": "scala",
+    "version": "2"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/2.11.8/scala-library-2.11.8-sources.jar >/dev/null && echo source OK' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-d9e4f6d1
+ succeeded in 0ms:
+source OK
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/scala/scala/tree/v2.11.8/test >/dev/null && echo tests OK' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-d9e4f6d1
+ succeeded in 0ms:
+tests OK
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/2.11.8/scala-library-2.11.8-javadoc.jar >/dev/null && echo docs OK' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-d9e4f6d1
+ succeeded in 0ms:
+docs OK
+
+diff --git a/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json b/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
+index c2c6ffaea0aecfef0026fcce94702b21e094efa6..16250a9a84f39f6a0a4f1ce190e0aa972ddcb074
+--- a/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
++++ b/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scala-lang:scala-library:2.11.8"
++  "coordinates" : "org.scala-lang:scala-library:2.11.8",
++  "repository-url" : "https://github.com/scala/scala",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/$version$/scala-library-$version$-sources.jar",
++  "test-code-url" : "https://github.com/scala/scala/tree/v$version$/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/$version$/scala-library-$version$-javadoc.jar",
++  "description" : "Scala Library is the standard runtime library for Scala 2, providing core APIs and language support used by Scala programs on the JVM. It supplies the JVM classes that compiled Scala 2.11 applications depend on at runtime, including collections, functions, options, futures, and standard utility types.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+web search: 
+web search: https://github.com/scala/scala/tree/v2.11.8/test
+web search: 
+web search: repo.maven.apache.org maven2 org scala-lang scala-library 2.11.8 scala-library-2.11.8.pom
+web search: 
+web search: https://central.sonatype.com/artifact/org.scala-lang/scala-library/2.11.8
+web search: 
+web search: https://repo1.maven.org/maven2/org/scala-lang/scala-library/2.11.8/
+codex
+Updated [org.scala-lang-scala-library-2.11.8.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-d9e4f6d1/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json:1).
+
+I set the Scala repository root, Maven Central source and javadoc URLs, the tagged GitHub test tree, a two-sentence description, and `"language": { "name": "scala", "version": "2" }`. I left `not-for-native-image` absent because this artifact is a JVM `jar` and Maven Central publishes the main jar, sources jar, and javadoc jar for `2.11.8`; the upstream test tree exists at the `v2.11.8` tag. ([central.sonatype.com](https://central.sonatype.com/artifact/org.scala-lang/scala-library/2.11.8))
+
+Validation passed with `jq`, and substituted source, documentation, and test URLs all returned OK.
+diff --git a/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json b/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
+index c2c6ffaea0aecfef0026fcce94702b21e094efa6..16250a9a84f39f6a0a4f1ce190e0aa972ddcb074
+--- a/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
++++ b/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scala-lang:scala-library:2.11.8"
++  "coordinates" : "org.scala-lang:scala-library:2.11.8",
++  "repository-url" : "https://github.com/scala/scala",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/$version$/scala-library-$version$-sources.jar",
++  "test-code-url" : "https://github.com/scala/scala/tree/v$version$/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-lang/scala-library/$version$/scala-library-$version$-javadoc.jar",
++  "description" : "Scala Library is the standard runtime library for Scala 2, providing core APIs and language support used by Scala programs on the JVM. It supplies the JVM classes that compiled Scala 2.11 applications depend on at runtime, including collections, functions, options, futures, and standard utility types.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+tokens used
+48,142
+Updated [org.scala-lang-scala-library-2.11.8.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-d9e4f6d1/build/discovered-artifact-metadata/org.scala-lang-scala-library-2.11.8.json:1).
+
+I set the Scala repository root, Maven Central source and javadoc URLs, the tagged GitHub test tree, a two-sentence description, and `"language": { "name": "scala", "version": "2" }`. I left `not-for-native-image` absent because this artifact is a JVM `jar` and Maven Central publishes the main jar, sources jar, and javadoc jar for `2.11.8`; the upstream test tree exists at the `v2.11.8` tag. ([central.sonatype.com](https://central.sonatype.com/artifact/org.scala-lang/scala-library/2.11.8))
+
+Validation passed with `jq`, and substituted source, documentation, and test URLs all returned OK.
+Ran agent for org.scala-lang:scala-library:2.11.8 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-d9e4f6d1/build/agent-artifact-discovery-logs/org.scala-lang-scala-library-2.11.8.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2158-d9e4f6d1/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 28s
+9 actionable tasks: 9 executed
