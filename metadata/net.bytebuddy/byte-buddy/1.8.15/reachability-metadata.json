@@ -76,6 +76,18 @@
     },
     {
       "condition": {
+        "typeReached": "net.bytebuddy.dynamic.ClassFileLocator$ForModule"
+      },
+      "type": "java.lang.Module",
+      "methods": [
+        {
+          "name": "getPackages",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
         "typeReached": "net.bytebuddy.agent.builder.AgentBuilder$Default"
       },
       "type": "java.lang.StackTraceElement[]"
@@ -391,7 +403,16 @@
       "condition": {
         "typeReached": "net.bytebuddy.dynamic.NexusAccessor$Dispatcher$CreationAction"
       },
-      "type": "net.bytebuddy.dynamic.Nexus"
+      "type": "net.bytebuddy.dynamic.Nexus",
+      "methods": [
+        {
+          "name": "initialize",
+          "parameterTypes": [
+            "java.lang.Class",
+            "int"
+          ]
+        }
+      ]
     },
     {
       "condition": {
