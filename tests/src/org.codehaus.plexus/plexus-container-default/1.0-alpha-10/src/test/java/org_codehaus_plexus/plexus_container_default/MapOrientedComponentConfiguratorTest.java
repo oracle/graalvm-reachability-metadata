@@ -55,7 +55,6 @@ public class MapOrientedComponentConfiguratorTest {
     public void rejectsPlainComponentWithConfiguratorResolvedFromContainer() throws Exception {
         DefaultPlexusContainer container = new DefaultPlexusContainer();
         try {
-            container.initialize();
             ComponentConfigurator configurator = (ComponentConfigurator) container.lookup(
                 ComponentConfigurator.ROLE,
                 "map-oriented"
@@ -75,9 +74,7 @@ public class MapOrientedComponentConfiguratorTest {
             assertTrue(exception.getMessage().contains("can only process implementations"));
             assertEquals(MapOrientedComponent.class, cachedMapOrientedComponentType());
         } finally {
-            if (container.isInitialized()) {
-                container.dispose();
-            }
+            container.dispose();
         }
     }
 

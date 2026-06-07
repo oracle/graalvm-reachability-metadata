@@ -12,10 +12,8 @@ import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.MapOrientedComponent;
 import org.codehaus.plexus.component.composition.CompositionException;
 import org.codehaus.plexus.component.composition.MapOrientedComponentComposer;
-import org.codehaus.plexus.component.composition.UndefinedComponentComposerException;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
-import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
@@ -98,9 +96,8 @@ public class MapOrientedComponentComposerTest {
         descriptor.addRequirement(set);
         descriptor.addRequirement(fallback);
 
-        List assignedDescriptors = composer.assembleComponent(component, descriptor, container);
+        composer.assembleComponent(component, descriptor, container);
 
-        assertEquals(5, assignedDescriptors.size());
         assertSame(hintedDependency, component.valueFor(hinted));
         assertSame(singleDependency, component.valueFor(single));
         assertSame(mappedDependencies, component.valueFor(mapped));
@@ -206,6 +203,11 @@ public class MapOrientedComponentComposerTest {
         private void addList(String role, List dependencies) {
             lists.put(role, dependencies);
             descriptors.put(role, descriptor(role));
+        }
+
+        @Override
+        public String getName() {
+            return "recording";
         }
 
         @Override
@@ -338,17 +340,7 @@ public class MapOrientedComponentComposerTest {
         }
 
         @Override
-        public boolean isInitialized() {
-            return true;
-        }
-
-        @Override
         public void start() throws PlexusContainerException {
-        }
-
-        @Override
-        public boolean isStarted() {
-            return true;
         }
 
         @Override
@@ -358,10 +350,6 @@ public class MapOrientedComponentComposerTest {
         @Override
         public Context getContext() {
             return null;
-        }
-
-        @Override
-        public void setParentPlexusContainer(PlexusContainer parentContainer) {
         }
 
         @Override
@@ -376,18 +364,6 @@ public class MapOrientedComponentComposerTest {
         @Override
         public Logger getLogger() {
             return null;
-        }
-
-        @Override
-        public Object createComponentInstance(ComponentDescriptor componentDescriptor)
-            throws ComponentInstantiationException, ComponentLifecycleException {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void composeComponent(Object component, ComponentDescriptor componentDescriptor)
-            throws CompositionException, UndefinedComponentComposerException {
-            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -416,13 +392,23 @@ public class MapOrientedComponentComposerTest {
         }
 
         @Override
-        public ClassRealm getComponentRealm(String componentKey) {
-            return null;
+        public Object autowire(Object component) throws CompositionException {
+            throw new UnsupportedOperationException();
         }
 
         @Override
-        public void setLoggerManager(LoggerManager loggerManager) {
+        public Object createAndAutowire(String clazz)
+            throws CompositionException, ClassNotFoundException, InstantiationException, IllegalAccessException {
             throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setReloadingEnabled(boolean reloadingEnabled) {
+        }
+
+        @Override
+        public boolean isReloadingEnabled() {
+            return false;
         }
 
         @Override

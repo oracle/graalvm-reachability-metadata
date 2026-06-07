@@ -11,9 +11,7 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.composition.CompositionException;
 import org.codehaus.plexus.component.composition.SetterComponentComposer;
-import org.codehaus.plexus.component.composition.UndefinedComponentComposerException;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
-import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
@@ -46,19 +44,18 @@ public class SetterComponentComposerTest {
 
         String arrayRole = "arrayRole";
         String mapRole = "mapRole";
-        Map<String, Object> emptyArrayDependencies = new HashMap<>();
+        List<Object> emptyArrayDependencies = new ArrayList<>();
         Map<String, String> mapDependencies = new HashMap<>();
         mapDependencies.put("key", "map dependency");
 
-        container.addMap(arrayRole, emptyArrayDependencies);
+        container.addList(arrayRole, emptyArrayDependencies);
         container.addMap(mapRole, mapDependencies);
 
         componentDescriptor.addRequirement(requirement(arrayRole, "arrayDependencies"));
         componentDescriptor.addRequirement(requirement(mapRole, "mapDependencies"));
 
-        List assignedDescriptors = composer.assembleComponent(component, componentDescriptor, container);
+        composer.assembleComponent(component, componentDescriptor, container);
 
-        assertEquals(2, assignedDescriptors.size());
         assertEquals(0, component.arrayDependencies.length);
         assertSame(mapDependencies, component.mapDependencies);
     }
@@ -109,6 +106,16 @@ public class SetterComponentComposerTest {
         private void addMap(String role, Map dependencies) {
             maps.put(role, dependencies);
             descriptors.put(role, descriptor(role));
+        }
+
+        private void addList(String role, List dependencies) {
+            lists.put(role, dependencies);
+            descriptors.put(role, descriptor(role));
+        }
+
+        @Override
+        public String getName() {
+            return "recording";
         }
 
         @Override
@@ -241,17 +248,7 @@ public class SetterComponentComposerTest {
         }
 
         @Override
-        public boolean isInitialized() {
-            return true;
-        }
-
-        @Override
         public void start() throws PlexusContainerException {
-        }
-
-        @Override
-        public boolean isStarted() {
-            return true;
         }
 
         @Override
@@ -261,10 +258,6 @@ public class SetterComponentComposerTest {
         @Override
         public Context getContext() {
             return null;
-        }
-
-        @Override
-        public void setParentPlexusContainer(PlexusContainer parentContainer) {
         }
 
         @Override
@@ -279,18 +272,6 @@ public class SetterComponentComposerTest {
         @Override
         public Logger getLogger() {
             return null;
-        }
-
-        @Override
-        public Object createComponentInstance(ComponentDescriptor componentDescriptor)
-            throws ComponentInstantiationException, ComponentLifecycleException {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void composeComponent(Object component, ComponentDescriptor componentDescriptor)
-            throws CompositionException, UndefinedComponentComposerException {
-            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -319,13 +300,23 @@ public class SetterComponentComposerTest {
         }
 
         @Override
-        public ClassRealm getComponentRealm(String componentKey) {
-            return null;
+        public Object autowire(Object component) throws CompositionException {
+            throw new UnsupportedOperationException();
         }
 
         @Override
-        public void setLoggerManager(LoggerManager loggerManager) {
+        public Object createAndAutowire(String clazz)
+            throws CompositionException, ClassNotFoundException, InstantiationException, IllegalAccessException {
             throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setReloadingEnabled(boolean reloadingEnabled) {
+        }
+
+        @Override
+        public boolean isReloadingEnabled() {
+            return false;
         }
 
         @Override

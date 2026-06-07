@@ -11,9 +11,7 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.composition.CompositionException;
 import org.codehaus.plexus.component.composition.FieldComponentComposer;
-import org.codehaus.plexus.component.composition.UndefinedComponentComposerException;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
-import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
@@ -33,14 +31,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class FieldComponentComposerTest {
     @Test
-    public void assignsRequirementsToAllSupportedFieldShapes() throws Exception {
+    public void assignsRequirementsToSupportedFieldShapes() throws Exception {
         FieldComponentComposer composer = new FieldComponentComposer();
         ComponentWithAllFieldKinds component = new ComponentWithAllFieldKinds();
         RecordingPlexusContainer container = new RecordingPlexusContainer();
@@ -51,36 +48,29 @@ public class FieldComponentComposerTest {
         listDependencies.add("list dependency");
         Map<String, String> mapDependencies = new HashMap<>();
         mapDependencies.put("key", "map dependency");
-        Map<String, String> setSourceDependencies = new HashMap<>();
-        setSourceDependencies.put("set-key", "set dependency");
         Dependency ordinaryDependency = new Dependency();
 
         String arrayRole = "arrayRole";
         String mapRole = "mapRole";
         String listRole = "listRole";
-        String setRole = "setRole";
         String ordinaryRole = Dependency.class.getName();
 
         container.addList(arrayRole, listOf(arrayDependency));
         container.addList(listRole, listDependencies);
         container.addMap(mapRole, mapDependencies);
-        container.addMap(setRole, setSourceDependencies);
         container.addComponent(ordinaryRole, ordinaryDependency);
 
         componentDescriptor.addRequirement(requirement(arrayRole, "arrayDependencies"));
         componentDescriptor.addRequirement(requirement(mapRole, "mapDependencies"));
         componentDescriptor.addRequirement(requirement(listRole, "listDependencies"));
-        componentDescriptor.addRequirement(requirement(setRole, "setDependencies"));
         componentDescriptor.addRequirement(requirement(ordinaryRole, "ordinaryDependency"));
 
-        List assignedDescriptors = composer.assembleComponent(component, componentDescriptor, container);
+        composer.assembleComponent(component, componentDescriptor, container);
 
-        assertEquals(5, assignedDescriptors.size());
         assertEquals(1, component.arrayDependencies.length);
         assertSame(arrayDependency, component.arrayDependencies[0]);
         assertSame(mapDependencies, component.mapDependencies);
         assertSame(listDependencies, component.listDependencies);
-        assertEquals(setSourceDependencies.entrySet(), component.setDependencies);
         assertSame(ordinaryDependency, component.ordinaryDependency);
     }
 
@@ -139,8 +129,6 @@ public class FieldComponentComposerTest {
 
         private List listDependencies;
 
-        private Set setDependencies;
-
         private Dependency ordinaryDependency;
     }
 
@@ -173,6 +161,11 @@ public class FieldComponentComposerTest {
         private void addMap(String role, Map dependencies) {
             maps.put(role, dependencies);
             descriptors.put(role, descriptor(role));
+        }
+
+        @Override
+        public String getName() {
+            return "recording";
         }
 
         @Override
@@ -305,17 +298,7 @@ public class FieldComponentComposerTest {
         }
 
         @Override
-        public boolean isInitialized() {
-            return true;
-        }
-
-        @Override
         public void start() throws PlexusContainerException {
-        }
-
-        @Override
-        public boolean isStarted() {
-            return true;
         }
 
         @Override
@@ -325,10 +308,6 @@ public class FieldComponentComposerTest {
         @Override
         public Context getContext() {
             return null;
-        }
-
-        @Override
-        public void setParentPlexusContainer(PlexusContainer parentContainer) {
         }
 
         @Override
@@ -343,18 +322,6 @@ public class FieldComponentComposerTest {
         @Override
         public Logger getLogger() {
             return null;
-        }
-
-        @Override
-        public Object createComponentInstance(ComponentDescriptor componentDescriptor)
-            throws ComponentInstantiationException, ComponentLifecycleException {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void composeComponent(Object component, ComponentDescriptor componentDescriptor)
-            throws CompositionException, UndefinedComponentComposerException {
-            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -383,13 +350,23 @@ public class FieldComponentComposerTest {
         }
 
         @Override
-        public ClassRealm getComponentRealm(String componentKey) {
-            return null;
+        public Object autowire(Object component) throws CompositionException {
+            throw new UnsupportedOperationException();
         }
 
         @Override
-        public void setLoggerManager(LoggerManager loggerManager) {
+        public Object createAndAutowire(String clazz)
+            throws CompositionException, ClassNotFoundException, InstantiationException, IllegalAccessException {
             throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setReloadingEnabled(boolean reloadingEnabled) {
+        }
+
+        @Override
+        public boolean isReloadingEnabled() {
+            return false;
         }
 
         @Override
