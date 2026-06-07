@@ -60,8 +60,8 @@ public class Kerb_clientTest {
         assertThat(config.allowUdp()).isTrue();
         assertThat(config.isPreauthRequired()).isFalse();
         assertThat(config.getTgsPrincipal()).isEqualTo("krbtgt/EXAMPLE.TEST@EXAMPLE.TEST");
-        assertThat(config.getTicketLifetime()).isEqualTo(1234L);
-        assertThat(config.getRenewLifetime()).isEqualTo(5678L);
+        assertThat(config.getTicketLifetime()).isEqualTo("1234");
+        assertThat(config.getRenewLifetime()).isEqualTo("5678");
     }
 
     @Test
@@ -86,7 +86,7 @@ public class Kerb_clientTest {
 
         KrbConfig config = ClientUtil.getConfig(temporaryDirectory.toFile());
         KrbSetting setting = new KrbSetting(config);
-        List<String> kdcList = ClientUtil.getKDCList(setting);
+        List<String> kdcList = ClientUtil.getKDCList(config.getDefaultRealm(), setting);
 
         assertThat(config.getDefaultRealm()).isEqualTo("FILE.TEST");
         assertThat(config.getKdcRealm()).isEqualTo("FILE.TEST");
@@ -96,7 +96,7 @@ public class Kerb_clientTest {
         assertThat(config.getRealmSectionItems("FILE.TEST", "kdc"))
                 .containsExactlyInAnyOrder("first-kdc.example.test:10088", "second-kdc.example.test:10089");
         assertThat(kdcList)
-                .contains("config-host.example.test", "first-kdc.example.test:10088", "second-kdc.example.test:10089");
+                .containsExactlyInAnyOrder("first-kdc.example.test:10088", "second-kdc.example.test:10089");
     }
 
     @Test
@@ -299,12 +299,12 @@ public class Kerb_clientTest {
         PkinitRequestOpts pkinitRequestOpts = new PkinitRequestOpts();
         TokenContext tokenContext = new TokenContext();
 
-        assertThat(pkinitRequestOpts.requireEku).isTrue();
-        assertThat(pkinitRequestOpts.acceptSecondaryEku).isFalse();
-        assertThat(pkinitRequestOpts.usingRsa).isFalse();
-        assertThat(pkinitRequestOpts.dhSize).isPositive();
-        assertThat(tokenContext.usingIdToken).isTrue();
-        assertThat(tokenContext.token).isNull();
+        assertThat(pkinitRequestOpts.isRequireEku()).isTrue();
+        assertThat(pkinitRequestOpts.isAcceptSecondaryEku()).isFalse();
+        assertThat(pkinitRequestOpts.isUsingRsa()).isFalse();
+        assertThat(pkinitRequestOpts.getDhSize()).isPositive();
+        assertThat(tokenContext.isUsingIdToken()).isTrue();
+        assertThat(tokenContext.getToken()).isNull();
     }
 
     private static KrbToken krbToken(boolean identityToken, boolean accessToken) {
