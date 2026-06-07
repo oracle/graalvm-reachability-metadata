@@ -37,8 +37,18 @@ public class ClassRealmTest {
     }
 
     @Test
+    void loadClassUsesParentClassLoaderWhenRealmHasNoMatchingClass() throws Exception {
+        ClassRealm realm = new ClassWorld().newRealm("parent-class-loader-realm", null);
+        realm.setParentClassLoader(ClassRealmTest.class.getClassLoader());
+
+        Class<?> loadedClass = realm.loadClass(ClassRealmTest.class.getName());
+
+        assertThat(loadedClass).isSameAs(ClassRealmTest.class);
+    }
+
+    @Test
     void loadResourceFromParentUsesForeignClassLoader() throws Exception {
-        ClassRealm realm = newRealm();
+        ClassRealm realm = newRealmWithParentClassLoader();
 
         URL resource = realm.loadResourceFromParent("classworlds.conf");
 
@@ -47,7 +57,7 @@ public class ClassRealmTest {
 
     @Test
     void loadResourcesFromParentUsesForeignClassLoader() throws Exception {
-        ClassRealm realm = newRealm();
+        ClassRealm realm = newRealmWithParentClassLoader();
 
         Enumeration<?> resources = realm.loadResourcesFromParent("classworlds.conf");
 
@@ -58,5 +68,11 @@ public class ClassRealmTest {
     private static ClassRealm newRealm() throws Exception {
         ClassWorld world = new ClassWorld();
         return world.newRealm(REALM_ID, ClassRealmTest.class.getClassLoader());
+    }
+
+    private static ClassRealm newRealmWithParentClassLoader() throws Exception {
+        ClassRealm realm = newRealm();
+        realm.setParentClassLoader(ClassRealmTest.class.getClassLoader());
+        return realm;
     }
 }
