@@ -32,4 +32,33 @@ public class DefaultPlexusContainerTest {
             container.dispose();
         }
     }
+
+    @Test
+    void createAndAutowireInstantiatesNamedComponentFromContainerRealm() throws Exception {
+        DefaultPlexusContainer container = new DefaultPlexusContainer(
+            "autowire-container",
+            DefaultPlexusContainerTest.class.getClassLoader()
+        );
+
+        try {
+            Object component = container.createAndAutowire(SimpleAutowirableComponent.class.getName());
+
+            assertThat(component).isInstanceOf(SimpleAutowirableComponent.class);
+            assertThat(((SimpleAutowirableComponent) component).isConstructed()).isTrue();
+        } finally {
+            container.dispose();
+        }
+    }
+
+    public static final class SimpleAutowirableComponent {
+        private final boolean constructed;
+
+        public SimpleAutowirableComponent() {
+            constructed = true;
+        }
+
+        public boolean isConstructed() {
+            return constructed;
+        }
+    }
 }
