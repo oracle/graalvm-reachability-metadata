@@ -31,16 +31,20 @@ import com.baomidou.mybatisplus.autoconfigure.SpringBootVFS;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.AES;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.mapper.MapperFactoryBean;
+import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.origin.OriginTrackedValue;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.boot.env.OriginTrackedMapPropertySource;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -110,6 +114,26 @@ public class Mybatis_plus_boot_starterTest {
                     SqlSessionTemplate sqlSessionTemplate = context.getBean(SqlSessionTemplate.class);
                     assertThat(properties.getExecutorType()).isEqualTo(ExecutorType.REUSE);
                     assertThat(sqlSessionTemplate.getExecutorType()).isEqualTo(ExecutorType.REUSE);
+                });
+    }
+
+    @Test
+    void autoConfigurationRegistersMapperScannerForAutoConfigurationPackage() {
+        new ApplicationContextRunner()
+                .withConfiguration(AutoConfigurations.of(MybatisPlusAutoConfiguration.class))
+                .withUserConfiguration(AutoScannedMapperConfiguration.class)
+                .run((context) -> {
+                    assertThat(context.getStartupFailure()).isNull();
+                    assertThat(context).hasSingleBean(SqlSessionFactory.class);
+                    assertThat(context).hasSingleBean(SqlSessionTemplate.class);
+                    assertThat(context.getBeanFactory().containsBeanDefinition(MapperScannerConfigurer.class.getName())).isTrue();
+
+                    BeanDefinition scannerDefinition = context.getBeanFactory()
+                            .getBeanDefinition(MapperScannerConfigurer.class.getName());
+                    assertThat(scannerDefinition.getPropertyValues().getPropertyValue("annotationClass").getValue())
+                            .isEqualTo(Mapper.class);
+                    assertThat(scannerDefinition.getPropertyValues().getPropertyValue("basePackage").getValue())
+                            .isEqualTo("org.apache.ibatis.annotations");
                 });
     }
 
@@ -230,6 +254,20 @@ public class Mybatis_plus_boot_starterTest {
         @Bean
         MybatisPlusPropertiesCustomizer executorTypePropertiesCustomizer() {
             return (properties) -> properties.setExecutorType(ExecutorType.REUSE);
+        }
+    }
+
+    @AutoConfigurationPackage(basePackages = "org.apache.ibatis.annotations")
+    @Configuration(proxyBeanMethods = false)
+    static class AutoScannedMapperConfiguration {
+
+        @Bean
+        DataSource dataSource() {
+            JdbcDataSource dataSource = new JdbcDataSource();
+            dataSource.setURL("jdbc:h2:mem:mp_scanned_" + UUID.randomUUID() + ";MODE=MySQL;DB_CLOSE_DELAY=-1");
+            dataSource.setUser("sa");
+            dataSource.setPassword("");
+            return dataSource;
         }
     }
 
