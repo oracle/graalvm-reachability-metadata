@@ -25,6 +25,7 @@ import org.xnio.channels.MulticastMessageChannel;
 import org.xnio.channels.SocketAddressBuffer;
 import org.xnio.channels.StreamSinkChannel;
 import org.xnio.channels.StreamSourceChannel;
+import org.xnio.management.XnioWorkerMXBean;
 import org.xnio.nio.NioXnioProvider;
 import org.xnio.nio.Version;
 
@@ -145,6 +146,24 @@ public class Xnio_nioTest {
                 writeText(right.getSinkChannel(), "right-to-left");
                 assertThat(readText(left.getSourceChannel(), "right-to-left".length())).isEqualTo("right-to-left");
             }
+        } finally {
+            shutdownWorker(worker);
+        }
+    }
+
+    @Test
+    void workerManagementBeanReportsNioWorkerConfiguration() throws Exception {
+        XnioWorker worker = createWorker();
+        try {
+            XnioWorkerMXBean mxBean = worker.getMXBean();
+
+            assertThat(mxBean.getProviderName()).isEqualTo("nio");
+            assertThat(mxBean.getName()).isEqualTo(worker.getName());
+            assertThat(mxBean.getIoThreadCount()).isEqualTo(worker.getIoThreadCount());
+            assertThat(mxBean.getCoreWorkerPoolSize()).isEqualTo(1);
+            assertThat(mxBean.getMaxWorkerPoolSize()).isEqualTo(2);
+            assertThat(mxBean.isShutdownRequested()).isFalse();
+            assertThat(mxBean.getServerMXBeans()).isEmpty();
         } finally {
             shutdownWorker(worker);
         }
