@@ -6,8 +6,8 @@
  */
 package io_airlift.aircompressor;
 
-import io.airlift.compress.v2.zstd.ZstdCompressor;
-import io.airlift.compress.v2.zstd.ZstdDecompressor;
+import io.airlift.compress.v2.zstd.ZstdJavaCompressor;
+import io.airlift.compress.v2.zstd.ZstdJavaDecompressor;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
@@ -18,8 +18,8 @@ public class ZstdUnsafeUtilTest {
     @Test
     void compressesAndDecompressesPayload() {
         byte[] input = repeatedPayload();
-        ZstdCompressor compressor = ZstdCompressor.create();
-        ZstdDecompressor decompressor = ZstdDecompressor.create();
+        ZstdJavaCompressor compressor = new ZstdJavaCompressor();
+        ZstdJavaDecompressor decompressor = new ZstdJavaDecompressor();
 
         byte[] compressed = new byte[compressor.maxCompressedLength(input.length)];
         int compressedSize = compressor.compress(
