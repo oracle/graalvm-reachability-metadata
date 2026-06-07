@@ -27,7 +27,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.net.ssl.KeyManager;
 
 import org.junit.jupiter.api.Test;
+import org.xnio.BufferAllocator;
 import org.xnio.Buffers;
+import org.xnio.ByteBufferSlicePool;
 import org.xnio.ByteString;
 import org.xnio.ChannelListeners;
 import org.xnio.FileAccess;
@@ -38,6 +40,7 @@ import org.xnio.LocalSocketAddress;
 import org.xnio.Option;
 import org.xnio.OptionMap;
 import org.xnio.Options;
+import org.xnio.Pooled;
 import org.xnio.Property;
 import org.xnio.Sequence;
 import org.xnio.SslClientAuthMode;
@@ -138,6 +141,34 @@ public class Xnio_apiTest {
         ByteBuffer filled = ByteBuffer.allocate(4);
         Buffers.fill(filled, 'Z', 4).flip();
         assertThat(Buffers.take(filled)).containsExactly((byte) 'Z', (byte) 'Z', (byte) 'Z', (byte) 'Z');
+    }
+
+    @Test
+    void byteBufferSlicePoolsAllocateAndReleasePooledBuffers() {
+        ByteBufferSlicePool pool = new ByteBufferSlicePool(BufferAllocator.BYTE_BUFFER_ALLOCATOR, 16, 64);
+
+        Pooled<ByteBuffer> firstAllocation = pool.allocate();
+        ByteBuffer firstBuffer = firstAllocation.getResource();
+        firstBuffer.put("pooled".getBytes(StandardCharsets.UTF_8));
+        firstBuffer.flip();
+
+        assertThat(pool.getBufferSize()).isEqualTo(16);
+        assertThat(firstBuffer.capacity()).isEqualTo(pool.getBufferSize());
+        assertThat(new String(Buffers.take(firstBuffer), StandardCharsets.UTF_8)).isEqualTo("pooled");
+
+        firstAllocation.close();
+
+        Pooled<ByteBuffer> secondAllocation = pool.allocate();
+        try {
+            ByteBuffer secondBuffer = secondAllocation.getResource();
+
+            assertThat(secondBuffer.position()).isZero();
+            assertThat(secondBuffer.limit()).isEqualTo(pool.getBufferSize());
+            assertThat(secondBuffer.capacity()).isEqualTo(pool.getBufferSize());
+        } finally {
+            secondAllocation.close();
+            pool.clean();
+        }
     }
 
     @Test
