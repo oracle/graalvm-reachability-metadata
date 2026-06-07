@@ -1,0 +1,58 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "com.oracle.oci.sdk:oci-java-sdk-addons-oke-workload-identity:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+List<String> metadataConfigDirectories() {
+    LinkedHashSet<String> directories = new LinkedHashSet<>()
+    directories.add(layout.buildDirectory.dir("native/generated/generateTestResourcesConfigFile").get().asFile.absolutePath)
+
+    configurations.testRuntimeClasspath.resolvedConfiguration.resolvedArtifacts.each { artifact ->
+        String group = artifact.moduleVersion.id.group
+        String name = artifact.name
+        String version = artifact.moduleVersion.id.version
+        if (group == "com.fasterxml.jackson.core" && name == "jackson-databind") {
+            return
+        }
+        try {
+            directories.add(tck.getMetadataDir("${group}:${name}:${version}").toFile().absolutePath)
+        } catch (RuntimeException ignored) {
+            // Dependencies without repository metadata do not contribute configuration directories.
+        }
+    }
+
+    return directories.toList()
+}
+
+graalvmNative {
+    metadataRepository {
+        enabled = false
+    }
+    binaries {
+        test {
+            buildArgs.addAll(providers.provider {
+                ["-H:ConfigurationFileDirectories=${metadataConfigDirectories().join(",")}"]
+            })
+        }
+    }
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
