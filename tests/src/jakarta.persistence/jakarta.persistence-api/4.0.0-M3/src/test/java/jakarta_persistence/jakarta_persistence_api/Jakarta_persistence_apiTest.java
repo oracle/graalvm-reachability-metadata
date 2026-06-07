@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -68,6 +69,7 @@ import jakarta.persistence.TemporalType;
 import jakarta.persistence.Timeout;
 import jakarta.persistence.TransactionRequiredException;
 import jakarta.persistence.TypedQuery;
+import jakarta.persistence.TypedQuery.Option;
 import jakarta.persistence.TypedQueryReference;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.metamodel.Metamodel;
@@ -1112,6 +1114,7 @@ public class Jakarta_persistence_apiTest {
     private static final class RecordingTypedQuery<T> extends RecordingQuery implements TypedQuery<T> {
         private final List<T> typedResults;
         private final T typedSingleResult;
+        private final Set<Option> options = new LinkedHashSet<>();
         private EntityGraph<? super T> entityGraph;
         private PessimisticLockScope lockScope;
 
@@ -1318,31 +1321,37 @@ public class Jakarta_persistence_apiTest {
             super.setTimeout(timeout);
             return this;
         }
+
+        @Override
+        public TypedQuery<T> addOption(Option option) {
+            options.add(Objects.requireNonNull(option));
+            return this;
+        }
+
+        @Override
+        public Set<Option> getOptions() {
+            return Set.copyOf(options);
+        }
     }
 
     private static final class StubEntityManagerFactory implements EntityManagerFactory {
         @Override
-        public EntityManager createEntityManager() {
+        public EntityManager createEntityManager(EntityManager.CreationOption... options) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public EntityManager createEntityManager(Map map) {
+        public EntityManager createEntityManager(Map<?, ?> map) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public EntityManager createEntityManager(SynchronizationType synchronizationType) {
+        public EntityManager createEntityManager(SynchronizationType synchronizationType, Map<?, ?> map) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public EntityManager createEntityManager(SynchronizationType synchronizationType, Map map) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public EntityAgent createEntityAgent() {
+        public EntityAgent createEntityAgent(EntityAgent.CreationOption... options) {
             throw new UnsupportedOperationException();
         }
 
