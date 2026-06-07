@@ -1,0 +1,1012 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ea1a1-de7e-72c3-bc13-a203f8bfc41e
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.hazelcast:hazelcast:3.4.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "3.4.0" when "$version$" is replaced with "3.4.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778/build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "com.hazelcast:hazelcast:3.4.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.4.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the upstream Hazelcast repo, then update the JSON in place with the resolved URLs and fields.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778
+ succeeded in 0ms:
+{
+  "coordinates" : "com.hazelcast:hazelcast:3.4.0"
+}
+
+exec
+/usr/bin/bash -lc "pwd && ls build/discovered-artifact-metadata | rg '"'^com'"\\.hazelcast-hazelcast' || true" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778
+com.hazelcast-hazelcast-3.4.0.json
+
+exec
+/usr/bin/bash -lc "rg '\"coordinates\": \"com\\.hazelcast:hazelcast:' -n build/discovered-artifact-metadata metadata || true" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778
+ succeeded in 0ms:
+codex
+The target file currently only has coordinates. I’m checking Maven Central first because the request says to prefer published sources and tests when they exist.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/hazelcast/hazelcast/3.4.0/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/hazelcast/hazelcast/3.4.0/hazelcast-3.4.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778
+ succeeded in 222ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 257ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 403ms:
+web search: 
+web search: Maven Central com.hazelcast hazelcast 3.4.0 pom
+codex
+`repo1.maven.org` did not return the old artifact path, so I’m switching to the canonical Apache Maven repository endpoint and checking the published classifiers there.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/hazelcast/hazelcast/3.4.0/hazelcast-3.4.0.pom | sed -n '1,260p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/hazelcast/hazelcast/3.4.0/ | sed -n '1,260p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/com/hazelcast/hazelcast/3.4.0/hazelcast-3.4.0-sources.jar; curl -I -fsSL https://repo.maven.apache.org/maven2/com/hazelcast/hazelcast/3.4.0/hazelcast-3.4.0-test-sources.jar; curl -I -fsSL https://repo.maven.apache.org/maven2/com/hazelcast/hazelcast/3.4.0/hazelcast-3.4.0-tests.jar; curl -I -fsSL https://repo.maven.apache.org/maven2/com/hazelcast/hazelcast/3.4.0/hazelcast-3.4.0-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778
+ succeeded in 226ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 276ms:
+curl: (22) The requested URL returned error: 404
+
+ exited 22 in 1204ms:
+HTTP/2 404 
+date: Sun, 07 Jun 2026 10:30:21 GMT
+content-type: text/html
+cf-ray: a07efb1cac61039c-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/hazelcast/hazelcast/3.4.0/hazelcast-3.4.0-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 07 Jun 2026 10:30:21 GMT
+content-type: text/html
+cf-ray: a07efb1e5bac3d61-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/hazelcast/hazelcast/3.4.0/hazelcast-3.4.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Sun, 07 Jun 2026 10:30:21 GMT
+content-type: text/html
+cf-ray: a07efb20b93abc65-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/hazelcast/hazelcast/3.4.0/hazelcast-3.4.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 07 Jun 2026 10:30:22 GMT
+content-type: text/html
+cf-ray: a07efb227b540229-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/hazelcast/hazelcast/3.4.0/hazelcast-3.4.0-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+web search: 
+web search: site:mvnrepository.com com.hazelcast hazelcast 3.4.0
+codex
+Maven Central has `com.hazelcast:hazelcast:3.4`, but I’m not seeing a published `3.4.0` directory. I’ll now check the upstream tags and repository layout so the `$version$` URLs still resolve for the requested index version.
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/hazelcast/hazelcast.git 'refs/tags/*3.4*'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/hazelcast/hazelcast/3.4/ | sed -n '1,260p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/hazelcast/hazelcast/3.4/hazelcast-3.4.pom | sed -n '1,260p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778
+ succeeded in 261ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/hazelcast/hazelcast/3.4</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/hazelcast/hazelcast/3.4</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="hazelcast-3.4-javadoc.jar" title="hazelcast-3.4-javadoc.jar">hazelcast-3.4-javadoc.jar</a>                         2014-12-24 16:06  11528104      
+<a href="hazelcast-3.4-javadoc.jar.asc" title="hazelcast-3.4-javadoc.jar.asc">hazelcast-3.4-javadoc.jar.asc</a>                     2014-12-24 16:06       181      
+<a href="hazelcast-3.4-javadoc.jar.asc.md5" title="hazelcast-3.4-javadoc.jar.asc.md5">hazelcast-3.4-javadoc.jar.asc.md5</a>                 2014-12-24 16:06        32      
+<a href="hazelcast-3.4-javadoc.jar.asc.sha1" title="hazelcast-3.4-javadoc.jar.asc.sha1">hazelcast-3.4-javadoc.jar.asc.sha1</a>                2014-12-24 16:06        40      
+<a href="hazelcast-3.4-javadoc.jar.md5" title="hazelcast-3.4-javadoc.jar.md5">hazelcast-3.4-javadoc.jar.md5</a>                     2014-12-24 16:06        32      
+<a href="hazelcast-3.4-javadoc.jar.sha1" title="hazelcast-3.4-javadoc.jar.sha1">hazelcast-3.4-javadoc.jar.sha1</a>                    2014-12-24 16:06        40      
+<a href="hazelcast-3.4-sources.jar" title="hazelcast-3.4-sources.jar">hazelcast-3.4-sources.jar</a>                         2014-12-24 16:06   2724179      
+<a href="hazelcast-3.4-sources.jar.asc" title="hazelcast-3.4-sources.jar.asc">hazelcast-3.4-sources.jar.asc</a>                     2014-12-24 16:06       181      
+<a href="hazelcast-3.4-sources.jar.asc.md5" title="hazelcast-3.4-sources.jar.asc.md5">hazelcast-3.4-sources.jar.asc.md5</a>                 2014-12-24 16:06        32      
+<a href="hazelcast-3.4-sources.jar.asc.sha1" title="hazelcast-3.4-sources.jar.asc.sha1">hazelcast-3.4-sources.jar.asc.sha1</a>                2014-12-24 16:06        40      
+<a href="hazelcast-3.4-sources.jar.md5" title="hazelcast-3.4-sources.jar.md5">hazelcast-3.4-sources.jar.md5</a>                     2014-12-24 16:06        32      
+<a href="hazelcast-3.4-sources.jar.sha1" title="hazelcast-3.4-sources.jar.sha1">hazelcast-3.4-sources.jar.sha1</a>                    2014-12-24 16:06        40      
+<a href="hazelcast-3.4-tests.jar" title="hazelcast-3.4-tests.jar">hazelcast-3.4-tests.jar</a>                           2014-12-24 16:06   1838322      
+<a href="hazelcast-3.4-tests.jar.asc" title="hazelcast-3.4-tests.jar.asc">hazelcast-3.4-tests.jar.asc</a>                       2014-12-24 16:06       181      
+<a href="hazelcast-3.4-tests.jar.asc.md5" title="hazelcast-3.4-tests.jar.asc.md5">hazelcast-3.4-tests.jar.asc.md5</a>                   2014-12-24 16:06        32      
+<a href="hazelcast-3.4-tests.jar.asc.sha1" title="hazelcast-3.4-tests.jar.asc.sha1">hazelcast-3.4-tests.jar.asc.sha1</a>                  2014-12-24 16:06        40      
+<a href="hazelcast-3.4-tests.jar.md5" title="hazelcast-3.4-tests.jar.md5">hazelcast-3.4-tests.jar.md5</a>                       2014-12-24 16:06        32      
+<a href="hazelcast-3.4-tests.jar.sha1" title="hazelcast-3.4-tests.jar.sha1">hazelcast-3.4-tests.jar.sha1</a>                      2014-12-24 16:06        40      
+<a href="hazelcast-3.4.jar" title="hazelcast-3.4.jar">hazelcast-3.4.jar</a>                                 2014-12-24 16:06   4157348      
+<a href="hazelcast-3.4.jar.asc" title="hazelcast-3.4.jar.asc">hazelcast-3.4.jar.asc</a>                             2014-12-24 16:06       181      
+<a href="hazelcast-3.4.jar.asc.md5" title="hazelcast-3.4.jar.asc.md5">hazelcast-3.4.jar.asc.md5</a>                         2014-12-24 16:06        32      
+<a href="hazelcast-3.4.jar.asc.sha1" title="hazelcast-3.4.jar.asc.sha1">hazelcast-3.4.jar.asc.sha1</a>                        2014-12-24 16:06        40      
+<a href="hazelcast-3.4.jar.md5" title="hazelcast-3.4.jar.md5">hazelcast-3.4.jar.md5</a>                             2014-12-24 16:06        32      
+<a href="hazelcast-3.4.jar.sha1" title="hazelcast-3.4.jar.sha1">hazelcast-3.4.jar.sha1</a>                            2014-12-24 16:06        40      
+<a href="hazelcast-3.4.pom" title="hazelcast-3.4.pom">hazelcast-3.4.pom</a>                                 2014-12-24 16:06     13813      
+<a href="hazelcast-3.4.pom.asc" title="hazelcast-3.4.pom.asc">hazelcast-3.4.pom.asc</a>                             2014-12-24 16:06       181      
+<a href="hazelcast-3.4.pom.asc.md5" title="hazelcast-3.4.pom.asc.md5">hazelcast-3.4.pom.asc.md5</a>                         2014-12-24 16:06        32      
+<a href="hazelcast-3.4.pom.asc.sha1" title="hazelcast-3.4.pom.asc.sha1">hazelcast-3.4.pom.asc.sha1</a>                        2014-12-24 16:06        40      
+<a href="hazelcast-3.4.pom.md5" title="hazelcast-3.4.pom.md5">hazelcast-3.4.pom.md5</a>                             2014-12-24 16:06        32      
+<a href="hazelcast-3.4.pom.sha1" title="hazelcast-3.4.pom.sha1">hazelcast-3.4.pom.sha1</a>                            2014-12-24 16:06        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 334ms:
+2e4ffc4f593de0869f0db9f7224f964f72dac15d	refs/tags/c3.4-gem
+eec3586670bb495bfe8f7dd387ce90a51da506cb	refs/tags/v3.3.4
+3dc5214ba7d10d6425243df04310c9c9ce5bca34	refs/tags/v3.4
+c0e3d4a5b6ef11667b14182ceb7567963cd99f0e	refs/tags/v3.4-EA
+780828c4daecb853b1bbe1cad47448e040866629	refs/tags/v3.4.1
+f6349a4e378a9764957e2c24554eae1144c88328	refs/tags/v3.4.2
+bc77eaf6c0d2da07260598f765b71f728d23df31	refs/tags/v3.4.3
+2d5450eeb3836f27fe27f19a903a424a4b592fef	refs/tags/v3.4.4
+16bdabb151274891ae3bc5a76ca915dea7e68bfa	refs/tags/v3.4.5
+74c48e63aef4c7b6c968ed4b3224e96f95bc5e6a	refs/tags/v3.4.6
+cfc332e700674143f75c13d1813a893f2ebc977a	refs/tags/v3.4.7
+2608cc18309b323a83028c4e3fe05da0800cce16	refs/tags/v3.4.8
+
+ succeeded in 337ms:
+<!--
+  ~ Copyright (c) 2008-2013, Hazelcast, Inc. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>hazelcast</name>
+    <artifactId>hazelcast</artifactId>
+    <description>Core Hazelcast Module</description>
+    <packaging>jar</packaging>
+
+    <parent>
+        <groupId>com.hazelcast</groupId>
+        <artifactId>hazelcast-root</artifactId>
+        <version>3.4</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <properties>
+        <!-- needed for checkstyle/findbugs -->
+        <main.basedir>${project.parent.basedir}</main.basedir>
+        <atomikos-version>3.9.2</atomikos-version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>2.1.10</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <useNativeGit>false</useNativeGit>
+                    <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+                    <failOnNoGitDirectory>false</failOnNoGitDirectory>
+                    <abbrevLength>7</abbrevLength>
+                    <gitDescribe>
+                        <skip>true</skip>
+                    </gitDescribe>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.plugin.version}</version>
+                <configuration>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>animal-sniffer-maven-plugin</artifactId>
+                <version>${animal.sniffer.plugin.version}</version>
+                <configuration>
+                    <signature>
+                        <groupId>org.codehaus.mojo.signature</groupId>
+                        <artifactId>java16</artifactId>
+                        <version>1.0</version>
+                    </signature>
+                    <ignores>
+                        <ignore>sun.misc.Unsafe</ignore>
+                    </ignores>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>source-java6-check</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven.source.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>${maven.bundle.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                        <configuration>
+                            <instructions>
+                                <Bundle-Activator>com.hazelcast.osgi.Activator</Bundle-Activator>
+                                <Export-Package>
+                                    com.hazelcast.*
+                                </Export-Package>
+                                <Import-Package>
+                                    !org.junit,
+                                    !com.eclipsesource.json,
+                                    sun.misc;resolution:=optional,
+                                    org.apache.log4j;resolution:=optional,
+                                    org.apache.logging.log4j;resolution:=optional,
+                                    org.apache.logging.log4j.*;resolution:=optional,
+                                    org.slf4j;resolution:=optional,
+                                    org.codehaus.groovy.jsr223;resolution:=optional,
+                                    org.jruby.embed.jsr223;resolution:=optional,
+                                    *
+                                </Import-Package>
+                            </instructions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven.jar.plugin.version}</version>
+                <configuration>
+                    <archive>
+                        <index>true</index>
+                        <compress>true</compress>
+                        <manifest>
+                            <mainClass>com.hazelcast.core.server.StartServer</mainClass>
+                            <!--<addClasspath>true</addClasspath>-->
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                    <excludes>
+                        <exclude>**/*.html</exclude>
+                        <exclude>**/*.sh</exclude>
+                        <exclude>**/*.bat</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                            <!--Need to add sources for this test jar to Maven central. partic TestHazelcastInstanceFactory. Brian request. -->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>${maven.antrun.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>copy-hazelcast-xml</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <copy file="${basedir}/src/main/resources/hazelcast-default.xml"
+                                      tofile="${basedir}/target/hazelcast.xml"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>${project.build.finalName}</finalName>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <createSourcesJar>true</createSourcesJar>
+                            <shadeSourcesContent>true</shadeSourcesContent>
+                            <artifactSet>
+                                <includes>
+                                    <include>com.eclipsesource.minimal-json:minimal-json</include>
+                                </includes>
+                            </artifactSet>
+                            <relocations>
+                                <relocation>
+                                    <pattern>com.eclipsesource.json</pattern>
+                                    <shadedPattern>com.hazelcast.com.eclipsesource.json</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+            <version>1.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.cache</groupId>
+            <artifactId>cache-tests</artifactId>
+            <classifier>tests</classifier>
+            <version>1.0.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.cache</groupId>
+            <artifactId>cache-tests</artifactId>
+            <version>1.0.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+
+codex
+The Maven `3.4` artifact publishes sources, tests, and Javadoc, but those URLs cannot be templated with `$version$` for `3.4.0` because the `3.4.0` Maven path is absent. I’m checking whether upstream has a `3.4.0` tag or versioned docs before deciding whether the versioned URL fields must be `N/A`.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/hazelcast/hazelcast-root/3.4/hazelcast-root-3.4.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778
+exec
+/usr/bin/bash -lc "for url in \\
+  https://github.com/hazelcast/hazelcast/tree/v3.4.0 \\
+  https://github.com/hazelcast/hazelcast/tree/3.4.0 \\
+  https://docs.hazelcast.org/docs/3.4.0/manual/html-single/index.html \\
+  https://docs.hazelcast.com/hazelcast/3.4.0/overview \\
+  https://javadoc.io/doc/com.hazelcast/hazelcast/3.4.0/index.html \\
+  https://www.javadoc.io/doc/com.hazelcast/hazelcast/3.4.0/index.html; do
+  printf '%s -> ' \""'$url"
+  curl -L -o /dev/null -s -w '"'%{http_code} %{url_effective}\\n' \""'$url"
+done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/hazelcast/hazelcast.git 'refs/tags/v3.4.0' 'refs/tags/3.4.0' 'refs/tags/hazelcast-3.4.0' 'refs/tags/v"'$version$'"'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778
+ succeeded in 290ms:
+<!--
+  ~ Copyright (c) 2008-2013, Hazelcast, Inc. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.hazelcast</groupId>
+    <artifactId>hazelcast-root</artifactId>
+    <packaging>pom</packaging>
+    <version>3.4</version>
+    <name>Hazelcast Root</name>
+    <description>Hazelcast In-Memory DataGrid</description>
+    <url>http://www.hazelcast.com/</url>
+
+    <modules>
+        <module>hazelcast</module>
+        <module>hazelcast-client</module>
+        <module>hazelcast-hibernate</module>
+        <module>hazelcast-wm</module>
+        <module>hazelcast-spring</module>
+        <module>hazelcast-cloud</module>
+        <module>hazelcast-ra</module>
+        <module>hazelcast-build-utils</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jdk.version>1.6</jdk.version>
+        <target.dir>target</target.dir>
+        <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
+        <timestamp>${maven.build.timestamp}</timestamp>
+        <hazelcast.distribution>Hazelcast</hazelcast.distribution>
+
+        <!--Not using 3.1 at the moment since it recompiles all classes everytime-->
+        <!--https://jira.codehaus.org/browse/MCOMPILER-205-->
+        <!--<maven.compiler.plugin.version>3.1</maven.compiler.plugin.version>-->
+        <maven.compiler.plugin.version>2.5.1</maven.compiler.plugin.version>
+        <maven.jar.plugin.version>2.4</maven.jar.plugin.version>
+        <maven.source.plugin.version>2.2.1</maven.source.plugin.version>
+        <maven.antrun.plugin.version>1.7</maven.antrun.plugin.version>
+        <maven.surefire.plugin.version>2.17</maven.surefire.plugin.version>
+        <maven.assembly.plugin.version>2.4</maven.assembly.plugin.version>
+        <maven.gpg.plugin.version>1.4</maven.gpg.plugin.version>
+        <maven.javadoc.plugin.version>2.9</maven.javadoc.plugin.version>
+        <maven.rar.plugin.version>2.2</maven.rar.plugin.version>
+        <maven.bundle.plugin.version>2.3.7</maven.bundle.plugin.version>
+        <findbugs.maven.plugin.version>3.0.0</findbugs.maven.plugin.version>
+        <checkstyle.maven.plugin.version>2.12</checkstyle.maven.plugin.version>
+        <maven.dependency.plugin.version>2.6</maven.dependency.plugin.version>
+        <maven.shade.plugin.version>2.2</maven.shade.plugin.version>
+        <junit.version>4.11</junit.version>
+        <h2.version>1.3.160</h2.version>
+        <mockito.all.version>1.9.5</mockito.all.version>
+        <log4j.version>1.2.12</log4j.version>
+        <log4j2.version>2.0.1</log4j2.version>
+        <slf4j.api.version>1.6.0</slf4j.api.version>
+        <main.basedir>${project.basedir}</main.basedir>
+        <jacoco.version>0.7.0.201403182114</jacoco.version>
+        <sonar.jacoco.jar>${basedir}/lib/jacocoagent.jar</sonar.jacoco.jar>
+        <!--<sonar.phase>post-integration-test</sonar.phase>-->
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.language>java</sonar.language>
+        <sonar.verbose>true</sonar.verbose>
+        <animal.sniffer.plugin.version>1.11</animal.sniffer.plugin.version>
+        <jsr107.api.version>1.0.0</jsr107.api.version>
+        <CacheManagerImpl>com.hazelcast.cache.HazelcastCacheManager</CacheManagerImpl>
+        <CacheImpl>com.hazelcast.cache.ICache</CacheImpl>
+        <CacheEntryImpl>com.hazelcast.cache.impl.CacheEntry</CacheEntryImpl>
+        <javax.management.builder.initial>com.hazelcast.cache.impl.TCKMBeanServerBuilder
+        </javax.management.builder.initial>
+        <org.jsr107.tck.management.agentId>TCKMbeanServer</org.jsr107.tck.management.agentId>
+        <javax.cache.annotation.CacheInvocationContext>javax.cache.annotation.impl.cdi.CdiCacheKeyInvocationContextImpl</javax.cache.annotation.CacheInvocationContext>
+    </properties>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:git://github.com/hazelcast/hazelcast.git</connection>
+        <developerConnection>scm:git:git@github.com:hazelcast/hazelcast.git</developerConnection>
+        <url>https://github.com/hazelcast/hazelcast/</url>
+    </scm>
+    <developers>
+        <developer>
+            <id>oztalip</id>
+            <name>talip ozturk</name>
+            <email>talip@hazelcast.com</email>
+        </developer>
+        <developer>
+            <id>fuad</id>
+            <name>fuad malikov</name>
+            <email>fuad@hazelcast.com</email>
+        </developer>
+    </developers>
+
+    <contributors>
+        <contributor>
+            <name>Marvin Froeder</name>
+            <email>velo dot br at gmail dot com</email>
+            <url>about.me/velo</url>
+        </contributor>
+    </contributors>
+
+    <issueManagement>
+        <system>Github</system>
+        <url>https://github.com/hazelcast/hazelcast/issues</url>
+    </issueManagement>
+    <organization>
+        <name>Hazelcast, Inc.</name>
+        <url>http://www.hazelcast.com/</url>
+    </organization>
+
+    <build>
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <outputDirectory>${target.dir}/classes</outputDirectory>
+        <testSourceDirectory>src/test/java</testSourceDirectory>
+        <testOutputDirectory>${target.dir}/test-classes</testOutputDirectory>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*.html</include>
+                    <include>**/*.bat</include>
+                    <include>**/*.sh</include>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                    <include>**/*.xsd</include>
+                    <include>**/*.handlers</include>
+                    <include>**/*.schemas</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/*.license</include>
+                    <include>**/*.key</include>
+                    <include>**/META-INF/services/*.*</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${maven.assembly.plugin.version}</version>
+                <configuration>
+                    <finalName>hazelcast-${project.version}</finalName>
+                    <descriptors>
+                        <descriptor>./src/main/assembly/assembly.xml</descriptor>
+                    </descriptors>
+                    <appendAssemblyId>false</appendAssemblyId>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>${findbugs.maven.plugin.version}</version>
+                <configuration>
+                    <findbugsXmlOutput>true</findbugsXmlOutput>
+                    <xmlOutput>true</xmlOutput>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven.source.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven.surefire.plugin.version}</version>
+                <configuration combine.self="override">
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+
+
+                    <!-- 1C means 1 process per cpu core -->
+                    <!-- forkCount>1C</forkCount>
+                    <reuseForks>true</reuseForks>
+
+                    <threadCount>1</threadCount>
+                    <perCoreThreadCount>true</perCoreThreadCount>
+                    <parallel>methods</parallel -->
+
+                    <!-- the argLine variable is needed for jacoco-->
+                    <argLine>
+
+ succeeded in 424ms:
+ succeeded in 2496ms:
+404 https://github.com/hazelcast/hazelcast/tree/v3.4.0
+https://github.com/hazelcast/hazelcast/tree/3.4.0 -> 404 https://github.com/hazelcast/hazelcast/tree/3.4.0
+https://docs.hazelcast.org/docs/3.4.0/manual/html-single/index.html -> 404 https://docs.hazelcast.org/docs/3.4.0/manual/html-single/index.html
+https://docs.hazelcast.com/hazelcast/3.4.0/overview -> 404 https://docs.hazelcast.com/hazelcast/3.4.0/overview
+https://javadoc.io/doc/com.hazelcast/hazelcast/3.4.0/index.html -> 200 https://javadoc.io/doc/com.hazelcast/hazelcast/5.7.0/index.html
+https://www.javadoc.io/doc/com.hazelcast/hazelcast/3.4.0/index.html -> 200 https://www.javadoc.io/doc/com.hazelcast/hazelcast/5.7.0/index.html
+
+codex
+The upstream POM confirms the repo root as `https://github.com/hazelcast/hazelcast/`. I’m checking nearby discovered metadata conventions now so the final JSON matches the repository’s expected shape for missing versioned URLs.
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | head -20 | xargs -r sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778
+ succeeded in 0ms:
+{
+  "coordinates" : "com.hazelcast:hazelcast:3.4.0"
+}
+
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\" : \"N/A\"|\"test-code-url\" : \"N/A\"|\"documentation-url\" : \"N/A\"' -n build/discovered-artifact-metadata | head -40" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778
+exec
+/usr/bin/bash -lc "rg '\"repository-url\" : \"https://github.com/hazelcast/hazelcast/?\"|hazelcast' -n build/discovered-artifact-metadata metadata | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778
+ succeeded in 0ms:
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json:2:  "coordinates" : "com.hazelcast:hazelcast:3.4.0"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:5:        "typeReached": "com.hazelcast.internal.util.phonehome.PhoneHome"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:17:        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:23:        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:29:        "typeReached": "com.hazelcast.internal.util.phonehome.PhoneHome"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:35:        "typeReached": "com.hazelcast.internal.metrics.impl.MetricsService"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:41:        "typeReached": "com.hazelcast.spi.discovery.impl.DefaultDiscoveryService"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:43:      "type": "com.hazelcast.aws.AwsDiscoveryStrategyFactory",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:53:        "typeReached": "com.hazelcast.spi.discovery.impl.DefaultDiscoveryService"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:55:      "type": "com.hazelcast.azure.AzureDiscoveryStrategyFactory",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:65:        "typeReached": "com.hazelcast.cache.impl.CacheStatisticsImpl"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:67:      "type": "com.hazelcast.cache.impl.CacheStatisticsImpl",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:100:        "typeReached": "com.hazelcast.cache.impl.AbstractCacheService"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:102:      "type": "com.hazelcast.cache.impl.CacheStatisticsMXBeanImpl"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:106:        "typeReached": "com.hazelcast.internal.util.ServiceLoader"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:108:      "type": "com.hazelcast.client.HazelcastClient"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:112:        "typeReached": "com.hazelcast.client.config.ClientConfig"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:114:      "type": "com.hazelcast.client.config.ClientFlakeIdGeneratorConfig",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:123:            "com.hazelcast.client.config.ClientFlakeIdGeneratorConfig"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:130:        "typeReached": "com.hazelcast.client.impl.ClientDelegatingFuture"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:132:      "type": "com.hazelcast.client.impl.ClientDelegatingFuture",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:141:        "typeReached": "com.hazelcast.client.impl.ClientEndpointManagerImpl"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:143:      "type": "com.hazelcast.client.impl.ClientEndpointManager",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:148:        "typeReached": "com.hazelcast.client.impl.ClientEndpointManagerImpl"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:150:      "type": "com.hazelcast.client.impl.ClientEndpointManagerImpl",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:155:        "typeReached": "com.hazelcast.client.impl.clientside.HazelcastClientInstanceImpl"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:157:      "type": "com.hazelcast.client.impl.clientside.DefaultClientExtension",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:167:        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:169:      "type": "com.hazelcast.client.impl.connection.ClientConnection"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:173:        "typeReached": "com.hazelcast.client.impl.statistics.ClusterConnectionMetricsProvider"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:175:      "type": "com.hazelcast.client.impl.connection.ClientConnection",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:180:        "typeReached": "com.hazelcast.client.impl.statistics.ClientStatisticsService"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:182:      "type": "com.hazelcast.client.impl.connection.tcp.TcpClientConnection"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:186:        "typeReached": "com.hazelcast.client.impl.statistics.ClusterConnectionMetricsProvider"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:188:      "type": "com.hazelcast.client.impl.connection.tcp.TcpClientConnection",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:193:        "typeReached": "com.hazelcast.client.impl.clientside.HazelcastClientInstanceImpl"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:195:      "type": "com.hazelcast.client.impl.proxy.ClientCardinalityEstimatorProxy",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:202:            "com.hazelcast.client.impl.spi.ClientContext"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:209:        "typeReached": "com.hazelcast.client.impl.clientside.HazelcastClientInstanceImpl"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:211:      "type": "com.hazelcast.client.impl.proxy.ClientDurableExecutorServiceProxy",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:218:            "com.hazelcast.client.impl.spi.ClientContext"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:225:        "typeReached": "com.hazelcast.client.impl.clientside.HazelcastClientInstanceImpl"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:227:      "type": "com.hazelcast.client.impl.proxy.ClientExecutorServiceProxy",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:234:            "com.hazelcast.client.impl.spi.ClientContext"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:241:        "typeReached": "com.hazelcast.client.impl.clientside.HazelcastClientInstanceImpl"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:243:      "type": "com.hazelcast.client.impl.proxy.ClientFlakeIdGeneratorProxy",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:250:            "com.hazelcast.client.impl.spi.ClientContext"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:257:        "typeReached": "com.hazelcast.client.impl.clientside.HazelcastClientInstanceImpl"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:259:      "type": "com.hazelcast.client.impl.proxy.ClientListProxy",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:266:            "com.hazelcast.client.impl.spi.ClientContext"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:273:        "typeReached": "com.hazelcast.client.impl.clientside.HazelcastClientInstanceImpl"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:275:      "type": "com.hazelcast.client.impl.proxy.ClientMultiMapProxy",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:282:            "com.hazelcast.client.impl.spi.ClientContext"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:289:        "typeReached": "com.hazelcast.client.impl.clientside.HazelcastClientInstanceImpl"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:291:      "type": "com.hazelcast.client.impl.proxy.ClientPNCounterProxy",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:298:            "com.hazelcast.client.impl.spi.ClientContext"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:305:        "typeReached": "com.hazelcast.client.impl.proxy.ClientPNCounterProxy"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:307:      "type": "com.hazelcast.client.impl.proxy.ClientPNCounterProxy",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:316:        "typeReached": "com.hazelcast.client.impl.clientside.HazelcastClientInstanceImpl"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:318:      "type": "com.hazelcast.client.impl.proxy.ClientQueueProxy",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:325:            "com.hazelcast.client.impl.spi.ClientContext"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:332:        "typeReached": "com.hazelcast.client.impl.clientside.HazelcastClientInstanceImpl"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:334:      "type": "com.hazelcast.client.impl.proxy.ClientReplicatedMapProxy",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:341:            "com.hazelcast.client.impl.spi.ClientContext"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:348:        "typeReached": "com.hazelcast.client.impl.clientside.HazelcastClientInstanceImpl"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:350:      "type": "com.hazelcast.client.impl.proxy.ClientRingbufferProxy",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:357:            "com.hazelcast.client.impl.spi.ClientContext"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:364:        "typeReached": "com.hazelcast.client.impl.clientside.HazelcastClientInstanceImpl"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:366:      "type": "com.hazelcast.client.impl.proxy.ClientScheduledExecutorProxy",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:373:            "com.hazelcast.client.impl.spi.ClientContext"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:380:        "typeReached": "com.hazelcast.client.impl.clientside.HazelcastClientInstanceImpl"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:382:      "type": "com.hazelcast.client.impl.proxy.ClientSetProxy",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:389:            "com.hazelcast.client.impl.spi.ClientContext"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:396:        "typeReached": "com.hazelcast.client.impl.clientside.HazelcastClientInstanceImpl"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:398:      "type": "com.hazelcast.client.impl.proxy.ClientTopicProxy",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:405:            "com.hazelcast.client.impl.spi.ClientContext"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:412:        "typeReached": "com.hazelcast.client.impl.clientside.HazelcastClientInstanceImpl"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:414:      "type": "com.hazelcast.client.impl.proxy.txn.xa.XAResourceProxy",
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:421:            "com.hazelcast.client.impl.spi.ClientContext"
+metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json:428:        "typeReached": "com.hazelcast.client.impl.spi.impl.ClientInvocationServiceImpl"
+
+codex
+I’ll make the edit now: repo URL from the POM, `N/A` for the three versioned artifact URLs because neither Maven nor upstream publishes a `3.4.0` URL/tag, and no language or native-image exclusion fields because this is a normal JVM JAR.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778/build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json
+diff --git a/build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json b/build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json
+index 9acc197b4f3a2859832af9459dd6114f19626c0e..27bdacca5e88f6098651af018fa9af612ab80d41
+--- a/build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json
++++ b/build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.hazelcast:hazelcast:3.4.0"
++  "coordinates" : "com.hazelcast:hazelcast:3.4.0",
++  "repository-url" : "https://github.com/hazelcast/hazelcast/",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "Hazelcast is a Java in-memory data grid and distributed computing platform for clustering JVM applications. It provides distributed data structures, caching, messaging, transactions, and cluster services that can be embedded in an application or run as a standalone member."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json b/build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json
+index 9acc197b4f3a2859832af9459dd6114f19626c0e..27bdacca5e88f6098651af018fa9af612ab80d41
+--- a/build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json
++++ b/build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.hazelcast:hazelcast:3.4.0"
++  "coordinates" : "com.hazelcast:hazelcast:3.4.0",
++  "repository-url" : "https://github.com/hazelcast/hazelcast/",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "Hazelcast is a Java in-memory data grid and distributed computing platform for clustering JVM applications. It provides distributed data structures, caching, messaging, transactions, and cluster services that can be embedded in an application or run as a standalone member."
+ }
+
+codex
+The JSON is updated. I’m doing a quick validity check and reviewing the exact diff before I wrap up.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778
+ succeeded in 0ms:
+{
+  "coordinates": "com.hazelcast:hazelcast:3.4.0",
+  "repository-url": "https://github.com/hazelcast/hazelcast/",
+  "source-code-url": "N/A",
+  "test-code-url": "N/A",
+  "documentation-url": "N/A",
+  "description": "Hazelcast is a Java in-memory data grid and distributed computing platform for clustering JVM applications. It provides distributed data structures, caching, messaging, transactions, and cluster services that can be embedded in an application or run as a standalone member."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json b/build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json
+index 9acc197b4f3a2859832af9459dd6114f19626c0e..27bdacca5e88f6098651af018fa9af612ab80d41
+--- a/build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json
++++ b/build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.hazelcast:hazelcast:3.4.0"
++  "coordinates" : "com.hazelcast:hazelcast:3.4.0",
++  "repository-url" : "https://github.com/hazelcast/hazelcast/",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "Hazelcast is a Java in-memory data grid and distributed computing platform for clustering JVM applications. It provides distributed data structures, caching, messaging, transactions, and cluster services that can be embedded in an application or run as a standalone member."
+ }
+
+codex
+`jq` accepts the file. `git diff` is empty because this generated metadata path is not tracked in git, so I’m checking status with ignored/untracked visibility.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778
+ succeeded in 0ms:
+{
+  "coordinates" : "com.hazelcast:hazelcast:3.4.0",
+  "repository-url" : "https://github.com/hazelcast/hazelcast/",
+  "source-code-url" : "N/A",
+  "test-code-url" : "N/A",
+  "documentation-url" : "N/A",
+  "description" : "Hazelcast is a Java in-memory data grid and distributed computing platform for clustering JVM applications. It provides distributed data structures, caching, messaging, transactions, and cluster services that can be embedded in an application or run as a standalone member."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --untracked-files=all --ignored=matching build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778
+ succeeded in 0ms:
+!! build/
+
+diff --git a/build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json b/build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json
+index 9acc197b4f3a2859832af9459dd6114f19626c0e..27bdacca5e88f6098651af018fa9af612ab80d41
+--- a/build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json
++++ b/build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.hazelcast:hazelcast:3.4.0"
++  "coordinates" : "com.hazelcast:hazelcast:3.4.0",
++  "repository-url" : "https://github.com/hazelcast/hazelcast/",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "Hazelcast is a Java in-memory data grid and distributed computing platform for clustering JVM applications. It provides distributed data structures, caching, messaging, transactions, and cluster services that can be embedded in an application or run as a standalone member."
+ }
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/com/hazelcast/hazelcast/3.4/
+web search: 
+web search: repo.maven.apache.org maven2 com hazelcast hazelcast 3.4 hazelcast-3.4-tests.jar
+web search: 
+web search: https://repo1.maven.org/maven2/com/hazelcast/hazelcast/
+web search: 
+web search: '3.4/' in https://repo1.maven.org/maven2/com/hazelcast/hazelcast/
+codex
+Updated [com.hazelcast-hazelcast-3.4.0.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778/build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json) with the repository URL, two-sentence description, and `N/A` for source/test/documentation URLs because I could not verify any `3.4.0` Maven, tag, or docs URL; Maven Central lists `3.4` and then `3.4.1`, not `3.4.0`. ([repo1.maven.org](https://repo1.maven.org/maven2/com/hazelcast/hazelcast/))
+
+I left `language` absent and did not set `not-for-native-image`, since this is a normal JVM Hazelcast artifact. Validation: `jq` accepted the JSON.
+diff --git a/build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json b/build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json
+index 9acc197b4f3a2859832af9459dd6114f19626c0e..27bdacca5e88f6098651af018fa9af612ab80d41
+--- a/build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json
++++ b/build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.hazelcast:hazelcast:3.4.0"
++  "coordinates" : "com.hazelcast:hazelcast:3.4.0",
++  "repository-url" : "https://github.com/hazelcast/hazelcast/",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "Hazelcast is a Java in-memory data grid and distributed computing platform for clustering JVM applications. It provides distributed data structures, caching, messaging, transactions, and cluster services that can be embedded in an application or run as a standalone member."
+ }
+
+tokens used
+62,090
+Updated [com.hazelcast-hazelcast-3.4.0.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778/build/discovered-artifact-metadata/com.hazelcast-hazelcast-3.4.0.json) with the repository URL, two-sentence description, and `N/A` for source/test/documentation URLs because I could not verify any `3.4.0` Maven, tag, or docs URL; Maven Central lists `3.4` and then `3.4.1`, not `3.4.0`. ([repo1.maven.org](https://repo1.maven.org/maven2/com/hazelcast/hazelcast/))
+
+I left `language` absent and did not set `not-for-native-image`, since this is a normal JVM Hazelcast artifact. Validation: `jq` accepted the JSON.
+Ran agent for com.hazelcast:hazelcast:3.4.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778/build/agent-artifact-discovery-logs/com.hazelcast-hazelcast-3.4.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/515-344cc778/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 56s
+9 actionable tasks: 9 executed
