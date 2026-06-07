@@ -59,6 +59,15 @@ public class Spring_cloud_aws_coreTest {
     }
 
     @Test
+    void staticRegionProviderSupportsCustomRegionIdentifiers() {
+        StaticRegionProvider provider = new StaticRegionProvider("local-test-1");
+
+        Region region = provider.getRegion();
+
+        assertThat(region.id()).isEqualTo("local-test-1");
+    }
+
+    @Test
     void staticRegionProviderRequiresRegionIdentifier() {
         assertThatThrownBy(() -> new StaticRegionProvider(null))
                 .isInstanceOf(IllegalArgumentException.class)
