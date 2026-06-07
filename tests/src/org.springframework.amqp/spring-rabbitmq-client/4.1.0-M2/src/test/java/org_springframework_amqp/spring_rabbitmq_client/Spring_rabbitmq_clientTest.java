@@ -1028,6 +1028,7 @@ public class Spring_rabbitmq_clientTest {
         private String queue;
         private Consumer.MessageHandler messageHandler;
         private int initialCredits;
+        private boolean preSettled;
         private int priority;
         private Resource.StateListener[] listeners;
         private FakeConnection owner;
@@ -1051,6 +1052,12 @@ public class Spring_rabbitmq_clientTest {
         @Override
         public ConsumerBuilder initialCredits(int initialCredits) {
             this.initialCredits = initialCredits;
+            return this;
+        }
+
+        @Override
+        public ConsumerBuilder preSettled() {
+            this.preSettled = true;
             return this;
         }
 
