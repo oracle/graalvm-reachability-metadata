@@ -37,7 +37,9 @@ public class JaxbAnnotationIntrospectorTest {
 
     private ObjectMapper newMapper() {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.setAnnotationIntrospector(new JaxbAnnotationIntrospector());
+        JaxbAnnotationIntrospector introspector = new JaxbAnnotationIntrospector();
+        mapper.getSerializationConfig().setAnnotationIntrospector(introspector);
+        mapper.getDeserializationConfig().setAnnotationIntrospector(introspector);
         return mapper;
     }
 
