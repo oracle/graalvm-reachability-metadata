@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.jaxrs.annotation.JacksonFeatures;
 import com.fasterxml.jackson.jaxrs.base.JsonMappingExceptionMapper;
@@ -279,10 +280,10 @@ public class ProviderBaseTest {
     @Test
     public void endpointConfigAppliesAnnotationsToReadersAndWriters() {
         ObjectMapper mapper = new ObjectMapper();
-        TestEndpointConfig readerConfig = new TestEndpointConfig()
+        TestEndpointConfig readerConfig = new TestEndpointConfig(mapper.getDeserializationConfig())
                 .addForReading(new Annotation[] {jsonViewAnnotation(PublicView.class), jacksonFeaturesAnnotation()})
                 .initForReading(mapper.reader());
-        TestEndpointConfig writerConfig = new TestEndpointConfig()
+        TestEndpointConfig writerConfig = new TestEndpointConfig(mapper.getSerializationConfig())
                 .addForWriting(new Annotation[] {jsonRootNameAnnotation("root"), jacksonFeaturesAnnotation()})
                 .initForWriting(mapper.writer());
 
@@ -292,8 +293,10 @@ public class ProviderBaseTest {
         assertThat(writerConfig.getRootName()).isEqualTo("root");
         assertThat(writerConfig.getWriter().isEnabled(SerializationFeature.INDENT_OUTPUT)).isTrue();
         assertThat(writerConfig.getWriter().isEnabled(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)).isFalse();
-        assertThatThrownBy(new TestEndpointConfig()::getReader).isInstanceOf(IllegalStateException.class);
-        assertThatThrownBy(new TestEndpointConfig()::getWriter).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(new TestEndpointConfig(mapper.getDeserializationConfig())::getReader)
+                .isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(new TestEndpointConfig(mapper.getSerializationConfig())::getWriter)
+                .isInstanceOf(IllegalStateException.class);
     }
 
     @Test
@@ -931,8 +934,8 @@ public class ProviderBaseTest {
     }
 
     private static final class TestEndpointConfig extends EndpointConfigBase<TestEndpointConfig> {
-        private TestEndpointConfig() {
-            super();
+        private TestEndpointConfig(MapperConfig<?> config) {
+            super(config);
         }
 
         private TestEndpointConfig addForReading(Annotation[] annotations) {
@@ -986,12 +989,12 @@ public class ProviderBaseTest {
 
         @Override
         protected TestEndpointConfig _configForReading(ObjectReader reader, Annotation[] annotations) {
-            return new TestEndpointConfig().addForReading(annotations).initForReading(reader);
+            return new TestEndpointConfig(reader.getConfig()).addForReading(annotations).initForReading(reader);
         }
 
         @Override
         protected TestEndpointConfig _configForWriting(ObjectWriter writer, Annotation[] annotations) {
-            return new TestEndpointConfig().addForWriting(annotations).initForWriting(writer);
+            return new TestEndpointConfig(writer.getConfig()).addForWriting(annotations).initForWriting(writer);
         }
     }
 }
