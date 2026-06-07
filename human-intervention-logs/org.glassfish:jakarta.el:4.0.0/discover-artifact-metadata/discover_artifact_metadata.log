@@ -1,0 +1,3101 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ea3dd-421d-7893-ac1f-77068e6be6db
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.glassfish:jakarta.el:4.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "4.0.0" when "$version$" is replaced with "4.0.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e/build/discovered-artifact-metadata/org.glassfish-jakarta.el-4.0.0.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "org.glassfish:jakarta.el:4.0.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.0.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven/official sources first, then write the JSON directly with only the requested keys.
+web search: 
+web search: Maven Central org.glassfish jakarta.el 4.0.0 pom scm url
+web search: 
+web search: https://central.sonatype.com/artifact/org.glassfish/jakarta.el/4.0.0
+codex
+Maven Central confirms this is a normal `jar` artifact with published sources and javadocs. I’m checking the repository’s existing generated metadata style now so the URLs match local conventions.
+exec
+/usr/bin/bash -lc "ls -l build/discovered-artifact-metadata/org.glassfish-jakarta.el-4.0.0.json && sed -n '1,160p' build/discovered-artifact-metadata/org.glassfish-jakarta.el-4.0.0.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+ succeeded in 0ms:
+-rw-rw-r-- 1 vjovanov vjovanov 55 Jun  7 22:54 build/discovered-artifact-metadata/org.glassfish-jakarta.el-4.0.0.json
+{
+  "coordinates" : "org.glassfish:jakarta.el:4.0.0"
+}
+
+exec
+/usr/bin/bash -lc "rg 'repo1.maven.org|javadoc.io|test-code-url|source-code-url' build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'rg --files build/discovered-artifact-metadata | head -40' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.glassfish-jakarta.el-4.0.0.json
+
+codex
+The target file currently contains only the coordinate, so this is a direct fill-in. Next I’m checking the POM, Maven directory, and upstream repo tag to distinguish Maven-hosted source/docs from GitHub test sources.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/glassfish/jakarta.el/4.0.0/jakarta.el-4.0.0.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 1997, 2020 Oracle and/or its affiliates and others.
+    All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.eclipse.ee4j</groupId>
+        <artifactId>project</artifactId>
+        <version>1.0.6</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>org.glassfish</groupId>
+    <artifactId>jakarta.el</artifactId>
+    <version>4.0.0</version>
+
+    <name>Jakarta Expression Language Implementation</name>
+    <description>Jakarta Expression Language Implementation</description>
+    <url>https://projects.eclipse.org/projects/ee4j.el</url>
+
+    <developers>
+        <developer>
+            <id>jakarta-ee4j-el</id>
+            <name>Jakarta Expression Language Developers</name>
+            <organization>Eclipse Foundation</organization>
+            <email>el-dev@eclipse.org</email>
+        </developer>
+    </developers>
+    <contributors>
+       <contributor>
+           <name>Jakarta Expression Language Contributors</name>
+           <email>el-dev@eclipse.org</email>
+           <url>https://github.com/eclipse-ee4j/el-ri/graphs/contributors</url>
+       </contributor>
+    </contributors>
+
+    <mailingLists>
+        <mailingList>
+            <name>Expression Language dev mailing list</name>
+            <post>el-dev@eclipse.org</post>
+            <subscribe>https://dev.eclipse.org/mailman/listinfo/el-dev</subscribe>
+            <unsubscribe>https://dev.eclipse.org/mailman/listinfo/el-dev</unsubscribe>
+            <archive>https://dev.eclipse.org/mhonarc/lists/el-dev</archive>
+        </mailingList>
+    </mailingLists>
+
+    <scm>
+        <connection>scm:git:https://github.com/eclipse-ee4j/el-ri.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/eclipse-ee4j/el-ri.git</developerConnection>
+        <url>https://github.com/eclipse-ee4j/el-ri</url>
+        <tag>HEAD</tag>
+    </scm>
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/eclipse-ee4j/el-ri/issues</url>
+    </issueManagement>
+
+    <properties>
+        <!-- the bundle build number must be the same as the maven number -->
+        <bundle.version>${project.version}</bundle.version>
+        <!-- The most current api version -->
+        <spec.version>4.0</spec.version>
+        <extensionName>jakarta.el.impl</extensionName>
+        <bundle.symbolicName>org.glassfish.jakarta.el</bundle.symbolicName>
+        <vendorName>Eclipse Foundation</vendorName>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>jakarta.el</groupId>
+            <artifactId>jakarta.el-api</artifactId>
+            <version>${bundle.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/..</directory>
+                <includes>
+                    <include>LICENSE.md</include>
+                    <include>NOTICE.md</include>
+                </includes>
+                <targetPath>META-INF</targetPath>
+            </resource>
+        </resources>
+        <plugins>
+            <!-- Sets minimal Maven version to 3.5.4 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0-M3</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.5.4</version>
+                                    <message>You need Maven 3.5.4 or higher</message>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Configure maven-bundle-plugin to generate OSGi manifest. Please note: we use the manifest goal only and not the bundle goal. 
+                The bundle goal can lead to very surprising results if the package names are not correctly specified. So, we use the jar plugin to generate the 
+                jar. -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>4.2.1</version>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
+                        <_include>-osgi.bundle</_include>
+                    </instructions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Adds the manifest file created by the org.apache.felix:maven-bundle-plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <archive>
+                        <manifestFile>
+                            ${project.build.outputDirectory}/META-INF/MANIFEST.MF
+                        </manifestFile>
+                        <manifestEntries>
+                            <Extension-Name>${extensionName}</Extension-Name>
+                            <Specification-Version>${spec.version}</Specification-Version>
+                            <Specification-Vendor>${vendorName}</Specification-Vendor>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Implementation-Vendor>${vendorName}</Implementation-Vendor>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <!-- Restricts the Java version to 1.8 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <compilerArgument>-Xlint:unchecked</compilerArgument>
+                </configuration>
+            </plugin>
+
+            <!-- Create Javadoc for API jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <source>1.8</source>
+                            <additionalJOption>-Xdoclint:none</additionalJOption>
+                            <groups>
+                                <group>
+                                    <title>Jakarta Expression Language ${spec.version} Implementation</title>
+                                    <packages>com.sun.el</packages>
+                                </group>
+                            </groups>
+                            <bottom><![CDATA[
+Comments to: <a href="mailto:el-dev@eclipse.org">el-dev@eclipse.org</a>.<br>
+Copyright &#169; 2018, 2020 Eclipse Foundation. All rights reserved.<br>
+Use is subject to <a href="http://www.eclipse.org/legal/epl-2.0" target="_top">license terms</a>.]]>
+                            </bottom>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <!-- Use ant to manually invoke javacc, as this required is very infrequently <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>javacc-maven-plugin</artifactId> 
+                <version>2.6</version> <executions> <execution> <id>jjtree-javacc</id> <goals> <goal>jjtree-javacc</goal> </goals> <configuration> <sourceDirectory>src/main/java/com/sun/el/parser</sourceDirectory> 
+                <outputDirectory>src/main/java/com/sun/el/parser</outputDirectory> </configuration> </execution> </executions> </plugin> -->
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <mavenExecutorId>forked-path</mavenExecutorId>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <arguments>${release.arguments}</arguments>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M4</version>
+                <configuration>
+                    <forkMode>never</forkMode>
+                </configuration>
+            </plugin>
+	   </plugins>
+    </build>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/glassfish/jakarta.el/4.0.0/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/eclipse-ee4j/el-ri/git/refs/tags' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/eclipse-ee4j/expressly/git/refs/tags' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+ succeeded in 205ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/glassfish/jakarta.el/4.0.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/glassfish/jakarta.el/4.0.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jakarta.el-4.0.0-javadoc.jar" title="jakarta.el-4.0.0-javadoc.jar">jakarta.el-4.0.0-javadoc.jar</a>                      2020-08-20 16:37    506814      
+<a href="jakarta.el-4.0.0-javadoc.jar.asc" title="jakarta.el-4.0.0-javadoc.jar.asc">jakarta.el-4.0.0-javadoc.jar.asc</a>                  2020-08-20 16:37       833      
+<a href="jakarta.el-4.0.0-javadoc.jar.asc.md5" title="jakarta.el-4.0.0-javadoc.jar.asc.md5">jakarta.el-4.0.0-javadoc.jar.asc.md5</a>              2020-08-20 16:37        32      
+<a href="jakarta.el-4.0.0-javadoc.jar.asc.sha1" title="jakarta.el-4.0.0-javadoc.jar.asc.sha1">jakarta.el-4.0.0-javadoc.jar.asc.sha1</a>             2020-08-20 16:37        40      
+<a href="jakarta.el-4.0.0-javadoc.jar.asc.sha256" title="jakarta.el-4.0.0-javadoc.jar.asc.sha256">jakarta.el-4.0.0-javadoc.jar.asc.sha256</a>           2020-08-20 16:37        64      
+<a href="jakarta.el-4.0.0-javadoc.jar.asc.sha512" title="jakarta.el-4.0.0-javadoc.jar.asc.sha512">jakarta.el-4.0.0-javadoc.jar.asc.sha512</a>           2020-08-20 16:37       128      
+<a href="jakarta.el-4.0.0-javadoc.jar.md5" title="jakarta.el-4.0.0-javadoc.jar.md5">jakarta.el-4.0.0-javadoc.jar.md5</a>                  2020-08-20 16:37        32      
+<a href="jakarta.el-4.0.0-javadoc.jar.sha1" title="jakarta.el-4.0.0-javadoc.jar.sha1">jakarta.el-4.0.0-javadoc.jar.sha1</a>                 2020-08-20 16:37        40      
+<a href="jakarta.el-4.0.0-sources.jar" title="jakarta.el-4.0.0-sources.jar">jakarta.el-4.0.0-sources.jar</a>                      2020-08-20 16:37    133008      
+<a href="jakarta.el-4.0.0-sources.jar.asc" title="jakarta.el-4.0.0-sources.jar.asc">jakarta.el-4.0.0-sources.jar.asc</a>                  2020-08-20 16:37       833      
+<a href="jakarta.el-4.0.0-sources.jar.asc.md5" title="jakarta.el-4.0.0-sources.jar.asc.md5">jakarta.el-4.0.0-sources.jar.asc.md5</a>              2020-08-20 16:37        32      
+<a href="jakarta.el-4.0.0-sources.jar.asc.sha1" title="jakarta.el-4.0.0-sources.jar.asc.sha1">jakarta.el-4.0.0-sources.jar.asc.sha1</a>             2020-08-20 16:37        40      
+<a href="jakarta.el-4.0.0-sources.jar.asc.sha256" title="jakarta.el-4.0.0-sources.jar.asc.sha256">jakarta.el-4.0.0-sources.jar.asc.sha256</a>           2020-08-20 16:37        64      
+<a href="jakarta.el-4.0.0-sources.jar.asc.sha512" title="jakarta.el-4.0.0-sources.jar.asc.sha512">jakarta.el-4.0.0-sources.jar.asc.sha512</a>           2020-08-20 16:37       128      
+<a href="jakarta.el-4.0.0-sources.jar.md5" title="jakarta.el-4.0.0-sources.jar.md5">jakarta.el-4.0.0-sources.jar.md5</a>                  2020-08-20 16:37        32      
+<a href="jakarta.el-4.0.0-sources.jar.sha1" title="jakarta.el-4.0.0-sources.jar.sha1">jakarta.el-4.0.0-sources.jar.sha1</a>                 2020-08-20 16:37        40      
+<a href="jakarta.el-4.0.0.jar" title="jakarta.el-4.0.0.jar">jakarta.el-4.0.0.jar</a>                              2020-08-20 16:37    173777      
+<a href="jakarta.el-4.0.0.jar.asc" title="jakarta.el-4.0.0.jar.asc">jakarta.el-4.0.0.jar.asc</a>                          2020-08-20 16:37       833      
+<a href="jakarta.el-4.0.0.jar.asc.md5" title="jakarta.el-4.0.0.jar.asc.md5">jakarta.el-4.0.0.jar.asc.md5</a>                      2020-08-20 16:37        32      
+<a href="jakarta.el-4.0.0.jar.asc.sha1" title="jakarta.el-4.0.0.jar.asc.sha1">jakarta.el-4.0.0.jar.asc.sha1</a>                     2020-08-20 16:37        40      
+<a href="jakarta.el-4.0.0.jar.asc.sha256" title="jakarta.el-4.0.0.jar.asc.sha256">jakarta.el-4.0.0.jar.asc.sha256</a>                   2020-08-20 16:37        64      
+<a href="jakarta.el-4.0.0.jar.asc.sha512" title="jakarta.el-4.0.0.jar.asc.sha512">jakarta.el-4.0.0.jar.asc.sha512</a>                   2020-08-20 16:37       128      
+<a href="jakarta.el-4.0.0.jar.md5" title="jakarta.el-4.0.0.jar.md5">jakarta.el-4.0.0.jar.md5</a>                          2020-08-20 16:37        32      
+<a href="jakarta.el-4.0.0.jar.sha1" title="jakarta.el-4.0.0.jar.sha1">jakarta.el-4.0.0.jar.sha1</a>                         2020-08-20 16:37        40      
+<a href="jakarta.el-4.0.0.pom" title="jakarta.el-4.0.0.pom">jakarta.el-4.0.0.pom</a>                              2020-08-20 16:37     10847      
+<a href="jakarta.el-4.0.0.pom.asc" title="jakarta.el-4.0.0.pom.asc">jakarta.el-4.0.0.pom.asc</a>                          2020-08-20 16:37       833      
+<a href="jakarta.el-4.0.0.pom.asc.md5" title="jakarta.el-4.0.0.pom.asc.md5">jakarta.el-4.0.0.pom.asc.md5</a>                      2020-08-20 16:37        32      
+<a href="jakarta.el-4.0.0.pom.asc.sha1" title="jakarta.el-4.0.0.pom.asc.sha1">jakarta.el-4.0.0.pom.asc.sha1</a>                     2020-08-20 16:37        40      
+<a href="jakarta.el-4.0.0.pom.asc.sha256" title="jakarta.el-4.0.0.pom.asc.sha256">jakarta.el-4.0.0.pom.asc.sha256</a>                   2020-08-20 16:37        64      
+<a href="jakarta.el-4.0.0.pom.asc.sha512" title="jakarta.el-4.0.0.pom.asc.sha512">jakarta.el-4.0.0.pom.asc.sha512</a>                   2020-08-20 16:37       128      
+<a href="jakarta.el-4.0.0.pom.md5" title="jakarta.el-4.0.0.pom.md5">jakarta.el-4.0.0.pom.md5</a>                          2020-08-20 16:37        32      
+<a href="jakarta.el-4.0.0.pom.sha1" title="jakarta.el-4.0.0.pom.sha1">jakarta.el-4.0.0.pom.sha1</a>                         2020-08-20 16:37        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 218ms:
+[
+  {
+    "ref": "refs/tags/4.x-RELEASE",
+    "node_id": "REF_kwDOGq-kubVyZWZzL3RhZ3MvNC54LVJFTEVBU0U",
+    "url": "https://api.github.com/repos/eclipse-ee4j/expressly/git/refs/tags/4.x-RELEASE",
+    "object": {
+      "sha": "69cd0ae4e86e4a2e5806ec9d5f1bde3721c5e20b",
+      "type": "commit",
+      "url": "https://api.github.com/repos/eclipse-ee4j/expressly/git/commits/69cd0ae4e86e4a2e5806ec9d5f1bde3721c5e20b"
+    }
+  },
+  {
+    "ref": "refs/tags/5.0.0-M1-RELEASE",
+    "node_id": "REF_kwDOGq-kubpyZWZzL3RhZ3MvNS4wLjAtTTEtUkVMRUFTRQ",
+    "url": "https://api.github.com/repos/eclipse-ee4j/expressly/git/refs/tags/5.0.0-M1-RELEASE",
+    "object": {
+      "sha": "6c69ae81b32a4364363f0ed0b46b874b48a45019",
+      "type": "tag",
+      "url": "https://api.github.com/repos/eclipse-ee4j/expressly/git/tags/6c69ae81b32a4364363f0ed0b46b874b48a45019"
+    }
+  },
+  {
+    "ref": "refs/tags/5.0.0-M2-RELEASE",
+    "node_id": "REF_kwDOGq-kubpyZWZzL3RhZ3MvNS4wLjAtTTItUkVMRUFTRQ",
+    "url": "https://api.github.com/repos/eclipse-ee4j/expressly/git/refs/tags/5.0.0-M2-RELEASE",
+    "object": {
+      "sha": "1d8b672d59c119e00f56e170a87411f1b478b4a3",
+      "type": "tag",
+      "url": "https://api.github.com/repos/eclipse-ee4j/expressly/git/tags/1d8b672d59c119e00f56e170a87411f1b478b4a3"
+    }
+  },
+  {
+    "ref": "refs/tags/5.0.0-RELEASE",
+    "node_id": "REF_kwDOGq-kubdyZWZzL3RhZ3MvNS4wLjAtUkVMRUFTRQ",
+    "url": "https://api.github.com/repos/eclipse-ee4j/expressly/git/refs/tags/5.0.0-RELEASE",
+    "object": {
+      "sha": "30a8792c3c0892830d4986f9da16dbd8a0ab2c31",
+      "type": "tag",
+      "url": "https://api.github.com/repos/eclipse-ee4j/expressly/git/tags/30a8792c3c0892830d4986f9da16dbd8a0ab2c31"
+    }
+  },
+  {
+    "ref": "refs/tags/6.0.0-M1-RELEASE",
+    "node_id": "REF_kwDOGq-kubpyZWZzL3RhZ3MvNi4wLjAtTTEtUkVMRUFTRQ",
+    "url": "https://api.github.com/repos/eclipse-ee4j/expressly/git/refs/tags/6.0.0-M1-RELEASE",
+    "object": {
+      "sha": "4970a1ea3a9ba6a32a84ed5f9c19efb99601940d",
+      "type": "tag",
+      "url": "https://api.github.com/repos/eclipse-ee4j/expressly/git/tags/4970a1ea3a9ba6a32a84ed5f9c19efb99601940d"
+    }
+  },
+  {
+    "ref": "refs/tags/6.0.0-M2-RELEASE",
+    "node_id": "REF_kwDOGq-kubpyZWZzL3RhZ3MvNi4wLjAtTTItUkVMRUFTRQ",
+    "url": "https://api.github.com/repos/eclipse-ee4j/expressly/git/refs/tags/6.0.0-M2-RELEASE",
+    "object": {
+      "sha": "399623f21ace08f8ad398ed18c4163764b4ddfd5",
+      "type": "tag",
+      "url": "https://api.github.com/repos/eclipse-ee4j/expressly/git/tags/399623f21ace08f8ad398ed18c4163764b4ddfd5"
+    }
+  },
+  {
+    "ref": "refs/tags/6.0.0-RELEASE",
+    "node_id": "REF_kwDOGq-kubdyZWZzL3RhZ3MvNi4wLjAtUkVMRUFTRQ",
+    "url": "https://api.github.com/repos/eclipse-ee4j/expressly/git/refs/tags/6.0.0-RELEASE",
+    "object": {
+      "sha": "ad19ee1e6c9c518eca0deee0762bf1a14cb4ec47",
+      "type": "tag",
+      "url": "https://api.github.com/repos/eclipse-ee4j/expressly/git/tags/ad19ee1e6c9c518eca0deee0762bf1a14cb4ec47"
+    }
+  }
+]
+
+ succeeded in 443ms:
+[
+  {
+    "ref": "refs/tags/3.0.2-RI-COMB-RELEASE",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy8zLjAuMi1SSS1DT01CLVJFTEVBU0U=",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/3.0.2-RI-COMB-RELEASE",
+    "object": {
+      "sha": "07187d1fbf6d46d76184072d0471afc57b4fbd3f",
+      "type": "tag",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/tags/07187d1fbf6d46d76184072d0471afc57b4fbd3f"
+    }
+  },
+  {
+    "ref": "refs/tags/3.0.3-RELEASE",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy8zLjAuMy1SRUxFQVNF",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/3.0.3-RELEASE",
+    "object": {
+      "sha": "c275306bfcbbbbcb6d0046c1151e4c05cb2a4d2a",
+      "type": "tag",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/tags/c275306bfcbbbbcb6d0046c1151e4c05cb2a4d2a"
+    }
+  },
+  {
+    "ref": "refs/tags/3.0.3-RELEASE-COMBO",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy8zLjAuMy1SRUxFQVNFLUNPTUJP",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/3.0.3-RELEASE-COMBO",
+    "object": {
+      "sha": "a836a4cce1e95333d49966a5f1688723c2a7cfed",
+      "type": "tag",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/tags/a836a4cce1e95333d49966a5f1688723c2a7cfed"
+    }
+  },
+  {
+    "ref": "refs/tags/3.0.3-RI-COMB-RELEASE",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy8zLjAuMy1SSS1DT01CLVJFTEVBU0U=",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/3.0.3-RI-COMB-RELEASE",
+    "object": {
+      "sha": "f9f0b3bfb4067c1db148e3dbd68da3df6615b90e",
+      "type": "commit",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/commits/f9f0b3bfb4067c1db148e3dbd68da3df6615b90e"
+    }
+  },
+  {
+    "ref": "refs/tags/3.0.4-impl",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy8zLjAuNC1pbXBs",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/3.0.4-impl",
+    "object": {
+      "sha": "ba0534579624a21c06b851bf2b718c52f801fc98",
+      "type": "tag",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/tags/ba0534579624a21c06b851bf2b718c52f801fc98"
+    }
+  },
+  {
+    "ref": "refs/tags/4.0.0-RC1-RELEASE",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy80LjAuMC1SQzEtUkVMRUFTRQ==",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/4.0.0-RC1-RELEASE",
+    "object": {
+      "sha": "d5ba8a8864c27f47314a6323caaa6a623d4005ec",
+      "type": "tag",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/tags/d5ba8a8864c27f47314a6323caaa6a623d4005ec"
+    }
+  },
+  {
+    "ref": "refs/tags/4.0.0-RC1-RELEASE-COMBO",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy80LjAuMC1SQzEtUkVMRUFTRS1DT01CTw==",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/4.0.0-RC1-RELEASE-COMBO",
+    "object": {
+      "sha": "42d31ed76a196eeba69b80af49a80e1af364b351",
+      "type": "commit",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/commits/42d31ed76a196eeba69b80af49a80e1af364b351"
+    }
+  },
+  {
+    "ref": "refs/tags/4.0.0-RC2-RELEASE",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy80LjAuMC1SQzItUkVMRUFTRQ==",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/4.0.0-RC2-RELEASE",
+    "object": {
+      "sha": "46ac5258504b779f6161416c73e9c0480deabbf7",
+      "type": "tag",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/tags/46ac5258504b779f6161416c73e9c0480deabbf7"
+    }
+  },
+  {
+    "ref": "refs/tags/4.0.0-RELEASE",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy80LjAuMC1SRUxFQVNF",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/4.0.0-RELEASE",
+    "object": {
+      "sha": "200bf1be423da9bbe014f107d954ab6c5db9023f",
+      "type": "tag",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/tags/200bf1be423da9bbe014f107d954ab6c5db9023f"
+    }
+  },
+  {
+    "ref": "refs/tags/4.0.0.M1-RELEASE",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy80LjAuMC5NMS1SRUxFQVNF",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/4.0.0.M1-RELEASE",
+    "object": {
+      "sha": "b13c4e579af99816d33c6afde0a246f5ca4f59c9",
+      "type": "tag",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/tags/b13c4e579af99816d33c6afde0a246f5ca4f59c9"
+    }
+  },
+  {
+    "ref": "refs/tags/4.0.1-RELEASE-impl",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy80LjAuMS1SRUxFQVNFLWltcGw=",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/4.0.1-RELEASE-impl",
+    "object": {
+      "sha": "e43d04d6dbe2043b16662b9a86e659e59745bb42",
+      "type": "tag",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/tags/e43d04d6dbe2043b16662b9a86e659e59745bb42"
+    }
+  },
+  {
+    "ref": "refs/tags/4.0.2-impl",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy80LjAuMi1pbXBs",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/4.0.2-impl",
+    "object": {
+      "sha": "1f3f92338ec6e69eab38f35f9a3b86963b6ec8c5",
+      "type": "tag",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/tags/1f3f92338ec6e69eab38f35f9a3b86963b6ec8c5"
+    }
+  },
+  {
+    "ref": "refs/tags/5.0.0-M1-RELEASE-api",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy81LjAuMC1NMS1SRUxFQVNFLWFwaQ==",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/5.0.0-M1-RELEASE-api",
+    "object": {
+      "sha": "30b693da211ba983686341fb4e46249994bef1d2",
+      "type": "tag",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/tags/30b693da211ba983686341fb4e46249994bef1d2"
+    }
+  },
+  {
+    "ref": "refs/tags/5.0.0-M1-RELEASE-impl",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy81LjAuMC1NMS1SRUxFQVNFLWltcGw=",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/5.0.0-M1-RELEASE-impl",
+    "object": {
+      "sha": "d09bac270872f84b5f76d5ede776289394d1fd01",
+      "type": "tag",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/tags/d09bac270872f84b5f76d5ede776289394d1fd01"
+    }
+  },
+  {
+    "ref": "refs/tags/5.0.0-M2-RELEASE-api",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy81LjAuMC1NMi1SRUxFQVNFLWFwaQ==",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/5.0.0-M2-RELEASE-api",
+    "object": {
+      "sha": "843f81bc2756efaf18cb0d2017da94c6c3135269",
+      "type": "tag",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/tags/843f81bc2756efaf18cb0d2017da94c6c3135269"
+    }
+  },
+  {
+    "ref": "refs/tags/5.0.0-M3-RELEASE-api",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy81LjAuMC1NMy1SRUxFQVNFLWFwaQ==",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/5.0.0-M3-RELEASE-api",
+    "object": {
+      "sha": "1441489f1b34d17c36c9b863a30b0c83e2bab9bf",
+      "type": "tag",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/tags/1441489f1b34d17c36c9b863a30b0c83e2bab9bf"
+    }
+  },
+  {
+    "ref": "refs/tags/5.0.0-RC1-RELEASE-api",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy81LjAuMC1SQzEtUkVMRUFTRS1hcGk=",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/5.0.0-RC1-RELEASE-api",
+    "object": {
+      "sha": "d2b73cf8a448ef51a75e374529a3db32fc1a050b",
+      "type": "tag",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/tags/d2b73cf8a448ef51a75e374529a3db32fc1a050b"
+    }
+  },
+  {
+    "ref": "refs/tags/5.0.0-RELEASE-api",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy81LjAuMC1SRUxFQVNFLWFwaQ==",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/5.0.0-RELEASE-api",
+    "object": {
+      "sha": "afc7c252ea72b5673f324a0c9cece433b6db9f7f",
+      "type": "tag",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/tags/afc7c252ea72b5673f324a0c9cece433b6db9f7f"
+    }
+  },
+  {
+    "ref": "refs/tags/5.0.1-RELEASE-api",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy81LjAuMS1SRUxFQVNFLWFwaQ==",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/5.0.1-RELEASE-api",
+    "object": {
+      "sha": "a654828c24f976cf8fdce9ab2783eafc18955c2a",
+      "type": "tag",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/tags/a654828c24f976cf8fdce9ab2783eafc18955c2a"
+    }
+  },
+  {
+    "ref": "refs/tags/6.0.0-M1-RELEASE-api",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy82LjAuMC1NMS1SRUxFQVNFLWFwaQ==",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/6.0.0-M1-RELEASE-api",
+    "object": {
+      "sha": "331bc03e0673905ed3a7442e9001bc788862e750",
+      "type": "tag",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/tags/331bc03e0673905ed3a7442e9001bc788862e750"
+    }
+  },
+  {
+    "ref": "refs/tags/6.0.0-M2-RELEASE-api",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy82LjAuMC1NMi1SRUxFQVNFLWFwaQ==",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/6.0.0-M2-RELEASE-api",
+    "object": {
+      "sha": "3a1328fed09a623fb808c84c58773cae41d15608",
+      "type": "tag",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/tags/3a1328fed09a623fb808c84c58773cae41d15608"
+    }
+  },
+  {
+    "ref": "refs/tags/6.0.0-RC1-RELEASE-api",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy82LjAuMC1SQzEtUkVMRUFTRS1hcGk=",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/6.0.0-RC1-RELEASE-api",
+    "object": {
+      "sha": "d34a7917455ab2781bdf024209baf6c6f38367f8",
+      "type": "tag",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/tags/d34a7917455ab2781bdf024209baf6c6f38367f8"
+    }
+  },
+  {
+    "ref": "refs/tags/6.0.0-RELEASE-api",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy82LjAuMC1SRUxFQVNFLWFwaQ==",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/6.0.0-RELEASE-api",
+    "object": {
+      "sha": "5d9baaf5e6af185b058d7cf847762f93c69e36e4",
+      "type": "tag",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/tags/5d9baaf5e6af185b058d7cf847762f93c69e36e4"
+    }
+  },
+  {
+    "ref": "refs/tags/6.0.1-RELEASE-api",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy82LjAuMS1SRUxFQVNFLWFwaQ==",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/6.0.1-RELEASE-api",
+    "object": {
+      "sha": "dea728b446fc0a84fed0bde50aaf66aabbc95881",
+      "type": "tag",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/tags/dea728b446fc0a84fed0bde50aaf66aabbc95881"
+    }
+  },
+  {
+    "ref": "refs/tags/6.1.0-M1",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy82LjEuMC1NMQ==",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/6.1.0-M1",
+    "object": {
+      "sha": "734e9ea7a6167173b9f4668f982e4e74b7d823dc",
+      "type": "tag",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/tags/734e9ea7a6167173b9f4668f982e4e74b7d823dc"
+    }
+  },
+  {
+    "ref": "refs/tags/6.1.0-M1-RELEASE-tck",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy82LjEuMC1NMS1SRUxFQVNFLXRjaw==",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/6.1.0-M1-RELEASE-tck",
+    "object": {
+      "sha": "ae8b78c066d2b9c06563ee355117ac8a9e176b20",
+      "type": "tag",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/tags/ae8b78c066d2b9c06563ee355117ac8a9e176b20"
+    }
+  },
+  {
+    "ref": "refs/tags/6.1.0-M2-RELEASE",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy82LjEuMC1NMi1SRUxFQVNF",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/6.1.0-M2-RELEASE",
+    "object": {
+      "sha": "ba939e370cb4b74489345a4a9e14c03ef7c1d662",
+      "type": "tag",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/tags/ba939e370cb4b74489345a4a9e14c03ef7c1d662"
+    }
+  },
+  {
+    "ref": "refs/tags/initial-contribution",
+    "node_id": "MDM6UmVmMTM1MTc2ODc1OnJlZnMvdGFncy9pbml0aWFsLWNvbnRyaWJ1dGlvbg==",
+    "url": "https://api.github.com/repos/jakartaee/expression-language/git/refs/tags/initial-contribution",
+    "object": {
+      "sha": "35f048cfae521189399a614f78a36c156f5e4c56",
+      "type": "commit",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/commits/35f048cfae521189399a614f78a36c156f5e4c56"
+    }
+  }
+]
+
+codex
+There is no Maven test-jar in the artifact directory, so Maven can cover source and javadocs but not tests. For tests I’m using the version tag from the upstream repository and checking the actual layout at that tag before writing the URL.
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/glassfish/jakarta.el/4.0.0/jakarta.el-4.0.0-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 20:54:36 GMT
+content-type: application/java-archive
+content-length: 133008
+cf-ray: a0828d8bbd9903a5-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 739774
+etag: "d37a46a40fe722c2eecbaad3022fa64d"
+last-modified: Thu, 20 Aug 2020 16:37:54 GMT
+x-checksum-md5: d37a46a40fe722c2eecbaad3022fa64d
+x-checksum-sha1: 6c79d07d2f98988935010c178cf40f992f1d7b3e
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/jakartaee/expression-language/contents?ref=4.0.0-RELEASE' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/glassfish/jakarta.el/4.0.0/jakarta.el-4.0.0-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/glassfish/jakarta.el/4.0.0/jakarta.el-4.0.0-tests.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+ succeeded in 157ms:
+[
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "26c150a3db5e40efb4ef3469222f896445045ad0",
+    "size": 366,
+    "url": "https://api.github.com/repos/jakartaee/expression-language/contents/.gitignore?ref=4.0.0-RELEASE",
+    "html_url": "https://github.com/jakartaee/expression-language/blob/4.0.0-RELEASE/.gitignore",
+    "git_url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/26c150a3db5e40efb4ef3469222f896445045ad0",
+    "download_url": "https://raw.githubusercontent.com/jakartaee/expression-language/4.0.0-RELEASE/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/expression-language/contents/.gitignore?ref=4.0.0-RELEASE",
+      "git": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/26c150a3db5e40efb4ef3469222f896445045ad0",
+      "html": "https://github.com/jakartaee/expression-language/blob/4.0.0-RELEASE/.gitignore"
+    }
+  },
+  {
+    "name": "CONTRIBUTING.md",
+    "path": "CONTRIBUTING.md",
+    "sha": "bf797f975171ffdec9e4b10a4a9b3291ed28f41c",
+    "size": 2273,
+    "url": "https://api.github.com/repos/jakartaee/expression-language/contents/CONTRIBUTING.md?ref=4.0.0-RELEASE",
+    "html_url": "https://github.com/jakartaee/expression-language/blob/4.0.0-RELEASE/CONTRIBUTING.md",
+    "git_url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/bf797f975171ffdec9e4b10a4a9b3291ed28f41c",
+    "download_url": "https://raw.githubusercontent.com/jakartaee/expression-language/4.0.0-RELEASE/CONTRIBUTING.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/expression-language/contents/CONTRIBUTING.md?ref=4.0.0-RELEASE",
+      "git": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/bf797f975171ffdec9e4b10a4a9b3291ed28f41c",
+      "html": "https://github.com/jakartaee/expression-language/blob/4.0.0-RELEASE/CONTRIBUTING.md"
+    }
+  },
+  {
+    "name": "LICENSE.md",
+    "path": "LICENSE.md",
+    "sha": "5de3d1b40c199fba101ae1602548c5042587ed7b",
+    "size": 35084,
+    "url": "https://api.github.com/repos/jakartaee/expression-language/contents/LICENSE.md?ref=4.0.0-RELEASE",
+    "html_url": "https://github.com/jakartaee/expression-language/blob/4.0.0-RELEASE/LICENSE.md",
+    "git_url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/5de3d1b40c199fba101ae1602548c5042587ed7b",
+    "download_url": "https://raw.githubusercontent.com/jakartaee/expression-language/4.0.0-RELEASE/LICENSE.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/expression-language/contents/LICENSE.md?ref=4.0.0-RELEASE",
+      "git": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/5de3d1b40c199fba101ae1602548c5042587ed7b",
+      "html": "https://github.com/jakartaee/expression-language/blob/4.0.0-RELEASE/LICENSE.md"
+    }
+  },
+  {
+    "name": "NOTICE.md",
+    "path": "NOTICE.md",
+    "sha": "9e121fdeb1cfed59a03a88258fb1f4a020289a49",
+    "size": 1655,
+    "url": "https://api.github.com/repos/jakartaee/expression-language/contents/NOTICE.md?ref=4.0.0-RELEASE",
+    "html_url": "https://github.com/jakartaee/expression-language/blob/4.0.0-RELEASE/NOTICE.md",
+    "git_url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/9e121fdeb1cfed59a03a88258fb1f4a020289a49",
+    "download_url": "https://raw.githubusercontent.com/jakartaee/expression-language/4.0.0-RELEASE/NOTICE.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/expression-language/contents/NOTICE.md?ref=4.0.0-RELEASE",
+      "git": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/9e121fdeb1cfed59a03a88258fb1f4a020289a49",
+      "html": "https://github.com/jakartaee/expression-language/blob/4.0.0-RELEASE/NOTICE.md"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "a802dfeab4895f3948fe6013525b19dc5888ca5c",
+    "size": 592,
+    "url": "https://api.github.com/repos/jakartaee/expression-language/contents/README.md?ref=4.0.0-RELEASE",
+    "html_url": "https://github.com/jakartaee/expression-language/blob/4.0.0-RELEASE/README.md",
+    "git_url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/a802dfeab4895f3948fe6013525b19dc5888ca5c",
+    "download_url": "https://raw.githubusercontent.com/jakartaee/expression-language/4.0.0-RELEASE/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/expression-language/contents/README.md?ref=4.0.0-RELEASE",
+      "git": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/a802dfeab4895f3948fe6013525b19dc5888ca5c",
+      "html": "https://github.com/jakartaee/expression-language/blob/4.0.0-RELEASE/README.md"
+    }
+  },
+  {
+    "name": "api",
+    "path": "api",
+    "sha": "a9cecfcc6d02a3f5df52502bab6f72fb99a11196",
+    "size": 0,
+    "url": "https://api.github.com/repos/jakartaee/expression-language/contents/api?ref=4.0.0-RELEASE",
+    "html_url": "https://github.com/jakartaee/expression-language/tree/4.0.0-RELEASE/api",
+    "git_url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/a9cecfcc6d02a3f5df52502bab6f72fb99a11196",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/expression-language/contents/api?ref=4.0.0-RELEASE",
+      "git": "https://api.github.com/repos/jakartaee/expression-language/git/trees/a9cecfcc6d02a3f5df52502bab6f72fb99a11196",
+      "html": "https://github.com/jakartaee/expression-language/tree/4.0.0-RELEASE/api"
+    }
+  },
+  {
+    "name": "combined-pom",
+    "path": "combined-pom",
+    "sha": "480398e1a1f050695c8f1e16fdb66a150caaff6a",
+    "size": 0,
+    "url": "https://api.github.com/repos/jakartaee/expression-language/contents/combined-pom?ref=4.0.0-RELEASE",
+    "html_url": "https://github.com/jakartaee/expression-language/tree/4.0.0-RELEASE/combined-pom",
+    "git_url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/480398e1a1f050695c8f1e16fdb66a150caaff6a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/expression-language/contents/combined-pom?ref=4.0.0-RELEASE",
+      "git": "https://api.github.com/repos/jakartaee/expression-language/git/trees/480398e1a1f050695c8f1e16fdb66a150caaff6a",
+      "html": "https://github.com/jakartaee/expression-language/tree/4.0.0-RELEASE/combined-pom"
+    }
+  },
+  {
+    "name": "exclude.xml",
+    "path": "exclude.xml",
+    "sha": "e25e6814e9d4ef6ba90ae2fa88d092a03ebfff4b",
+    "size": 1158,
+    "url": "https://api.github.com/repos/jakartaee/expression-language/contents/exclude.xml?ref=4.0.0-RELEASE",
+    "html_url": "https://github.com/jakartaee/expression-language/blob/4.0.0-RELEASE/exclude.xml",
+    "git_url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/e25e6814e9d4ef6ba90ae2fa88d092a03ebfff4b",
+    "download_url": "https://raw.githubusercontent.com/jakartaee/expression-language/4.0.0-RELEASE/exclude.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/expression-language/contents/exclude.xml?ref=4.0.0-RELEASE",
+      "git": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/e25e6814e9d4ef6ba90ae2fa88d092a03ebfff4b",
+      "html": "https://github.com/jakartaee/expression-language/blob/4.0.0-RELEASE/exclude.xml"
+    }
+  },
+  {
+    "name": "impl",
+    "path": "impl",
+    "sha": "0e64eb59b190e7161750abb03c6e1cc37c14fa30",
+    "size": 0,
+    "url": "https://api.github.com/repos/jakartaee/expression-language/contents/impl?ref=4.0.0-RELEASE",
+    "html_url": "https://github.com/jakartaee/expression-language/tree/4.0.0-RELEASE/impl",
+    "git_url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/0e64eb59b190e7161750abb03c6e1cc37c14fa30",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/expression-language/contents/impl?ref=4.0.0-RELEASE",
+      "git": "https://api.github.com/repos/jakartaee/expression-language/git/trees/0e64eb59b190e7161750abb03c6e1cc37c14fa30",
+      "html": "https://github.com/jakartaee/expression-language/tree/4.0.0-RELEASE/impl"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "sha": "0ea5724cac1e721feca7b905a44036b0178af558",
+    "size": 2521,
+    "url": "https://api.github.com/repos/jakartaee/expression-language/contents/pom.xml?ref=4.0.0-RELEASE",
+    "html_url": "https://github.com/jakartaee/expression-language/blob/4.0.0-RELEASE/pom.xml",
+    "git_url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/0ea5724cac1e721feca7b905a44036b0178af558",
+    "download_url": "https://raw.githubusercontent.com/jakartaee/expression-language/4.0.0-RELEASE/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/expression-language/contents/pom.xml?ref=4.0.0-RELEASE",
+      "git": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/0ea5724cac1e721feca7b905a44036b0178af558",
+      "html": "https://github.com/jakartaee/expression-language/blob/4.0.0-RELEASE/pom.xml"
+    }
+  },
+  {
+    "name": "spec",
+    "path": "spec",
+    "sha": "42dace0715a92ac244a69f7a63c6974570782aa5",
+    "size": 0,
+    "url": "https://api.github.com/repos/jakartaee/expression-language/contents/spec?ref=4.0.0-RELEASE",
+    "html_url": "https://github.com/jakartaee/expression-language/tree/4.0.0-RELEASE/spec",
+    "git_url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/42dace0715a92ac244a69f7a63c6974570782aa5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/expression-language/contents/spec?ref=4.0.0-RELEASE",
+      "git": "https://api.github.com/repos/jakartaee/expression-language/git/trees/42dace0715a92ac244a69f7a63c6974570782aa5",
+      "html": "https://github.com/jakartaee/expression-language/tree/4.0.0-RELEASE/spec"
+    }
+  },
+  {
+    "name": "src",
+    "path": "src",
+    "sha": "e3c33e57becb59d9edab6cd7903cf777b4e49ff7",
+    "size": 0,
+    "url": "https://api.github.com/repos/jakartaee/expression-language/contents/src?ref=4.0.0-RELEASE",
+    "html_url": "https://github.com/jakartaee/expression-language/tree/4.0.0-RELEASE/src",
+    "git_url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/e3c33e57becb59d9edab6cd7903cf777b4e49ff7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/expression-language/contents/src?ref=4.0.0-RELEASE",
+      "git": "https://api.github.com/repos/jakartaee/expression-language/git/trees/e3c33e57becb59d9edab6cd7903cf777b4e49ff7",
+      "html": "https://github.com/jakartaee/expression-language/tree/4.0.0-RELEASE/src"
+    }
+  }
+]
+
+ succeeded in 174ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 20:54:36 GMT
+content-type: application/java-archive
+content-length: 506814
+cf-ray: a0828d8bca5203a9-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "6d461dcd806e7cabd444f8a62a0ff2ab"
+last-modified: Thu, 20 Aug 2020 16:37:54 GMT
+x-checksum-md5: 6d461dcd806e7cabd444f8a62a0ff2ab
+x-checksum-sha1: c9a85758fb7526335c9f3abc2e7805ee847a8c0d
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ exited 22 in 205ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 07 Jun 2026 20:54:36 GMT
+content-type: text/html
+cf-ray: a0828d8bf9f3c115-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/glassfish/jakarta.el/4.0.0/jakarta.el-4.0.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+The artifact is a JVM JAR with class files, not an Android-only, JS, Native, Wasm, or tool-only package, so I’ll leave the Native Image exclusion fields absent. I’m narrowing the test URL to the module tests that correspond to the implementation artifact.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/jakartaee/expression-language/contents/impl/src?ref=4.0.0-RELEASE' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/jakartaee/expression-language/contents/impl?ref=4.0.0-RELEASE' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/eclipse-ee4j/el-ri' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/jakartaee/expression-language/tree/4.0.0-RELEASE/impl/src/test' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+ succeeded in 141ms:
+[
+  {
+    "name": "build.xml",
+    "path": "impl/build.xml",
+    "sha": "2ed734c4cf6e67ed2fae01a84d050981efba7564",
+    "size": 1665,
+    "url": "https://api.github.com/repos/jakartaee/expression-language/contents/impl/build.xml?ref=4.0.0-RELEASE",
+    "html_url": "https://github.com/jakartaee/expression-language/blob/4.0.0-RELEASE/impl/build.xml",
+    "git_url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/2ed734c4cf6e67ed2fae01a84d050981efba7564",
+    "download_url": "https://raw.githubusercontent.com/jakartaee/expression-language/4.0.0-RELEASE/impl/build.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/expression-language/contents/impl/build.xml?ref=4.0.0-RELEASE",
+      "git": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/2ed734c4cf6e67ed2fae01a84d050981efba7564",
+      "html": "https://github.com/jakartaee/expression-language/blob/4.0.0-RELEASE/impl/build.xml"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "impl/pom.xml",
+    "sha": "76ad214f6520026a9de68398262cc26c9eb878f8",
+    "size": 10847,
+    "url": "https://api.github.com/repos/jakartaee/expression-language/contents/impl/pom.xml?ref=4.0.0-RELEASE",
+    "html_url": "https://github.com/jakartaee/expression-language/blob/4.0.0-RELEASE/impl/pom.xml",
+    "git_url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/76ad214f6520026a9de68398262cc26c9eb878f8",
+    "download_url": "https://raw.githubusercontent.com/jakartaee/expression-language/4.0.0-RELEASE/impl/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/expression-language/contents/impl/pom.xml?ref=4.0.0-RELEASE",
+      "git": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/76ad214f6520026a9de68398262cc26c9eb878f8",
+      "html": "https://github.com/jakartaee/expression-language/blob/4.0.0-RELEASE/impl/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "impl/src",
+    "sha": "cd1f4534ebd43b7f9e529767719b0849c747b051",
+    "size": 0,
+    "url": "https://api.github.com/repos/jakartaee/expression-language/contents/impl/src?ref=4.0.0-RELEASE",
+    "html_url": "https://github.com/jakartaee/expression-language/tree/4.0.0-RELEASE/impl/src",
+    "git_url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/cd1f4534ebd43b7f9e529767719b0849c747b051",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/expression-language/contents/impl/src?ref=4.0.0-RELEASE",
+      "git": "https://api.github.com/repos/jakartaee/expression-language/git/trees/cd1f4534ebd43b7f9e529767719b0849c747b051",
+      "html": "https://github.com/jakartaee/expression-language/tree/4.0.0-RELEASE/impl/src"
+    }
+  }
+]
+
+ succeeded in 153ms:
+[
+  {
+    "name": "main",
+    "path": "impl/src/main",
+    "sha": "346c1b34957861d7ab4fff816bc0704cf53b342e",
+    "size": 0,
+    "url": "https://api.github.com/repos/jakartaee/expression-language/contents/impl/src/main?ref=4.0.0-RELEASE",
+    "html_url": "https://github.com/jakartaee/expression-language/tree/4.0.0-RELEASE/impl/src/main",
+    "git_url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/346c1b34957861d7ab4fff816bc0704cf53b342e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/expression-language/contents/impl/src/main?ref=4.0.0-RELEASE",
+      "git": "https://api.github.com/repos/jakartaee/expression-language/git/trees/346c1b34957861d7ab4fff816bc0704cf53b342e",
+      "html": "https://github.com/jakartaee/expression-language/tree/4.0.0-RELEASE/impl/src/main"
+    }
+  }
+]
+
+ exited 22 in 486ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 07 Jun 2026 20:54:41 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=TpYi%2BFYRXYCwJ4Hmh0r66zmiZyGVMBykjbgtgCvoIOeBA%2FybE5DyNYPOY6bgFG7Rk9QX3Up18w2uUWBd6zIAcrobJGhGyAFy1O%2B18uMyfuKWP4g3IYZLtL75Sv6J4lj0WQXVKUOlqcWNLVu%2FiOsx%2BWxOstgeq6xueUcGkqYt19iicYYrNSCWdssgWMI%2BnYMJKcOjAuGW3ntIUCVzoVpJih2G0lDpJCwk%2Bqlq0YDzU8%2B8aqSvC0Ep2BOo46T3l4HJGj8QFGZQ6Y8LfOHUhWFxaw%3D%3D--0QJc%2Brcxp7OZt8Iy--Vc8Fyd4VriRAyvmGhlhRBw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.806827800.1780865681; expires=Mon, 07 Jun 2027 20:54:41 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 07 Jun 2027 20:54:41 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 621A:52838:9311829:70259D6:6A25DA91
+
+
+ succeeded in 711ms:
+HTTP/2 301 
+date: Sun, 07 Jun 2026 20:54:41 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/jakartaee/expression-language
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=mtLLxWm4CGSL%2Bznxg6HNkn%2FECqVCWj7YybPS5BNRjjjMoTP2xYyMuqgDIoi4fj0Ii7k2kh2M5y8DjXNrtU4CzG9gZbC1I7MHOet%2Fzi1oBwa1vXDXOCK9L%2BCxwpZUj8k8jb4uJ44NUdUag19jPwFSfqRzgizjvwGsWQOcGFgbUvQlyo5sI7PHdSe%2BAriIrcRzMe08F0JKYHW%2FLMoQx9SNgbiHda3jf4I16ydd%2Fe5UAHKN%2Flr3MYbsnmxWWNr%2BJZa6Qu3Pt9ABWptAK5ZUw3IQ9Q%3D%3D--h1KILqb5tDHrKdNr--7ZwAGDukiDRkx5%2BDd9qAIQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.854603632.1780865681; expires=Mon, 07 Jun 2027 20:54:41 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 07 Jun 2027 20:54:41 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+content-length: 0
+x-github-request-id: 621E:BD753:95A86A4:721C6DC:6A25DA91
+
+HTTP/2 200 
+date: Sun, 07 Jun 2026 20:54:42 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"406a6f54f731a462a0c7fbd5d3bbdbcc"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=B%2FLveZfO%2BHJF7cFxJX%2BrEbEUmEvcNgo4iuYYcZgLHVHV%2BZRRgkU2wYpqq92oNdEP6Fp%2BHbEk4tpPTOQrxZngSPc8vWmj9c0nhNiZJGaCyDAiZUuJLWGBLsPFCHpmYh1aPTROCi%2B%2BSr1UEPoNardopCfQvtRNbqMN1QL7lzAzdmgOTNy1kImJqj2p4NQ0h2cLUpZvqQ97t%2FmlyX8v25vAhjpiJ%2Bl2iZkKbyayTQAlO6%2B7bMXAoQvCDpxhgNisbh%2BtQ13B48sqmOWtORzVz8%2F8Xw%3D%3D--SY6lwQAMjJGz9azu--qtzm8DtK%2Bo81fvSKqK3deQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.272722626.1780865681; expires=Mon, 07 Jun 2027 20:54:41 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 07 Jun 2027 20:54:41 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 621E:BD753:95A87E8:721C7C0:6A25DA91
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/jakartaee/expression-language/4.0.0-RELEASE/README.md' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/jakartaee/expression-language/contents/src?ref=4.0.0-RELEASE' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/jakartaee/expression-language/git/trees/4.0.0-RELEASE?recursive=1' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+ succeeded in 140ms:
+[
+  {
+    "name": "assembly",
+    "path": "src/assembly",
+    "sha": "5982b8f27df56af7e45f0453af5c5f357a2a8a5a",
+    "size": 0,
+    "url": "https://api.github.com/repos/jakartaee/expression-language/contents/src/assembly?ref=4.0.0-RELEASE",
+    "html_url": "https://github.com/jakartaee/expression-language/tree/4.0.0-RELEASE/src/assembly",
+    "git_url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/5982b8f27df56af7e45f0453af5c5f357a2a8a5a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/expression-language/contents/src/assembly?ref=4.0.0-RELEASE",
+      "git": "https://api.github.com/repos/jakartaee/expression-language/git/trees/5982b8f27df56af7e45f0453af5c5f357a2a8a5a",
+      "html": "https://github.com/jakartaee/expression-language/tree/4.0.0-RELEASE/src/assembly"
+    }
+  },
+  {
+    "name": "test",
+    "path": "src/test",
+    "sha": "128b7d6b6c6e1ed8af39fb95eb8723659f028777",
+    "size": 0,
+    "url": "https://api.github.com/repos/jakartaee/expression-language/contents/src/test?ref=4.0.0-RELEASE",
+    "html_url": "https://github.com/jakartaee/expression-language/tree/4.0.0-RELEASE/src/test",
+    "git_url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/128b7d6b6c6e1ed8af39fb95eb8723659f028777",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/expression-language/contents/src/test?ref=4.0.0-RELEASE",
+      "git": "https://api.github.com/repos/jakartaee/expression-language/git/trees/128b7d6b6c6e1ed8af39fb95eb8723659f028777",
+      "html": "https://github.com/jakartaee/expression-language/tree/4.0.0-RELEASE/src/test"
+    }
+  }
+]
+
+ succeeded in 177ms:
+# Jakarta Expression Language
+
+This repository contains the code for Jakarta Expression Language.
+
+[Online JavaDoc](https://javadoc.io/doc/jakarta.el/jakarta.el-api/)
+
+Building
+--------
+
+Jakarta Expression Language can be built by executing the following from the project root:
+
+``mvn clean package``
+
+The API jar can then be found in /target.
+
+Making Changes
+--------------
+
+To make changes, fork this repository, make your changes, and submit a pull request.
+
+About Jakarta Expression Language
+-------------
+
+Jakarta Expression Language defines an expression language for Java applications.
+ succeeded in 226ms:
+{
+  "sha": "c91a6ecaaf0b8de1d522368318245600d2563a92",
+  "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/c91a6ecaaf0b8de1d522368318245600d2563a92",
+  "tree": [
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "26c150a3db5e40efb4ef3469222f896445045ad0",
+      "size": 366,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/26c150a3db5e40efb4ef3469222f896445045ad0"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bf797f975171ffdec9e4b10a4a9b3291ed28f41c",
+      "size": 2273,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/bf797f975171ffdec9e4b10a4a9b3291ed28f41c"
+    },
+    {
+      "path": "LICENSE.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5de3d1b40c199fba101ae1602548c5042587ed7b",
+      "size": 35084,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/5de3d1b40c199fba101ae1602548c5042587ed7b"
+    },
+    {
+      "path": "NOTICE.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9e121fdeb1cfed59a03a88258fb1f4a020289a49",
+      "size": 1655,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/9e121fdeb1cfed59a03a88258fb1f4a020289a49"
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a802dfeab4895f3948fe6013525b19dc5888ca5c",
+      "size": 592,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/a802dfeab4895f3948fe6013525b19dc5888ca5c"
+    },
+    {
+      "path": "api",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a9cecfcc6d02a3f5df52502bab6f72fb99a11196",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/a9cecfcc6d02a3f5df52502bab6f72fb99a11196"
+    },
+    {
+      "path": "api/etc",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "07569fc3a4c60f23418796ad68b8a7cea3ce0568",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/07569fc3a4c60f23418796ad68b8a7cea3ce0568"
+    },
+    {
+      "path": "api/etc/config",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "acee477d0187baddb5de7320fbf7d68f96e953e8",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/acee477d0187baddb5de7320fbf7d68f96e953e8"
+    },
+    {
+      "path": "api/etc/config/copyright-exclude",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "7991944a111385d932bf2b1030ecceb5d44a71e5",
+      "size": 65,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/7991944a111385d932bf2b1030ecceb5d44a71e5"
+    },
+    {
+      "path": "api/etc/config/copyright.txt",
+      "mode": "100755",
+      "type": "blob",
+      "sha": "0bf589f2933583a036fa16e34865c9b14a2d3ecd",
+      "size": 715,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/0bf589f2933583a036fa16e34865c9b14a2d3ecd"
+    },
+    {
+      "path": "api/pom.xml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ead4134a7308e71e8f006484c4397b7688c06757",
+      "size": 11547,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/ead4134a7308e71e8f006484c4397b7688c06757"
+    },
+    {
+      "path": "api/src",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "cd549cf3d063b1f7f753c4cd3d177cec6ba504d7",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/cd549cf3d063b1f7f753c4cd3d177cec6ba504d7"
+    },
+    {
+      "path": "api/src/main",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b273532edf452a43e0285e5da65690c686f4283b",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/b273532edf452a43e0285e5da65690c686f4283b"
+    },
+    {
+      "path": "api/src/main/java",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9391ca52ba9f14f84dfa0e6a4e2922c5ca80674c",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/9391ca52ba9f14f84dfa0e6a4e2922c5ca80674c"
+    },
+    {
+      "path": "api/src/main/java/jakarta",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "129e5e036051fb6adf25297890c75162d6e16e4f",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/129e5e036051fb6adf25297890c75162d6e16e4f"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "afbce89ecc8567c8707739f59d27d167c735525c",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/afbce89ecc8567c8707739f59d27d167c735525c"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/ArrayELResolver.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9fad8b63ef87b23f5bea4f5eaea5823b153f47ca",
+      "size": 13720,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/9fad8b63ef87b23f5bea4f5eaea5823b153f47ca"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/BeanELResolver.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "01343ce9be90740ccbc9ad22b1a0e5359179debe",
+      "size": 25275,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/01343ce9be90740ccbc9ad22b1a0e5359179debe"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/BeanNameELResolver.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d2af2e26e02b580e7d688c5d84a54ee089addd29",
+      "size": 9311,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/d2af2e26e02b580e7d688c5d84a54ee089addd29"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/BeanNameResolver.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "20b032ed5d3978a771777133948b543154e39adb",
+      "size": 2824,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/20b032ed5d3978a771777133948b543154e39adb"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/CompositeELResolver.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1d03c287ec8de54ad39d5a7d395969b88d0e3965",
+      "size": 24572,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/1d03c287ec8de54ad39d5a7d395969b88d0e3965"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/ELClass.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0b666d81b4ace9df2c446401ff6c4cfa20839df6",
+      "size": 1495,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/0b666d81b4ace9df2c446401ff6c4cfa20839df6"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/ELContext.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f45f8a067f4c710f12b0ecfc26ecbec2784deb80",
+      "size": 16601,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/f45f8a067f4c710f12b0ecfc26ecbec2784deb80"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/ELContextEvent.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "10894c1640939516e8541228e9e6819b7c02cbda",
+      "size": 1655,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/10894c1640939516e8541228e9e6819b7c02cbda"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/ELContextListener.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aa66016a625ca2dd405452efc356945468ff24dc",
+      "size": 1161,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/aa66016a625ca2dd405452efc356945468ff24dc"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/ELException.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "11b36793b9b79842218650e6eb7000cff2fa436f",
+      "size": 2072,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/11b36793b9b79842218650e6eb7000cff2fa436f"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/ELManager.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "48fb6ca2caa7a8ef17ab210b945cfa82f889481e",
+      "size": 6415,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/48fb6ca2caa7a8ef17ab210b945cfa82f889481e"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/ELProcessor.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d745fe1e0bb5e9a80bb6b595ce478334d3d82aab",
+      "size": 13048,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/d745fe1e0bb5e9a80bb6b595ce478334d3d82aab"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/ELResolver.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ebf936676d45e30d448dec559637ccfc5f7952c4",
+      "size": 19629,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/ebf936676d45e30d448dec559637ccfc5f7952c4"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/ELUtil.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f89ff70428ff628683cda83f6eca3574c07bc363",
+      "size": 29327,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/f89ff70428ff628683cda83f6eca3574c07bc363"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/EvaluationListener.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2c344f69f741aad114b7cf2d93ed50963a7a0803",
+      "size": 1892,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/2c344f69f741aad114b7cf2d93ed50963a7a0803"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/Expression.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "488f5de6eb1f847533027240e572c9be25718222",
+      "size": 4875,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/488f5de6eb1f847533027240e572c9be25718222"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/ExpressionFactory.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "71ad345c782e00a19c7f6f17b8ca24da8612f303",
+      "size": 14255,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/71ad345c782e00a19c7f6f17b8ca24da8612f303"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/FactoryFinder.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5dece24f41ce4bbad50748c8fee6ccb9297d4a6e",
+      "size": 5348,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/5dece24f41ce4bbad50748c8fee6ccb9297d4a6e"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/FunctionMapper.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c00cfc0e0db7769a72ab93aebfb663b06e069b7f",
+      "size": 2508,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/c00cfc0e0db7769a72ab93aebfb663b06e069b7f"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/ImportHandler.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8e0b45f88882881a2fe6722fffd9d431f3c1f4c4",
+      "size": 6147,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/8e0b45f88882881a2fe6722fffd9d431f3c1f4c4"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/LambdaExpression.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8214314e08532e5f70aa56cf64783cab1a39793e",
+      "size": 6787,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/8214314e08532e5f70aa56cf64783cab1a39793e"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/ListELResolver.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cc918cad40d2a7b9e97f12a5001e5ca5713a9e12",
+      "size": 15115,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/cc918cad40d2a7b9e97f12a5001e5ca5713a9e12"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/MapELResolver.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "94d8e6a1a0a9943bd66fd5676cde8f5b06d2b7d1",
+      "size": 15676,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/94d8e6a1a0a9943bd66fd5676cde8f5b06d2b7d1"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/MethodExpression.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fefd8eb9ea8ae829316229ed8c9106a54e861e67",
+      "size": 6347,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/fefd8eb9ea8ae829316229ed8c9106a54e861e67"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/MethodInfo.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7cee0f7ee8db3336156731ba1539e6bb4da2908a",
+      "size": 1982,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/7cee0f7ee8db3336156731ba1539e6bb4da2908a"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/MethodNotFoundException.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b7ba8a3053d7c4c8440e88b7515dab658624f8b0",
+      "size": 2023,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/b7ba8a3053d7c4c8440e88b7515dab658624f8b0"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/PrivateMessages.properties",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "902982bb6f3b83fdca0c8c6e75d4a1fc0d45bb8e",
+      "size": 1441,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/902982bb6f3b83fdca0c8c6e75d4a1fc0d45bb8e"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/PropertyNotFoundException.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d575fef2be1bb0909d7a7ed40178bebdea0b384c",
+      "size": 2331,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/d575fef2be1bb0909d7a7ed40178bebdea0b384c"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/PropertyNotWritableException.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2eb22508924a6c1b1ecdd838919e0b475a4c67a6",
+      "size": 2174,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/2eb22508924a6c1b1ecdd838919e0b475a4c67a6"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/ResourceBundleELResolver.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "111616c284db9c35aa8a780334417c003eea748e",
+      "size": 10447,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/111616c284db9c35aa8a780334417c003eea748e"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/StandardELContext.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "43a305ec9f8be9e1143b56734d214d40adef27e4",
+      "size": 9169,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/43a305ec9f8be9e1143b56734d214d40adef27e4"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/StaticFieldELResolver.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5d98ae9fb21a1059cfe0c3acf08de8920f8c54dd",
+      "size": 12037,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/5d98ae9fb21a1059cfe0c3acf08de8920f8c54dd"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/TypeConverter.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f3050f5cbc3ba847065b8a6ea9cf93ad50fd435d",
+      "size": 2833,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/f3050f5cbc3ba847065b8a6ea9cf93ad50fd435d"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/ValueExpression.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "04bbe23157290e66f5bf0764e5090cacbfda4a26",
+      "size": 8494,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/04bbe23157290e66f5bf0764e5090cacbfda4a26"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/ValueReference.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7c817bbe00ddd35bc111a3ca9b3c0aabe97fe6f6",
+      "size": 1327,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/7c817bbe00ddd35bc111a3ca9b3c0aabe97fe6f6"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/VariableMapper.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "83f886e59b11de9204979b2acda5c49ffe28ccf0",
+      "size": 1824,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/83f886e59b11de9204979b2acda5c49ffe28ccf0"
+    },
+    {
+      "path": "api/src/main/java/jakarta/el/package.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "56086c46d84bae77044fd0ffd5a4c65d18767d2c",
+      "size": 11519,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/56086c46d84bae77044fd0ffd5a4c65d18767d2c"
+    },
+    {
+      "path": "api/src/main/javadoc",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "85ad9538717704002824c582d2f738d5b95ca4f2",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/85ad9538717704002824c582d2f738d5b95ca4f2"
+    },
+    {
+      "path": "api/src/main/javadoc/doc-files",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9288c7742949efc980e55915d3b36c054ce650d0",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/9288c7742949efc980e55915d3b36c054ce650d0"
+    },
+    {
+      "path": "api/src/main/javadoc/doc-files/EFSL.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1d28f1ae6f73c857ff99c170505f5efeea9fde21",
+      "size": 3266,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/1d28f1ae6f73c857ff99c170505f5efeea9fde21"
+    },
+    {
+      "path": "combined-pom",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "480398e1a1f050695c8f1e16fdb66a150caaff6a",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/480398e1a1f050695c8f1e16fdb66a150caaff6a"
+    },
+    {
+      "path": "combined-pom/pom.xml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "45f51e5b48541692d39c020566ecdc5c7b0c8cc4",
+      "size": 11785,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/45f51e5b48541692d39c020566ecdc5c7b0c8cc4"
+    },
+    {
+      "path": "exclude.xml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e25e6814e9d4ef6ba90ae2fa88d092a03ebfff4b",
+      "size": 1158,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/e25e6814e9d4ef6ba90ae2fa88d092a03ebfff4b"
+    },
+    {
+      "path": "impl",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0e64eb59b190e7161750abb03c6e1cc37c14fa30",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/0e64eb59b190e7161750abb03c6e1cc37c14fa30"
+    },
+    {
+      "path": "impl/build.xml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2ed734c4cf6e67ed2fae01a84d050981efba7564",
+      "size": 1665,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/2ed734c4cf6e67ed2fae01a84d050981efba7564"
+    },
+    {
+      "path": "impl/pom.xml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "76ad214f6520026a9de68398262cc26c9eb878f8",
+      "size": 10847,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/76ad214f6520026a9de68398262cc26c9eb878f8"
+    },
+    {
+      "path": "impl/src",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "cd1f4534ebd43b7f9e529767719b0849c747b051",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/cd1f4534ebd43b7f9e529767719b0849c747b051"
+    },
+    {
+      "path": "impl/src/main",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "346c1b34957861d7ab4fff816bc0704cf53b342e",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/346c1b34957861d7ab4fff816bc0704cf53b342e"
+    },
+    {
+      "path": "impl/src/main/java",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3661dc36f5e9ff1e3c2e7a5181d67de617e53a38",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/3661dc36f5e9ff1e3c2e7a5181d67de617e53a38"
+    },
+    {
+      "path": "impl/src/main/java/com",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "737eba7be49f4193400914ae7e1f13f14374c742",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/737eba7be49f4193400914ae7e1f13f14374c742"
+    },
+    {
+      "path": "impl/src/main/java/com/sun",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a66805982b96856ccf0567a1fde697e0aa87c1e8",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/a66805982b96856ccf0567a1fde697e0aa87c1e8"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ab4acd78003b4939c260613dd4322d7df97b0183",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/ab4acd78003b4939c260613dd4322d7df97b0183"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/ExpressionFactoryImpl.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "71efa55c669a499216ca9369df3dc088c3999d70",
+      "size": 4126,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/71efa55c669a499216ca9369df3dc088c3999d70"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/Messages.properties",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "802a38a25a8eb74aea34ab72151185dbbb7fa89c",
+      "size": 3203,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/802a38a25a8eb74aea34ab72151185dbbb7fa89c"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/MethodExpressionImpl.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "99c92211472685745376c57b2d28cb772c8762c7",
+      "size": 11645,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/99c92211472685745376c57b2d28cb772c8762c7"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/MethodExpressionLiteral.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e3e7b3f3629010096d39ae21aa26a8ebf413eb04",
+      "size": 3075,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/e3e7b3f3629010096d39ae21aa26a8ebf413eb04"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/ValueExpressionImpl.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c814dc004e8be3d24a4a231a8ce5e6e40405a199",
+      "size": 8748,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/c814dc004e8be3d24a4a231a8ce5e6e40405a199"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/ValueExpressionLiteral.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "94cb429a90612756f91dbf28922095b55533a9bd",
+      "size": 3448,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/94cb429a90612756f91dbf28922095b55533a9bd"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/lang",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "e8a43e155579f273a3d43651fddb0e3977293d94",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/e8a43e155579f273a3d43651fddb0e3977293d94"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/lang/ELArithmetic.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "37092d45dbfc87eb11eb5ecc3ac9606167f0e0e1",
+      "size": 13530,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/37092d45dbfc87eb11eb5ecc3ac9606167f0e0e1"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/lang/ELSupport.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1ecb927254f2621537449cc243eade3d0ce9b556",
+      "size": 17093,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/1ecb927254f2621537449cc243eade3d0ce9b556"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/lang/EvaluationContext.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e46dad2c7a26b39aaa53b23320fbdee745b69c22",
+      "size": 4006,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/e46dad2c7a26b39aaa53b23320fbdee745b69c22"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/lang/ExpressionBuilder.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1c0e090d37bb8c6dfe7ca6c9e531052e3d78e02b",
+      "size": 10483,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/1c0e090d37bb8c6dfe7ca6c9e531052e3d78e02b"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/lang/FunctionMapperFactory.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f790365251f8c8ddcfdf43a77b2770b86a6ffa14",
+      "size": 1865,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/f790365251f8c8ddcfdf43a77b2770b86a6ffa14"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/lang/FunctionMapperImpl.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "11984962da6aaacf8d0a43103f05acfa3e99c167",
+      "size": 6335,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/11984962da6aaacf8d0a43103f05acfa3e99c167"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/lang/VariableMapperFactory.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e498b7c035b82ea7b43cc42db453ccf395f84bb0",
+      "size": 1881,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/e498b7c035b82ea7b43cc42db453ccf395f84bb0"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/lang/VariableMapperImpl.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "07a495b716a1c35047d8e0a30559cd755904ef07",
+      "size": 1894,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/07a495b716a1c35047d8e0a30559cd755904ef07"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "1a8159bf86f91c8b24f381b0cbb95f9f3a77ae18",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/1a8159bf86f91c8b24f381b0cbb95f9f3a77ae18"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/ArithmeticNode.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0d96776c1dca2b2ae1e12973b9776f03baf90ee0",
+      "size": 1202,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/0d96776c1dca2b2ae1e12973b9776f03baf90ee0"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstAnd.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2ab076c668439503eb6b3fd366edda6d4d4bdb37",
+      "size": 1383,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/2ab076c668439503eb6b3fd366edda6d4d4bdb37"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstAssign.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fbfcd7eb68393b15ae59d941df3a4b85bc37f350",
+      "size": 1119,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/fbfcd7eb68393b15ae59d941df3a4b85bc37f350"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstBracketSuffix.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4d8ffc634e0721a1fedf16b8788ff6eb5f5867f4",
+      "size": 1226,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/4d8ffc634e0721a1fedf16b8788ff6eb5f5867f4"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstChoice.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7a7d8701a975d7bc54e5412c1165540c6810fed6",
+      "size": 2451,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/7a7d8701a975d7bc54e5412c1165540c6810fed6"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstCompositeExpression.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "af632d5cd82e0cfa8cef743cd8b0d039c84cfb3e",
+      "size": 1656,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/af632d5cd82e0cfa8cef743cd8b0d039c84cfb3e"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstConcat.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f936de1a2bba1796d50fde650381eef8b48246f0",
+      "size": 1135,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/f936de1a2bba1796d50fde650381eef8b48246f0"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstDeferredExpression.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e0feeccc13ec77443e11b51f95d7739a74b945e7",
+      "size": 1642,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/e0feeccc13ec77443e11b51f95d7739a74b945e7"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstDiv.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2a3df681a41f633496e48c6ad6ac33c8fc84f297",
+      "size": 1331,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/2a3df681a41f633496e48c6ad6ac33c8fc84f297"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstDotSuffix.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "af129af90104907d10f5b8c2d15bbb5304527440",
+      "size": 1173,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/af129af90104907d10f5b8c2d15bbb5304527440"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstDynamicExpression.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "52e8580aea8abd614805c6801e5955adb1470b8b",
+      "size": 1640,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/52e8580aea8abd614805c6801e5955adb1470b8b"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstEmpty.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "abf13ba788a70e3729c761c87071ee596426d988",
+      "size": 1899,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/abf13ba788a70e3729c761c87071ee596426d988"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstEqual.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6fbae0366312da6ac4ae692112645dc90aa89ed6",
+      "size": 1299,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/6fbae0366312da6ac4ae692112645dc90aa89ed6"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstFalse.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c9c7dbc88fc101c74ffbeccd599f9bf25490efb1",
+      "size": 1169,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/c9c7dbc88fc101c74ffbeccd599f9bf25490efb1"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstFloatingPoint.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6079e5fa7c37193dd36e58a25b18a56a91dbc46b",
+      "size": 1707,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/6079e5fa7c37193dd36e58a25b18a56a91dbc46b"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstFunction.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "045505749b9f9f17da5c7abd4232c57b07198eca",
+      "size": 7036,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/045505749b9f9f17da5c7abd4232c57b07198eca"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstGreaterThan.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e9a6e57f5b575551a4f378aa7ec6cc917060eb7a",
+      "size": 1476,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/e9a6e57f5b575551a4f378aa7ec6cc917060eb7a"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstGreaterThanEqual.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a6e093d4d9dd002c1cfd84c6571fba62f529853b",
+      "size": 1502,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/a6e093d4d9dd002c1cfd84c6571fba62f529853b"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstIdentifier.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c7a9ab392ea5eef7240ac87628fa6950bce9d660",
+      "size": 7109,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/c7a9ab392ea5eef7240ac87628fa6950bce9d660"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstInteger.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4d62759dbe19ba8dbdcb5075dd9e4de68e578eab",
+      "size": 1673,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/4d62759dbe19ba8dbdcb5075dd9e4de68e578eab"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstLambdaExpression.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "633098b6d0c6663b3cb0dbf858ea77e3c2e3649a",
+      "size": 2250,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/633098b6d0c6663b3cb0dbf858ea77e3c2e3649a"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstLambdaParameters.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ee5875c7721ab2eedfc39c804898e0e66f0e47c6",
+      "size": 1219,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/ee5875c7721ab2eedfc39c804898e0e66f0e47c6"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstLessThan.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fb77653afe7a7e1e608e14d141dd94c8b58185d3",
+      "size": 1470,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/fb77653afe7a7e1e608e14d141dd94c8b58185d3"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstLessThanEqual.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "775ac5b259802ade326f957a9f755e50587ba5c2",
+      "size": 1496,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/775ac5b259802ade326f957a9f755e50587ba5c2"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstListData.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7dc29528ba6a9b9e6e225d533b843b662aa92680",
+      "size": 1260,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/7dc29528ba6a9b9e6e225d533b843b662aa92680"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstLiteralExpression.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6445913b1bd15b2a42e20de007ac488cc9f11e8d",
+      "size": 1976,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/6445913b1bd15b2a42e20de007ac488cc9f11e8d"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstMapData.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4f5ea67cd35adfbc0391d6e177e5738454d97bec",
+      "size": 1885,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/4f5ea67cd35adfbc0391d6e177e5738454d97bec"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstMapEntry.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c55caa6b5c2e84242a25d7b17c79814295220f75",
+      "size": 874,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/c55caa6b5c2e84242a25d7b17c79814295220f75"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstMethodArguments.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bba95444dbd2fd40408728ab0812e09540c7b872",
+      "size": 1577,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/bba95444dbd2fd40408728ab0812e09540c7b872"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstMinus.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a25b0839b23de9d4a9cc9185dedf36bf9a8a0580",
+      "size": 1337,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/a25b0839b23de9d4a9cc9185dedf36bf9a8a0580"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstMod.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c0f76d34136497ebb26063d0cc2d9c01688b0c22",
+      "size": 1328,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/c0f76d34136497ebb26063d0cc2d9c01688b0c22"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstMult.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4f3b362ef9ae56b76fd7eb3b87a16c51a3bd135f",
+      "size": 1335,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/4f3b362ef9ae56b76fd7eb3b87a16c51a3bd135f"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstNegative.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1a534e1011027c5e7d5cdbd93b2258667786c3f3",
+      "size": 2838,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/1a534e1011027c5e7d5cdbd93b2258667786c3f3"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstNot.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b535590b6198ec7b726e6a64a2be5cfad968e17c",
+      "size": 1400,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/b535590b6198ec7b726e6a64a2be5cfad968e17c"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstNotEqual.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d79a05c5f5649a7aa073ddfbf507f01420792767",
+      "size": 1306,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/d79a05c5f5649a7aa073ddfbf507f01420792767"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstNull.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "34fdfd84e5665c1f867a885537c1eb6f522549a3",
+      "size": 1268,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/34fdfd84e5665c1f867a885537c1eb6f522549a3"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstOr.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9565e302a3753390953026406a1983649778fe21",
+      "size": 1390,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/9565e302a3753390953026406a1983649778fe21"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstPlus.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e7f815a7d4cd8ebf4b9bad0829d7065029580a19",
+      "size": 1355,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/e7f815a7d4cd8ebf4b9bad0829d7065029580a19"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstSemiColon.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "abed071f1c2bccddd8fba0ca1558ead78a98500f",
+      "size": 1321,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/abed071f1c2bccddd8fba0ca1558ead78a98500f"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstString.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "089c29f039bd346d324ca424a2ca9c2e37fe9d72",
+      "size": 2176,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/089c29f039bd346d324ca424a2ca9c2e37fe9d72"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstTrue.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f33696d126df91263e1e3e81a21b022b4047d10d",
+      "size": 1166,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/f33696d126df91263e1e3e81a21b022b4047d10d"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/AstValue.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2b99930dccd4fc5a14e26bf4af355f119e40a548",
+      "size": 9706,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/2b99930dccd4fc5a14e26bf4af355f119e40a548"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/BooleanNode.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b4beed4b075afb3e9b7708922250c7a70cd8f25e",
+      "size": 1196,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/b4beed4b075afb3e9b7708922250c7a70cd8f25e"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/ELParser.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0fd3f4a6f44c3bdf4a7cc2bc9a7530b88263231a",
+      "size": 87178,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/0fd3f4a6f44c3bdf4a7cc2bc9a7530b88263231a"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/ELParser.jjt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9411460d329e282b22b689da89d0c2662dfa5583",
+      "size": 10520,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/9411460d329e282b22b689da89d0c2662dfa5583"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/ELParserConstants.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c6145a3dc8c11121bb535988250ca9d805e7dc7d",
+      "size": 5093,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/c6145a3dc8c11121bb535988250ca9d805e7dc7d"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/ELParserTokenManager.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7cafd4eef837f43cbf3e069c38c0a9c59d73d906",
+      "size": 62255,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/7cafd4eef837f43cbf3e069c38c0a9c59d73d906"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/ELParserTreeConstants.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "656c392b8c85a570b354f671470d6432e8c42e5a",
+      "size": 2998,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/656c392b8c85a570b354f671470d6432e8c42e5a"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/JJTELParserState.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bef1968f7950746711fcc75d7ab0f0f714f36ad7",
+      "size": 3944,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/bef1968f7950746711fcc75d7ab0f0f714f36ad7"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/Node.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5eed9bc9817a3e1d1cde7741679a79b3b7584ca2",
+      "size": 2723,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/5eed9bc9817a3e1d1cde7741679a79b3b7584ca2"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/NodeVisitor.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "52aec1207eaad65b33960623b2924f822dfafdd1",
+      "size": 976,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/52aec1207eaad65b33960623b2924f822dfafdd1"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/ParseException.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ac9dee311b9fc32637638eeb94c7485892e494a3",
+      "size": 7266,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/ac9dee311b9fc32637638eeb94c7485892e494a3"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/SimpleCharStream.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3e97009e0392afc2610f8510f865b9e4bf882d46",
+      "size": 12400,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/3e97009e0392afc2610f8510f865b9e4bf882d46"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/SimpleNode.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e80c0b37249a13f759f97787ec325b8974440daf",
+      "size": 6405,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/e80c0b37249a13f759f97787ec325b8974440daf"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/Token.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "54eab3eba9023138fa92a59fe2490b38147c6710",
+      "size": 3408,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/54eab3eba9023138fa92a59fe2490b38147c6710"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/parser/TokenMgrError.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ae3920761298dba9ea3743c91e8b06cfc85a27e4",
+      "size": 4891,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/ae3920761298dba9ea3743c91e8b06cfc85a27e4"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/stream",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ea2ec9e521b31ce73ec58fba7138634d8e934c47",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/ea2ec9e521b31ce73ec58fba7138634d8e934c47"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/stream/Operator.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4793ce395316ab6d7d80f0ae601137f395b24cd3",
+      "size": 845,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/4793ce395316ab6d7d80f0ae601137f395b24cd3"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/stream/Optional.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b3b13eb0b88418b68f84a39df556cd3d478aaf61",
+      "size": 1614,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/b3b13eb0b88418b68f84a39df556cd3d478aaf61"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/stream/Stream.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fc91e55f94ddc2aea06272f788f53cb3ad2f46ec",
+      "size": 16309,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/fc91e55f94ddc2aea06272f788f53cb3ad2f46ec"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/stream/StreamELResolver.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1dd6a8c6b14c715f111fe656f5dcd2f30d4f2524",
+      "size": 3782,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/1dd6a8c6b14c715f111fe656f5dcd2f30d4f2524"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/util",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "adb0053df3d9148234e46d225fe049bb2566db44",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/adb0053df3d9148234e46d225fe049bb2566db44"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/util/MessageFactory.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "356124b269f2779dce0a9e1106f0e9f28e35812a",
+      "size": 2278,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/356124b269f2779dce0a9e1106f0e9f28e35812a"
+    },
+    {
+      "path": "impl/src/main/java/com/sun/el/util/ReflectionUtil.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ec489e1e1a90200ff7a5501419a387cb19047d2a",
+      "size": 25143,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/ec489e1e1a90200ff7a5501419a387cb19047d2a"
+    },
+    {
+      "path": "pom.xml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0ea5724cac1e721feca7b905a44036b0178af558",
+      "size": 2521,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/0ea5724cac1e721feca7b905a44036b0178af558"
+    },
+    {
+      "path": "spec",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "42dace0715a92ac244a69f7a63c6974570782aa5",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/42dace0715a92ac244a69f7a63c6974570782aa5"
+    },
+    {
+      "path": "spec/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8c36c9de4f0d39ee5af326f5ee15d8c9a7959908",
+      "size": 428,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/8c36c9de4f0d39ee5af326f5ee15d8c9a7959908"
+    },
+    {
+      "path": "spec/assembly.xml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c4b5be67563bb7cd3ba0325fbd9f857f1b5834b3",
+      "size": 1085,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/c4b5be67563bb7cd3ba0325fbd9f857f1b5834b3"
+    },
+    {
+      "path": "spec/pom.xml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "38331d4045c84e7087fe9fbb18bb09505e0cc37f",
+      "size": 11204,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/38331d4045c84e7087fe9fbb18bb09505e0cc37f"
+    },
+    {
+      "path": "spec/src",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "cfa12bb775ac652115b010f8f3748eb8cfe61905",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/cfa12bb775ac652115b010f8f3748eb8cfe61905"
+    },
+    {
+      "path": "spec/src/main",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "aab3f386c2b74f86037f00acd34ef21287121d87",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/aab3f386c2b74f86037f00acd34ef21287121d87"
+    },
+    {
+      "path": "spec/src/main/asciidoc",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9504dd6afd5def98787b0815f62b79184067e8e7",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/9504dd6afd5def98787b0815f62b79184067e8e7"
+    },
+    {
+      "path": "spec/src/main/asciidoc/ELSpec.adoc",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a64d1eb50eb126309bb29de778e4b4b138dd0feb",
+      "size": 80149,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/a64d1eb50eb126309bb29de778e4b4b138dd0feb"
+    },
+    {
+      "path": "spec/src/main/asciidoc/expression-language-spec.adoc",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "03593398596ffd190e21bc87a1fbb4957a13a25e",
+      "size": 685,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/03593398596ffd190e21bc87a1fbb4957a13a25e"
+    },
+    {
+      "path": "spec/src/main/asciidoc/images",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "7fb89d9591aff2d479406be2cf018e73ea79b3c0",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/7fb89d9591aff2d479406be2cf018e73ea79b3c0"
+    },
+    {
+      "path": "spec/src/main/asciidoc/images/jakarta_ee_logo_schooner_color_stacked_default.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "97b46ce3e162ecff823aa6aac6bda0d261b8c3df",
+      "size": 46992,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/97b46ce3e162ecff823aa6aac6bda0d261b8c3df"
+    },
+    {
+      "path": "spec/src/main/asciidoc/license-efsl.adoc",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eda2e108d2af1f802c0085d0f7ead083b8c4da09",
+      "size": 3256,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/eda2e108d2af1f802c0085d0f7ead083b8c4da09"
+    },
+    {
+      "path": "spec/src/main/theme",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f01a37b28bb4236014000b9190eca67ac51dfec6",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/f01a37b28bb4236014000b9190eca67ac51dfec6"
+    },
+    {
+      "path": "spec/src/main/theme/jakartaee-theme.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d54eb06c005a45d9673ee2deb838415a869d2e89",
+      "size": 10379,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/d54eb06c005a45d9673ee2deb838415a869d2e89"
+    },
+    {
+      "path": "src",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "e3c33e57becb59d9edab6cd7903cf777b4e49ff7",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/e3c33e57becb59d9edab6cd7903cf777b4e49ff7"
+    },
+    {
+      "path": "src/assembly",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "5982b8f27df56af7e45f0453af5c5f357a2a8a5a",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/5982b8f27df56af7e45f0453af5c5f357a2a8a5a"
+    },
+    {
+      "path": "src/assembly/assembly.xml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8780af655eb32c79dbdcedd398bdb6df65029431",
+      "size": 1711,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/8780af655eb32c79dbdcedd398bdb6df65029431"
+    },
+    {
+      "path": "src/test",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "128b7d6b6c6e1ed8af39fb95eb8723659f028777",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/128b7d6b6c6e1ed8af39fb95eb8723659f028777"
+    },
+    {
+      "path": "src/test/java",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f658ac04c398749c3cec9338978a8c7a68444542",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/f658ac04c398749c3cec9338978a8c7a68444542"
+    },
+    {
+      "path": "src/test/java/org",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "26956c19e48f59db5a04df68e19d6d16b5cb91c3",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/26956c19e48f59db5a04df68e19d6d16b5cb91c3"
+    },
+    {
+      "path": "src/test/java/org/glassfish",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "d0fd42ba4dd7a5d728c6d24c6ec285ace3f810ae",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/d0fd42ba4dd7a5d728c6d24c6ec285ace3f810ae"
+    },
+    {
+      "path": "src/test/java/org/glassfish/el",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f79af0b2086b6de5c9f4a4256c139377be25839c",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/f79af0b2086b6de5c9f4a4256c139377be25839c"
+    },
+    {
+      "path": "src/test/java/org/glassfish/el/test",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "814ef8ec7763a79dd6555be9bfeb046b103c8dd9",
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/trees/814ef8ec7763a79dd6555be9bfeb046b103c8dd9"
+    },
+    {
+      "path": "src/test/java/org/glassfish/el/test/ConvertTest.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c9c6db29534627d41ab8fd305b80168ceea2344c",
+      "size": 3038,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/c9c6db29534627d41ab8fd305b80168ceea2344c"
+    },
+    {
+      "path": "src/test/java/org/glassfish/el/test/Customer.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c5a9a80fb1f700ac4c5d782091ce0a03f79f0728",
+      "size": 1801,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/c5a9a80fb1f700ac4c5d782091ce0a03f79f0728"
+    },
+    {
+      "path": "src/test/java/org/glassfish/el/test/DataBase.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5ceecdb854fc0d705bb2265b658d053f758866c0",
+      "size": 3384,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/5ceecdb854fc0d705bb2265b658d053f758866c0"
+    },
+    {
+      "path": "src/test/java/org/glassfish/el/test/Date.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4bce00a543a20c614068889fac712bd03f921ae7",
+      "size": 1152,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/4bce00a543a20c614068889fac712bd03f921ae7"
+    },
+    {
+      "path": "src/test/java/org/glassfish/el/test/ELProcessorTest.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "176608a8fef945f7b59a94e3d64bb77bbbfb9f5f",
+      "size": 6360,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/176608a8fef945f7b59a94e3d64bb77bbbfb9f5f"
+    },
+    {
+      "path": "src/test/java/org/glassfish/el/test/ElasticityTest.java.sav",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "63aa7140a17efad68fe74737d896e9cd47ddd85d",
+      "size": 3902,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/63aa7140a17efad68fe74737d896e9cd47ddd85d"
+    },
+    {
+      "path": "src/test/java/org/glassfish/el/test/EvalListenerTest.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cb63354b0a008f5974a72ee579efb73773f3b8a4",
+      "size": 3370,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/cb63354b0a008f5974a72ee579efb73773f3b8a4"
+    },
+    {
+      "path": "src/test/java/org/glassfish/el/test/LambdaTest.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fcc800c6b0fb2167f7f84cc01d5c18496c36c097",
+      "size": 3579,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/fcc800c6b0fb2167f7f84cc01d5c18496c36c097"
+    },
+    {
+      "path": "src/test/java/org/glassfish/el/test/OperatorTest.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e6b2437c4de1a6eb784b1dc8599829c928a4e315",
+      "size": 4266,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/e6b2437c4de1a6eb784b1dc8599829c928a4e315"
+    },
+    {
+      "path": "src/test/java/org/glassfish/el/test/Order.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a184acceafaefd57bef6bef3f8cb3f99625b53f3",
+      "size": 1420,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/a184acceafaefd57bef6bef3f8cb3f99625b53f3"
+    },
+    {
+      "path": "src/test/java/org/glassfish/el/test/OverloadedMethodTest.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ab91fb5561ef83d33106d37c10dd77e81246efff",
+      "size": 9577,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/ab91fb5561ef83d33106d37c10dd77e81246efff"
+    },
+    {
+      "path": "src/test/java/org/glassfish/el/test/Product.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e888b39a2bf48ffbaf06bd2fa5399c81dc800f53",
+      "size": 1629,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/e888b39a2bf48ffbaf06bd2fa5399c81dc800f53"
+    },
+    {
+      "path": "src/test/java/org/glassfish/el/test/StaticRefTest.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "51a7049b6f421531de1f479a519ba959db61969e",
+      "size": 2127,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/51a7049b6f421531de1f479a519ba959db61969e"
+    },
+    {
+      "path": "src/test/java/org/glassfish/el/test/StreamTest.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b28ca50a9a5f33dfe4744fae73ff52222bf2dc61",
+      "size": 11765,
+      "url": "https://api.github.com/repos/jakartaee/expression-language/git/blobs/b28ca50a9a5f33dfe4744fae73ff52222bf2dc61"
+    }
+  ],
+  "truncated": false
+}
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://javadoc.io/doc/org.glassfish/jakarta.el/4.0.0' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/jakartaee/expression-language/tree/4.0.0-RELEASE/impl/src/main' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/jakartaee/expression-language/tree/4.0.0-RELEASE/src/test' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+ succeeded in 218ms:
+HTTP/2 303 
+date: Sun, 07 Jun 2026 20:54:52 GMT
+content-length: 0
+location: /doc/org.glassfish/jakarta.el/4.0.0/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=IvMEdpXTLxkXybhEb6MFa1qyR5yp9hLXo9IEYVtdUBN244BXkwbOQDtW6JwXmnVmjIuj7nBt0QRJ%2BXtLev%2BO1U1t2NgKdWzZf9Lh0RGfwi2ef07ko%2F6tXO1%2BsyAPM6u4SKyQQZZb%2FVZc"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: a0828df46d3d2db1-LYS
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Sun, 07 Jun 2026 20:54:53 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/org.glassfish/jakarta.el/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=VzGABCrlrqpDKoJusA9WgiuNQyVlefwyAVVZg6pScIWG2kzBpXlNUY922vHoiZCR87RcBaj3TtqDlw4HER67iodVmsayjeJmrIMmGmDUi%2BUQWNH%2FMVMrDUJ9qwdBUQfUhfFL%2FN7GATGZ"}]}
+server: cloudflare
+cf-ray: a0828df51e122db1-LYS
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 456ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 20:54:53 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"5cfd997fd07dc58eaae5b0703db789e2"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=SBhrer25wnLroo%2BlVyr9sMi46DzpFCo8owxg2V%2FGuYV6OU5L7WeLdO9hPmpzBiPmPt4sgtBrWPQK0LicWqpRCdZynAUM1zDbfugSFhxY8j0tAZ87OeI0hPvDIKFLKFCpGFmZdAaoLmXnlsL%2F8v8vaiHw0%2BsVAOW9h13Oj8ZHYwYLz%2BvljIcHoj84psKwyRKrdozjChTny7VL4W3wktXWvpSHZd6O2GCAC38EKiG5umeqegHrR5rYXxe%2F%2BSH7U6BGk%2BdB3dt6P%2B9%2BYfSEJlrQWg%3D%3D--kxiaPdZROP85Imzl--pP70RoZKwRzMmarp6XlDtQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1122573867.1780865692; expires=Mon, 07 Jun 2027 20:54:52 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 07 Jun 2027 20:54:52 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 61FD:22029E:9373620:705ECAD:6A25DA9C
+
+
+ succeeded in 476ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 20:54:53 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"16a47f2ab3918ebac421b9291850f71e"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=QBjRkhZKLNIn8OHz2jdfbO03DURsDYIT0xpybu7z5EjH%2BD67XM5vwPdV7%2FL0goiEKT1SSFE8kbIyEksWd%2B0HHWPaLUeGCdCs5NHEWpiodDSkXb1P2RNvVXy2M8Oo0VNmaz6a3xiVTKNxTDzn8D486V51yGikDPKS3jtY2%2BjFJmSylKht4oHbgp1SwE4tYYBdD3mdIy7PMQlcEDwqG7RVuOuGx8VlxK2GMmX8yQdgA%2Fs6Vwauoti8QrdeOUzebHSUzdNYJjLSZ50TZJlcMg0Ohg%3D%3D--4KuaKlzBRfCcdCMt--X8oY%2FVLAlsrvZb0QjjG2Tg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1359061609.1780865692; expires=Mon, 07 Jun 2027 20:54:52 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 07 Jun 2027 20:54:52 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6201:52838:9317E9A:702A832:6A25DA9C
+
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/glassfish/jakarta.el/4.0.0/
+web search: 
+web search: github jakartaee expression-language 4.0.0-RELEASE src test org glassfish el test
+web search: 
+web search: https://github.com/jakartaee/expression-language/tree/4.0.0-RELEASE/src/test
+web search: 
+web search: https://github.com/jakartaee/expression-language/tree/4.0.0-RELEASE
+codex
+I found the implementation module source under `impl/src/main` at the `4.0.0-RELEASE` tag, but Maven has a versioned sources JAR, so the JSON will prefer Maven for `source-code-url`. For docs I’m using the published versioned Javadoc rather than a generic project page.
+exec
+/usr/bin/bash -lc 'find metadata -name index.json -maxdepth 5 | head -20' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+ succeeded in 0ms:
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json
+metadata/org.eclipse.jetty/jetty-ee/index.json
+metadata/org.eclipse.jetty/jetty-server/index.json
+metadata/org.eclipse.jetty/jetty-client/index.json
+metadata/org.eclipse.jetty/jetty-util/index.json
+metadata/org.eclipse.jetty/jetty-http/index.json
+metadata/org.eclipse.jetty/jetty-security/index.json
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json
+metadata/org.eclipse.jetty/jetty-io/index.json
+metadata/org.eclipse.jetty/jetty-servlet/index.json
+metadata/org.eclipse.jetty/jetty-session/index.json
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json
+metadata/org.scalatest/scalatest-wordspec_3/index.json
+metadata/org.scalatest/scalatest_3/index.json
+metadata/org.scalatest/scalatest-freespec_2.13/index.json
+metadata/org.scalatest/scalatest-flatspec_3/index.json
+metadata/org.scalatest/scalatest-funspec_2.13/index.json
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json
+metadata/org.scalatest/scalatest-funsuite_3/index.json
+
+exec
+/usr/bin/bash -lc "rg 'javadoc.io/doc|documentation-url|sources.jar|test-code-url' metadata build -g 'index.json' -g '*.json' | head -120" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+ succeeded in 0ms:
+metadata/com.thoughtworks.paranamer/paranamer/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-annotations/$version$/hadoop-annotations-$version$-sources.jar",
+metadata/org.apache.hadoop/hadoop-annotations/index.json:    "test-code-url" : "N/A",
+metadata/org.apache.hadoop/hadoop-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-annotations/$version$/hadoop-annotations-$version$-javadoc.jar",
+metadata/com.spotify/completable-futures/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-sources.jar",
+metadata/com.spotify/completable-futures/index.json:    "test-code-url" : "https://github.com/spotify/completable-futures/tree/v$version$/src/test/java",
+metadata/com.spotify/completable-futures/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-javadoc.jar",
+metadata/com.google.truth/truth/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-sources.jar",
+metadata/com.google.truth/truth/index.json:    "test-code-url" : "https://github.com/google/truth/tree/release_1_1_3/core/src/test/java?version=$version$",
+metadata/com.google.truth/truth/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-web-proxy/$version$/hadoop-yarn-server-web-proxy-$version$-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-web-proxy/$version$/hadoop-yarn-server-web-proxy-$version$-test-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-web-proxy/$version$/hadoop-yarn-server-web-proxy-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-container/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-container/$version$/arquillian-junit-container-$version$-sources.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-container/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-container/$version$/arquillian-junit-container-$version$-test-sources.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-container/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-container/$version$/arquillian-junit-container-$version$-javadoc.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-sources.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:    "test-code-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/xbean-reflect/src/test/",
+metadata/org.apache.xbean/xbean-reflect/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-jvm-graal-ffi-jvm/$version$/mordant-jvm-graal-ffi-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:    "documentation-url" : "https://github.com/ajalt/mordant/blob/$version$/mordant-jvm-graal-ffi/README.md",
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-core/$version$/arquillian-junit-core-$version$-sources.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-core/$version$/arquillian-junit-core-$version$-test-sources.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-core/$version$/arquillian-junit-core-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics5/metrics-core/$version$/metrics-core-$version$-sources.jar",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-core/src/test",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics5/metrics-core/$version$/metrics-core-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics5/metrics-core/$version$/metrics-core-$version$-sources.jar",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$-rc0/metrics-core/src/test",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics5/metrics-core/$version$/metrics-core-$version$-javadoc.jar",
+metadata/dom4j/dom4j/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/dom4j/dom4j/$version$/dom4j-$version$-sources.jar",
+metadata/dom4j/dom4j/index.json:    "test-code-url" : "https://github.com/dom4j/dom4j/tree/dom4j_1_6_1/src/test",
+metadata/dom4j/dom4j/index.json:    "documentation-url" : "https://github.com/dom4j/dom4j/tree/dom4j_1_6_1/xdocs",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-test-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-test-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:    "test-code-url" : "https://github.com/apache/hadoop/tree/rel/release-$version$/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common/src/test/java",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:    "documentation-url" : "https://hadoop.apache.org/docs/r$version$/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common/apidocs/",
+metadata/org.scalacheck/scalacheck_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalacheck/scalacheck_2.13/$version$/scalacheck_2.13-$version$-sources.jar",
+metadata/org.scalacheck/scalacheck_2.13/index.json:    "test-code-url" : "https://github.com/typelevel/scalacheck/tree/v$version$/core/shared/src/test",
+metadata/org.scalacheck/scalacheck_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalacheck/scalacheck_2.13/$version$/scalacheck_2.13-$version$-javadoc.jar",
+metadata/org.scalacheck/scalacheck_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalacheck/scalacheck_2.13/$version$/scalacheck_2.13-$version$-sources.jar",
+metadata/org.scalacheck/scalacheck_2.13/index.json:    "test-code-url" : "https://github.com/typelevel/scalacheck/tree/v$version$/core/shared/src/test",
+metadata/org.scalacheck/scalacheck_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalacheck/scalacheck_2.13/$version$/scalacheck_2.13-$version$-javadoc.jar",
+metadata/org.eclipse.microprofile.config/microprofile-config-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/microprofile/config/microprofile-config-api/$version$/microprofile-config-api-$version$-sources.jar",
+metadata/org.eclipse.microprofile.config/microprofile-config-api/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/microprofile/config/microprofile-config-tck/$version$/microprofile-config-tck-$version$-sources.jar",
+metadata/org.eclipse.microprofile.config/microprofile-config-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/microprofile/config/microprofile-config-api/$version$/microprofile-config-api-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/javax.persistence/persistence-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/persistence/persistence-api/$version$/persistence-api-$version$-sources.jar",
+metadata/javax.persistence/persistence-api/index.json:    "test-code-url" : "N/A",
+metadata/javax.persistence/persistence-api/index.json:    "documentation-url" : "https://javadoc.io/doc/javax.persistence/persistence-api/$version$",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:    "documentation-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/4.22/xbean-asm9-shaded-4.22-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:    "documentation-url" : "https://javadoc.io/doc/org.apache.xbean/xbean-asm9-shaded/4.22",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:    "documentation-url" : "N/A",
+metadata/org.json4s/json4s-native-core_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/json4s/json4s-native-core_3/$version$/json4s-native-core_3-$version$-sources.jar",
+metadata/org.json4s/json4s-native-core_3/index.json:    "test-code-url" : "https://github.com/json4s/json4s/tree/v$version$/native-core/shared/src/test",
+metadata/org.json4s/json4s-native-core_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/json4s/json4s-native-core_3/$version$/json4s-native-core_3-$version$-javadoc.jar",
+metadata/io.helidon.builder/helidon-builder-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/helidon/builder/helidon-builder-api/$version$/helidon-builder-api-$version$-sources.jar",
+metadata/io.helidon.builder/helidon-builder-api/index.json:    "test-code-url" : "https://github.com/helidon-io/helidon/tree/$version$/builder/tests",
+metadata/io.helidon.builder/helidon-builder-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/helidon/builder/helidon-builder-api/$version$/helidon-builder-api-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:    "documentation-url" : "https://github.com/ajalt/mordant/blob/$version$/mordant-jvm-ffm/README.md",
+metadata/javax.xml.bind/jaxb-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/$version$/jaxb-api-$version$-sources.jar",
+metadata/javax.xml.bind/jaxb-api/index.json:    "test-code-url" : "https://github.com/javaee/jaxb-spec/tree/$version$/jaxb-api-test/src/test",
+metadata/javax.xml.bind/jaxb-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/$version$/jaxb-api-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/net.sf.py4j/py4j/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sf/py4j/py4j/$version$/py4j-$version$-sources.jar",
+metadata/net.sf.py4j/py4j/index.json:    "test-code-url" : "https://github.com/py4j/py4j/tree/$version$/py4j-java/src/test/java",
+metadata/net.sf.py4j/py4j/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sf/py4j/py4j/$version$/py4j-$version$-javadoc.jar",
+metadata/commons-io/commons-io/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-sources.jar",
+metadata/commons-io/commons-io/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-test-sources.jar",
+metadata/commons-io/commons-io/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-javadoc.jar",
+metadata/commons-io/commons-io/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-sources.jar",
+metadata/commons-io/commons-io/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-test-sources.jar",
+metadata/commons-io/commons-io/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-javadoc.jar",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm7-shaded/$version$/xbean-asm7-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:    "documentation-url" : "N/A",
+metadata/javax.persistence/javax.persistence-api/index.json:    "source-code-url": "https://repo1.maven.org/maven2/javax/persistence/javax.persistence-api/$version$/javax.persistence-api-$version$-sources.jar",
+metadata/javax.persistence/javax.persistence-api/index.json:    "test-code-url": "N/A",
+metadata/javax.persistence/javax.persistence-api/index.json:    "documentation-url": "https://repo1.maven.org/maven2/javax/persistence/javax.persistence-api/$version$/javax.persistence-api-$version$-javadoc.jar",
+metadata/info.picocli/picocli/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/$version$/picocli-$version$-sources.jar",
+metadata/info.picocli/picocli/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/$version$/picocli-$version$-test-sources.jar",
+metadata/info.picocli/picocli/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/$version$/picocli-$version$-javadoc.jar",
+metadata/org.json4s/json4s-jackson_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/json4s/json4s-jackson_2.13/$version$/json4s-jackson_2.13-$version$-sources.jar",
+metadata/org.json4s/json4s-jackson_2.13/index.json:    "test-code-url" : "https://github.com/json4s/json4s/tree/v$version$/tests/src/test/scala/org/json4s/jackson",
+metadata/org.json4s/json4s-jackson_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/json4s/json4s-jackson_2.13/$version$/json4s-jackson_2.13-$version$-javadoc.jar",
+metadata/org.json4s/json4s-jackson_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/json4s/json4s-jackson_2.13/$version$/json4s-jackson_2.13-$version$-sources.jar",
+metadata/org.json4s/json4s-jackson_2.13/index.json:    "test-code-url" : "https://github.com/json4s/json4s/tree/v$version$/tests/src/test/scala/org/json4s/jackson",
+metadata/org.json4s/json4s-jackson_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/json4s/json4s-jackson_2.13/$version$/json4s-jackson_2.13-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/org.crac/crac/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/crac/crac/$version$/crac-$version$-sources.jar",
+metadata/org.crac/crac/index.json:    "test-code-url" : "N/A",
+metadata/org.crac/crac/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/crac/crac/$version$/crac-$version$-javadoc.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-sources.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:    "test-code-url" : "https://download.eclipse.org/jakartaee/messaging/3.0/jakarta-messaging-tck-$version$.zip",
+metadata/jakarta.jms/jakarta.jms-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-javadoc.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/glassfish/jakarta.el/4.0.0/jakarta.el-4.0.0-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 20:55:12 GMT
+content-type: application/java-archive
+content-length: 133008
+cf-ray: a0828e6f8e6bc126-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 381763
+etag: "d37a46a40fe722c2eecbaad3022fa64d"
+last-modified: Thu, 20 Aug 2020 16:37:54 GMT
+x-checksum-md5: d37a46a40fe722c2eecbaad3022fa64d
+x-checksum-sha1: 6c79d07d2f98988935010c178cf40f992f1d7b3e
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/glassfish/jakarta.el/4.0.0/jakarta.el-4.0.0-javadoc.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+ succeeded in 349ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 20:55:12 GMT
+content-type: application/java-archive
+content-length: 506814
+cf-ray: a0828e6f8d8bb571-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "6d461dcd806e7cabd444f8a62a0ff2ab"
+last-modified: Thu, 20 Aug 2020 16:37:54 GMT
+x-checksum-md5: 6d461dcd806e7cabd444f8a62a0ff2ab
+x-checksum-sha1: c9a85758fb7526335c9f3abc2e7805ee847a8c0d
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+I’m going to replace the stub JSON with the discovered metadata now. The language and Native Image exclusion fields will be omitted because this is a regular Java/JVM artifact, not one of the language-specific or non-JVM cases listed.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e/build/discovered-artifact-metadata/org.glassfish-jakarta.el-4.0.0.json
+diff --git a/build/discovered-artifact-metadata/org.glassfish-jakarta.el-4.0.0.json b/build/discovered-artifact-metadata/org.glassfish-jakarta.el-4.0.0.json
+index 0432dbd76ae5069bd105d559063c41ec8dff59f9..701f03451533065c3c4d92a0ee9cf802fffada78
+--- a/build/discovered-artifact-metadata/org.glassfish-jakarta.el-4.0.0.json
++++ b/build/discovered-artifact-metadata/org.glassfish-jakarta.el-4.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish:jakarta.el:4.0.0"
++  "coordinates" : "org.glassfish:jakarta.el:4.0.0",
++  "repository-url" : "https://github.com/jakartaee/expression-language",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jakarta.el/$version$/jakarta.el-$version$-sources.jar",
++  "test-code-url" : "https://github.com/jakartaee/expression-language/tree/$version$-RELEASE/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jakarta.el/$version$/jakarta.el-$version$-javadoc.jar",
++  "description" : "Jakarta Expression Language is an implementation of the Jakarta Expression Language used to evaluate expressions in Java applications. It provides parsing, expression factory, resolver, coercion, lambda, stream, and method invocation support for applications and frameworks that use Jakarta EL."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.glassfish-jakarta.el-4.0.0.json b/build/discovered-artifact-metadata/org.glassfish-jakarta.el-4.0.0.json
+index 0432dbd76ae5069bd105d559063c41ec8dff59f9..701f03451533065c3c4d92a0ee9cf802fffada78
+--- a/build/discovered-artifact-metadata/org.glassfish-jakarta.el-4.0.0.json
++++ b/build/discovered-artifact-metadata/org.glassfish-jakarta.el-4.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish:jakarta.el:4.0.0"
++  "coordinates" : "org.glassfish:jakarta.el:4.0.0",
++  "repository-url" : "https://github.com/jakartaee/expression-language",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jakarta.el/$version$/jakarta.el-$version$-sources.jar",
++  "test-code-url" : "https://github.com/jakartaee/expression-language/tree/$version$-RELEASE/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jakarta.el/$version$/jakarta.el-$version$-javadoc.jar",
++  "description" : "Jakarta Expression Language is an implementation of the Jakarta Expression Language used to evaluate expressions in Java applications. It provides parsing, expression factory, resolver, coercion, lambda, stream, and method invocation support for applications and frameworks that use Jakarta EL."
+ }
+
+codex
+The JSON is updated. I’m doing a quick validity check and confirming the file contains only the requested top-level keys.
+exec
+/usr/bin/bash -lc "jq 'keys' build/discovered-artifact-metadata/org.glassfish-jakarta.el-4.0.0.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+ succeeded in 0ms:
+[
+  "coordinates",
+  "description",
+  "documentation-url",
+  "repository-url",
+  "source-code-url",
+  "test-code-url"
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.glassfish-jakarta.el-4.0.0.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e
+ succeeded in 0ms:
+{
+  "coordinates" : "org.glassfish:jakarta.el:4.0.0",
+  "repository-url" : "https://github.com/jakartaee/expression-language",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jakarta.el/$version$/jakarta.el-$version$-sources.jar",
+  "test-code-url" : "https://github.com/jakartaee/expression-language/tree/$version$-RELEASE/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jakarta.el/$version$/jakarta.el-$version$-javadoc.jar",
+  "description" : "Jakarta Expression Language is an implementation of the Jakarta Expression Language used to evaluate expressions in Java applications. It provides parsing, expression factory, resolver, coercion, lambda, stream, and method invocation support for applications and frameworks that use Jakarta EL."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.glassfish-jakarta.el-4.0.0.json b/build/discovered-artifact-metadata/org.glassfish-jakarta.el-4.0.0.json
+index 0432dbd76ae5069bd105d559063c41ec8dff59f9..701f03451533065c3c4d92a0ee9cf802fffada78
+--- a/build/discovered-artifact-metadata/org.glassfish-jakarta.el-4.0.0.json
++++ b/build/discovered-artifact-metadata/org.glassfish-jakarta.el-4.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish:jakarta.el:4.0.0"
++  "coordinates" : "org.glassfish:jakarta.el:4.0.0",
++  "repository-url" : "https://github.com/jakartaee/expression-language",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jakarta.el/$version$/jakarta.el-$version$-sources.jar",
++  "test-code-url" : "https://github.com/jakartaee/expression-language/tree/$version$-RELEASE/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jakarta.el/$version$/jakarta.el-$version$-javadoc.jar",
++  "description" : "Jakarta Expression Language is an implementation of the Jakarta Expression Language used to evaluate expressions in Java applications. It provides parsing, expression factory, resolver, coercion, lambda, stream, and method invocation support for applications and frameworks that use Jakarta EL."
+ }
+
+web search: 
+web search: Maven Central org.glassfish jakarta.el 4.0.0
+codex
+Updated [org.glassfish-jakarta.el-4.0.0.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e/build/discovered-artifact-metadata/org.glassfish-jakarta.el-4.0.0.json:1).
+
+I used Maven-hosted source and javadoc JARs, and the upstream Jakarta Expression Language repository/test path at the `4.0.0-RELEASE` tag. Maven Central lists the artifact as a normal JVM dependency with source/javadoc artifacts, and Jakarta describes Expression Language as an expression language for Java applications, so I omitted `language` and `not-for-native-image`. ([central.sonatype.com](https://central.sonatype.com/artifact/org.glassfish/jakarta.el/4.0.0?utm_source=openai))
+
+Validation: `jq 'keys' ...` passed and shows only the requested keys.
+diff --git a/build/discovered-artifact-metadata/org.glassfish-jakarta.el-4.0.0.json b/build/discovered-artifact-metadata/org.glassfish-jakarta.el-4.0.0.json
+index 0432dbd76ae5069bd105d559063c41ec8dff59f9..701f03451533065c3c4d92a0ee9cf802fffada78
+--- a/build/discovered-artifact-metadata/org.glassfish-jakarta.el-4.0.0.json
++++ b/build/discovered-artifact-metadata/org.glassfish-jakarta.el-4.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish:jakarta.el:4.0.0"
++  "coordinates" : "org.glassfish:jakarta.el:4.0.0",
++  "repository-url" : "https://github.com/jakartaee/expression-language",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jakarta.el/$version$/jakarta.el-$version$-sources.jar",
++  "test-code-url" : "https://github.com/jakartaee/expression-language/tree/$version$-RELEASE/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jakarta.el/$version$/jakarta.el-$version$-javadoc.jar",
++  "description" : "Jakarta Expression Language is an implementation of the Jakarta Expression Language used to evaluate expressions in Java applications. It provides parsing, expression factory, resolver, coercion, lambda, stream, and method invocation support for applications and frameworks that use Jakarta EL."
+ }
+
+tokens used
+111,353
+Updated [org.glassfish-jakarta.el-4.0.0.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e/build/discovered-artifact-metadata/org.glassfish-jakarta.el-4.0.0.json:1).
+
+I used Maven-hosted source and javadoc JARs, and the upstream Jakarta Expression Language repository/test path at the `4.0.0-RELEASE` tag. Maven Central lists the artifact as a normal JVM dependency with source/javadoc artifacts, and Jakarta describes Expression Language as an expression language for Java applications, so I omitted `language` and `not-for-native-image`. ([central.sonatype.com](https://central.sonatype.com/artifact/org.glassfish/jakarta.el/4.0.0?utm_source=openai))
+
+Validation: `jq 'keys' ...` passed and shows only the requested keys.
+Ran agent for org.glassfish:jakarta.el:4.0.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e/build/agent-artifact-discovery-logs/org.glassfish-jakarta.el-4.0.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1519-4962392e/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m
+9 actionable tasks: 9 executed
