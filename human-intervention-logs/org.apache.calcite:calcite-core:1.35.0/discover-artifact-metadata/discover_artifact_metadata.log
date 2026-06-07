@@ -1,0 +1,435 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/446-06840db3/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/446-06840db3/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/446-06840db3
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ea18f-417a-73a2-8ea0-cdfd8531b6dc
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.calcite:calcite-core:1.35.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "1.35.0" when "$version$" is replaced with "1.35.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/446-06840db3/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "org.apache.calcite:calcite-core:1.35.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.35.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against the existing repo conventions first, then check authoritative sources for Calcite’s tag and Maven artifacts before editing the JSON.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/446-06840db3
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.calcite:calcite-core:1.35.0"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -50' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/446-06840db3
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/446-06840db3
+build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json
+
+exec
+/usr/bin/bash -lc "rg 'source-code-url|test-code-url|documentation-url|repository-url|calcite' -n metadata build/discovered-artifact-metadata | head -120" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/446-06840db3
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json:2:  "coordinates" : "org.apache.calcite:calcite-core:1.35.0"
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:17:    "repository-url" : "https://github.com/paul-hammant/paranamer",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/com.google.truth/truth/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-sources.jar",
+metadata/com.google.truth/truth/index.json:6:    "repository-url" : "https://github.com/google/truth",
+metadata/com.google.truth/truth/index.json:7:    "test-code-url" : "https://github.com/google/truth/tree/release_1_1_3/core/src/test/java?version=$version$",
+metadata/com.google.truth/truth/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-jvm-graal-ffi-jvm/$version$/mordant-jvm-graal-ffi-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/mordant",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:8:    "documentation-url" : "https://github.com/ajalt/mordant/blob/$version$/mordant-jvm-graal-ffi/README.md",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/mordant",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/mordant",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:8:    "documentation-url" : "https://github.com/ajalt/mordant/blob/$version$/mordant-jvm-ffm/README.md",
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.glassfish.hk2/hk2-utils/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:34:    "repository-url" : "https://github.com/javaee/hk2",
+metadata/org.glassfish.hk2/hk2-utils/index.json:35:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.glassfish.hk2/hk2-api/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:21:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.glassfish.hk2/hk2-api/index.json:22:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:36:    "repository-url" : "https://github.com/javaee/hk2",
+metadata/org.glassfish.hk2/hk2-api/index.json:37:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:38:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-sources.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/asn1/ber/src/test/java/org/apache/directory/api/asn1/ber/",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:6:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-ldap-model/index.json:7:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:28:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:29:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-ldap-model/index.json:30:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model/",
+metadata/org.apache.directory.api/api-ldap-model/index.json:31:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:42:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:43:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-ldap-model/index.json:44:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:45:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:56:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:57:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-ldap-model/index.json:58:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:59:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:73:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:74:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-ldap-model/index.json:75:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:76:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:87:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:88:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-ldap-model/index.json:89:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:90:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:101:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:102:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-ldap-model/index.json:103:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:104:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:115:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:116:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-ldap-model/index.json:117:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:118:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-ldap-model/$version$/",
+metadata/org.apache.directory.api/api-ldap-model/index.json:129:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:130:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-ldap-model/index.json:131:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model/",
+metadata/org.apache.directory.api/api-ldap-model/index.json:132:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:6:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-i18n/index.json:7:    "test-code-url" : "https://github.com/apache/directory-ldap-api/blob/$version$/integ-osgi/src/test/java/org/apache/directory/api/osgi/ApiI18nOsgiTest.java",
+metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:35:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-i18n/index.json:36:    "test-code-url" : "N/A",
+metadata/org.apache.directory.api/api-i18n/index.json:37:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-i18n/$version$/",
+metadata/org.apache.directory.api/api-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-util/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/util/src/test/java/org/apache/directory/api/util/",
+metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:6:    "repository-url": "https://github.com/openjdk/jfx",
+metadata/org.openjfx/javafx-base/index.json:7:    "test-code-url": "https://github.com/openjdk/jfx/tree/13+1/tests",
+metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:21:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:22:    "repository-url": "https://github.com/javafxports/openjdk-jfx",
+metadata/org.openjfx/javafx-base/index.json:23:    "test-code-url": "https://github.com/javafxports/openjdk-jfx/tree/$version$+1/tests",
+metadata/org.openjfx/javafx-base/index.json:24:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:6:    "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-tests.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:6:    "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-tests.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-sources.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:6:    "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-javadoc.jar",
+metadata/io.smallrye.reactive/mutiny/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/reactive/mutiny/$version$/mutiny-$version$-sources.jar",
+metadata/io.smallrye.reactive/mutiny/index.json:6:    "repository-url" : "https://github.com/smallrye/smallrye-mutiny",
+metadata/io.smallrye.reactive/mutiny/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-mutiny/tree/$version$/implementation/src/test",
+
+web search: 
+web search: org.apache.calcite calcite-core 1.35.0 Maven Central sources javadoc tests jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/calcite/calcite-core/1.35.0/
+web search: 
+web search: 'apache/calcite' in https://github.com/apache/calcite/tree/calcite-1.35.0
+web search: 
+web search: https://github.com/apache/calcite/tree/calcite-1.35.0/core/src/test
+codex
+Calcite publishes `calcite-core` sources and Javadocs on Maven Central for `1.35.0`; I don’t see a Maven test JAR in that version’s directory, so I’ll point tests at the matching GitHub tag’s `core/src/test` tree. The artifact is a normal JVM JAR, so I’m leaving the Native Image exclusion fields absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/446-06840db3/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json
+diff --git a/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json b/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json
+index cbe4f329208f6acfa0726d533c25cdee5f3ef662..22bdb4f7ad668d7b0d0db17e83ee9e121275a209
+--- a/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json
++++ b/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.calcite:calcite-core:1.35.0"
++  "coordinates" : "org.apache.calcite:calcite-core:1.35.0",
++  "repository-url" : "https://github.com/apache/calcite",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/calcite/calcite-core/$version$/calcite-core-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/calcite/tree/calcite-$version$/core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/calcite/calcite-core/$version$/calcite-core-$version$-javadoc.jar",
++  "description" : "Apache Calcite is a dynamic data management framework for building query-processing and database-like systems without providing storage primitives. Its core module provides SQL parsing and validation, query optimization, relational algebra, SQL-to-algebra transformations, and adapters for querying external systems such as Cassandra, Druid, Elasticsearch, MongoDB, and Kafka."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json b/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json
+index cbe4f329208f6acfa0726d533c25cdee5f3ef662..22bdb4f7ad668d7b0d0db17e83ee9e121275a209
+--- a/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json
++++ b/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.calcite:calcite-core:1.35.0"
++  "coordinates" : "org.apache.calcite:calcite-core:1.35.0",
++  "repository-url" : "https://github.com/apache/calcite",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/calcite/calcite-core/$version$/calcite-core-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/calcite/tree/calcite-$version$/core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/calcite/calcite-core/$version$/calcite-core-$version$-javadoc.jar",
++  "description" : "Apache Calcite is a dynamic data management framework for building query-processing and database-like systems without providing storage primitives. Its core module provides SQL parsing and validation, query optimization, relational algebra, SQL-to-algebra transformations, and adapters for querying external systems such as Cassandra, Druid, Elasticsearch, MongoDB, and Kafka."
+ }
+
+codex
+The JSON has been updated. I’m doing a quick validation pass now: syntax, final rendered URLs for `1.35.0`, and whether the selected test path exists on the tag.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/446-06840db3
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.calcite:calcite-core:1.35.0",
+  "repository-url": "https://github.com/apache/calcite",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/calcite/calcite-core/$version$/calcite-core-$version$-sources.jar",
+  "test-code-url": "https://github.com/apache/calcite/tree/calcite-$version$/core/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/calcite/calcite-core/$version$/calcite-core-$version$-javadoc.jar",
+  "description": "Apache Calcite is a dynamic data management framework for building query-processing and database-like systems without providing storage primitives. Its core module provides SQL parsing and validation, query optimization, relational algebra, SQL-to-algebra transformations, and adapters for querying external systems such as Cassandra, Druid, Elasticsearch, MongoDB, and Kafka."
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSIL https://repo.maven.apache.org/maven2/org/apache/calcite/calcite-core/1.35.0/calcite-core-1.35.0-sources.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/446-06840db3
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 10:10:11 GMT
+content-type: application/java-archive
+content-length: 3779857
+cf-ray: a07edd96ff26739d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1272946
+
+exec
+/usr/bin/bash -lc "curl -fsSIL https://repo.maven.apache.org/maven2/org/apache/calcite/calcite-core/1.35.0/calcite-core-1.35.0-javadoc.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/446-06840db3
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 10:10:11 GMT
+content-type: application/java-archive
+content-length: 9154940
+cf-ray: a07edd96f9f1fcc9-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 250338
+
+exec
+/usr/bin/bash -lc "curl -fsSIL https://github.com/apache/calcite/tree/calcite-1.35.0/core/src/test | sed -n '1,12p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/446-06840db3
+diff --git a/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json b/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json
+index cbe4f329208f6acfa0726d533c25cdee5f3ef662..22bdb4f7ad668d7b0d0db17e83ee9e121275a209
+--- a/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json
++++ b/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.calcite:calcite-core:1.35.0"
++  "coordinates" : "org.apache.calcite:calcite-core:1.35.0",
++  "repository-url" : "https://github.com/apache/calcite",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/calcite/calcite-core/$version$/calcite-core-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/calcite/tree/calcite-$version$/core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/calcite/calcite-core/$version$/calcite-core-$version$-javadoc.jar",
++  "description" : "Apache Calcite is a dynamic data management framework for building query-processing and database-like systems without providing storage primitives. Its core module provides SQL parsing and validation, query optimization, relational algebra, SQL-to-algebra transformations, and adapters for querying external systems such as Cassandra, Druid, Elasticsearch, MongoDB, and Kafka."
+ }
+
+ succeeded in 563ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 10:10:12 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"35e6cb7106bbf82abefb555c2c2b4271"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+web search: 
+web search: Maven Central org.apache.calcite calcite-core 1.35.0 sources javadoc
+web search: 
+web search: https://github.com/apache/calcite/tree/calcite-1.35.0/core/src/test
+codex
+The rendered source, Javadoc, and GitHub test URLs all return HTTP 200, and `jq` parses the file cleanly. I’m checking the diff once so the final summary can be precise.
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/446-06840db3
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json b/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json
+index cbe4f329208f6acfa0726d533c25cdee5f3ef662..22bdb4f7ad668d7b0d0db17e83ee9e121275a209
+--- a/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json
++++ b/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.calcite:calcite-core:1.35.0"
++  "coordinates" : "org.apache.calcite:calcite-core:1.35.0",
++  "repository-url" : "https://github.com/apache/calcite",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/calcite/calcite-core/$version$/calcite-core-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/calcite/tree/calcite-$version$/core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/calcite/calcite-core/$version$/calcite-core-$version$-javadoc.jar",
++  "description" : "Apache Calcite is a dynamic data management framework for building query-processing and database-like systems without providing storage primitives. Its core module provides SQL parsing and validation, query optimization, relational algebra, SQL-to-algebra transformations, and adapters for querying external systems such as Cassandra, Druid, Elasticsearch, MongoDB, and Kafka."
+ }
+
+codex
+`git diff` is empty for that path, which usually means the file is untracked or ignored under `build/`. I’ll confirm the file content directly rather than relying on Git’s tracked diff.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/446-06840db3
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.calcite:calcite-core:1.35.0",
+  "repository-url" : "https://github.com/apache/calcite",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/calcite/calcite-core/$version$/calcite-core-$version$-sources.jar",
+  "test-code-url" : "https://github.com/apache/calcite/tree/calcite-$version$/core/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/calcite/calcite-core/$version$/calcite-core-$version$-javadoc.jar",
+  "description" : "Apache Calcite is a dynamic data management framework for building query-processing and database-like systems without providing storage primitives. Its core module provides SQL parsing and validation, query optimization, relational algebra, SQL-to-algebra transformations, and adapters for querying external systems such as Cassandra, Druid, Elasticsearch, MongoDB, and Kafka."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/446-06840db3
+diff --git a/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json b/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json
+index cbe4f329208f6acfa0726d533c25cdee5f3ef662..22bdb4f7ad668d7b0d0db17e83ee9e121275a209
+--- a/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json
++++ b/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.calcite:calcite-core:1.35.0"
++  "coordinates" : "org.apache.calcite:calcite-core:1.35.0",
++  "repository-url" : "https://github.com/apache/calcite",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/calcite/calcite-core/$version$/calcite-core-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/calcite/tree/calcite-$version$/core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/calcite/calcite-core/$version$/calcite-core-$version$-javadoc.jar",
++  "description" : "Apache Calcite is a dynamic data management framework for building query-processing and database-like systems without providing storage primitives. Its core module provides SQL parsing and validation, query optimization, relational algebra, SQL-to-algebra transformations, and adapters for querying external systems such as Cassandra, Druid, Elasticsearch, MongoDB, and Kafka."
+ }
+
+ succeeded in 220ms:
+web search: 
+web search: site:calcite.apache.org docs Apache Calcite dynamic data management framework SQL parser optimizer adapters
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/calcite/calcite-core/1.35.0/
+web search: 
+web search: repo.maven.apache.org maven2 org apache calcite calcite-core 1.35.0 sources jar javadoc jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/calcite/calcite-core/1.35.0/
+web search: 
+web search: github apache calcite calcite-1.35.0 core/src/test
+web search: 
+web search: https://github.com/apache/calcite
+codex
+Updated [org.apache.calcite-calcite-core-1.35.0.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/446-06840db3/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json:1).
+
+I used Maven Central for the sources and Javadoc URLs because `calcite-core-1.35.0-sources.jar`, `calcite-core-1.35.0-javadoc.jar`, and the JVM `jar` are published there. The test URL points at the matching `calcite-1.35.0` GitHub tag, and I left `language` plus `not-for-native-image` absent because this is a JVM artifact, not a Kotlin/Groovy/Scala-specific or non-JVM artifact. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/calcite/calcite-core/1.35.0/))
+
+Validation: `jq` parsed the JSON, and the rendered source, Javadoc, and test URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json b/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json
+index cbe4f329208f6acfa0726d533c25cdee5f3ef662..22bdb4f7ad668d7b0d0db17e83ee9e121275a209
+--- a/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json
++++ b/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.calcite:calcite-core:1.35.0"
++  "coordinates" : "org.apache.calcite:calcite-core:1.35.0",
++  "repository-url" : "https://github.com/apache/calcite",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/calcite/calcite-core/$version$/calcite-core-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/calcite/tree/calcite-$version$/core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/calcite/calcite-core/$version$/calcite-core-$version$-javadoc.jar",
++  "description" : "Apache Calcite is a dynamic data management framework for building query-processing and database-like systems without providing storage primitives. Its core module provides SQL parsing and validation, query optimization, relational algebra, SQL-to-algebra transformations, and adapters for querying external systems such as Cassandra, Druid, Elasticsearch, MongoDB, and Kafka."
+ }
+
+tokens used
+89,836
+Updated [org.apache.calcite-calcite-core-1.35.0.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/446-06840db3/build/discovered-artifact-metadata/org.apache.calcite-calcite-core-1.35.0.json:1).
+
+I used Maven Central for the sources and Javadoc URLs because `calcite-core-1.35.0-sources.jar`, `calcite-core-1.35.0-javadoc.jar`, and the JVM `jar` are published there. The test URL points at the matching `calcite-1.35.0` GitHub tag, and I left `language` plus `not-for-native-image` absent because this is a JVM artifact, not a Kotlin/Groovy/Scala-specific or non-JVM artifact. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/calcite/calcite-core/1.35.0/))
+
+Validation: `jq` parsed the JSON, and the rendered source, Javadoc, and test URLs returned HTTP 200.
+Ran agent for org.apache.calcite:calcite-core:1.35.0 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/446-06840db3/build/agent-artifact-discovery-logs/org.apache.calcite-calcite-core-1.35.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/446-06840db3/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 38s
+9 actionable tasks: 9 executed
