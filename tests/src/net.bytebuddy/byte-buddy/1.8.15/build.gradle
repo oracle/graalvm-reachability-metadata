@@ -9,6 +9,13 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+File compiledTestClassesDir = layout.buildDirectory.dir("classes/java/test").get().asFile
+File processedTestResourcesDir = layout.buildDirectory.dir("resources/test").get().asFile
+File generatedNexusMarkerFile = layout.buildDirectory.dir("generated/predefined-nexus-test-class").get().file("done.marker").asFile
+File generatedNexusClassFile = new File(
+        compiledTestClassesDir,
+        "net_bytebuddy/byte_buddy/generated/NexusInitializationSample.class")
+String javaHome = System.getenv("JAVA_HOME")
 
 configurations {
     byteBuddyAgent {
@@ -26,6 +33,10 @@ dependencies {
 
 tasks.withType(Test).configureEach {
     jvmArgs "-javaagent:${configurations.byteBuddyAgent.singleFile}"
+    doFirst {
+        delete(generatedNexusClassFile)
+        delete(generatedNexusMarkerFile)
+    }
 }
 
 graalvmNative {
@@ -37,4 +48,29 @@ graalvmNative {
             }
         }
     }
+}
+
+tasks.register("generatePredefinedNexusClasses", JavaExec) { JavaExec task ->
+    task.dependsOn(tasks.named("testClasses"))
+    task.mustRunAfter(tasks.named("test"))
+    task.inputs.files(compiledTestClassesDir, processedTestResourcesDir, configurations.testRuntimeClasspath)
+    task.outputs.file(generatedNexusMarkerFile)
+    task.classpath = files(compiledTestClassesDir, processedTestResourcesDir, configurations.testRuntimeClasspath)
+    task.mainClass = "net_bytebuddy.byte_buddy.PredefinedNexusClassesGenerator"
+    task.args(compiledTestClassesDir.absolutePath)
+    task.executable = new File(javaHome, "bin/java").absolutePath
+    task.environment("JAVA_HOME", javaHome)
+    task.environment("GRAALVM_HOME", System.getenv("GRAALVM_HOME"))
+    task.doLast {
+        generatedNexusMarkerFile.parentFile.mkdirs()
+        generatedNexusMarkerFile.text = "generated"
+    }
+}
+
+tasks.named("nativeTestCompile") {
+    dependsOn("generatePredefinedNexusClasses")
+}
+
+tasks.named("nativeTraceImage") {
+    dependsOn("generatePredefinedNexusClasses")
 }

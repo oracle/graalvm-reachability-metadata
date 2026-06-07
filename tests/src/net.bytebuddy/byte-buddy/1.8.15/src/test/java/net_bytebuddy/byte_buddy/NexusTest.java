@@ -6,10 +6,7 @@
  */
 package net_bytebuddy.byte_buddy;
 
-import net.bytebuddy.ByteBuddy;
-import net.bytebuddy.ClassFileVersion;
 import net.bytebuddy.dynamic.DynamicType;
-import net.bytebuddy.dynamic.TypeResolutionStrategy;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import net.bytebuddy.implementation.LoadedTypeInitializer;
 import org.graalvm.internal.tck.NativeImageSupport;
@@ -22,12 +19,10 @@ public class NexusTest {
     void initializesRegisteredLoadedTypeInitializerFromGeneratedTypeInitializer() throws Exception {
         RecordingLoadedTypeInitializer initializer = new RecordingLoadedTypeInitializer();
         try {
-            DynamicType.Loaded<?> loadedType = new ByteBuddy(ClassFileVersion.JAVA_V8)
-                    .subclass(Object.class)
-                    .name("net_bytebuddy.byte_buddy.generated.NexusInitializationSample")
-                    .initializer(initializer)
-                    .make(new TypeResolutionStrategy.Active())
-                    .load(NexusTest.class.getClassLoader(), ClassLoadingStrategy.Default.WRAPPER);
+            DynamicType.Loaded<?> loadedType = NexusInitializationSupport.makeGeneratedType(initializer)
+                    .load(
+                            NexusTest.class.getClassLoader(),
+                            ClassLoadingStrategy.Default.WRAPPER.allowExistingTypes());
 
             Class<?> generatedType = loadedType.getLoaded();
             Class<?> initializedType = Class.forName(generatedType.getName(), true, generatedType.getClassLoader());
