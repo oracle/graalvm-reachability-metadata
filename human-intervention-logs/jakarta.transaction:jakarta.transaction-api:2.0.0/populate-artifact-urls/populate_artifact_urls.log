@@ -1,0 +1,1299 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ea3fb-21bf-7640-b62d-9b0fa9be80d7
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: jakarta.transaction:jakarta.transaction-api:2.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.0.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d/metadata/jakarta.transaction/jakarta.transaction-api/index.json
+- Entry selector: "metadata-version" = "2.0.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2.0.0
+- Entry metadata-version: 2.0.0
+- Entry test-version: 2.0.0
+- Entry tested-versions: [2.0.0]
+codex
+I’ll inspect the existing metadata entry and nearby index conventions first, then verify the candidate artifact/tag URLs before editing only the blank fields.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/jakarta.transaction/jakarta.transaction-api/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.0",
+    "tested-versions" : [
+      "2.0.0"
+    ],
+    "allowed-packages" : [
+      "javax.transaction"
+    ]
+  },
+  {
+    "metadata-version" : "1.3.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/jakartaee/transactions",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-javadoc.jar",
+    "description" : "Jakarta Transaction API provides the standard Java interfaces and exceptions for demarcating and coordinating distributed transactions. It defines contracts such as UserTransaction, TransactionManager, and Synchronization that application servers and transaction managers implement or expose to JVM applications.",
+    "tested-versions" : [
+      "1.3.1",
+      "1.3.2",
+      "1.3.3"
+    ],
+    "allowed-packages" : [
+      "javax.transaction"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n 'jakarta.transaction-api|source-code-url|test-code-url|documentation-url' metadata/jakarta.transaction metadata/jakarta.* -g 'index.json'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+ succeeded in 0ms:
+metadata/jakarta.json/jakarta.json-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-tck-tests/$version$/jakarta.json-tck-tests-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-javadoc.jar",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-sources.jar",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/$version$/jakarta.json.bind-tck-$version$-sources.jar",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-javadoc.jar",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/soap/jakarta.xml.soap-api/$version$/jakarta.xml.soap-api-$version$-sources.jar",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/saaj-api/tree/$version$/api/src/test",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/soap/jakarta.xml.soap-api/$version$/jakarta.xml.soap-api-$version$-javadoc.jar",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-sources.jar",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api-test/$version$/jakarta.xml.bind-api-test-$version$-sources.jar",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-javadoc.jar",
+metadata/jakarta.ws.rs/jakarta.ws.rs-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/ws/rs/jakarta.ws.rs-api/$version$/jakarta.ws.rs-api-$version$-sources.jar",
+metadata/jakarta.ws.rs/jakarta.ws.rs-api/index.json:7:    "test-code-url" : "https://download.eclipse.org/jakartaee/restful-ws/3.1/jakarta-restful-ws-tck-$version$.zip",
+metadata/jakarta.ws.rs/jakarta.ws.rs-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/ws/rs/jakarta.ws.rs-api/$version$/jakarta.ws.rs-api-$version$-javadoc.jar",
+metadata/jakarta.ws.rs/jakarta.ws.rs-api/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/ws/rs/jakarta.ws.rs-api/$version$/jakarta.ws.rs-api-$version$-sources.jar",
+metadata/jakarta.ws.rs/jakarta.ws.rs-api/index.json:22:    "test-code-url" : "https://github.com/jakartaee/rest/tree/$version$/jaxrs-api/src/test",
+metadata/jakarta.ws.rs/jakarta.ws.rs-api/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/ws/rs/jakarta.ws.rs-api/$version$/jakarta.ws.rs-api-$version$-javadoc.jar",
+metadata/jakarta.ws.rs/jakarta.ws.rs-api/index.json:34:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/ws/rs/jakarta.ws.rs-api/$version$/jakarta.ws.rs-api-$version$-sources.jar",
+metadata/jakarta.ws.rs/jakarta.ws.rs-api/index.json:36:    "test-code-url" : "https://github.com/jakartaee/rest/tree/$version$/jaxrs-api/src/test",
+metadata/jakarta.ws.rs/jakarta.ws.rs-api/index.json:37:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/ws/rs/jakarta.ws.rs-api/$version$/jakarta.ws.rs-api-$version$-javadoc.jar",
+metadata/jakarta.inject/jakarta.inject-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/inject/jakarta.inject-api/$version$/jakarta.inject-api-$version$-sources.jar",
+metadata/jakarta.inject/jakarta.inject-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.inject/jakarta.inject-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/inject/jakarta.inject-api/$version$/jakarta.inject-api-$version$-javadoc.jar",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/$version$/jakarta.websocket-client-api-$version$-sources.jar",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/$version$/jakarta.websocket-client-api-$version$-javadoc.jar",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-sources.jar",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-javadoc.jar",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:22:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-sources.jar",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:24:    "test-code-url" : "N/A",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:25:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-javadoc.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-sources.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:7:    "test-code-url" : "https://download.eclipse.org/jakartaee/authentication/3.0/jakarta-authentication-tck-$version$.zip",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-javadoc.jar",
+metadata/jakarta.validation/jakarta.validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/$version$/jakarta.validation-api-$version$-sources.jar",
+metadata/jakarta.validation/jakarta.validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/jakarta.validation/jakarta.validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/$version$/jakarta.validation-api-$version$-javadoc.jar",
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/$version$/jakarta.websocket-api-$version$-sources.jar",
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/$version$/jakarta.websocket-api-$version$-javadoc.jar",
+metadata/jakarta.transaction/jakarta.transaction-api/index.json:14:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-sources.jar",
+metadata/jakarta.transaction/jakarta.transaction-api/index.json:16:    "test-code-url" : "N/A",
+metadata/jakarta.transaction/jakarta.transaction-api/index.json:17:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-javadoc.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-sources.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/servlet/tree/$version$-RELEASE-tck/tck",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-javadoc.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-sources.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:22:    "test-code-url" : "N/A",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-javadoc.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-sources.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:36:    "test-code-url" : "N/A",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-javadoc.jar",
+metadata/jakarta.security.enterprise/jakarta.security.enterprise-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/security/enterprise/jakarta.security.enterprise-api/$version$/jakarta.security.enterprise-api-$version$-sources.jar",
+metadata/jakarta.security.enterprise/jakarta.security.enterprise-api/index.json:7:    "test-code-url" : "https://download.eclipse.org/jakartaee/security/3.0/jakarta-security-tck-$version$.zip",
+metadata/jakarta.security.enterprise/jakarta.security.enterprise-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/security/enterprise/jakarta.security.enterprise-api/$version$/jakarta.security.enterprise-api-$version$-javadoc.jar",
+metadata/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/servlet/jsp/jstl/jakarta.servlet.jsp.jstl-api/$version$/jakarta.servlet.jsp.jstl-api-$version$-sources.jar",
+metadata/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api/index.json:6:    "test-code-url" : "https://download.eclipse.org/jakartaee/tags/3.0/jakarta-tags-tck-$version$.zip",
+metadata/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/servlet/jsp/jstl/jakarta.servlet.jsp.jstl-api/$version$/jakarta.servlet.jsp.jstl-api-$version$-javadoc.jar",
+metadata/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/servlet/jsp/jstl/jakarta.servlet.jsp.jstl-api/$version$/jakarta.servlet.jsp.jstl-api-$version$-sources.jar",
+metadata/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api/index.json:23:    "test-code-url" : "https://github.com/jakartaee/tags/tree/$version$-RELEASE/tck",
+metadata/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/servlet/jsp/jstl/jakarta.servlet.jsp.jstl-api/$version$/jakarta.servlet.jsp.jstl-api-$version$-javadoc.jar",
+metadata/jakarta.batch/jakarta.batch-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/batch/jakarta.batch-api/$version$/jakarta.batch-api-$version$-sources.jar",
+metadata/jakarta.batch/jakarta.batch-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.batch/jakarta.batch-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/batch/jakarta.batch-api/$version$/jakarta.batch-api-$version$-javadoc.jar",
+metadata/jakarta.el/jakarta.el-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/el/jakarta.el-api/$version$/jakarta.el-api-$version$-sources.jar",
+metadata/jakarta.el/jakarta.el-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/expression-language/tree/$version$-RI-COMB-RELEASE/src/test",
+metadata/jakarta.el/jakarta.el-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/el/jakarta.el-api/$version$/jakarta.el-api-$version$-javadoc.jar",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/interceptor/jakarta.interceptor-api/$version$/jakarta.interceptor-api-$version$-sources.jar",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/interceptor/jakarta.interceptor-api/$version$/jakarta.interceptor-api-$version$-javadoc.jar",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:22:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/interceptor/jakarta.interceptor-api/$version$/jakarta.interceptor-api-$version$-sources.jar",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:24:    "test-code-url" : "N/A",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:25:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/interceptor/jakarta.interceptor-api/$version$/jakarta.interceptor-api-$version$-javadoc.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-sources.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-javadoc.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-sources.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:21:    "test-code-url" : "N/A",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-javadoc.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-sources.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:36:    "test-code-url" : "N/A",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-javadoc.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:48:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-sources.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:50:    "test-code-url" : "N/A",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:51:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-javadoc.jar",
+metadata/jakarta.resource/jakarta.resource-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/resource/jakarta.resource-api/$version$/jakarta.resource-api-$version$-sources.jar",
+metadata/jakarta.resource/jakarta.resource-api/index.json:7:    "test-code-url" : "https://download.eclipse.org/jakartaee/connectors/2.1/jakarta-connectors-tck-$version$.zip",
+metadata/jakarta.resource/jakarta.resource-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/resource/jakarta.resource-api/$version$/jakarta.resource-api-$version$-javadoc.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-sources.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/persistence-tck-dist/$version$/persistence-tck-dist-$version$.zip",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-javadoc.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-sources.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/persistence-tck-dist/$version$/persistence-tck-dist-$version$.zip",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-javadoc.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-sources.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:35:    "test-code-url" : "https://download.eclipse.org/jakartaee/persistence/3.2/jakarta-persistence-tck-$version$.zip",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:36:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-javadoc.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:47:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-sources.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:49:    "test-code-url" : "N/A",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:50:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-javadoc.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-sources.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:7:    "test-code-url" : "https://download.eclipse.org/jakartaee/messaging/3.0/jakarta-messaging-tck-$version$.zip",
+metadata/jakarta.jms/jakarta.jms-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-javadoc.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-sources.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:22:    "test-code-url" : "N/A",
+metadata/jakarta.jms/jakarta.jms-api/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-javadoc.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/jakarta.enterprise.lang-model/$version$/jakarta.enterprise.lang-model-$version$-sources.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/cdi-tck-lang-model/$version$/cdi-tck-lang-model-$version$-sources.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/jakarta.enterprise.lang-model/$version$/jakarta.enterprise.lang-model-$version$-javadoc.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/jakarta.enterprise.lang-model/$version$/jakarta.enterprise.lang-model-$version$-sources.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:25:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/cdi-tck-lang-model/$version$/cdi-tck-lang-model-$version$-sources.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:26:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/jakarta.enterprise.lang-model/$version$/jakarta.enterprise.lang-model-$version$-javadoc.jar",
+metadata/jakarta.transaction/jakarta.transaction-api/index.json:14:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-sources.jar",
+metadata/jakarta.transaction/jakarta.transaction-api/index.json:16:    "test-code-url" : "N/A",
+metadata/jakarta.transaction/jakarta.transaction-api/index.json:17:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-javadoc.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.cdi-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/jakarta.enterprise.cdi-api/$version$/jakarta.enterprise.cdi-api-$version$-sources.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.cdi-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/cdi/tree/$version$/api/src/test",
+metadata/jakarta.enterprise/jakarta.enterprise.cdi-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/jakarta.enterprise.cdi-api/$version$/jakarta.enterprise.cdi-api-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+ succeeded in 118ms:
+web search: 
+web search: jakarta.transaction jakarta.transaction-api 2.0.0 source repository tag tests javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/
+web search: 
+web search: https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/2.0.0/
+codex
+The entry itself is blank for 2.0.0, while the older 1.3.x entry already uses Maven Central source and javadoc artifacts and marks tests as unavailable. I’m checking whether 2.0.0 has any Maven-hosted test/TCK artifact before reusing that pattern.
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/2.0.0/jakarta.transaction-api-2.0.0.pom' | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2012, 2020 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.eclipse.ee4j</groupId>
+        <artifactId>project</artifactId>
+        <version>1.0.6</version>
+    </parent>
+
+    <groupId>jakarta.transaction</groupId>
+    <artifactId>jakarta.transaction-api</artifactId>
+    <version>2.0.0</version>
+    
+    <properties>
+        <non.final>false</non.final>
+        <extension.name>jakarta.transaction</extension.name>
+        <spec.version>2.0</spec.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+    <name>${extension.name} API</name>
+    <description>Jakarta Transactions</description>
+    <url>https://projects.eclipse.org/projects/ee4j.jta</url>
+
+    <developers>
+        <developer>
+            <id>stephen_felts</id>
+            <name>Stephen Felts</name>
+            <organization>Oracle, Inc.</organization>
+            <roles>
+                <role>lead</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <organization>
+        <name>EE4J Community</name>
+        <url>https://github.com/eclipse-ee4j</url>
+    </organization>
+    <licenses>
+        <license>
+            <name>EPL 2.0</name>
+            <url>http://www.eclipse.org/legal/epl-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+        <license>
+            <name>GPL2 w/ CPE</name>
+            <url>https://www.gnu.org/software/classpath/license.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/eclipse-ee4j/jta-api/issues</url>
+    </issueManagement>
+    <mailingLists>
+      <mailingList>
+            <name>Jakarta Transactions mailing list</name>
+            <post>jta-dev@eclipse.org</post>
+            <subscribe>https://dev.eclipse.org/mailman/listinfo/jta-dev</subscribe>
+            <unsubscribe>https://dev.eclipse.org/mailman/listinfo/jta-dev</unsubscribe>
+            <archive>https://dev.eclipse.org/mhonarc/lists/jta-dev/</archive>
+        </mailingList>
+    </mailingLists>
+    <scm>
+        <connection>scm:git:https://github.com/eclipse-ee4j/jta-api.git</connection>
+        <developerConnection>scm:git:git@github.com:eclipse-ee4j/jta-api.git</developerConnection>
+        <url>https://github.com/eclipse-ee4j/jta-api</url>
+      <tag>HEAD</tag>
+  </scm>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.html</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>        
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <compilerArgument>-Xlint:unchecked</compilerArgument>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.glassfish.build</groupId>
+                <artifactId>spec-version-maven-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <specMode>jakarta</specMode>
+                    <spec>
+                        <nonFinal>${non.final}</nonFinal>
+                        <jarType>api</jarType>
+                        <specVersion>${spec.version}</specVersion>
+                        <specImplVersion>${project.version}</specImplVersion>
+                        <apiPackage>${extension.name}</apiPackage>
+                    </spec>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>set-spec-properties</goal>
+                            <goal>check-module</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>            
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>1.4.3</version>
+                <configuration>
+                    <supportedProjectTypes>
+                        <supportedProjectType>jar</supportedProjectType>
+                    </supportedProjectTypes>
+                    <instructions>
+                        <Bundle-Version>${spec.bundle.version}</Bundle-Version>
+                        <Bundle-SymbolicName>${spec.bundle.symbolic-name}</Bundle-SymbolicName>
+                        <Extension-Name>${spec.extension.name}</Extension-Name>
+                        <Implementation-Version>${spec.implementation.version}</Implementation-Version>
+                        <Specification-Version>${spec.specification.version}</Specification-Version>                               
+                        <Bundle-Description>
+                            Jakarta(TM) Transactions ${spec.version} API Design Specification
+                        </Bundle-Description>
+                        <Specification-Vendor>Oracle Corporation</Specification-Vendor>
+                        <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+                        <Implementation-Vendor-Id>org.glassfish</Implementation-Vendor-Id>
+                        <_include>-${basedir}/osgi.bundle</_include>
+                    </instructions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                      <manifestEntries>
+                          <!-- for JDK 9 -->
+                          <Automatic-Module-Name>
+                            jakarta.transaction
+                          </Automatic-Module-Name>
+                      </manifestEntries>
+                    </archive>
+                    <excludes>
+                        <exclude>**/*.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>build-helper-maven-plugin</artifactId>
+              <version>3.0.0</version>
+              <executions>
+                <execution>
+                  <id>add-resource</id>
+                  <phase>generate-resources</phase>
+                  <goals>
+                    <goal>add-resource</goal>
+                  </goals>
+                  <configuration>
+                    <resources>
+                      <resource>
+                        <directory>..</directory>
+                        <targetPath>META-INF</targetPath>
+                        <includes>
+                          <include>LICENSE.md</include>
+                          <include>NOTICE.md</include>
+                        </includes>
+                      </resource>
+                    </resources>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <includePom>true</includePom>
+                </configuration>
+                <executions>
+                    <execution>
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22jakarta.transaction%22&rows=100&wt=json'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=jakarta%20transaction%20tck&rows=100&wt=json'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+ succeeded in 119ms:
+{"responseHeader":{"status":0,"QTime":1,"params":{"q":"g:\"jakarta.transaction\"","core":"","indent":"off","spellcheck":"true","fl":"id,g,a,latestVersion,p,ec,repositoryId,text,timestamp,versionCount","start":"","spellcheck.count":"5","sort":"score desc,timestamp desc,g asc,a asc","rows":"100","wt":"json","version":"2.2"}},"response":{"numFound":1,"start":0,"docs":[{"id":"jakarta.transaction:jakarta.transaction-api","g":"jakarta.transaction","a":"jakarta.transaction-api","latestVersion":"2.0.1","repositoryId":"central","p":"jar","timestamp":1648723059000,"versionCount":9,"text":["jakarta.transaction","jakarta.transaction-api","-sources.jar",".pom","-javadoc.jar",".jar"],"ec":["-sources.jar",".pom","-javadoc.jar",".jar"]}]},"spellcheck":{"suggestions":[]}}
+ succeeded in 124ms:
+{"responseHeader":{"status":0,"QTime":3,"params":{"q":"jakarta transaction tck","core":"","defType":"dismax","qf":"text^20 g^5 a^10","indent":"off","spellcheck":"true","fl":"id,g,a,latestVersion,p,ec,repositoryId,text,timestamp,versionCount","start":"","spellcheck.count":"5","sort":"score desc,timestamp desc,g asc,a asc","rows":"100","wt":"json","version":"2.2"}},"response":{"numFound":1,"start":0,"docs":[{"id":"jakarta.tck:transaction-docs","g":"jakarta.tck","a":"transaction-docs","latestVersion":"2.0","repositoryId":"central","p":"pom","timestamp":1741208750000,"versionCount":1,"text":["jakarta.tck","transaction-docs","-cyclonedx.json","-cyclonedx.xml",".pom"],"ec":["-cyclonedx.json","-cyclonedx.xml",".pom"]}]},"spellcheck":{"suggestions":[]}}
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/eclipse-ee4j/jta-api.git '2.0.0*' 'jakarta.transaction-api-2.0.0*' 'v2.0.0*' '2.0*'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+exec
+/usr/bin/bash -lc "curl -I -L -sS -o /dev/null -w '%{url_effective} %{http_code}\\n' 'https://github.com/jakartaee/transactions'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/jakartaee/transactions.git '2.0.0*' 'jakarta.transaction-api-2.0.0*' 'v2.0.0*' '2.0*'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+exec
+/usr/bin/bash -lc "curl -I -L -sS -o /dev/null -w '%{url_effective} %{http_code}\\n' 'https://github.com/eclipse-ee4j/jta-api'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+ succeeded in 283ms:
+461f6a98b8be17310d2d125578d0053bf7be1676	refs/tags/2.0.0
+f22267b04557777b6de0747812ca593f27445dd6	refs/tags/2.0.0-RC1-staging
+178cd37b687c9bba22448c407a1bfb1457fc6e6b	refs/tags/2.0.0-RC1-staging^{}
+3ea1022fcd59283b8c4453ef1eb54cf35c2e8c8e	refs/tags/2.0.0-RC2-staging
+3a20f83811d22854266e7eeb1323ea3dce0a9577	refs/tags/2.0.0-RC2-staging^{}
+64dd46401a3e2ee7cf7856bc498fdd002fc28bf5	refs/tags/2.0.0-RC3-staging
+622306e5220472c98f7ce1ef1e8d8dc2ce9b52f5	refs/tags/2.0.0-RC3-staging^{}
+304dec027c8c663cb89f0515b76c27b9cea7b7b4	refs/tags/2.0.0-staging
+461f6a98b8be17310d2d125578d0053bf7be1676	refs/tags/2.0.0-staging^{}
+5a123d75822db43472ef25043a2b3db568f7d03d	refs/tags/2.0.1
+fe68bdda9f852f4a6ad70d0be634b94747d80b23	refs/tags/2.0.1-RC1-staging
+5a3433336e7c4c31a61ac0587b97ac7ce0887680	refs/tags/2.0.1-RC1-staging^{}
+659a689357e7415479dff2a5c96d0ff56675cb7f	refs/tags/2.0.1-staging
+5a123d75822db43472ef25043a2b3db568f7d03d	refs/tags/2.0.1-staging^{}
+
+ succeeded in 283ms:
+461f6a98b8be17310d2d125578d0053bf7be1676	refs/tags/2.0.0
+f22267b04557777b6de0747812ca593f27445dd6	refs/tags/2.0.0-RC1-staging
+178cd37b687c9bba22448c407a1bfb1457fc6e6b	refs/tags/2.0.0-RC1-staging^{}
+3ea1022fcd59283b8c4453ef1eb54cf35c2e8c8e	refs/tags/2.0.0-RC2-staging
+3a20f83811d22854266e7eeb1323ea3dce0a9577	refs/tags/2.0.0-RC2-staging^{}
+64dd46401a3e2ee7cf7856bc498fdd002fc28bf5	refs/tags/2.0.0-RC3-staging
+622306e5220472c98f7ce1ef1e8d8dc2ce9b52f5	refs/tags/2.0.0-RC3-staging^{}
+304dec027c8c663cb89f0515b76c27b9cea7b7b4	refs/tags/2.0.0-staging
+461f6a98b8be17310d2d125578d0053bf7be1676	refs/tags/2.0.0-staging^{}
+5a123d75822db43472ef25043a2b3db568f7d03d	refs/tags/2.0.1
+fe68bdda9f852f4a6ad70d0be634b94747d80b23	refs/tags/2.0.1-RC1-staging
+5a3433336e7c4c31a61ac0587b97ac7ce0887680	refs/tags/2.0.1-RC1-staging^{}
+659a689357e7415479dff2a5c96d0ff56675cb7f	refs/tags/2.0.1-staging
+5a123d75822db43472ef25043a2b3db568f7d03d	refs/tags/2.0.1-staging^{}
+
+ succeeded in 743ms:
+https://github.com/jakartaee/transactions 200
+
+ succeeded in 753ms:
+https://github.com/jakartaee/transactions 200
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/2.0.0/' | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: jakarta/transaction/jakarta.transaction-api/2.0.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>jakarta/transaction/jakarta.transaction-api/2.0.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jakarta.transaction-api-2.0.0-javadoc.jar" title="jakarta.transaction-api-2.0.0-javadoc.jar">jakarta.transaction-api-2.0.0-javadoc.jar</a>         2020-09-29 11:58    146100      
+<a href="jakarta.transaction-api-2.0.0-javadoc.jar.asc" title="jakarta.transaction-api-2.0.0-javadoc.jar.asc">jakarta.transaction-api-2.0.0-javadoc.jar.asc</a>     2020-09-29 11:58       833      
+<a href="jakarta.transaction-api-2.0.0-javadoc.jar.asc.md5" title="jakarta.transaction-api-2.0.0-javadoc.jar.asc.md5">jakarta.transaction-api-2.0.0-javadoc.jar.asc...</a>  2020-09-29 11:58        32      
+<a href="jakarta.transaction-api-2.0.0-javadoc.jar.asc.sha1" title="jakarta.transaction-api-2.0.0-javadoc.jar.asc.sha1">jakarta.transaction-api-2.0.0-javadoc.jar.asc...</a>  2020-09-29 11:58        40      
+<a href="jakarta.transaction-api-2.0.0-javadoc.jar.asc.sha256" title="jakarta.transaction-api-2.0.0-javadoc.jar.asc.sha256">jakarta.transaction-api-2.0.0-javadoc.jar.asc...</a>  2020-09-29 11:58        64      
+<a href="jakarta.transaction-api-2.0.0-javadoc.jar.asc.sha512" title="jakarta.transaction-api-2.0.0-javadoc.jar.asc.sha512">jakarta.transaction-api-2.0.0-javadoc.jar.asc...</a>  2020-09-29 11:58       128      
+<a href="jakarta.transaction-api-2.0.0-javadoc.jar.md5" title="jakarta.transaction-api-2.0.0-javadoc.jar.md5">jakarta.transaction-api-2.0.0-javadoc.jar.md5</a>     2020-09-29 11:58        32      
+<a href="jakarta.transaction-api-2.0.0-javadoc.jar.sha1" title="jakarta.transaction-api-2.0.0-javadoc.jar.sha1">jakarta.transaction-api-2.0.0-javadoc.jar.sha...</a>  2020-09-29 11:58        40      
+<a href="jakarta.transaction-api-2.0.0-sources.jar" title="jakarta.transaction-api-2.0.0-sources.jar">jakarta.transaction-api-2.0.0-sources.jar</a>         2020-09-29 11:58     39221      
+<a href="jakarta.transaction-api-2.0.0-sources.jar.asc" title="jakarta.transaction-api-2.0.0-sources.jar.asc">jakarta.transaction-api-2.0.0-sources.jar.asc</a>     2020-09-29 11:58       833      
+<a href="jakarta.transaction-api-2.0.0-sources.jar.asc.md5" title="jakarta.transaction-api-2.0.0-sources.jar.asc.md5">jakarta.transaction-api-2.0.0-sources.jar.asc...</a>  2020-09-29 11:58        32      
+<a href="jakarta.transaction-api-2.0.0-sources.jar.asc.sha1" title="jakarta.transaction-api-2.0.0-sources.jar.asc.sha1">jakarta.transaction-api-2.0.0-sources.jar.asc...</a>  2020-09-29 11:58        40      
+<a href="jakarta.transaction-api-2.0.0-sources.jar.asc.sha256" title="jakarta.transaction-api-2.0.0-sources.jar.asc.sha256">jakarta.transaction-api-2.0.0-sources.jar.asc...</a>  2020-09-29 11:58        64      
+<a href="jakarta.transaction-api-2.0.0-sources.jar.asc.sha512" title="jakarta.transaction-api-2.0.0-sources.jar.asc.sha512">jakarta.transaction-api-2.0.0-sources.jar.asc...</a>  2020-09-29 11:58       128      
+<a href="jakarta.transaction-api-2.0.0-sources.jar.md5" title="jakarta.transaction-api-2.0.0-sources.jar.md5">jakarta.transaction-api-2.0.0-sources.jar.md5</a>     2020-09-29 11:58        32      
+<a href="jakarta.transaction-api-2.0.0-sources.jar.sha1" title="jakarta.transaction-api-2.0.0-sources.jar.sha1">jakarta.transaction-api-2.0.0-sources.jar.sha...</a>  2020-09-29 11:58        40      
+<a href="jakarta.transaction-api-2.0.0.jar" title="jakarta.transaction-api-2.0.0.jar">jakarta.transaction-api-2.0.0.jar</a>                 2020-09-29 11:58     27927      
+<a href="jakarta.transaction-api-2.0.0.jar.asc" title="jakarta.transaction-api-2.0.0.jar.asc">jakarta.transaction-api-2.0.0.jar.asc</a>             2020-09-29 11:58       833      
+<a href="jakarta.transaction-api-2.0.0.jar.asc.md5" title="jakarta.transaction-api-2.0.0.jar.asc.md5">jakarta.transaction-api-2.0.0.jar.asc.md5</a>         2020-09-29 11:58        32      
+<a href="jakarta.transaction-api-2.0.0.jar.asc.sha1" title="jakarta.transaction-api-2.0.0.jar.asc.sha1">jakarta.transaction-api-2.0.0.jar.asc.sha1</a>        2020-09-29 11:58        40      
+<a href="jakarta.transaction-api-2.0.0.jar.asc.sha256" title="jakarta.transaction-api-2.0.0.jar.asc.sha256">jakarta.transaction-api-2.0.0.jar.asc.sha256</a>      2020-09-29 11:58        64      
+<a href="jakarta.transaction-api-2.0.0.jar.asc.sha512" title="jakarta.transaction-api-2.0.0.jar.asc.sha512">jakarta.transaction-api-2.0.0.jar.asc.sha512</a>      2020-09-29 11:58       128      
+<a href="jakarta.transaction-api-2.0.0.jar.md5" title="jakarta.transaction-api-2.0.0.jar.md5">jakarta.transaction-api-2.0.0.jar.md5</a>             2020-09-29 11:58        32      
+<a href="jakarta.transaction-api-2.0.0.jar.sha1" title="jakarta.transaction-api-2.0.0.jar.sha1">jakarta.transaction-api-2.0.0.jar.sha1</a>            2020-09-29 11:58        40      
+<a href="jakarta.transaction-api-2.0.0.pom" title="jakarta.transaction-api-2.0.0.pom">jakarta.transaction-api-2.0.0.pom</a>                 2020-09-29 11:58     12000      
+<a href="jakarta.transaction-api-2.0.0.pom.asc" title="jakarta.transaction-api-2.0.0.pom.asc">jakarta.transaction-api-2.0.0.pom.asc</a>             2020-09-29 11:58       833      
+<a href="jakarta.transaction-api-2.0.0.pom.asc.md5" title="jakarta.transaction-api-2.0.0.pom.asc.md5">jakarta.transaction-api-2.0.0.pom.asc.md5</a>         2020-09-29 11:58        32      
+<a href="jakarta.transaction-api-2.0.0.pom.asc.sha1" title="jakarta.transaction-api-2.0.0.pom.asc.sha1">jakarta.transaction-api-2.0.0.pom.asc.sha1</a>        2020-09-29 11:58        40      
+<a href="jakarta.transaction-api-2.0.0.pom.asc.sha256" title="jakarta.transaction-api-2.0.0.pom.asc.sha256">jakarta.transaction-api-2.0.0.pom.asc.sha256</a>      2020-09-29 11:58        64      
+<a href="jakarta.transaction-api-2.0.0.pom.asc.sha512" title="jakarta.transaction-api-2.0.0.pom.asc.sha512">jakarta.transaction-api-2.0.0.pom.asc.sha512</a>      2020-09-29 11:58       128      
+<a href="jakarta.transaction-api-2.0.0.pom.md5" title="jakarta.transaction-api-2.0.0.pom.md5">jakarta.transaction-api-2.0.0.pom.md5</a>             2020-09-29 11:58        32      
+<a href="jakarta.transaction-api-2.0.0.pom.sha1" title="jakarta.transaction-api-2.0.0.pom.sha1">jakarta.transaction-api-2.0.0.pom.sha1</a>            2020-09-29 11:58        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/jakartaee/transactions/contents?ref=2.0.0' | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=transaction-api%202.0.0%20tests&rows=50&wt=json'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/jakartaee/transactions/git/trees/2.0.0?recursive=1' | rg '\"path\":' | rg 'test|tck|src/main|README|pom.xml'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+ succeeded in 124ms:
+{"responseHeader":{"status":0,"QTime":6,"params":{"q":"transaction-api 2.0.0 tests","core":"","defType":"dismax","qf":"text^20 g^5 a^10","indent":"off","spellcheck":"true","fl":"id,g,a,latestVersion,p,ec,repositoryId,text,timestamp,versionCount","start":"","spellcheck.count":"5","sort":"score desc,timestamp desc,g asc,a asc","rows":"50","wt":"json","version":"2.2"}},"response":{"numFound":0,"start":0,"docs":[]},"spellcheck":{"suggestions":[]}}
+ succeeded in 170ms:
+[
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "9f970225adb6a6ada5c22d46d02684b6b0f5525e",
+    "size": 7,
+    "url": "https://api.github.com/repos/jakartaee/transactions/contents/.gitignore?ref=2.0.0",
+    "html_url": "https://github.com/jakartaee/transactions/blob/2.0.0/.gitignore",
+    "git_url": "https://api.github.com/repos/jakartaee/transactions/git/blobs/9f970225adb6a6ada5c22d46d02684b6b0f5525e",
+    "download_url": "https://raw.githubusercontent.com/jakartaee/transactions/2.0.0/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/transactions/contents/.gitignore?ref=2.0.0",
+      "git": "https://api.github.com/repos/jakartaee/transactions/git/blobs/9f970225adb6a6ada5c22d46d02684b6b0f5525e",
+      "html": "https://github.com/jakartaee/transactions/blob/2.0.0/.gitignore"
+    }
+  },
+  {
+    "name": "CONTRIBUTING.md",
+    "path": "CONTRIBUTING.md",
+    "sha": "ace8a8c692b86aa593e6f254a19b8e2bfac33045",
+    "size": 2112,
+    "url": "https://api.github.com/repos/jakartaee/transactions/contents/CONTRIBUTING.md?ref=2.0.0",
+    "html_url": "https://github.com/jakartaee/transactions/blob/2.0.0/CONTRIBUTING.md",
+    "git_url": "https://api.github.com/repos/jakartaee/transactions/git/blobs/ace8a8c692b86aa593e6f254a19b8e2bfac33045",
+    "download_url": "https://raw.githubusercontent.com/jakartaee/transactions/2.0.0/CONTRIBUTING.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/transactions/contents/CONTRIBUTING.md?ref=2.0.0",
+      "git": "https://api.github.com/repos/jakartaee/transactions/git/blobs/ace8a8c692b86aa593e6f254a19b8e2bfac33045",
+      "html": "https://github.com/jakartaee/transactions/blob/2.0.0/CONTRIBUTING.md"
+    }
+  },
+  {
+    "name": "LICENSE.md",
+    "path": "LICENSE.md",
+    "sha": "4f38d09342aab02911221a2386eea04eb55c2f9f",
+    "size": 35721,
+    "url": "https://api.github.com/repos/jakartaee/transactions/contents/LICENSE.md?ref=2.0.0",
+    "html_url": "https://github.com/jakartaee/transactions/blob/2.0.0/LICENSE.md",
+    "git_url": "https://api.github.com/repos/jakartaee/transactions/git/blobs/4f38d09342aab02911221a2386eea04eb55c2f9f",
+    "download_url": "https://raw.githubusercontent.com/jakartaee/transactions/2.0.0/LICENSE.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/transactions/contents/LICENSE.md?ref=2.0.0",
+      "git": "https://api.github.com/repos/jakartaee/transactions/git/blobs/4f38d09342aab02911221a2386eea04eb55c2f9f",
+      "html": "https://github.com/jakartaee/transactions/blob/2.0.0/LICENSE.md"
+    }
+  },
+  {
+    "name": "NOTICE.md",
+    "path": "NOTICE.md",
+    "sha": "f3b1b2616452bbef9abac83a089241e33fa02621",
+    "size": 1702,
+    "url": "https://api.github.com/repos/jakartaee/transactions/contents/NOTICE.md?ref=2.0.0",
+    "html_url": "https://github.com/jakartaee/transactions/blob/2.0.0/NOTICE.md",
+    "git_url": "https://api.github.com/repos/jakartaee/transactions/git/blobs/f3b1b2616452bbef9abac83a089241e33fa02621",
+    "download_url": "https://raw.githubusercontent.com/jakartaee/transactions/2.0.0/NOTICE.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/transactions/contents/NOTICE.md?ref=2.0.0",
+      "git": "https://api.github.com/repos/jakartaee/transactions/git/blobs/f3b1b2616452bbef9abac83a089241e33fa02621",
+      "html": "https://github.com/jakartaee/transactions/blob/2.0.0/NOTICE.md"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "7030dbbb71bdd2fbe30a2c76feeecc6ba4eab6bd",
+    "size": 449,
+    "url": "https://api.github.com/repos/jakartaee/transactions/contents/README.md?ref=2.0.0",
+    "html_url": "https://github.com/jakartaee/transactions/blob/2.0.0/README.md",
+    "git_url": "https://api.github.com/repos/jakartaee/transactions/git/blobs/7030dbbb71bdd2fbe30a2c76feeecc6ba4eab6bd",
+    "download_url": "https://raw.githubusercontent.com/jakartaee/transactions/2.0.0/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/transactions/contents/README.md?ref=2.0.0",
+      "git": "https://api.github.com/repos/jakartaee/transactions/git/blobs/7030dbbb71bdd2fbe30a2c76feeecc6ba4eab6bd",
+      "html": "https://github.com/jakartaee/transactions/blob/2.0.0/README.md"
+    }
+  },
+  {
+    "name": "api",
+    "path": "api",
+    "sha": "ba0cc27a47decf086551bc1aa422762d403468ed",
+    "size": 0,
+    "url": "https://api.github.com/repos/jakartaee/transactions/contents/api?ref=2.0.0",
+    "html_url": "https://github.com/jakartaee/transactions/tree/2.0.0/api",
+    "git_url": "https://api.github.com/repos/jakartaee/transactions/git/trees/ba0cc27a47decf086551bc1aa422762d403468ed",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/transactions/contents/api?ref=2.0.0",
+      "git": "https://api.github.com/repos/jakartaee/transactions/git/trees/ba0cc27a47decf086551bc1aa422762d403468ed",
+      "html": "https://github.com/jakartaee/transactions/tree/2.0.0/api"
+    }
+  },
+  {
+    "name": "osgi.bundle",
+    "path": "osgi.bundle",
+    "sha": "ed67870b882753f98defe99b73637e50e4ece0f1",
+    "size": 721,
+    "url": "https://api.github.com/repos/jakartaee/transactions/contents/osgi.bundle?ref=2.0.0",
+    "html_url": "https://github.com/jakartaee/transactions/blob/2.0.0/osgi.bundle",
+    "git_url": "https://api.github.com/repos/jakartaee/transactions/git/blobs/ed67870b882753f98defe99b73637e50e4ece0f1",
+    "download_url": "https://raw.githubusercontent.com/jakartaee/transactions/2.0.0/osgi.bundle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/transactions/contents/osgi.bundle?ref=2.0.0",
+      "git": "https://api.github.com/repos/jakartaee/transactions/git/blobs/ed67870b882753f98defe99b73637e50e4ece0f1",
+      "html": "https://github.com/jakartaee/transactions/blob/2.0.0/osgi.bundle"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "sha": "73337f10813c7400105fff90ee84cab2d96e0ad1",
+    "size": 2165,
+    "url": "https://api.github.com/repos/jakartaee/transactions/contents/pom.xml?ref=2.0.0",
+    "html_url": "https://github.com/jakartaee/transactions/blob/2.0.0/pom.xml",
+    "git_url": "https://api.github.com/repos/jakartaee/transactions/git/blobs/73337f10813c7400105fff90ee84cab2d96e0ad1",
+    "download_url": "https://raw.githubusercontent.com/jakartaee/transactions/2.0.0/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/transactions/contents/pom.xml?ref=2.0.0",
+      "git": "https://api.github.com/repos/jakartaee/transactions/git/blobs/73337f10813c7400105fff90ee84cab2d96e0ad1",
+      "html": "https://github.com/jakartaee/transactions/blob/2.0.0/pom.xml"
+    }
+  },
+  {
+    "name": "spec",
+    "path": "spec",
+    "sha": "5e380130dc50a53edabf91062d8b8cfc922ec707",
+    "size": 0,
+    "url": "https://api.github.com/repos/jakartaee/transactions/contents/spec?ref=2.0.0",
+    "html_url": "https://github.com/jakartaee/transactions/tree/2.0.0/spec",
+    "git_url": "https://api.github.com/repos/jakartaee/transactions/git/trees/5e380130dc50a53edabf91062d8b8cfc922ec707",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/jakartaee/transactions/contents/spec?ref=2.0.0",
+      "git": "https://api.github.com/repos/jakartaee/transactions/git/trees/5e380130dc50a53edabf91062d8b8cfc922ec707",
+      "html": "https://github.com/jakartaee/transactions/tree/2.0.0/spec"
+    }
+  }
+]
+
+ succeeded in 226ms:
+      "path": "README.md",
+      "path": "api/pom.xml",
+      "path": "api/src/main",
+      "path": "api/src/main/java",
+      "path": "api/src/main/java/jakarta",
+      "path": "api/src/main/java/jakarta/transaction",
+      "path": "api/src/main/java/jakarta/transaction/HeuristicCommitException.java",
+      "path": "api/src/main/java/jakarta/transaction/HeuristicMixedException.java",
+      "path": "api/src/main/java/jakarta/transaction/HeuristicRollbackException.java",
+      "path": "api/src/main/java/jakarta/transaction/InvalidTransactionException.java",
+      "path": "api/src/main/java/jakarta/transaction/NotSupportedException.java",
+      "path": "api/src/main/java/jakarta/transaction/RollbackException.java",
+      "path": "api/src/main/java/jakarta/transaction/Status.java",
+      "path": "api/src/main/java/jakarta/transaction/Synchronization.java",
+      "path": "api/src/main/java/jakarta/transaction/SystemException.java",
+      "path": "api/src/main/java/jakarta/transaction/Transaction.java",
+      "path": "api/src/main/java/jakarta/transaction/TransactionManager.java",
+      "path": "api/src/main/java/jakarta/transaction/TransactionRequiredException.java",
+      "path": "api/src/main/java/jakarta/transaction/TransactionRolledbackException.java",
+      "path": "api/src/main/java/jakarta/transaction/TransactionScoped.java",
+      "path": "api/src/main/java/jakarta/transaction/TransactionSynchronizationRegistry.java",
+      "path": "api/src/main/java/jakarta/transaction/Transactional.java",
+      "path": "api/src/main/java/jakarta/transaction/TransactionalException.java",
+      "path": "api/src/main/java/jakarta/transaction/UserTransaction.java",
+      "path": "api/src/main/java/jakarta/transaction/package.html",
+      "path": "api/src/main/javadoc",
+      "path": "api/src/main/javadoc/doc-files",
+      "path": "api/src/main/javadoc/doc-files/EFSL.html",
+      "path": "pom.xml",
+      "path": "spec/README.md",
+      "path": "spec/pom.xml",
+      "path": "spec/src/main",
+      "path": "spec/src/main/asciidoc",
+      "path": "spec/src/main/asciidoc/Transactions.adoc",
+      "path": "spec/src/main/asciidoc/images",
+      "path": "spec/src/main/asciidoc/images/jakarta_ee_logo_schooner_color_stacked_default.png",
+      "path": "spec/src/main/asciidoc/images/transactions-2.svg",
+      "path": "spec/src/main/asciidoc/images/transactions-3.svg",
+      "path": "spec/src/main/asciidoc/images/transactions-4.svg",
+      "path": "spec/src/main/asciidoc/images/transactions-5.svg",
+      "path": "spec/src/main/asciidoc/license-efsl.adoc",
+      "path": "spec/src/main/asciidoc/transactions-spec.adoc",
+      "path": "spec/src/main/theme",
+      "path": "spec/src/main/theme/jakartaee-theme.yml",
+
+web search: 
+web search: jakarta transactions tck 2.0 zip download.eclipse.org
+codex
+The 2.0.0 repository tag exists and the GitHub root redirects to `jakartaee/transactions`, so that is the canonical repository root. There is no Maven test artifact for this group/artifact, but the Jakarta Transactions 2.0 release publishes a versioned TCK ZIP, which fits the test suite field.
+exec
+/usr/bin/bash -lc "curl -I -L -sS -o /dev/null -w '%{http_code} %{url_effective}\\n' 'https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/2.0.0/jakarta.transaction-api-2.0.0-sources.jar'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+ succeeded in 0ms:
+200 https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/2.0.0/jakarta.transaction-api-2.0.0-sources.jar
+
+exec
+/usr/bin/bash -lc "curl -I -L -sS -o /dev/null -w '%{http_code} %{url_effective}\\n' 'https://download.eclipse.org/ee4j/jakartaee-tck/jakartaee9-eftl/promoted/jakarta-transactions-tck-2.0.0.zip'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+exec
+/usr/bin/bash -lc "curl -I -L -sS -o /dev/null -w '%{http_code} %{url_effective}\\n' 'https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/2.0.0/jakarta.transaction-api-2.0.0-javadoc.jar'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+exec
+/usr/bin/bash -lc "curl -I -L -sS -o /dev/null -w '%{http_code} %{url_effective}\\n' 'https://github.com/jakartaee/transactions/tree/2.0.0'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+ succeeded in 217ms:
+200 https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/2.0.0/jakarta.transaction-api-2.0.0-javadoc.jar
+
+ succeeded in 707ms:
+200 https://download.eclipse.org/ee4j/jakartaee-tck/jakartaee9-eftl/promoted/jakarta-transactions-tck-2.0.0.zip
+
+ succeeded in 830ms:
+200 https://github.com/jakartaee/transactions/tree/2.0.0
+
+codex
+I’m going to add the verified version-template URLs to the 2.0.0 entry, reuse the canonical repository root, add the two-sentence description, and leave `language` absent because this is not one of the language-specific Kotlin/Groovy/Scala libraries requested.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d/metadata/jakarta.transaction/jakarta.transaction-api/index.json
+diff --git a/metadata/jakarta.transaction/jakarta.transaction-api/index.json b/metadata/jakarta.transaction/jakarta.transaction-api/index.json
+index 7a42ea2cb41c30d3b8e7a0895a78ec37452cd3f4..adcb8602c03d09d3a3ebdd49e8772452692620cf
+--- a/metadata/jakarta.transaction/jakarta.transaction-api/index.json
++++ b/metadata/jakarta.transaction/jakarta.transaction-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/transactions",
++    "test-code-url" : "https://download.eclipse.org/ee4j/jakartaee-tck/jakartaee9-eftl/promoted/jakarta-transactions-tck-$version$.zip",
++    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-javadoc.jar",
++    "description" : "Jakarta Transaction API provides the standard Java interfaces and exceptions for demarcating and coordinating distributed transactions. It defines contracts such as UserTransaction, TransactionManager, and Synchronization that application servers and transaction managers implement or expose to JVM applications.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+diff --git a/metadata/jakarta.transaction/jakarta.transaction-api/index.json b/metadata/jakarta.transaction/jakarta.transaction-api/index.json
+index 7a42ea2cb41c30d3b8e7a0895a78ec37452cd3f4..adcb8602c03d09d3a3ebdd49e8772452692620cf
+--- a/metadata/jakarta.transaction/jakarta.transaction-api/index.json
++++ b/metadata/jakarta.transaction/jakarta.transaction-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/transactions",
++    "test-code-url" : "https://download.eclipse.org/ee4j/jakartaee-tck/jakartaee9-eftl/promoted/jakarta-transactions-tck-$version$.zip",
++    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-javadoc.jar",
++    "description" : "Jakarta Transaction API provides the standard Java interfaces and exceptions for demarcating and coordinating distributed transactions. It defines contracts such as UserTransaction, TransactionManager, and Synchronization that application servers and transaction managers implement or expose to JVM applications.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+codex
+The metadata file is updated. I’ll now validate JSON and run the targeted metadata check for this coordinate so formatting and metadata rules are exercised.
+exec
+/usr/bin/bash -lc 'jq empty metadata/jakarta.transaction/jakarta.transaction-api/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/jakarta.transaction/jakarta.transaction-api/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+ succeeded in 0ms:
+diff --git i/metadata/jakarta.transaction/jakarta.transaction-api/index.json w/metadata/jakarta.transaction/jakarta.transaction-api/index.json
+index 7a42ea2cb4..adcb8602c0 100644
+--- i/metadata/jakarta.transaction/jakarta.transaction-api/index.json
++++ w/metadata/jakarta.transaction/jakarta.transaction-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/transactions",
++    "test-code-url" : "https://download.eclipse.org/ee4j/jakartaee-tck/jakartaee9-eftl/promoted/jakarta-transactions-tck-$version$.zip",
++    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-javadoc.jar",
++    "description" : "Jakarta Transaction API provides the standard Java interfaces and exceptions for demarcating and coordinating distributed transactions. It defines contracts such as UserTransaction, TransactionManager, and Synchronization that application servers and transaction managers implement or expose to JVM applications.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+diff --git a/metadata/jakarta.transaction/jakarta.transaction-api/index.json b/metadata/jakarta.transaction/jakarta.transaction-api/index.json
+index 7a42ea2cb41c30d3b8e7a0895a78ec37452cd3f4..adcb8602c03d09d3a3ebdd49e8772452692620cf
+--- a/metadata/jakarta.transaction/jakarta.transaction-api/index.json
++++ b/metadata/jakarta.transaction/jakarta.transaction-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/transactions",
++    "test-code-url" : "https://download.eclipse.org/ee4j/jakartaee-tck/jakartaee9-eftl/promoted/jakarta-transactions-tck-$version$.zip",
++    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-javadoc.jar",
++    "description" : "Jakarta Transaction API provides the standard Java interfaces and exceptions for demarcating and coordinating distributed transactions. It defines contracts such as UserTransaction, TransactionManager, and Synchronization that application servers and transaction managers implement or expose to JVM applications.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=jakarta.transaction:jakarta.transaction-api:2.0.0 --stacktrace' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+diff --git a/metadata/jakarta.transaction/jakarta.transaction-api/index.json b/metadata/jakarta.transaction/jakarta.transaction-api/index.json
+index 7a42ea2cb41c30d3b8e7a0895a78ec37452cd3f4..adcb8602c03d09d3a3ebdd49e8772452692620cf
+--- a/metadata/jakarta.transaction/jakarta.transaction-api/index.json
++++ b/metadata/jakarta.transaction/jakarta.transaction-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/transactions",
++    "test-code-url" : "https://download.eclipse.org/ee4j/jakartaee-tck/jakartaee9-eftl/promoted/jakarta-transactions-tck-$version$.zip",
++    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-javadoc.jar",
++    "description" : "Jakarta Transaction API provides the standard Java interfaces and exceptions for demarcating and coordinating distributed transactions. It defines contracts such as UserTransaction, TransactionManager, and Synchronization that application servers and transaction managers implement or expose to JVM applications.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+ exited 1 in 5019ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for jakarta.transaction:jakarta.transaction-api:2.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d/metadata/jakarta.transaction/jakarta.transaction-api/2.0.0/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - jakarta.transaction:jakarta.transaction-api:2.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d/metadata/jakarta.transaction/jakarta.transaction-api/2.0.0/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - jakarta.transaction:jakarta.transaction-api:2.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d/metadata/jakarta.transaction/jakarta.transaction-api/2.0.0/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 4s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+JSON parsing passed. The broader `checkMetadataFiles` task failed before validating the URL change because this metadata version has no `reachability-metadata.json` directory content, which is outside the requested fields; I’m checking for a narrower index validation task now.
+exec
+/usr/bin/bash -lc "rg -n 'validateIndexFiles|checkIndex|IndexFiles|index files' build.gradle settings.gradle gradle tck-build-logic -g '*.gradle' -g '*.groovy' -g '*.java'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+ exited 2 in 0ms:
+rg: tck-build-logic: No such file or directory (os error 2)
+build.gradle:138:            "validateIndexFiles",
+
+exec
+/usr/bin/bash -lc "./gradlew tasks --all | rg -i 'index|metadata'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+diff --git a/metadata/jakarta.transaction/jakarta.transaction-api/index.json b/metadata/jakarta.transaction/jakarta.transaction-api/index.json
+index 7a42ea2cb41c30d3b8e7a0895a78ec37452cd3f4..adcb8602c03d09d3a3ebdd49e8772452692620cf
+--- a/metadata/jakarta.transaction/jakarta.transaction-api/index.json
++++ b/metadata/jakarta.transaction/jakarta.transaction-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/transactions",
++    "test-code-url" : "https://download.eclipse.org/ee4j/jakartaee-tck/jakartaee9-eftl/promoted/jakarta-transactions-tck-$version$.zip",
++    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-javadoc.jar",
++    "description" : "Jakarta Transaction API provides the standard Java interfaces and exceptions for demarcating and coordinating distributed transactions. It defines contracts such as UserTransaction, TransactionManager, and Synchronization that application servers and transaction managers implement or expose to JVM applications.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+ succeeded in 765ms:
+GraalVM Reachability Metadata TCK
+Tasks runnable from root project 'reachability-metadata'
+artifactTransforms - Displays the Artifact Transforms that can be executed in root project 'reachability-metadata'.
+buildEnvironment - Displays all buildscript dependencies declared in root project 'reachability-metadata'.
+dependencies - Displays all dependencies declared in root project 'reachability-metadata'.
+dependencyInsight - Displays the insight into a specific dependency in root project 'reachability-metadata'.
+outgoingVariants - Displays the outgoing variants of root project 'reachability-metadata'.
+projects - Displays the sub-projects of root project 'reachability-metadata'.
+properties - Displays the properties of root project 'reachability-metadata'.
+resolvableConfigurations - Displays the configurations that can be resolved in root project 'reachability-metadata'.
+tasks - Displays the tasks runnable from root project 'reachability-metadata'.
+Metadata tasks
+addLibraryAsLatestMetadataIndexJson - Marks given coordinates as latest in metadata/group/artifact/index.json
+addLibraryMetadataIndexJson - Adds given coordinates to metadata/group/artifact/index.json without changing the latest entry
+checkMetadataFiles - Checks content of metadata files for matching coordinates
+contribute - Generates metadata and prepares pull request for contibuting on metadata repository based on provided tests.
+discoverArtifactMetadata - Uses a coding agent command to discover artifact metadata for a single coordinate and stores it under build/.
+generateChangedIndexFileCoordinatesList - Returns a list of changed coordinates for validation based on git diff
+generateChangedMetadataTestMatrix - Returns matrix definition populated with changed coordinates and batched tested versions from metadata index files
+generateLibraryStats - Generates local library stats and updates stats/<group>/<artifact>/<metadata-version>/stats.json
+generateMetadata - Generates metadata based on provided tests.
+mergeNativeTraceMetadata - Merges runtime metadata trace output directories with native-image-utils generate
+populateArtifactURLs - Uses a coding agent command to fill source-code-url, repository-url, test-code-url, documentation-url, description, and language in matching metadata index entries.
+scaffold - Creates a metadata and test scaffold for the given coordindates
+splitTestOnlyMetadata - Moves test-only entries from library reachability metadata into test resources metadata.
+package - Packages current repository to 'build/graalvm-reachability-metadata-1.0.0-SNAPSHOT.zip'
+diff - Tests GraalVM Reflection Metadata that was changed between 'baseCommit' and 'newCommit'
+testInfra - Runs clean and pullAllowedDockerImages, then runs (validateIndexFiles, checkstyle, spotlessCheck, checkMetadataFiles, fetchExistingLibrariesWithNewerVersions, test, jacocoTestReport, listLibraryJars, generateDynamicAccessReport, generateDynamicAccessCoverageReport, generateLibraryStats, listCoordinates, generateDependencyGraph, splitTestOnlyMetadata) concurrently with isolated logs for a single coordinate.
+validateIndexFiles - Checks content of index.json files for matching coordinates or files
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d/build/reports/problems/problems-report.html
+
+codex
+There is a dedicated `validateIndexFiles` task, which is the right scope for this index-only edit. I’m running it against the changed coordinate now.
+exec
+/usr/bin/bash -lc './gradlew validateIndexFiles -Pcoordinates=jakarta.transaction:jakarta.transaction-api:2.0.0 --stacktrace' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+diff --git a/metadata/jakarta.transaction/jakarta.transaction-api/index.json b/metadata/jakarta.transaction/jakarta.transaction-api/index.json
+index 7a42ea2cb41c30d3b8e7a0895a78ec37452cd3f4..adcb8602c03d09d3a3ebdd49e8772452692620cf
+--- a/metadata/jakarta.transaction/jakarta.transaction-api/index.json
++++ b/metadata/jakarta.transaction/jakarta.transaction-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/transactions",
++    "test-code-url" : "https://download.eclipse.org/ee4j/jakartaee-tck/jakartaee9-eftl/promoted/jakarta-transactions-tck-$version$.zip",
++    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-javadoc.jar",
++    "description" : "Jakarta Transaction API provides the standard Java interfaces and exceptions for demarcating and coordinating distributed transactions. It defines contracts such as UserTransaction, TransactionManager, and Synchronization that application servers and transaction managers implement or expose to JVM applications.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+ succeeded in 442ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :validateIndexFiles
+✅ metadata/jakarta.transaction/jakarta.transaction-api/index.json: Valid
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 433ms
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: repo1.maven.org jakarta.transaction-api 2.0.0 javadoc sources
+exec
+/usr/bin/bash -lc "nl -ba metadata/jakarta.transaction/jakarta.transaction-api/index.json | sed -n '1,28p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "2.0.0",
+     5	    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-sources.jar",
+     6	    "repository-url" : "https://github.com/jakartaee/transactions",
+     7	    "test-code-url" : "https://download.eclipse.org/ee4j/jakartaee-tck/jakartaee9-eftl/promoted/jakarta-transactions-tck-$version$.zip",
+     8	    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-javadoc.jar",
+     9	    "description" : "Jakarta Transaction API provides the standard Java interfaces and exceptions for demarcating and coordinating distributed transactions. It defines contracts such as UserTransaction, TransactionManager, and Synchronization that application servers and transaction managers implement or expose to JVM applications.",
+    10	    "tested-versions" : [
+    11	      "2.0.0"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "javax.transaction"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "1.3.1",
+    19	    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-sources.jar",
+    20	    "repository-url" : "https://github.com/jakartaee/transactions",
+    21	    "test-code-url" : "N/A",
+    22	    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-javadoc.jar",
+    23	    "description" : "Jakarta Transaction API provides the standard Java interfaces and exceptions for demarcating and coordinating distributed transactions. It defines contracts such as UserTransaction, TransactionManager, and Synchronization that application servers and transaction managers implement or expose to JVM applications.",
+    24	    "tested-versions" : [
+    25	      "1.3.1",
+    26	      "1.3.2",
+    27	      "1.3.3"
+    28	    ],
+
+exec
+/usr/bin/bash -lc 'git status --short metadata/jakarta.transaction/jakarta.transaction-api/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d
+ succeeded in 0ms:
+ M metadata/jakarta.transaction/jakarta.transaction-api/index.json
+
+diff --git a/metadata/jakarta.transaction/jakarta.transaction-api/index.json b/metadata/jakarta.transaction/jakarta.transaction-api/index.json
+index 7a42ea2cb41c30d3b8e7a0895a78ec37452cd3f4..adcb8602c03d09d3a3ebdd49e8772452692620cf
+--- a/metadata/jakarta.transaction/jakarta.transaction-api/index.json
++++ b/metadata/jakarta.transaction/jakarta.transaction-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/transactions",
++    "test-code-url" : "https://download.eclipse.org/ee4j/jakartaee-tck/jakartaee9-eftl/promoted/jakarta-transactions-tck-$version$.zip",
++    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-javadoc.jar",
++    "description" : "Jakarta Transaction API provides the standard Java interfaces and exceptions for demarcating and coordinating distributed transactions. It defines contracts such as UserTransaction, TransactionManager, and Synchronization that application servers and transaction managers implement or expose to JVM applications.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+web search: 
+web search: https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/2.0.0/
+web search: 
+web search: https://download.eclipse.org/ee4j/jakartaee-tck/jakartaee9-eftl/promoted/jakarta-transactions-tck-2.0.0.zip
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d/metadata/jakarta.transaction/jakarta.transaction-api/index.json:5) for `metadata-version` 2.0.0 with source, repository, TCK test suite, javadoc, and the two-sentence description. I left `language` absent because this is not a Kotlin/Groovy/Scala-specific library. Maven Central has the 2.0.0 sources and javadoc artifacts, and the canonical repository is `jakartaee/transactions`. ([repo1.maven.org](https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/2.0.0/))
+
+Validation:
+- `jq empty metadata/jakarta.transaction/jakarta.transaction-api/index.json` passed.
+- `./gradlew validateIndexFiles -Pcoordinates=jakarta.transaction:jakarta.transaction-api:2.0.0 --stacktrace` passed.
+- `./gradlew checkMetadataFiles ...` failed because `metadata/jakarta.transaction/jakarta.transaction-api/2.0.0/reachability-metadata.json` is missing; that is outside the requested field update.
+diff --git a/metadata/jakarta.transaction/jakarta.transaction-api/index.json b/metadata/jakarta.transaction/jakarta.transaction-api/index.json
+index 7a42ea2cb41c30d3b8e7a0895a78ec37452cd3f4..adcb8602c03d09d3a3ebdd49e8772452692620cf
+--- a/metadata/jakarta.transaction/jakarta.transaction-api/index.json
++++ b/metadata/jakarta.transaction/jakarta.transaction-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/transactions",
++    "test-code-url" : "https://download.eclipse.org/ee4j/jakartaee-tck/jakartaee9-eftl/promoted/jakarta-transactions-tck-$version$.zip",
++    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-javadoc.jar",
++    "description" : "Jakarta Transaction API provides the standard Java interfaces and exceptions for demarcating and coordinating distributed transactions. It defines contracts such as UserTransaction, TransactionManager, and Synchronization that application servers and transaction managers implement or expose to JVM applications.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+tokens used
+67,024
+Updated [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d/metadata/jakarta.transaction/jakarta.transaction-api/index.json:5) for `metadata-version` 2.0.0 with source, repository, TCK test suite, javadoc, and the two-sentence description. I left `language` absent because this is not a Kotlin/Groovy/Scala-specific library. Maven Central has the 2.0.0 sources and javadoc artifacts, and the canonical repository is `jakartaee/transactions`. ([repo1.maven.org](https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/2.0.0/))
+
+Validation:
+- `jq empty metadata/jakarta.transaction/jakarta.transaction-api/index.json` passed.
+- `./gradlew validateIndexFiles -Pcoordinates=jakarta.transaction:jakarta.transaction-api:2.0.0 --stacktrace` passed.
+- `./gradlew checkMetadataFiles ...` failed because `metadata/jakarta.transaction/jakarta.transaction-api/2.0.0/reachability-metadata.json` is missing; that is outside the requested field update.
+Ran agent for jakarta.transaction:jakarta.transaction-api:2.0.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d/build/agent-url-discovery-logs/jakarta.transaction-jakarta.transaction-api-2.0.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8154-1a82769d/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 50s
+9 actionable tasks: 1 executed, 8 up-to-date
