@@ -55,6 +55,20 @@ public class Spring_cloud_aws_coreTest {
     }
 
     @Test
+    void defaultClientConfigurationLoadsVersionFromPropertiesResource() {
+        SpringCloudClientConfiguration configuration = new SpringCloudClientConfiguration();
+
+        ClientOverrideConfiguration overrideConfiguration = configuration.clientOverrideConfiguration();
+
+        assertThat(overrideConfiguration.advancedOption(SdkAdvancedClientOption.USER_AGENT_SUFFIX))
+                .hasValueSatisfying(userAgent -> {
+                    String expectedPrefix = "spring-cloud-aws/";
+                    assertThat(userAgent).startsWith(expectedPrefix);
+                    assertThat(userAgent.substring(expectedPrefix.length())).isNotBlank();
+                });
+    }
+
+    @Test
     void runtimeHintsRegisterClientConfigurationPropertiesResource() {
         RuntimeHints hints = new RuntimeHints();
 
