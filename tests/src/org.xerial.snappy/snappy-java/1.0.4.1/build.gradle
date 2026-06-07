@@ -15,8 +15,38 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+String nativeOs = System.getProperty('os.name').contains('Windows') ? 'Windows'
+        : System.getProperty('os.name').contains('Mac') ? 'Mac'
+        : System.getProperty('os.name').contains('Linux') ? 'Linux'
+        : System.getProperty('os.name').replaceAll('\\W', '')
+String nativeArch = System.getProperty('os.arch').replaceAll('\\W', '')
+String nativeLibraryName = System.mapLibraryName('snappyjava')
+Provider<Directory> snappySystemLibraryDirectory = layout.buildDirectory.dir('snappy-system-lib')
+
+TaskProvider<Copy> extractSnappySystemLibrary = tasks.register('extractSnappySystemLibrary', Copy) {
+    from({
+        File snappyJar = configurations.testRuntimeClasspath.files.find {
+            it.name == "snappy-java-${libraryVersion}.jar"
+        }
+        zipTree(snappyJar)
+    }) {
+        include "org/xerial/snappy/native/${nativeOs}/${nativeArch}/${nativeLibraryName}"
+        if (nativeOs == 'Mac') {
+            include "org/xerial/snappy/native/${nativeOs}/${nativeArch}/libsnappyjava.jnilib"
+        }
+        eachFile { details ->
+            details.path = details.name
+        }
+        includeEmptyDirs = false
+    }
+    into(snappySystemLibraryDirectory)
+}
+
 tasks.withType(Test).configureEach {
+    dependsOn(extractSnappySystemLibrary)
+    forkEvery = 1
     jvmArgs "--add-opens=java.base/java.lang=ALL-UNNAMED"
+    jvmArgs "-Djava.library.path=${snappySystemLibraryDirectory.get().asFile.absolutePath}"
 }
 
 graalvmNative {
@@ -31,6 +61,7 @@ graalvmNative {
     binaries {
         all {
             buildArgs.add("--add-opens=java.base/java.lang=ALL-UNNAMED")
+            runtimeArgs.add("-Djava.library.path=${snappySystemLibraryDirectory.get().asFile.absolutePath}")
         }
     }
 }

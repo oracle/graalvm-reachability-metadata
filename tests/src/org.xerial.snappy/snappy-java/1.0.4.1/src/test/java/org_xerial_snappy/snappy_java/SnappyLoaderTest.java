@@ -13,6 +13,7 @@ import org.xerial.snappy.Snappy;
 import org.xerial.snappy.SnappyLoader;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -57,6 +58,10 @@ public class SnappyLoaderTest {
             Thread.currentThread().setContextClassLoader(isolatedClassLoader);
             try {
                 roundTripWithIsolatedSnappyApi(isolatedClassLoader);
+            } catch (final InvocationTargetException exception) {
+                if (!isExpectedMissingSystemLibraryFailure(exception) && !containsUnsupportedFeatureError(exception)) {
+                    throw exception;
+                }
             } catch (final Error error) {
                 if (!isExpectedMissingSystemLibraryFailure(error)
                         && !NativeImageSupport.isUnsupportedFeatureError(error)) {
@@ -85,6 +90,17 @@ public class SnappyLoaderTest {
         while (current != null) {
             if ("org.xerial.snappy.SnappyError".equals(current.getClass().getName())
                     && current.getMessage().contains("FAILED_TO_LOAD_NATIVE_LIBRARY")) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
+    }
+
+    private static boolean containsUnsupportedFeatureError(final Throwable throwable) {
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof Error && NativeImageSupport.isUnsupportedFeatureError((Error) current)) {
                 return true;
             }
             current = current.getCause();
