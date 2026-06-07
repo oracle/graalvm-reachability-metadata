@@ -10,9 +10,21 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+configurations {
+    byteBuddyAgent {
+        canBeConsumed = false
+        canBeResolved = true
+    }
+}
+
 dependencies {
+    byteBuddyAgent "net.bytebuddy:byte-buddy-agent:$libraryVersion"
     testImplementation "net.bytebuddy:byte-buddy:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+tasks.withType(Test).configureEach {
+    jvmArgs "-javaagent:${configurations.byteBuddyAgent.singleFile}"
 }
 
 graalvmNative {

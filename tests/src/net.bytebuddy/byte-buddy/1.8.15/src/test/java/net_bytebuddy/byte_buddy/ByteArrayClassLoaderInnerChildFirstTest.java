@@ -10,7 +10,6 @@ import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.ClassFileVersion;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.loading.ByteArrayClassLoader;
-import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -30,6 +29,10 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ByteArrayClassLoaderInnerChildFirstTest {
+    private static final String GENERATED_PACKAGE = "net_bytebuddy.byte_buddy.generated.childfirst";
+    private static final String LATENT_TYPE_NAME = GENERATED_PACKAGE + ".LatentChildFirstType";
+    private static final String MANIFEST_TYPE_NAME = GENERATED_PACKAGE + ".ManifestChildFirstType";
+
     @TempDir
     Path temporaryDirectory;
 
@@ -63,13 +66,24 @@ public class ByteArrayClassLoaderInnerChildFirstTest {
     }
 
     private Class<?> loadLatentChildFirstType(ClassLoader parentClassLoader) {
-        DynamicType.Unloaded<?> unloaded = makeType("LatentChildFirstType");
-        return unloaded.load(parentClassLoader, ClassLoadingStrategy.Default.CHILD_FIRST).getLoaded();
+        DynamicType.Unloaded<?> unloaded = makeType(LATENT_TYPE_NAME);
+        Map<String, byte[]> typeDefinitions = new LinkedHashMap<String, byte[]>();
+        String typeName = unloaded.getTypeDescription().getName();
+        typeDefinitions.put(typeName, unloaded.getBytes());
+        ExposedChildFirstClassLoader classLoader = new ExposedChildFirstClassLoader(
+                parentClassLoader,
+                typeDefinitions,
+                ByteArrayClassLoader.PersistenceHandler.LATENT);
+        try {
+            return classLoader.define(typeName);
+        } catch (ClassNotFoundException exception) {
+            throw new IllegalStateException("Cannot load class " + typeName, exception);
+        }
     }
 
     private void loadManifestChildFirstTypeAndReadClassResource(ClassLoader parentClassLoader)
             throws Exception {
-        DynamicType.Unloaded<?> unloaded = makeType("ManifestChildFirstType");
+        DynamicType.Unloaded<?> unloaded = makeType(MANIFEST_TYPE_NAME);
         String typeName = unloaded.getTypeDescription().getName();
         String resourceName = typeName.replace('.', '/') + ".class";
         prepareParentResource(resourceName, "parent class resource".getBytes(StandardCharsets.UTF_8));
@@ -89,8 +103,7 @@ public class ByteArrayClassLoaderInnerChildFirstTest {
         assertThat(read(resources.nextElement())).containsExactly(unloaded.getBytes());
     }
 
-    private DynamicType.Unloaded<?> makeType(String simpleName) {
-        String typeName = "net.bytebuddy.generated.childfirst" + System.nanoTime() + "." + simpleName;
+    private DynamicType.Unloaded<?> makeType(String typeName) {
         return new ByteBuddy(ClassFileVersion.JAVA_V8)
                 .subclass(Object.class)
                 .name(typeName)
@@ -121,5 +134,18 @@ public class ByteArrayClassLoaderInnerChildFirstTest {
             }
         }
         return outputStream.toByteArray();
+    }
+
+    private static final class ExposedChildFirstClassLoader extends ByteArrayClassLoader.ChildFirst {
+        private ExposedChildFirstClassLoader(
+                ClassLoader parentClassLoader,
+                Map<String, byte[]> typeDefinitions,
+                ByteArrayClassLoader.PersistenceHandler persistenceHandler) {
+            super(parentClassLoader, typeDefinitions, persistenceHandler);
+        }
+
+        private Class<?> define(String typeName) throws ClassNotFoundException {
+            return findClass(typeName);
+        }
     }
 }
