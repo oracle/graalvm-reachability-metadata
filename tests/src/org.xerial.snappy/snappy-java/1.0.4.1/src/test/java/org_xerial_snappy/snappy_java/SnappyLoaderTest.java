@@ -13,7 +13,6 @@ import org.xerial.snappy.Snappy;
 import org.xerial.snappy.SnappyLoader;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -39,7 +38,7 @@ public class SnappyLoaderTest {
             assertThat(Snappy.uncompress(compressed)).isEqualTo(input);
             assertThat(SnappyLoader.isNativeLibraryLoaded()).isTrue();
         } catch (final Error error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+            if (!isExpectedNativeImageFailure(error)) {
                 throw error;
             }
         } finally {
@@ -58,13 +57,12 @@ public class SnappyLoaderTest {
             Thread.currentThread().setContextClassLoader(isolatedClassLoader);
             try {
                 roundTripWithIsolatedSnappyApi(isolatedClassLoader);
-            } catch (final InvocationTargetException exception) {
-                if (!isExpectedMissingSystemLibraryFailure(exception) && !containsUnsupportedFeatureError(exception)) {
+            } catch (final ReflectiveOperationException exception) {
+                if (!isExpectedMissingSystemLibraryFailure(exception) && !isExpectedNativeImageFailure(exception)) {
                     throw exception;
                 }
             } catch (final Error error) {
-                if (!isExpectedMissingSystemLibraryFailure(error)
-                        && !NativeImageSupport.isUnsupportedFeatureError(error)) {
+                if (!isExpectedMissingSystemLibraryFailure(error) && !isExpectedNativeImageFailure(error)) {
                     throw error;
                 }
             }
@@ -88,13 +86,19 @@ public class SnappyLoaderTest {
     private static boolean isExpectedMissingSystemLibraryFailure(final Throwable throwable) {
         Throwable current = throwable;
         while (current != null) {
+            final String message = current.getMessage();
             if ("org.xerial.snappy.SnappyError".equals(current.getClass().getName())
-                    && current.getMessage().contains("FAILED_TO_LOAD_NATIVE_LIBRARY")) {
+                    && message != null
+                    && message.contains("FAILED_TO_LOAD_NATIVE_LIBRARY")) {
                 return true;
             }
             current = current.getCause();
         }
         return false;
+    }
+
+    private static boolean isExpectedNativeImageFailure(final Throwable throwable) {
+        return containsUnsupportedFeatureError(throwable) || containsUnsupportedSnappyInitializationFailure(throwable);
     }
 
     private static boolean containsUnsupportedFeatureError(final Throwable throwable) {
@@ -104,6 +108,48 @@ public class SnappyLoaderTest {
                 return true;
             }
             current = current.getCause();
+        }
+        return false;
+    }
+
+    private static boolean containsUnsupportedSnappyInitializationFailure(final Throwable throwable) {
+        if (!"runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))) {
+            return false;
+        }
+
+        Throwable current = throwable;
+        while (current != null) {
+            if (isWrappedSnappyDynamicClassLoadingFailure(current)) {
+                return true;
+            }
+            if (current instanceof NoClassDefFoundError || current instanceof ClassNotFoundException) {
+                final String message = current.getMessage();
+                if (message != null && (message.contains("org.xerial.snappy.Snappy")
+                        || message.contains("org.xerial.snappy.SnappyNativeLoader")
+                        || message.contains("org/xerial/snappy/SnappyNativeLoader"))) {
+                    return true;
+                }
+            }
+            current = current.getCause();
+        }
+        return false;
+    }
+
+    private static boolean isWrappedSnappyDynamicClassLoadingFailure(final Throwable throwable) {
+        if (!"org.xerial.snappy.SnappyError".equals(throwable.getClass().getName())) {
+            return false;
+        }
+
+        final String message = throwable.getMessage();
+        if (message == null || !message.contains("FAILED_TO_LOAD_NATIVE_LIBRARY")) {
+            return false;
+        }
+
+        for (final StackTraceElement element : throwable.getStackTrace()) {
+            if ("org.xerial.snappy.SnappyLoader".equals(element.getClassName())
+                    && "injectSnappyNativeLoader".equals(element.getMethodName())) {
+                return true;
+            }
         }
         return false;
     }
