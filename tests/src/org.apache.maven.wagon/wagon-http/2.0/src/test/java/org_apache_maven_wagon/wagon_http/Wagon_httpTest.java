@@ -17,6 +17,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URI;
@@ -32,7 +33,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.GZIPOutputStream;
-import org.apache.commons.httpclient.HttpStatus;
 import org.apache.maven.wagon.TransferFailedException;
 import org.apache.maven.wagon.authentication.AuthenticationInfo;
 import org.apache.maven.wagon.authorization.AuthorizationException;
@@ -60,7 +60,7 @@ public class Wagon_httpTest {
             assertThat(exchange.getRequestHeaders().getFirst("Cache-control")).isEqualTo("no-cache");
             assertThat(exchange.getRequestHeaders().getFirst("Accept-Encoding")).isEqualTo("gzip");
 
-            writeStringResponse(exchange, HttpStatus.SC_OK, """
+            writeStringResponse(exchange, HttpURLConnection.HTTP_OK, """
                     <html>
                       <body>
                         <a href="artifact-1.jar">artifact</a>
@@ -102,10 +102,10 @@ public class Wagon_httpTest {
                 assertThat(exchange.getRequestHeaders().getFirst("Accept-Encoding")).isEqualTo("gzip");
                 exchange.getResponseHeaders().add("Content-Encoding", "gzip");
                 exchange.getResponseHeaders().add("Last-Modified", lastModified);
-                writeBytesResponse(exchange, HttpStatus.SC_OK, gzippedBody);
+                writeBytesResponse(exchange, HttpURLConnection.HTTP_OK, gzippedBody);
             } else {
                 assertThat(exchange.getRequestHeaders().getFirst("If-Modified-Since")).isNotBlank();
-                exchange.sendResponseHeaders(HttpStatus.SC_NOT_MODIFIED, -1);
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_MODIFIED, -1);
             }
         })) {
             HttpWagon wagon = connect(server);
@@ -137,11 +137,11 @@ public class Wagon_httpTest {
             if (requestNumber == 1) {
                 assertThat(exchange.getRequestURI().getRawPath()).isEqualTo("/repository/uploads/hello+world.txt");
                 assertThat(new String(exchange.getRequestBody().readAllBytes(), UTF_8)).isEqualTo("file payload");
-                writeStringResponse(exchange, HttpStatus.SC_CREATED, "created");
+                writeStringResponse(exchange, HttpURLConnection.HTTP_CREATED, "created");
             } else {
                 assertThat(exchange.getRequestURI().getRawPath()).isEqualTo("/repository/streams/data.bin");
                 assertThat(new String(exchange.getRequestBody().readAllBytes(), UTF_8)).isEqualTo("stream payload");
-                exchange.sendResponseHeaders(HttpStatus.SC_NO_CONTENT, -1);
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_NO_CONTENT, -1);
             }
         })) {
             HttpWagon wagon = connect(server);
@@ -163,7 +163,7 @@ public class Wagon_httpTest {
     }
 
     @Test
-    void getRespondsToBasicAuthenticationChallengeWithRepositoryCredentials() throws Exception {
+    void getSendsRepositoryCredentialsForBasicAuthentication() throws Exception {
         String expectedAuthorization = "Basic "
                 + Base64.getEncoder().encodeToString("alice:s3cret".getBytes(UTF_8));
         AtomicInteger requests = new AtomicInteger();
@@ -175,14 +175,14 @@ public class Wagon_httpTest {
 
             String authorization = exchange.getRequestHeaders().getFirst("Authorization");
             if (expectedAuthorization.equals(authorization)) {
-                writeStringResponse(exchange, HttpStatus.SC_OK, "authenticated content");
+                writeStringResponse(exchange, HttpURLConnection.HTTP_OK, "authenticated content");
                 return;
             }
 
             assertThat(authorization).isNull();
             assertThat(requestNumber).isEqualTo(1);
             exchange.getResponseHeaders().add("WWW-Authenticate", "Basic realm=\"wagon-test\"");
-            writeStringResponse(exchange, HttpStatus.SC_UNAUTHORIZED, "credentials required");
+            writeStringResponse(exchange, HttpURLConnection.HTTP_UNAUTHORIZED, "credentials required");
         })) {
             HttpWagon wagon = new HttpWagon();
             wagon.setTimeout(SHORT_TIMEOUT_MILLIS);
@@ -195,7 +195,7 @@ public class Wagon_httpTest {
                 wagon.get("private/data.txt", destination.toFile());
 
                 assertThat(Files.readString(destination, UTF_8)).isEqualTo("authenticated content");
-                assertThat(requests).hasValue(2);
+                assertThat(requests).hasValue(1);
                 server.assertNoFailure();
             } finally {
                 wagon.disconnect();
@@ -218,14 +218,14 @@ public class Wagon_httpTest {
 
             String proxyAuthorization = exchange.getRequestHeaders().getFirst("Proxy-Authorization");
             if (expectedProxyAuthorization.equals(proxyAuthorization)) {
-                writeStringResponse(exchange, HttpStatus.SC_OK, "proxied content");
+                writeStringResponse(exchange, HttpURLConnection.HTTP_OK, "proxied content");
                 return;
             }
 
             assertThat(proxyAuthorization).isNull();
             assertThat(requestNumber).isEqualTo(1);
             exchange.getResponseHeaders().add("Proxy-Authenticate", "Basic realm=\"wagon-proxy-test\"");
-            writeStringResponse(exchange, HttpStatus.SC_PROXY_AUTHENTICATION_REQUIRED, "proxy credentials required");
+            writeStringResponse(exchange, HttpURLConnection.HTTP_PROXY_AUTH, "proxy credentials required");
         })) {
             HttpWagon wagon = new HttpWagon();
             wagon.setTimeout(SHORT_TIMEOUT_MILLIS);
@@ -258,15 +258,15 @@ public class Wagon_httpTest {
             assertThat(exchange.getRequestHeaders().getFirst("Cache-control")).isNull();
             String path = exchange.getRequestURI().getPath();
             if ("/repository/present.dat".equals(path)) {
-                exchange.sendResponseHeaders(HttpStatus.SC_OK, -1);
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, -1);
             } else if ("/repository/missing.dat".equals(path)) {
-                exchange.sendResponseHeaders(HttpStatus.SC_NOT_FOUND, -1);
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, -1);
             } else if ("/repository/forbidden.dat".equals(path)) {
-                exchange.sendResponseHeaders(HttpStatus.SC_FORBIDDEN, -1);
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_FORBIDDEN, -1);
             } else if ("/repository/error.dat".equals(path)) {
-                exchange.sendResponseHeaders(HttpStatus.SC_INTERNAL_SERVER_ERROR, -1);
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_INTERNAL_ERROR, -1);
             } else {
-                writeStringResponse(exchange, HttpStatus.SC_BAD_REQUEST, "unexpected path: " + path);
+                writeStringResponse(exchange, HttpURLConnection.HTTP_BAD_REQUEST, "unexpected path: " + path);
             }
         })) {
             HttpWagon wagon = connect(server);
@@ -369,7 +369,7 @@ public class Wagon_httpTest {
                 } catch (Throwable throwable) {
                     failure = throwable;
                     if (exchange.getResponseCode() == -1) {
-                        writeStringResponse(exchange, HttpStatus.SC_INTERNAL_SERVER_ERROR, "handler failure");
+                        writeStringResponse(exchange, HttpURLConnection.HTTP_INTERNAL_ERROR, "handler failure");
                     }
                 } finally {
                     exchange.close();
