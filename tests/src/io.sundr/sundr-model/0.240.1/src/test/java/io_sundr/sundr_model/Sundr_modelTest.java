@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.sundr.model.AnnotationRef;
 import io.sundr.model.AnnotationRefBuilder;
+import io.sundr.model.Argument;
 import io.sundr.model.Assign;
 import io.sundr.model.AttributeKey;
 import io.sundr.model.Block;
@@ -22,12 +23,15 @@ import io.sundr.model.Declare;
 import io.sundr.model.Do;
 import io.sundr.model.Empty;
 import io.sundr.model.Expression;
+import io.sundr.model.Field;
+import io.sundr.model.FieldBuilder;
 import io.sundr.model.For;
 import io.sundr.model.Foreach;
 import io.sundr.model.GreaterThan;
 import io.sundr.model.If;
 import io.sundr.model.Kind;
 import io.sundr.model.Lambda;
+import io.sundr.model.LocalVariable;
 import io.sundr.model.Method;
 import io.sundr.model.MethodBuilder;
 import io.sundr.model.MethodCall;
@@ -78,7 +82,7 @@ public class Sundr_modelTest {
                 .withClassRef(ClassRef.forName("example.Generated"))
                 .addToParameters("value", "sundr-model-test")
                 .build();
-        Property value = new PropertyBuilder()
+        Field value = new FieldBuilder()
                 .withModifiers(privateFinalModifiers())
                 .withTypeRef(typeParameter.toReference())
                 .withName("value")
@@ -104,7 +108,7 @@ public class Sundr_modelTest {
                 .addToAnnotations(generated)
                 .addToImplementsList(SERIALIZABLE)
                 .addToParameters(typeParameter)
-                .addToProperties(value)
+                .addToFields(value)
                 .addToMethods(getter)
                 .addToInnerTypes(nested)
                 .addToAttributes(sourceAttribute, "type")
@@ -114,7 +118,7 @@ public class Sundr_modelTest {
         assertThat(box.isClass()).isTrue();
         assertThat(box.getAttribute(sourceAttribute)).isEqualTo("type");
         assertThat(box.getParameters()).containsExactly(typeParameter);
-        assertThat(box.getProperties()).containsExactly(value);
+        assertThat(box.getFields()).containsExactly(value);
         assertThat(box.getMethods()).containsExactly(getter);
         assertThat(box.getInnerTypes()).containsExactly(nested);
         assertThat(box).extracting(TypeDef::getAnnotations).isEqualTo(List.of(generated));
@@ -134,43 +138,43 @@ public class Sundr_modelTest {
 
     @Test
     void fluentBuildersCanCopyEditMatchAndRemoveGeneratedModelParts() {
-        Property first = Property.newProperty(STRING, "firstName");
-        Property last = Property.newProperty(STRING, "lastName");
+        Field first = Field.newField(STRING, "firstName");
+        Field last = Field.newField(STRING, "lastName");
         Method fullName = Method.newMethod("fullName", STRING);
         TypeDef person = new TypeDefBuilder()
                 .withKind(Kind.CLASS)
                 .withPackageName("example.people")
                 .withName("Person")
-                .withProperties(first, last)
+                .withFields(first, last)
                 .withMethods(fullName)
                 .build();
 
         TypeDef edited = new TypeDefBuilder(person)
-                .editMatchingProperty(property -> "firstName".equals(property.getName()))
+                .editMatchingField(field -> "firstName".equals(field.getName()))
                 .withName("givenName")
-                .endProperty()
+                .endField()
                 .editMatchingMethod(method -> "fullName".equals(method.getName()))
                 .withName("displayName")
                 .endMethod()
-                .removeMatchingFromProperties(property -> "lastName".equals(property.getName()))
-                .addNewPropertyLike(Property.newProperty(STRING, "familyName"))
+                .removeMatchingFromFields(field -> "lastName".equals(field.getName()))
+                .addNewFieldLike(Field.newField(STRING, "familyName"))
                 .addToComments("created through copy-edit fluent API")
-                .endProperty()
+                .endField()
                 .build();
 
         assertThat(edited).isNotSameAs(person);
         assertThat(edited.getFullyQualifiedName()).isEqualTo("example.people.Person");
-        assertThat(edited.getProperties()).extracting(Property::getName)
+        assertThat(edited.getFields()).extracting(Field::getName)
                 .containsExactly("givenName", "familyName");
         assertThat(edited.getMethods()).extracting(Method::getName).containsExactly("displayName");
         assertThat(new TypeDefBuilder(edited)
-                .hasMatchingProperty(property -> "givenName".equals(property.getName())))
+                .hasMatchingField(field -> "givenName".equals(field.getName())))
                 .isTrue();
         assertThat(new TypeDefBuilder(edited)
-                .buildMatchingProperty(property -> "familyName".equals(property.getName())))
-                .satisfies(property -> {
-                    assertThat(property.getName()).isEqualTo("familyName");
-                    assertThat(property.getTypeRef()).isEqualTo(STRING);
+                .buildMatchingField(field -> "familyName".equals(field.getName())))
+                .satisfies(field -> {
+                    assertThat(field.getName()).isEqualTo("familyName");
+                    assertThat(field.getTypeRef()).isEqualTo(STRING);
                 });
     }
 
@@ -224,8 +228,8 @@ public class Sundr_modelTest {
 
     @Test
     void rendersComposedExpressionsStatementsAndControlFlow() {
-        Property counter = Property.newProperty(INT, "counter");
-        PropertyRef counterRef = counter.toReference();
+        LocalVariable counter = LocalVariable.newLocalVariable(INT, "counter");
+        PropertyRef counterRef = new PropertyRef(INT, "counter", null);
         Expression increment = counterRef.plus(new ValueRef(1));
         Assign assignment = counterRef.assign(increment);
         If conditional = If.gt(counterRef, new ValueRef(0))
@@ -295,8 +299,8 @@ public class Sundr_modelTest {
     @Test
     void rendersAdditionalStructuredStatements() {
         Property state = Property.newProperty(STRING, "state");
-        Property name = Property.newProperty(STRING, "name");
-        Property names = Property.newProperty(ClassRef.forName("java.util.List"), "names");
+        LocalVariable name = LocalVariable.newLocalVariable(STRING, "name");
+        Field names = Field.newField(ClassRef.forName("java.util.List"), "names");
         Block startBlock = new Block(new Return(new ValueRef("ready")));
         Block stopBlock = new Block(new Break());
         Block defaultBlock = new Block(new Return(new ValueRef("unknown")));
@@ -328,7 +332,7 @@ public class Sundr_modelTest {
                 .contains("break;")
                 .contains("ready")
                 .contains("unknown");
-        assertThat(foreach.getDeclare().getProperties()).containsExactly(name);
+        assertThat(foreach.getDeclare().getLocalVariables()).containsExactly(name);
         assertThat(foreach.getExpression()).isEqualTo(names);
         assertThat(foreachRender)
                 .contains("for")
@@ -365,7 +369,7 @@ public class Sundr_modelTest {
         Method withVarArg = new MethodBuilder()
                 .withName("format")
                 .withReturnType(STRING)
-                .withArguments(Property.newProperty(STRING.withDimensions(1), "parts"))
+                .withArguments(Argument.newArgument(STRING.withDimensions(1), "parts"))
                 .withVarArgPreferred()
                 .withExceptions(ClassRef.forName("java.io.IOException"))
                 .withBlock(new Block(new Return(new MethodCall(
