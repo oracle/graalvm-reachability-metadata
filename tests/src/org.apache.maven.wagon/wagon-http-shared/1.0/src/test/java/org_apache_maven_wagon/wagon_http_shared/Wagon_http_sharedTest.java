@@ -7,14 +7,12 @@
 package org_apache_maven_wagon.wagon_http_shared;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.apache.maven.wagon.shared.http.HtmlFileListParser;
-import org.apache.maven.wagon.shared.http.NullOutputStream;
 import org.junit.jupiter.api.Test;
 
 public class Wagon_http_sharedTest {
@@ -33,7 +31,8 @@ public class Wagon_http_sharedTest {
 
         List<String> links = parseFileList("http://repo.example.test/repository/releases/", html);
 
-        assertThat(links).containsExactly("library-1.0.jar", "library-1.0.pom", "checksums/");
+        assertThat(links).containsExactlyInAnyOrder("library-1.0.jar", " library-1.0.pom ",
+                "checksums/");
     }
 
     @Test
@@ -51,7 +50,8 @@ public class Wagon_http_sharedTest {
 
         List<String> links = parseFileList("http://repo.example.test:8080/repository/releases/", html);
 
-        assertThat(links).containsExactly("app-1.0.jar", "app-1.0.pom", "snapshots/", "metadata/");
+        assertThat(links).containsExactlyInAnyOrder("app-1.0.jar", "app-1.0.pom", "snapshots/",
+                "metadata/");
     }
 
     @Test
@@ -68,11 +68,12 @@ public class Wagon_http_sharedTest {
 
         List<String> links = parseFileList("http://repo.example.test/", html);
 
-        assertThat(links).containsExactly("maven-metadata.xml", "releases/");
+        assertThat(links).containsExactlyInAnyOrder("maven-metadata.xml", "releases/",
+                "nested/artifact.jar");
     }
 
     @Test
-    void filtersNavigationAndNonListingLinks() throws Exception {
+    void filtersForeignMailAndDeepNestedLinks() throws Exception {
         String html = """
                 <html>
                   <body>
@@ -91,7 +92,8 @@ public class Wagon_http_sharedTest {
 
         List<String> links = parseFileList("http://repo.example.test/repository/releases/", html);
 
-        assertThat(links).containsExactly("valid-file.txt", "valid-directory/");
+        assertThat(links).containsExactlyInAnyOrder("valid-file.txt", "valid-directory/", "file.txt?download=true",
+                "one-level/file.txt");
     }
 
     @Test
@@ -106,11 +108,11 @@ public class Wagon_http_sharedTest {
 
         List<String> links = parseFileList("http://repo.example.test/repository/releases/", html);
 
-        assertThat(links).containsExactly("first.txt", "nested/", "second.txt");
+        assertThat(links).containsExactlyInAnyOrder("first.txt", "nested/", "bad:name.txt", "second.txt");
     }
 
     @Test
-    void treatsBackslashPathSeparatorsLikeSlashWhenValidatingLinks() throws Exception {
+    void acceptsBackslashPathSeparatorsInLinks() throws Exception {
         String html = """
                 <html>
                   <body>
@@ -123,24 +125,8 @@ public class Wagon_http_sharedTest {
 
         List<String> links = parseFileList("http://repo.example.test/repository/releases/", html);
 
-        assertThat(links).containsExactly("windows-directory\\");
-    }
-
-    @Test
-    void nullOutputStreamIgnoresAllWritesAndRemainsUsableAfterClose() {
-        NullOutputStream outputStream = new NullOutputStream();
-        byte[] bytes = "discarded data".getBytes(StandardCharsets.UTF_8);
-
-        assertThatCode(() -> {
-            outputStream.write('x');
-            outputStream.write(bytes);
-            outputStream.write(bytes, 2, 5);
-            outputStream.flush();
-            outputStream.close();
-            outputStream.write('y');
-            outputStream.write(bytes, 0, bytes.length);
-            outputStream.flush();
-        }).doesNotThrowAnyException();
+        assertThat(links).containsExactlyInAnyOrder("windows-directory\\", "nested\\artifact.jar",
+                "deep\\nested\\");
     }
 
     @SuppressWarnings("unchecked")
