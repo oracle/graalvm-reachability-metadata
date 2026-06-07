@@ -6,8 +6,8 @@
  */
 package io_airlift.aircompressor;
 
-import io.airlift.compress.v2.snappy.SnappyCompressor;
-import io.airlift.compress.v2.snappy.SnappyDecompressor;
+import io.airlift.compress.v2.snappy.SnappyJavaCompressor;
+import io.airlift.compress.v2.snappy.SnappyJavaDecompressor;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
@@ -18,8 +18,8 @@ public class SnappyUnsafeUtilTest {
     @Test
     void compressesAndDecompressesPayload() {
         byte[] input = repeatedPayload();
-        SnappyCompressor compressor = SnappyCompressor.create();
-        SnappyDecompressor decompressor = SnappyDecompressor.create();
+        SnappyJavaCompressor compressor = new SnappyJavaCompressor();
+        SnappyJavaDecompressor decompressor = new SnappyJavaDecompressor();
 
         byte[] compressed = new byte[compressor.maxCompressedLength(input.length)];
         int compressedSize = compressor.compress(
@@ -37,7 +37,7 @@ public class SnappyUnsafeUtilTest {
     }
 
     private static byte[] repeatedPayload() {
-        String sentence = "Aircompressor Snappy direct-buffer round trip exercises unsafe address access.\n";
+        String sentence = "Aircompressor Snappy Java round trip exercises unsafe access.\n";
         StringBuilder builder = new StringBuilder(sentence.length() * 64);
         for (int i = 0; i < 64; i++) {
             builder.append(sentence).append(i).append('\n');
