@@ -51,7 +51,6 @@ import ai_workflows.core  # noqa: F401 - triggers strategy registration
 from ai_workflows.drivers.add_new_library_support import (
     DEFAULT_MODEL_NAME,
     init_agent as init_workflow_agent,
-    list_all_files,
     main as run_add_new_library_support_workflow,
 )
 from ai_workflows.drivers.fix_javac_fail import (
@@ -119,6 +118,10 @@ from utility_scripts.large_library_progress import (
     copy_progress_artifacts,
     find_progress_state_path,
 )
+from utility_scripts.library_preparation_preflight import (
+    LIBRARY_PREPARATION_PREFLIGHT_FILENAME,
+    run_library_preparation_preflight as run_preflight_decision,
+)
 from utility_scripts.metadata_index import (
     coordinate_parts as metadata_coordinate_parts,
     get_not_for_native_image_marker,
@@ -126,7 +129,7 @@ from utility_scripts.metadata_index import (
     resolve_metadata_version,
     resolve_test_dir,
 )
-from utility_scripts.metrics_writer import read_pending_metrics
+from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME, read_pending_metrics
 from utility_scripts.repo_path_resolver import (
     git_env_limited_to_repo_root,
     get_forge_subdir_name,
@@ -174,6 +177,7 @@ GITHUB_RATE_LIMIT_EXIT_CODE = 75
 FIXTURE_E2E_LOG_DIRNAME = "fixture-e2e-logs"
 FIXTURE_RUN_LOG_FILENAME = "run.log"
 FIXTURE_PUBLICATION_FILENAME = "publication.md"
+FIXTURE_PREFLIGHT_EVIDENCE_DIRNAME = "preflight-evidence"
 REVIEW_PERIOD_SUFFIX_SECONDS = {
     "s": 1,
     "m": 60,
@@ -4030,10 +4034,38 @@ def append_large_library_workflow_args(pipeline_argv: list[str], claimed_issue: 
         pipeline_argv.extend(["--chunk-call-limit", chunk_call_limit])
 
 
+def run_library_preparation_preflight(
+        claimed_issue: ClaimedIssue,
+        strategy_name: str | None,
+) -> str:
+    """Run and persist the library-specific preparation preflight before workflow dispatch."""
+    fixture_response = False
+    if is_fixture_testing_enabled():
+        fixture_response = require_fixture_github_state().get_issue_library_preparation_preflight_response(
+            int(claimed_issue.issue["number"])
+        )
+    return run_preflight_decision(
+        claimed_issue=claimed_issue,
+        strategy_name=strategy_name,
+        issue_body_provider=get_issue_body,
+        init_agent=init_workflow_agent,
+        default_strategy_name=DEFAULT_WORK_QUEUE_STRATEGY_NAME,
+        default_model_name=DEFAULT_MODEL_NAME,
+        fixture_response=fixture_response,
+    )
+
+
+def append_library_preparation_preflight_arg(pipeline_argv: list[str], preflight_path: str | None) -> None:
+    """Append the dispatcher preflight path when one was produced."""
+    if preflight_path:
+        pipeline_argv.extend(["--library-preparation-preflight-path", preflight_path])
+
+
 def build_workflow_driver_invocation(
         claimed_issue: ClaimedIssue,
         strategy_name: str | None,
         keep_tests_without_dynamic_access: bool,
+        library_preparation_preflight_path: str | None = None,
 ) -> WorkflowDriverInvocation:
     """Build the routed workflow-driver command for a claimed issue."""
     issue_number = claimed_issue.issue["number"]
@@ -4043,6 +4075,7 @@ def build_workflow_driver_invocation(
             "--reachability-metadata-path", claimed_issue.worktree_path,
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
+        append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
         if keep_tests_without_dynamic_access:
@@ -4074,6 +4107,7 @@ def build_workflow_driver_invocation(
             "--reachability-metadata-path", claimed_issue.worktree_path,
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
+        append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
         return WorkflowDriverInvocation(
@@ -4102,6 +4136,7 @@ def build_workflow_driver_invocation(
             "--reachability-metadata-path", claimed_issue.worktree_path,
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
+        append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
         return WorkflowDriverInvocation(
@@ -4128,7 +4163,9 @@ def build_workflow_driver_invocation(
             "--coordinates", claimed_issue.current_coordinates,
             "--new-version", claimed_issue.new_version,
             "--reachability-metadata-path", claimed_issue.worktree_path,
+            "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
+        append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
         return WorkflowDriverInvocation(
             driver_name="fix_ni_run",
             script_name="fix_ni_run.py",
@@ -4154,6 +4191,7 @@ def build_workflow_driver_invocation(
             "--reachability-metadata-path", claimed_issue.worktree_path,
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
+        append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
         issue_requested_metadata_context = extract_issue_requested_metadata_context(get_issue_body(issue_number))
         if issue_requested_metadata_context:
             pipeline_argv.extend(["--issue-requested-metadata-context", issue_requested_metadata_context])
@@ -4195,10 +4233,15 @@ def invoke_pipeline(
     strategy names, and chunk context.
     """
     require_claimed_issue_worktree(claimed_issue, "workflow execution")
+    library_preparation_preflight_path = run_library_preparation_preflight(
+        claimed_issue,
+        strategy_name,
+    )
     invocation = build_workflow_driver_invocation(
         claimed_issue,
         strategy_name,
         keep_tests_without_dynamic_access,
+        library_preparation_preflight_path,
     )
 
     print()
@@ -5405,6 +5448,38 @@ def write_fixture_publication_handoff(handoff: PublicationHandoff) -> str:
     return publication_path
 
 
+def preserve_fixture_preflight_evidence(claimed_issue: ClaimedIssue) -> None:
+    """Copy fixture metrics/preflight files before scratch worktree cleanup."""
+    issue_number = int(claimed_issue.issue["number"])
+    evidence_dir = os.path.join(
+        get_fixture_issue_artifact_dir(issue_number),
+        FIXTURE_PREFLIGHT_EVIDENCE_DIRNAME,
+    )
+    os.makedirs(evidence_dir, exist_ok=True)
+    evidence_files = [
+        (PENDING_METRICS_FILENAME, "pending-metrics.json"),
+        (LIBRARY_PREPARATION_PREFLIGHT_FILENAME, LIBRARY_PREPARATION_PREFLIGHT_FILENAME),
+        ("library-preflight-prompt.txt", "library-preflight-prompt.txt"),
+        ("library-preflight-response.txt", "library-preflight-response.txt"),
+    ]
+    copied_files: list[str] = []
+    for source_name, target_name in evidence_files:
+        source_path = os.path.join(claimed_issue.scratch_metrics_repo_path, source_name)
+        if not os.path.isfile(source_path):
+            continue
+        target_path = os.path.join(evidence_dir, target_name)
+        shutil.copy2(source_path, target_path)
+        copied_files.append(target_name)
+    if copied_files:
+        log_stage(
+            "fixture-evidence",
+            (
+                f"Preserved fixture preflight evidence for issue #{issue_number}: "
+                f"{', '.join(copied_files)}"
+            ),
+        )
+
+
 def apply_large_library_completion_follow_up(claimed_issue: ClaimedIssue) -> None:
     """Apply issue labels after a large-library part was published."""
     run_metrics = _load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
@@ -5434,6 +5509,7 @@ def finalize_successful_issue(
     if is_fixture_testing_enabled():
         handoff = build_publication_handoff(claimed_issue)
         publication_path = write_fixture_publication_handoff(handoff)
+        preserve_fixture_preflight_evidence(claimed_issue)
         log_stage(
             "publication",
             (

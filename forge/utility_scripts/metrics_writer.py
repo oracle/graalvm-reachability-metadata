@@ -413,6 +413,7 @@ def build_run_metrics_dict(
         stats: dict | None = None,
         previous_library_stats: dict | None = None,
         post_generation_intervention: dict | None = None,
+        library_preparation_preflight: dict | None = None,
 ):
     """Assemble the run_metrics dict."""
     metrics = {
@@ -459,6 +460,8 @@ def build_run_metrics_dict(
         run_metrics["previous_library_stats"] = previous_library_stats
     if post_generation_intervention is not None:
         run_metrics["post_generation_intervention"] = post_generation_intervention
+    if library_preparation_preflight is not None:
+        run_metrics["library_preparation_preflight"] = library_preparation_preflight
     run_metrics["metrics"] = metrics
     run_metrics["artifacts"] = {
         "test_file": test_file,
@@ -535,6 +538,7 @@ def create_run_metrics_output_json(
         starting_commit: str | None = None,
         ending_commit: str | None = None,
         post_generation_intervention: dict | None = None,
+        library_preparation_preflight: dict | None = None,
 ):
     """
     Build a run_metrics dict using collected metrics.
@@ -577,6 +581,7 @@ def create_run_metrics_output_json(
         metadata_file=metadata_file,
         stats=stats,
         post_generation_intervention=post_generation_intervention,
+        library_preparation_preflight=library_preparation_preflight,
     )
 
 
@@ -595,6 +600,7 @@ def create_javac_fix_run_metrics_output_json(
         starting_commit: str | None = None,
         ending_commit: str | None = None,
         post_generation_intervention: dict | None = None,
+        library_preparation_preflight: dict | None = None,
 ):
     """Build run metrics for fix_javac_fail workflow including previous-version metrics."""
     metrics = collect_base_metrics(
@@ -649,6 +655,7 @@ def create_javac_fix_run_metrics_output_json(
         stats=stats,
         previous_library_stats=previous_stats,
         post_generation_intervention=post_generation_intervention,
+        library_preparation_preflight=library_preparation_preflight,
     )
 
 
@@ -666,6 +673,7 @@ def create_failure_run_metrics_output(
         strategy_name,
         starting_commit: str | None = None,
         ending_commit: str | None = None,
+        library_preparation_preflight: dict | None = None,
 ):
     """Builds failure metrics when no valid unit tests were generated."""
     token_metrics = collect_token_usage_metrics(agent, model_name)
@@ -692,6 +700,7 @@ def create_failure_run_metrics_output(
         total_entries=0,
         test_file="None",
         metadata_file="None",
+        library_preparation_preflight=library_preparation_preflight,
     )
 
 

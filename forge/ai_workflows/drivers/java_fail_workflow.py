@@ -25,6 +25,9 @@ from ai_workflows.core.workflow_strategy import WorkflowStrategy
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists, ensure_gh_authenticated
 from utility_scripts import metrics_writer
 from utility_scripts.gradle_environment import gradle_command_environment
+from utility_scripts.library_preparation_preflight import (
+    prepare_library_preparation_preflight,
+)
 from utility_scripts.metadata_index import is_newer_than_latest_metadata_version
 from utility_scripts.metrics_writer import create_failure_run_metrics_output
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo, resolve_repo_roots
@@ -141,6 +144,10 @@ def build_parser(config: JavaFailWorkflowConfig):
         default=None,
         help="Optional path with additional read-only docs/sources for agent context",
     )
+    parser.add_argument(
+        "--library-preparation-preflight-path",
+        help="Path to the dispatcher-created library preparation preflight JSON record.",
+    )
     parser.add_argument("-v", "--verbose", action="store_true", help="enable verbose mode for the configured agent")
     return parser
 
@@ -168,6 +175,7 @@ def parse_flags(config: JavaFailWorkflowConfig, argv_list):
         flags.verbose,
         flags.reachability_metadata_path,
         flags.metrics_repo_path,
+        flags.library_preparation_preflight_path,
     )
 
 
@@ -457,12 +465,21 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
         is_verbose,
         explicit_repo_path,
         explicit_metrics_repo_path,
+        library_preparation_preflight_path,
     ) = parse_flags(config, argv if argv is not None else sys.argv[1:])
 
     strategy = require_strategy_by_name(strategy_name)
     reachability_repo_path, metrics_repo_dir, metrics_repo_root = resolve_repo_paths(
         explicit_repo_path,
         explicit_metrics_repo_path,
+    )
+    # Apply deterministic preflight setup into the resolved worktree before
+    # generation; only advisory guidance reaches the prompt context.
+    library_preparation_preflight, library_preparation_preflight_context = (
+        prepare_library_preparation_preflight(
+            library_preparation_preflight_path,
+            reachability_repo_path,
+        )
     )
     ensure_gh_authenticated()
     resolve_graalvm_java_home()
@@ -531,6 +548,7 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
         test_language=test_source_layout.language,
         test_language_display_name=test_source_layout.display_language,
         test_source_dir_name=test_source_layout.source_dir_name,
+        library_preparation_preflight_context=library_preparation_preflight_context,
     )
 
     model_name = strategy.get("model") or DEFAULT_MODEL_NAME
@@ -587,6 +605,7 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
             strategy_name=strategy_name,
             starting_commit=commit_checkpoint,
             ending_commit=ending_commit,
+            library_preparation_preflight=library_preparation_preflight,
         )
     else:
         if workflow_status == SUCCESS_WITH_INTERVENTION_STATUS:
@@ -609,6 +628,7 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
             starting_commit=commit_checkpoint,
             ending_commit=ending_commit,
             post_generation_intervention=strategy_obj.post_generation_intervention,
+            library_preparation_preflight=library_preparation_preflight,
         )
     write_fix_metrics(config, run_metrics, metrics_repo_dir, metrics_repo_root=metrics_repo_root)
     return 0 if workflow_status in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS} else 1

@@ -47,28 +47,65 @@ optimistic and authoritative against live GitHub state.
 
 ## 1. Library-Specific Preparation Decision
 
-Before dispatching a workflow for a library coordinate, orchestration may run a
-bounded LLM preflight decision that identifies whether the library needs
-additional setup beyond the normal generated test scaffold. The decision should
-consider the issue body, resolved artifact metadata, existing tests, source
-context, documentation, and known CI constraints.
+After claiming a supported issue and preparing its isolated worktree, but before
+dispatching the workflow driver, orchestration runs an LLM preflight decision
+that identifies whether the library needs additional setup beyond the normal
+generated test scaffold. Orchestration gives the agent a small starting context
+— issue text and any existing tests — and instructs it to research the library
+itself (its resolved artifact, dependencies, usage, and documentation) rather
+than deciding solely from that context. The agent investigates but must not
+modify the repository or apply setup; it returns only the decision.
 
 The preflight decision exists for library-specific requirements that are hard
-to infer from labels alone, such as optional Maven dependencies, feature-module
-artifacts, Docker-backed services, required allowed Docker images, environment
-configuration, or library setup code that must exist before meaningful tests
-can be generated. When the decision finds such a requirement, orchestration
-must pass it to the selected workflow as explicit preparation context so the
-agent can implement the needed build/test setup as part of the generated work
-(§WF-forge-workflow-drivers).
+to infer from labels alone, such as optional Maven dependencies, Docker-backed
+services and their required allowed Docker images, or library setup the agent
+must perform before meaningful tests can be generated.
+
+### 1.1 Deterministic setup versus advisory guidance
+
+The preflight decision separates its output into two distinct kinds, and the
+workflow driver routes each kind to a different consumer:
+
+- **Deterministic setup** is a typed, structurally-validated list of one-time,
+  idempotent source/config edits the driver applies itself before generation —
+  not free text injected into a prompt. The supported kinds are a `dependency`
+  declaration added to the library's test `build.gradle`, and a `docker_image`
+  pin added to the `allowed-docker-images` directory. Because the model only
+  supplies typed fields (a `group:artifact:version` coordinate, an image
+  reference and slug), they are validated by shape rather than scanned as prose,
+  and the driver applies each one once and idempotently. These are source-tree
+  edits, not environment mutations: the driver does not pull images, download
+  dependencies, or mutate the environment from the decision — the actual image
+  pull and dependency resolution stay gated by the allow-list and the build, and
+  local CI-equivalent verification (§FS-local-ci-equivalent-verification) remains
+  the sole authority for rejecting work CI would not accept.
+
+- **Advisory guidance** is the residual reasoning the agent must apply inside the
+  generated test code (for example, exercise a driver against a stood-up
+  service, or set a system property before a factory lookup). Only this guidance
+  is passed to the workflow as prompt context, and it is evidence, not trusted
+  instructions. Deterministic setup the driver already applied is omitted from
+  the prompt so an iterating workflow does not re-attempt a completed edit; any
+  deterministic item the driver could not apply yet (for example, a `dependency`
+  edit for a new library whose scaffold does not exist until generation) falls
+  back into the advisory guidance so the agent still performs it.
+
+This split is what keeps deterministic, idempotent edits out of the iteration
+loop and confines the prompt to reasoning. The driver — not orchestration and
+not a generated-run LLM agent — owns the decision of what to do with each field
+of the persisted record.
 
 The LLM decision is advisory input to workflow preparation, not a verification
 result. It must be recorded in metrics with the prompt, model, decision,
-evidence, and selected preparation actions. Docker and dependency preparation
-must still satisfy local CI-equivalent verification; a preflight decision must
-not allow tests to rely on untracked downloads, undeclared optional
-dependencies, or Docker images that CI would reject
-(§FS-local-ci-equivalent-verification).
+evidence, selected deterministic setup, advisory guidance, and the result of
+applying each deterministic action. A preflight decision must not allow tests to
+rely on untracked downloads, undeclared optional dependencies, or Docker images
+that CI would reject (§FS-local-ci-equivalent-verification).
+
+If the preflight decision cannot run or returns invalid, unavailable, or unsafe
+output, orchestration must degrade to a recorded no-action advisory result. It
+must keep the collected evidence and failure reason visible in metrics rather
+than silently omitting the preflight record.
 
 Orchestration scripts must not let a failed workflow silently disappear.
 Successful or chunk-ready runs (§WF-chunked-dynamic-access-pr-linking) proceed to

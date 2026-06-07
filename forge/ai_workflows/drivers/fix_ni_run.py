@@ -15,6 +15,9 @@ from ai_workflows.core.fix_metadata_codex import run_codex_metadata_fix
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.library_finalization import run_library_finalization
+from utility_scripts.library_preparation_preflight import (
+    prepare_library_preparation_preflight,
+)
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo, resolve_repo_roots
 from utility_scripts.source_context import populate_artifact_urls
 
@@ -48,6 +51,14 @@ def build_parser():
             "Path to the graalvm-reachability-metadata repository. "
             "If omitted, the parent checkout of this Forge directory is used."
         ),
+    )
+    parser.add_argument(
+        "--metrics-repo-path",
+        help="Path where dispatcher-created workflow context artifacts are written.",
+    )
+    parser.add_argument(
+        "--library-preparation-preflight-path",
+        help="Path to the dispatcher-created library preparation preflight JSON record.",
     )
     return parser
 
@@ -106,11 +117,22 @@ def main(argv=None) -> int:
 
     reachability_metadata_path, _ = resolve_repo_roots(
         args.reachability_metadata_path,
-        None,
+        args.metrics_repo_path,
     )
 
     current_coordinates = args.coordinates
     new_version = args.new_version
+    # Apply deterministic preflight setup into the resolved worktree before
+    # generation; only advisory guidance reaches the prompt context.
+    library_preparation_preflight, library_preparation_preflight_context = (
+        prepare_library_preparation_preflight(
+            args.library_preparation_preflight_path,
+            reachability_metadata_path,
+        )
+    )
+    if library_preparation_preflight is not None:
+        print("[pipeline] Library preparation preflight:")
+        print(library_preparation_preflight_context)
 
     group, artifact, _ = current_coordinates.split(":")
     branch = build_ai_branch_name(
@@ -150,6 +172,7 @@ def main(argv=None) -> int:
             reachability_metadata_path,
             library,
             graalvm_home=gradle_env.get("GRAALVM_HOME"),
+            library_preparation_preflight_context=library_preparation_preflight_context,
         )
         if codex_rc != 0:
             print(f"ERROR: Codex failed with return code: {codex_rc}", file=sys.stderr)

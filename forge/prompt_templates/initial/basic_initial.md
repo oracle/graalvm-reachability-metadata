@@ -6,6 +6,9 @@ You need to generate comprehensive tests for the library defined by these Maven 
 Issue-Requested Metadata:
 {issue_requested_metadata_context}
 
+Library Preparation Preflight:
+{library_preparation_preflight_context}
+
 Rules:
 - Write tests in `{test_language_display_name}` under the module's existing `src/test/{test_source_dir_name}` tree.
 - Follow idiomatic `{test_language_display_name}` coding conventions.

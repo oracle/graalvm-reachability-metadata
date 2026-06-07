@@ -35,3 +35,13 @@ comments:
       dynamic-access path. Keep generated tests if no dynamic-access call sites
       are found so the fixture still verifies routing, metrics, and publication
       handoff.
+library_preparation_preflight_response:
+  action: advisory_preparation
+  summary: "Fixture advisory setup for Google HTTP Client exercises preflight context handoff."
+  agent_guidance: >-
+    Cover HTTP transport-independent data model parsing and serialization paths.
+    Avoid live network calls; use in-memory requests, a mock transport, or
+    byte-array content, and prefer deterministic Google HTTP Client helpers that
+    run without external services.
+  risks:
+    - "Network-dependent tests would not satisfy local CI-equivalent verification."

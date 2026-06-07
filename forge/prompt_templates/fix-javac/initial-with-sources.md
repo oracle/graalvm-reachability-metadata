@@ -5,6 +5,9 @@ Task:
 Source context:
 {source_context_overview}
 
+Library Preparation Preflight:
+{library_preparation_preflight_context}
+
 How to use the source context (strict):
 - Only open source files that correspond or are related to the classes explicitly named in the Gradle error output below.
 - Stop inspecting sources as soon as you have identified the renamed/removed/changed API for the failing symbols. Then make the minimal edit to the test.

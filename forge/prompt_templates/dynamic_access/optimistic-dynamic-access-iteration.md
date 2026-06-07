@@ -6,6 +6,9 @@ Generate test for `{library}` following provided dynamic access report, by cover
 Source Context:
 {source_context_overview}
 
+Library Preparation Preflight:
+{library_preparation_preflight_context}
+
 Iteration progress:
 {iteration_progress}
 
