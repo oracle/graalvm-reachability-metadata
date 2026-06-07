@@ -56,6 +56,17 @@ public class ServiceLoaderTest {
         assertThat(providers.get(0).value()).isEqualTo("loaded-from-service-resource");
     }
 
+    @Test
+    public void getsServiceClassFromConfiguredClassLoader() throws Exception {
+        ServiceLoader serviceLoader = new ServiceLoader(new ServiceResourceClassLoader(
+                ServiceLoaderTest.class.getClassLoader(), Collections.emptyList()));
+
+        Class<? extends TestService> serviceClass = serviceLoader.getServiceClass(
+                TestService.class, TestServiceProvider.class.getName());
+
+        assertThat(serviceClass).isEqualTo(TestServiceProvider.class);
+    }
+
     private Path createServiceFile(Class<?> serviceInterface, Class<?> provider)
             throws IOException {
         Path servicesDirectory = tempDir.resolve("META-INF").resolve("services");
