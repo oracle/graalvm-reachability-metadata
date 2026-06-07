@@ -8,29 +8,24 @@ package org_apache_directory_server.apacheds_kerberos_codec;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.nio.charset.StandardCharsets;
-
-import org.apache.directory.server.kerberos.shared.crypto.encryption.CipherTextHandler;
-import org.apache.directory.server.kerberos.shared.crypto.encryption.KeyUsage;
+import org.apache.directory.server.kerberos.shared.crypto.encryption.RandomKeyFactory;
 import org.apache.directory.shared.kerberos.codec.types.EncryptionType;
-import org.apache.directory.shared.kerberos.components.EncryptedData;
 import org.apache.directory.shared.kerberos.components.EncryptionKey;
 import org.junit.jupiter.api.Test;
 
 public class CipherTextHandlerTest {
     @Test
-    void encryptsAndDecryptsRc4HmacData() throws Exception {
-        CipherTextHandler handler = new CipherTextHandler();
-        byte[] keyBytes = "deterministic-key".getBytes(StandardCharsets.UTF_8);
-        EncryptionKey key = new EncryptionKey(EncryptionType.RC4_HMAC, keyBytes, 3);
-        byte[] plainText = "Apache Directory Kerberos cipher text".getBytes(StandardCharsets.UTF_8);
+    void createsAndDestroysAesSessionKey() throws Exception {
+        EncryptionKey sessionKey = RandomKeyFactory.getRandomKey(EncryptionType.AES128_CTS_HMAC_SHA1_96);
+        byte[] keyValue = sessionKey.getKeyValue();
 
-        EncryptedData encryptedData = handler.encrypt(key, plainText, KeyUsage.AP_REQ_AUTHNT_SESS_KEY);
-        byte[] decryptedData = handler.decrypt(key, encryptedData, KeyUsage.AP_REQ_AUTHNT_SESS_KEY);
+        assertThat(sessionKey.getKeyType()).isEqualTo(EncryptionType.AES128_CTS_HMAC_SHA1_96);
+        assertThat(sessionKey.getKeyVersion()).isZero();
+        assertThat(keyValue).hasSize(16);
 
-        assertThat(encryptedData.getEType()).isEqualTo(EncryptionType.RC4_HMAC);
-        assertThat(encryptedData.getKvno()).isEqualTo(3);
-        assertThat(encryptedData.getCipher()).containsExactly(plainText);
-        assertThat(decryptedData).containsExactly(plainText);
+        sessionKey.destroy();
+
+        assertThat(keyValue).containsOnly((byte) 0x00);
+        assertThat(sessionKey.getKeyValue()).containsOnly((byte) 0x00);
     }
 }
