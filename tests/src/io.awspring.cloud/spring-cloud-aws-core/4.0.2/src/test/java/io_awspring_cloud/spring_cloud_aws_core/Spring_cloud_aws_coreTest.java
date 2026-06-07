@@ -15,10 +15,13 @@ import io.awspring.cloud.core.config.AwsPropertySource;
 import io.awspring.cloud.core.region.StaticRegionProvider;
 import io.awspring.cloud.core.support.JacksonPresent;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.aot.hint.ResourcePatternHint;
 import org.springframework.aot.hint.RuntimeHints;
+import org.springframework.aot.hint.RuntimeHintsRegistrar;
+import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.util.ClassUtils;
 import software.amazon.awssdk.core.client.config.SdkAdvancedClientOption;
 import software.amazon.awssdk.regions.Region;
@@ -92,6 +95,16 @@ public class Spring_cloud_aws_coreTest {
                 .flatMap(resourcePatternHints -> resourcePatternHints.getIncludes().stream())
                 .map(ResourcePatternHint::getPattern))
                 .contains("io/awspring/cloud/core/SpringCloudClientConfiguration.properties");
+    }
+
+    @Test
+    void runtimeHintsRegistrarIsDiscoverableFromSpringAotFactories() {
+        List<RuntimeHintsRegistrar> registrars = SpringFactoriesLoader
+                .forResourceLocation("META-INF/spring/aot.factories", getClass().getClassLoader())
+                .load(RuntimeHintsRegistrar.class);
+
+        assertThat(registrars)
+                .anySatisfy(registrar -> assertThat(registrar).isInstanceOf(AWSCoreRuntimeHints.class));
     }
 
     @Test
