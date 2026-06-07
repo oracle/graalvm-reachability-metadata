@@ -203,6 +203,25 @@ public class Jakarta_transaction_apiTest {
                 .hasMessageContaining("No transaction");
     }
 
+    @Test
+    void xaExceptionAndXidExposeDistributedTransactionFailureAndIdentifierContracts() {
+        XAException rollbackException = new XAException(XAException.XA_RBDEADLOCK);
+        XAException resourceManagerException = new XAException(XAException.XAER_RMERR);
+        byte[] globalTransactionId = new byte[] {1, 2, 3};
+        byte[] branchQualifier = new byte[] {4, 5};
+        Xid xid = new FixedXid(12, globalTransactionId, branchQualifier);
+
+        assertThat(rollbackException.errorCode).isEqualTo(XAException.XA_RBDEADLOCK);
+        assertThat(resourceManagerException.errorCode).isEqualTo(XAException.XAER_RMERR);
+        assertThat(XAException.XA_RBROLLBACK).isEqualTo(XAException.XA_RBBASE);
+        assertThat(XAException.XA_RBTRANSIENT).isEqualTo(XAException.XA_RBEND);
+        assertThat(xid.getFormatId()).isEqualTo(12);
+        assertThat(xid.getGlobalTransactionId()).containsExactly(globalTransactionId);
+        assertThat(xid.getBranchQualifier()).containsExactly(branchQualifier);
+        assertThat(xid.getGlobalTransactionId().length).isLessThanOrEqualTo(Xid.MAXGTRIDSIZE);
+        assertThat(xid.getBranchQualifier().length).isLessThanOrEqualTo(Xid.MAXBQUALSIZE);
+    }
+
     @Transactional
     @TransactionScoped
     private static final class AnnotatedComponent {
@@ -213,6 +232,33 @@ public class Jakarta_transaction_apiTest {
         @Transactional(value = TxType.NEVER, dontRollbackOn = IllegalArgumentException.class)
         String never() {
             return "never";
+        }
+    }
+
+    private static final class FixedXid implements Xid {
+        private final int formatId;
+        private final byte[] globalTransactionId;
+        private final byte[] branchQualifier;
+
+        FixedXid(int formatId, byte[] globalTransactionId, byte[] branchQualifier) {
+            this.formatId = formatId;
+            this.globalTransactionId = globalTransactionId.clone();
+            this.branchQualifier = branchQualifier.clone();
+        }
+
+        @Override
+        public int getFormatId() {
+            return formatId;
+        }
+
+        @Override
+        public byte[] getGlobalTransactionId() {
+            return globalTransactionId.clone();
+        }
+
+        @Override
+        public byte[] getBranchQualifier() {
+            return branchQualifier.clone();
         }
     }
 
