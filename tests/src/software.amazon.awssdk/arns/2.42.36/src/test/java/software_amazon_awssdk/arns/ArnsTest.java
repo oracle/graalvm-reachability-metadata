@@ -199,6 +199,27 @@ public class ArnsTest {
     }
 
     @Test
+    void parsesResourcesContainingBothSlashAndColonSeparators() {
+        ArnResource slashTypedResource = ArnResource.fromString("accesspoint/my-access-point/object/customer:invoice");
+        ArnResource colonTypedResource = ArnResource.fromString("outpost:op-123/accesspoint/ap-1");
+        Arn arn = Arn.fromString(
+                "arn:aws:s3:us-west-2:123456789012:accesspoint/my-access-point/object/customer:invoice");
+
+        assertThat(slashTypedResource.resourceType()).contains("accesspoint");
+        assertThat(slashTypedResource.resource()).isEqualTo("my-access-point");
+        assertThat(slashTypedResource.qualifier()).contains("object/customer:invoice");
+
+        assertThat(colonTypedResource.resourceType()).contains("outpost");
+        assertThat(colonTypedResource.resource()).isEqualTo("op-123/accesspoint/ap-1");
+        assertThat(colonTypedResource.qualifier()).isEmpty();
+
+        assertThat(arn.resourceAsString()).isEqualTo("accesspoint/my-access-point/object/customer:invoice");
+        assertThat(arn.resource().resourceType()).contains("accesspoint");
+        assertThat(arn.resource().resource()).isEqualTo("my-access-point");
+        assertThat(arn.resource().qualifier()).contains("object/customer:invoice");
+    }
+
+    @Test
     void resourceBuilderCreatesCopyAndComparesByValue() {
         ArnResource resource = ArnResource.builder()
                                           .resourceType("function")
