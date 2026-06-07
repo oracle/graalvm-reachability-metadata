@@ -17,14 +17,17 @@ import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.cli.common.modules.ModuleXmlParser
 import org.jetbrains.kotlin.cli.jvm.K2JVMCompiler
+import org.jetbrains.kotlin.com.intellij.psi.tree.IElementType
 import org.jetbrains.kotlin.config.ApiVersion
+import org.jetbrains.kotlin.config.CommonConfigurationKeys
 import org.jetbrains.kotlin.modules.JavaRootPath
 import org.jetbrains.kotlin.modules.Module as KotlinModule
-import org.jetbrains.kotlin.config.CommonConfigurationKeys
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.config.JVMConfigurationKeys
 import org.jetbrains.kotlin.config.LanguageVersion
 import org.jetbrains.kotlin.config.LanguageVersionSettingsImpl
+import org.jetbrains.kotlin.lexer.KotlinLexer
+import org.jetbrains.kotlin.lexer.KtTokens
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.ByteArrayOutputStream
@@ -105,6 +108,53 @@ public class KotlinCompilerEmbeddableTest {
         assertThat(configuration.getBoolean(JVMConfigurationKeys.NO_JDK)).isTrue()
         assertThat(configuration.getList(CLIConfigurationKeys.CONTENT_ROOTS)).containsExactly(sourceRoot)
         assertThat(sourceRoot.path).isEqualTo(sourceFile.toString())
+    }
+
+    @Test
+    fun tokenizesKotlinSource() {
+        val lexer = KotlinLexer()
+        lexer.start(
+            """
+            package sample.lexer
+
+            class LexerSample {
+                fun answer(): Int = 42
+            }
+            """.trimIndent(),
+        )
+        val tokens = mutableListOf<LexedToken>()
+        while (true) {
+            val tokenType = lexer.tokenType ?: break
+            tokens += LexedToken(tokenType, lexer.tokenText)
+            lexer.advance()
+        }
+
+        assertThat(tokens.map { it.type }).containsSubsequence(
+            KtTokens.PACKAGE_KEYWORD,
+            KtTokens.IDENTIFIER,
+            KtTokens.DOT,
+            KtTokens.IDENTIFIER,
+            KtTokens.CLASS_KEYWORD,
+            KtTokens.IDENTIFIER,
+            KtTokens.LBRACE,
+            KtTokens.FUN_KEYWORD,
+            KtTokens.IDENTIFIER,
+            KtTokens.COLON,
+            KtTokens.IDENTIFIER,
+            KtTokens.EQ,
+            KtTokens.INTEGER_LITERAL,
+        )
+        assertThat(tokens.filter { it.type == KtTokens.IDENTIFIER }.map { it.text }).contains(
+            "sample",
+            "lexer",
+            "LexerSample",
+            "answer",
+            "Int",
+        )
+        assertThat(tokens).anySatisfy { token ->
+            assertThat(token.type).isEqualTo(KtTokens.INTEGER_LITERAL)
+            assertThat(token.text).isEqualTo("42")
+        }
     }
 
     @Test
@@ -250,6 +300,11 @@ public class KotlinCompilerEmbeddableTest {
     private data class CompilationResult(
         val exitCode: ExitCode,
         val output: String,
+    )
+
+    private data class LexedToken(
+        val type: IElementType,
+        val text: String,
     )
 
     private class RecordingMessageCollector : MessageCollector {
