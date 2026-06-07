@@ -1,0 +1,2162 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ea276-3e2c-7730-80ca-e83757ec9a1f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.mchange:c3p0:0.9.5.4
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "0.9.5.4" when "$version$" is replaced with "0.9.5.4".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "com.mchange:c3p0:0.9.5.4".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "0.9.5.4".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream, then update the JSON in place with URLs that are version-templateable as requested.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json && sed -n '1,160p' build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689
+-rw-rw-r-- 1 vjovanov vjovanov 49 Jun  7 16:21 build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+{
+  "coordinates" : "com.mchange:c3p0:0.9.5.4"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'com\\.mchange:c3p0|c3p0' build/discovered-artifact-metadata metadata tests docs -g '*.json' -g '*.md'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json:2:  "coordinates" : "com.mchange:c3p0:0.9.5.4"
+
+web search: 
+web search: Maven Central com.mchange c3p0 0.9.5.4 sources jar test sources
+web search: 
+web search: https://repo1.maven.org/maven2/com/mchange/c3p0/0.9.5.4/
+codex
+Maven Central has the 0.9.5.4 binary, sources JAR, and javadoc JAR, but no test-sources artifact in the directory listing. I’m checking the published POM and upstream tags now to avoid guessing the repo root or test URL.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/mchange/c3p0/0.9.5.4/c3p0-0.9.5.4.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+ <modelVersion>4.0.0</modelVersion>
+
+ <groupId>com.mchange</groupId>
+ <artifactId>c3p0</artifactId> 
+ <packaging>jar</packaging> 
+ <version>0.9.5.4</version>
+
+ <name>c3p0</name>
+ <description>a JDBC Connection pooling / Statement caching library</description>
+ <url>https://github.com/swaldman/c3p0</url>
+ <licenses>
+   <license>
+     <name>GNU Lesser General Public License, Version 2.1</name>
+     <url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+     <distribution>repo</distribution>
+   </license>
+   <license>                                      
+     <name>Eclipse Public License, Version 1.0</name>
+     <url>http://www.eclipse.org/org/documents/epl-v10.php</url> 
+     <distribution>repo</distribution>
+   </license>
+</licenses>
+ <scm>
+   <url>scm:git:git@github.com:swaldman/c3p0.git</url>              
+   <connection>scm:git:git@github.com:swaldman/c3p0.git</connection>
+ </scm>
+ <developers>
+   <developer>
+     <id>swaldman</id>                  
+     <name>Steve Waldman</name>         
+     <email>swaldman@mchange.com</email>
+   </developer>
+ </developers>
+ <dependencies>
+   <dependency>
+     <groupId>com.mchange</groupId>
+     <artifactId>mchange-commons-java</artifactId>
+     <version>0.2.15</version>
+   </dependency>
+ </dependencies>
+</project>
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/mchange/c3p0/0.9.5.4/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/swaldman/c3p0 | sed -n '1,40p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689
+ succeeded in 273ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/mchange/c3p0/0.9.5.4</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/mchange/c3p0/0.9.5.4</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="c3p0-0.9.5.4-javadoc.jar" title="c3p0-0.9.5.4-javadoc.jar">c3p0-0.9.5.4-javadoc.jar</a>                          2019-03-24 06:01    635698      
+<a href="c3p0-0.9.5.4-javadoc.jar.asc" title="c3p0-0.9.5.4-javadoc.jar.asc">c3p0-0.9.5.4-javadoc.jar.asc</a>                      2019-03-24 06:01       229      
+<a href="c3p0-0.9.5.4-javadoc.jar.asc.md5" title="c3p0-0.9.5.4-javadoc.jar.asc.md5">c3p0-0.9.5.4-javadoc.jar.asc.md5</a>                  2019-03-24 06:01        32      
+<a href="c3p0-0.9.5.4-javadoc.jar.asc.sha1" title="c3p0-0.9.5.4-javadoc.jar.asc.sha1">c3p0-0.9.5.4-javadoc.jar.asc.sha1</a>                 2019-03-24 06:01        40      
+<a href="c3p0-0.9.5.4-javadoc.jar.md5" title="c3p0-0.9.5.4-javadoc.jar.md5">c3p0-0.9.5.4-javadoc.jar.md5</a>                      2019-03-24 06:01        32      
+<a href="c3p0-0.9.5.4-javadoc.jar.sha1" title="c3p0-0.9.5.4-javadoc.jar.sha1">c3p0-0.9.5.4-javadoc.jar.sha1</a>                     2019-03-24 06:01        40      
+<a href="c3p0-0.9.5.4-sources.jar" title="c3p0-0.9.5.4-sources.jar">c3p0-0.9.5.4-sources.jar</a>                          2019-03-24 06:01    361569      
+<a href="c3p0-0.9.5.4-sources.jar.asc" title="c3p0-0.9.5.4-sources.jar.asc">c3p0-0.9.5.4-sources.jar.asc</a>                      2019-03-24 06:01       229      
+<a href="c3p0-0.9.5.4-sources.jar.asc.md5" title="c3p0-0.9.5.4-sources.jar.asc.md5">c3p0-0.9.5.4-sources.jar.asc.md5</a>                  2019-03-24 06:01        32      
+<a href="c3p0-0.9.5.4-sources.jar.asc.sha1" title="c3p0-0.9.5.4-sources.jar.asc.sha1">c3p0-0.9.5.4-sources.jar.asc.sha1</a>                 2019-03-24 06:01        40      
+<a href="c3p0-0.9.5.4-sources.jar.md5" title="c3p0-0.9.5.4-sources.jar.md5">c3p0-0.9.5.4-sources.jar.md5</a>                      2019-03-24 06:01        32      
+<a href="c3p0-0.9.5.4-sources.jar.sha1" title="c3p0-0.9.5.4-sources.jar.sha1">c3p0-0.9.5.4-sources.jar.sha1</a>                     2019-03-24 06:01        40      
+<a href="c3p0-0.9.5.4.jar" title="c3p0-0.9.5.4.jar">c3p0-0.9.5.4.jar</a>                                  2019-03-24 06:01    499844      
+<a href="c3p0-0.9.5.4.jar.asc" title="c3p0-0.9.5.4.jar.asc">c3p0-0.9.5.4.jar.asc</a>                              2019-03-24 06:01       229      
+<a href="c3p0-0.9.5.4.jar.asc.md5" title="c3p0-0.9.5.4.jar.asc.md5">c3p0-0.9.5.4.jar.asc.md5</a>                          2019-03-24 06:01        32      
+<a href="c3p0-0.9.5.4.jar.asc.sha1" title="c3p0-0.9.5.4.jar.asc.sha1">c3p0-0.9.5.4.jar.asc.sha1</a>                         2019-03-24 06:01        40      
+<a href="c3p0-0.9.5.4.jar.md5" title="c3p0-0.9.5.4.jar.md5">c3p0-0.9.5.4.jar.md5</a>                              2019-03-24 06:01        32      
+<a href="c3p0-0.9.5.4.jar.sha1" title="c3p0-0.9.5.4.jar.sha1">c3p0-0.9.5.4.jar.sha1</a>                             2019-03-24 06:01        40      
+<a href="c3p0-0.9.5.4.pom" title="c3p0-0.9.5.4.pom">c3p0-0.9.5.4.pom</a>                                  2019-03-24 06:01      1527      
+<a href="c3p0-0.9.5.4.pom.asc" title="c3p0-0.9.5.4.pom.asc">c3p0-0.9.5.4.pom.asc</a>                              2019-03-24 06:01       229      
+<a href="c3p0-0.9.5.4.pom.asc.md5" title="c3p0-0.9.5.4.pom.asc.md5">c3p0-0.9.5.4.pom.asc.md5</a>                          2019-03-24 06:01        32      
+<a href="c3p0-0.9.5.4.pom.asc.sha1" title="c3p0-0.9.5.4.pom.asc.sha1">c3p0-0.9.5.4.pom.asc.sha1</a>                         2019-03-24 06:01        40      
+<a href="c3p0-0.9.5.4.pom.md5" title="c3p0-0.9.5.4.pom.md5">c3p0-0.9.5.4.pom.md5</a>                              2019-03-24 06:01        32      
+<a href="c3p0-0.9.5.4.pom.sha1" title="c3p0-0.9.5.4.pom.sha1">c3p0-0.9.5.4.pom.sha1</a>                             2019-03-24 06:01        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 641ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 14:22:14 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"0ca90eaa6239c78ed321236c5b1650b7"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=Lhbxy%2FDetG%2FYmzemUir49%2B3KbFMOrMgUfpTbul3e2WoBmTL5boL%2BfVtcEmtH24NMomTsLrGxZvPs7K6I13INtdfpbQ9ZDg8yPu6qa%2Fl8sAydGedanULgck3PXEJpLcEk2zmkIp%2BlxnkFnqnAMsGITalVGxjzm0fXo7iScJ4X7zTlYDFoF6sa5gtMsWXhyRlgZNuNEyYGpJUy50RSXe6yT96ZOLGYKHjVOr%2BniqwWlxWpEEqsFpqqfspg1mZdnNkd9nASXlRamzmpAz65Q2%2FRfQ%3D%3D--Ncag%2Bn9OvG5vM5%2B5--2xWVh7oOxqd6mb35944MAg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.900769755.1780842134; expires=Mon, 07 Jun 2027 14:22:14 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 07 Jun 2027 14:22:14 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 621A:52838:5612A5E:41D7083:6A257E96
+
+
+codex
+The POM confirms this is a normal JVM `jar` artifact and identifies `https://github.com/swaldman/c3p0` as the project URL/SCM root. Since Maven Central does not publish tests, I’m checking the upstream tag names and test tree for `0.9.5.4`.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/swaldman/c3p0/tags?per_page=100' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/swaldman/c3p0/contents?ref=v0.9.5.4' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/swaldman/c3p0/contents?ref=c3p0-0.9.5.4' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689
+ exited 22 in 152ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 171ms:
+[
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "e48580de2422d3db940a3c5cea6896d46d3d51e4",
+    "size": 122,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/.gitignore?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/.gitignore",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/e48580de2422d3db940a3c5cea6896d46d3d51e4",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/.gitignore?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/e48580de2422d3db940a3c5cea6896d46d3d51e4",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/.gitignore"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "cfa0503d4b596f186f2c4403cb090f6a4ec4bf90",
+    "size": 1101,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/LICENSE?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/LICENSE",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/cfa0503d4b596f186f2c4403cb090f6a4ec4bf90",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/LICENSE?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/cfa0503d4b596f186f2c4403cb090f6a4ec4bf90",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/LICENSE"
+    }
+  },
+  {
+    "name": "LICENSE-EPL",
+    "path": "LICENSE-EPL",
+    "sha": "5a7d9d4a4ffb86482f2b89496b9495bf018c8ce1",
+    "size": 11481,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/LICENSE-EPL?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/LICENSE-EPL",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/5a7d9d4a4ffb86482f2b89496b9495bf018c8ce1",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/LICENSE-EPL",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/LICENSE-EPL?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/5a7d9d4a4ffb86482f2b89496b9495bf018c8ce1",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/LICENSE-EPL"
+    }
+  },
+  {
+    "name": "LICENSE-LGPL",
+    "path": "LICENSE-LGPL",
+    "sha": "f349ccd9fa3766f62acced61ce14f492e3f31d2f",
+    "size": 26326,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/LICENSE-LGPL?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/LICENSE-LGPL",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/f349ccd9fa3766f62acced61ce14f492e3f31d2f",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/LICENSE-LGPL",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/LICENSE-LGPL?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/f349ccd9fa3766f62acced61ce14f492e3f31d2f",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/LICENSE-LGPL"
+    }
+  },
+  {
+    "name": "README-SRC",
+    "path": "README-SRC",
+    "sha": "075021412809621e71a36e54092b689dfaa16428",
+    "size": 1271,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/README-SRC?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/README-SRC",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/075021412809621e71a36e54092b689dfaa16428",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/README-SRC",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/README-SRC?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/075021412809621e71a36e54092b689dfaa16428",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/README-SRC"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "530bd433baf270afad70d31284a933fcae74b9b2",
+    "size": 1710,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/README.md?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/README.md",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/530bd433baf270afad70d31284a933fcae74b9b2",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/README.md?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/530bd433baf270afad70d31284a933fcae74b9b2",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/README.md"
+    }
+  },
+  {
+    "name": "build.properties",
+    "path": "build.properties",
+    "sha": "cf5555b0265d63ca6711e9214f8a53773e0a053e",
+    "size": 2741,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/build.properties?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/build.properties",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/cf5555b0265d63ca6711e9214f8a53773e0a053e",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/build.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/build.properties?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/cf5555b0265d63ca6711e9214f8a53773e0a053e",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/build.properties"
+    }
+  },
+  {
+    "name": "build.xml",
+    "path": "build.xml",
+    "sha": "e872afe0de93d99b3f3b6cbc3d7e554197873fe8",
+    "size": 37165,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/build.xml?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/build.xml",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/e872afe0de93d99b3f3b6cbc3d7e554197873fe8",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/build.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/build.xml?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/e872afe0de93d99b3f3b6cbc3d7e554197873fe8",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/build.xml"
+    }
+  },
+  {
+    "name": "dbms",
+    "path": "dbms",
+    "sha": "14407d65d8aa8bc09bb1f244aebb4c1ed0162314",
+    "size": 0,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/dbms?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/dbms",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/trees/14407d65d8aa8bc09bb1f244aebb4c1ed0162314",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/dbms?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/trees/14407d65d8aa8bc09bb1f244aebb4c1ed0162314",
+      "html": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/dbms"
+    }
+  },
+  {
+    "name": "src",
+    "path": "src",
+    "sha": "b29b59d08eaa1b28097c9ecee77ddac042b2eae4",
+    "size": 0,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/src?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/trees/b29b59d08eaa1b28097c9ecee77ddac042b2eae4",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/src?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/trees/b29b59d08eaa1b28097c9ecee77ddac042b2eae4",
+      "html": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src"
+    }
+  }
+]
+
+ succeeded in 236ms:
+[
+  {
+    "name": "v0.14.0",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/v0.14.0",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/v0.14.0",
+    "commit": {
+      "sha": "931fd53b695720adc4ac087e021b6de7daf0dd1b",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/931fd53b695720adc4ac087e021b6de7daf0dd1b"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvdjAuMTQuMA=="
+  },
+  {
+    "name": "v0.13.0",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/v0.13.0",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/v0.13.0",
+    "commit": {
+      "sha": "a8f08227431ebc00bb75486011675b103cff1643",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/a8f08227431ebc00bb75486011675b103cff1643"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvdjAuMTMuMA=="
+  },
+  {
+    "name": "v0.12.0",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/v0.12.0",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/v0.12.0",
+    "commit": {
+      "sha": "afbb946ea70ee2312c1c5fc53dd60dd218f87ef9",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/afbb946ea70ee2312c1c5fc53dd60dd218f87ef9"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvdjAuMTIuMA=="
+  },
+  {
+    "name": "v0.11.2",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/v0.11.2",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/v0.11.2",
+    "commit": {
+      "sha": "51a8e479802edc516ad1b018f6f9c9bf4ae2c09a",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/51a8e479802edc516ad1b018f6f9c9bf4ae2c09a"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvdjAuMTEuMg=="
+  },
+  {
+    "name": "v0.11.1",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/v0.11.1",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/v0.11.1",
+    "commit": {
+      "sha": "73e77ed2cdddf0211940f34761ae454e0ec7e2d9",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/73e77ed2cdddf0211940f34761ae454e0ec7e2d9"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvdjAuMTEuMQ=="
+  },
+  {
+    "name": "v0.11.0",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/v0.11.0",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/v0.11.0",
+    "commit": {
+      "sha": "7d0e9f707fef05a5c15ea67a4ead622ee216f66d",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/7d0e9f707fef05a5c15ea67a4ead622ee216f66d"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvdjAuMTEuMA=="
+  },
+  {
+    "name": "v0.11.0-pre2",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/v0.11.0-pre2",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/v0.11.0-pre2",
+    "commit": {
+      "sha": "ab3976b4fa62f487b2f4379e6a772e674f53b0ae",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/ab3976b4fa62f487b2f4379e6a772e674f53b0ae"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvdjAuMTEuMC1wcmUy"
+  },
+  {
+    "name": "v0.11.0-pre1",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/v0.11.0-pre1",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/v0.11.0-pre1",
+    "commit": {
+      "sha": "bbebcc22e2f9b6080e8354042a91f6d02e50e392",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/bbebcc22e2f9b6080e8354042a91f6d02e50e392"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvdjAuMTEuMC1wcmUx"
+  },
+  {
+    "name": "v0.10.2",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/v0.10.2",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/v0.10.2",
+    "commit": {
+      "sha": "f4151d9ebe7d3862782e2c1f2082834a2ad8020c",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/f4151d9ebe7d3862782e2c1f2082834a2ad8020c"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvdjAuMTAuMg=="
+  },
+  {
+    "name": "v0.10.1",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/v0.10.1",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/v0.10.1",
+    "commit": {
+      "sha": "c666965e1780a45d4f5aed6367fb43c6c87d8632",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/c666965e1780a45d4f5aed6367fb43c6c87d8632"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvdjAuMTAuMQ=="
+  },
+  {
+    "name": "v.0.10.0",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/v.0.10.0",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/v.0.10.0",
+    "commit": {
+      "sha": "c6e1d63d4a228676926e12bfb0585af4734fc311",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/c6e1d63d4a228676926e12bfb0585af4734fc311"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3Mvdi4wLjEwLjA="
+  },
+  {
+    "name": "v0.10.0-pre7",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/v0.10.0-pre7",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/v0.10.0-pre7",
+    "commit": {
+      "sha": "3f610518ef5df1ae37284257da295a524255cffe",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/3f610518ef5df1ae37284257da295a524255cffe"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvdjAuMTAuMC1wcmU3"
+  },
+  {
+    "name": "v0.10.0-pre6",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/v0.10.0-pre6",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/v0.10.0-pre6",
+    "commit": {
+      "sha": "82b5bf58036d8e8f24f632c56e521b20ef67a343",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/82b5bf58036d8e8f24f632c56e521b20ef67a343"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvdjAuMTAuMC1wcmU2"
+  },
+  {
+    "name": "v0.10.0-pre5",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/v0.10.0-pre5",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/v0.10.0-pre5",
+    "commit": {
+      "sha": "c597a11272a7d048c1b0fa5782c8edfc054e526e",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/c597a11272a7d048c1b0fa5782c8edfc054e526e"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvdjAuMTAuMC1wcmU1"
+  },
+  {
+    "name": "v0.10.0-pre4",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/v0.10.0-pre4",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/v0.10.0-pre4",
+    "commit": {
+      "sha": "4643934113f6118071ab0953a4593f05965e87c6",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/4643934113f6118071ab0953a4593f05965e87c6"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvdjAuMTAuMC1wcmU0"
+  },
+  {
+    "name": "v0.10.0-pre3",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/v0.10.0-pre3",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/v0.10.0-pre3",
+    "commit": {
+      "sha": "4aefc7b0291caec8b3f7529f5c321ff0075adf7f",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/4aefc7b0291caec8b3f7529f5c321ff0075adf7f"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvdjAuMTAuMC1wcmUz"
+  },
+  {
+    "name": "v0.10.0-pre2",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/v0.10.0-pre2",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/v0.10.0-pre2",
+    "commit": {
+      "sha": "9d8d4394a74b8875f0188d1a8d5ff543b39efc9e",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/9d8d4394a74b8875f0188d1a8d5ff543b39efc9e"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvdjAuMTAuMC1wcmUy"
+  },
+  {
+    "name": "v0.10.0-pre1",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/v0.10.0-pre1",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/v0.10.0-pre1",
+    "commit": {
+      "sha": "df2b44d286d1c33e726a250caa5c164ce9f226e9",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/df2b44d286d1c33e726a250caa5c164ce9f226e9"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvdjAuMTAuMC1wcmUx"
+  },
+  {
+    "name": "c3p0-0.9.5.5",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.5.5",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.5.5",
+    "commit": {
+      "sha": "5640dcc2e3e216953325c9ed7059626e735e5032",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/5640dcc2e3e216953325c9ed7059626e735e5032"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuNS41"
+  },
+  {
+    "name": "c3p0-0.9.5.4",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.5.4",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.5.4",
+    "commit": {
+      "sha": "c61c00b1f7e3d6cf23501cd02b429474e4d22c73",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/c61c00b1f7e3d6cf23501cd02b429474e4d22c73"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuNS40"
+  },
+  {
+    "name": "c3p0-0.9.5.3",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.5.3",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.5.3",
+    "commit": {
+      "sha": "c422ead14de1ca530b72d5e0515880b7ed27df1e",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/c422ead14de1ca530b72d5e0515880b7ed27df1e"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuNS4z"
+  },
+  {
+    "name": "c3p0-0.9.5.2",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.5.2",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.5.2",
+    "commit": {
+      "sha": "9f97c814aef31b2997d6ecfad1e3875c6136317b",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/9f97c814aef31b2997d6ecfad1e3875c6136317b"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuNS4y"
+  },
+  {
+    "name": "c3p0-0.9.5.1",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.5.1",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.5.1",
+    "commit": {
+      "sha": "21a2fcf29f4d1a10a315a4f0fc2e29804442763e",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/21a2fcf29f4d1a10a315a4f0fc2e29804442763e"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuNS4x"
+  },
+  {
+    "name": "c3p0-0.9.5",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.5",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.5",
+    "commit": {
+      "sha": "01a28e054765c1d254f1cbc82ce55f0632a883ce",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/01a28e054765c1d254f1cbc82ce55f0632a883ce"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuNQ=="
+  },
+  {
+    "name": "c3p0-0.9.5-pre10",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.5-pre10",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.5-pre10",
+    "commit": {
+      "sha": "148e310455e36ee07bbebeddc712cd3a1a22ba82",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/148e310455e36ee07bbebeddc712cd3a1a22ba82"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuNS1wcmUxMA=="
+  },
+  {
+    "name": "c3p0-0.9.5-pre9",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.5-pre9",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.5-pre9",
+    "commit": {
+      "sha": "cec41155e59e318ee28d82eac3731c37e51eed9e",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/cec41155e59e318ee28d82eac3731c37e51eed9e"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuNS1wcmU5"
+  },
+  {
+    "name": "c3p0-0.9.5-pre8",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.5-pre8",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.5-pre8",
+    "commit": {
+      "sha": "65ef9b4dcad7f9aea233ebbe26f57bba3cd24744",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/65ef9b4dcad7f9aea233ebbe26f57bba3cd24744"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuNS1wcmU4"
+  },
+  {
+    "name": "c3p0-0.9.5-pre7",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.5-pre7",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.5-pre7",
+    "commit": {
+      "sha": "89554cf022ab18d1c6244fec802807fc49351e37",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/89554cf022ab18d1c6244fec802807fc49351e37"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuNS1wcmU3"
+  },
+  {
+    "name": "c3p0-0.9.5-pre6",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.5-pre6",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.5-pre6",
+    "commit": {
+      "sha": "f70621af49ebdc5b12ae0fe40704c7a7496fec66",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/f70621af49ebdc5b12ae0fe40704c7a7496fec66"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuNS1wcmU2"
+  },
+  {
+    "name": "c3p0-0.9.5-pre5",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.5-pre5",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.5-pre5",
+    "commit": {
+      "sha": "7c131bb3f29c74e3a5b639694fd4901ae834895d",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/7c131bb3f29c74e3a5b639694fd4901ae834895d"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuNS1wcmU1"
+  },
+  {
+    "name": "c3p0-0.9.5-pre4",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.5-pre4",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.5-pre4",
+    "commit": {
+      "sha": "c79fde67016f0999045414e881769cb5660c8654",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/c79fde67016f0999045414e881769cb5660c8654"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuNS1wcmU0"
+  },
+  {
+    "name": "c3p0-0.9.5-pre3",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.5-pre3",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.5-pre3",
+    "commit": {
+      "sha": "095608fb2a846dbaab7fadcc5aeda631a22e5d8e",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/095608fb2a846dbaab7fadcc5aeda631a22e5d8e"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuNS1wcmUz"
+  },
+  {
+    "name": "c3p0-0.9.5-pre2",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.5-pre2",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.5-pre2",
+    "commit": {
+      "sha": "42494910c0bc1bd260a3a3af09df77f6e3b1d6a2",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/42494910c0bc1bd260a3a3af09df77f6e3b1d6a2"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuNS1wcmUy"
+  },
+  {
+    "name": "c3p0-0.9.5-pre1",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.5-pre1",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.5-pre1",
+    "commit": {
+      "sha": "50e0ac1305f41bbc7896843dedb764f61b3368b7",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/50e0ac1305f41bbc7896843dedb764f61b3368b7"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuNS1wcmUx"
+  },
+  {
+    "name": "c3p0-0.9.2.1",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.2.1",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.2.1",
+    "commit": {
+      "sha": "9ba5276e1dd86c7fa9ff31300435d0543c36a20d",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/9ba5276e1dd86c7fa9ff31300435d0543c36a20d"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMi4x"
+  },
+  {
+    "name": "c3p0-0.9.2.1-final",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.2.1-final",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.2.1-final",
+    "commit": {
+      "sha": "fe0dc1785224869da8ca2554af9a7e6dfe5f915b",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/fe0dc1785224869da8ca2554af9a7e6dfe5f915b"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMi4xLWZpbmFs"
+  },
+  {
+    "name": "c3p0-0.9.2",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.2",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.2",
+    "commit": {
+      "sha": "b79eb54c98f262c76cdc64d16a0dbfe5603473d3",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/b79eb54c98f262c76cdc64d16a0dbfe5603473d3"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMg=="
+  },
+  {
+    "name": "c3p0-0.9.2-pre8",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.2-pre8",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.2-pre8",
+    "commit": {
+      "sha": "74d503ffdfcdf53edbfe73ac6cf62a79e48da2d8",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/74d503ffdfcdf53edbfe73ac6cf62a79e48da2d8"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMi1wcmU4"
+  },
+  {
+    "name": "c3p0-0.9.2-pre7",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.2-pre7",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.2-pre7",
+    "commit": {
+      "sha": "8d26e62db52f52bc7000a5e24cb779f8a039d70d",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/8d26e62db52f52bc7000a5e24cb779f8a039d70d"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMi1wcmU3"
+  },
+  {
+    "name": "c3p0-0.9.2-pre6",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.2-pre6",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.2-pre6",
+    "commit": {
+      "sha": "39deb5c5563383e8409df1ac9861f737bd314cb9",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/39deb5c5563383e8409df1ac9861f737bd314cb9"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMi1wcmU2"
+  },
+  {
+    "name": "c3p0-0.9.2-pre5",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.2-pre5",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.2-pre5",
+    "commit": {
+      "sha": "e9e2db5adfcc0a41a3e0eb57a3cc77d997a92771",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/e9e2db5adfcc0a41a3e0eb57a3cc77d997a92771"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMi1wcmU1"
+  },
+  {
+    "name": "c3p0-0.9.2-pre4",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.2-pre4",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.2-pre4",
+    "commit": {
+      "sha": "65d3282329913a772a0bbe21e978e7619f21bb2a",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/65d3282329913a772a0bbe21e978e7619f21bb2a"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMi1wcmU0"
+  },
+  {
+    "name": "c3p0-0.9.2-pre3",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.2-pre3",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.2-pre3",
+    "commit": {
+      "sha": "454ddbac865c941984b4e3d57e4cc4bd834ba1c5",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/454ddbac865c941984b4e3d57e4cc4bd834ba1c5"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMi1wcmUz"
+  },
+  {
+    "name": "c3p0-0.9.2-pre2",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.2-pre2",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.2-pre2",
+    "commit": {
+      "sha": "237703ea922b2d18cf058fe25b41cc76cc67d66d",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/237703ea922b2d18cf058fe25b41cc76cc67d66d"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMi1wcmUy"
+  },
+  {
+    "name": "c3p0-0.9.2-pre2-RELEASE",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.2-pre2-RELEASE",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.2-pre2-RELEASE",
+    "commit": {
+      "sha": "f094b9f67bfd2894537ceab029623b4b741571c1",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/f094b9f67bfd2894537ceab029623b4b741571c1"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMi1wcmUyLVJFTEVBU0U="
+  },
+  {
+    "name": "c3p0-0.9.2-pre1",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.2-pre1",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.2-pre1",
+    "commit": {
+      "sha": "9be85019176612c9bec498017d3adb93b5681108",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/9be85019176612c9bec498017d3adb93b5681108"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMi1wcmUx"
+  },
+  {
+    "name": "c3p0-0.9.2-jdk14",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.2-jdk14",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.2-jdk14",
+    "commit": {
+      "sha": "d77b2205156a212851c4b0189336b9ae7af9e0f1",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/d77b2205156a212851c4b0189336b9ae7af9e0f1"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMi1qZGsxNA=="
+  },
+  {
+    "name": "c3p0-0.9.1.2",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.1.2",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.1.2",
+    "commit": {
+      "sha": "2be3e54cc2ede5af65417ce569eb83071e35b5d1",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/2be3e54cc2ede5af65417ce569eb83071e35b5d1"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMS4y"
+  },
+  {
+    "name": "c3p0-0.9.1.1",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.1.1",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.1.1",
+    "commit": {
+      "sha": "7af95f2bf45cf688e0e919b2c04f887a98df899d",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/7af95f2bf45cf688e0e919b2c04f887a98df899d"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMS4x"
+  },
+  {
+    "name": "c3p0-0.9.1",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.1",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.1",
+    "commit": {
+      "sha": "e3ab5765ef7778c7e9912818e9697f29c2e7ffc5",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/e3ab5765ef7778c7e9912818e9697f29c2e7ffc5"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMQ=="
+  },
+  {
+    "name": "c3p0-0.9.1-pre12",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.1-pre12",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.1-pre12",
+    "commit": {
+      "sha": "b5f51204e507a94d33f26d81af07f628a6de24cb",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/b5f51204e507a94d33f26d81af07f628a6de24cb"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMS1wcmUxMg=="
+  },
+  {
+    "name": "c3p0-0.9.1-pre11",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.1-pre11",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.1-pre11",
+    "commit": {
+      "sha": "3041fac5450b3e5e5884ebd921956a8b116c4ec0",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/3041fac5450b3e5e5884ebd921956a8b116c4ec0"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMS1wcmUxMQ=="
+  },
+  {
+    "name": "c3p0-0.9.1-pre10",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.1-pre10",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.1-pre10",
+    "commit": {
+      "sha": "819ffe7dd330e1bf1c8eac6a33cbfd3837fa1d83",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/819ffe7dd330e1bf1c8eac6a33cbfd3837fa1d83"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMS1wcmUxMA=="
+  },
+  {
+    "name": "c3p0-0.9.1-pre9",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.1-pre9",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.1-pre9",
+    "commit": {
+      "sha": "457d3a9dd3609b9ed48305f819f4a672dd609f21",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/457d3a9dd3609b9ed48305f819f4a672dd609f21"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMS1wcmU5"
+  },
+  {
+    "name": "c3p0-0.9.1-pre7",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.1-pre7",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.1-pre7",
+    "commit": {
+      "sha": "87137f392e23ea878b37f5934319bdf488ae0979",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/87137f392e23ea878b37f5934319bdf488ae0979"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMS1wcmU3"
+  },
+  {
+    "name": "c3p0-0.9.1-pre6",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.1-pre6",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.1-pre6",
+    "commit": {
+      "sha": "225c6353ea17cfb6c0dbf8bcf15821b7fcd13d02",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/225c6353ea17cfb6c0dbf8bcf15821b7fcd13d02"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMS1wcmU2"
+  },
+  {
+    "name": "c3p0-0.9.1-pre5",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.1-pre5",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.1-pre5",
+    "commit": {
+      "sha": "e11fd1340644747977fa34bc3377704223b6ccb4",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/e11fd1340644747977fa34bc3377704223b6ccb4"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMS1wcmU1"
+  },
+  {
+    "name": "c3p0-0.9.1-pre5a",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.1-pre5a",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.1-pre5a",
+    "commit": {
+      "sha": "3bf2cf4c5e44d7d0ea097693bb1e0b76100e544b",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/3bf2cf4c5e44d7d0ea097693bb1e0b76100e544b"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMS1wcmU1YQ=="
+  },
+  {
+    "name": "c3p0-0.9.0.4",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.0.4",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.0.4",
+    "commit": {
+      "sha": "15b53cfce6ed1fb0a46fd6597c2b2e4470e6f8c9",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/15b53cfce6ed1fb0a46fd6597c2b2e4470e6f8c9"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMC40"
+  },
+  {
+    "name": "c3p0-0.9.0.3",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.0.3",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.0.3",
+    "commit": {
+      "sha": "3f08409c8438369745142e7604f39364cf5f1bf4",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/3f08409c8438369745142e7604f39364cf5f1bf4"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMC4z"
+  },
+  {
+    "name": "c3p0-0.9.0.2",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.0.2",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.0.2",
+    "commit": {
+      "sha": "b498399c5c4b6d59be7623c57c3ae37f2fa24899",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/b498399c5c4b6d59be7623c57c3ae37f2fa24899"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMC4y"
+  },
+  {
+    "name": "c3p0-0.9.0",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.0",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.0",
+    "commit": {
+      "sha": "87b1d9af25798b92078fb3ae2d414f091a3ce510",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/87b1d9af25798b92078fb3ae2d414f091a3ce510"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMA=="
+  },
+  {
+    "name": "c3p0-0.9.0-pre6",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.0-pre6",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.0-pre6",
+    "commit": {
+      "sha": "6e627e6edab6ffe438b96a92753c736fa526c146",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/6e627e6edab6ffe438b96a92753c736fa526c146"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMC1wcmU2"
+  },
+  {
+    "name": "c3p0-0.9.0-pre5",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.0-pre5",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.0-pre5",
+    "commit": {
+      "sha": "4e0c371c5a83d6abd8c8305a771707f83328003c",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/4e0c371c5a83d6abd8c8305a771707f83328003c"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMC1wcmU1"
+  },
+  {
+    "name": "c3p0-0.9.0-pre4",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.0-pre4",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.0-pre4",
+    "commit": {
+      "sha": "2185b7f9b4ce47cfa2c92af38ac1b7f99fe6e8f9",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/2185b7f9b4ce47cfa2c92af38ac1b7f99fe6e8f9"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMC1wcmU0"
+  },
+  {
+    "name": "c3p0-0.9.0-pre3",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.0-pre3",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.0-pre3",
+    "commit": {
+      "sha": "84b36a0b8caa68a47980a1dde5eb2eae9c7af5d4",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/84b36a0b8caa68a47980a1dde5eb2eae9c7af5d4"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMC1wcmUz"
+  },
+  {
+    "name": "c3p0-0.9.0-pre2",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.9.0-pre2",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.9.0-pre2",
+    "commit": {
+      "sha": "5e638ef3d9538ab5073ea2e172ca77876f6f9b24",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/5e638ef3d9538ab5073ea2e172ca77876f6f9b24"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjkuMC1wcmUy"
+  },
+  {
+    "name": "c3p0-0.8.5.2",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.8.5.2",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.8.5.2",
+    "commit": {
+      "sha": "02d1b6e3c269f8d3e1bdf4f26edfff3893348924",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/02d1b6e3c269f8d3e1bdf4f26edfff3893348924"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjguNS4y"
+  },
+  {
+    "name": "c3p0-0.8.5.1",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.8.5.1",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.8.5.1",
+    "commit": {
+      "sha": "a5b7c16f150eb2beb40ee35952da7f5fbd71cd9a",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/a5b7c16f150eb2beb40ee35952da7f5fbd71cd9a"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjguNS4x"
+  },
+  {
+    "name": "c3p0-0.8.5",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.8.5",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.8.5",
+    "commit": {
+      "sha": "c716dbe3b672a89ec6841b32a6c83486281bdf03",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/c716dbe3b672a89ec6841b32a6c83486281bdf03"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjguNQ=="
+  },
+  {
+    "name": "c3p0-0.8.5-pre9",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.8.5-pre9",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.8.5-pre9",
+    "commit": {
+      "sha": "95ce52b3f4b45808d95bb0fd34fcde0fca18b15e",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/95ce52b3f4b45808d95bb0fd34fcde0fca18b15e"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjguNS1wcmU5"
+  },
+  {
+    "name": "c3p0-0.8.5-pre8",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.8.5-pre8",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.8.5-pre8",
+    "commit": {
+      "sha": "f97afda4bfc7c61126840a9405ac23a9e5e814eb",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/f97afda4bfc7c61126840a9405ac23a9e5e814eb"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjguNS1wcmU4"
+  },
+  {
+    "name": "c3p0-0.8.5-pre7",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.8.5-pre7",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.8.5-pre7",
+    "commit": {
+      "sha": "41915594b361a53ebe3629a579d6138f334b2baa",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/41915594b361a53ebe3629a579d6138f334b2baa"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjguNS1wcmU3"
+  },
+  {
+    "name": "c3p0-0.8.5-pre4",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.8.5-pre4",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.8.5-pre4",
+    "commit": {
+      "sha": "1c7f0e6635cc459a379d75ad42d557d594f45405",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/1c7f0e6635cc459a379d75ad42d557d594f45405"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjguNS1wcmU0"
+  },
+  {
+    "name": "c3p0-0.8.5-pre2",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.8.5-pre2",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.8.5-pre2",
+    "commit": {
+      "sha": "c3bafbfd342f655631ca62d055f880df46489627",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/c3bafbfd342f655631ca62d055f880df46489627"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjguNS1wcmUy"
+  },
+  {
+    "name": "c3p0-0.8.4.5",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.8.4.5",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.8.4.5",
+    "commit": {
+      "sha": "757ee7a905884a7bae61dc6c38fe1cc43cd50ac9",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/757ee7a905884a7bae61dc6c38fe1cc43cd50ac9"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjguNC41"
+  },
+  {
+    "name": "c3p0-0.8.4.2",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.8.4.2",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.8.4.2",
+    "commit": {
+      "sha": "eb780f587f69832001ac498d73d95a9662f89987",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/eb780f587f69832001ac498d73d95a9662f89987"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjguNC4y"
+  },
+  {
+    "name": "c3p0-0.8.4.1",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.8.4.1",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.8.4.1",
+    "commit": {
+      "sha": "aa0e2618b9fe19909222a593f8fefb9c8e8df425",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/aa0e2618b9fe19909222a593f8fefb9c8e8df425"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjguNC4x"
+  },
+  {
+    "name": "c3p0-0.8.4",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.8.4",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.8.4",
+    "commit": {
+      "sha": "9b26a409637a6856d524ef34846c21fc74c680c4",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/9b26a409637a6856d524ef34846c21fc74c680c4"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjguNA=="
+  },
+  {
+    "name": "c3p0-0.8.4-test5",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.8.4-test5",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.8.4-test5",
+    "commit": {
+      "sha": "e68a25411eb9f1ccc43b8cf1a90c090e16274030",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/e68a25411eb9f1ccc43b8cf1a90c090e16274030"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjguNC10ZXN0NQ=="
+  },
+  {
+    "name": "c3p0-0.8.4-test2",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.8.4-test2",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.8.4-test2",
+    "commit": {
+      "sha": "88e2fa9f2c577c1a3c973424ee87018b54058832",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/88e2fa9f2c577c1a3c973424ee87018b54058832"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjguNC10ZXN0Mg=="
+  },
+  {
+    "name": "c3p0-0.8.4-test1",
+    "zipball_url": "https://api.github.com/repos/swaldman/c3p0/zipball/refs/tags/c3p0-0.8.4-test1",
+    "tarball_url": "https://api.github.com/repos/swaldman/c3p0/tarball/refs/tags/c3p0-0.8.4-test1",
+    "commit": {
+      "sha": "66e3716e788e0ac8f9c2e8e93711cfee301bede8",
+      "url": "https://api.github.com/repos/swaldman/c3p0/commits/66e3716e788e0ac8f9c2e8e93711cfee301bede8"
+    },
+    "node_id": "MDM6UmVmNDMxMjI3ODpyZWZzL3RhZ3MvYzNwMC0wLjguNC10ZXN0MQ=="
+  }
+]
+
+codex
+The upstream tag is `c3p0-0.9.5.4`, and the repo exposes a `src` tree for that tag. I’m locating the test subtree and documentation entry point, then I’ll write the JSON.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/swaldman/c3p0/contents/src?ref=c3p0-0.9.5.4' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/README.md | sed -n '1,160p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/mchange/c3p0/0.9.5.4/c3p0-0.9.5.4.jar -o /tmp/c3p0-0.9.5.4.jar && jar tf /tmp/c3p0-0.9.5.4.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689
+ succeeded in 111ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/mchange/
+com/mchange/v2/
+com/mchange/v2/c3p0/
+com/mchange/v2/c3p0/cfg/
+com/mchange/v2/c3p0/codegen/
+com/mchange/v2/c3p0/debug/
+com/mchange/v2/c3p0/example/
+com/mchange/v2/c3p0/filter/
+com/mchange/v2/c3p0/impl/
+com/mchange/v2/c3p0/jboss/
+com/mchange/v2/c3p0/management/
+com/mchange/v2/c3p0/mbean/
+com/mchange/v2/c3p0/stmt/
+com/mchange/v2/c3p0/subst/
+com/mchange/v2/c3p0/test/
+com/mchange/v2/c3p0/util/
+com/mchange/v2/resourcepool/
+com/mchange/Debug.class
+com/mchange/v2/Debug.class
+com/mchange/v2/c3p0/AbstractComboPooledDataSource$1.class
+com/mchange/v2/c3p0/AbstractComboPooledDataSource$2.class
+com/mchange/v2/c3p0/AbstractComboPooledDataSource.class
+com/mchange/v2/c3p0/AbstractConnectionCustomizer.class
+com/mchange/v2/c3p0/AbstractConnectionTester.class
+com/mchange/v2/c3p0/C3P0ProxyConnection.class
+com/mchange/v2/c3p0/C3P0ProxyStatement.class
+com/mchange/v2/c3p0/C3P0Registry.class
+com/mchange/v2/c3p0/ComboPooledDataSource.class
+com/mchange/v2/c3p0/ConnectionCustomizer.class
+com/mchange/v2/c3p0/ConnectionTester.class
+com/mchange/v2/c3p0/DataSources.class
+com/mchange/v2/c3p0/Debug.class
+com/mchange/v2/c3p0/DriverManagerDataSource$1.class
+com/mchange/v2/c3p0/DriverManagerDataSource.class
+com/mchange/v2/c3p0/DriverManagerDataSourceFactory.class
+com/mchange/v2/c3p0/FullQueryConnectionTester.class
+com/mchange/v2/c3p0/JndiRefConnectionPoolDataSource.class
+com/mchange/v2/c3p0/JndiRefForwardingDataSource$1.class
+com/mchange/v2/c3p0/JndiRefForwardingDataSource$2.class
+com/mchange/v2/c3p0/JndiRefForwardingDataSource.class
+com/mchange/v2/c3p0/PoolBackedDataSource.class
+com/mchange/v2/c3p0/PoolBackedDataSourceFactory.class
+com/mchange/v2/c3p0/PoolConfig.class
+com/mchange/v2/c3p0/PooledDataSource.class
+com/mchange/v2/c3p0/QueryConnectionTester.class
+com/mchange/v2/c3p0/SQLWarnings.class
+com/mchange/v2/c3p0/UnifiedConnectionTester.class
+com/mchange/v2/c3p0/WrapperConnectionPoolDataSource$1.class
+com/mchange/v2/c3p0/WrapperConnectionPoolDataSource.class
+com/mchange/v2/c3p0/cfg/C3P0Config.class
+com/mchange/v2/c3p0/cfg/C3P0ConfigFinder.class
+com/mchange/v2/c3p0/cfg/C3P0ConfigUtils.class
+com/mchange/v2/c3p0/cfg/C3P0ConfigXmlUtils.class
+com/mchange/v2/c3p0/cfg/Debug.class
+com/mchange/v2/c3p0/cfg/DefaultC3P0ConfigFinder.class
+com/mchange/v2/c3p0/cfg/NamedScope.class
+com/mchange/v2/c3p0/codegen/BeangenDataSourceGenerator$1.class
+com/mchange/v2/c3p0/codegen/BeangenDataSourceGenerator$BooleanInitIdentityTokenConstructortorGeneratorExtension.class
+com/mchange/v2/c3p0/codegen/BeangenDataSourceGenerator$UnmodifiableShadowGeneratorExtension.class
+com/mchange/v2/c3p0/codegen/BeangenDataSourceGenerator$WcpdsExtrasGeneratorExtension.class
+com/mchange/v2/c3p0/codegen/BeangenDataSourceGenerator.class
+com/mchange/v2/c3p0/codegen/C3P0ImplUtilsParentLoggerGeneratorExtension.class
+com/mchange/v2/c3p0/codegen/Debug.class
+com/mchange/v2/c3p0/codegen/JdbcProxyGenerator$NewProxyAnyStatementGenerator.class
+com/mchange/v2/c3p0/codegen/JdbcProxyGenerator$NewProxyConnectionGenerator.class
+com/mchange/v2/c3p0/codegen/JdbcProxyGenerator$NewProxyMetaDataGenerator.class
+com/mchange/v2/c3p0/codegen/JdbcProxyGenerator$NewProxyResultSetGenerator.class
+com/mchange/v2/c3p0/codegen/JdbcProxyGenerator.class
+com/mchange/v2/c3p0/codegen/UnsupportedParentLoggerGeneratorExtension.class
+com/mchange/v2/c3p0/debug/AfterCloseLoggingComboPooledDataSource.class
+com/mchange/v2/c3p0/debug/AfterCloseLoggingConnectionWrapper$AfterCloseLoggingInvocationHandler.class
+com/mchange/v2/c3p0/debug/AfterCloseLoggingConnectionWrapper.class
+com/mchange/v2/c3p0/debug/CloseLoggingComboPooledDataSource.class
+com/mchange/v2/c3p0/debug/CloseLoggingConnectionWrapper.class
+com/mchange/v2/c3p0/debug/ConstructionLoggingComboPooledDataSource.class
+com/mchange/v2/c3p0/debug/Debug.class
+com/mchange/v2/c3p0/example/Debug.class
+
+ succeeded in 150ms:
+[
+  {
+    "name": "codegen",
+    "path": "src/codegen",
+    "sha": "7b3b8680e9a7fa20cd64474e040277e017b88269",
+    "size": 0,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/src/codegen?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/codegen",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/trees/7b3b8680e9a7fa20cd64474e040277e017b88269",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/src/codegen?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/trees/7b3b8680e9a7fa20cd64474e040277e017b88269",
+      "html": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/codegen"
+    }
+  },
+  {
+    "name": "dist-static",
+    "path": "src/dist-static",
+    "sha": "644f86990f9d66d07ef6c4a8c6e66995d225bff3",
+    "size": 0,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/src/dist-static?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/dist-static",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/trees/644f86990f9d66d07ef6c4a8c6e66995d225bff3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/src/dist-static?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/trees/644f86990f9d66d07ef6c4a8c6e66995d225bff3",
+      "html": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/dist-static"
+    }
+  },
+  {
+    "name": "doc",
+    "path": "src/doc",
+    "sha": "9bf5c88610b16b24e81d826a8c819a239c54e3e4",
+    "size": 0,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/src/doc?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/doc",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/trees/9bf5c88610b16b24e81d826a8c819a239c54e3e4",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/src/doc?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/trees/9bf5c88610b16b24e81d826a8c819a239c54e3e4",
+      "html": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/doc"
+    }
+  },
+  {
+    "name": "docweb",
+    "path": "src/docweb",
+    "sha": "d2bd886e129f2ac135e004fb05b97a249ff3a73f",
+    "size": 0,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/src/docweb?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/docweb",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/trees/d2bd886e129f2ac135e004fb05b97a249ff3a73f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/src/docweb?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/trees/d2bd886e129f2ac135e004fb05b97a249ff3a73f",
+      "html": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/docweb"
+    }
+  },
+  {
+    "name": "java",
+    "path": "src/java",
+    "sha": "b78a076271b6479b24cbd7b571cd0805479725b8",
+    "size": 0,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/src/java?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/java",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/trees/b78a076271b6479b24cbd7b571cd0805479725b8",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/src/java?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/trees/b78a076271b6479b24cbd7b571cd0805479725b8",
+      "html": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/java"
+    }
+  },
+  {
+    "name": "maven",
+    "path": "src/maven",
+    "sha": "613deff57cafb736cdb02da87294ec2da3bf0c2a",
+    "size": 0,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/src/maven?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/maven",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/trees/613deff57cafb736cdb02da87294ec2da3bf0c2a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/src/maven?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/trees/613deff57cafb736cdb02da87294ec2da3bf0c2a",
+      "html": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/maven"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "src/resources",
+    "sha": "4bc7918eefa1d718d4d5737b834a1fc9e09b5274",
+    "size": 0,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/src/resources?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/resources",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/trees/4bc7918eefa1d718d4d5737b834a1fc9e09b5274",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/src/resources?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/trees/4bc7918eefa1d718d4d5737b834a1fc9e09b5274",
+      "html": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/resources"
+    }
+  },
+  {
+    "name": "test-properties",
+    "path": "src/test-properties",
+    "sha": "68234512324caa05fe051c03feef4e0dada6a66c",
+    "size": 0,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/src/test-properties?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/test-properties",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/trees/68234512324caa05fe051c03feef4e0dada6a66c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/src/test-properties?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/trees/68234512324caa05fe051c03feef4e0dada6a66c",
+      "html": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/test-properties"
+    }
+  }
+]
+
+ succeeded in 166ms:
+#### c3p0 ####
+
+c3p0 is a mature, highly concurrent JDBC Connection pooling library, with
+support for caching and reuse of PreparedStatements. It is licensed under 
+[LGPL v.2.1](https://github.com/swaldman/c3p0/blob/master/src/dist-static/LICENSE-LGPL)
+or [EPL v.1.0](https://github.com/swaldman/c3p0/blob/master/src/dist-static/LICENSE-EPL), 
+at your option.
+
+c3p0 is now maintained on [github](https://github.com/swaldman/c3p0).
+
+c3p0 is available as managed dependency on [Sonatype's open-source software repostory](https://oss.sonatype.org/content/repositories/releases/), 
+under <code>[groupId: com.mchange, artifactId: c3p0]</code> For available values of <code>version</code>, look [here](https://oss.sonatype.org/content/repositories/releases/com/mchange/c3p0/).
+
+You can still find releases at [sourceforge](http://sourceforge.net/projects/c3p0/).
+
+Documentation is available as part of every distribution, as well as [on-line](http://www.mchange.com/projects/c3p0/).
+
+From the current *development snapshot*, here are the latest [CHANGELOG](https://github.com/swaldman/c3p0/blob/master/src/dist-static/CHANGELOG) and [RELEASE_NOTES](https://github.com/swaldman/c3p0/blob/master/src/dist-static/RELEASE_NOTES-c3p0-0.9.5). For information on how to build from src, checkout [README-SRC](https://github.com/swaldman/c3p0/blob/master/README-SRC).
+
+Please address comments and questions to the [library author](mailto:swaldman@mchange.com), although keep in mind he is an abysmal correspondent and basically an asshole. Despite that, your feedback is very much appreciated. You may also open issues on github and/or sourceforge.
+
+Thank you for your interest in c3p0. I do hope that you find it useful!
+
+
+
+
+codex
+The published JAR contains JVM class files, so this is applicable to Native Image metadata; no `language` or `not-for-native-image` flag is appropriate. The test code is under the tagged upstream Java source tree rather than a Maven test-sources artifact.
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/swaldman/c3p0/contents/src/docweb?ref=c3p0-0.9.5.4 | sed -n '1,200p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/swaldman/c3p0/contents/src/java/com/mchange/v2/c3p0/test?ref=c3p0-0.9.5.4 | sed -n '1,160p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/mchange/c3p0/0.9.5.4/c3p0-0.9.5.4-sources.jar -o /tmp/c3p0-0.9.5.4-sources.jar && jar tf /tmp/c3p0-0.9.5.4-sources.jar | rg '("'^|/)test(/|'"\\.|"'$)|Test|Tests'"' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/swaldman/c3p0/contents/src/doc?ref=c3p0-0.9.5.4 | sed -n '1,200p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689
+ succeeded in 160ms:
+[
+  {
+    "name": "docwebapp",
+    "path": "src/docweb/docwebapp",
+    "sha": "8dbd99fd9b7b0ff57edbcd9bc3c50acc0690612b",
+    "size": 0,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/src/docweb/docwebapp?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/docweb/docwebapp",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/trees/8dbd99fd9b7b0ff57edbcd9bc3c50acc0690612b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/src/docweb/docwebapp?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/trees/8dbd99fd9b7b0ff57edbcd9bc3c50acc0690612b",
+      "html": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/docweb/docwebapp"
+    }
+  },
+  {
+    "name": "docwebear",
+    "path": "src/docweb/docwebear",
+    "sha": "fd6cbadae8444ea4f6b969a994553706d7898d6d",
+    "size": 0,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/src/docweb/docwebear?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/docweb/docwebear",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/trees/fd6cbadae8444ea4f6b969a994553706d7898d6d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/src/docweb/docwebear?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/trees/fd6cbadae8444ea4f6b969a994553706d7898d6d",
+      "html": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/docweb/docwebear"
+    }
+  }
+]
+
+ succeeded in 165ms:
+[
+  {
+    "name": "arrow_sm.png",
+    "path": "src/doc/arrow_sm.png",
+    "sha": "9c97fdc8c736e2fb4bf64f697445cbfce1d81a91",
+    "size": 375,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/src/doc/arrow_sm.png?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/src/doc/arrow_sm.png",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/9c97fdc8c736e2fb4bf64f697445cbfce1d81a91",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/src/doc/arrow_sm.png",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/src/doc/arrow_sm.png?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/9c97fdc8c736e2fb4bf64f697445cbfce1d81a91",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/src/doc/arrow_sm.png"
+    }
+  },
+  {
+    "name": "extra.xml",
+    "path": "src/doc/extra.xml",
+    "sha": "1202931ffb7ad9f3e9e7382ee2a9c9de0075f6ab",
+    "size": 183,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/src/doc/extra.xml?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/src/doc/extra.xml",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/1202931ffb7ad9f3e9e7382ee2a9c9de0075f6ab",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/src/doc/extra.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/src/doc/extra.xml?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/1202931ffb7ad9f3e9e7382ee2a9c9de0075f6ab",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/src/doc/extra.xml"
+    }
+  },
+  {
+    "name": "index.html",
+    "path": "src/doc/index.html",
+    "sha": "844ddd01240fb2030ccd55be429a0276d96e77b5",
+    "size": 186103,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/src/doc/index.html?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/src/doc/index.html",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/844ddd01240fb2030ccd55be429a0276d96e77b5",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/src/doc/index.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/src/doc/index.html?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/844ddd01240fb2030ccd55be429a0276d96e77b5",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/src/doc/index.html"
+    }
+  },
+  {
+    "name": "old",
+    "path": "src/doc/old",
+    "sha": "4074b9b2cf0b6cd9840c6323a20a762e5031f1bf",
+    "size": 0,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/src/doc/old?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/doc/old",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/trees/4074b9b2cf0b6cd9840c6323a20a762e5031f1bf",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/src/doc/old?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/trees/4074b9b2cf0b6cd9840c6323a20a762e5031f1bf",
+      "html": "https://github.com/swaldman/c3p0/tree/c3p0-0.9.5.4/src/doc/old"
+    }
+  }
+]
+
+ succeeded in 175ms:
+[
+  {
+    "name": "AlwaysFailConnectionTester.java",
+    "path": "src/java/com/mchange/v2/c3p0/test/AlwaysFailConnectionTester.java",
+    "sha": "8e4ecdfab1c488306b364b3f25a0bf6758d09ecb",
+    "size": 2451,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/src/java/com/mchange/v2/c3p0/test/AlwaysFailConnectionTester.java?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/AlwaysFailConnectionTester.java",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/8e4ecdfab1c488306b364b3f25a0bf6758d09ecb",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/AlwaysFailConnectionTester.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/src/java/com/mchange/v2/c3p0/test/AlwaysFailConnectionTester.java?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/8e4ecdfab1c488306b364b3f25a0bf6758d09ecb",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/AlwaysFailConnectionTester.java"
+    }
+  },
+  {
+    "name": "AlwaysFailDataSource.java",
+    "path": "src/java/com/mchange/v2/c3p0/test/AlwaysFailDataSource.java",
+    "sha": "b94016331133a3902b31ca2a70276439560a4663",
+    "size": 2411,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/src/java/com/mchange/v2/c3p0/test/AlwaysFailDataSource.java?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/AlwaysFailDataSource.java",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/b94016331133a3902b31ca2a70276439560a4663",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/AlwaysFailDataSource.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/src/java/com/mchange/v2/c3p0/test/AlwaysFailDataSource.java?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/b94016331133a3902b31ca2a70276439560a4663",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/AlwaysFailDataSource.java"
+    }
+  },
+  {
+    "name": "C3P0BenchmarkApp.java",
+    "path": "src/java/com/mchange/v2/c3p0/test/C3P0BenchmarkApp.java",
+    "sha": "91c7ec556346e7c2354f3133d70b155833c281c2",
+    "size": 19425,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/src/java/com/mchange/v2/c3p0/test/C3P0BenchmarkApp.java?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/C3P0BenchmarkApp.java",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/91c7ec556346e7c2354f3133d70b155833c281c2",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/C3P0BenchmarkApp.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/src/java/com/mchange/v2/c3p0/test/C3P0BenchmarkApp.java?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/91c7ec556346e7c2354f3133d70b155833c281c2",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/C3P0BenchmarkApp.java"
+    }
+  },
+  {
+    "name": "ConnectionDispersionTest.java",
+    "path": "src/java/com/mchange/v2/c3p0/test/ConnectionDispersionTest.java",
+    "sha": "5fb4706c7742a6758b16ab9612990d8a06103d95",
+    "size": 6818,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/src/java/com/mchange/v2/c3p0/test/ConnectionDispersionTest.java?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/ConnectionDispersionTest.java",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/5fb4706c7742a6758b16ab9612990d8a06103d95",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/ConnectionDispersionTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/src/java/com/mchange/v2/c3p0/test/ConnectionDispersionTest.java?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/5fb4706c7742a6758b16ab9612990d8a06103d95",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/ConnectionDispersionTest.java"
+    }
+  },
+  {
+    "name": "FreezableDriverManagerDataSource.java",
+    "path": "src/java/com/mchange/v2/c3p0/test/FreezableDriverManagerDataSource.java",
+    "sha": "97683badbac5d6aa7100c0b144730c01a56efcef",
+    "size": 10063,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/src/java/com/mchange/v2/c3p0/test/FreezableDriverManagerDataSource.java?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/FreezableDriverManagerDataSource.java",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/97683badbac5d6aa7100c0b144730c01a56efcef",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/FreezableDriverManagerDataSource.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/src/java/com/mchange/v2/c3p0/test/FreezableDriverManagerDataSource.java?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/97683badbac5d6aa7100c0b144730c01a56efcef",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/FreezableDriverManagerDataSource.java"
+    }
+  },
+  {
+    "name": "InterruptedBatchTest.java",
+    "path": "src/java/com/mchange/v2/c3p0/test/InterruptedBatchTest.java",
+    "sha": "8ddca448be0d328d77724dbb04706fa674e2d51f",
+    "size": 4756,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/src/java/com/mchange/v2/c3p0/test/InterruptedBatchTest.java?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/InterruptedBatchTest.java",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/8ddca448be0d328d77724dbb04706fa674e2d51f",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/InterruptedBatchTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/src/java/com/mchange/v2/c3p0/test/InterruptedBatchTest.java?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/8ddca448be0d328d77724dbb04706fa674e2d51f",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/InterruptedBatchTest.java"
+    }
+  },
+  {
+    "name": "JavaBeanRefTest.java",
+    "path": "src/java/com/mchange/v2/c3p0/test/JavaBeanRefTest.java",
+    "sha": "015e9051fd6f27382503cee45819c1fb97a4fc1b",
+    "size": 2122,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/src/java/com/mchange/v2/c3p0/test/JavaBeanRefTest.java?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/JavaBeanRefTest.java",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/015e9051fd6f27382503cee45819c1fb97a4fc1b",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/JavaBeanRefTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/src/java/com/mchange/v2/c3p0/test/JavaBeanRefTest.java?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/015e9051fd6f27382503cee45819c1fb97a4fc1b",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/JavaBeanRefTest.java"
+    }
+  },
+  {
+    "name": "JndiBindTest.java",
+    "path": "src/java/com/mchange/v2/c3p0/test/JndiBindTest.java",
+    "sha": "790f5f6991ce48f32d2603587543cbb806318c5f",
+    "size": 3297,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/src/java/com/mchange/v2/c3p0/test/JndiBindTest.java?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/JndiBindTest.java",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/790f5f6991ce48f32d2603587543cbb806318c5f",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/JndiBindTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/src/java/com/mchange/v2/c3p0/test/JndiBindTest.java?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/790f5f6991ce48f32d2603587543cbb806318c5f",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/JndiBindTest.java"
+    }
+  },
+  {
+    "name": "JndiLookupTest.java",
+    "path": "src/java/com/mchange/v2/c3p0/test/JndiLookupTest.java",
+    "sha": "21ec1e6236c7ed4039894cdd949c7c1c863d750e",
+    "size": 2635,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/src/java/com/mchange/v2/c3p0/test/JndiLookupTest.java?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/JndiLookupTest.java",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/21ec1e6236c7ed4039894cdd949c7c1c863d750e",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/JndiLookupTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/src/java/com/mchange/v2/c3p0/test/JndiLookupTest.java?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/21ec1e6236c7ed4039894cdd949c7c1c863d750e",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/JndiLookupTest.java"
+    }
+  },
+  {
+    "name": "ListTablesTest.java",
+    "path": "src/java/com/mchange/v2/c3p0/test/ListTablesTest.java",
+    "sha": "0e9b755ac36624f1795f6e68ab20cc86a8f44e16",
+    "size": 2042,
+    "url": "https://api.github.com/repos/swaldman/c3p0/contents/src/java/com/mchange/v2/c3p0/test/ListTablesTest.java?ref=c3p0-0.9.5.4",
+    "html_url": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/ListTablesTest.java",
+    "git_url": "https://api.github.com/repos/swaldman/c3p0/git/blobs/0e9b755ac36624f1795f6e68ab20cc86a8f44e16",
+    "download_url": "https://raw.githubusercontent.com/swaldman/c3p0/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/ListTablesTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/swaldman/c3p0/contents/src/java/com/mchange/v2/c3p0/test/ListTablesTest.java?ref=c3p0-0.9.5.4",
+      "git": "https://api.github.com/repos/swaldman/c3p0/git/blobs/0e9b755ac36624f1795f6e68ab20cc86a8f44e16",
+      "html": "https://github.com/swaldman/c3p0/blob/c3p0-0.9.5.4/src/java/com/mchange/v2/c3p0/test/ListTablesTest.java"
+    }
+
+ succeeded in 189ms:
+com/mchange/v2/c3p0/AbstractConnectionTester.java
+com/mchange/v2/c3p0/ConnectionTester.java
+com/mchange/v2/c3p0/FullQueryConnectionTester.java
+com/mchange/v2/c3p0/QueryConnectionTester.java
+com/mchange/v2/c3p0/UnifiedConnectionTester.java
+com/mchange/v2/c3p0/example/IsValidOnlyConnectionTester30.java
+com/mchange/v2/c3p0/impl/DefaultConnectionTester.java
+com/mchange/v2/c3p0/test/
+com/mchange/v2/c3p0/test/AlwaysFailConnectionTester.java
+com/mchange/v2/c3p0/test/AlwaysFailDataSource.java
+com/mchange/v2/c3p0/test/C3P0BenchmarkApp.java
+com/mchange/v2/c3p0/test/ConnectionDispersionTest.java
+com/mchange/v2/c3p0/test/FreezableDriverManagerDataSource.java
+com/mchange/v2/c3p0/test/InterruptedBatchTest.java
+com/mchange/v2/c3p0/test/JavaBeanRefTest.java
+com/mchange/v2/c3p0/test/JndiBindTest.java
+com/mchange/v2/c3p0/test/JndiLookupTest.java
+com/mchange/v2/c3p0/test/ListTablesTest.java
+com/mchange/v2/c3p0/test/LoadPoolBackedDataSource.java
+com/mchange/v2/c3p0/test/OneThreadRepeatedInsertOrQueryTest.java
+com/mchange/v2/c3p0/test/PSLoadPoolBackedDataSource.java
+com/mchange/v2/c3p0/test/ProxyWrappersTest.java
+com/mchange/v2/c3p0/test/RawConnectionOpTest.java
+com/mchange/v2/c3p0/test/StatsTest.java
+com/mchange/v2/c3p0/test/TestConnectionCustomizer.java
+com/mchange/v2/c3p0/test/TestRefSerStuff.java
+com/mchange/v2/c3p0/test/junit/
+com/mchange/v2/c3p0/test/junit/C3P0JUnitTestCaseBase.java
+com/mchange/v2/c3p0/test/junit/ConnectionPropertiesResetJUnitTestCase.java
+com/mchange/v2/c3p0/test/junit/MarshallUnmarshallDataSourcesJUnitTestCase.java
+com/mchange/v2/c3p0/util/IsValidOnlyConnectionTester.java
+com/mchange/v2/c3p0/util/TestUtils.java
+com/mchange/v2/c3p0/test/Debug.java
+com/mchange/v2/c3p0/test/junit/Debug.java
+
+codex
+I found both the source code and test package inside the Maven Central sources JAR, so I’ll use that Maven artifact for source and test URLs. For documentation, Maven Central publishes the versioned javadoc JAR, and the upstream tag also has `src/doc/index.html`; the Maven javadoc is the better versioned artifact under your preference rule.
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f -name '*.json' | head -n 20 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689
+ succeeded in 0ms:
+{
+  "coordinates" : "com.mchange:c3p0:0.9.5.4"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"\\s*:\\s*\"https://repo1\\.maven\\.org|\"test-code-url\"\\s*:\\s*\"https://repo1\\.maven\\.org|\"documentation-url\"\\s*:\\s*\"https://repo1\\.maven\\.org' build/discovered-artifact-metadata metadata -g '*.json' | sed -n '1,160p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689
+ succeeded in 0ms:
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-sources.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_2.13/$version$/jackson-module-scala_2.13-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-scala_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_2.13/$version$/jackson-module-scala_2.13-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:118:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:121:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/com.google.android/annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/android/annotations/$version$/annotations-$version$-sources.jar",
+metadata/com.google.android/annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/google/android/annotations/$version$/annotations-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-parameter-names/$version$/jackson-module-parameter-names-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-parameter-names/$version$/jackson-module-parameter-names-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-parameter-names/$version$/jackson-module-parameter-names-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-parameter-names/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-parameter-names/$version$/jackson-module-parameter-names-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:24:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:26:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:27:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:43:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:45:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:46:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:45:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:48:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-javadoc.jar",
+metadata/com.ning/compress-lzf/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/$version$/compress-lzf-$version$-sources.jar",
+metadata/com.ning/compress-lzf/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/$version$/compress-lzf-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/$version$/jackson-module-kotlin-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/$version$/jackson-module-kotlin-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/$version$/jackson-databind-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/$version$/jackson-databind-$version$-javadoc.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:37:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:40:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-sources.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-javadoc.jar",
+metadata/org.apache.camel/camel-xml-jaxp-util/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/camel/camel-xml-jaxp-util/$version$/camel-xml-jaxp-util-$version$-sources.jar",
+metadata/org.apache.camel/camel-xml-jaxp-util/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/camel/camel-xml-jaxp-util/$version$/camel-xml-jaxp-util-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/com.squareup.okio/okio/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/$version$/okio-$version$-sources.jar",
+metadata/com.squareup.okio/okio/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/$version$/okio-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/$version$/zookeeper-$version$-sources.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/$version$/zookeeper-$version$-tests.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/$version$/zookeeper-$version$-javadoc.jar",
+metadata/io.github.resilience4j/resilience4j-retry/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/github/resilience4j/resilience4j-retry/$version$/resilience4j-retry-$version$-sources.jar",
+metadata/io.github.resilience4j/resilience4j-retry/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/github/resilience4j/resilience4j-retry/$version$/resilience4j-retry-$version$-javadoc.jar",
+metadata/org.codehaus.jettison/jettison/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/jettison/jettison/$version$/jettison-$version$-sources.jar",
+metadata/org.codehaus.jettison/jettison/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/jettison/jettison/$version$/jettison-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/$version$/zookeeper-jute-$version$-sources.jar",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/$version$/zookeeper-jute-$version$-tests.jar",
+metadata/io.gsonfire/gson-fire/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/gsonfire/gson-fire/$version$/gson-fire-$version$-sources.jar",
+metadata/io.gsonfire/gson-fire/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/io/gsonfire/gson-fire/$version$/gson-fire-$version$-tests.jar",
+metadata/io.gsonfire/gson-fire/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/gsonfire/gson-fire/$version$/gson-fire-$version$-javadoc.jar",
+metadata/org.jctools/jctools-core/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/$version$/jctools-core-$version$-sources.jar",
+metadata/org.jctools/jctools-core/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/$version$/jctools-core-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:28:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:31:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:42:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:45:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:56:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:59:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:73:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:76:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:87:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:90:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:101:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:104:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:115:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:129:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:132:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:26:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/com.google.errorprone/error_prone_annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/$version$/error_prone_annotations-$version$-sources.jar",
+metadata/com.google.errorprone/error_prone_annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/$version$/error_prone_annotations-$version$-javadoc.jar",
+metadata/com.google.errorprone/error_prone_annotations/index.json:71:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.4.0/error_prone_annotations-2.4.0-sources.jar",
+metadata/com.google.errorprone/error_prone_annotations/index.json:74:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.4.0/error_prone_annotations-2.4.0-javadoc.jar",
+metadata/com.google.errorprone/error_prone_annotations/index.json:85:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/$version$/error_prone_annotations-$version$-sources.jar",
+metadata/com.google.errorprone/error_prone_annotations/index.json:88:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/$version$/error_prone_annotations-$version$-javadoc.jar",
+metadata/com.google.errorprone/error_prone_annotations/index.json:99:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/$version$/error_prone_annotations-$version$-sources.jar",
+metadata/com.google.errorprone/error_prone_annotations/index.json:102:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/$version$/error_prone_annotations-$version$-javadoc.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+metadata/oro/oro/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/oro/oro/$version$/oro-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-android-extensions-runtime/$version$/kotlin-android-extensions-runtime-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-android-extensions-runtime/$version$/kotlin-android-extensions-runtime-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-exec/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-sources.jar",
+metadata/org.apache.commons/commons-exec/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-exec/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-exec/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-sources.jar",
+metadata/org.apache.commons/commons-exec/index.json:23:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-exec/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-javadoc.jar",
+metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-sources.jar",
+metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-javadoc.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:90:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:92:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:93:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:111:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:113:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:114:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:21:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:24:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-javadoc.jar",
+metadata/org.jetbrains/annotations-java5/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/annotations-java5/$version$/annotations-java5-$version$-sources.jar",
+metadata/org.jetbrains/annotations-java5/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/annotations-java5/$version$/annotations-java5-$version$-javadoc.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+metadata/org.jetbrains/annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/jetbrains/annotations/$version$/annotations-$version$-sources.jar",
+metadata/org.jetbrains/annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/jetbrains/annotations/$version$/annotations-$version$-javadoc.jar",
+
+codex
+I’m applying the metadata now with the Maven URLs templated by `$version$` and no language/native-image exclusion fields.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+diff --git a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+index fdeeea08c262665d250648e10cbf07fee20f650c..beb123afb566b57c4255c4ed12b348068e83f649
+--- a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
++++ b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.mchange:c3p0:0.9.5.4"
++  "coordinates" : "com.mchange:c3p0:0.9.5.4",
++  "repository-url" : "https://github.com/swaldman/c3p0",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-javadoc.jar",
++  "description" : "c3p0 is a JDBC connection pooling library for Java applications. It manages reusable database connections and supports prepared statement caching to reduce connection setup overhead."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+index fdeeea08c262665d250648e10cbf07fee20f650c..beb123afb566b57c4255c4ed12b348068e83f649
+--- a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
++++ b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.mchange:c3p0:0.9.5.4"
++  "coordinates" : "com.mchange:c3p0:0.9.5.4",
++  "repository-url" : "https://github.com/swaldman/c3p0",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-javadoc.jar",
++  "description" : "c3p0 is a JDBC connection pooling library for Java applications. It manages reusable database connections and supports prepared statement caching to reduce connection setup overhead."
+ }
+
+codex
+The JSON has been updated. I’m doing a quick structural check and URL existence check for the substituted 0.9.5.4 values before I wrap up.
+exec
+/usr/bin/bash -lc "jar tf /tmp/c3p0-0.9.5.4-sources.jar | rg '"'^com/mchange/v2/c3p0/test/.+'"\\.java"'$'"' | wc -l" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689
+ succeeded in 0ms:
+23
+
+exec
+/usr/bin/bash -lc "python3 -m json.tool build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json >/tmp/c3p0-jsoncheck && sed -n '1,80p' /tmp/c3p0-jsoncheck" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689
+ succeeded in 0ms:
+{
+    "coordinates": "com.mchange:c3p0:0.9.5.4",
+    "repository-url": "https://github.com/swaldman/c3p0",
+    "source-code-url": "https://repo1.maven.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
+    "test-code-url": "https://repo1.maven.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
+    "documentation-url": "https://repo1.maven.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-javadoc.jar",
+    "description": "c3p0 is a JDBC connection pooling library for Java applications. It manages reusable database connections and supports prepared statement caching to reduce connection setup overhead."
+}
+
+exec
+/usr/bin/bash -lc "curl -I -L -s https://repo1.maven.org/maven2/com/mchange/c3p0/0.9.5.4/c3p0-0.9.5.4-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 14:22:54 GMT
+content-type: application/java-archive
+content-length: 361569
+cf-ray: a0804fc68b21fcc9-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 455775
+etag: "62bd742d0bfbf68a241b3bdf61e6e33b"
+last-modified: Sun, 24 Mar 2019 06:01:47 GMT
+x-checksum-md5: 62bd742d0bfbf68a241b3bdf61e6e33b
+x-checksum-sha1: c3bebeb3a803901e8bb0707cb85abe22232fee9a
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -I -L -s https://repo1.maven.org/maven2/com/mchange/c3p0/0.9.5.4/c3p0-0.9.5.4-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 14:22:54 GMT
+content-type: application/java-archive
+content-length: 635698
+cf-ray: a0804fc68a53c115-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1191015
+etag: "24e99823ba96bca9c9a50af0835198fa"
+last-modified: Sun, 24 Mar 2019 06:01:41 GMT
+x-checksum-md5: 24e99823ba96bca9c9a50af0835198fa
+x-checksum-sha1: 8f26e261eb93fa0ebf8031cbab9ecf1258666220
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+diff --git a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+index fdeeea08c262665d250648e10cbf07fee20f650c..beb123afb566b57c4255c4ed12b348068e83f649
+--- a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
++++ b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.mchange:c3p0:0.9.5.4"
++  "coordinates" : "com.mchange:c3p0:0.9.5.4",
++  "repository-url" : "https://github.com/swaldman/c3p0",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-javadoc.jar",
++  "description" : "c3p0 is a JDBC connection pooling library for Java applications. It manages reusable database connections and supports prepared statement caching to reduce connection setup overhead."
+ }
+
+codex
+The substituted Maven URLs return HTTP 200, and the sources JAR includes 23 Java files under `com/mchange/v2/c3p0/test`. I’m checking the final diff now.
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+index fdeeea08c262665d250648e10cbf07fee20f650c..beb123afb566b57c4255c4ed12b348068e83f649
+--- a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
++++ b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.mchange:c3p0:0.9.5.4"
++  "coordinates" : "com.mchange:c3p0:0.9.5.4",
++  "repository-url" : "https://github.com/swaldman/c3p0",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-javadoc.jar",
++  "description" : "c3p0 is a JDBC connection pooling library for Java applications. It manages reusable database connections and supports prepared statement caching to reduce connection setup overhead."
+ }
+
+codex
+`git diff` is empty because this generated `build/` path is not tracked by Git, but the requested file content is updated on disk. I’ll read it back once more to confirm the exact final JSON.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689
+ succeeded in 0ms:
+{
+  "coordinates" : "com.mchange:c3p0:0.9.5.4",
+  "repository-url" : "https://github.com/swaldman/c3p0",
+  "source-code-url" : "https://repo1.maven.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
+  "test-code-url" : "https://repo1.maven.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
+  "documentation-url" : "https://repo1.maven.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-javadoc.jar",
+  "description" : "c3p0 is a JDBC connection pooling library for Java applications. It manages reusable database connections and supports prepared statement caching to reduce connection setup overhead."
+}
+
+diff --git a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+index fdeeea08c262665d250648e10cbf07fee20f650c..beb123afb566b57c4255c4ed12b348068e83f649
+--- a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
++++ b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.mchange:c3p0:0.9.5.4"
++  "coordinates" : "com.mchange:c3p0:0.9.5.4",
++  "repository-url" : "https://github.com/swaldman/c3p0",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-javadoc.jar",
++  "description" : "c3p0 is a JDBC connection pooling library for Java applications. It manages reusable database connections and supports prepared statement caching to reduce connection setup overhead."
+ }
+
+web search: 
+web search: https://repo1.maven.org/maven2/com/mchange/c3p0/0.9.5.4/
+web search: 
+web search: site:github.com/swaldman/c3p0 c3p0 0.9.5.4
+codex
+Updated [com.mchange-c3p0-0.9.5.4.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json).
+
+I set the repository to the upstream GitHub project, used Maven Central for the source and javadoc artifacts, and used the Maven sources JAR for `test-code-url` because the 0.9.5.4 listing has no separate test-sources/tests artifact but the sources JAR contains the c3p0 test package. The artifact is a JVM JAR, so I did not add `language` or `not-for-native-image`. ([github.com](https://github.com/swaldman/c3p0?utm_source=openai))
+
+Validation done: JSON parses, substituted source/javadoc Maven URLs return HTTP 200, and the sources JAR contains 23 Java files under `com/mchange/v2/c3p0/test`.
+diff --git a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+index fdeeea08c262665d250648e10cbf07fee20f650c..beb123afb566b57c4255c4ed12b348068e83f649
+--- a/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
++++ b/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.mchange:c3p0:0.9.5.4"
++  "coordinates" : "com.mchange:c3p0:0.9.5.4",
++  "repository-url" : "https://github.com/swaldman/c3p0",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
++  "test-code-url" : "https://repo1.maven.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/mchange/c3p0/$version$/c3p0-$version$-javadoc.jar",
++  "description" : "c3p0 is a JDBC connection pooling library for Java applications. It manages reusable database connections and supports prepared statement caching to reduce connection setup overhead."
+ }
+
+tokens used
+83,707
+Updated [com.mchange-c3p0-0.9.5.4.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689/build/discovered-artifact-metadata/com.mchange-c3p0-0.9.5.4.json).
+
+I set the repository to the upstream GitHub project, used Maven Central for the source and javadoc artifacts, and used the Maven sources JAR for `test-code-url` because the 0.9.5.4 listing has no separate test-sources/tests artifact but the sources JAR contains the c3p0 test package. The artifact is a JVM JAR, so I did not add `language` or `not-for-native-image`. ([github.com](https://github.com/swaldman/c3p0?utm_source=openai))
+
+Validation done: JSON parses, substituted source/javadoc Maven URLs return HTTP 200, and the sources JAR contains 23 Java files under `com/mchange/v2/c3p0/test`.
+Ran agent for com.mchange:c3p0:0.9.5.4 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689/build/agent-artifact-discovery-logs/com.mchange-c3p0-0.9.5.4.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1336-f5f7d689/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 41s
+9 actionable tasks: 9 executed
