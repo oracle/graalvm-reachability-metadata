@@ -183,10 +183,10 @@ public class Selenium_apiTest {
         assertThat(rectangle.getPoint()).isEqualTo(origin);
         assertThat(rectangle.getDimension()).isEqualTo(size);
 
-        rectangle.setX(30);
-        rectangle.setY(40);
-        rectangle.setWidth(800);
-        rectangle.setHeight(600);
+        rectangle.x = 30;
+        rectangle.y = 40;
+        rectangle.width = 800;
+        rectangle.height = 600;
 
         assertThat(rectangle).isEqualTo(new Rectangle(30, 40, 600, 800));
         assertThat(rectangle.getPoint()).isEqualTo(new Point(30, 40));
