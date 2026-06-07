@@ -98,6 +98,31 @@ public class Woodstox_coreTest {
     }
 
     @Test
+    void streamReaderResolvesExternalEntitiesWithCustomResolver() throws Exception {
+        String xml = """
+                <!DOCTYPE doc [<!ENTITY external SYSTEM "memory:message">]>
+                <doc>&external;</doc>
+                """;
+
+        XMLInputFactory inputFactory = newInputFactory();
+        inputFactory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, true);
+        inputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, true);
+        inputFactory.setXMLResolver((publicId, systemId, baseUri, namespace) -> {
+            assertThat(publicId).isNull();
+            assertThat(systemId).isEqualTo("memory:message");
+            return new ByteArrayInputStream("resolved external entity".getBytes(StandardCharsets.UTF_8));
+        });
+
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(xml));
+        try {
+            assertThat(nextStartElement(reader)).isEqualTo("doc");
+            assertThat(reader.getElementText()).isEqualTo("resolved external entity");
+        } finally {
+            reader.close();
+        }
+    }
+
+    @Test
     void stax2ReaderProvidesTypedElementAndAttributeAccess() throws Exception {
         String xml = """
                 <values count="3">
