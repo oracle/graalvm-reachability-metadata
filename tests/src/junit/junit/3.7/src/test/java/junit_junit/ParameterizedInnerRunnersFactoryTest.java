@@ -49,7 +49,7 @@ public class ParameterizedInnerRunnersFactoryTest {
 
         @Parameters(name = "custom-factory-{index}: {0}")
         public static Collection<Object[]> parameters() {
-            return Arrays.asList(new Object[][] { {"alpha"}, {"bravo"} });
+            return Arrays.asList(new Object[][] {{"alpha"}, {"bravo"}});
         }
 
         @Test
