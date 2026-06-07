@@ -14,11 +14,31 @@ import org.junit.jupiter.api.Test;
 public class HK2LoaderImplTest {
     @Test
     void loadClassUsesConfiguredClassLoader() {
-        final ClassLoader classLoader = HK2LoaderImplTest.class.getClassLoader();
+        final RecordingClassLoader classLoader = new RecordingClassLoader(
+                HK2LoaderImplTest.class.getClassLoader());
         final HK2LoaderImpl loader = new HK2LoaderImpl(classLoader);
 
-        final Class<?> loadedClass = loader.loadClass(HK2LoaderImpl.class.getName());
+        final Class<?> loadedClass = loader.loadClass(String.class.getName());
 
-        assertThat(loadedClass).isSameAs(HK2LoaderImpl.class);
+        assertThat(loadedClass).isSameAs(String.class);
+        assertThat(classLoader.getLoadedClassName()).isEqualTo(String.class.getName());
+    }
+
+    private static final class RecordingClassLoader extends ClassLoader {
+        private String loadedClassName;
+
+        RecordingClassLoader(ClassLoader parent) {
+            super(parent);
+        }
+
+        @Override
+        public Class<?> loadClass(String name) throws ClassNotFoundException {
+            loadedClassName = name;
+            return super.loadClass(name);
+        }
+
+        String getLoadedClassName() {
+            return loadedClassName;
+        }
     }
 }
