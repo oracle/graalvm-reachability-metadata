@@ -1,0 +1,953 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.130.0
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ea098-8c81-7043-9d10-6f62c1d6a1a7
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.sun.jersey.jersey-test-framework:jersey-test-framework-core:1.18
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [1.18].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
+- Entry selector: "metadata-version" = "1.18"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 1.18
+- Entry metadata-version: 1.18
+- Entry test-version: 1.18
+- Entry tested-versions: [1.18]
+codex
+I’ll verify the existing index entry first, then check Maven Central and upstream project tags so the URLs I write are version-correct rather than inferred.
+exec
+/bin/bash -lc "jq '.' metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e
+ succeeded in 0ms:
+[
+  {
+    "latest": true,
+    "metadata-version": "1.18",
+    "tested-versions": [
+      "1.18"
+    ],
+    "allowed-packages": [
+      "com.sun.jersey.test.framework"
+    ]
+  },
+  {
+    "metadata-version": "1.9",
+    "source-code-url": "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-sources.jar",
+    "repository-url": "https://github.com/javaee/jersey-1.x",
+    "test-code-url": "https://github.com/javaee/jersey-1.x/tree/post-$version$/jersey-test-framework/jersey-test-framework-core/src/test",
+    "documentation-url": "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-javadoc.jar",
+    "description": "Jersey Test Framework Core provides the common JUnit-based APIs and base classes for writing integration tests for Jersey JAX-RS applications. It supplies the shared client, container, configuration, and lifecycle abstractions used by the Jersey test framework's concrete container modules.",
+    "tested-versions": [
+      "1.9-ea06",
+      "1.9-ea07",
+      "1.9",
+      "1.9.1",
+      "1.10",
+      "1.11",
+      "1.11.1",
+      "1.11.2",
+      "1.12",
+      "1.13",
+      "1.14",
+      "1.15",
+      "1.16",
+      "1.17",
+      "1.17.1"
+    ],
+    "allowed-packages": [
+      "com.sun.jersey.test.framework"
+    ]
+  }
+]
+
+exec
+/bin/bash -lc 'rg -n "jersey-test-framework-core|com.sun.jersey.jersey-test-framework|jersey-test-framework" metadata tests docs -S' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e
+ succeeded in 0ms:
+metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json:14:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-sources.jar",
+metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json:16:    "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/post-$version$/jersey-test-framework/jersey-test-framework-core/src/test",
+metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json:17:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-javadoc.jar",
+tests/src/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/1.9/build.gradle:14:    testImplementation "com.sun.jersey.jersey-test-framework:jersey-test-framework-core:$libraryVersion"
+tests/src/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/1.9/settings.gradle:20:rootProject.name = 'com.sun.jersey.jersey-test-framework.jersey-test-framework-core_tests'
+tests/src/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/1.9/gradle.properties:4:library.coordinates = com.sun.jersey.jersey-test-framework:jersey-test-framework-core:1.9
+tests/src/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/1.9/gradle.properties:6:metadata.dir = com.sun.jersey.jersey-test-framework/jersey-test-framework-core/1.9/
+tests/src/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/1.18/build.gradle:14:    testImplementation "com.sun.jersey.jersey-test-framework:jersey-test-framework-core:$libraryVersion"
+tests/src/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/1.18/settings.gradle:20:rootProject.name = 'com.sun.jersey.jersey-test-framework.jersey-test-framework-core_tests'
+tests/src/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/1.18/gradle.properties:4:library.coordinates = com.sun.jersey.jersey-test-framework:jersey-test-framework-core:1.18
+tests/src/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/1.18/gradle.properties:6:metadata.dir = com.sun.jersey.jersey-test-framework/jersey-test-framework-core/1.18/
+
+web search: 
+web search: Maven Central com.sun.jersey.jersey-test-framework jersey-test-framework-core 1.18 sources javadoc
+codex
+The existing older entry already uses Maven Central for sources and Javadocs and the `javaee/jersey-1.x` repository for tests. I’m checking the 1.18 artifacts directly now, including whether Maven published any test-sources artifact.
+exec
+/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/1.18/' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e
+exec
+/bin/bash -lc "curl -I -L -sS -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/javaee/jersey-1.x/tree/post-1.18/jersey-test-framework/jersey-test-framework-core/src/test" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e
+exec
+/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/1.18/jersey-test-framework-core-1.18.pom | sed -n '1,220p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e
+ succeeded in 326ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/sun/jersey/jersey-test-framework/jersey-test-framework-core/1.18</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/sun/jersey/jersey-test-framework/jersey-test-framework-core/1.18</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jersey-test-framework-core-1.18-javadoc.jar" title="jersey-test-framework-core-1.18-javadoc.jar">jersey-test-framework-core-1.18-javadoc.jar</a>       2013-11-22 09:34    145027      
+<a href="jersey-test-framework-core-1.18-javadoc.jar.asc" title="jersey-test-framework-core-1.18-javadoc.jar.asc">jersey-test-framework-core-1.18-javadoc.jar.a...</a>  2013-11-22 09:34       481      
+<a href="jersey-test-framework-core-1.18-javadoc.jar.asc.md5" title="jersey-test-framework-core-1.18-javadoc.jar.asc.md5">jersey-test-framework-core-1.18-javadoc.jar.a...</a>  2013-11-22 09:34        32      
+<a href="jersey-test-framework-core-1.18-javadoc.jar.asc.sha1" title="jersey-test-framework-core-1.18-javadoc.jar.asc.sha1">jersey-test-framework-core-1.18-javadoc.jar.a...</a>  2013-11-22 09:34        40      
+<a href="jersey-test-framework-core-1.18-javadoc.jar.md5" title="jersey-test-framework-core-1.18-javadoc.jar.md5">jersey-test-framework-core-1.18-javadoc.jar.m...</a>  2013-11-22 09:34        32      
+<a href="jersey-test-framework-core-1.18-javadoc.jar.sha1" title="jersey-test-framework-core-1.18-javadoc.jar.sha1">jersey-test-framework-core-1.18-javadoc.jar.s...</a>  2013-11-22 09:34        40      
+<a href="jersey-test-framework-core-1.18-sources.jar" title="jersey-test-framework-core-1.18-sources.jar">jersey-test-framework-core-1.18-sources.jar</a>       2013-11-22 09:34     38147      
+<a href="jersey-test-framework-core-1.18-sources.jar.asc" title="jersey-test-framework-core-1.18-sources.jar.asc">jersey-test-framework-core-1.18-sources.jar.a...</a>  2013-11-22 09:34       481      
+<a href="jersey-test-framework-core-1.18-sources.jar.asc.md5" title="jersey-test-framework-core-1.18-sources.jar.asc.md5">jersey-test-framework-core-1.18-sources.jar.a...</a>  2013-11-22 09:34        32      
+<a href="jersey-test-framework-core-1.18-sources.jar.asc.sha1" title="jersey-test-framework-core-1.18-sources.jar.asc.sha1">jersey-test-framework-core-1.18-sources.jar.a...</a>  2013-11-22 09:34        40      
+<a href="jersey-test-framework-core-1.18-sources.jar.md5" title="jersey-test-framework-core-1.18-sources.jar.md5">jersey-test-framework-core-1.18-sources.jar.m...</a>  2013-11-22 09:34        32      
+<a href="jersey-test-framework-core-1.18-sources.jar.sha1" title="jersey-test-framework-core-1.18-sources.jar.sha1">jersey-test-framework-core-1.18-sources.jar.s...</a>  2013-11-22 09:34        40      
+<a href="jersey-test-framework-core-1.18.jar" title="jersey-test-framework-core-1.18.jar">jersey-test-framework-core-1.18.jar</a>               2013-11-22 09:34     30812      
+<a href="jersey-test-framework-core-1.18.jar.asc" title="jersey-test-framework-core-1.18.jar.asc">jersey-test-framework-core-1.18.jar.asc</a>           2013-11-22 09:34       481      
+<a href="jersey-test-framework-core-1.18.jar.asc.md5" title="jersey-test-framework-core-1.18.jar.asc.md5">jersey-test-framework-core-1.18.jar.asc.md5</a>       2013-11-22 09:34        32      
+<a href="jersey-test-framework-core-1.18.jar.asc.sha1" title="jersey-test-framework-core-1.18.jar.asc.sha1">jersey-test-framework-core-1.18.jar.asc.sha1</a>      2013-11-22 09:34        40      
+<a href="jersey-test-framework-core-1.18.jar.md5" title="jersey-test-framework-core-1.18.jar.md5">jersey-test-framework-core-1.18.jar.md5</a>           2013-11-22 09:34        32      
+<a href="jersey-test-framework-core-1.18.jar.sha1" title="jersey-test-framework-core-1.18.jar.sha1">jersey-test-framework-core-1.18.jar.sha1</a>          2013-11-22 09:34        40      
+<a href="jersey-test-framework-core-1.18.pom" title="jersey-test-framework-core-1.18.pom">jersey-test-framework-core-1.18.pom</a>               2013-11-22 09:34      6627      
+<a href="jersey-test-framework-core-1.18.pom.asc" title="jersey-test-framework-core-1.18.pom.asc">jersey-test-framework-core-1.18.pom.asc</a>           2013-11-22 09:34       481      
+<a href="jersey-test-framework-core-1.18.pom.asc.md5" title="jersey-test-framework-core-1.18.pom.asc.md5">jersey-test-framework-core-1.18.pom.asc.md5</a>       2013-11-22 09:34        32      
+<a href="jersey-test-framework-core-1.18.pom.asc.sha1" title="jersey-test-framework-core-1.18.pom.asc.sha1">jersey-test-framework-core-1.18.pom.asc.sha1</a>      2013-11-22 09:34        40      
+<a href="jersey-test-framework-core-1.18.pom.md5" title="jersey-test-framework-core-1.18.pom.md5">jersey-test-framework-core-1.18.pom.md5</a>           2013-11-22 09:34        32      
+<a href="jersey-test-framework-core-1.18.pom.sha1" title="jersey-test-framework-core-1.18.pom.sha1">jersey-test-framework-core-1.18.pom.sha1</a>          2013-11-22 09:34        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 324ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+    Copyright (c) 2010-2013 Oracle and/or its affiliates. All rights reserved.
+
+    The contents of this file are subject to the terms of either the GNU
+    General Public License Version 2 only ("GPL") or the Common Development
+    and Distribution License("CDDL") (collectively, the "License").  You
+    may not use this file except in compliance with the License.  You can
+    obtain a copy of the License at
+    http://glassfish.java.net/public/CDDL+GPL_1_1.html
+    or packager/legal/LICENSE.txt.  See the License for the specific
+    language governing permissions and limitations under the License.
+
+    When distributing the software, include this License Header Notice in each
+    file and include the License file at packager/legal/LICENSE.txt.
+
+    GPL Classpath Exception:
+    Oracle designates this particular file as subject to the "Classpath"
+    exception as provided by Oracle in the GPL Version 2 section of the License
+    file that accompanied this code.
+
+    Modifications:
+    If applicable, add the following below the License Header, with the fields
+    enclosed by brackets [] replaced by your own identifying information:
+    "Portions Copyright [year] [name of copyright owner]"
+
+    Contributor(s):
+    If you wish your version of this file to be governed by only the CDDL or
+    only the GPL Version 2, indicate your decision by adding "[Contributor]
+    elects to include this software in this distribution under the [CDDL or GPL
+    Version 2] license."  If you don't indicate a single choice of license, a
+    recipient has the option to distribute your version of this file under
+    either the CDDL, the GPL Version 2 or to extend the choice of license to
+    its licensees as provided above.  However, if you add GPL Version 2 code
+    and therefore, elected the GPL Version 2 license, then the option applies
+    only if the new code is made subject to such option by the copyright
+    holder.
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>jersey-test-framework</artifactId>
+        <version>1.18</version>
+    </parent>
+
+    <groupId>com.sun.jersey.jersey-test-framework</groupId>
+    <artifactId>jersey-test-framework-core</artifactId>
+    <packaging>jar</packaging>
+    <name>Jersey Test Framework - Core</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <links>
+                                <link>http://jsr311.java.net/nonav/releases/1.1</link>
+                                <link>http://jersey.java.net/nonav/apidocs/${project.version}/jersey/</link>
+                            </links>
+                            <excludePackageNames>com.sun.jersey.test.framework.impl</excludePackageNames>
+                            <notimestamp>true</notimestamp>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>cobertura</id>
+            <activation>
+                <property>
+                    <name>cobertura</name>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.sun.jersey</groupId>
+                    <artifactId>jersey-servlet</artifactId>
+                    <version>${project.version}</version>
+                    <classifier>cobertura</classifier>
+                </dependency>
+                <dependency>
+                    <groupId>com.sun.jersey</groupId>
+                    <artifactId>jersey-client</artifactId>
+                    <version>${project.version}</version>
+                    <classifier>cobertura</classifier>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.sun.jersey</groupId>
+                    <artifactId>jersey-servlet</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>com.sun.jersey</groupId>
+                    <artifactId>jersey-client</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
+    <build>
+        <finalName>jersey-test-framework</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>com/sun/jersey/test/framework/impl/container/http/*Test.java</exclude>
+                        <exclude>com/sun/jersey/test/framework/impl/container/http/testpackage/*Test.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+ succeeded in 430ms:
+404 https://github.com/javaee/jersey-1.x/tree/post-1.18/jersey-test-framework/jersey-test-framework-core/src/test
+
+codex
+Maven Central has the 1.18 main, sources, and Javadoc artifacts, but no test-sources artifact in that directory. The older `post-$version$` GitHub test URL does not resolve for `1.18`, so I’m checking upstream tags for the correct 1.18 test path before editing.
+exec
+/bin/bash -lc "git ls-remote --tags https://github.com/javaee/jersey-1.x.git | rg '1\\.18|jersey-1|post-'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e
+exec
+/bin/bash -lc "curl -I -L -sS -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/javaee/jersey-1.x" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e
+exec
+/bin/bash -lc "git ls-remote --heads https://github.com/javaee/jersey-1.x.git | sed -n '1,120p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e
+ succeeded in 369ms:
+de20b8ebee3cb70b53627d2743414debbe7dc3f6	refs/heads/1.17.x
+ba24a6011f3c3cc5d7abadbdbb5023dd644cab62	refs/heads/1.18.x
+f46a4b734790535175648e809a9d8166579d1313	refs/heads/cdi-extension-fix
+cee3be6f13728105eadf20b1c61cf8f9b795c9c1	refs/heads/dependabot/maven/archetypes/jersey-quickstart-grizzly/src/main/resources/archetype-resources/junit-junit-4.13.1
+fa1e9d6cb8d84ba1bb48fba569274c8bd82e5ad9	refs/heads/dependabot/maven/archetypes/jersey-quickstart-grizzly2/src/main/resources/archetype-resources/junit-junit-4.13.1
+5ee2819811385241ef542d66bd2380420ed49f8a	refs/heads/dependabot/maven/contribs/bill-burke-book/ex11_2/commons-collections-commons-collections-3.2.2
+affe9c5f37ee3c809e024e2ee6c662da8cb7f167	refs/heads/dependabot/maven/contribs/bill-burke-book/ex11_2/xerces-xercesImpl-2.12.0
+a0b8fbe097bdd41e33bfac418173c02c7c7541b4	refs/heads/dependabot/maven/contribs/bill-burke-book/junit-junit-4.13.1
+19b24bd05f326cec334a0cf2bfab1341d416c788	refs/heads/dependabot/maven/contribs/maven-wadl-plugin/xerces-xercesImpl-2.12.0
+dfbf5f99dea1ca42513b1ab96ec4154f16a58047	refs/heads/dependabot/maven/contribs/wadl-resourcedoc-doclet/xerces-xercesImpl-2.12.0
+4887c1bb6b74f0edc13449d7a4e84fef79cf8791	refs/heads/dependabot/maven/glassfish/v3-packages/junit-junit-4.13.1
+d846a33c4c465dc8061bfcbbfeb18112ca2bd4bc	refs/heads/dependabot/maven/glassfish/v3.2-packages/junit-junit-4.13.1
+cf597b3645a0513ebe015b0dc98c7cbe6deee09d	refs/heads/dependabot/maven/junit-junit-4.13.1
+f8b8e64c4beaeab7d0a8c4d0d6a767aa79a4ea40	refs/heads/dependabot/maven/osgi/runtime-delegate-tests/rd-tests/junit-junit-4.13.1
+8b6a511300088adb7e29d90bad7fdfd30b5f49b7	refs/heads/dependabot/maven/samples/helloworld-osgi-webapp/functional-test/junit-junit-4.13.1
+c1aa9b718d71154edafb49f5235531db908385df	refs/heads/dependabot/maven/samples/junit-junit-4.13.1
+f4dcee3bc057fda121d5cb6c2ed878a8dae3cd9b	refs/heads/dependabot/maven/samples/osgi-http-service/functional-test/junit-junit-4.13.1
+97df0c240ff706356f9e77e349ae6c3e72956702	refs/heads/dependabot/maven/tests/junit-junit-4.13.1
+864a01d7be490ab93d2424da3e446ad8eb84b1e8	refs/heads/master
+343f7bdd22d4c9a4b2e51ca8cdcfd713bd76bf5f	refs/heads/master-cdi-extension-fix
+
+ succeeded in 375ms:
+5b1fb9aa7933a493fe82643dcdb26d4df7f98fda	refs/tags/1.18
+75377ec632a19a871dd1fee3079983269befded1	refs/tags/1.18^{}
+d0d634f05ec6a84b8c944f320490d794c53c1f5a	refs/tags/1.18.1
+0dd2f987e659ea9157a0a403740e9928d599a789	refs/tags/1.18.1^{}
+b64e23f944e169281ef40ccf19711cfbf89928f9	refs/tags/1.18.2
+d28d3b863c8c49e1351b6a870f3ba65eb3415ec5	refs/tags/1.18.3
+829d3ac40357c72eaed75fb4720b421d0aa9b2f0	refs/tags/1.18.4
+4f57e7cdf30cd8bd4da97e3508cdbeb035cae3d0	refs/tags/1.18.5
+a8efb78fffc6313ab486a383b4103d724a18b128	refs/tags/1.18.6
+b280740e9b8a7a6ed433d86f57c4834fbaa04792	refs/tags/post-1.12
+dd6f00cf4d599241d3ee3358b5567e4a172ff5bc	refs/tags/post-1.12^{}
+ce3bd4917c00ab7fdcec742f0202090a22b6935b	refs/tags/post-1.13
+f9c26a6ccf062f0808abd94e81b9d2b2443414bf	refs/tags/post-1.13^{}
+13cee7abe791b2e76dd03a9fae524c8598229036	refs/tags/post-1.15
+64dc139033d90b2d64340edda9bcce6fa5f1cca8	refs/tags/post-1.15^{}
+72e66983051a53645383adc10e4dfdb5bcd2cbb6	refs/tags/post-1.16
+abdfaff2e2db6722e6df4a0252a99939f11eaf6d	refs/tags/post-1.16^{}
+f8bc68f35e284d098236ad26a52bab820304677d	refs/tags/post-1.9
+b409352db466a81e37eb40b46fd9e1aac2a187c7	refs/tags/post-1.9^{}
+
+ succeeded in 863ms:
+200 https://github.com/javaee/jersey-1.x
+
+codex
+The upstream tag for this exact version is `1.18`, not `post-1.18`; I’m validating the test directory and using `$version$` only where the rendered `1.18` URL works.
+exec
+/bin/bash -lc "curl -I -L -sS -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/javaee/jersey-1.x/tree/1.18/jersey-test-framework/jersey-test-framework-core/src/test" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e
+exec
+/bin/bash -lc "curl -I -L -sS -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/1.18/jersey-test-framework-core-1.18-javadoc.jar" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e
+exec
+/bin/bash -lc "curl -I -L -sS -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/1.18/jersey-test-framework-core-1.18-sources.jar" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e
+exec
+/bin/bash -lc "curl -I -L -sS -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/1.18/jersey-test-framework-core-1.18-test-sources.jar" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e
+ succeeded in 265ms:
+404 https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/1.18/jersey-test-framework-core-1.18-test-sources.jar
+
+ succeeded in 295ms:
+200 https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/1.18/jersey-test-framework-core-1.18-sources.jar
+
+ succeeded in 430ms:
+200 https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/1.18/jersey-test-framework-core-1.18-javadoc.jar
+
+ succeeded in 601ms:
+200 https://github.com/javaee/jersey-1.x/tree/1.18/jersey-test-framework/jersey-test-framework-core/src/test
+
+codex
+The exact rendered URLs check out for Maven sources/Javadocs and the GitHub tag `1.18`; Maven has no test-sources artifact, so the test URL should stay on the tagged upstream source tree. I’m going to fill only the missing fields in the `1.18` entry and leave `language` absent because this is not a Kotlin, Groovy, or Scala-specific library.
+exec
+/bin/bash -lc "sed -n '1,120p' metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.18",
+    "tested-versions" : [
+      "1.18"
+    ],
+    "allowed-packages" : [
+      "com.sun.jersey.test.framework"
+    ]
+  },
+  {
+    "metadata-version" : "1.9",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/javaee/jersey-1.x",
+    "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/post-$version$/jersey-test-framework/jersey-test-framework-core/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-javadoc.jar",
+    "description" : "Jersey Test Framework Core provides the common JUnit-based APIs and base classes for writing integration tests for Jersey JAX-RS applications. It supplies the shared client, container, configuration, and lifecycle abstractions used by the Jersey test framework's concrete container modules.",
+    "tested-versions" : [
+      "1.9-ea06",
+      "1.9-ea07",
+      "1.9",
+      "1.9.1",
+      "1.10",
+      "1.11",
+      "1.11.1",
+      "1.11.2",
+      "1.12",
+      "1.13",
+      "1.14",
+      "1.15",
+      "1.16",
+      "1.17",
+      "1.17.1"
+    ],
+    "allowed-packages" : [
+      "com.sun.jersey.test.framework"
+    ]
+  }
+]
+
+exec
+/bin/bash -lc 'git diff -- metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e
+ succeeded in 0ms:
+codex
+I’m applying the scoped JSON edit now: only the six requested candidate fields are considered, and since `language` does not apply I won’t add it.
+apply patch
+patch: completed
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
+diff --git a/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json b/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
+index 8742aa121b597835461d7916a813eecd95f3349d..a040c868b594e670be166e27a530a1c4b62558ef
+--- a/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
++++ b/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.18",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-sources.jar",
++    "repository-url" : "https://github.com/javaee/jersey-1.x",
++    "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/$version$/jersey-test-framework/jersey-test-framework-core/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-javadoc.jar",
++    "description" : "Jersey Test Framework Core provides the common JUnit-based APIs and base classes for writing integration tests for Jersey JAX-RS applications. It supplies the shared client, container, configuration, and lifecycle abstractions used by the Jersey test framework's concrete container modules.",
+     "tested-versions" : [
+       "1.18"
+     ],
+
+diff --git a/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json b/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
+index 8742aa121b597835461d7916a813eecd95f3349d..a040c868b594e670be166e27a530a1c4b62558ef
+--- a/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
++++ b/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.18",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-sources.jar",
++    "repository-url" : "https://github.com/javaee/jersey-1.x",
++    "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/$version$/jersey-test-framework/jersey-test-framework-core/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-javadoc.jar",
++    "description" : "Jersey Test Framework Core provides the common JUnit-based APIs and base classes for writing integration tests for Jersey JAX-RS applications. It supplies the shared client, container, configuration, and lifecycle abstractions used by the Jersey test framework's concrete container modules.",
+     "tested-versions" : [
+       "1.18"
+     ],
+
+codex
+The JSON edit is in place. I’m validating the file format and then running the repository metadata check for this coordinate so the index change is exercised by the project’s own tooling.
+exec
+/bin/bash -lc 'jq empty metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e
+ succeeded in 0ms:
+exec
+/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=com.sun.jersey.jersey-test-framework:jersey-test-framework-core:1.18 --stacktrace' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e
+diff --git a/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json b/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
+index 8742aa121b597835461d7916a813eecd95f3349d..a040c868b594e670be166e27a530a1c4b62558ef
+--- a/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
++++ b/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.18",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-sources.jar",
++    "repository-url" : "https://github.com/javaee/jersey-1.x",
++    "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/$version$/jersey-test-framework/jersey-test-framework-core/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-javadoc.jar",
++    "description" : "Jersey Test Framework Core provides the common JUnit-based APIs and base classes for writing integration tests for Jersey JAX-RS applications. It supplies the shared client, container, configuration, and lifecycle abstractions used by the Jersey test framework's concrete container modules.",
+     "tested-versions" : [
+       "1.18"
+     ],
+
+ exited 1 in 9474ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for com.sun.jersey.jersey-test-framework:jersey-test-framework-core:1.18: ERROR: Missing reachability-metadata.json in file:/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/1.18/
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e/build/reports/problems/problems-report.html
+FAILURE: Build failed with an exception.
+
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - com.sun.jersey.jersey-test-framework:jersey-test-framework-core:1.18: ERROR: Missing reachability-metadata.json in file:/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/1.18/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:146)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:131)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:45)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - com.sun.jersey.jersey-test-framework:jersey-test-framework-core:1.18: ERROR: Missing reachability-metadata.json in file:/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/1.18/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+9 actionable tasks: 1 executed, 8 up-to-date
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 57 more
+
+
+BUILD FAILED in 9s
+
+codex
+`jq` accepts the updated JSON. The repository metadata check itself fails before URL validation because the `1.18` metadata directory has no `reachability-metadata.json`, which appears outside this URL-fill task; I’m checking the final diff and rendered URLs once more.
+exec
+/bin/bash -lc 'find metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core -maxdepth 2 -type f | sort' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e
+ succeeded in 0ms:
+metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/1.9/reachability-metadata.json
+metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
+
+exec
+/bin/bash -lc 'git diff -- metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e
+ succeeded in 0ms:
+diff --git a/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json b/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
+index 8742aa121b..a040c868b5 100644
+--- a/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
++++ b/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.18",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-sources.jar",
++    "repository-url" : "https://github.com/javaee/jersey-1.x",
++    "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/$version$/jersey-test-framework/jersey-test-framework-core/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-javadoc.jar",
++    "description" : "Jersey Test Framework Core provides the common JUnit-based APIs and base classes for writing integration tests for Jersey JAX-RS applications. It supplies the shared client, container, configuration, and lifecycle abstractions used by the Jersey test framework's concrete container modules.",
+     "tested-versions" : [
+       "1.18"
+     ],
+
+exec
+/bin/bash -lc "for url in \\
+'https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/1.18/jersey-test-framework-core-1.18-sources.jar' \\
+'https://github.com/javaee/jersey-1.x/tree/1.18/jersey-test-framework/jersey-test-framework-core/src/test' \\
+'https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/1.18/jersey-test-framework-core-1.18-javadoc.jar' \\
+'https://github.com/javaee/jersey-1.x'; do curl -I -L -sS -o /dev/null -w '%{http_code} %{url_effective}\\n' \""'$url"; done' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e
+diff --git a/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json b/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
+index 8742aa121b597835461d7916a813eecd95f3349d..a040c868b594e670be166e27a530a1c4b62558ef
+--- a/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
++++ b/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.18",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-sources.jar",
++    "repository-url" : "https://github.com/javaee/jersey-1.x",
++    "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/$version$/jersey-test-framework/jersey-test-framework-core/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-javadoc.jar",
++    "description" : "Jersey Test Framework Core provides the common JUnit-based APIs and base classes for writing integration tests for Jersey JAX-RS applications. It supplies the shared client, container, configuration, and lifecycle abstractions used by the Jersey test framework's concrete container modules.",
+     "tested-versions" : [
+       "1.18"
+     ],
+
+ succeeded in 1071ms:
+200 https://github.com/javaee/jersey-1.x/tree/1.18/jersey-test-framework/jersey-test-framework-core/src/test
+200 https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/1.18/jersey-test-framework-core-1.18-javadoc.jar
+200 https://github.com/javaee/jersey-1.x
+
+web search: 
+web search: https://github.com/javaee/jersey-1.x/tree/1.18/jersey-test-framework/jersey-test-framework-core/src/test
+web search: 
+web search: repo.maven.apache.org maven2 com/sun/jersey/jersey-test-framework/jersey-test-framework-core/1.18 jersey-test-framework-core-1.18-sources.jar
+web search: 
+web search: https://mvnrepository.com/artifact/com.sun.jersey.jersey-test-framework/jersey-test-framework-core
+codex
+All four rendered URL candidates return HTTP 200 after substituting `1.18`. I’m doing one final status check so the final note can distinguish the intended edit from the unrelated metadata-file validation failure.
+exec
+/bin/bash -lc "jq '.[0]' metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "1.18",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-sources.jar",
+  "repository-url": "https://github.com/javaee/jersey-1.x",
+  "test-code-url": "https://github.com/javaee/jersey-1.x/tree/$version$/jersey-test-framework/jersey-test-framework-core/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-javadoc.jar",
+  "description": "Jersey Test Framework Core provides the common JUnit-based APIs and base classes for writing integration tests for Jersey JAX-RS applications. It supplies the shared client, container, configuration, and lifecycle abstractions used by the Jersey test framework's concrete container modules.",
+  "tested-versions": [
+    "1.18"
+  ],
+  "allowed-packages": [
+    "com.sun.jersey.test.framework"
+  ]
+}
+
+exec
+/bin/bash -lc 'git status --short' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e
+diff --git a/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json b/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
+index 8742aa121b597835461d7916a813eecd95f3349d..a040c868b594e670be166e27a530a1c4b62558ef
+--- a/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
++++ b/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.18",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-sources.jar",
++    "repository-url" : "https://github.com/javaee/jersey-1.x",
++    "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/$version$/jersey-test-framework/jersey-test-framework-core/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-javadoc.jar",
++    "description" : "Jersey Test Framework Core provides the common JUnit-based APIs and base classes for writing integration tests for Jersey JAX-RS applications. It supplies the shared client, container, configuration, and lifecycle abstractions used by the Jersey test framework's concrete container modules.",
+     "tested-versions" : [
+       "1.18"
+     ],
+
+ succeeded in 316ms:
+ M metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
+
+exec
+/bin/bash -lc "nl -ba metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json | sed -n '1,24p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "1.18",
+     5	    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-sources.jar",
+     6	    "repository-url" : "https://github.com/javaee/jersey-1.x",
+     7	    "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/$version$/jersey-test-framework/jersey-test-framework-core/src/test",
+     8	    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-javadoc.jar",
+     9	    "description" : "Jersey Test Framework Core provides the common JUnit-based APIs and base classes for writing integration tests for Jersey JAX-RS applications. It supplies the shared client, container, configuration, and lifecycle abstractions used by the Jersey test framework's concrete container modules.",
+    10	    "tested-versions" : [
+    11	      "1.18"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "com.sun.jersey.test.framework"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "1.9",
+    19	    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-sources.jar",
+    20	    "repository-url" : "https://github.com/javaee/jersey-1.x",
+    21	    "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/post-$version$/jersey-test-framework/jersey-test-framework-core/src/test",
+    22	    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-javadoc.jar",
+    23	    "description" : "Jersey Test Framework Core provides the common JUnit-based APIs and base classes for writing integration tests for Jersey JAX-RS applications. It supplies the shared client, container, configuration, and lifecycle abstractions used by the Jersey test framework's concrete container modules.",
+    24	    "tested-versions" : [
+
+diff --git a/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json b/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
+index 8742aa121b597835461d7916a813eecd95f3349d..a040c868b594e670be166e27a530a1c4b62558ef
+--- a/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
++++ b/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.18",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-sources.jar",
++    "repository-url" : "https://github.com/javaee/jersey-1.x",
++    "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/$version$/jersey-test-framework/jersey-test-framework-core/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-javadoc.jar",
++    "description" : "Jersey Test Framework Core provides the common JUnit-based APIs and base classes for writing integration tests for Jersey JAX-RS applications. It supplies the shared client, container, configuration, and lifecycle abstractions used by the Jersey test framework's concrete container modules.",
+     "tested-versions" : [
+       "1.18"
+     ],
+
+codex
+Updated [index.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json:5) for `metadata-version` `1.18` with source, repository, test, documentation, and the two-sentence description. I left `language` absent because this is not Kotlin, Groovy, or Scala-specific.
+
+Verification:
+- `jq empty metadata/.../index.json` passed.
+- Rendered `1.18` URLs all returned HTTP 200.
+- `./gradlew checkMetadataFiles -Pcoordinates=com.sun.jersey.jersey-test-framework:jersey-test-framework-core:1.18 --stacktrace` failed because `metadata/.../jersey-test-framework-core/1.18/reachability-metadata.json` is missing; that is outside the requested URL/description update.
+diff --git a/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json b/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
+index 8742aa121b597835461d7916a813eecd95f3349d..a040c868b594e670be166e27a530a1c4b62558ef
+--- a/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
++++ b/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.18",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-sources.jar",
++    "repository-url" : "https://github.com/javaee/jersey-1.x",
++    "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/$version$/jersey-test-framework/jersey-test-framework-core/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/$version$/jersey-test-framework-core-$version$-javadoc.jar",
++    "description" : "Jersey Test Framework Core provides the common JUnit-based APIs and base classes for writing integration tests for Jersey JAX-RS applications. It supplies the shared client, container, configuration, and lifecycle abstractions used by the Jersey test framework's concrete container modules.",
+     "tested-versions" : [
+       "1.18"
+     ],
+
+tokens used
+58,041
+Updated [index.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e/metadata/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/index.json:5) for `metadata-version` `1.18` with source, repository, test, documentation, and the two-sentence description. I left `language` absent because this is not Kotlin, Groovy, or Scala-specific.
+
+Verification:
+- `jq empty metadata/.../index.json` passed.
+- Rendered `1.18` URLs all returned HTTP 200.
+- `./gradlew checkMetadataFiles -Pcoordinates=com.sun.jersey.jersey-test-framework:jersey-test-framework-core:1.18 --stacktrace` failed because `metadata/.../jersey-test-framework-core/1.18/reachability-metadata.json` is missing; that is outside the requested URL/description update.
+Ran agent for com.sun.jersey.jersey-test-framework:jersey-test-framework-core:1.18 (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e/build/agent-url-discovery-logs/com.sun.jersey.jersey-test-framework-jersey-test-framework-core-1.18.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6952-824be21e/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 34s
+9 actionable tasks: 1 executed, 8 up-to-date
