@@ -86,6 +86,26 @@ public class Json_utilsTest {
     }
 
     @Test
+    void parserAndWriterHandleTopLevelScalarDocuments() {
+        JsonNode parsedString = JsonNode.parser().parse("\"standalone\"");
+        JsonNode parsedBoolean = JsonNode.parser().parse("false");
+        JsonNode parsedNull = JsonNode.parser().parse("null");
+        JsonWriter numericWriter = JsonWriter.create().writeNumber("-12.75");
+        JsonNode parsedNumber = JsonNode.parser().parse(numericWriter.getBytes());
+
+        assertThat(parsedString.isString()).isTrue();
+        assertThat(parsedString.asString()).isEqualTo("standalone");
+        assertThat(parsedString.field("anything")).isEmpty();
+        assertThat(parsedString.index(0)).isEmpty();
+        assertThat(parsedBoolean.isBoolean()).isTrue();
+        assertThat(parsedBoolean.asBoolean()).isFalse();
+        assertThat(parsedNull.isNull()).isTrue();
+        assertThat(parsedNull.text()).isNull();
+        assertThat(parsedNumber.isNumber()).isTrue();
+        assertThat(parsedNumber.asNumber()).isEqualTo("-12.75");
+    }
+
+    @Test
     void parserReadsEquivalentDocumentsFromBytesAndInputStreams() {
         byte[] bytes = DOCUMENT.getBytes(StandardCharsets.UTF_8);
         JsonNode fromBytes = JsonNode.parser().parse(bytes);
