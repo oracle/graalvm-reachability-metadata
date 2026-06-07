@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.security.Permission;
 
 import org.apache.logging.log4j.core.util.Loader;
 import org.junit.jupiter.api.Test;
@@ -131,8 +132,52 @@ public class LoaderTest {
 
     @Test
     @Timeout(20)
+    void loadsLog4jClassAfterSystemLoaderMiss() throws Exception {
+        final Class<?> loadedClass = Loader.loadSystemClass(Loader.class.getName());
+
+        assertSame(Loader.class, loadedClass);
+    }
+
+    @Test
+    @Timeout(20)
+    @SuppressWarnings("removal")
+    void fallsBackToClassForNameWhenSystemClassLoaderIsUnavailable() throws Exception {
+        final SecurityManager previousSecurityManager = System.getSecurityManager();
+        final boolean installed = installSecurityManager(new SystemClassLoaderDenyingSecurityManager());
+        try {
+            final Class<?> loadedClass = Loader.loadSystemClass(String.class.getName());
+
+            assertSame(String.class, loadedClass);
+        } finally {
+            if (installed || previousSecurityManager != null) {
+                restoreSecurityManager(previousSecurityManager);
+            }
+        }
+    }
+
+    @Test
+    @Timeout(20)
     void reportsMissingSystemClassAfterFallbackLookup() {
         assertThrows(ClassNotFoundException.class, () -> Loader.loadSystemClass("not.a.RealLog4jCoreLoaderClass"));
+    }
+
+    @SuppressWarnings("removal")
+    private static boolean installSecurityManager(final SecurityManager securityManager) {
+        try {
+            System.setSecurityManager(securityManager);
+            return System.getSecurityManager() == securityManager;
+        } catch (SecurityException | UnsupportedOperationException exception) {
+            return false;
+        }
+    }
+
+    @SuppressWarnings("removal")
+    private static void restoreSecurityManager(final SecurityManager previousSecurityManager) {
+        try {
+            System.setSecurityManager(previousSecurityManager);
+        } catch (SecurityException | UnsupportedOperationException exception) {
+            assertSame(previousSecurityManager, System.getSecurityManager());
+        }
     }
 
     private static final class TestResourceClassLoader extends ClassLoader {
@@ -156,6 +201,16 @@ public class LoaderTest {
                 return null;
             }
             return new ByteArrayInputStream(resourceName.getBytes(StandardCharsets.UTF_8));
+        }
+    }
+
+    @SuppressWarnings("removal")
+    private static final class SystemClassLoaderDenyingSecurityManager extends SecurityManager {
+        @Override
+        public void checkPermission(final Permission permission) {
+            if (permission instanceof RuntimePermission && "getClassLoader".equals(permission.getName())) {
+                throw new SecurityException("System class loader access denied for Loader fallback coverage");
+            }
         }
     }
 }
