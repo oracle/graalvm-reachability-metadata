@@ -1,0 +1,747 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ea1b6-abfc-7363-9789-ac55cd43cecc
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jetbrains.kotlin:kotlin-compiler-embeddable:2.3.20
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "2.3.20" when "$version$" is replaced with "2.3.20".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "org.jetbrains.kotlin:kotlin-compiler-embeddable:2.3.20".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.3.20".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact coordinates and upstream layout first, then patch the JSON in place. I’m checking both Maven-hosted metadata and the Kotlin repository tags so the URLs resolve with the required `$version$` placeholder.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json && sed -n '1,160p' build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3
+-rw-rw-r-- 1 vjovanov vjovanov 79 Jun  7 12:52 build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json
+{
+  "coordinates" : "org.jetbrains.kotlin:kotlin-compiler-embeddable:2.3.20"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'kotlin-compiler-embeddable|org.jetbrains.kotlin' build/discovered-artifact-metadata metadata -g '*.json'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json:2:  "coordinates" : "org.jetbrains.kotlin:kotlin-compiler-embeddable:2.3.20"
+metadata/org.jetbrains.kotlinx/atomicfu/index.json:4:    "reason": "The published root JAR contains Kotlin metadata and no JVM class files; Gradle module metadata redirects JVM variants to org.jetbrains.kotlinx:atomicfu-jvm:0.19.0.",
+metadata/org.jetbrains.kotlinx/atomicfu/index.json:5:    "replacement": "org.jetbrains.kotlinx:atomicfu-jvm:0.19.0"
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-cbor-jvm/$version$/kotlinx-serialization-cbor-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-datetime-jvm/$version$/kotlinx-datetime-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-datetime-jvm/$version$/kotlinx-datetime-jvm-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-core/index.json:4:    "reason": "The published root JAR contains Kotlin Multiplatform metadata/linkdata and no JVM class files; the POM declares org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.10.2 for JVM consumption.",
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-core/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.10.2"
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-io-bytestring-jvm/$version$/kotlinx-io-bytestring-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-io-bytestring-jvm/$version$/kotlinx-io-bytestring-jvm-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-slf4j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-slf4j/$version$/kotlinx-coroutines-slf4j-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-properties-jvm/$version$/kotlinx-serialization-properties-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-test-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-test-jvm/$version$/kotlinx-coroutines-test-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-reactor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-reactor/$version$/kotlinx-coroutines-reactor-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json/index.json:4:    "reason": "The published root JAR contains Kotlin Multiplatform metadata/linkdata and no JVM class files; Gradle module metadata redirects standard JVM variants to org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0.",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0"
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-rx2/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-rx2/$version$/kotlinx-coroutines-rx2-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-rx2/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-rx2/$version$/kotlinx-coroutines-rx2-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-io-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-json-io-jvm/$version$/kotlinx-serialization-json-io-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-io-jvm/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.jetbrains.kotlinx/kotlinx-serialization-json-io-jvm/$version$/index.html",
+metadata/org.jetbrains.kotlinx/kotlinx-metadata-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-metadata-jvm/$version$/kotlinx-metadata-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-metadata-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-metadata-jvm/$version$/kotlinx-metadata-jvm-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-hocon/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-hocon/$version$/kotlinx-serialization-hocon-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-io-bytestring-jvm:0.8.2"
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects standard JVM variants to org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.9.0.",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.9.0"
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-json-jvm/$version$/kotlinx-serialization-json-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu-jvm/$version$/atomicfu-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-collections-immutable-jvm/$version$/kotlinx-collections-immutable-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-collections-immutable-jvm/$version$/kotlinx-collections-immutable-jvm-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-guava/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-guava/$version$/kotlinx-coroutines-guava-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-okio-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-json-okio-jvm/$version$/kotlinx-serialization-json-okio-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-okio-jvm/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.jetbrains.kotlinx/kotlinx-serialization-json-okio-jvm/$version$/index.html",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-core-jvm/$version$/kotlinx-serialization-core-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-io-core/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.8.2"
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-protobuf-jvm/$version$/kotlinx-serialization-protobuf-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-benchmark-runtime/index.json:5:    "replacement": "org.jetbrains.kotlinx:kotlinx-benchmark-runtime-jvm:0.4.16"
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-io-core-jvm/$version$/kotlinx-io-core-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-io-core-jvm/$version$/kotlinx-io-core-jvm-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-cli-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-cli-jvm/$version$/kotlinx-cli-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-cli-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-cli-jvm/$version$/kotlinx-cli-jvm-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-reactive/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-reactive/$version$/kotlinx-coroutines-reactive-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-html-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-html-jvm/$version$/kotlinx-html-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-html-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-html-jvm/$version$/kotlinx-html-jvm-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-rx3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-rx3/1.10.2/kotlinx-coroutines-rx3-1.10.2-sources.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-jdk8/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-jdk8/$version$/kotlinx-coroutines-jdk8-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/$version$/kotlin-reflect-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/$version$/kotlin-reflect-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:17:      "org.jetbrains.kotlin.daemon"
+metadata/org.jetbrains.kotlin/kotlin-test-testng/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test-testng/$version$/kotlin-test-testng-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-test-testng/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test-testng/$version$/kotlin-test-testng-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/$version$/kotlin-script-runtime-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-parcelize-runtime/$version$/kotlin-parcelize-runtime-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-parcelize-runtime/$version$/kotlin-parcelize-runtime-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/$version$/kotlin-scripting-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/$version$/kotlin-scripting-jvm-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-jsr223/2.3.21/reachability-metadata.json:74:        "typeReached" : "org.jetbrains.kotlin.cli.common.repl.KotlinJsr223JvmScriptEngineBase"
+metadata/org.jetbrains.kotlin/kotlin-scripting-jsr223/2.3.21/reachability-metadata.json:76:      "type" : "org.jetbrains.kotlin.cli.common.arguments.CommonToolArguments",
+metadata/org.jetbrains.kotlin/kotlin-scripting-jsr223/2.3.21/reachability-metadata.json:83:        "typeReached" : "org.jetbrains.kotlin.cli.common.repl.KotlinJsr223JvmScriptEngineBase"
+metadata/org.jetbrains.kotlin/kotlin-scripting-jsr223/2.3.21/reachability-metadata.json:85:      "type" : "org.jetbrains.kotlin.cli.common.arguments.CommonCompilerArguments",
+metadata/org.jetbrains.kotlin/kotlin-scripting-jsr223/2.3.21/reachability-metadata.json:92:        "typeReached" : "org.jetbrains.kotlin.cli.common.repl.KotlinJsr223JvmScriptEngineBase"
+metadata/org.jetbrains.kotlin/kotlin-scripting-jsr223/2.3.21/reachability-metadata.json:94:      "type" : "org.jetbrains.kotlin.cli.common.arguments.K2JVMCompilerArguments",
+metadata/org.jetbrains.kotlin/kotlin-scripting-jsr223/2.3.21/reachability-metadata.json:102:        "typeReached" : "org.jetbrains.kotlin.cli.common.repl.KotlinJsr223JvmScriptEngineBase"
+metadata/org.jetbrains.kotlin/kotlin-scripting-jsr223/2.3.21/reachability-metadata.json:109:        "typeReached" : "org.jetbrains.kotlin.cli.common.repl.KotlinJsr223JvmScriptEngineBase"
+metadata/org.jetbrains.kotlin/kotlin-scripting-jsr223/2.3.21/reachability-metadata.json:113:          "org.jetbrains.kotlin.com.intellij.openapi.vfs.VirtualFileListener"
+metadata/org.jetbrains.kotlin/kotlin-scripting-jsr223/2.3.21/reachability-metadata.json:119:        "typeReached" : "org.jetbrains.kotlin.cli.common.repl.KotlinJsr223JvmScriptEngineBase"
+metadata/org.jetbrains.kotlin/kotlin-scripting-jsr223/2.3.21/reachability-metadata.json:121:      "type" : "org.jetbrains.kotlin.com.intellij.util.ConcurrentLongObjectHashMap",
+metadata/org.jetbrains.kotlin/kotlin-scripting-jsr223/2.3.21/reachability-metadata.json:126:        "typeReached" : "org.jetbrains.kotlin.cli.common.repl.KotlinJsr223JvmScriptEngineBase"
+metadata/org.jetbrains.kotlin/kotlin-scripting-jsr223/2.3.21/reachability-metadata.json:128:      "type" : "org.jetbrains.kotlin.com.intellij.util.ConcurrentLongObjectHashMap$CounterCell",
+metadata/org.jetbrains.kotlin/kotlin-scripting-jsr223/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jsr223/$version$/kotlin-scripting-jsr223-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-jsr223/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jsr223/$version$/kotlin-scripting-jsr223-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-jsr223/index.json:20:      "org.jetbrains.kotlin.cli.common.repl"
+metadata/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/2.3.21/reachability-metadata.json:5:        "typeReached" : "org.jetbrains.kotlin.scripting.compiler.plugin.impl.CompiledScriptClassLoader"
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk8/$version$/kotlin-stdlib-jdk8-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk8/$version$/kotlin-stdlib-jdk8-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-embeddable/$version$/kotlin-scripting-compiler-embeddable-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
+metadata/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-embeddable/$version$/kotlin-scripting-compiler-embeddable-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/index.json:19:      "org.jetbrains.kotlin.scripting.compiler.plugin"
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-common/$version$/kotlin-scripting-common-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-common/$version$/kotlin-scripting-common-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:26:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/$version$/kotlin-stdlib-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk7/$version$/kotlin-stdlib-jdk7-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk7/$version$/kotlin-stdlib-jdk7-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-android-extensions-runtime/$version$/kotlin-android-extensions-runtime-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-android-extensions-runtime/$version$/kotlin-android-extensions-runtime-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/$version$/kotlin-stdlib-common-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:54:      "org.jetbrains.kotlin"
+metadata/org.jetbrains.kotlin/kotlin-test-junit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test-junit/$version$/kotlin-test-junit-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-test-junit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test-junit/$version$/kotlin-test-junit-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-test-junit5/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test-junit5/$version$/kotlin-test-junit5-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-test-junit5/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test-junit5/$version$/kotlin-test-junit5-$version$-javadoc.jar",
+
+web search: 
+web search: Maven org.jetbrains.kotlin kotlin-compiler-embeddable 2.3.20
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/2.3.20/
+codex
+The existing repo already prefers Maven-hosted source and javadoc jars for Kotlin artifacts when those jars exist. I found the target version in Maven Central, so I’m now checking the exact classifier files and the upstream test/doc paths instead of guessing from nearby artifacts.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/2.3.20/kotlin-compiler-embeddable-2.3.20.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.jetbrains.kotlin</groupId>
+  <artifactId>kotlin-compiler-embeddable</artifactId>
+  <version>2.3.20</version>
+  <name>Kotlin Compiler Embeddable</name>
+  <description>Kotlin Compiler (embeddable)</description>
+  <url>https://kotlinlang.org/</url>
+  <licenses>
+    <license>
+      <name>Apache-2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Kotlin Team</name>
+      <organization>JetBrains</organization>
+      <organizationUrl>https://www.jetbrains.com</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/JetBrains/kotlin.git</connection>
+    <developerConnection>scm:git:https://github.com/JetBrains/kotlin.git</developerConnection>
+    <url>https://github.com/JetBrains/kotlin</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+      <version>2.3.20</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-script-runtime</artifactId>
+      <version>2.3.20</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-reflect</artifactId>
+      <version>1.6.10</version>
+      <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-daemon-embeddable</artifactId>
+      <version>2.3.20</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>kotlinx-coroutines-core-jvm</artifactId>
+      <version>1.8.0</version>
+      <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/2.3.20/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://github.com/JetBrains/kotlin/tree/v2.3.20/compiler/tests && curl -fsSL -I https://github.com/JetBrains/kotlin/tree/v2.3.20/compiler/testData && curl -fsSL -I https://github.com/JetBrains/kotlin/tree/v2.3.20/docs' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3
+ succeeded in 245ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/jetbrains/kotlin/kotlin-compiler-embeddable/2.3.20</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/jetbrains/kotlin/kotlin-compiler-embeddable/2.3.20</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="kotlin-compiler-embeddable-2.3.20-javadoc.jar" title="kotlin-compiler-embeddable-2.3.20-javadoc.jar">kotlin-compiler-embeddable-2.3.20-javadoc.jar</a>     2026-03-16 07:26       261      
+<a href="kotlin-compiler-embeddable-2.3.20-javadoc.jar.asc" title="kotlin-compiler-embeddable-2.3.20-javadoc.jar.asc">kotlin-compiler-embeddable-2.3.20-javadoc.jar...</a>  2026-03-16 07:26       689      
+<a href="kotlin-compiler-embeddable-2.3.20-javadoc.jar.md5" title="kotlin-compiler-embeddable-2.3.20-javadoc.jar.md5">kotlin-compiler-embeddable-2.3.20-javadoc.jar...</a>  2026-03-16 07:26        32      
+<a href="kotlin-compiler-embeddable-2.3.20-javadoc.jar.sha1" title="kotlin-compiler-embeddable-2.3.20-javadoc.jar.sha1">kotlin-compiler-embeddable-2.3.20-javadoc.jar...</a>  2026-03-16 07:26        40      
+<a href="kotlin-compiler-embeddable-2.3.20-sources.jar" title="kotlin-compiler-embeddable-2.3.20-sources.jar">kotlin-compiler-embeddable-2.3.20-sources.jar</a>     2026-03-16 07:26  11652674      
+<a href="kotlin-compiler-embeddable-2.3.20-sources.jar.asc" title="kotlin-compiler-embeddable-2.3.20-sources.jar.asc">kotlin-compiler-embeddable-2.3.20-sources.jar...</a>  2026-03-16 07:26       689      
+<a href="kotlin-compiler-embeddable-2.3.20-sources.jar.md5" title="kotlin-compiler-embeddable-2.3.20-sources.jar.md5">kotlin-compiler-embeddable-2.3.20-sources.jar...</a>  2026-03-16 07:26        32      
+<a href="kotlin-compiler-embeddable-2.3.20-sources.jar.sha1" title="kotlin-compiler-embeddable-2.3.20-sources.jar.sha1">kotlin-compiler-embeddable-2.3.20-sources.jar...</a>  2026-03-16 07:26        40      
+<a href="kotlin-compiler-embeddable-2.3.20.jar" title="kotlin-compiler-embeddable-2.3.20.jar">kotlin-compiler-embeddable-2.3.20.jar</a>             2026-03-16 07:26  59718536      
+<a href="kotlin-compiler-embeddable-2.3.20.jar.asc" title="kotlin-compiler-embeddable-2.3.20.jar.asc">kotlin-compiler-embeddable-2.3.20.jar.asc</a>         2026-03-16 07:26       689      
+<a href="kotlin-compiler-embeddable-2.3.20.jar.md5" title="kotlin-compiler-embeddable-2.3.20.jar.md5">kotlin-compiler-embeddable-2.3.20.jar.md5</a>         2026-03-16 07:26        32      
+<a href="kotlin-compiler-embeddable-2.3.20.jar.sha1" title="kotlin-compiler-embeddable-2.3.20.jar.sha1">kotlin-compiler-embeddable-2.3.20.jar.sha1</a>        2026-03-16 07:26        40      
+<a href="kotlin-compiler-embeddable-2.3.20.pom" title="kotlin-compiler-embeddable-2.3.20.pom">kotlin-compiler-embeddable-2.3.20.pom</a>             2026-03-16 07:26      2451      
+<a href="kotlin-compiler-embeddable-2.3.20.pom.asc" title="kotlin-compiler-embeddable-2.3.20.pom.asc">kotlin-compiler-embeddable-2.3.20.pom.asc</a>         2026-03-16 07:26       689      
+<a href="kotlin-compiler-embeddable-2.3.20.pom.md5" title="kotlin-compiler-embeddable-2.3.20.pom.md5">kotlin-compiler-embeddable-2.3.20.pom.md5</a>         2026-03-16 07:26        32      
+<a href="kotlin-compiler-embeddable-2.3.20.pom.sha1" title="kotlin-compiler-embeddable-2.3.20.pom.sha1">kotlin-compiler-embeddable-2.3.20.pom.sha1</a>        2026-03-16 07:26        40      
+<a href="kotlin-compiler-embeddable-2.3.20.spdx.json" title="kotlin-compiler-embeddable-2.3.20.spdx.json">kotlin-compiler-embeddable-2.3.20.spdx.json</a>       2026-03-16 07:26      6046      
+<a href="kotlin-compiler-embeddable-2.3.20.spdx.json.asc" title="kotlin-compiler-embeddable-2.3.20.spdx.json.asc">kotlin-compiler-embeddable-2.3.20.spdx.json.a...</a>  2026-03-16 07:26       689      
+<a href="kotlin-compiler-embeddable-2.3.20.spdx.json.md5" title="kotlin-compiler-embeddable-2.3.20.spdx.json.md5">kotlin-compiler-embeddable-2.3.20.spdx.json.m...</a>  2026-03-16 07:26        32      
+<a href="kotlin-compiler-embeddable-2.3.20.spdx.json.sha1" title="kotlin-compiler-embeddable-2.3.20.spdx.json.sha1">kotlin-compiler-embeddable-2.3.20.spdx.json.s...</a>  2026-03-16 07:26        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 1948ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 10:53:05 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"439f54be548d7572960d128a2d58f1fa"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=xkxh9lXhf%2FSwj%2FyD6DStknAlEGBdcA2kq%2B1PdeMbi%2FCNPXNcZ3S%2B26dCGf3WZBvprexTwmMmwOJ99qgZM8jadbW%2BV2OeeEn4eFYAIxb6hbnxMQhr1XMolk5kzSTFqPzzu5bKq%2BIe2sXD3VdIjMz1sFNKjfFNfvnLBqHdDgKHb36iUD0so4ZLrKFR7%2FB6Moy8GEG6FazfB7JrwsPRqqk00BF8vkDqsmrT0kPD93hfrNVYTO7K42%2B9ody0fShTVuz7ES1S%2FeI2XD%2FUVYbD5wsAyw%3D%3D--q1zliu7OfHFC93Ln--oAyUpagfH8qpZ4U90xrTXA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1676713545.1780829584; expires=Mon, 07 Jun 2027 10:53:04 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 07 Jun 2027 10:53:04 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 620A:D65A3:352C2CD:28A5892:6A254D90
+
+HTTP/2 200 
+date: Sun, 07 Jun 2026 10:53:05 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"d7bb267c1cb51ed858d5c97ee88cd4c9"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=lxTfBkEqamsGcW0TGveSTyNHdW9oYXyp%2F5J6n0bVRSY1MGEOeFj9ife0ml0Mh9zU%2FF4FUkzMdIY%2BCuzxnxNmCYXpbYwGw6TU0a0k7J8GRCrAakZipNdxJp%2BRRwcg81vvx%2BsKuEBLmr8ZG16C8QuoLHVyX5HBPsRVwlTkgMQFFqdH5bBW64yWCle%2FWkxUFqpvAWdtcbkpoKftZL77UG9V%2FZwRGlifKQCmDle1HJnFRLBEXc10X6XMygwifbnBQKQvW6iNYgiRSGyn%2FRxD2NvJUQ%3D%3D--DlpsFTXtAWRsXphi--mi5SPuijbfu93TjG6PQXDQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.697198906.1780829585; expires=Mon, 07 Jun 2027 10:53:05 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 07 Jun 2027 10:53:05 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6235:BD753:366466D:299AFDF:6A254D91
+
+HTTP/2 200 
+date: Sun, 07 Jun 2026 10:53:06 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"87bf0a46ad4a87fbfc82f36623de49df"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=enjZiz5F7nm4b9zc6IjDjL4jCOCylmzbcxtCkhFSwUoK0i19xfRxT3rfucAlCDLm3Y2%2FckwlgNHaG7LOYNfomcNWUmgIT0hkkRoitjrKp9SyvGRbIIAKx%2FdSGeL9sAultsY9N7CxFCBLjpD%2BskX38C%2F2u0HRHJy80wO%2FVnX%2Fpx%2FLzpFbOXQPro2IikXS8i0vs%2FUvoNemI9EB6Zr7kD3VRkTDQcOtOsY%2FnFbSQ9H14vFalhEFsQ7EP6Cl5AQesKqeE%2F8DKu09bZ5KmcE99swroQ%3D%3D--ovtQXAIY8AzM3xAI--1ihWKUjWrUvD79o2iMV2Yw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.704400803.1780829586; expires=Mon, 07 Jun 2027 10:53:06 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 07 Jun 2027 10:53:06 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6238:D65A3:352D05E:28A62EB:6A254D92
+
+
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/2.3.20 kotlin-compiler-embeddable-2.3.20-sources.jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/2.3.20/kotlin-compiler-embeddable-2.3.20.pom
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/2.3.20/ kotlin-compiler-embeddable-2.3.20.jar
+web search: 
+web search: central.sonatype.com artifact org.jetbrains.kotlin kotlin-compiler-embeddable 2.3.20
+codex
+The artifact has a normal JVM jar plus Maven `sources` and `javadoc` classifiers, and no Maven test-sources classifier. I’m going to use Maven for source/docs and the `v$version$` Kotlin GitHub tree for the compiler test suite.
+exec
+/usr/bin/bash -lc "rg -n '\"language\"' metadata/org.jetbrains.kotlin metadata/org.jetbrains.kotlinx build/discovered-artifact-metadata -g '*.json' | head -40" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3
+ succeeded in 0ms:
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-datetime-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-bytestring-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-slf4j/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-collections-immutable-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-android-extensions-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-guava/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-properties-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test-junit/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-test-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-okio-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-reactor/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test-testng/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-rx2/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-protobuf-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-jsr223/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-json-io-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-io-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-hocon/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-metadata-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-reactive/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-test-junit5/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-cli-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-scripting-common/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk7/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-html-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-rx3/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-coroutines-jdk8/index.json:10:    "language" : {
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/2.3.20/kotlin-compiler-embeddable-2.3.20.jar -o /tmp/kotlin-compiler-embeddable-2.3.20.jar && jar tf /tmp/kotlin-compiler-embeddable-2.3.20.jar | rg '\\.class"'$'"' | head -10" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/2.3.20/kotlin-compiler-embeddable-2.3.20-sources.jar && curl -fsSL -I https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/2.3.20/kotlin-compiler-embeddable-2.3.20-javadoc.jar && curl -fsSL -I https://github.com/JetBrains/kotlin/tree/v2.3.20/compiler/tests' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3
+ succeeded in 179ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 10:53:05 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"439f54be548d7572960d128a2d58f1fa"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=kxCYJoqViQCrKOBxAAZbhrEQ%2F%2BC5%2FXwrgVUFJ3N2T5MCcpuRil98bw728j9pcabCsVkzxiXaaZpNNS6oDysoSyFV%2BceRG8m6RK%2F8tDvPQVMCxEqa6g0CCcRQ6WLu7oqhGYqP89Sj%2F13y3vxvfbEDp0kDm1XyLszwwMidQ5TKxRC60H6bkzwnAR4iA0uaX6QAPXSUgKRJYUPxbJbculRBGbeyHSZUyc7lPHQRzbG7w6gpkNo63GY4qpmTaKojFKVkTiN6dfppI5cx8DBqRTo%2BVg%3D%3D--a2b7r40dCvRjEaNd--CoOdcJNoxALOUtBWGAjpMQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1156952677.1780829616; expires=Mon, 07 Jun 2027 10:53:36 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 07 Jun 2027 10:53:36 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 620E:386FFA:351020C:289DCCF:6A254DB0
+
+
+ succeeded in 3392ms:
+org/jetbrains/kotlin/com/fasterxml/aalto/UncheckedStreamException.class
+org/jetbrains/kotlin/com/fasterxml/aalto/WFCException.class
+org/jetbrains/kotlin/com/fasterxml/aalto/impl/CommonConfig.class
+org/jetbrains/kotlin/com/fasterxml/aalto/impl/ErrorConsts.class
+org/jetbrains/kotlin/com/fasterxml/aalto/impl/IoStreamException.class
+org/jetbrains/kotlin/com/fasterxml/aalto/impl/LocationImpl.class
+org/jetbrains/kotlin/com/fasterxml/aalto/impl/StreamExceptionBase.class
+org/jetbrains/kotlin/com/fasterxml/aalto/in/AttributeCollector.class
+org/jetbrains/kotlin/com/fasterxml/aalto/in/ByteBasedPName.class
+org/jetbrains/kotlin/com/fasterxml/aalto/in/ByteBasedPNameFactory.class
+
+codex
+The jar contains JVM `.class` files, so it remains a Native Image metadata target and I will not add `not-for-native-image`. Next I’m applying the JSON update with the same key style used in the existing metadata files.
+exec
+/usr/bin/bash -lc "sed -n '1,60p' metadata/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3
+exec
+/usr/bin/bash -lc "sed -n '1,40p' metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.3.20",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/compiler/daemon/daemon-tests/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-javadoc.jar",
+    "description" : "This artifact packages the Kotlin compiler daemon implementation for use with the embeddable compiler. It runs compilation work in a separate process so build tools and IDE integrations can invoke Kotlin compilation out of process.",
+    "tested-versions" : [
+      "2.3.20",
+      "2.3.21-RC",
+      "2.3.21-RC2",
+      "2.4.0"
+    ],
+    "allowed-packages" : [
+      "org.jetbrains.kotlin.daemon"
+    ]
+  }
+]
+
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.3.21",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-embeddable/$version$/kotlin-scripting-compiler-embeddable-$version$-sources.jar",
+    "repository-url" : "https://github.com/JetBrains/kotlin",
+    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-embeddable/$version$/kotlin-scripting-compiler-embeddable-$version$-javadoc.jar",
+    "description" : "Kotlin Scripting Compiler Embeddable packages the compiler plugin and REPL/script compilation implementation for use with the embeddable Kotlin compiler. It lets JVM tools, build systems, and scripting hosts configure, compile, and evaluate Kotlin scripts without depending on the standalone compiler distribution.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.3"
+    },
+    "tested-versions" : [
+      "2.3.21",
+      "2.4.0"
+    ],
+    "allowed-packages" : [
+      "org.jetbrains.kotlin.scripting.compiler.plugin"
+    ]
+  }
+]
+
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json
+index 2d2d0f5bb0a80c24567e6e2c6104a6f69145f7d1..319ca03fb4024869b6f324a48f5ecf6a82367f11
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-compiler-embeddable:2.3.20"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-compiler-embeddable:2.3.20",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/$version$/kotlin-compiler-embeddable-$version$-sources.jar",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/compiler/tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/$version$/kotlin-compiler-embeddable-$version$-javadoc.jar",
++  "description" : "Kotlin Compiler Embeddable packages the Kotlin compiler for use inside JVM applications, build tools, and IDE integrations without relying on the standalone command-line distribution. It provides embeddable compiler APIs and implementation classes for analyzing and compiling Kotlin source code on the JVM.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json
+index 2d2d0f5bb0a80c24567e6e2c6104a6f69145f7d1..319ca03fb4024869b6f324a48f5ecf6a82367f11
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-compiler-embeddable:2.3.20"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-compiler-embeddable:2.3.20",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/$version$/kotlin-compiler-embeddable-$version$-sources.jar",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/compiler/tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/$version$/kotlin-compiler-embeddable-$version$-javadoc.jar",
++  "description" : "Kotlin Compiler Embeddable packages the Kotlin compiler for use inside JVM applications, build tools, and IDE integrations without relying on the standalone command-line distribution. It provides embeddable compiler APIs and implementation classes for analyzing and compiling Kotlin source code on the JVM.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+codex
+The JSON is patched. I’m doing a quick validation pass now: parse the file, enforce the allowed key set, and hit the rendered URLs for `2.3.20`.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3
+ succeeded in 0ms:
+{
+  "coordinates": "org.jetbrains.kotlin:kotlin-compiler-embeddable:2.3.20",
+  "repository-url": "https://github.com/JetBrains/kotlin",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/$version$/kotlin-compiler-embeddable-$version$-sources.jar",
+  "test-code-url": "https://github.com/JetBrains/kotlin/tree/v$version$/compiler/tests",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/$version$/kotlin-compiler-embeddable-$version$-javadoc.jar",
+  "description": "Kotlin Compiler Embeddable packages the Kotlin compiler for use inside JVM applications, build tools, and IDE integrations without relying on the standalone command-line distribution. It provides embeddable compiler APIs and implementation classes for analyzing and compiling Kotlin source code on the JVM.",
+  "language": {
+    "name": "kotlin",
+    "version": "2.3"
+  }
+}
+
+exec
+/usr/bin/bash -lc "jq -r 'keys_unsorted[]' build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json | sort" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3
+ succeeded in 0ms:
+ succeeded in 0ms:
+coordinates
+description
+documentation-url
+language
+repository-url
+source-code-url
+test-code-url
+
+exec
+/usr/bin/bash -lc 'for url in $(jq -r '"'.\"source-code-url\", .\"test-code-url\", .\"documentation-url\"' build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json | sed 's/\\"'$version'"\\"'$/2.3.20/g'"'); do printf '%s -> ' \""'$url"; curl -fsSL -o /dev/null -w '"'%{http_code}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json
+index 2d2d0f5bb0a80c24567e6e2c6104a6f69145f7d1..319ca03fb4024869b6f324a48f5ecf6a82367f11
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-compiler-embeddable:2.3.20"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-compiler-embeddable:2.3.20",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/$version$/kotlin-compiler-embeddable-$version$-sources.jar",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/compiler/tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/$version$/kotlin-compiler-embeddable-$version$-javadoc.jar",
++  "description" : "Kotlin Compiler Embeddable packages the Kotlin compiler for use inside JVM applications, build tools, and IDE integrations without relying on the standalone command-line distribution. It provides embeddable compiler APIs and implementation classes for analyzing and compiling Kotlin source code on the JVM.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+ succeeded in 2008ms:
+200
+https://github.com/JetBrains/kotlin/tree/v2.3.20/compiler/tests -> 200
+https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/2.3.20/kotlin-compiler-embeddable-2.3.20-javadoc.jar -> 200
+
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json
+index 2d2d0f5bb0a80c24567e6e2c6104a6f69145f7d1..319ca03fb4024869b6f324a48f5ecf6a82367f11
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-compiler-embeddable:2.3.20"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-compiler-embeddable:2.3.20",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/$version$/kotlin-compiler-embeddable-$version$-sources.jar",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/compiler/tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/$version$/kotlin-compiler-embeddable-$version$-javadoc.jar",
++  "description" : "Kotlin Compiler Embeddable packages the Kotlin compiler for use inside JVM applications, build tools, and IDE integrations without relying on the standalone command-line distribution. It provides embeddable compiler APIs and implementation classes for analyzing and compiling Kotlin source code on the JVM.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+codex
+Validation passed: the rendered source, test, and documentation URLs all returned HTTP 200. I’m checking the worktree status once so I can report exactly what changed.
+exec
+/usr/bin/bash -lc "sed -n '1,80p' build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3
+ succeeded in 0ms:
+{
+  "coordinates" : "org.jetbrains.kotlin:kotlin-compiler-embeddable:2.3.20",
+  "repository-url" : "https://github.com/JetBrains/kotlin",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/$version$/kotlin-compiler-embeddable-$version$-sources.jar",
+  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/compiler/tests",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/$version$/kotlin-compiler-embeddable-$version$-javadoc.jar",
+  "description" : "Kotlin Compiler Embeddable packages the Kotlin compiler for use inside JVM applications, build tools, and IDE integrations without relying on the standalone command-line distribution. It provides embeddable compiler APIs and implementation classes for analyzing and compiling Kotlin source code on the JVM.",
+  "language" : {
+    "name" : "kotlin",
+    "version" : "2.3"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git ls-files --error-unmatch build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json >/dev/null 2>&1; echo $?' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3
+ succeeded in 0ms:
+1
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json
+index 2d2d0f5bb0a80c24567e6e2c6104a6f69145f7d1..319ca03fb4024869b6f324a48f5ecf6a82367f11
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-compiler-embeddable:2.3.20"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-compiler-embeddable:2.3.20",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/$version$/kotlin-compiler-embeddable-$version$-sources.jar",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/compiler/tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/$version$/kotlin-compiler-embeddable-$version$-javadoc.jar",
++  "description" : "Kotlin Compiler Embeddable packages the Kotlin compiler for use inside JVM applications, build tools, and IDE integrations without relying on the standalone command-line distribution. It provides embeddable compiler APIs and implementation classes for analyzing and compiling Kotlin source code on the JVM.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+ succeeded in 341ms:
+web search: 
+web search: https://github.com/JetBrains/kotlin/tree/v2.3.20/compiler/tests
+web search: 
+web search: central.sonatype.com org.jetbrains.kotlin kotlin-compiler-embeddable 2.3.20
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/2.3.20/
+web search: 
+web search: repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/2.3.20/kotlin-compiler-embeddable-2.3.20.pom
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/
+codex
+Updated [org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json:1).
+
+I set the repository, Maven source/javadoc URLs, GitHub `v$version$` compiler test URL, two-sentence description, and Kotlin language metadata. I left `not-for-native-image` absent because the artifact jar contains JVM `.class` files, so it is still a Native Image metadata target.
+
+Validation passed: JSON parses, only allowed top-level keys are present, and the rendered source, test, and documentation URLs returned HTTP 200. Maven Central lists `2.3.20`, and the Kotlin repo exposes `compiler/tests` at tag `v2.3.20`. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/))
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json
+index 2d2d0f5bb0a80c24567e6e2c6104a6f69145f7d1..319ca03fb4024869b6f324a48f5ecf6a82367f11
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-compiler-embeddable:2.3.20"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-compiler-embeddable:2.3.20",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/$version$/kotlin-compiler-embeddable-$version$-sources.jar",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/compiler/tests",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/$version$/kotlin-compiler-embeddable-$version$-javadoc.jar",
++  "description" : "Kotlin Compiler Embeddable packages the Kotlin compiler for use inside JVM applications, build tools, and IDE integrations without relying on the standalone command-line distribution. It provides embeddable compiler APIs and implementation classes for analyzing and compiling Kotlin source code on the JVM.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+tokens used
+93,334
+Updated [org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.json:1).
+
+I set the repository, Maven source/javadoc URLs, GitHub `v$version$` compiler test URL, two-sentence description, and Kotlin language metadata. I left `not-for-native-image` absent because the artifact jar contains JVM `.class` files, so it is still a Native Image metadata target.
+
+Validation passed: JSON parses, only allowed top-level keys are present, and the rendered source, test, and documentation URLs returned HTTP 200. Maven Central lists `2.3.20`, and the Kotlin repo exposes `compiler/tests` at tag `v2.3.20`. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/))
+Ran agent for org.jetbrains.kotlin:kotlin-compiler-embeddable:2.3.20 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3/build/agent-artifact-discovery-logs/org.jetbrains.kotlin-kotlin-compiler-embeddable-2.3.20.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1952-6a596fc3/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 12s
+9 actionable tasks: 9 executed
