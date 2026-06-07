@@ -6,37 +6,33 @@
  */
 package io_airlift.aircompressor;
 
-import io.airlift.compress.lz4.Lz4Compressor;
-import io.airlift.compress.lz4.Lz4Decompressor;
+import io.airlift.compress.v2.lz4.Lz4Compressor;
+import io.airlift.compress.v2.lz4.Lz4Decompressor;
 import org.junit.jupiter.api.Test;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class UnsafeUtilTest {
     @Test
-    void compressesAndDecompressesDirectBuffers() {
+    void compressesAndDecompressesPayload() {
         byte[] input = repeatedPayload();
-        Lz4Compressor compressor = new Lz4Compressor();
-        Lz4Decompressor decompressor = new Lz4Decompressor();
+        Lz4Compressor compressor = Lz4Compressor.create();
+        Lz4Decompressor decompressor = Lz4Decompressor.create();
 
-        ByteBuffer source = ByteBuffer.allocateDirect(input.length);
-        source.put(input);
-        source.flip();
+        byte[] compressed = new byte[compressor.maxCompressedLength(input.length)];
+        int compressedSize = compressor.compress(
+                input, 0, input.length,
+                compressed, 0, compressed.length);
+        assertThat(compressedSize).isPositive();
 
-        ByteBuffer compressed = ByteBuffer.allocateDirect(compressor.maxCompressedLength(input.length));
-        compressor.compress(source, compressed);
-        assertThat(compressed.position()).isPositive();
+        byte[] actual = new byte[input.length];
+        int restoredSize = decompressor.decompress(
+                compressed, 0, compressedSize,
+                actual, 0, actual.length);
 
-        compressed.flip();
-        ByteBuffer restored = ByteBuffer.allocateDirect(input.length);
-        decompressor.decompress(compressed, restored);
-
-        restored.flip();
-        byte[] actual = new byte[restored.remaining()];
-        restored.get(actual);
+        assertThat(restoredSize).isEqualTo(input.length);
         assertThat(actual).isEqualTo(input);
     }
 
