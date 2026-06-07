@@ -14,6 +14,19 @@ import org.junit.jupiter.api.Test;
 
 public class AccessorTest {
     @Test
+    void serializesBeanPropertyWithStandardGetter() {
+        try {
+            String json = JSONValue.toJSONString(new StandardGetterBean());
+
+            assertThat(json).isEqualTo("{\"name\":\"json-smart\"}");
+        } catch (Error error) {
+            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+                throw error;
+            }
+        }
+    }
+
+    @Test
     void serializesBooleanBeanPropertyWithGetterFallback() {
         try {
             String json = JSONValue.toJSONString(new BooleanGetterOnlyBean());
@@ -23,6 +36,18 @@ public class AccessorTest {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
             }
+        }
+    }
+
+    public static class StandardGetterBean {
+        private String name = "json-smart";
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
         }
     }
 
