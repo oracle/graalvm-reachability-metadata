@@ -6,8 +6,8 @@
  */
 package io_airlift.aircompressor;
 
-import io.airlift.compress.v2.lz4.Lz4Compressor;
-import io.airlift.compress.v2.lz4.Lz4Decompressor;
+import io.airlift.compress.v2.lz4.Lz4JavaCompressor;
+import io.airlift.compress.v2.lz4.Lz4JavaDecompressor;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
@@ -18,8 +18,8 @@ public class UnsafeUtilTest {
     @Test
     void compressesAndDecompressesPayload() {
         byte[] input = repeatedPayload();
-        Lz4Compressor compressor = Lz4Compressor.create();
-        Lz4Decompressor decompressor = Lz4Decompressor.create();
+        Lz4JavaCompressor compressor = new Lz4JavaCompressor();
+        Lz4JavaDecompressor decompressor = new Lz4JavaDecompressor();
 
         byte[] compressed = new byte[compressor.maxCompressedLength(input.length)];
         int compressedSize = compressor.compress(
