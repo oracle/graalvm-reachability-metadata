@@ -12,6 +12,9 @@ String libraryVersion = tck.testedLibraryVersion.get()
 File compiledTestClassesDir = layout.buildDirectory.dir("classes/java/test").get().asFile
 File processedTestResourcesDir = layout.buildDirectory.dir("resources/test").get().asFile
 File generatedNexusMarkerFile = layout.buildDirectory.dir("generated/predefined-nexus-test-class").get().file("done.marker").asFile
+File generatedByteArrayLoadedTypeClassFile = new File(
+        compiledTestClassesDir,
+        "net_bytebuddy/byte_buddy/generated/ByteArrayLoadedType.class")
 File generatedNexusClassFile = new File(
         compiledTestClassesDir,
         "net_bytebuddy/byte_buddy/generated/NexusInitializationSample.class")
@@ -34,6 +37,7 @@ dependencies {
 tasks.withType(Test).configureEach {
     jvmArgs "-javaagent:${configurations.byteBuddyAgent.singleFile}"
     doFirst {
+        delete(generatedByteArrayLoadedTypeClassFile)
         delete(generatedNexusClassFile)
         delete(generatedNexusMarkerFile)
     }

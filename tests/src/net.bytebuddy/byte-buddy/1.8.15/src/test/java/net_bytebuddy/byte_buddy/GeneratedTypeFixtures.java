@@ -18,6 +18,7 @@ import java.util.concurrent.Callable;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
 final class GeneratedTypeFixtures {
+    static final String BYTE_ARRAY_LOADED_TYPE = "net_bytebuddy.byte_buddy.generated.ByteArrayLoadedType";
     static final String STATIC_FIELD_CALLABLE = "net_bytebuddy.byte_buddy.generated.StaticFieldCallable";
     static final String LOCK_HELD_SUPER_TYPE = "net_bytebuddy.byte_buddy.generated.agentbuilder.LockHeldSuperType";
     static final String LOCK_HELD_SUB_TYPE = "net_bytebuddy.byte_buddy.generated.agentbuilder.LockHeldSubType";
@@ -25,6 +26,13 @@ final class GeneratedTypeFixtures {
     static final String SIMPLE_ACTION_SUB_TYPE = "net_bytebuddy.byte_buddy.generated.agentbuilder.SimpleActionSubType";
 
     private GeneratedTypeFixtures() {
+    }
+
+    static DynamicType.Unloaded<?> byteArrayLoadedType() {
+        return new ByteBuddy(ClassFileVersion.JAVA_V8)
+                .subclass(Object.class)
+                .name(BYTE_ARRAY_LOADED_TYPE)
+                .make();
     }
 
     static DynamicType.Unloaded<?> staticFieldCallable(Object fixedValue) {

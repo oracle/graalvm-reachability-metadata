@@ -28,6 +28,10 @@ public final class PredefinedNexusClassesGenerator {
     private static void writePredefinedClasses(Path outputDirectory) throws IOException {
         writePredefinedClass(
                 outputDirectory,
+                GeneratedTypeFixtures.BYTE_ARRAY_LOADED_TYPE,
+                GeneratedTypeFixtures.byteArrayLoadedType().getBytes());
+        writePredefinedClass(
+                outputDirectory,
                 NexusInitializationSupport.GENERATED_TYPE_NAME,
                 NexusInitializationSupport.generatePredefinedClassBytes());
         writePredefinedClass(
@@ -59,6 +63,7 @@ public final class PredefinedNexusClassesGenerator {
     }
 
     private static void verifyGeneratedClasses(Path outputDirectory) throws IOException {
+        verifyGeneratedClass(outputDirectory, GeneratedTypeFixtures.BYTE_ARRAY_LOADED_TYPE);
         verifyGeneratedClass(outputDirectory, NexusInitializationSupport.GENERATED_TYPE_NAME);
         verifyGeneratedClass(outputDirectory, GeneratedTypeFixtures.STATIC_FIELD_CALLABLE);
         verifyGeneratedClass(outputDirectory, GeneratedTypeFixtures.LOCK_HELD_SUPER_TYPE);
