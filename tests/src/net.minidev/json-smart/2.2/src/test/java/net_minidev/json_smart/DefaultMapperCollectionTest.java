@@ -9,26 +9,29 @@ package net_minidev.json_smart;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import net.minidev.json.JSONValue;
 import org.junit.jupiter.api.Test;
 
-public class DefaultMapperCollectionTest {
+public class DefaultMapperCollectionTest extends ArrayList<Object> {
+    private static final long serialVersionUID = 1L;
+
     @Test
     void parsesObjectIntoConcreteMapImplementation() {
-        HashMap<?, ?> parsed = JSONValue.parse(
-                "{\"name\":\"json-smart\",\"enabled\":true}", HashMap.class);
+        CollectionMapperInnerMapTypeTest.AccessibleJsonObject parsed = JSONValue.parse(
+                "{\"name\":\"json-smart\",\"enabled\":true}",
+                CollectionMapperInnerMapTypeTest.AccessibleJsonObject.class);
 
-        assertThat(parsed).isInstanceOf(HashMap.class);
+        assertThat(parsed).isInstanceOf(CollectionMapperInnerMapTypeTest.AccessibleJsonObject.class);
         assertThat(parsed.get("name")).isEqualTo("json-smart");
         assertThat(parsed.get("enabled")).isEqualTo(Boolean.TRUE);
     }
 
     @Test
     void parsesArrayIntoConcreteListImplementation() {
-        ArrayList<?> parsed = JSONValue.parse("[\"alpha\",2,true]", ArrayList.class);
+        DefaultMapperCollectionTest parsed = JSONValue.parse(
+                "[\"alpha\",2,true]", DefaultMapperCollectionTest.class);
 
-        assertThat(parsed).isInstanceOf(ArrayList.class);
+        assertThat(parsed).isInstanceOf(DefaultMapperCollectionTest.class);
         assertThat(parsed).hasSize(3);
         assertThat(parsed.get(0)).isEqualTo("alpha");
         assertThat(parsed.get(1)).isEqualTo(Integer.valueOf(2));
