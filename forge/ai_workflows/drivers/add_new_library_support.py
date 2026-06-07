@@ -44,6 +44,9 @@ from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if
 from utility_scripts import metrics_writer
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.large_library_progress import resolve_workflow_progress_state
+from utility_scripts.library_preparation_preflight import (
+    prepare_library_preparation_preflight,
+)
 from utility_scripts.metadata_index import is_not_for_native_image, write_not_for_native_image_marker
 from utility_scripts.native_image_artifact import evaluate_native_image_eligibility
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo, resolve_repo_roots
@@ -186,6 +189,10 @@ def build_parser():
         type=int,
         help="GitHub issue number for durable large-library progress state.",
     )
+    parser.add_argument(
+        "--library-preparation-preflight-path",
+        help="Path to the dispatcher-created library preparation preflight JSON record.",
+    )
     return parser
 
 
@@ -223,6 +230,7 @@ def parse_flags(argv_list):
         flags.chunk_call_limit,
         flags.resume_artifact,
         flags.issue_number,
+        flags.library_preparation_preflight_path,
     )
 
 
@@ -444,6 +452,7 @@ def main(argv=None):
         chunk_call_limit,
         resume_artifact,
         issue_number,
+        library_preparation_preflight_path,
     ) = parse_flags(argv if argv is not None else sys.argv[1:])
 
     strategy = require_strategy_by_name(strategy_name)
@@ -453,6 +462,14 @@ def main(argv=None):
         explicit_repo_path,
         explicit_metrics_repo_path,
         is_benchmark_mode,
+    )
+    # Apply deterministic preflight setup into the resolved worktree before
+    # generation; only advisory guidance reaches the prompt context.
+    library_preparation_preflight, library_preparation_preflight_context = (
+        prepare_library_preparation_preflight(
+            library_preparation_preflight_path,
+            reachability_repo_path,
+        )
     )
     resolve_graalvm_java_home()
 
@@ -531,6 +548,7 @@ def main(argv=None):
         test_language=test_source_layout.language,
         test_language_display_name=test_source_layout.display_language,
         test_source_dir_name=test_source_layout.source_dir_name,
+        library_preparation_preflight_context=library_preparation_preflight_context,
     )
 
     # Add generated files to git and commit; record commit hash (do not use it)
@@ -670,6 +688,7 @@ def main(argv=None):
             strategy_name=strategy_name,
             starting_commit=checkpoint_commit_hash,
             ending_commit=ending_commit_hash,
+            library_preparation_preflight=library_preparation_preflight,
         )
     else:
         run_metrics = metrics_writer.create_run_metrics_output_json(
@@ -686,6 +705,7 @@ def main(argv=None):
             starting_commit=checkpoint_commit_hash,
             ending_commit=ending_commit_hash,
             post_generation_intervention=strategy_obj.post_generation_intervention,
+            library_preparation_preflight=library_preparation_preflight,
         )
 
     metrics_json = resolve_add_new_library_support_metrics_json(

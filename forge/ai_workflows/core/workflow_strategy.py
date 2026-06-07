@@ -30,6 +30,7 @@ from utility_scripts.metadata_index import (
     resolve_test_version,
 )
 from utility_scripts.issue_requested_metadata import NO_REPORTER_METADATA_CONTEXT
+from utility_scripts.library_preparation_preflight import NO_LIBRARY_PREPARATION_PREFLIGHT_CONTEXT
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.strategy_loader import load_persistent_instructions, load_prompt_template
@@ -103,6 +104,10 @@ class WorkflowStrategy(ABC):
         self.context.setdefault(
             "issue_requested_metadata_context",
             NO_REPORTER_METADATA_CONTEXT,
+        )
+        self.context.setdefault(
+            "library_preparation_preflight_context",
+            NO_LIBRARY_PREPARATION_PREFLIGHT_CONTEXT,
         )
         self.context.setdefault("resolved_edit_scope_context", "")
         self.model_name = self.strategy_obj.get("model")

@@ -49,6 +49,9 @@ from utility_scripts.issue_requested_metadata import (
     format_issue_requested_test_requirements,
 )
 from utility_scripts.large_library_progress import resolve_workflow_progress_state
+from utility_scripts.library_preparation_preflight import (
+    prepare_library_preparation_preflight,
+)
 from utility_scripts.library_stats import stats_artifact_dir
 from utility_scripts.metadata_index import (
     MATCH_NEW_VERSION,
@@ -179,6 +182,10 @@ def build_parser() -> argparse.ArgumentParser:
         default="",
         help="Reporter-provided missing metadata context extracted from the GitHub issue body.",
     )
+    parser.add_argument(
+        "--library-preparation-preflight-path",
+        help="Path to the dispatcher-created library preparation preflight JSON record.",
+    )
     return parser
 
 
@@ -208,6 +215,7 @@ def parse_flags(argv_list: list[str]):
         flags.resume_artifact,
         flags.issue_number,
         flags.issue_requested_metadata_context,
+        flags.library_preparation_preflight_path,
     )
 
 
@@ -806,6 +814,7 @@ def main(argv=None) -> int:
         resume_artifact,
         issue_number,
         issue_requested_metadata_context,
+        library_preparation_preflight_path,
     ) = parse_flags(argv if argv is not None else sys.argv[1:])
 
     library = f"{group}:{artifact}:{version}"
@@ -813,6 +822,14 @@ def main(argv=None) -> int:
     reachability_repo_path, metrics_repo_dir, metrics_repo_root = resolve_repo_paths(
         explicit_repo_path,
         explicit_metrics_repo_path,
+    )
+    # Apply deterministic preflight setup into the resolved worktree before
+    # generation; only advisory guidance reaches the prompt context.
+    library_preparation_preflight, library_preparation_preflight_context = (
+        prepare_library_preparation_preflight(
+            library_preparation_preflight_path,
+            reachability_repo_path,
+        )
     )
     ensure_gh_authenticated()
     resolve_graalvm_java_home()
@@ -940,6 +957,7 @@ def main(argv=None) -> int:
         test_language_display_name=test_source_layout.display_language,
         test_source_dir_name=test_source_layout.source_dir_name,
         metadata_version=update_target.resolved_metadata_version,
+        library_preparation_preflight_context=library_preparation_preflight_context,
         large_library_progress_state=large_library_state,
         large_library_progress_state_path=large_library_state_path,
         large_library_issue_number=issue_number,
@@ -1008,6 +1026,7 @@ def main(argv=None) -> int:
             strategy_name=strategy_name,
             starting_commit=checkpoint_commit,
             ending_commit=ending_commit,
+            library_preparation_preflight=library_preparation_preflight,
         )
     else:
         if workflow_status == SUCCESS_WITH_INTERVENTION_STATUS:
@@ -1028,6 +1047,7 @@ def main(argv=None) -> int:
             starting_commit=checkpoint_commit,
             ending_commit=ending_commit,
             post_generation_intervention=strategy_obj.post_generation_intervention,
+            library_preparation_preflight=library_preparation_preflight,
         )
 
     write_library_update_target_sidecar(metrics_repo_root, update_target)
