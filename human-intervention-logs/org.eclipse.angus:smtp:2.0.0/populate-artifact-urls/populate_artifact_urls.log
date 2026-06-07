@@ -1,0 +1,615 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7392-f2ace720
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ea308-6a71-7803-9702-68e8e8025cf8
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.eclipse.angus:smtp:2.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.0.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7392-f2ace720/metadata/org.eclipse.angus/smtp/index.json
+- Entry selector: "metadata-version" = "2.0.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2.0.0
+- Entry metadata-version: 2.0.0
+- Entry test-version: 2.0.0
+- Entry tested-versions: [2.0.0]
+codex
+I’ll verify the artifact metadata and tag-specific URLs before editing, then update only the missing fields in the selected `index.json` entry.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.eclipse.angus/smtp/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7392-f2ace720
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.0",
+    "tested-versions" : [
+      "2.0.0"
+    ],
+    "allowed-packages" : [
+      "com.sun.mail.smtp"
+    ]
+  },
+  {
+    "metadata-version" : "1.0.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/smtp/$version$/smtp-$version$-sources.jar",
+    "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
+    "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test/java/com/sun/mail/smtp",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/smtp/$version$/smtp-$version$-javadoc.jar",
+    "description" : "Angus Mail SMTP provider is the Eclipse Angus implementation of the Jakarta Mail SMTP transport. It supplies the com.sun.mail.smtp classes and service provider metadata used by JVM applications to send mail over SMTP and SMTPS through Jakarta Mail.",
+    "tested-versions" : [
+      "1.0.0",
+      "1.1.0"
+    ],
+    "allowed-packages" : [
+      "com.sun.mail.smtp"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n 'org\\.eclipse\\.angus|source-code-url|documentation-url|test-code-url|repository-url|description|language' metadata/org.eclipse.angus -g 'index.json'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7392-f2ace720
+ succeeded in 0ms:
+metadata/org.eclipse.angus/angus-mail/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/angus-mail/$version$/angus-mail-$version$-sources.jar",
+metadata/org.eclipse.angus/angus-mail/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
+metadata/org.eclipse.angus/angus-mail/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test",
+metadata/org.eclipse.angus/angus-mail/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/angus-mail/$version$/angus-mail-$version$-javadoc.jar",
+metadata/org.eclipse.angus/angus-mail/index.json:9:    "description" : "Angus Mail is the Eclipse implementation of the Jakarta Mail provider stack. The angus-mail artifact packages core utilities, SMTP, IMAP, POP3, MIME handlers, and logging mail handler classes used by Jakarta Mail clients.",
+metadata/org.eclipse.angus/angus-mail/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/angus-mail/$version$/angus-mail-$version$-sources.jar",
+metadata/org.eclipse.angus/angus-mail/index.json:20:    "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
+metadata/org.eclipse.angus/angus-mail/index.json:21:    "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test",
+metadata/org.eclipse.angus/angus-mail/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/angus-mail/$version$/angus-mail-$version$-javadoc.jar",
+metadata/org.eclipse.angus/angus-mail/index.json:23:    "description" : "Angus Mail is the Eclipse implementation of the Jakarta Mail provider stack. The angus-mail artifact packages core utilities, SMTP, IMAP, POP3, MIME handlers, and logging mail handler classes used by Jakarta Mail clients.",
+metadata/org.eclipse.angus/jakarta.mail/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/angus/jakarta.mail/$version$/jakarta.mail-$version$-sources.jar",
+metadata/org.eclipse.angus/jakarta.mail/index.json:9:    "repository-url": "https://github.com/eclipse-ee4j/angus-mail",
+metadata/org.eclipse.angus/jakarta.mail/index.json:10:    "test-code-url": "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test",
+metadata/org.eclipse.angus/jakarta.mail/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/angus/jakarta.mail/$version$/jakarta.mail-$version$-javadoc.jar",
+metadata/org.eclipse.angus/jakarta.mail/index.json:12:    "description": "Angus Mail is the Eclipse implementation of the Jakarta Mail 2.1 specification. It provides the Jakarta Mail API together with SMTP, IMAP, and POP3 providers for building Java mail and messaging applications.",
+metadata/org.eclipse.angus/smtp/index.json:14:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/smtp/$version$/smtp-$version$-sources.jar",
+metadata/org.eclipse.angus/smtp/index.json:15:    "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
+metadata/org.eclipse.angus/smtp/index.json:16:    "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test/java/com/sun/mail/smtp",
+metadata/org.eclipse.angus/smtp/index.json:17:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/smtp/$version$/smtp-$version$-javadoc.jar",
+metadata/org.eclipse.angus/smtp/index.json:18:    "description" : "Angus Mail SMTP provider is the Eclipse Angus implementation of the Jakarta Mail SMTP transport. It supplies the com.sun.mail.smtp classes and service provider metadata used by JVM applications to send mail over SMTP and SMTPS through Jakarta Mail.",
+metadata/org.eclipse.angus/angus-activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/angus-activation/$version$/angus-activation-$version$-sources.jar",
+metadata/org.eclipse.angus/angus-activation/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/angus-activation",
+metadata/org.eclipse.angus/angus-activation/index.json:7:    "test-code-url" : "N/A",
+metadata/org.eclipse.angus/angus-activation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/angus-activation/$version$/angus-activation-$version$-javadoc.jar",
+metadata/org.eclipse.angus/angus-activation/index.json:9:    "description" : "Angus Activation is the Eclipse implementation support for the Jakarta Activation specification, providing registry implementations used by Jakarta Activation to resolve MIME types and mailcap entries. The angus-activation artifact supplies JVM classes and service providers that help applications determine data types, discover operations for data, and instantiate the appropriate handlers.",
+
+web search: 
+web search: Maven Central org.eclipse.angus smtp 2.0.0 sources javadoc
+web search: 
+web search: https://central.sonatype.com/artifact/org.eclipse.angus/smtp/2.0.0
+codex
+The local file has an older `1.0.0` entry with useful patterns, but the `2.0.0` test path changed: the old `com/sun/mail/smtp` tag path returns 404. I’m checking the actual `2.0.0` tag layout and Maven classifiers before writing anything.
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/eclipse-ee4j/angus-mail/tree/2.0.0/providers/angus-mail/src/test/java/org/eclipse/angus/mail/smtp" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7392-f2ace720
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/eclipse/angus/smtp/2.0.0/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7392-f2ace720
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/eclipse-ee4j/angus-mail/tree/2.0.0/providers/smtp/src/test/java/org/eclipse/angus/mail/smtp" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7392-f2ace720
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/eclipse-ee4j/angus-mail.git '*2.0.0*'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7392-f2ace720
+ succeeded in 281ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/eclipse/angus/smtp/2.0.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/eclipse/angus/smtp/2.0.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="smtp-2.0.0-javadoc.jar" title="smtp-2.0.0-javadoc.jar">smtp-2.0.0-javadoc.jar</a>                            2023-01-20 05:51    529168      
+<a href="smtp-2.0.0-javadoc.jar.asc" title="smtp-2.0.0-javadoc.jar.asc">smtp-2.0.0-javadoc.jar.asc</a>                        2023-01-20 05:51       833      
+<a href="smtp-2.0.0-javadoc.jar.md5" title="smtp-2.0.0-javadoc.jar.md5">smtp-2.0.0-javadoc.jar.md5</a>                        2023-01-20 05:51        32      
+<a href="smtp-2.0.0-javadoc.jar.sha1" title="smtp-2.0.0-javadoc.jar.sha1">smtp-2.0.0-javadoc.jar.sha1</a>                       2023-01-20 05:51        40      
+<a href="smtp-2.0.0-sources.jar" title="smtp-2.0.0-sources.jar">smtp-2.0.0-sources.jar</a>                            2023-01-20 05:51     64451      
+<a href="smtp-2.0.0-sources.jar.asc" title="smtp-2.0.0-sources.jar.asc">smtp-2.0.0-sources.jar.asc</a>                        2023-01-20 05:51       833      
+<a href="smtp-2.0.0-sources.jar.md5" title="smtp-2.0.0-sources.jar.md5">smtp-2.0.0-sources.jar.md5</a>                        2023-01-20 05:51        32      
+<a href="smtp-2.0.0-sources.jar.sha1" title="smtp-2.0.0-sources.jar.sha1">smtp-2.0.0-sources.jar.sha1</a>                       2023-01-20 05:51        40      
+<a href="smtp-2.0.0.jar" title="smtp-2.0.0.jar">smtp-2.0.0.jar</a>                                    2023-01-20 05:51     67439      
+<a href="smtp-2.0.0.jar.asc" title="smtp-2.0.0.jar.asc">smtp-2.0.0.jar.asc</a>                                2023-01-20 05:51       833      
+<a href="smtp-2.0.0.jar.md5" title="smtp-2.0.0.jar.md5">smtp-2.0.0.jar.md5</a>                                2023-01-20 05:51        32      
+<a href="smtp-2.0.0.jar.sha1" title="smtp-2.0.0.jar.sha1">smtp-2.0.0.jar.sha1</a>                               2023-01-20 05:51        40      
+<a href="smtp-2.0.0.pom" title="smtp-2.0.0.pom">smtp-2.0.0.pom</a>                                    2023-01-20 05:51      3323      
+<a href="smtp-2.0.0.pom.asc" title="smtp-2.0.0.pom.asc">smtp-2.0.0.pom.asc</a>                                2023-01-20 05:51       833      
+<a href="smtp-2.0.0.pom.md5" title="smtp-2.0.0.pom.md5">smtp-2.0.0.pom.md5</a>                                2023-01-20 05:51        32      
+<a href="smtp-2.0.0.pom.sha1" title="smtp-2.0.0.pom.sha1">smtp-2.0.0.pom.sha1</a>                               2023-01-20 05:51        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 278ms:
+32ff58165f83dab6b28a7bd854d3420e425cd9e1	refs/tags/2.0.0
+9e00ba12f25d7e926fb02f32f9bf2203ffde3c33	refs/tags/2.0.0^{}
+
+ succeeded in 769ms:
+404 https://github.com/eclipse-ee4j/angus-mail/tree/2.0.0/providers/smtp/src/test/java/org/eclipse/angus/mail/smtp
+
+ succeeded in 779ms:
+200 https://github.com/eclipse-ee4j/angus-mail/tree/2.0.0/providers/angus-mail/src/test/java/org/eclipse/angus/mail/smtp
+
+web search: 
+web search: https://github.com/eclipse-ee4j/angus-mail/tree/2.0.0/providers/angus-mail/src/test/java/org/eclipse/angus/mail/smtp
+web search: 
+web search: repo1.maven.org/maven2/org/eclipse/angus/smtp/2.0.0/smtp-2.0.0-sources.jar
+web search: 
+web search: https://central.sonatype.com/artifact/org.eclipse.angus/smtp/2.0.0
+codex
+I found no Maven test classifier for `org.eclipse.angus:smtp:2.0.0`, but Maven Central has the `sources` and `javadoc` JARs. I’m going to add the Maven source/javadoc templates, the canonical GitHub repository root, the tag-specific GitHub test directory, and the two-sentence description; no `language` field is needed because this is not a Kotlin, Groovy, or Scala-specific artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7392-f2ace720/metadata/org.eclipse.angus/smtp/index.json
+diff --git a/metadata/org.eclipse.angus/smtp/index.json b/metadata/org.eclipse.angus/smtp/index.json
+index 1a2be58af60ba12017db2176236cf9885233c991..b25154945c4951e156eeb00c0540568b692f6c96
+--- a/metadata/org.eclipse.angus/smtp/index.json
++++ b/metadata/org.eclipse.angus/smtp/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/smtp/$version$/smtp-$version$-sources.jar",
++    "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
++    "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test/java/org/eclipse/angus/mail/smtp",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/smtp/$version$/smtp-$version$-javadoc.jar",
++    "description" : "Angus Mail SMTP provider is the Eclipse Angus implementation of the Jakarta Mail SMTP transport. It supplies the org.eclipse.angus.mail.smtp provider classes and service metadata used by JVM applications to send mail over SMTP and SMTPS through Jakarta Mail.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+diff --git a/metadata/org.eclipse.angus/smtp/index.json b/metadata/org.eclipse.angus/smtp/index.json
+index 1a2be58af60ba12017db2176236cf9885233c991..b25154945c4951e156eeb00c0540568b692f6c96
+--- a/metadata/org.eclipse.angus/smtp/index.json
++++ b/metadata/org.eclipse.angus/smtp/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/smtp/$version$/smtp-$version$-sources.jar",
++    "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
++    "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test/java/org/eclipse/angus/mail/smtp",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/smtp/$version$/smtp-$version$-javadoc.jar",
++    "description" : "Angus Mail SMTP provider is the Eclipse Angus implementation of the Jakarta Mail SMTP transport. It supplies the org.eclipse.angus.mail.smtp provider classes and service metadata used by JVM applications to send mail over SMTP and SMTPS through Jakarta Mail.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+codex
+The edit is in place. I’m now validating JSON structure and re-checking each rendered `2.0.0` URL before running the targeted metadata check.
+exec
+/usr/bin/bash -lc 'jq . metadata/org.eclipse.angus/smtp/index.json >/dev/null' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7392-f2ace720
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w 'tests %{http_code} %{url_effective}\\n' https://github.com/eclipse-ee4j/angus-mail/tree/2.0.0/providers/angus-mail/src/test/java/org/eclipse/angus/mail/smtp" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7392-f2ace720
+ succeeded in 0ms:
+tests 200 https://github.com/eclipse-ee4j/angus-mail/tree/2.0.0/providers/angus-mail/src/test/java/org/eclipse/angus/mail/smtp
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w 'source %{http_code} %{url_effective}\\n' https://repo1.maven.org/maven2/org/eclipse/angus/smtp/2.0.0/smtp-2.0.0-sources.jar" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7392-f2ace720
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w 'docs %{http_code} %{url_effective}\\n' https://repo1.maven.org/maven2/org/eclipse/angus/smtp/2.0.0/smtp-2.0.0-javadoc.jar" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7392-f2ace720
+diff --git a/metadata/org.eclipse.angus/smtp/index.json b/metadata/org.eclipse.angus/smtp/index.json
+index 1a2be58af60ba12017db2176236cf9885233c991..b25154945c4951e156eeb00c0540568b692f6c96
+--- a/metadata/org.eclipse.angus/smtp/index.json
++++ b/metadata/org.eclipse.angus/smtp/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/smtp/$version$/smtp-$version$-sources.jar",
++    "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
++    "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test/java/org/eclipse/angus/mail/smtp",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/smtp/$version$/smtp-$version$-javadoc.jar",
++    "description" : "Angus Mail SMTP provider is the Eclipse Angus implementation of the Jakarta Mail SMTP transport. It supplies the org.eclipse.angus.mail.smtp provider classes and service metadata used by JVM applications to send mail over SMTP and SMTPS through Jakarta Mail.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+ succeeded in 298ms:
+source 200 https://repo1.maven.org/maven2/org/eclipse/angus/smtp/2.0.0/smtp-2.0.0-sources.jar
+
+ succeeded in 295ms:
+docs 200 https://repo1.maven.org/maven2/org/eclipse/angus/smtp/2.0.0/smtp-2.0.0-javadoc.jar
+
+codex
+All rendered URLs return 200 and the JSON parses. I’m running the repository’s targeted metadata validation for `org.eclipse.angus:smtp:2.0.0` now.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.eclipse.angus:smtp:2.0.0 --stacktrace' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7392-f2ace720
+diff --git a/metadata/org.eclipse.angus/smtp/index.json b/metadata/org.eclipse.angus/smtp/index.json
+index 1a2be58af60ba12017db2176236cf9885233c991..b25154945c4951e156eeb00c0540568b692f6c96
+--- a/metadata/org.eclipse.angus/smtp/index.json
++++ b/metadata/org.eclipse.angus/smtp/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/smtp/$version$/smtp-$version$-sources.jar",
++    "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
++    "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test/java/org/eclipse/angus/mail/smtp",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/smtp/$version$/smtp-$version$-javadoc.jar",
++    "description" : "Angus Mail SMTP provider is the Eclipse Angus implementation of the Jakarta Mail SMTP transport. It supplies the org.eclipse.angus.mail.smtp provider classes and service metadata used by JVM applications to send mail over SMTP and SMTPS through Jakarta Mail.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+ exited 1 in 3152ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.eclipse.angus:smtp:2.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7392-f2ace720/metadata/org.eclipse.angus/smtp/2.0.0/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7392-f2ace720/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.eclipse.angus:smtp:2.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7392-f2ace720/metadata/org.eclipse.angus/smtp/2.0.0/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.eclipse.angus:smtp:2.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7392-f2ace720/metadata/org.eclipse.angus/smtp/2.0.0/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 2s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+The targeted `checkMetadataFiles` task fails because this entry has no `metadata/org.eclipse.angus/smtp/2.0.0/reachability-metadata.json` directory/file, which is outside the requested URL-field update. I’m checking the index-level validation and the final diff next so we know the edit itself is clean.
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.eclipse.angus/smtp/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7392-f2ace720
+ succeeded in 0ms:
+diff --git i/metadata/org.eclipse.angus/smtp/index.json w/metadata/org.eclipse.angus/smtp/index.json
+index 1a2be58af6..b25154945c 100644
+--- i/metadata/org.eclipse.angus/smtp/index.json
++++ w/metadata/org.eclipse.angus/smtp/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/smtp/$version$/smtp-$version$-sources.jar",
++    "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
++    "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test/java/org/eclipse/angus/mail/smtp",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/smtp/$version$/smtp-$version$-javadoc.jar",
++    "description" : "Angus Mail SMTP provider is the Eclipse Angus implementation of the Jakarta Mail SMTP transport. It supplies the org.eclipse.angus.mail.smtp provider classes and service metadata used by JVM applications to send mail over SMTP and SMTPS through Jakarta Mail.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+exec
+/usr/bin/bash -lc './gradlew validateIndexFiles --stacktrace' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7392-f2ace720
+diff --git a/metadata/org.eclipse.angus/smtp/index.json b/metadata/org.eclipse.angus/smtp/index.json
+index 1a2be58af60ba12017db2176236cf9885233c991..b25154945c4951e156eeb00c0540568b692f6c96
+--- a/metadata/org.eclipse.angus/smtp/index.json
++++ b/metadata/org.eclipse.angus/smtp/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/smtp/$version$/smtp-$version$-sources.jar",
++    "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
++    "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test/java/org/eclipse/angus/mail/smtp",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/smtp/$version$/smtp-$version$-javadoc.jar",
++    "description" : "Angus Mail SMTP provider is the Eclipse Angus implementation of the Jakarta Mail SMTP transport. It supplies the org.eclipse.angus.mail.smtp provider classes and service metadata used by JVM applications to send mail over SMTP and SMTPS through Jakarta Mail.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+ succeeded in 492ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :validateIndexFiles
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7392-f2ace720/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 495ms
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+Updated [metadata/org.eclipse.angus/smtp/index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7392-f2ace720/metadata/org.eclipse.angus/smtp/index.json:1) for metadata version `2.0.0`.
+
+Added:
+- `source-code-url`: Maven Central sources JAR template
+- `repository-url`: canonical `eclipse-ee4j/angus-mail` repository root
+- `test-code-url`: tag-specific GitHub test directory template
+- `documentation-url`: Maven Central javadoc JAR template
+- `description`: exactly two sentences
+- No `language` field, since this is not Kotlin, Groovy, or Scala-specific
+
+Verification:
+- `jq` JSON parse: passed
+- Rendered `2.0.0` source/docs/test URLs: all HTTP 200
+- `./gradlew validateIndexFiles --stacktrace`: passed
+- `./gradlew checkMetadataFiles -Pcoordinates=org.eclipse.angus:smtp:2.0.0 --stacktrace`: failed because `metadata/org.eclipse.angus/smtp/2.0.0/reachability-metadata.json` is missing, which is outside this URL-field update.
+diff --git a/metadata/org.eclipse.angus/smtp/index.json b/metadata/org.eclipse.angus/smtp/index.json
+index 1a2be58af60ba12017db2176236cf9885233c991..b25154945c4951e156eeb00c0540568b692f6c96
+--- a/metadata/org.eclipse.angus/smtp/index.json
++++ b/metadata/org.eclipse.angus/smtp/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/smtp/$version$/smtp-$version$-sources.jar",
++    "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
++    "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test/java/org/eclipse/angus/mail/smtp",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/smtp/$version$/smtp-$version$-javadoc.jar",
++    "description" : "Angus Mail SMTP provider is the Eclipse Angus implementation of the Jakarta Mail SMTP transport. It supplies the org.eclipse.angus.mail.smtp provider classes and service metadata used by JVM applications to send mail over SMTP and SMTPS through Jakarta Mail.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+tokens used
+51,893
+Updated [metadata/org.eclipse.angus/smtp/index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7392-f2ace720/metadata/org.eclipse.angus/smtp/index.json:1) for metadata version `2.0.0`.
+
+Added:
+- `source-code-url`: Maven Central sources JAR template
+- `repository-url`: canonical `eclipse-ee4j/angus-mail` repository root
+- `test-code-url`: tag-specific GitHub test directory template
+- `documentation-url`: Maven Central javadoc JAR template
+- `description`: exactly two sentences
+- No `language` field, since this is not Kotlin, Groovy, or Scala-specific
+
+Verification:
+- `jq` JSON parse: passed
+- Rendered `2.0.0` source/docs/test URLs: all HTTP 200
+- `./gradlew validateIndexFiles --stacktrace`: passed
+- `./gradlew checkMetadataFiles -Pcoordinates=org.eclipse.angus:smtp:2.0.0 --stacktrace`: failed because `metadata/org.eclipse.angus/smtp/2.0.0/reachability-metadata.json` is missing, which is outside this URL-field update.
+Ran agent for org.eclipse.angus:smtp:2.0.0 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7392-f2ace720/build/agent-url-discovery-logs/org.eclipse.angus-smtp-2.0.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7392-f2ace720/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 4s
+9 actionable tasks: 1 executed, 8 up-to-date
