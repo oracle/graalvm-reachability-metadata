@@ -132,6 +132,26 @@ public class Spring_cloud_aws_parameter_storeTest {
     }
 
     @Test
+    void acceptsDocumentExtensionValuesCaseInsensitively() {
+        String propertiesDocument = """
+                client.name=parameter-store
+                client.region=us-east-1
+                """;
+        RecordingSsmClient ssmClient = new RecordingSsmClient(
+                response(null, parameter("/config/case/application.properties", propertiesDocument)));
+        ParameterStorePropertySource propertySource = new ParameterStorePropertySource(
+                "/config/case?extension=PrOpErTiEs", ssmClient);
+
+        propertySource.init();
+
+        assertThat(propertySource.getPropertyNames()).containsExactlyInAnyOrder("client.name", "client.region");
+        assertThat(propertySource.getProperty("client.name")).isEqualTo("parameter-store");
+        assertThat(propertySource.getProperty("client.region")).isEqualTo("us-east-1");
+        assertThat(ssmClient.requests()).singleElement()
+                .satisfies(request -> assertRequest(request, "/config/case", null));
+    }
+
+    @Test
     void copyCreatesIndependentPropertySourceWithSameContextAndClient() {
         RecordingSsmClient ssmClient = new RecordingSsmClient(
                 response(null, parameter("/config/copy/source/value", "original")),
