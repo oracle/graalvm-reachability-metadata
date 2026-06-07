@@ -6,7 +6,7 @@
  */
 package org_codehaus_plexus.plexus_archiver;
 
-import org.codehaus.plexus.archiver.zip.ZipEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -14,11 +14,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ZipEntryTest {
 
     @Test
-    void setComprSizeUpdatesCompressedSizeThroughJdkZipEntryApi() throws Exception {
-        ZipEntry entry = new ZipEntry("compressed-entry.txt");
+    void setCompressedSizeUpdatesCompressedSizeThroughJdkZipEntryApi() throws Exception {
+        ZipArchiveEntry entry = new ZipArchiveEntry("compressed-entry.txt");
         long compressedSize = 23L;
 
-        entry.setComprSize(compressedSize);
+        entry.setCompressedSize(compressedSize);
 
         assertThat(entry.getCompressedSize()).isEqualTo(compressedSize);
     }

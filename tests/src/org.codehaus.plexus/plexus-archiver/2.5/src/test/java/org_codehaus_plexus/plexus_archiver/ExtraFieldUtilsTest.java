@@ -6,10 +6,10 @@
  */
 package org_codehaus_plexus.plexus_archiver;
 
-import org.codehaus.plexus.archiver.zip.AsiExtraField;
-import org.codehaus.plexus.archiver.zip.ExtraFieldUtils;
-import org.codehaus.plexus.archiver.zip.ZipExtraField;
-import org.codehaus.plexus.archiver.zip.ZipShort;
+import org.apache.commons.compress.archivers.zip.AsiExtraField;
+import org.apache.commons.compress.archivers.zip.ExtraFieldUtils;
+import org.apache.commons.compress.archivers.zip.ZipExtraField;
+import org.apache.commons.compress.archivers.zip.ZipShort;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
