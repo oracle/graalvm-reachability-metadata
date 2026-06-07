@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -95,6 +96,22 @@ public class Json_utilsTest {
         assertThat(fromBytes).isEqualTo(fromStream);
         assertThat(fromBytes.hashCode()).isEqualTo(fromStream.hashCode());
         assertThat(JsonNode.emptyObjectNode()).isEqualTo(JsonNode.parser().parse("{}"));
+    }
+
+    @Test
+    void parserDoesNotCloseCallerProvidedInputStreams() throws IOException {
+        CloseTrackingInputStream inputStream = new CloseTrackingInputStream("{\"status\":\"open\"}"
+                .getBytes(StandardCharsets.UTF_8));
+
+        try {
+            JsonNode parsed = JsonNodeParser.create().parse(inputStream);
+
+            assertThat(requiredField(parsed, "status").asString()).isEqualTo("open");
+            assertThat(inputStream.isClosed()).isFalse();
+        } finally {
+            inputStream.close();
+        }
+        assertThat(inputStream.isClosed()).isTrue();
     }
 
     @Test
@@ -231,6 +248,24 @@ public class Json_utilsTest {
 
     private static JsonNode requiredIndex(JsonNode node, int index) {
         return node.index(index).orElseThrow(() -> new AssertionError("Missing JSON index " + index));
+    }
+
+    private static final class CloseTrackingInputStream extends ByteArrayInputStream {
+        private boolean closed;
+
+        private CloseTrackingInputStream(byte[] bytes) {
+            super(bytes);
+        }
+
+        @Override
+        public void close() throws IOException {
+            closed = true;
+            super.close();
+        }
+
+        private boolean isClosed() {
+            return closed;
+        }
     }
 
     private static final class JsonTypeDescribingVisitor implements JsonNodeVisitor<String> {
