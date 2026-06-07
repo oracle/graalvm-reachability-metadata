@@ -1,0 +1,19 @@
+Handled the post-generation failure.
+
+Changes made:
+- Removed non-metadata-related failing generated tests:
+  - `BeanDefinitionLoaderTest.java`
+  - `ClearCachesApplicationListenerTest.java`
+  - `EnvironmentConverterTest.java`
+  - `ProcessInfoTest.java`
+  - `SpringApplicationAotProcessorTest.java`
+- Wrote report:
+  - `post-gen-interventions/org.springframework.boot_spring-boot_4.0.6.md`
+
+Validation:
+- Ran `./gradlew test -Pcoordinates=org.springframework.boot:spring-boot:4.0.6 --stacktrace`
+- Result: `BUILD SUCCESSFUL`, 15 native tests passed.
+
+Note:
+- The requested Codex log path was not present in this worktree, so the report documents that and bases classification on the Gradle failure output and generated test sources.
+- I did not modify metadata files.
