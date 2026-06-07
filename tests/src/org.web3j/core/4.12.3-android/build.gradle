@@ -4,11 +4,17 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+import org.gradle.api.Task
+import org.gradle.api.artifacts.ResolvedArtifact
+import org.gradle.api.file.DuplicatesStrategy
+import org.gradle.api.tasks.TaskProvider
+
 plugins {
     id "org.graalvm.internal.tck"
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+File web3jAndroidClassesDir = layout.buildDirectory.dir("web3j-android-classes").get().asFile
 
 repositories {
     maven {
@@ -19,8 +25,59 @@ repositories {
     }
 }
 
+configurations {
+    web3jAndroidAars {
+        transitive = false
+    }
+}
+
+TaskProvider<Task> extractWeb3jAndroidAars = tasks.register("extractWeb3jAndroidAars") {
+    inputs.files(configurations.web3jAndroidAars)
+    outputs.dir(web3jAndroidClassesDir)
+
+    doLast {
+        delete(web3jAndroidClassesDir)
+        mkdir(web3jAndroidClassesDir)
+        configurations.web3jAndroidAars.resolvedConfiguration.resolvedArtifacts.each {
+            ResolvedArtifact artifact ->
+            File artifactDirectory = new File(temporaryDir, artifact.name)
+            delete(artifactDirectory)
+            mkdir(artifactDirectory)
+            copy {
+                from zipTree(artifact.file)
+                include "classes.jar"
+                into artifactDirectory
+            }
+            copy {
+                from zipTree(new File(artifactDirectory, "classes.jar"))
+                into web3jAndroidClassesDir
+                duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+            }
+        }
+    }
+}
+
 dependencies {
-    testImplementation "org.web3j:core:$libraryVersion"
+    web3jAndroidAars "org.web3j:abi:$libraryVersion@aar"
+    web3jAndroidAars "org.web3j:core:$libraryVersion@aar"
+    web3jAndroidAars "org.web3j:crypto:$libraryVersion@aar"
+    web3jAndroidAars "org.web3j:rlp:$libraryVersion@aar"
+    web3jAndroidAars "org.web3j:tuples:$libraryVersion@aar"
+    web3jAndroidAars "org.web3j:utils:$libraryVersion@aar"
+
+    testImplementation files(web3jAndroidClassesDir).builtBy(extractWeb3jAndroidAars)
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.17.1'
+    testImplementation 'com.github.jnr:jnr-unixsocket:0.38.22'
+    testImplementation 'com.squareup.okhttp3:logging-interceptor:4.12.0'
+    testImplementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    testImplementation 'io.consensys.protocols:jc-kzg-4844:2.0.0'
+    testImplementation 'io.github.adraffy:ens-normalize:0.2.0'
+    testImplementation 'io.reactivex.rxjava2:rxjava:2.2.21'
+    testImplementation 'io.tmio:tuweni-bytes:2.4.2'
+    testImplementation 'io.tmio:tuweni-units:2.4.2'
+    testImplementation 'org.bouncycastle:bcprov-jdk18on:1.78.1'
+    testImplementation 'org.java-websocket:Java-WebSocket:1.5.6'
+    testImplementation 'org.slf4j:slf4j-api:2.0.13'
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
