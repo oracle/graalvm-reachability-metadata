@@ -61,6 +61,26 @@ public class Spring_cloud_aws_parameter_storeTest {
     }
 
     @Test
+    void addsPrefixAsIsToSlashTerminatedParameterPath() {
+        RecordingSsmClient ssmClient = new RecordingSsmClient(
+                response(null, parameter("/config/my-datasource/url", "jdbc:mysql://localhost:3306"),
+                        parameter("/config/my-datasource/username", "db-user")));
+        ParameterStorePropertySource propertySource = new ParameterStorePropertySource(
+                "/config/my-datasource/?prefix=spring.datasource.", ssmClient);
+
+        propertySource.init();
+
+        assertThat(propertySource.getPropertyNames()).containsExactly("spring.datasource.url",
+                "spring.datasource.username");
+        assertThat(propertySource.getProperty("spring.datasource.url")).isEqualTo("jdbc:mysql://localhost:3306");
+        assertThat(propertySource.getProperty("spring.datasource.username")).isEqualTo("db-user");
+        assertThat(propertySource.getProperty("url")).isNull();
+        assertThat(propertySource.getProperty("spring.datasourceurl")).isNull();
+        assertThat(ssmClient.requests()).singleElement()
+                .satisfies(request -> assertRequest(request, "/config/my-datasource/", null));
+    }
+
+    @Test
     void loadsJavaPropertiesDocumentFromParameterValue() {
         String propertiesDocument = """
                 service.name=orders
