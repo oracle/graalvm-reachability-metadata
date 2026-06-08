@@ -13,8 +13,13 @@ String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
     testImplementation "org.spockframework:spock-core:$libraryVersion"
-    testImplementation localGroovy()
+    testImplementation 'org.codehaus.groovy:groovy-all:2.4.21'
     testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+tasks.withType(GroovyCompile).configureEach {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 java {
