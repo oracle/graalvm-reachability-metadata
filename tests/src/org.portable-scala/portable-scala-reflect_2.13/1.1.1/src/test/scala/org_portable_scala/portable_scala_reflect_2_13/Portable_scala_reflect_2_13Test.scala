@@ -272,6 +272,27 @@ final class Portable_scala_reflect_2_13Test {
     assertTrue(Reflect.lookupInstantiatableClass(Names.DirectClass, classLoader).isDefined)
     assertTrue(Reflect.lookupLoadableModuleClass(Names.DirectModule, classLoader).isDefined)
   }
+
+  @Test
+  def singleArgumentLookupsUseTheEnclosingClassLoader(): Unit = {
+    val originalClassLoader: ClassLoader = Thread.currentThread().getContextClassLoader
+    val unavailableClassLoader: ClassLoader = new ClassLoader(null) {
+      override def loadClass(name: String, resolve: Boolean): Class[_] =
+        throw new ClassNotFoundException(name)
+    }
+
+    Thread.currentThread().setContextClassLoader(unavailableClassLoader)
+    try {
+      assertTrue(Reflect.lookupInstantiatableClass(Names.DirectClass).isDefined)
+      assertTrue(Reflect.lookupLoadableModuleClass(Names.DirectModule).isDefined)
+      assertTrue(Reflect.lookupInstantiatableClass(
+        Names.DirectClass, unavailableClassLoader).isEmpty)
+      assertTrue(Reflect.lookupLoadableModuleClass(
+        Names.DirectModule, unavailableClassLoader).isEmpty)
+    } finally {
+      Thread.currentThread().setContextClassLoader(originalClassLoader)
+    }
+  }
 }
 
 object PortableScalaReflectFixtures {
