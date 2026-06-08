@@ -49,8 +49,7 @@ public class MergedContextConfigurationRuntimeHintsTest {
                     .flatMap(Collection::stream)
                     .anyMatch(hint -> WEB_RESOURCE_PATTERN.equals(hint.getPattern())))
                     .isTrue();
-        }
-        catch (IllegalStateException ex) {
+        } catch (IllegalStateException ex) {
             assertThat(ex)
                     .hasMessage("Cannot perform AOT processing during AOT run-time execution");
         }
