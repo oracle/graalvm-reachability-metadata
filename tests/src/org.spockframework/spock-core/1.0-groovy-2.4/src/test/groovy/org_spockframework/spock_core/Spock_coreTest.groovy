@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test
 import org.junit.runner.JUnitCore
 import org.junit.runner.Result
 import org.junit.runner.notification.Failure
+import spock.lang.AutoCleanup
 import spock.lang.Narrative
 import spock.lang.Specification
 import spock.lang.Stepwise
@@ -21,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat
 public class Spock_coreTest {
     static final List<String> fixtureEvents = []
     static final List<String> observedDataResults = []
+    static final List<String> autoCleanupEvents = []
 
     @Test
     void runsFixtureLifecycleAndDataDrivenSpecifications() {
@@ -53,6 +55,18 @@ public class Spock_coreTest {
         Result result = JUnitCore.runClasses(ExceptionConditionSpec, CollectionConditionSpec)
 
         assertSuccessful(result)
+    }
+
+    @Test
+    void runsAutoCleanupSpecification() {
+        autoCleanupEvents.clear()
+
+        Result result = JUnitCore.runClasses(AutoCleanupSpec)
+
+        assertSuccessful(result)
+        assertThat(autoCleanupEvents).containsExactly(
+                'used managed-resource for request',
+                'released managed-resource')
     }
 
     private static void assertSuccessful(Result result) {
@@ -181,6 +195,16 @@ public class Spock_coreTest {
         }
     }
 
+    public static class AutoCleanupSpec extends Specification {
+        @AutoCleanup('release')
+        ManagedResource resource = new ManagedResource('managed-resource')
+
+        def 'auto cleanup invokes configured resource method after feature completion'() {
+            expect:
+            resource.useFor('request') == 'managed-resource:request'
+        }
+    }
+
     public static interface GreetingService {
         String greet(String name)
 
@@ -200,6 +224,23 @@ public class Spock_coreTest {
 
         BigDecimal total(List<String> items) {
             return items.collect { String item -> catalog.priceOf(item) }.sum() as BigDecimal
+        }
+    }
+
+    public static class ManagedResource {
+        private final String name
+
+        ManagedResource(String name) {
+            this.name = name
+        }
+
+        String useFor(String purpose) {
+            Spock_coreTest.autoCleanupEvents << "used ${name} for ${purpose}".toString()
+            return "${name}:${purpose}".toString()
+        }
+
+        void release() {
+            Spock_coreTest.autoCleanupEvents << "released ${name}".toString()
         }
     }
 }
