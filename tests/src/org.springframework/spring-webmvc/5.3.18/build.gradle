@@ -9,6 +9,27 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+File compiledTestClassesDir = layout.buildDirectory.dir("classes/java/test").get().asFile
+File processedTestResourcesDir = layout.buildDirectory.dir("resources/test").get().asFile
+File generatedNativeImageClassesMarkerFile = layout.buildDirectory
+        .dir("generated/predefined-native-image-classes")
+        .get()
+        .file("done.marker")
+        .asFile
+File generatedXsltTransletMarkerFile = layout.buildDirectory
+        .dir("generated/predefined-xslt-translet")
+        .get()
+        .file("done.marker")
+        .asFile
+String javaHome = System.getenv("JAVA_HOME")
+List<String> nativeAccessArgs = [
+        "--add-opens=java.base/java.lang=ALL-UNNAMED",
+        "--add-exports=java.xml/com.sun.org.apache.xalan.internal.xsltc=ALL-UNNAMED",
+        "--add-exports=java.xml/com.sun.org.apache.xalan.internal.xsltc.dom=ALL-UNNAMED",
+        "--add-exports=java.xml/com.sun.org.apache.xalan.internal.xsltc.runtime=ALL-UNNAMED",
+        "--add-exports=java.xml/com.sun.org.apache.xml.internal.dtm=ALL-UNNAMED",
+        "--add-exports=java.xml/com.sun.org.apache.xml.internal.serializer=ALL-UNNAMED"
+]
 
 dependencies {
     testImplementation "org.springframework:spring-webmvc:$libraryVersion"
@@ -17,7 +38,71 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.withType(Test).configureEach {
+    jvmArgs nativeAccessArgs
+}
+
+tasks.register("generatePredefinedXsltTranslet", JavaExec) { JavaExec task ->
+    task.dependsOn(tasks.named("testClasses"))
+    task.inputs.files(compiledTestClassesDir, processedTestResourcesDir, configurations.testRuntimeClasspath)
+    task.outputs.file(generatedXsltTransletMarkerFile)
+    task.classpath = files(compiledTestClassesDir, processedTestResourcesDir, configurations.testRuntimeClasspath)
+    task.mainClass = "org_springframework.spring_webmvc.PredefinedNativeImageClassesGenerator"
+    task.args(compiledTestClassesDir.absolutePath, compiledTestClassesDir.absolutePath, "translet")
+    task.jvmArgs(nativeAccessArgs)
+    task.executable = new File(javaHome, "bin/java").absolutePath
+    task.environment("JAVA_HOME", javaHome)
+    task.environment("GRAALVM_HOME", System.getenv("GRAALVM_HOME"))
+    task.doLast {
+        generatedXsltTransletMarkerFile.parentFile.mkdirs()
+        generatedXsltTransletMarkerFile.text = "generated"
+    }
+}
+
+tasks.register("generatePredefinedNativeImageClasses", JavaExec) { JavaExec task ->
+    task.dependsOn(tasks.named("testClasses"))
+    task.mustRunAfter(tasks.named("test"))
+    task.inputs.files(compiledTestClassesDir, processedTestResourcesDir, configurations.testRuntimeClasspath)
+    task.outputs.file(generatedNativeImageClassesMarkerFile)
+    task.classpath = files(compiledTestClassesDir, processedTestResourcesDir, configurations.testRuntimeClasspath)
+    task.mainClass = "org_springframework.spring_webmvc.PredefinedNativeImageClassesGenerator"
+    task.args(compiledTestClassesDir.absolutePath, compiledTestClassesDir.absolutePath, "all")
+    task.jvmArgs(nativeAccessArgs)
+    task.executable = new File(javaHome, "bin/java").absolutePath
+    task.environment("JAVA_HOME", javaHome)
+    task.environment("GRAALVM_HOME", System.getenv("GRAALVM_HOME"))
+    task.doLast {
+        generatedNativeImageClassesMarkerFile.parentFile.mkdirs()
+        generatedNativeImageClassesMarkerFile.text = "generated"
+    }
+}
+
+tasks.named("nativeTestCompile") {
+    dependsOn("generatePredefinedNativeImageClasses")
+}
+
+tasks.named("test") {
+    dependsOn("generatePredefinedXsltTranslet")
+    doFirst {
+        delete(fileTree(compiledTestClassesDir) {
+            include "org/springframework/cglib/**/*.class"
+            include "org_springframework/spring_webmvc/**/\$\$*.class"
+            include "org_springframework/spring_webmvc/*\$\$*.class"
+        })
+    }
+}
+
+tasks.named("nativeTraceImage") {
+    dependsOn("generatePredefinedNativeImageClasses")
+}
+
 graalvmNative {
+    binaries {
+        all {
+            buildArgs.addAll(nativeAccessArgs)
+        }
+    }
+
     agent {
         defaultMode = "conditional"
         modes {

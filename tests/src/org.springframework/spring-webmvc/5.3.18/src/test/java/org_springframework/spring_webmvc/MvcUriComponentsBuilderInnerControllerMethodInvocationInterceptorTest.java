@@ -40,10 +40,8 @@ public class MvcUriComponentsBuilderInnerControllerMethodInvocationInterceptorTe
             assertThat(ConstructorFallbackController.constructorInvocations).hasValue(1);
             assertThat(path).isEqualTo("/fallback/spring");
         }
-        catch (Error error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-                throw error;
-            }
+        catch (Throwable throwable) {
+            rethrowUnlessUnsupportedFeatureError(throwable);
         }
         finally {
             if (previousValue == null) {
@@ -66,5 +64,23 @@ public class MvcUriComponentsBuilderInnerControllerMethodInvocationInterceptorTe
         @RequestMapping("/{id}")
         public void handle(@PathVariable("id") String id) {
         }
+    }
+
+    private static void rethrowUnlessUnsupportedFeatureError(Throwable throwable) {
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof Error error && NativeImageSupport.isUnsupportedFeatureError(error)) {
+                return;
+            }
+            current = current.getCause();
+        }
+
+        if (throwable instanceof RuntimeException runtimeException) {
+            throw runtimeException;
+        }
+        if (throwable instanceof Error error) {
+            throw error;
+        }
+        throw new AssertionError(throwable);
     }
 }

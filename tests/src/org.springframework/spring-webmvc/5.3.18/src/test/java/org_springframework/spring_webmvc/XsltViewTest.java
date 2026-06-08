@@ -60,18 +60,9 @@ public class XsltViewTest {
     }
 
     public static class StaticStylesheetXsltView extends XsltView {
-        private static final String STYLESHEET = String.join("",
-                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
-                "<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">",
-                "<xsl:output method=\"text\" encoding=\"UTF-8\" media-type=\"text/plain\"/>",
-                "<xsl:param name=\"greeting\"/>",
-                "<xsl:template match=\"/\"><xsl:value-of select=\"$greeting\"/><xsl:text> </xsl:text>",
-                "<xsl:value-of select=\"/message/@name\"/></xsl:template>",
-                "</xsl:stylesheet>");
-
         @Override
         protected Source getStylesheetSource() {
-            return new StreamSource(new StringReader(STYLESHEET), "test-stylesheet");
+            return XsltViewNativeImageSupport.newStylesheetSource();
         }
     }
 
@@ -82,7 +73,9 @@ public class XsltViewTest {
 
         public RecordingTransformerFactory() {
             instances.incrementAndGet();
-            this.delegate = TransformerFactory.newInstance();
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            XsltViewNativeImageSupport.configureUseClasspath(transformerFactory);
+            this.delegate = transformerFactory;
         }
 
         static void reset() {

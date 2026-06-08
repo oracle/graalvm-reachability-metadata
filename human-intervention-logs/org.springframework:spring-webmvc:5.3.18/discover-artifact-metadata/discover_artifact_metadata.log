@@ -1,0 +1,664 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2196-a290238e/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2196-a290238e/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2196-a290238e
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ea58a-911f-7923-adc3-ddb3249e2f1f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.springframework:spring-webmvc:5.3.18
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "5.3.18" when "$version$" is replaced with "5.3.18".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2196-a290238e/build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "org.springframework:spring-webmvc:5.3.18".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "5.3.18".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact coordinates and available published artifacts first, then update the JSON with version-templated URLs. For Spring Framework, the main question is whether Maven Central has a useful test artifact; if it does, that takes priority over GitHub.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json && sed -n '1,160p' build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2196-a290238e
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2196-a290238e
+-rw-rw-r-- 1 vjovanov vjovanov 65 Jun  8 06:43 build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json
+{
+  "coordinates" : "org.springframework:spring-webmvc:5.3.18"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'org\\.springframework:spring-webmvc|spring-webmvc' metadata build/discovered-artifact-metadata docs -g '*.json' -g '*.md'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2196-a290238e
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json:2:  "coordinates" : "org.springframework:spring-webmvc:5.3.18"
+metadata/org.springframework.boot/spring-boot-starter-web/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework:spring-web:5.3.31, org.springframework:spring-webmvc:5.3.31, org.springframework.boot:spring-boot:2.7.18, org.springframework.boot:spring-boot-autoconfigure:2.7.18, and org.apache.tomcat.embed:tomcat-embed-core:9.0.83."
+metadata/library-and-framework-list.json:2660:    "artifact": "org.springframework:spring-webmvc",
+
+web search: 
+web search: Maven Central org.springframework spring-webmvc 5.3.18 sources jar test jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/springframework/spring-webmvc/5.3.18/
+web search: 
+web search: site:github.com/spring-projects/spring-framework/tree/v5.3.18 spring-webmvc src test java
+codex
+The Maven Central directory has the main jar, sources jar, and javadoc jar for `5.3.18`, but no published test-sources jar. I’m checking local metadata style now so the result matches what this repository expects for documentation and test URLs.
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata metadata | head -n 80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2196-a290238e
+ succeeded in 0ms:
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/jakarta.transaction/jakarta.transaction-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-sources.jar",
+metadata/jakarta.transaction/jakarta.transaction-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.transaction/jakarta.transaction-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-sources.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:7:    "test-code-url" : "https://download.eclipse.org/jakartaee/authentication/3.0/jakarta-authentication-tck-$version$.zip",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:7:    "test-code-url": "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient_caffeine/src/test/java",
+metadata/io.prometheus/simpleclient_caffeine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient/src/test",
+metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_agent",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:7:    "test-code-url" : "N/A",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_sdk/src/test",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_httpserver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_httpserver/$version$/simpleclient_httpserver-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_httpserver/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient_httpserver/src/test",
+metadata/io.prometheus/simpleclient_httpserver/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_httpserver/$version$/simpleclient_httpserver-$version$-javadoc.jar",
+metadata/com.spotify/completable-futures/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-sources.jar",
+metadata/com.spotify/completable-futures/index.json:7:    "test-code-url" : "https://github.com/spotify/completable-futures/tree/v$version$/src/test/java",
+metadata/com.spotify/completable-futures/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-javadoc.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-sources.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/xbean-reflect/src/test/",
+metadata/org.apache.xbean/xbean-reflect/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-javadoc.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:8:    "documentation-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/4.22/xbean-asm9-shaded-4.22-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:25:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:26:    "documentation-url" : "https://javadoc.io/doc/org.apache.xbean/xbean-asm9-shaded/4.22",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:37:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:39:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:40:    "documentation-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm7-shaded/$version$/xbean-asm7-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:8:    "documentation-url" : "N/A",
+metadata/org.threeten/threetenbp/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-sources.jar",
+metadata/org.threeten/threetenbp/index.json:7:    "test-code-url" : "https://github.com/ThreeTen/threetenbp/tree/v$version$/src/test",
+metadata/org.threeten/threetenbp/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-javadoc.jar",
+metadata/org.threeten/threeten-extra/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threeten-extra/$version$/threeten-extra-$version$-sources.jar",
+metadata/org.threeten/threeten-extra/index.json:7:    "test-code-url" : "https://github.com/ThreeTen/threeten-extra/tree/v$version$/src/test",
+metadata/org.threeten/threeten-extra/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/threeten/threeten-extra/$version$/threeten-extra-$version$-javadoc.jar",
+metadata/jdom/jdom/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jdom/jdom/$version$/jdom-$version$-sources.jar",
+metadata/jdom/jdom/index.json:7:    "test-code-url" : "https://www.jdom.org/dist/binary/archive/jdom-test-$version$.zip",
+metadata/jdom/jdom/index.json:8:    "documentation-url" : "https://www.jdom.org/dist/binary/archive/jdom-$version$.zip",
+metadata/tools.jackson.jaxrs/jackson-jaxrs-json-provider/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/tools/jackson/jaxrs/jackson-jaxrs-json-provider/$version$/jackson-jaxrs-json-provider-$version$-sources.jar",
+metadata/tools.jackson.jaxrs/jackson-jaxrs-json-provider/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-jaxrs-providers/tree/jackson-jaxrs-providers-$version$/json/src/test",
+metadata/tools.jackson.jaxrs/jackson-jaxrs-json-provider/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/tools/jackson/jaxrs/jackson-jaxrs-json-provider/$version$/jackson-jaxrs-json-provider-$version$-javadoc.jar",
+metadata/tools.jackson.jaxrs/jackson-jaxrs-base/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/tools/jackson/jaxrs/jackson-jaxrs-base/$version$/jackson-jaxrs-base-$version$-sources.jar",
+metadata/tools.jackson.jaxrs/jackson-jaxrs-base/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-jaxrs-providers/tree/jackson-jaxrs-providers-$version$/base/src/test",
+metadata/tools.jackson.jaxrs/jackson-jaxrs-base/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/tools/jackson/jaxrs/jackson-jaxrs-base/$version$/jackson-jaxrs-base-$version$-javadoc.jar",
+metadata/com.github.package-url/packageurl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/package-url/packageurl-java/$version$/packageurl-java-$version$-sources.jar",
+metadata/com.github.package-url/packageurl-java/index.json:7:    "test-code-url" : "https://github.com/package-url/packageurl-java/tree/packageurl-java-$version$/src/test",
+
+exec
+/usr/bin/bash -lc "rg -n 'repo1\\.maven\\.org|repo\\.maven\\.apache\\.org|javadoc\\.jar|sources\\.jar|src/test' build/discovered-artifact-metadata metadata | head -n 120" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2196-a290238e
+ succeeded in 0ms:
+metadata/net.postgis/postgis-geometry/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+metadata/net.postgis/postgis-geometry/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/postgis-geometry/src/test",
+metadata/net.postgis/postgis-geometry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+metadata/net.postgis/postgis-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+metadata/net.postgis/postgis-jdbc/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/jdbc/src/test",
+metadata/net.postgis/postgis-jdbc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+metadata/com.comcast/ip4s-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-sources.jar",
+metadata/com.comcast/ip4s-core_3/index.json:7:    "test-code-url" : "https://github.com/Comcast/ip4s/tree/v$version$/test-kit/shared/src/test",
+metadata/com.comcast/ip4s-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-sources.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-tests.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-binary/tree/jackson-dataformats-binary-$version$/cbor/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/toml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/yaml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test/java",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:23:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/$version$/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:38:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/$version$/stax-ex/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/io.circe/circe-jawn_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-jawn_3/$version$/circe-jawn_3-$version$-sources.jar",
+metadata/io.circe/circe-jawn_3/index.json:7:    "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/jawn/shared/src/test/scala/io/circe/jawn",
+metadata/io.circe/circe-jawn_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-jawn_3/$version$/circe-jawn_3-$version$-javadoc.jar",
+metadata/org.ehcache/ehcache/index.json:11:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-sources.jar",
+metadata/org.ehcache/ehcache/index.json:13:    "test-code-url": "https://github.com/ehcache/ehcache3/tree/v3.10.8/integration-test/src/test",
+metadata/org.ehcache/ehcache/index.json:14:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-javadoc.jar",
+metadata/org.yaml/snakeyaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:7:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml/src/snakeyaml-$version$/src/test/",
+metadata/org.yaml/snakeyaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-javadoc.jar",
+metadata/org.yaml/snakeyaml/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:21:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml/src/snakeyaml-$version$/src/test/",
+metadata/org.yaml/snakeyaml/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-javadoc.jar",
+metadata/io.circe/circe-parser_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-parser_3/$version$/circe-parser_3-$version$-sources.jar",
+metadata/io.circe/circe-parser_3/index.json:7:    "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/tests/shared/src/test/scala/io/circe/parser",
+metadata/io.circe/circe-parser_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-parser_3/$version$/circe-parser_3-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-contrib-http-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-http-util/$version$/opencensus-contrib-http-util-$version$-sources.jar",
+metadata/io.opencensus/opencensus-contrib-http-util/index.json:7:    "test-code-url" : "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/contrib/http_util/src/test/java",
+metadata/io.opencensus/opencensus-contrib-http-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-http-util/$version$/opencensus-contrib-http-util-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:8:    "test-code-url": "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/api/src/test",
+metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-javadoc.jar",
+metadata/io.circe/circe-numbers_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-numbers_3/$version$/circe-numbers_3-$version$-sources.jar",
+metadata/io.circe/circe-numbers_3/index.json:7:    "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/numbers/shared/src/test/scala/io/circe/numbers",
+metadata/io.circe/circe-numbers_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-numbers_3/$version$/circe-numbers_3-$version$-javadoc.jar",
+metadata/io.circe/circe-numbers_3/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-numbers_3/$version$/circe-numbers_3-$version$-sources.jar",
+metadata/io.circe/circe-numbers_3/index.json:25:    "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/numbers/shared/src/test/scala/io/circe/numbers",
+metadata/io.circe/circe-numbers_3/index.json:26:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-numbers_3/$version$/circe-numbers_3-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-sources.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:7:    "test-code-url" : "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/contrib/grpc_util/src/test",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:54:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:56:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:57:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:68:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:70:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:71:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:82:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:84:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:85:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:96:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:98:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:99:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:110:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:112:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:113:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/org.springframework.cloud/spring-cloud-function-context/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/$version$/spring-cloud-function-context-$version$-sources.jar",
+metadata/org.springframework.cloud/spring-cloud-function-context/index.json:7:    "test-code-url" : "https://github.com/spring-cloud/spring-cloud-function/tree/v$version$/spring-cloud-function-context/src/test",
+metadata/org.springframework.cloud/spring-cloud-function-context/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/$version$/spring-cloud-function-context-$version$-javadoc.jar",
+metadata/io.circe/circe-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-core_3/$version$/circe-core_3-$version$-sources.jar",
+metadata/io.circe/circe-core_3/index.json:7:    "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/tests/shared/src/test",
+metadata/io.circe/circe-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-core_3/$version$/circe-core_3-$version$-javadoc.jar",
+metadata/io.circe/circe-core_3/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-core_3/$version$/circe-core_3-$version$-sources.jar",
+metadata/io.circe/circe-core_3/index.json:25:    "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/tests/shared/src/test",
+metadata/io.circe/circe-core_3/index.json:26:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-core_3/$version$/circe-core_3-$version$-javadoc.jar",
+metadata/io.circe/circe-core_3/index.json:45:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-core_3/$version$/circe-core_3-$version$-sources.jar",
+metadata/io.circe/circe-core_3/index.json:47:    "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/tests/shared/src/test",
+metadata/io.circe/circe-core_3/index.json:48:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-core_3/$version$/circe-core_3-$version$-javadoc.jar",
+metadata/io.vertx/vertx-web-common/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-web-common/$version$/vertx-web-common-$version$-sources.jar",
+metadata/io.vertx/vertx-web-common/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-web-common/$version$/vertx-web-common-$version$-tests.jar",
+metadata/io.vertx/vertx-web-common/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-web-common/$version$/vertx-web-common-$version$-javadoc.jar",
+metadata/org.springframework.cloud/spring-cloud-stream-binder-rabbit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream-binder-rabbit/$version$/spring-cloud-stream-binder-rabbit-$version$-sources.jar",
+metadata/org.springframework.cloud/spring-cloud-stream-binder-rabbit/index.json:7:    "test-code-url" : "https://github.com/spring-cloud/spring-cloud-stream/tree/v$version$/binders/rabbit-binder/spring-cloud-stream-binder-rabbit/src/test",
+metadata/org.springframework.cloud/spring-cloud-stream-binder-rabbit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream-binder-rabbit/$version$/spring-cloud-stream-binder-rabbit-$version$-javadoc.jar",
+metadata/io.vertx/vertx-uri-template/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-uri-template/$version$/vertx-uri-template-$version$-sources.jar",
+metadata/io.vertx/vertx-uri-template/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-uri-template/$version$/vertx-uri-template-$version$-test-sources.jar",
+metadata/io.vertx/vertx-uri-template/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-uri-template/$version$/vertx-uri-template-$version$-javadoc.jar",
+metadata/org.springframework.cloud/spring-cloud-function-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-core/$version$/spring-cloud-function-core-$version$-sources.jar",
+metadata/org.springframework.cloud/spring-cloud-function-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-core/$version$/spring-cloud-function-core-$version$-javadoc.jar",
+metadata/io.swagger/swagger-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-sources.jar",
+metadata/io.swagger/swagger-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
+metadata/io.vertx/vertx-sql-client/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-sources.jar",
+metadata/io.vertx/vertx-sql-client/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-test-sources.jar",
+metadata/io.vertx/vertx-sql-client/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-javadoc.jar",
+metadata/io.vertx/vertx-sql-client/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-sources.jar",
+metadata/io.vertx/vertx-sql-client/index.json:35:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-test-sources.jar",
+metadata/io.vertx/vertx-sql-client/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-sql-client/$version$/vertx-sql-client-$version$-javadoc.jar",
+metadata/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream-binder-rabbit-core/$version$/spring-cloud-stream-binder-rabbit-core-$version$-sources.jar",
+metadata/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/index.json:7:    "test-code-url": "https://github.com/spring-cloud/spring-cloud-stream/tree/v$version$/binders/rabbit-binder/spring-cloud-stream-binder-rabbit-core/src/test",
+metadata/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream-binder-rabbit-core/$version$/spring-cloud-stream-binder-rabbit-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-web-client/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-web-client/$version$/vertx-web-client-$version$-sources.jar",
+metadata/io.vertx/vertx-web-client/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-web-client/$version$/vertx-web-client-$version$-test-sources.jar",
+metadata/io.vertx/vertx-web-client/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-web-client/$version$/vertx-web-client-$version$-javadoc.jar",
+metadata/io.vertx/vertx-web-client/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-web-client/$version$/vertx-web-client-$version$-sources.jar",
+metadata/io.vertx/vertx-web-client/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-web-client/$version$/vertx-web-client-$version$-test-sources.jar",
+metadata/io.vertx/vertx-web-client/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-web-client/$version$/vertx-web-client-$version$-javadoc.jar",
+metadata/org.springframework.cloud/spring-cloud-context/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-context/$version$/spring-cloud-context-$version$-sources.jar",
+metadata/org.springframework.cloud/spring-cloud-context/index.json:7:    "test-code-url" : "https://github.com/spring-cloud/spring-cloud-commons/tree/v$version$/spring-cloud-context/src/test",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/springframework/spring-webmvc/5.3.18/spring-webmvc-5.3.18.pom | sed -n '1,180p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2196-a290238e
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.springframework</groupId>
+  <artifactId>spring-webmvc</artifactId>
+  <version>5.3.18</version>
+  <name>Spring Web MVC</name>
+  <description>Spring Web MVC</description>
+  <url>https://github.com/spring-projects/spring-framework</url>
+  <organization>
+    <name>Spring IO</name>
+    <url>https://spring.io/projects/spring-framework</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>jhoeller</id>
+      <name>Juergen Hoeller</name>
+      <email>jhoeller@pivotal.io</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/spring-projects/spring-framework</connection>
+    <developerConnection>scm:git:git://github.com/spring-projects/spring-framework</developerConnection>
+    <url>https://github.com/spring-projects/spring-framework</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/spring-projects/spring-framework/issues</url>
+  </issueManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
+      <version>5.3.18</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>5.3.18</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>5.3.18</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>5.3.18</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-expression</artifactId>
+      <version>5.3.18</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+      <version>5.3.18</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/springframework/spring-webmvc/5.3.18/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2196-a290238e
+ succeeded in 203ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/springframework/spring-webmvc/5.3.18</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/springframework/spring-webmvc/5.3.18</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="spring-webmvc-5.3.18-javadoc.jar" title="spring-webmvc-5.3.18-javadoc.jar">spring-webmvc-5.3.18-javadoc.jar</a>                  2022-03-31 09:40   2583101      
+<a href="spring-webmvc-5.3.18-javadoc.jar.asc" title="spring-webmvc-5.3.18-javadoc.jar.asc">spring-webmvc-5.3.18-javadoc.jar.asc</a>              2022-03-31 09:40       488      
+<a href="spring-webmvc-5.3.18-javadoc.jar.md5" title="spring-webmvc-5.3.18-javadoc.jar.md5">spring-webmvc-5.3.18-javadoc.jar.md5</a>              2022-03-31 09:40        32      
+<a href="spring-webmvc-5.3.18-javadoc.jar.sha1" title="spring-webmvc-5.3.18-javadoc.jar.sha1">spring-webmvc-5.3.18-javadoc.jar.sha1</a>             2022-03-31 09:40        40      
+<a href="spring-webmvc-5.3.18-sources.jar" title="spring-webmvc-5.3.18-sources.jar">spring-webmvc-5.3.18-sources.jar</a>                  2022-03-31 09:40    837535      
+<a href="spring-webmvc-5.3.18-sources.jar.asc" title="spring-webmvc-5.3.18-sources.jar.asc">spring-webmvc-5.3.18-sources.jar.asc</a>              2022-03-31 09:40       488      
+<a href="spring-webmvc-5.3.18-sources.jar.md5" title="spring-webmvc-5.3.18-sources.jar.md5">spring-webmvc-5.3.18-sources.jar.md5</a>              2022-03-31 09:40        32      
+<a href="spring-webmvc-5.3.18-sources.jar.sha1" title="spring-webmvc-5.3.18-sources.jar.sha1">spring-webmvc-5.3.18-sources.jar.sha1</a>             2022-03-31 09:40        40      
+<a href="spring-webmvc-5.3.18.jar" title="spring-webmvc-5.3.18.jar">spring-webmvc-5.3.18.jar</a>                          2022-03-31 09:40   1028503      
+<a href="spring-webmvc-5.3.18.jar.asc" title="spring-webmvc-5.3.18.jar.asc">spring-webmvc-5.3.18.jar.asc</a>                      2022-03-31 09:40       488      
+<a href="spring-webmvc-5.3.18.jar.md5" title="spring-webmvc-5.3.18.jar.md5">spring-webmvc-5.3.18.jar.md5</a>                      2022-03-31 09:40        32      
+<a href="spring-webmvc-5.3.18.jar.sha1" title="spring-webmvc-5.3.18.jar.sha1">spring-webmvc-5.3.18.jar.sha1</a>                     2022-03-31 09:40        40      
+<a href="spring-webmvc-5.3.18.module" title="spring-webmvc-5.3.18.module">spring-webmvc-5.3.18.module</a>                       2022-03-31 09:40     17299      
+<a href="spring-webmvc-5.3.18.module.asc" title="spring-webmvc-5.3.18.module.asc">spring-webmvc-5.3.18.module.asc</a>                   2022-03-31 09:40       488      
+<a href="spring-webmvc-5.3.18.module.md5" title="spring-webmvc-5.3.18.module.md5">spring-webmvc-5.3.18.module.md5</a>                   2022-03-31 09:40        32      
+<a href="spring-webmvc-5.3.18.module.sha1" title="spring-webmvc-5.3.18.module.sha1">spring-webmvc-5.3.18.module.sha1</a>                  2022-03-31 09:40        40      
+<a href="spring-webmvc-5.3.18.pom" title="spring-webmvc-5.3.18.pom">spring-webmvc-5.3.18.pom</a>                          2022-03-31 09:40      2954      
+<a href="spring-webmvc-5.3.18.pom.asc" title="spring-webmvc-5.3.18.pom.asc">spring-webmvc-5.3.18.pom.asc</a>                      2022-03-31 09:40       488      
+<a href="spring-webmvc-5.3.18.pom.md5" title="spring-webmvc-5.3.18.pom.md5">spring-webmvc-5.3.18.pom.md5</a>                      2022-03-31 09:40        32      
+<a href="spring-webmvc-5.3.18.pom.sha1" title="spring-webmvc-5.3.18.pom.sha1">spring-webmvc-5.3.18.pom.sha1</a>                     2022-03-31 09:40        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/org/springframework/spring-webmvc/5.3.18/spring-webmvc-5.3.18-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2196-a290238e
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 08 Jun 2026 04:43:35 GMT
+content-type: application/java-archive
+content-length: 837535
+cf-ray: a0853c8ddd1bc8a4-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1976463
+etag: "c1aa532eb490b83735921ddac44db563"
+last-modified: Thu, 31 Mar 2022 09:40:21 GMT
+x-checksum-md5: c1aa532eb490b83735921ddac44db563
+x-checksum-sha1: da162c144e68218cc632dfc63dbaa55ab7715e45
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/org/springframework/spring-webmvc/5.3.18/spring-webmvc-5.3.18-javadoc.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2196-a290238e
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 08 Jun 2026 04:43:36 GMT
+content-type: application/java-archive
+content-length: 2583101
+cf-ray: a0853c8e8dbbbbf3-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 436876
+etag: "4177cdb633ea170308b0c45598c6bf7c"
+last-modified: Thu, 31 Mar 2022 09:40:22 GMT
+x-checksum-md5: 4177cdb633ea170308b0c45598c6bf7c
+x-checksum-sha1: b4af7a33dd6fd91e7cb069de379bbdaf410cdd82
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/spring-projects/spring-framework/tree/v5.3.18/spring-webmvc/src/test | sed -n '1,12p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2196-a290238e
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/spring-projects/spring-framework | sed -n '1,12p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2196-a290238e
+exec
+/usr/bin/bash -lc 'for name in tests test-sources; do url="https://repo.maven.apache.org/maven2/org/springframework/spring-webmvc/5.3.18/spring-webmvc-5.3.18-${name}.jar"; code=$(curl -s -o /dev/null -w '"'%{http_code}' \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2196-a290238e
+ succeeded in 479ms:
+HTTP/2 200 
+date: Mon, 08 Jun 2026 04:43:36 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"f05958fde21fa7ed3759d425ddffc22b"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+ succeeded in 544ms:
+404 https://repo.maven.apache.org/maven2/org/springframework/spring-webmvc/5.3.18/spring-webmvc-5.3.18-tests.jar
+404 https://repo.maven.apache.org/maven2/org/springframework/spring-webmvc/5.3.18/spring-webmvc-5.3.18-test-sources.jar
+
+ succeeded in 556ms:
+HTTP/2 200 
+date: Mon, 08 Jun 2026 04:43:36 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"85b1cfbb6cf1d2570018d0ec7ef4c348"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+codex
+I found the repository’s established pattern: source and Javadoc URLs use Maven Central jars when present, while test URLs fall back to the tagged repository path when no tests jar/test-sources jar is published. I’m updating only the requested JSON keys and leaving language/native-image flags absent because `spring-webmvc` is a normal JVM Spring Framework Java artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2196-a290238e/build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json
+diff --git a/build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json b/build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json
+index d1e3bb27a24e65df852a7147fb323955ac574e44..37d4fc0bcb4d58c65b2d2aa7ddfd37a87697196b
+--- a/build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json
++++ b/build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework:spring-webmvc:5.3.18"
++  "coordinates" : "org.springframework:spring-webmvc:5.3.18",
++  "repository-url" : "https://github.com/spring-projects/spring-framework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-webmvc/$version$/spring-webmvc-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-webmvc/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-webmvc/$version$/spring-webmvc-$version$-javadoc.jar",
++  "description" : "Spring Web MVC is the servlet-based web framework module in Spring Framework for building request-driven web applications and REST APIs. It provides DispatcherServlet-based request routing, controllers, view resolution, data binding, validation, and integration with Spring's application context."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json b/build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json
+index d1e3bb27a24e65df852a7147fb323955ac574e44..37d4fc0bcb4d58c65b2d2aa7ddfd37a87697196b
+--- a/build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json
++++ b/build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework:spring-webmvc:5.3.18"
++  "coordinates" : "org.springframework:spring-webmvc:5.3.18",
++  "repository-url" : "https://github.com/spring-projects/spring-framework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-webmvc/$version$/spring-webmvc-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-webmvc/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-webmvc/$version$/spring-webmvc-$version$-javadoc.jar",
++  "description" : "Spring Web MVC is the servlet-based web framework module in Spring Framework for building request-driven web applications and REST APIs. It provides DispatcherServlet-based request routing, controllers, view resolution, data binding, validation, and integration with Spring's application context."
+ }
+
+codex
+The file is patched. I’m doing a quick JSON parse and URL substitution check for the three versioned URLs so the final file does not rely on visual inspection alone.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2196-a290238e
+ succeeded in 0ms:
+{
+  "coordinates": "org.springframework:spring-webmvc:5.3.18",
+  "repository-url": "https://github.com/spring-projects/spring-framework",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/springframework/spring-webmvc/$version$/spring-webmvc-$version$-sources.jar",
+  "test-code-url": "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-webmvc/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/springframework/spring-webmvc/$version$/spring-webmvc-$version$-javadoc.jar",
+  "description": "Spring Web MVC is the servlet-based web framework module in Spring Framework for building request-driven web applications and REST APIs. It provides DispatcherServlet-based request routing, controllers, view resolution, data binding, validation, and integration with Spring's application context."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2196-a290238e
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  'https://repo.maven.apache.org/maven2/org/springframework/spring-webmvc/5.3.18/spring-webmvc-5.3.18-sources.jar' \\
+  'https://github.com/spring-projects/spring-framework/tree/v5.3.18/spring-webmvc/src/test' \\
+  'https://repo.maven.apache.org/maven2/org/springframework/spring-webmvc/5.3.18/spring-webmvc-5.3.18-javadoc.jar'; do
+  code="'$(curl -s -o /dev/null -w '"'%{http_code}' \""'$url")
+  printf '"'%s %s\\n' \""'$code" "$url"
+done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2196-a290238e
+diff --git a/build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json b/build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json
+index d1e3bb27a24e65df852a7147fb323955ac574e44..37d4fc0bcb4d58c65b2d2aa7ddfd37a87697196b
+--- a/build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json
++++ b/build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework:spring-webmvc:5.3.18"
++  "coordinates" : "org.springframework:spring-webmvc:5.3.18",
++  "repository-url" : "https://github.com/spring-projects/spring-framework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-webmvc/$version$/spring-webmvc-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-webmvc/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-webmvc/$version$/spring-webmvc-$version$-javadoc.jar",
++  "description" : "Spring Web MVC is the servlet-based web framework module in Spring Framework for building request-driven web applications and REST APIs. It provides DispatcherServlet-based request routing, controllers, view resolution, data binding, validation, and integration with Spring's application context."
+ }
+
+ succeeded in 721ms:
+200 https://repo.maven.apache.org/maven2/org/springframework/spring-webmvc/5.3.18/spring-webmvc-5.3.18-sources.jar
+200 https://github.com/spring-projects/spring-framework/tree/v5.3.18/spring-webmvc/src/test
+200 https://repo.maven.apache.org/maven2/org/springframework/spring-webmvc/5.3.18/spring-webmvc-5.3.18-javadoc.jar
+
+codex
+The JSON parses cleanly and each templated URL resolves with `5.3.18` substituted. I’m checking the file status once because this lives under `build/`, which can be ignored in this repository.
+exec
+/usr/bin/bash -lc "sed -n '1,80p' build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2196-a290238e
+ succeeded in 0ms:
+{
+  "coordinates" : "org.springframework:spring-webmvc:5.3.18",
+  "repository-url" : "https://github.com/spring-projects/spring-framework",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-webmvc/$version$/spring-webmvc-$version$-sources.jar",
+  "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-webmvc/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-webmvc/$version$/spring-webmvc-$version$-javadoc.jar",
+  "description" : "Spring Web MVC is the servlet-based web framework module in Spring Framework for building request-driven web applications and REST APIs. It provides DispatcherServlet-based request routing, controllers, view resolution, data binding, validation, and integration with Spring's application context."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored=matching build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2196-a290238e
+diff --git a/build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json b/build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json
+index d1e3bb27a24e65df852a7147fb323955ac574e44..37d4fc0bcb4d58c65b2d2aa7ddfd37a87697196b
+--- a/build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json
++++ b/build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework:spring-webmvc:5.3.18"
++  "coordinates" : "org.springframework:spring-webmvc:5.3.18",
++  "repository-url" : "https://github.com/spring-projects/spring-framework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-webmvc/$version$/spring-webmvc-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-webmvc/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-webmvc/$version$/spring-webmvc-$version$-javadoc.jar",
++  "description" : "Spring Web MVC is the servlet-based web framework module in Spring Framework for building request-driven web applications and REST APIs. It provides DispatcherServlet-based request routing, controllers, view resolution, data binding, validation, and integration with Spring's application context."
+ }
+
+ succeeded in 324ms:
+!! build/
+
+codex
+Updated [org.springframework-spring-webmvc-5.3.18.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2196-a290238e/build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json).
+
+I left `language` absent and did not set `not-for-native-image` because `spring-webmvc` is a JVM Spring Framework artifact. Verified the JSON parses with `jq`, and the rendered source, test, and documentation URLs all return HTTP 200 for `5.3.18`. Note: `build/` is git-ignored in this worktree.
+diff --git a/build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json b/build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json
+index d1e3bb27a24e65df852a7147fb323955ac574e44..37d4fc0bcb4d58c65b2d2aa7ddfd37a87697196b
+--- a/build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json
++++ b/build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework:spring-webmvc:5.3.18"
++  "coordinates" : "org.springframework:spring-webmvc:5.3.18",
++  "repository-url" : "https://github.com/spring-projects/spring-framework",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-webmvc/$version$/spring-webmvc-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-webmvc/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-webmvc/$version$/spring-webmvc-$version$-javadoc.jar",
++  "description" : "Spring Web MVC is the servlet-based web framework module in Spring Framework for building request-driven web applications and REST APIs. It provides DispatcherServlet-based request routing, controllers, view resolution, data binding, validation, and integration with Spring's application context."
+ }
+
+tokens used
+46,160
+Updated [org.springframework-spring-webmvc-5.3.18.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2196-a290238e/build/discovered-artifact-metadata/org.springframework-spring-webmvc-5.3.18.json).
+
+I left `language` absent and did not set `not-for-native-image` because `spring-webmvc` is a JVM Spring Framework artifact. Verified the JSON parses with `jq`, and the rendered source, test, and documentation URLs all return HTTP 200 for `5.3.18`. Note: `build/` is git-ignored in this worktree.
+Ran agent for org.springframework:spring-webmvc:5.3.18 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2196-a290238e/build/agent-artifact-discovery-logs/org.springframework-spring-webmvc-5.3.18.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2196-a290238e/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 24s
+9 actionable tasks: 9 executed
