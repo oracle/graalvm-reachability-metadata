@@ -7,7 +7,7 @@
 package org_apache_maven_plugins.maven_source_plugin;
 
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugins.source.HelpMojo;
+import org.apache.maven.plugins.maven_source_plugin.HelpMojo;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
