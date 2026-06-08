@@ -1,0 +1,1560 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ea315-ddb3-7752-9fe1-37c29f8a9b04
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.bouncycastle:bcprov-jdk18on:1.77
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "1.77" when "$version$" is replaced with "1.77".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "org.bouncycastle:bcprov-jdk18on:1.77".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.77".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the Maven artifacts first, then fall back to the upstream repository tag for anything Maven does not publish. After that I’ll update the JSON in place.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,160p' build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a
+{
+  "coordinates" : "org.bouncycastle:bcprov-jdk18on:1.77"
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/bcprov-jdk18on-1.77.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.bouncycastle</groupId>
+  <artifactId>bcprov-jdk18on</artifactId>
+  <packaging>jar</packaging>
+  <name>Bouncy Castle Provider</name>
+  <version>1.77</version>
+  <description>The Bouncy Castle Crypto package is a Java implementation of cryptographic algorithms. This jar contains JCE provider and lightweight API for the Bouncy Castle Cryptography APIs for JDK 1.8 and up.</description>
+  <url>https://www.bouncycastle.org/java.html</url>
+  <licenses>
+    <license>
+      <name>Bouncy Castle Licence</name>
+      <url>https://www.bouncycastle.org/licence.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://github.com/bcgit/bc-java</url>
+  </scm>
+  <issueManagement>
+     <system>GitHub</system>
+     <url>https://github.com/bcgit/bc-java/issues</url>
+  </issueManagement>
+  <developers>
+    <developer>
+      <id>feedback-crypto</id>
+      <name>The Legion of the Bouncy Castle Inc.</name>
+      <email>feedback-crypto@bouncycastle.org</email>
+    </developer>
+  </developers>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/bouncycastle/bcprov-jdk18on/1.77</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/bouncycastle/bcprov-jdk18on/1.77</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="bcprov-jdk18on-1.77-javadoc.jar" title="bcprov-jdk18on-1.77-javadoc.jar">bcprov-jdk18on-1.77-javadoc.jar</a>                   2023-11-15 04:36  11670607      
+<a href="bcprov-jdk18on-1.77-javadoc.jar.asc" title="bcprov-jdk18on-1.77-javadoc.jar.asc">bcprov-jdk18on-1.77-javadoc.jar.asc</a>               2023-11-15 04:36       659      
+<a href="bcprov-jdk18on-1.77-javadoc.jar.asc.md5" title="bcprov-jdk18on-1.77-javadoc.jar.asc.md5">bcprov-jdk18on-1.77-javadoc.jar.asc.md5</a>           2023-11-15 04:36        32      
+<a href="bcprov-jdk18on-1.77-javadoc.jar.asc.sha1" title="bcprov-jdk18on-1.77-javadoc.jar.asc.sha1">bcprov-jdk18on-1.77-javadoc.jar.asc.sha1</a>          2023-11-15 04:36        40      
+<a href="bcprov-jdk18on-1.77-javadoc.jar.asc.sha256" title="bcprov-jdk18on-1.77-javadoc.jar.asc.sha256">bcprov-jdk18on-1.77-javadoc.jar.asc.sha256</a>        2023-11-15 04:36        64      
+<a href="bcprov-jdk18on-1.77-javadoc.jar.asc.sha512" title="bcprov-jdk18on-1.77-javadoc.jar.asc.sha512">bcprov-jdk18on-1.77-javadoc.jar.asc.sha512</a>        2023-11-15 04:36       128      
+<a href="bcprov-jdk18on-1.77-javadoc.jar.md5" title="bcprov-jdk18on-1.77-javadoc.jar.md5">bcprov-jdk18on-1.77-javadoc.jar.md5</a>               2023-11-15 04:36        32      
+<a href="bcprov-jdk18on-1.77-javadoc.jar.sha1" title="bcprov-jdk18on-1.77-javadoc.jar.sha1">bcprov-jdk18on-1.77-javadoc.jar.sha1</a>              2023-11-15 04:36        40      
+<a href="bcprov-jdk18on-1.77-javadoc.jar.sha256" title="bcprov-jdk18on-1.77-javadoc.jar.sha256">bcprov-jdk18on-1.77-javadoc.jar.sha256</a>            2023-11-15 04:36        64      
+<a href="bcprov-jdk18on-1.77-javadoc.jar.sha512" title="bcprov-jdk18on-1.77-javadoc.jar.sha512">bcprov-jdk18on-1.77-javadoc.jar.sha512</a>            2023-11-15 04:36       128      
+<a href="bcprov-jdk18on-1.77-sources.jar" title="bcprov-jdk18on-1.77-sources.jar">bcprov-jdk18on-1.77-sources.jar</a>                   2023-11-15 04:36   4847793      
+<a href="bcprov-jdk18on-1.77-sources.jar.asc" title="bcprov-jdk18on-1.77-sources.jar.asc">bcprov-jdk18on-1.77-sources.jar.asc</a>               2023-11-15 04:36       659      
+<a href="bcprov-jdk18on-1.77-sources.jar.asc.md5" title="bcprov-jdk18on-1.77-sources.jar.asc.md5">bcprov-jdk18on-1.77-sources.jar.asc.md5</a>           2023-11-15 04:36        32      
+<a href="bcprov-jdk18on-1.77-sources.jar.asc.sha1" title="bcprov-jdk18on-1.77-sources.jar.asc.sha1">bcprov-jdk18on-1.77-sources.jar.asc.sha1</a>          2023-11-15 04:36        40      
+<a href="bcprov-jdk18on-1.77-sources.jar.asc.sha256" title="bcprov-jdk18on-1.77-sources.jar.asc.sha256">bcprov-jdk18on-1.77-sources.jar.asc.sha256</a>        2023-11-15 04:36        64      
+<a href="bcprov-jdk18on-1.77-sources.jar.asc.sha512" title="bcprov-jdk18on-1.77-sources.jar.asc.sha512">bcprov-jdk18on-1.77-sources.jar.asc.sha512</a>        2023-11-15 04:36       128      
+<a href="bcprov-jdk18on-1.77-sources.jar.md5" title="bcprov-jdk18on-1.77-sources.jar.md5">bcprov-jdk18on-1.77-sources.jar.md5</a>               2023-11-15 04:36        32      
+<a href="bcprov-jdk18on-1.77-sources.jar.sha1" title="bcprov-jdk18on-1.77-sources.jar.sha1">bcprov-jdk18on-1.77-sources.jar.sha1</a>              2023-11-15 04:36        40      
+<a href="bcprov-jdk18on-1.77-sources.jar.sha256" title="bcprov-jdk18on-1.77-sources.jar.sha256">bcprov-jdk18on-1.77-sources.jar.sha256</a>            2023-11-15 04:36        64      
+<a href="bcprov-jdk18on-1.77-sources.jar.sha512" title="bcprov-jdk18on-1.77-sources.jar.sha512">bcprov-jdk18on-1.77-sources.jar.sha512</a>            2023-11-15 04:36       128      
+<a href="bcprov-jdk18on-1.77.jar" title="bcprov-jdk18on-1.77.jar">bcprov-jdk18on-1.77.jar</a>                           2023-11-15 04:36   8372360      
+<a href="bcprov-jdk18on-1.77.jar.asc" title="bcprov-jdk18on-1.77.jar.asc">bcprov-jdk18on-1.77.jar.asc</a>                       2023-11-15 04:36       659      
+<a href="bcprov-jdk18on-1.77.jar.asc.md5" title="bcprov-jdk18on-1.77.jar.asc.md5">bcprov-jdk18on-1.77.jar.asc.md5</a>                   2023-11-15 04:36        32      
+<a href="bcprov-jdk18on-1.77.jar.asc.sha1" title="bcprov-jdk18on-1.77.jar.asc.sha1">bcprov-jdk18on-1.77.jar.asc.sha1</a>                  2023-11-15 04:36        40      
+<a href="bcprov-jdk18on-1.77.jar.asc.sha256" title="bcprov-jdk18on-1.77.jar.asc.sha256">bcprov-jdk18on-1.77.jar.asc.sha256</a>                2023-11-15 04:36        64      
+<a href="bcprov-jdk18on-1.77.jar.asc.sha512" title="bcprov-jdk18on-1.77.jar.asc.sha512">bcprov-jdk18on-1.77.jar.asc.sha512</a>                2023-11-15 04:36       128      
+<a href="bcprov-jdk18on-1.77.jar.md5" title="bcprov-jdk18on-1.77.jar.md5">bcprov-jdk18on-1.77.jar.md5</a>                       2023-11-15 04:36        32      
+<a href="bcprov-jdk18on-1.77.jar.sha1" title="bcprov-jdk18on-1.77.jar.sha1">bcprov-jdk18on-1.77.jar.sha1</a>                      2023-11-15 04:36        40      
+<a href="bcprov-jdk18on-1.77.jar.sha256" title="bcprov-jdk18on-1.77.jar.sha256">bcprov-jdk18on-1.77.jar.sha256</a>                    2023-11-15 04:36        64      
+<a href="bcprov-jdk18on-1.77.jar.sha512" title="bcprov-jdk18on-1.77.jar.sha512">bcprov-jdk18on-1.77.jar.sha512</a>                    2023-11-15 04:36       128      
+<a href="bcprov-jdk18on-1.77.pom" title="bcprov-jdk18on-1.77.pom">bcprov-jdk18on-1.77.pom</a>                           2023-11-15 04:36      1141      
+<a href="bcprov-jdk18on-1.77.pom.asc" title="bcprov-jdk18on-1.77.pom.asc">bcprov-jdk18on-1.77.pom.asc</a>                       2023-11-15 04:36       659      
+<a href="bcprov-jdk18on-1.77.pom.asc.md5" title="bcprov-jdk18on-1.77.pom.asc.md5">bcprov-jdk18on-1.77.pom.asc.md5</a>                   2023-11-15 04:36        32      
+<a href="bcprov-jdk18on-1.77.pom.asc.sha1" title="bcprov-jdk18on-1.77.pom.asc.sha1">bcprov-jdk18on-1.77.pom.asc.sha1</a>                  2023-11-15 04:36        40      
+<a href="bcprov-jdk18on-1.77.pom.asc.sha256" title="bcprov-jdk18on-1.77.pom.asc.sha256">bcprov-jdk18on-1.77.pom.asc.sha256</a>                2023-11-15 04:36        64      
+<a href="bcprov-jdk18on-1.77.pom.asc.sha512" title="bcprov-jdk18on-1.77.pom.asc.sha512">bcprov-jdk18on-1.77.pom.asc.sha512</a>                2023-11-15 04:36       128      
+<a href="bcprov-jdk18on-1.77.pom.md5" title="bcprov-jdk18on-1.77.pom.md5">bcprov-jdk18on-1.77.pom.md5</a>                       2023-11-15 04:36        32      
+<a href="bcprov-jdk18on-1.77.pom.sha1" title="bcprov-jdk18on-1.77.pom.sha1">bcprov-jdk18on-1.77.pom.sha1</a>                      2023-11-15 04:36        40      
+<a href="bcprov-jdk18on-1.77.pom.sha256" title="bcprov-jdk18on-1.77.pom.sha256">bcprov-jdk18on-1.77.pom.sha256</a>                    2023-11-15 04:36        64      
+<a href="bcprov-jdk18on-1.77.pom.sha512" title="bcprov-jdk18on-1.77.pom.sha512">bcprov-jdk18on-1.77.pom.sha512</a>                    2023-11-15 04:36       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: github bcgit bc-java r1rv77 bcprov-jdk18on tests
+codex
+Maven Central publishes the normal JAR, sources JAR, and Javadoc JAR for `1.77`, but there is no test-sources artifact in that directory. I’m checking the upstream tag now so the test URL points at the matching release tree.
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/bcprov-jdk18on-1.77-test-sources.jar || true' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/bcgit/bc-java.git 'r1rv77*'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/bcgit/bc-java/contents/prov/src/test?ref=r1rv77' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/bcgit/bc-java/contents?ref=r1rv77' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a
+ succeeded in 130ms:
+[
+  {
+    "name": "java",
+    "path": "prov/src/test/java",
+    "sha": "179aea4caf77aa41b872749911aa34ab16e91295",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/prov/src/test/java?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test/java",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/179aea4caf77aa41b872749911aa34ab16e91295",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/prov/src/test/java?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/179aea4caf77aa41b872749911aa34ab16e91295",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test/java"
+    }
+  },
+  {
+    "name": "jdk1.1",
+    "path": "prov/src/test/jdk1.1",
+    "sha": "c6df61265824882b1c6a6a419fede02f7eeb4c38",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/prov/src/test/jdk1.1?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test/jdk1.1",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/c6df61265824882b1c6a6a419fede02f7eeb4c38",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/prov/src/test/jdk1.1?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/c6df61265824882b1c6a6a419fede02f7eeb4c38",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test/jdk1.1"
+    }
+  },
+  {
+    "name": "jdk1.11",
+    "path": "prov/src/test/jdk1.11",
+    "sha": "0aa0a1fb976f911311b58a439b8ee4ac6a4b9664",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/prov/src/test/jdk1.11?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test/jdk1.11",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/0aa0a1fb976f911311b58a439b8ee4ac6a4b9664",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/prov/src/test/jdk1.11?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/0aa0a1fb976f911311b58a439b8ee4ac6a4b9664",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test/jdk1.11"
+    }
+  },
+  {
+    "name": "jdk1.15",
+    "path": "prov/src/test/jdk1.15",
+    "sha": "e836351b12bc604095e2da38474ae39ba06ddd48",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/prov/src/test/jdk1.15?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test/jdk1.15",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/e836351b12bc604095e2da38474ae39ba06ddd48",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/prov/src/test/jdk1.15?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/e836351b12bc604095e2da38474ae39ba06ddd48",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test/jdk1.15"
+    }
+  },
+  {
+    "name": "jdk1.3",
+    "path": "prov/src/test/jdk1.3",
+    "sha": "a47c24d7d719d1a5c83da1f352ca06efd83fdb28",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/prov/src/test/jdk1.3?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test/jdk1.3",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/a47c24d7d719d1a5c83da1f352ca06efd83fdb28",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/prov/src/test/jdk1.3?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/a47c24d7d719d1a5c83da1f352ca06efd83fdb28",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test/jdk1.3"
+    }
+  },
+  {
+    "name": "jdk1.4",
+    "path": "prov/src/test/jdk1.4",
+    "sha": "440ab85074f81d8d61156d0c8389370f669c43ae",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/prov/src/test/jdk1.4?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test/jdk1.4",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/440ab85074f81d8d61156d0c8389370f669c43ae",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/prov/src/test/jdk1.4?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/440ab85074f81d8d61156d0c8389370f669c43ae",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test/jdk1.4"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "prov/src/test/resources",
+    "sha": "30c0c2f0e95e2d5b304d84c20dad127a6b8df8ff",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/prov/src/test/resources?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test/resources",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/30c0c2f0e95e2d5b304d84c20dad127a6b8df8ff",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/prov/src/test/resources?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/30c0c2f0e95e2d5b304d84c20dad127a6b8df8ff",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test/resources"
+    }
+  }
+]
+
+ succeeded in 173ms:
+[
+  {
+    "name": ".gitattributes",
+    "path": ".gitattributes",
+    "sha": "8004eb05f3cfaa24c217100ae441dc0af2085a0a",
+    "size": 447,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/.gitattributes?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/.gitattributes",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/8004eb05f3cfaa24c217100ae441dc0af2085a0a",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/.gitattributes",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/.gitattributes?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/8004eb05f3cfaa24c217100ae441dc0af2085a0a",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/.gitattributes"
+    }
+  },
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "98c1cdbd2ec331bce091dce8c18ccf7e1e765c9c",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/.github?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/.github",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/98c1cdbd2ec331bce091dce8c18ccf7e1e765c9c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/.github?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/98c1cdbd2ec331bce091dce8c18ccf7e1e765c9c",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "72ab296f6340aa574764e6c43f2f6d92a127a94d",
+    "size": 235,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/.gitignore?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/.gitignore",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/72ab296f6340aa574764e6c43f2f6d92a127a94d",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/.gitignore?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/72ab296f6340aa574764e6c43f2f6d92a127a94d",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/.gitignore"
+    }
+  },
+  {
+    "name": ".gitlab-ci.yml",
+    "path": ".gitlab-ci.yml",
+    "sha": "0b257ad1cb35a18eb644a8faf5ff0aa3e2a6c0e8",
+    "size": 1760,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/.gitlab-ci.yml?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/.gitlab-ci.yml",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/0b257ad1cb35a18eb644a8faf5ff0aa3e2a6c0e8",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/.gitlab-ci.yml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/.gitlab-ci.yml?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/0b257ad1cb35a18eb644a8faf5ff0aa3e2a6c0e8",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/.gitlab-ci.yml"
+    }
+  },
+  {
+    "name": ".travis.yml",
+    "path": ".travis.yml",
+    "sha": "b179f30c7ea9c40038edd07b12e88451f19fcb4f",
+    "size": 33,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/.travis.yml?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/.travis.yml",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/b179f30c7ea9c40038edd07b12e88451f19fcb4f",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/.travis.yml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/.travis.yml?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/b179f30c7ea9c40038edd07b12e88451f19fcb4f",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/.travis.yml"
+    }
+  },
+  {
+    "name": "CONTRIBUTORS.html",
+    "path": "CONTRIBUTORS.html",
+    "sha": "3ef9af79aead22675d707e774c3030119dd41cd3",
+    "size": 69976,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/CONTRIBUTORS.html?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/CONTRIBUTORS.html",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/3ef9af79aead22675d707e774c3030119dd41cd3",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/CONTRIBUTORS.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/CONTRIBUTORS.html?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/3ef9af79aead22675d707e774c3030119dd41cd3",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/CONTRIBUTORS.html"
+    }
+  },
+  {
+    "name": "LICENSE.html",
+    "path": "LICENSE.html",
+    "sha": "c300d61643d0982b130c58ba9ce535b5106fa9bd",
+    "size": 1175,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/LICENSE.html?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/LICENSE.html",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/c300d61643d0982b130c58ba9ce535b5106fa9bd",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/LICENSE.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/LICENSE.html?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/c300d61643d0982b130c58ba9ce535b5106fa9bd",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/LICENSE.html"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "4b1766478a2fcc14b4c79c87dc34209cf90e2050",
+    "size": 5962,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/README.md?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/README.md",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/4b1766478a2fcc14b4c79c87dc34209cf90e2050",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/README.md?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/4b1766478a2fcc14b4c79c87dc34209cf90e2050",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/README.md"
+    }
+  },
+  {
+    "name": "SECURITY.md",
+    "path": "SECURITY.md",
+    "sha": "c365182c2fb688b9046fd96601af473dc09f635a",
+    "size": 192,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/SECURITY.md?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/SECURITY.md",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/c365182c2fb688b9046fd96601af473dc09f635a",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/SECURITY.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/SECURITY.md?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/c365182c2fb688b9046fd96601af473dc09f635a",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/SECURITY.md"
+    }
+  },
+  {
+    "name": "add_module.sh",
+    "path": "add_module.sh",
+    "sha": "a7abb0a050ce3fd213625ba5aa42425ada5ae214",
+    "size": 5151,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/add_module.sh?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/add_module.sh",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/a7abb0a050ce3fd213625ba5aa42425ada5ae214",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/add_module.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/add_module.sh?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/a7abb0a050ce3fd213625ba5aa42425ada5ae214",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/add_module.sh"
+    }
+  },
+  {
+    "name": "ant",
+    "path": "ant",
+    "sha": "b53b264c71c926a3a4e66317c8e822f9b2866a88",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/ant?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/ant",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/b53b264c71c926a3a4e66317c8e822f9b2866a88",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/ant?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/b53b264c71c926a3a4e66317c8e822f9b2866a88",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/ant"
+    }
+  },
+  {
+    "name": "bc-build.properties",
+    "path": "bc-build.properties",
+    "sha": "de7f7ccadd9f073bdbbbfa67c4200e137503f9e6",
+    "size": 638,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/bc-build.properties?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/bc-build.properties",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/de7f7ccadd9f073bdbbbfa67c4200e137503f9e6",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/bc-build.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/bc-build.properties?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/de7f7ccadd9f073bdbbbfa67c4200e137503f9e6",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/bc-build.properties"
+    }
+  },
+  {
+    "name": "build.gradle",
+    "path": "build.gradle",
+    "sha": "b500e6f95625d16a4317c40d88be3f63616a560d",
+    "size": 9621,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/build.gradle?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/build.gradle",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/b500e6f95625d16a4317c40d88be3f63616a560d",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/build.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/build.gradle?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/b500e6f95625d16a4317c40d88be3f63616a560d",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/build.gradle"
+    }
+  },
+  {
+    "name": "build1-1",
+    "path": "build1-1",
+    "sha": "6e9791d8e48bc8964f3eff92a12ddad65f41523f",
+    "size": 45548,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/build1-1?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/build1-1",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/6e9791d8e48bc8964f3eff92a12ddad65f41523f",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/build1-1",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/build1-1?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/6e9791d8e48bc8964f3eff92a12ddad65f41523f",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/build1-1"
+    }
+  },
+  {
+    "name": "build1-2",
+    "path": "build1-2",
+    "sha": "85228eeffd916d04bcd0bd48c0bb5b3369ef1503",
+    "size": 30994,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/build1-2?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/build1-2",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/85228eeffd916d04bcd0bd48c0bb5b3369ef1503",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/build1-2",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/build1-2?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/85228eeffd916d04bcd0bd48c0bb5b3369ef1503",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/build1-2"
+    }
+  },
+  {
+    "name": "build1-3",
+    "path": "build1-3",
+    "sha": "4f698cd5717a7ea074e294215e05fc4c34582730",
+    "size": 896,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/build1-3?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/build1-3",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/4f698cd5717a7ea074e294215e05fc4c34582730",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/build1-3",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/build1-3?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/4f698cd5717a7ea074e294215e05fc4c34582730",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/build1-3"
+    }
+  },
+  {
+    "name": "build1-4",
+    "path": "build1-4",
+    "sha": "cc4e059704e196add4376db3953426e6a391dbc4",
+    "size": 640,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/build1-4?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/build1-4",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/cc4e059704e196add4376db3953426e6a391dbc4",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/build1-4",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/build1-4?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/cc4e059704e196add4376db3953426e6a391dbc4",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/build1-4"
+    }
+  },
+  {
+    "name": "build1-5to1-8",
+    "path": "build1-5to1-8",
+    "sha": "cea656a8a8ab920f013f8375b8ff135fc0b6e024",
+    "size": 1213,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/build1-5to1-8?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/build1-5to1-8",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/cea656a8a8ab920f013f8375b8ff135fc0b6e024",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/build1-5to1-8",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/build1-5to1-8?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/cea656a8a8ab920f013f8375b8ff135fc0b6e024",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/build1-5to1-8"
+    }
+  },
+  {
+    "name": "build1-8+",
+    "path": "build1-8+",
+    "sha": "94c8a3f32daea5052f693de5b1d0812fd88f4199",
+    "size": 963,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/build1-8%2B?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/build1-8%2B",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/94c8a3f32daea5052f693de5b1d0812fd88f4199",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/build1-8+",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/build1-8%2B?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/94c8a3f32daea5052f693de5b1d0812fd88f4199",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/build1-8%2B"
+    }
+  },
+  {
+    "name": "buildj2me",
+    "path": "buildj2me",
+    "sha": "4e9562f5bc15444b9f968a3ea54a5c5dff828e63",
+    "size": 17875,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/buildj2me?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/buildj2me",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/4e9562f5bc15444b9f968a3ea54a5c5dff828e63",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/buildj2me",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/buildj2me?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/4e9562f5bc15444b9f968a3ea54a5c5dff828e63",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/buildj2me"
+    }
+  },
+  {
+    "name": "ci",
+    "path": "ci",
+    "sha": "5f7c8688037a293ade0feb13c6ed02030905f184",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/ci?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/ci",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/5f7c8688037a293ade0feb13c6ed02030905f184",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/ci?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/5f7c8688037a293ade0feb13c6ed02030905f184",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/ci"
+    }
+  },
+  {
+    "name": "config",
+    "path": "config",
+    "sha": "9ce3054b2fde5365fa8869660212ce71bf2fadf5",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/config?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/config",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/9ce3054b2fde5365fa8869660212ce71bf2fadf5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/config?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/9ce3054b2fde5365fa8869660212ce71bf2fadf5",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/config"
+    }
+  },
+  {
+    "name": "core",
+    "path": "core",
+    "sha": "b6d73bc9f84f50a654cc82aa3c29f1c83d69a64d",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/core?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/core",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/b6d73bc9f84f50a654cc82aa3c29f1c83d69a64d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/core?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/b6d73bc9f84f50a654cc82aa3c29f1c83d69a64d",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/core"
+    }
+  },
+  {
+    "name": "docs",
+    "path": "docs",
+    "sha": "6bd3b9ac23e83dc9114896cb39c9bc6a7ebd764f",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/docs?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/docs",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/6bd3b9ac23e83dc9114896cb39c9bc6a7ebd764f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/docs?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/6bd3b9ac23e83dc9114896cb39c9bc6a7ebd764f",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/docs"
+    }
+  },
+  {
+    "name": "gradle.properties",
+    "path": "gradle.properties",
+    "sha": "8a89256adc212abb1117da83311f9cbbc6b8354a",
+    "size": 39,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/gradle.properties?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/gradle.properties",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/8a89256adc212abb1117da83311f9cbbc6b8354a",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/gradle.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/gradle.properties?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/8a89256adc212abb1117da83311f9cbbc6b8354a",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/gradle.properties"
+    }
+  },
+  {
+    "name": "gradlew",
+    "path": "gradlew",
+    "sha": "744e882ed57263a19bf3a504977da292d009345f",
+    "size": 5774,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/gradlew?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/gradlew",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/744e882ed57263a19bf3a504977da292d009345f",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/gradlew",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/gradlew?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/744e882ed57263a19bf3a504977da292d009345f",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/gradlew"
+    }
+  },
+  {
+    "name": "gradlew.bat",
+    "path": "gradlew.bat",
+    "sha": "f127cfd49d4024c3e1e0d08ba56399221b4fb25d",
+    "size": 2747,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/gradlew.bat?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/gradlew.bat",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/f127cfd49d4024c3e1e0d08ba56399221b4fb25d",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/gradlew.bat",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/gradlew.bat?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/f127cfd49d4024c3e1e0d08ba56399221b4fb25d",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/gradlew.bat"
+    }
+  },
+  {
+    "name": "index.html",
+    "path": "index.html",
+    "sha": "226cdc54433f4016860e572ed1b36ff4f5d51498",
+    "size": 5856,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/index.html?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/index.html",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/226cdc54433f4016860e572ed1b36ff4f5d51498",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/index.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/index.html?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/226cdc54433f4016860e572ed1b36ff4f5d51498",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/index.html"
+    }
+  },
+  {
+    "name": "jar_process.sh",
+    "path": "jar_process.sh",
+    "sha": "a7e739e8347b7d831dd0c6d53bda96be9e636d71",
+    "size": 263,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/jar_process.sh?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/jar_process.sh",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/a7e739e8347b7d831dd0c6d53bda96be9e636d71",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/jar_process.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/jar_process.sh?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/a7e739e8347b7d831dd0c6d53bda96be9e636d71",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/jar_process.sh"
+    }
+  },
+  {
+    "name": "jce",
+    "path": "jce",
+    "sha": "439209636dfc818a88697362ef8c73c27909f694",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/jce?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/jce",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/439209636dfc818a88697362ef8c73c27909f694",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/jce?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/439209636dfc818a88697362ef8c73c27909f694",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/jce"
+    }
+  },
+  {
+    "name": "jmail",
+    "path": "jmail",
+    "sha": "51ddbbe48daad13e4f7a31b2f1651a96148445b6",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/jmail?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/jmail",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/51ddbbe48daad13e4f7a31b2f1651a96148445b6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/jmail?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/51ddbbe48daad13e4f7a31b2f1651a96148445b6",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/jmail"
+    }
+  },
+  {
+    "name": "kmip",
+    "path": "kmip",
+    "sha": "7d4f7d9bebf46f17e4d6c1bf37ade97064bd99d7",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/kmip?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/kmip",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/7d4f7d9bebf46f17e4d6c1bf37ade97064bd99d7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/kmip?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/7d4f7d9bebf46f17e4d6c1bf37ade97064bd99d7",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/kmip"
+    }
+  },
+  {
+    "name": "libs",
+    "path": "libs",
+    "sha": "2460ef65e048d92d181823ec5b88b254afa918e7",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/libs?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/libs",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/2460ef65e048d92d181823ec5b88b254afa918e7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/libs?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/2460ef65e048d92d181823ec5b88b254afa918e7",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/libs"
+    }
+  },
+  {
+    "name": "mail",
+    "path": "mail",
+    "sha": "ed402dd94102af50a7ce3eec03a2b1f064567635",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/mail?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/mail",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/ed402dd94102af50a7ce3eec03a2b1f064567635",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/mail?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/ed402dd94102af50a7ce3eec03a2b1f064567635",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/mail"
+    }
+  },
+  {
+    "name": "misc",
+    "path": "misc",
+    "sha": "53b7450fa592601d708b1fa4677bb2000c5f7a95",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/misc?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/misc",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/53b7450fa592601d708b1fa4677bb2000c5f7a95",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/misc?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/53b7450fa592601d708b1fa4677bb2000c5f7a95",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/misc"
+    }
+  },
+  {
+    "name": "mod_test_ext.sh",
+    "path": "mod_test_ext.sh",
+    "sha": "3a323d5868d7fc011a68ed6fa8464e5f42aec83d",
+    "size": 2906,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/mod_test_ext.sh?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/mod_test_ext.sh",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/3a323d5868d7fc011a68ed6fa8464e5f42aec83d",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/mod_test_ext.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/mod_test_ext.sh?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/3a323d5868d7fc011a68ed6fa8464e5f42aec83d",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/mod_test_ext.sh"
+    }
+  },
+  {
+    "name": "mod_test_prov.sh",
+    "path": "mod_test_prov.sh",
+    "sha": "b0905160bfc4e4e422f209b7ab1b326a0f72b95e",
+    "size": 2884,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/mod_test_prov.sh?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/mod_test_prov.sh",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/b0905160bfc4e4e422f209b7ab1b326a0f72b95e",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/mod_test_prov.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/mod_test_prov.sh?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/b0905160bfc4e4e422f209b7ab1b326a0f72b95e",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/mod_test_prov.sh"
+    }
+  },
+  {
+    "name": "pg",
+    "path": "pg",
+    "sha": "3a95cee58f90f37db875d950621dafefaadbe98e",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/pg?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/pg",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/3a95cee58f90f37db875d950621dafefaadbe98e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/pg?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/3a95cee58f90f37db875d950621dafefaadbe98e",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/pg"
+    }
+  },
+  {
+    "name": "pkix",
+    "path": "pkix",
+    "sha": "e0ebf9d37a85eee57a5ae4b6aa9d86b5fd621167",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/pkix?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/pkix",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/e0ebf9d37a85eee57a5ae4b6aa9d86b5fd621167",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/pkix?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/e0ebf9d37a85eee57a5ae4b6aa9d86b5fd621167",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/pkix"
+    }
+  },
+  {
+    "name": "prov",
+    "path": "prov",
+    "sha": "3365b18b63dd7745e28104ebbfa0e765a81441b6",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/prov?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/prov",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/3365b18b63dd7745e28104ebbfa0e765a81441b6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/prov?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/3365b18b63dd7745e28104ebbfa0e765a81441b6",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/prov"
+    }
+  },
+  {
+    "name": "run_test.sh",
+    "path": "run_test.sh",
+    "sha": "30d47a6d55f04855c5cc6542c80b6a92fa67f4fa",
+    "size": 2053,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/run_test.sh?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/run_test.sh",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/30d47a6d55f04855c5cc6542c80b6a92fa67f4fa",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/run_test.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/run_test.sh?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/30d47a6d55f04855c5cc6542c80b6a92fa67f4fa",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/run_test.sh"
+    }
+  },
+  {
+    "name": "scripts",
+    "path": "scripts",
+    "sha": "3ba3c2a8fae39dd12af287ef5fe0ce393d2e82d6",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/scripts?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/scripts",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/3ba3c2a8fae39dd12af287ef5fe0ce393d2e82d6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/scripts?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/3ba3c2a8fae39dd12af287ef5fe0ce393d2e82d6",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/scripts"
+    }
+  },
+  {
+    "name": "settings.gradle",
+    "path": "settings.gradle",
+    "sha": "cc4e91ea127fe1febab6ae3b68dd865daa4774d1",
+    "size": 117,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/settings.gradle?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/settings.gradle",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/cc4e91ea127fe1febab6ae3b68dd865daa4774d1",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/settings.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/settings.gradle?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/cc4e91ea127fe1febab6ae3b68dd865daa4774d1",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/settings.gradle"
+    }
+  },
+  {
+    "name": "spotbugs.gradle",
+    "path": "spotbugs.gradle",
+    "sha": "7392a9acc7dfc519a3b325cb494b3d68972d1933",
+    "size": 884,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/spotbugs.gradle?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/spotbugs.gradle",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/7392a9acc7dfc519a3b325cb494b3d68972d1933",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/spotbugs.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/spotbugs.gradle?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/7392a9acc7dfc519a3b325cb494b3d68972d1933",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/spotbugs.gradle"
+    }
+  },
+  {
+    "name": "spotbugs.settings.gradle",
+    "path": "spotbugs.settings.gradle",
+    "sha": "c7e4590fe31be457fb9e6e7e86f3301e378b12ab",
+    "size": 93,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/spotbugs.settings.gradle?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/spotbugs.settings.gradle",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/c7e4590fe31be457fb9e6e7e86f3301e378b12ab",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/spotbugs.settings.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/spotbugs.settings.gradle?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/c7e4590fe31be457fb9e6e7e86f3301e378b12ab",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/spotbugs.settings.gradle"
+    }
+  },
+  {
+    "name": "spotbugs",
+    "path": "spotbugs",
+    "sha": "ff4a871920f9cb39fbefa42a5e1b3c3d2e3a23b8",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/spotbugs?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/spotbugs",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/ff4a871920f9cb39fbefa42a5e1b3c3d2e3a23b8",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/spotbugs?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/ff4a871920f9cb39fbefa42a5e1b3c3d2e3a23b8",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/spotbugs"
+    }
+  },
+  {
+    "name": "spotbugs_settings.gradle",
+    "path": "spotbugs_settings.gradle",
+    "sha": "c7e4590fe31be457fb9e6e7e86f3301e378b12ab",
+    "size": 93,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/spotbugs_settings.gradle?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/blob/r1rv77/spotbugs_settings.gradle",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/blobs/c7e4590fe31be457fb9e6e7e86f3301e378b12ab",
+    "download_url": "https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/spotbugs_settings.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/spotbugs_settings.gradle?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/blobs/c7e4590fe31be457fb9e6e7e86f3301e378b12ab",
+      "html": "https://github.com/bcgit/bc-java/blob/r1rv77/spotbugs_settings.gradle"
+    }
+  },
+  {
+    "name": "test",
+    "path": "test",
+    "sha": "d993e4f844032ea44eff510d05470c1d2f7a1788",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/test?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/test",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/d993e4f844032ea44eff510d05470c1d2f7a1788",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/test?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/d993e4f844032ea44eff510d05470c1d2f7a1788",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/test"
+    }
+  },
+  {
+    "name": "tls",
+    "path": "tls",
+    "sha": "db069c85f353ad54f118fc1156048653c19ec720",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/tls?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/tls",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/db069c85f353ad54f118fc1156048653c19ec720",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/tls?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/db069c85f353ad54f118fc1156048653c19ec720",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/tls"
+    }
+  },
+  {
+    "name": "util",
+    "path": "util",
+    "sha": "92373f4281c1a9a602161472a97c9c8ea44ce642",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/util?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/util",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/92373f4281c1a9a602161472a97c9c8ea44ce642",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/util?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/92373f4281c1a9a602161472a97c9c8ea44ce642",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/util"
+    }
+  }
+]
+
+ succeeded in 231ms:
+HTTP/2 404 
+date: Sun, 07 Jun 2026 17:16:42 GMT
+content-type: text/html
+cf-ray: a0814e5a9fd403a5-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/bouncycastle/bcprov-jdk18on/1.77/bcprov-jdk18on-1.77-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 315ms:
+4f3a8b216b3b6285f2cad52c05987dd5c48886c4	refs/tags/r1rv77
+f1367f0b89962b29460eea381a12063fa7cd2428	refs/tags/r1rv77^{}
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/
+codex
+The release tag is `r1rv77`, and `prov/src/test` exists there. Since Maven Central does not publish a `test-sources` JAR for this artifact, I’m going to use Maven for sources/Javadocs and the tagged upstream tree for tests.
+exec
+/usr/bin/bash -lc "rg -n 'bcprov-jdk18on|repo1.maven.org/maven2/.+sources.jar|javadoc.jar|test-code-url' build/discovered-artifact-metadata metadata -g '*.json' | head -200" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json:2:  "coordinates" : "org.bouncycastle:bcprov-jdk18on:1.77"
+metadata/io.prometheus/simpleclient_caffeine/index.json:7:    "test-code-url": "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient_caffeine/src/test/java",
+metadata/io.prometheus/simpleclient_caffeine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient/src/test",
+metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_agent",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:7:    "test-code-url" : "N/A",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_sdk/src/test",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_httpserver/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient_httpserver/src/test",
+metadata/io.prometheus/simpleclient_httpserver/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_httpserver/$version$/simpleclient_httpserver-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.hadoop/hadoop-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-annotations/$version$/hadoop-annotations-$version$-javadoc.jar",
+metadata/com.google.truth/truth/index.json:7:    "test-code-url" : "https://github.com/google/truth/tree/release_1_1_3/core/src/test/java?version=$version$",
+metadata/com.google.truth/truth/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-javadoc.jar",
+metadata/net.postgis/postgis-geometry/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/postgis-geometry/src/test",
+metadata/net.postgis/postgis-geometry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-web-proxy/$version$/hadoop-yarn-server-web-proxy-$version$-test-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-web-proxy/$version$/hadoop-yarn-server-web-proxy-$version$-javadoc.jar",
+metadata/net.postgis/postgis-jdbc/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/jdbc/src/test",
+metadata/net.postgis/postgis-jdbc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:7:    "test-code-url" : "N/A",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/com.comcast/ip4s-core_3/index.json:7:    "test-code-url" : "https://github.com/Comcast/ip4s/tree/v$version$/test-kit/shared/src/test",
+metadata/com.comcast/ip4s-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-tests.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-binary/tree/jackson-dataformats-binary-$version$/cbor/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:35:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-test-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:22:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-test-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:37:    "test-code-url" : "https://github.com/apache/hadoop/tree/rel/release-$version$/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common/src/test/java",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/toml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/saaj-api/tree/$version$/api/src/test",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/soap/jakarta.xml.soap-api/$version$/jakarta.xml.soap-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:22:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:37:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:38:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/yaml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r$version$/junit-jupiter-engine/src/test",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-sources.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/asn1/ber/src/test/java/org/apache/directory/api/asn1/ber/",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit5/tree/r5.9.2/junit-jupiter-params/src/test/java",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:42:    "test-code-url" : "N/A",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:43:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:56:    "test-code-url" : "N/A",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:57:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:70:    "test-code-url" : "N/A",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:71:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:84:    "test-code-url" : "N/A",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:85:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:98:    "test-code-url" : "N/A",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:99:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:112:    "test-code-url" : "N/A",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:113:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:126:    "test-code-url" : "N/A",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:127:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:140:    "test-code-url" : "N/A",
+metadata/org.apache.hadoop/hadoop-yarn-api/index.json:141:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-api/$version$/hadoop-yarn-api-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:7:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala",
+metadata/com.typesafe.slick/slick_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-sources.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:7:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala/slick/test/jdbc/hikaricp",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-mapreduce-client-shuffle/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-mapreduce-client-shuffle/$version$/hadoop-mapreduce-client-shuffle-$version$-test-sources.jar",
+metadata/org.apache.hadoop/hadoop-mapreduce-client-shuffle/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-mapreduce-client-shuffle/$version$/hadoop-mapreduce-client-shuffle-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-registry/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-registry/$version$/hadoop-yarn-registry-$version$-test-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-registry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-registry/$version$/hadoop-yarn-registry-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:7:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:28:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:30:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model/",
+metadata/org.apache.directory.api/api-ldap-model/index.json:31:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:42:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:44:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:45:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:56:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:58:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:59:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:73:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:75:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:76:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:87:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:89:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:90:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:101:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:103:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:104:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:115:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:117:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:129:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:131:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model/",
+metadata/org.apache.directory.api/api-ldap-model/index.json:132:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-auth/index.json:7:    "test-code-url" : "https://github.com/apache/hadoop/tree/rel/release-$version$/hadoop-common-project/hadoop-auth/src/test",
+metadata/org.apache.hadoop/hadoop-auth/index.json:57:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-auth/$version$/hadoop-auth-$version$-test-sources.jar",
+metadata/org.apache.hadoop/hadoop-auth/index.json:58:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-auth/$version$/hadoop-auth-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/io.suzaku/boopickle_2.13/index.json:7:    "test-code-url" : "https://github.com/suzaku-io/boopickle/tree/v$version$/boopickle/shared/src/test",
+metadata/io.suzaku/boopickle_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_2.13/$version$/boopickle_2.13-$version$-javadoc.jar",
+metadata/io.suzaku/boopickle_3/index.json:7:    "test-code-url" : "https://github.com/suzaku-io/boopickle/tree/v$version$/boopickle/shared/src/test",
+metadata/io.suzaku/boopickle_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-javadoc.jar",
+metadata/org.yaml/snakeyaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:7:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml/src/snakeyaml-$version$/src/test/",
+metadata/org.yaml/snakeyaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-javadoc.jar",
+metadata/org.yaml/snakeyaml/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:21:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml/src/snakeyaml-$version$/src/test/",
+metadata/org.yaml/snakeyaml/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-javadoc.jar",
+metadata/com.spotify/completable-futures/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-sources.jar",
+metadata/com.spotify/completable-futures/index.json:7:    "test-code-url" : "https://github.com/spotify/completable-futures/tree/v$version$/src/test/java",
+metadata/com.spotify/completable-futures/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-javadoc.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:7:    "test-code-url" : "https://github.com/google/closure-compiler/tree/v20150505/test",
+metadata/io.vertx/vertx-core/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:54:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:56:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:57:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:68:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:70:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:71:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:82:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:84:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:85:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:96:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:98:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:99:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:110:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:112:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:113:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/net.bytebuddy/byte-buddy-agent/index.json:7:    "test-code-url" : "https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-agent/src/test/java",
+metadata/net.bytebuddy/byte-buddy-agent/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-tests.jar",
+
+exec
+/usr/bin/bash -lc 'file build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json && git status --short -- build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/bcprov-jdk18on-1.77.jar -o /tmp/bcprov-jdk18on-1.77.jar && jar tf /tmp/bcprov-jdk18on-1.77.jar | sed -n '1,40p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a
+ succeeded in 421ms:
+ succeeded in 689ms:
+META-INF/MANIFEST.MF
+META-INF/BC2048KE.SF
+META-INF/BC2048KE.DSA
+META-INF/
+META-INF/services/
+META-INF/services/java.security.Provider
+META-INF/versions/9/
+META-INF/versions/9/org/
+META-INF/versions/9/org/bouncycastle/
+META-INF/versions/9/org/bouncycastle/jce/
+META-INF/versions/9/org/bouncycastle/jce/provider/
+META-INF/versions/9/org/bouncycastle/jce/provider/BouncyCastleProvider$JcaCryptoService.class
+META-INF/versions/9/org/bouncycastle/jce/provider/BouncyCastleProvider$2.class
+META-INF/versions/9/org/bouncycastle/jce/provider/BouncyCastleProvider$1.class
+META-INF/versions/9/org/bouncycastle/jce/provider/BouncyCastleProvider.class
+META-INF/versions/9/org/bouncycastle/jce/provider/BouncyCastleProviderConfiguration.class
+META-INF/versions/9/org/bouncycastle/jce/interfaces/
+META-INF/versions/9/org/bouncycastle/jce/interfaces/ECKey.class
+META-INF/versions/9/org/bouncycastle/jce/interfaces/ECPrivateKey.class
+META-INF/versions/9/org/bouncycastle/jce/interfaces/ECPublicKey.class
+META-INF/versions/9/org/bouncycastle/jce/ECGOST3410NamedCurveTable.class
+META-INF/versions/9/org/bouncycastle/jce/spec/
+META-INF/versions/9/org/bouncycastle/jce/spec/ECParameterSpec.class
+META-INF/versions/9/org/bouncycastle/jce/spec/ECNamedCurveParameterSpec.class
+META-INF/versions/9/org/bouncycastle/jce/spec/ECNamedCurveSpec.class
+META-INF/versions/9/org/bouncycastle/asn1/
+META-INF/versions/9/org/bouncycastle/asn1/ASN1UTF8String$1.class
+META-INF/versions/9/org/bouncycastle/asn1/ASN1OctetString$1.class
+META-INF/versions/9/org/bouncycastle/asn1/ConstructedOctetStream.class
+META-INF/versions/9/org/bouncycastle/asn1/ASN1Set.class
+META-INF/versions/9/org/bouncycastle/asn1/ASN1VideotexString$1.class
+META-INF/versions/9/org/bouncycastle/asn1/DERExternal.class
+META-INF/versions/9/org/bouncycastle/asn1/DERTaggedObject.class
+META-INF/versions/9/org/bouncycastle/asn1/ASN1T61String.class
+META-INF/versions/9/org/bouncycastle/asn1/DERGraphicString.class
+META-INF/versions/9/org/bouncycastle/asn1/DERSet.class
+META-INF/versions/9/org/bouncycastle/asn1/ConstructedBitStream.class
+META-INF/versions/9/org/bouncycastle/asn1/ASN1EncodableVector.class
+META-INF/versions/9/org/bouncycastle/asn1/BERBitString.class
+META-INF/versions/9/org/bouncycastle/asn1/ASN1IA5String$1.class
+
+codex
+I’m updating the discovered metadata now with Maven source/Javadoc artifacts and the tagged upstream provider test directory. I’m leaving `language` and `not-for-native-image` out because this is a JVM JAR with class files, not a Kotlin/Groovy/Scala-specific or non-JVM artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json
+diff --git a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json
+index 205fd7be813369a3aaa770c185464f1758dbd07e..8aadc6ceb3a14401376d30697fd56810d65ff8ca
+--- a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json
++++ b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.bouncycastle:bcprov-jdk18on:1.77"
++  "coordinates" : "org.bouncycastle:bcprov-jdk18on:1.77",
++  "repository-url" : "https://github.com/bcgit/bc-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/$version$/bcprov-jdk18on-$version$-sources.jar",
++  "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test?version=$version$",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/$version$/bcprov-jdk18on-$version$-javadoc.jar",
++  "description" : "The Bouncy Castle provider is a Java cryptography library that implements cryptographic algorithms and exposes them through the JCA/JCE provider APIs. The bcprov-jdk18on artifact also includes Bouncy Castle's lightweight cryptography APIs for JDK 8 and newer."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json
+index 205fd7be813369a3aaa770c185464f1758dbd07e..8aadc6ceb3a14401376d30697fd56810d65ff8ca
+--- a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json
++++ b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.bouncycastle:bcprov-jdk18on:1.77"
++  "coordinates" : "org.bouncycastle:bcprov-jdk18on:1.77",
++  "repository-url" : "https://github.com/bcgit/bc-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/$version$/bcprov-jdk18on-$version$-sources.jar",
++  "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test?version=$version$",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/$version$/bcprov-jdk18on-$version$-javadoc.jar",
++  "description" : "The Bouncy Castle provider is a Java cryptography library that implements cryptographic algorithms and exposes them through the JCA/JCE provider APIs. The bcprov-jdk18on artifact also includes Bouncy Castle's lightweight cryptography APIs for JDK 8 and newer."
+ }
+
+codex
+The file is patched. I’m doing a quick validation pass now: JSON syntax, expected rendered URLs for `1.77`, and a final diff check.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a
+ succeeded in 0ms:
+{
+  "coordinates": "org.bouncycastle:bcprov-jdk18on:1.77",
+  "repository-url": "https://github.com/bcgit/bc-java",
+  "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/$version$/bcprov-jdk18on-$version$-sources.jar",
+  "test-code-url": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test?version=$version$",
+  "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/$version$/bcprov-jdk18on-$version$-javadoc.jar",
+  "description": "The Bouncy Castle provider is a Java cryptography library that implements cryptographic algorithms and exposes them through the JCA/JCE provider APIs. The bcprov-jdk18on artifact also includes Bouncy Castle's lightweight cryptography APIs for JDK 8 and newer."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  'https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/bcprov-jdk18on-1.77-sources.jar' \\
+  'https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test?version=1.77' \\
+  'https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/bcprov-jdk18on-1.77-javadoc.jar'; do
+  printf '%s -> ' \""'$url"
+  curl -fsSI -L "$url" | awk '"'toupper("'$0) ~ /''^HTTP'"\\// { code="'$2 } END { print code }'"'
+done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a
+diff --git a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json
+index 205fd7be813369a3aaa770c185464f1758dbd07e..8aadc6ceb3a14401376d30697fd56810d65ff8ca
+--- a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json
++++ b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.bouncycastle:bcprov-jdk18on:1.77"
++  "coordinates" : "org.bouncycastle:bcprov-jdk18on:1.77",
++  "repository-url" : "https://github.com/bcgit/bc-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/$version$/bcprov-jdk18on-$version$-sources.jar",
++  "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test?version=$version$",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/$version$/bcprov-jdk18on-$version$-javadoc.jar",
++  "description" : "The Bouncy Castle provider is a Java cryptography library that implements cryptographic algorithms and exposes them through the JCA/JCE provider APIs. The bcprov-jdk18on artifact also includes Bouncy Castle's lightweight cryptography APIs for JDK 8 and newer."
+ }
+
+ succeeded in 1035ms:
+200
+https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/bcprov-jdk18on-1.77-javadoc.jar -> 200
+
+codex
+The URLs render and return HTTP 200 after substituting `1.77`. One oddity: `git diff` did not show this build artifact, so I’m checking whether the path is ignored or otherwise outside tracked diff output.
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json build/discovered-artifact-metadata' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git ls-files --stage -- build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json; git check-ignore -v build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json || true' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a
+ succeeded in 0ms:
+.gitignore:33:**/build	build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a
+ succeeded in 0ms:
+{
+  "coordinates" : "org.bouncycastle:bcprov-jdk18on:1.77",
+  "repository-url" : "https://github.com/bcgit/bc-java",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/$version$/bcprov-jdk18on-$version$-sources.jar",
+  "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test?version=$version$",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/$version$/bcprov-jdk18on-$version$-javadoc.jar",
+  "description" : "The Bouncy Castle provider is a Java cryptography library that implements cryptographic algorithms and exposes them through the JCA/JCE provider APIs. The bcprov-jdk18on artifact also includes Bouncy Castle's lightweight cryptography APIs for JDK 8 and newer."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json
+index 205fd7be813369a3aaa770c185464f1758dbd07e..8aadc6ceb3a14401376d30697fd56810d65ff8ca
+--- a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json
++++ b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.bouncycastle:bcprov-jdk18on:1.77"
++  "coordinates" : "org.bouncycastle:bcprov-jdk18on:1.77",
++  "repository-url" : "https://github.com/bcgit/bc-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/$version$/bcprov-jdk18on-$version$-sources.jar",
++  "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test?version=$version$",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/$version$/bcprov-jdk18on-$version$-javadoc.jar",
++  "description" : "The Bouncy Castle provider is a Java cryptography library that implements cryptographic algorithms and exposes them through the JCA/JCE provider APIs. The bcprov-jdk18on artifact also includes Bouncy Castle's lightweight cryptography APIs for JDK 8 and newer."
+ }
+
+web search: 
+web search: Maven Central org.bouncycastle bcprov-jdk18on 1.77 sources javadoc
+web search: 
+web search: https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test
+web search: 
+web search: https://central.sonatype.com/artifact/org.bouncycastle/bcprov-jdk18on/1.77
+codex
+Updated [org.bouncycastle-bcprov-jdk18on-1.77.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json).
+
+I used the Maven Central sources/Javadoc artifacts, the POM SCM repository, and the `r1rv77` `prov/src/test` tree for tests. The artifact is a JVM JAR, so I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. ([repo1.maven.org](https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/?utm_source=openai))
+
+Validated JSON with `jq` and checked the rendered source, test, and documentation URLs return HTTP 200 for `1.77`.
+diff --git a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json
+index 205fd7be813369a3aaa770c185464f1758dbd07e..8aadc6ceb3a14401376d30697fd56810d65ff8ca
+--- a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json
++++ b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.bouncycastle:bcprov-jdk18on:1.77"
++  "coordinates" : "org.bouncycastle:bcprov-jdk18on:1.77",
++  "repository-url" : "https://github.com/bcgit/bc-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/$version$/bcprov-jdk18on-$version$-sources.jar",
++  "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test?version=$version$",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/$version$/bcprov-jdk18on-$version$-javadoc.jar",
++  "description" : "The Bouncy Castle provider is a Java cryptography library that implements cryptographic algorithms and exposes them through the JCA/JCE provider APIs. The bcprov-jdk18on artifact also includes Bouncy Castle's lightweight cryptography APIs for JDK 8 and newer."
+ }
+
+tokens used
+82,600
+Updated [org.bouncycastle-bcprov-jdk18on-1.77.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk18on-1.77.json).
+
+I used the Maven Central sources/Javadoc artifacts, the POM SCM repository, and the `r1rv77` `prov/src/test` tree for tests. The artifact is a JVM JAR, so I left `language`, `not-for-native-image`, `reason`, and `replacement` absent. ([repo1.maven.org](https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/?utm_source=openai))
+
+Validated JSON with `jq` and checked the rendered source, test, and documentation URLs return HTTP 200 for `1.77`.
+Ran agent for org.bouncycastle:bcprov-jdk18on:1.77 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a/build/agent-artifact-discovery-logs/org.bouncycastle-bcprov-jdk18on-1.77.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 42s
+9 actionable tasks: 9 executed

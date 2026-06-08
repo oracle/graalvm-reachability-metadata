@@ -1,0 +1,124 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.bouncycastle:bcprov-jdk18on:1.77
+Command: `/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 35 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+
+> Task :test FAILED
+
+DRBGTest > generatesDefaultSecureRandomBytesUsingInitialEntropySourceDiscovery() FAILED
+    java.lang.ExceptionInInitializerError
+        at java.base/jdk.internal.misc.Unsafe.ensureClassInitialized0(Native Method)
+        at java.base/jdk.internal.misc.Unsafe.ensureClassInitialized(Unsafe.java:1169)
+        at java.base/jdk.internal.reflect.MethodHandleAccessorFactory.ensureClassInitialized(MethodHandleAccessorFactory.java:341)
+        at java.base/jdk.internal.reflect.MethodHandleAccessorFactory.newConstructorAccessor(MethodHandleAccessorFactory.java:104)
+        at java.base/jdk.internal.reflect.ReflectionFactory.newConstructorAccessor(ReflectionFactory.java:138)
+        at java.base/java.lang.reflect.Constructor.acquireConstructorAccessor(Constructor.java:546)
+        at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:496)
+        at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+        at java.base/java.security.Provider$Service.newInstanceOf(Provider.java:1769)
+        at java.base/java.security.Provider$Service.newInstanceUtil(Provider.java:1797)
+        at java.base/java.security.Provider$Service.newInstance(Provider.java:1751)
+        at java.base/sun.security.jca.GetInstance.getInstance(GetInstance.java:227)
+        at java.base/sun.security.jca.GetInstance.getInstance(GetInstance.java:209)
+        at java.base/java.security.SecureRandom.getInstance(SecureRandom.java:482)
+        at org_bouncycastle.bcprov_jdk18on.DRBGTest.generatesDefaultSecureRandomBytesUsingInitialEntropySourceDiscovery(DRBGTest.java:36)
+
+        Caused by:
+        java.lang.NullPointerException: Cannot load from object array because "<parameter1>" is null
+            at org.bouncycastle.jcajce.provider.drbg.DRBG$CoreSecureRandom.<init>(Unknown Source)
+            at org.bouncycastle.jcajce.provider.drbg.DRBG$4.run(Unknown Source)
+            at org.bouncycastle.jcajce.provider.drbg.DRBG$4.run(Unknown Source)
+            at java.base/java.security.AccessController.doPrivileged(AccessController.java:74)
+            at org.bouncycastle.jcajce.provider.drbg.DRBG.createInitialEntropySource(Unknown Source)
+            at org.bouncycastle.jcajce.provider.drbg.DRBG.createCoreEntropySourceProvider(Unknown Source)
+            at org.bouncycastle.jcajce.provider.drbg.DRBG.access$700(Unknown Source)
+            at org.bouncycastle.jcajce.provider.drbg.DRBG$OneShotHybridEntropySource.<init>(Unknown Source)
+            at org.bouncycastle.jcajce.provider.drbg.DRBG.createBaseRandom(Unknown Source)
+            at org.bouncycastle.jcajce.provider.drbg.DRBG.access$100(Unknown Source)
+            at org.bouncycastle.jcajce.provider.drbg.DRBG$Default.<clinit>(Unknown Source)
+            ... 15 more
+
+57 tests completed, 1 failed
+
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a/tests/src/org.bouncycastle/bcprov-jdk18on/1.77/build/reports/problems/problems-report.html
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a/tests/src/org.bouncycastle/bcprov-jdk18on/1.77/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 4s
+14 actionable tasks: 3 executed, 11 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1500-96ad851a/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.bouncycastle:bcprov-jdk18on:1.77 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 5s
+9 actionable tasks: 1 executed, 8 up-to-date
