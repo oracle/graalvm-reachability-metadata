@@ -8,8 +8,6 @@ package velocity.velocity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Vector;
-
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.RuntimeInstance;
@@ -30,7 +28,6 @@ public class ResourceManagerImplTest {
         private final ExtendedProperties configuration = new ExtendedProperties();
 
         private CacheFallbackRuntime() {
-            configuration.setProperty(RuntimeConstants.RESOURCE_LOADER, new Vector<String>());
         }
 
         @Override
