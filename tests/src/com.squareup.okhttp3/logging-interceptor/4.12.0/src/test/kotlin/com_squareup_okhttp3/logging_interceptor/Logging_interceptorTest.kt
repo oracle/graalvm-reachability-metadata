@@ -8,13 +8,16 @@ package com_squareup_okhttp3.logging_interceptor
 
 import com.sun.net.httpserver.HttpExchange
 import com.sun.net.httpserver.HttpServer
+import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.LoggingEventListener
+import okio.BufferedSink
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.net.InetAddress
@@ -198,6 +201,36 @@ public class HttpLoggingInterceptorTest {
     }
 
     @Test
+    fun bodyLevelOmitsOneShotRequestBodyWithoutPreventingTransmission(): Unit = withServer { server: TestServer ->
+        server.createContext("/one-shot") { exchange: HttpExchange ->
+            val requestBody: String = exchange.readRequestBody()
+            exchange.respond(200, "server received: $requestBody", "text/plain; charset=utf-8")
+        }
+        val logs: MutableList<String> = mutableListOf()
+        val client: OkHttpClient = newClient(loggingInterceptor(logs, HttpLoggingInterceptor.Level.BODY))
+        val requestBodyText: String = "single-use request body"
+
+        try {
+            val request: Request = Request.Builder()
+                .url(server.url("/one-shot"))
+                .post(OneShotTextRequestBody(requestBodyText, "text/plain; charset=utf-8".toMediaType()))
+                .build()
+
+            client.newCall(request).execute().use { response: Response ->
+                assertThat(response.code).isEqualTo(200)
+                assertThat(checkNotNull(response.body).string()).isEqualTo("server received: $requestBodyText")
+            }
+        } finally {
+            client.close()
+        }
+
+        assertThat(logs.hasLineContaining("--> POST", "/one-shot")).isTrue()
+        assertThat(logs.hasLineContaining("--> END POST", "one-shot body omitted")).isTrue()
+        assertThat(logs.none { line: String -> line == requestBodyText }).isTrue()
+        assertThat(logs).contains("server received: $requestBodyText")
+    }
+
+    @Test
     fun bodyLevelOmitsBinaryRequestAndResponseBodies(): Unit = withServer { server: TestServer ->
         val binaryResponse: ByteArray = byteArrayOf(0, 1, 2, 3, -1)
         server.createContext("/binary") { exchange: HttpExchange ->
@@ -294,6 +327,21 @@ private fun HttpExchange.respond(statusCode: Int, body: ByteArray, contentType: 
     sendResponseHeaders(statusCode, body.size.toLong())
     responseBody.use { output ->
         output.write(body)
+    }
+}
+
+private class OneShotTextRequestBody(
+    private val text: String,
+    private val mediaType: MediaType,
+) : RequestBody() {
+    override fun contentType(): MediaType = mediaType
+
+    override fun contentLength(): Long = text.toByteArray(UTF_8).size.toLong()
+
+    override fun isOneShot(): Boolean = true
+
+    override fun writeTo(sink: BufferedSink): Unit {
+        sink.writeString(text, UTF_8)
     }
 }
 
