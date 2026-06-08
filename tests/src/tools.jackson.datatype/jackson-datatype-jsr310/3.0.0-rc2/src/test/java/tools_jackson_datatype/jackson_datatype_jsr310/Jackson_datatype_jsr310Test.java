@@ -26,6 +26,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TimeZone;
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.JavaType;
@@ -232,6 +233,20 @@ public class Jackson_datatype_jsr310Test {
 
         assertThat(mapper.writeValueAsString(Month.JULY)).isEqualTo("7");
         assertThat(mapper.readValue("7", Month.class)).isEqualTo(Month.JULY);
+    }
+
+    @Test
+    void usesMapperTimeZoneForLenientDateAndDateTimeParsing() throws Exception {
+        ObjectMapper mapper = JsonMapper.builder()
+                .addModule(new JavaTimeModule().enable(JavaTimeFeature.USE_TIME_ZONE_FOR_LENIENT_DATE_PARSING))
+                .defaultTimeZone(TimeZone.getTimeZone("GMT-05:00"))
+                .build();
+
+        LocalDate date = mapper.readValue("\"2024-01-01T02:00:00Z\"", LocalDate.class);
+        LocalDateTime dateTime = mapper.readValue("\"2024-01-15T12:00:00Z\"", LocalDateTime.class);
+
+        assertThat(date).isEqualTo(LocalDate.of(2023, 12, 31));
+        assertThat(dateTime).isEqualTo(LocalDateTime.of(2024, 1, 15, 7, 0));
     }
 
     @Test
