@@ -8,6 +8,7 @@ package velocity.velocity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -81,7 +82,7 @@ public class GeneratorTest {
         }
 
         @Override
-        public void merge(Context context, Writer writer) throws Exception {
+        public void merge(Context context, Writer writer) throws IOException {
             writer.write(templateName);
         }
     }

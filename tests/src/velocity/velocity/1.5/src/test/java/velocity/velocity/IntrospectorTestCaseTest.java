@@ -6,35 +6,92 @@
  */
 package velocity.velocity;
 
-import java.lang.reflect.Field;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.runtime.RuntimeSingleton;
-import org.apache.velocity.test.IntrospectorTestCase;
+import java.lang.reflect.Method;
+
+import org.apache.velocity.runtime.log.Log;
+import org.apache.velocity.runtime.log.NullLogChute;
+import org.apache.velocity.util.introspection.Introspector;
 import org.junit.jupiter.api.Test;
 
 public class IntrospectorTestCaseTest {
     @Test
-    void runsVelocityPrimitiveIntrospectionTestCase() throws Exception {
-        RuntimeSingleton.setProperty(
-                RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
-                "org.apache.velocity.runtime.log.NullLogSystem");
-        RuntimeSingleton.init();
-        clearMethodProviderClassCache();
+    void resolvesPrimitiveMethodsAndRejectsNonPublicMethods() throws Exception {
+        final Introspector introspector = new Introspector(new Log(new NullLogChute()));
+        final MethodProvider provider = new MethodProvider();
 
-        IntrospectorTestCase testCase = new IntrospectorTestCase("runTest");
-        testCase.runTest();
+        assertPrimitiveMethod(introspector, provider, "booleanMethod", Boolean.TRUE, "boolean");
+        assertPrimitiveMethod(introspector, provider, "byteMethod", Byte.valueOf((byte) 1), "byte");
+        assertPrimitiveMethod(
+                introspector, provider, "characterMethod", Character.valueOf('a'), "character");
+        assertPrimitiveMethod(
+                introspector, provider, "doubleMethod", Double.valueOf(1.0d), "double");
+        assertPrimitiveMethod(introspector, provider, "floatMethod", Float.valueOf(1.0f), "float");
+        assertPrimitiveMethod(
+                introspector, provider, "integerMethod", Integer.valueOf(1), "integer");
+        assertPrimitiveMethod(introspector, provider, "longMethod", Long.valueOf(1L), "long");
+        assertPrimitiveMethod(
+                introspector, provider, "shortMethod", Short.valueOf((short) 1), "short");
+
+        assertThat(introspector.getMethod(
+                MethodProvider.class, "untouchable", new Object[0])).isNull();
+        assertThat(introspector.getMethod(
+                MethodProvider.class, "reallyUntouchable", new Object[0])).isNull();
     }
 
-    private static void clearMethodProviderClassCache() throws Exception {
-        /*
-         * The Velocity 1.4 artifact was compiled with a synthetic `Class` cache for
-         * `MethodProvider.class`. Clear it so `runTest()` exercises the original
-         * `Class.forName(String)` resolution path even if test discovery initialized it.
-         */
-        Field classCache = IntrospectorTestCase.class.getDeclaredField(
-                "class$org$apache$velocity$test$IntrospectorTestCase$MethodProvider");
-        classCache.setAccessible(true);
-        classCache.set(null, null);
+    private static void assertPrimitiveMethod(
+            final Introspector introspector,
+            final MethodProvider provider,
+            final String methodName,
+            final Object parameter,
+            final String expectedResult) throws Exception {
+        final Method method = introspector.getMethod(
+                MethodProvider.class, methodName, new Object[] {parameter});
+
+        assertThat(method).isNotNull();
+        assertThat(method.invoke(provider, parameter)).isEqualTo(expectedResult);
+    }
+
+    public static class MethodProvider {
+        public String booleanMethod(final boolean value) {
+            return "boolean";
+        }
+
+        public String byteMethod(final byte value) {
+            return "byte";
+        }
+
+        public String characterMethod(final char value) {
+            return "character";
+        }
+
+        public String doubleMethod(final double value) {
+            return "double";
+        }
+
+        public String floatMethod(final float value) {
+            return "float";
+        }
+
+        public String integerMethod(final int value) {
+            return "integer";
+        }
+
+        public String longMethod(final long value) {
+            return "long";
+        }
+
+        public String shortMethod(final short value) {
+            return "short";
+        }
+
+        String untouchable() {
+            return "hidden";
+        }
+
+        private String reallyUntouchable() {
+            return "hidden";
+        }
     }
 }

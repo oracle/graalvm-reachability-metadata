@@ -6,12 +6,14 @@
  */
 package velocity.velocity;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.lang.reflect.Method;
 import java.util.Base64;
 
-import org.apache.velocity.test.ClassloaderChangeTest;
+import org.apache.velocity.runtime.log.Log;
+import org.apache.velocity.runtime.log.NullLogChute;
+import org.apache.velocity.util.introspection.Introspector;
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 
@@ -25,12 +27,22 @@ public class ClassloaderChangeTestTest {
             """.replaceAll("\\s", ""));
 
     @Test
-    public void reloadsFooClassAndFlushesVelocityIntrospectionCache() throws Exception {
-        writeFooClassFileExpectedByUpstreamTest();
-
+    public void clearsIntrospectionCacheForClassNameLoadedAgain() throws Exception {
         try {
-            ClassloaderChangeTest test = new ClassloaderChangeTest();
-            test.runTest();
+            final Introspector introspector = new Introspector(new Log(new NullLogChute()));
+            final Class<?> firstFooClass = new FooClassLoader().defineFooClass();
+            final Method firstMethod = introspector.getMethod(firstFooClass, "doIt", new Object[0]);
+            assertThat(firstMethod.invoke(firstFooClass.getDeclaredConstructor().newInstance()))
+                    .isEqualTo("Hello From Foo");
+
+            final Class<?> secondFooClass = new FooClassLoader().defineFooClass();
+            final Method secondMethod = introspector.getMethod(
+                    secondFooClass, "doIt", new Object[0]);
+
+            assertThat(secondMethod).isNotNull();
+            assertThat(secondMethod.getDeclaringClass()).isSameAs(secondFooClass);
+            assertThat(secondMethod.invoke(secondFooClass.getDeclaredConstructor().newInstance()))
+                    .isEqualTo("Hello From Foo");
         } catch (Error error) {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
@@ -38,9 +50,9 @@ public class ClassloaderChangeTestTest {
         }
     }
 
-    private static void writeFooClassFileExpectedByUpstreamTest() throws IOException {
-        Path classFile = Path.of("..", "test", "classloader", "Foo.class");
-        Files.createDirectories(classFile.getParent());
-        Files.write(classFile, FOO_CLASS_BYTES);
+    private static final class FooClassLoader extends ClassLoader {
+        private Class<?> defineFooClass() {
+            return defineClass("Foo", FOO_CLASS_BYTES, 0, FOO_CLASS_BYTES.length);
+        }
     }
 }

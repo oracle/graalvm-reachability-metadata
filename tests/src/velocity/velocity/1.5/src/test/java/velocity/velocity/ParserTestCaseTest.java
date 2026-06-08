@@ -7,34 +7,81 @@
 package velocity.velocity;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.lang.reflect.Field;
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
-import junit.framework.TestSuite;
-
-import org.apache.velocity.test.ParserTestCase;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.exception.ParseErrorException;
+import org.apache.velocity.runtime.RuntimeConstants;
 import org.junit.jupiter.api.Test;
 
 public class ParserTestCaseTest {
     @Test
-    public void createsJUnitThreeSuiteForParserRegressionTests() throws Exception {
-        clearParserTestCaseClassCache();
+    public void evaluatesValidParserConstructsAndRejectsInvalidOnes() throws Exception {
+        final VelocityEngine engine = newVelocityEngine();
 
-        TestSuite suite = (TestSuite) ParserTestCase.suite();
+        assertThat(evaluate(engine, "#if($a == $b)equals#end", Map.of("a", "same", "b", "same")))
+                .isEqualTo("equals");
+        assertThat(evaluate(engine, "#macro(foo)macro#end#foo()", Map.of()))
+                .isEqualTo("macro");
+        assertThat(evaluate(
+                engine,
+                "#foreach($i in $items)$i#end",
+                Map.of("items", (Object) new String[] {"a", "b"})))
+                .isEqualTo("ab");
 
-        assertThat(suite).isNotNull();
-        assertThat(suite.getName()).isEqualTo(ParserTestCase.class.getName());
+        final ToStringCounter counter = new ToStringCounter();
+        assertThat(evaluate(engine, "$counter", Map.of("counter", (Object) counter)))
+                .isEqualTo("value");
+        assertThat(counter.getTimesCalled()).isEqualTo(1);
+
+        assertThatThrownBy(() -> evaluate(engine, "#if($a = $b)bad#end", Map.of()))
+                .isInstanceOf(ParseErrorException.class);
+        assertThatThrownBy(() -> evaluate(engine, "#macro($x)bad#end", Map.of()))
+                .isInstanceOf(ParseErrorException.class);
+        assertThatThrownBy(() -> evaluate(engine, "#macro(foo $a)$a#end#foo(value)", Map.of()))
+                .isInstanceOf(ParseErrorException.class);
     }
 
-    private static void clearParserTestCaseClassCache() throws Exception {
-        /*
-         * The Velocity 1.4 artifact was compiled with a synthetic `Class` cache for
-         * `ParserTestCase.class`. Clear it so `suite()` exercises the original
-         * `Class.forName(String)` resolution path even if discovery initialized it.
-         */
-        Field classCache = ParserTestCase.class.getDeclaredField(
-                "class$org$apache$velocity$test$ParserTestCase");
-        classCache.setAccessible(true);
-        classCache.set(null, null);
+    private static VelocityEngine newVelocityEngine() throws Exception {
+        final Properties properties = new Properties();
+        properties.setProperty(
+                RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
+                "org.apache.velocity.runtime.log.NullLogChute");
+
+        final VelocityEngine engine = new VelocityEngine();
+        engine.init(properties);
+        return engine;
+    }
+
+    private static String evaluate(
+            final VelocityEngine engine,
+            final String template,
+            final Map<String, ?> values) throws Exception {
+        final VelocityContext context = new VelocityContext(new HashMap<>(values));
+        final StringWriter writer = new StringWriter();
+
+        engine.evaluate(context, writer, "parser-test", template);
+
+        return writer.toString();
+    }
+
+    public static final class ToStringCounter {
+        private int timesCalled;
+
+        @Override
+        public String toString() {
+            timesCalled++;
+            return "value";
+        }
+
+        private int getTimesCalled() {
+            return timesCalled;
+        }
     }
 }

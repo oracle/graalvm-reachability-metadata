@@ -17,7 +17,7 @@ public class PropertiesUtilTest {
     private static final String PROPERTIES_RESOURCE = "velocity/velocity/texen-test.properties";
 
     @Test
-    public void loadsPropertiesResourceFromClasspath() {
+    public void loadsPropertiesResourceFromClasspath() throws Exception {
         ClasspathPropertiesUtil propertiesUtil = new ClasspathPropertiesUtil();
 
         Properties properties = propertiesUtil.loadClasspathResource(PROPERTIES_RESOURCE);
@@ -28,7 +28,7 @@ public class PropertiesUtilTest {
     }
 
     private static final class ClasspathPropertiesUtil extends PropertiesUtil {
-        private Properties loadClasspathResource(String propertiesFile) {
+        private Properties loadClasspathResource(String propertiesFile) throws Exception {
             return loadFromClassPath(propertiesFile);
         }
     }

@@ -9,8 +9,10 @@ package velocity.velocity;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import org.apache.velocity.exception.MethodInvocationException;
-import org.apache.velocity.runtime.RuntimeLogger;
+import java.lang.reflect.InvocationTargetException;
+
+import org.apache.velocity.runtime.log.Log;
+import org.apache.velocity.runtime.log.NullLogChute;
 import org.apache.velocity.runtime.parser.node.GetExecutor;
 import org.apache.velocity.util.introspection.Introspector;
 import org.junit.jupiter.api.Test;
@@ -28,30 +30,29 @@ public class GetExecutorTest {
     }
 
     @Test
-    void oldExecuteInvokesResolvedGetMethod() throws Exception {
-        final GetExecutor executor = newExecutor("legacy");
-        final KeyValueStore store = new KeyValueStore();
+    void executeReturnsNullWhenNoGetMethodIsAvailable() throws Exception {
+        final Log log = new Log(new NullLogChute());
+        final GetExecutor executor = new GetExecutor(
+                log, new Introspector(log), Object.class, "missing");
 
-        final Object result = executor.OLDexecute(store, null);
-
-        assertThat(result).isEqualTo("value:legacy");
-        assertThat(store.getLastKey()).isEqualTo("legacy");
+        assertThat(executor.execute(new Object())).isNull();
     }
 
     @Test
-    void oldExecuteWrapsGetMethodExceptions() throws Exception {
-        final NoOpRuntimeLogger logger = new NoOpRuntimeLogger();
-        final GetExecutor executor = new GetExecutor(logger, new Introspector(logger), FailingKeyValueStore.class,
-                "boom");
+    void executePropagatesGetMethodInvocationExceptions() throws Exception {
+        final Log log = new Log(new NullLogChute());
+        final GetExecutor executor = new GetExecutor(
+                log, new Introspector(log), FailingKeyValueStore.class, "boom");
 
-        assertThatThrownBy(() -> executor.OLDexecute(new FailingKeyValueStore(), null))
-                .isInstanceOf(MethodInvocationException.class)
-                .hasMessageContaining("Invocation of method 'get(\"boom\")'");
+        assertThatThrownBy(() -> executor.execute(new FailingKeyValueStore()))
+                .isInstanceOf(InvocationTargetException.class)
+                .hasCauseInstanceOf(IllegalStateException.class)
+                .hasRootCauseMessage("Cannot resolve boom");
     }
 
     private static GetExecutor newExecutor(final String key) throws Exception {
-        final NoOpRuntimeLogger logger = new NoOpRuntimeLogger();
-        return new GetExecutor(logger, new Introspector(logger), KeyValueStore.class, key);
+        final Log log = new Log(new NullLogChute());
+        return new GetExecutor(log, new Introspector(log), KeyValueStore.class, key);
     }
 
     public static final class KeyValueStore {
@@ -70,24 +71,6 @@ public class GetExecutorTest {
     public static final class FailingKeyValueStore {
         public String get(final String key) {
             throw new IllegalStateException("Cannot resolve " + key);
-        }
-    }
-
-    private static final class NoOpRuntimeLogger implements RuntimeLogger {
-        @Override
-        public void warn(final Object message) {
-        }
-
-        @Override
-        public void info(final Object message) {
-        }
-
-        @Override
-        public void error(final Object message) {
-        }
-
-        @Override
-        public void debug(final Object message) {
         }
     }
 }

@@ -10,15 +10,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.Method;
 
+import org.apache.velocity.runtime.log.Log;
+import org.apache.velocity.runtime.log.NullLogChute;
 import org.apache.velocity.util.introspection.ClassMap;
 import org.junit.jupiter.api.Test;
 
 public class ClassMapTest {
     @Test
     void resolvesPublicInterfaceMethodForNonPublicImplementationMethod() throws Exception {
-        final Method implementationMethod = HiddenGreetingService.class.getMethod("greet", String.class);
+        final ClassMap classMap = new ClassMap(
+                HiddenGreetingService.class, new Log(new NullLogChute()));
 
-        final Method publicMethod = ClassMap.getPublicMethod(implementationMethod);
+        final Method publicMethod = classMap.findMethod("greet", new Object[] {"Ada"});
 
         assertThat(publicMethod).isNotNull();
         assertThat(publicMethod.getDeclaringClass()).isEqualTo(GreetingService.class);
