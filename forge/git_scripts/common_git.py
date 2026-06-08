@@ -99,8 +99,40 @@ def ensure_gh_authenticated() -> None:
         sys.exit(1)
 
 
-class GitHubRateLimitExceeded(RuntimeError):
-    """Raised when GitHub reports an exhausted API rate-limit bucket."""
+class GitHubError(RuntimeError):
+    """A GitHub API failure that survived common_git's retries.
+
+    Treated as an external failure: the issue automation should release its claim
+    for a later retry rather than apply a `human-intervention` follow-up.
+    """
+
+
+class GitHubRateLimitExceeded(GitHubError):
+    """GitHub reported an exhausted API rate-limit bucket.
+
+    A `GitHubError` whose quota semantics also tell the top-level run to stop and
+    retry after the reset (exit code 75), unlike a one-off transient failure.
+    """
+
+
+class GitTransportError(RuntimeError):
+    """A `git` remote transport operation failed.
+
+    Treated as an external failure for the same reason as `GitHubError`.
+    """
+
+    def __init__(
+            self,
+            message: str,
+            *,
+            returncode: int | None = None,
+            command: list[str] | None = None,
+            output: str | None = None,
+    ):
+        super().__init__(message)
+        self.returncode = returncode
+        self.command = command
+        self.output = output
 
 
 GITHUB_TRANSIENT_RETRY_ATTEMPTS = 5
@@ -304,10 +336,19 @@ def gh(
         error_text = "\n".join(part for part in (result.stderr, result.stdout) if part)
         if check and is_github_rate_limit_text(error_text):
             raise GitHubRateLimitExceeded("GitHub API rate limit exceeded")
-        if attempt < max_attempts and is_github_transient_failure_text(error_text):
-            _log_github_transient_retry(error_text, attempt, max_attempts, quiet)
-            time.sleep(_github_retry_delay_seconds(attempt))
-            continue
+        if is_github_transient_failure_text(error_text):
+            if attempt < max_attempts:
+                _log_github_transient_retry(error_text, attempt, max_attempts, quiet)
+                time.sleep(_github_retry_delay_seconds(attempt))
+                continue
+            # Only type the failure when this loop owns the retries; a single attempt
+            # (max_attempts == 1) is driven by an outer retrier that needs the raw
+            # CalledProcessError so it can retry and decide.
+            if max_attempts > 1:
+                raise GitHubError(
+                    f"GitHub transient failure after {max_attempts} attempts: "
+                    f"{_format_github_retry_reason(error_text)}"
+                )
         if check:
             if not quiet:
                 print(f"ERROR: {' '.join(cmd)}\n{result.stderr}", file=sys.stderr)
@@ -331,20 +372,27 @@ def run_github_json_with_retries(
             result = _run_gh_runner_once(gh_runner, args, command_quiet)
         except subprocess.CalledProcessError as exc:
             error_text = _github_error_text_from_exception(exc)
-            if attempt < max_attempts and is_github_transient_failure_text(error_text):
-                _log_github_transient_retry(error_text, attempt, max_attempts, quiet)
-                time.sleep(_github_retry_delay_seconds(attempt))
-                continue
+            if is_github_transient_failure_text(error_text):
+                if attempt < max_attempts:
+                    _log_github_transient_retry(error_text, attempt, max_attempts, quiet)
+                    time.sleep(_github_retry_delay_seconds(attempt))
+                    continue
+                raise GitHubError(
+                    f"GitHub transient failure after {max_attempts} attempts: "
+                    f"{_format_github_retry_reason(error_text)}"
+                ) from exc
             raise
 
         data = json.loads(result.stdout)
         if isinstance(data, dict) and data.get("errors"):
             if is_github_rate_limit_errors(data["errors"]):
                 raise GitHubRateLimitExceeded("GitHub API rate limit exceeded")
-            if attempt < max_attempts and is_github_transient_errors(data["errors"]):
-                _log_github_transient_retry(str(data["errors"]), attempt, max_attempts, quiet)
-                time.sleep(_github_retry_delay_seconds(attempt))
-                continue
+            if is_github_transient_errors(data["errors"]):
+                if attempt < max_attempts:
+                    _log_github_transient_retry(str(data["errors"]), attempt, max_attempts, quiet)
+                    time.sleep(_github_retry_delay_seconds(attempt))
+                    continue
+                raise GitHubError(f"GitHub transient GraphQL failure after {max_attempts} attempts")
             if not quiet:
                 print(f"ERROR: GraphQL errors: {data['errors']}", file=sys.stderr)
             raise RuntimeError(f"GraphQL error: {data['errors']}")
@@ -367,10 +415,15 @@ def run_github_command_with_retries(
             return _run_gh_runner_once(gh_runner, args, command_quiet)
         except subprocess.CalledProcessError as exc:
             error_text = _github_error_text_from_exception(exc)
-            if attempt < max_attempts and is_github_transient_failure_text(error_text):
-                _log_github_transient_retry(error_text, attempt, max_attempts, quiet)
-                time.sleep(_github_retry_delay_seconds(attempt))
-                continue
+            if is_github_transient_failure_text(error_text):
+                if attempt < max_attempts:
+                    _log_github_transient_retry(error_text, attempt, max_attempts, quiet)
+                    time.sleep(_github_retry_delay_seconds(attempt))
+                    continue
+                raise GitHubError(
+                    f"GitHub transient failure after {max_attempts} attempts: "
+                    f"{_format_github_retry_reason(error_text)}"
+                ) from exc
             raise
 
     raise RuntimeError("GitHub command exhausted retries")
@@ -425,24 +478,54 @@ def build_ai_branch_name(branch_suffix: str, cwd=None) -> str:
 
 def git_remote_branch_exists(branch: str, remote: str = "origin", cwd: str | None = None) -> bool:
     """Return True when the remote has a branch with this name."""
-    result = subprocess.run(
-        ["git", "ls-remote", "--exit-code", "--heads", remote, branch],
+    result = run_git_transport(
+        ["ls-remote", "--exit-code", "--heads", remote, branch],
         cwd=cwd,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-        check=False,
+        allowed_returncodes=(0, 2),
     )
     if result.returncode == 0:
         return True
     if result.returncode == 2:
         return False
-    print(
-        f"ERROR: Failed to check whether `{remote}/{branch}` exists:\n{result.stderr.strip()}",
-        file=sys.stderr,
-    )
-    result.check_returncode()
     return False
+
+
+def run_git_transport(
+        args: list[str],
+        *,
+        cwd: str | None = None,
+        env: dict[str, str] | None = None,
+        timeout: int | None = None,
+        allowed_returncodes: Iterable[int] = (0,),
+) -> subprocess.CompletedProcess:
+    """Run a `git` remote transport command, typing its failures.
+
+    Captures output so a transport failure surfaces as a typed `GitTransportError`
+    instead of a bare `CalledProcessError`, letting the issue automation treat it
+    as external (release the claim, no `human-intervention`).
+    §FS-human-intervention-policy
+    """
+    result = subprocess.run(
+        ["git", *args],
+        cwd=cwd,
+        env=env,
+        capture_output=True,
+        text=True,
+        timeout=timeout,
+    )
+    if result.returncode not in set(allowed_returncodes):
+        detail = "\n".join(
+            stream.strip()
+            for stream in (result.stderr, result.stdout)
+            if stream and stream.strip()
+        )
+        raise GitTransportError(
+            f"git {' '.join(args)} failed (exit {result.returncode}): {detail}",
+            returncode=result.returncode,
+            command=["git", *args],
+            output=detail,
+        )
+    return result
 
 
 def delete_remote_branch_if_exists(branch: str, remote: str = "origin", cwd: str | None = None) -> bool:
@@ -450,7 +533,7 @@ def delete_remote_branch_if_exists(branch: str, remote: str = "origin", cwd: str
     if not git_remote_branch_exists(branch, remote=remote, cwd=cwd):
         return False
     print(f"[git-branch] Deleting existing remote branch {remote}/{branch}.")
-    subprocess.run(["git", "push", remote, "--delete", branch], cwd=cwd, check=True)
+    run_git_transport(["push", remote, "--delete", branch], cwd=cwd)
     return True
 
 

@@ -26,6 +26,7 @@ import tempfile
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
+from git_scripts.common_git import run_git_transport
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.metadata_index import resolve_test_version
 from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME, read_pending_metrics, write_pending_metrics
@@ -186,10 +187,10 @@ def fetch_pr_base_ref(repo_path: str, repo: str, base_branch: str = DEFAULT_BASE
         )
         remote_repo = _github_repo_slug_from_url(remote_url.stdout.strip()) if remote_url.returncode == 0 else None
         if remote_repo == target_repo:
-            subprocess.run(["git", "fetch", remote_name, base_branch], cwd=repo_path, check=True)
+            run_git_transport(["fetch", remote_name, base_branch], cwd=repo_path)
             return f"{remote_name}/{base_branch}"
 
-    subprocess.run(["git", "fetch", f"https://github.com/{target_repo}.git", base_branch], cwd=repo_path, check=True)
+    run_git_transport(["fetch", f"https://github.com/{target_repo}.git", base_branch], cwd=repo_path)
     return "FETCH_HEAD"
 
 
@@ -345,14 +346,11 @@ def _run_spring_aot_verification(
     with tempfile.TemporaryDirectory(prefix="forge-spring-aot-") as spring_parent:
         os.symlink(os.path.join(repo_path, "metadata"), os.path.join(spring_parent, "metadata"))
         spring_path = os.path.join(spring_parent, "spring-aot-smoke-tests")
-        failed = _run_recorded_command(
-            repo_path,
-            "checkout-spring-aot-smoke-tests",
-            ["git", "clone", "--depth", "1", "--branch", SPRING_AOT_BRANCH, SPRING_AOT_REPO_URL, spring_path],
-            result,
+        _log_local_ci("Fetching Spring AOT smoke tests", indent_level=1)
+        run_git_transport(
+            ["clone", "--depth", "1", "--branch", SPRING_AOT_BRANCH, SPRING_AOT_REPO_URL, spring_path],
+            cwd=repo_path,
         )
-        if failed is not None:
-            return failed
 
         try:
             spring_matrix = _gradle_json_output(

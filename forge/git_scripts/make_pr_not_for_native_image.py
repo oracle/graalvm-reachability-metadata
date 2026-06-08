@@ -20,6 +20,7 @@ from git_scripts.common_git import (
     get_origin_owner,
     gh,
     parse_coordinate_parts,
+    run_git_transport,
     stage_and_commit,
 )
 from utility_scripts.metadata_index import get_not_for_native_image_marker
@@ -84,7 +85,7 @@ def push_marker_branch(
         base_commit=base_ref,
         metrics_repo_path=metrics_repo_path,
     )
-    subprocess.run(["git", "push", "origin", branch], check=True, cwd=repo_path)
+    run_git_transport(["push", "origin", branch], cwd=repo_path)
     return branch, local_ci_verification
 
 

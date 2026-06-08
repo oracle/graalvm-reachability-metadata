@@ -26,6 +26,7 @@ from git_scripts.common_git import (
     build_ai_branch_name,
     delete_remote_branch_if_exists,
     get_configured_reviewers,
+    run_git_transport,
 )
 from utility_scripts.library_stats import stats_artifact_dir
 from utility_scripts.metadata_index import resolve_metadata_version, resolve_test_version
@@ -321,9 +322,9 @@ def _fetch_pr_base(repo_path: str) -> str:
         check=False,
     )
     if upstream_remote_url.returncode == 0 and REPO in upstream_remote_url.stdout.strip():
-        subprocess.run(["git", "fetch", "upstream", BASE_BRANCH], check=True, cwd=repo_path)
+        run_git_transport(["fetch", "upstream", BASE_BRANCH], cwd=repo_path)
         return f"upstream/{BASE_BRANCH}"
-    subprocess.run(["git", "fetch", upstream_url, BASE_BRANCH], check=True, cwd=repo_path)
+    run_git_transport(["fetch", upstream_url, BASE_BRANCH], cwd=repo_path)
     return "FETCH_HEAD"
 
 
@@ -517,7 +518,7 @@ def push_current_branch_to_origin(
         base_commit=base_ref,
         metrics_repo_path=metrics_repo_path,
     )
-    subprocess.run(["git", "push", "origin", new_branch], check=True, cwd=repo_path)
+    run_git_transport(["push", "origin", new_branch], cwd=repo_path)
 
     return new_branch
 

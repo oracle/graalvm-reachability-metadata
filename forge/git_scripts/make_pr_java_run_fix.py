@@ -22,6 +22,7 @@ from git_scripts.common_git import (
     assert_no_dynamic_access_category_regressions,
     build_ai_branch_name,
     delete_remote_branch_if_exists,
+    run_git_transport,
 )
 from git_scripts.make_pr_javac_fix import generate_diff_text
 from utility_scripts.library_stats import stats_artifact_dir
@@ -293,11 +294,7 @@ def push_current_branch_to_origin(
     )
     assert_no_dynamic_access_category_regressions(repo_path, old_coordinates, new_coordinates)
 
-    subprocess.run(
-        ["git", "push", "origin", branch],
-        check=True,
-        cwd=repo_path,
-    )
+    run_git_transport(["push", "origin", branch], cwd=repo_path)
 
     return branch, group, artifact, old_version, new_coordinates
 
