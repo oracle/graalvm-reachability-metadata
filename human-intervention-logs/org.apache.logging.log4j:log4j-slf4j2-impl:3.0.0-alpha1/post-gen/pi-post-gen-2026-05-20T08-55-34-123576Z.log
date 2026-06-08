@@ -1,0 +1,19 @@
+Warning: Model "gpt-5.5" not found for provider "OCA". Using custom model id.
+Done.
+
+Changes made:
+- Pruned non-metadata-related failing/generated coverage in:
+  - `tests/src/org.apache.logging.log4j/log4j-slf4j2-impl/3.0.0-alpha1/src/test/java/org_apache_logging_log4j/log4j_slf4j2_impl/Log4j_slf4j2_implTest.java`
+- Wrote report to:
+  - `post-gen-interventions/org.apache.logging.log4j_log4j-slf4j2-impl_3.0.0-alpha1.md`
+
+Root cause:
+- Not missing metadata.
+- The failing tests exercised Log4j 3 runtime `LambdaMetafactory` class generation (`LoggingSystem$$Lambda...`), which native-image does not support by default, causing `ThreadContext` initialization failures and cascading `NoClassDefFoundError`s.
+
+Verification:
+- Ran:
+  - `./gradlew test -Pcoordinates=org.apache.logging.log4j:log4j-slf4j2-impl:3.0.0-alpha1 --stacktrace`
+- Result: build successful; native test ran `3` tests and all `3` passed.
+
+No metadata files were modified by this intervention.
