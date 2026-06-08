@@ -1,0 +1,28 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package ch_qos_logback.logback_core;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import ch.qos.logback.core.util.EnvUtil;
+import org.junit.jupiter.api.Test;
+
+public class EnvUtilTest {
+
+    @Test
+    void detectsJaninoScriptEvaluatorThroughLogbackClassLoader() {
+        boolean janinoAvailable = EnvUtil.isJaninoAvailable();
+
+        assertThat(janinoAvailable).isTrue();
+    }
+
+    @Test
+    void detectsAvailableAndUnavailableClassesThroughCallerClassLoader() {
+        assertThat(EnvUtil.isClassAvailable(EnvUtilTest.class, String.class.getName())).isTrue();
+        assertThat(EnvUtil.isClassAvailable(EnvUtilTest.class, "example.missing.DoesNotExist")).isFalse();
+    }
+}
