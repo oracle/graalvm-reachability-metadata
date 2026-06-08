@@ -20,6 +20,7 @@ from git_scripts.common_git import (
     build_ai_branch_name,
     delete_remote_branch_if_exists,
     get_configured_reviewers,
+    run_git_transport,
 )
 from utility_scripts.metrics_writer import (
     count_metadata_entries,
@@ -332,11 +333,7 @@ def push_current_branch_to_origin(
         metrics_repo_path=metrics_repo_path,
     )
 
-    subprocess.run(
-        ["git", "push", "origin", branch],
-        cwd=repo_path,
-        check=True,
-    )
+    run_git_transport(["push", "origin", branch], cwd=repo_path)
 
     return branch, group, artifact, new_coordinates, local_ci_verification
 

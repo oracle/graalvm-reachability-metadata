@@ -341,12 +341,23 @@ Forge's responsibility boundary, including:
   the PR unsafe to auto-review as a normal generated result.
 
 Forge must not use `human-intervention` for failures that are only external or
-transient infrastructure conditions. Connection errors, Maven repository
-download failures, GitHub API/status failures, rate limits, runner outages,
-temporary registry unavailability, and similar environmental failures must be
-reported as infrastructure failures, retried or preserved with diagnostics as
-appropriate, and left without the `human-intervention` label unless later
-evidence shows a semantic Forge, repository, generation, or library problem.
+transient infrastructure conditions. The issue-side classification is by failure
+origin, not by log keywords: a workflow failure is **logical** — and gets the
+label — when it comes from the driver script, the core workflow, or the local
+CI-equivalent verification (compile, test, native-test, and finalization gates),
+which includes the rare case of an agent timeout. A workflow failure is
+**external** — and must not get the label — only when it surfaces as a typed
+exception from the dependency boundary Forge itself crosses: GitHub (`gh`: rate
+limits and 5xx/network) as `GitHubError` / `GitHubRateLimitExceeded`, and remote
+git operations (push/pull/fetch/clone/ls-remote) as `GitTransportError`. Maven
+Central and Docker registry failures have no such boundary — Gradle owns them
+inside `./gradlew test` and they reach Forge only as an opaque CI-check `rc != 0`,
+indistinguishable from a real test failure once the in-workflow retries have run —
+so they are not special-cased and fall through to the safe logical default. When a
+failure is external, Forge takes no issue action: it applies no
+`human-intervention` label and posts no comment, and silently releases the issue
+claim (status back to `Todo`, assignees cleared) so the issue is retried later.
+Rate limits additionally stop the current run for retry after reset.
 
 The label can appear on issues or pull requests. On an issue, it means Forge
 could not safely produce a PR-ready result and posted enough diagnostics for a

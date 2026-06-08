@@ -25,7 +25,7 @@ from utility_scripts.native_image_config_policy import (
 )
 from utility_scripts.source_context import resolve_test_source_layout
 from utility_scripts.strategy_loader import load_strategy_by_name
-from git_scripts.common_git import git_remote_exists
+from git_scripts.common_git import GitTransportError, git_remote_exists, run_git_transport
 
 # Rates are attached to the workflow model name.
 DEFAULT_INPUT_RATE_PER_1M = 3.00
@@ -1024,7 +1024,7 @@ def commit_run_metrics_with_retry(
     snapshot_root = _snapshot_extra_paths(metrics_repo_root, extra_paths)
     try:
         for attempt in range(1, max_attempts + 1):
-            subprocess.run(["git", "fetch", "origin", "master"], check=True, cwd=metrics_repo_root)
+            run_git_transport(["fetch", "origin", "master"], cwd=metrics_repo_root)
             subprocess.run(["git", "reset", "--hard", "origin/master"], check=True, cwd=metrics_repo_root)
 
             append_run_metrics(run_metrics, metrics_json_absolute_path)
@@ -1040,33 +1040,24 @@ def commit_run_metrics_with_retry(
                 return
 
             subprocess.run(["git", "commit", "-m", commit_message], check=True, cwd=metrics_repo_root)
-            push_result = subprocess.run(
-                ["git", "push", "origin", "HEAD:master"],
-                cwd=metrics_repo_root,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-            )
-            if push_result.returncode == 0:
+            try:
+                run_git_transport(["push", "origin", "HEAD:master"], cwd=metrics_repo_root)
                 return
+            except GitTransportError as exc:
+                push_output = exc.output or str(exc)
 
-            if attempt < max_attempts:
+                if attempt < max_attempts:
+                    print(
+                        f"Retrying metrics push after attempt {attempt} failed: {push_output}",
+                        file=sys.stderr,
+                    )
+                    continue
+
                 print(
-                    f"Retrying metrics push after attempt {attempt} failed: {push_result.stdout}",
+                    f"ERROR: Failed to push metrics after {max_attempts} attempts: {push_output}",
                     file=sys.stderr,
                 )
-                continue
-
-            if attempt == max_attempts:
-                print(
-                    f"ERROR: Failed to push metrics after {max_attempts} attempts: {push_result.stdout}",
-                    file=sys.stderr,
-                )
-                raise subprocess.CalledProcessError(
-                    push_result.returncode,
-                    ["git", "push", "origin", "HEAD:master"],
-                    output=push_result.stdout,
-                )
+                raise
     finally:
         if snapshot_root:
             shutil.rmtree(snapshot_root, ignore_errors=True)

@@ -7,6 +7,8 @@ import os
 import subprocess
 import sys
 
+from git_scripts.common_git import GitTransportError, run_git_transport
+
 REACHABILITY_REPO_CLONE_URL = "git@github.com:oracle/graalvm-reachability-metadata.git"
 
 
@@ -29,6 +31,14 @@ def git_env_limited_to_repo_root(repo_root: str) -> dict[str, str]:
 
 def _run_git(cmd: list[str], cwd: str) -> None:
     """Run a git command and exit with a clear error on failure."""
+    if cmd[:2] == ["git", "clone"]:
+        try:
+            run_git_transport(cmd[1:], cwd=cwd)
+        except GitTransportError as exc:
+            print(f"ERROR: Failed to run `{' '.join(cmd)}` in {cwd}: {exc}", file=sys.stderr)
+            raise
+        return
+
     result = subprocess.run(
         cmd,
         cwd=cwd,

@@ -74,7 +74,10 @@ from ai_workflows.core.workflow_strategy import (
 )
 from git_scripts.common_git import (
     GITHUB_TRANSIENT_RETRY_ATTEMPTS,
+    GitHubError,
     GitHubRateLimitExceeded,
+    GitTransportError,
+    _format_github_retry_reason,
     _github_retry_delay_seconds,
     _log_github_transient_retry,
     ensure_gh_authenticated,
@@ -83,6 +86,7 @@ from git_scripts.common_git import (
     is_github_rate_limit_text,
     is_github_transient_failure_text,
     log_github_query,
+    run_git_transport,
     run_github_command_with_retries,
     run_github_json_with_retries,
     run_github_with_retries,
@@ -251,42 +255,13 @@ HUMAN_INTERVENTION_NON_FAILURE_STATUSES = {
     RUN_STATUS_CHUNK_READY,
     SUCCESS_WITH_INTERVENTION_STATUS,
 }
-HUMAN_INTERVENTION_SEMANTIC_FAILURE_PATTERNS = (
-    "analysis: stage=",
-    "coverage_did_not_reach_zero_uncovered_calls",
-    "generated-test-quality",
-    "metadata-gap-exhausted",
-    "native-test gate failed",
-    "post-generation-fix",
-    "scaffold placeholder quality gate",
-    "suspicious generated test target requires human review",
-    "test_failures_prevented_reaching_nativeTest",
-)
-HUMAN_INTERVENTION_TRANSIENT_FAILURE_PATTERNS = (
-    "api rate limit",
-    "bad gateway",
-    "connection reset",
-    "connection timed out",
-    "could not get resource",
-    "could not head",
-    "could not resolve all files",
-    "docker registry",
-    "github api transient failure",
-    "http 502",
-    "http 503",
-    "http 504",
-    "i/o timeout",
-    "maven repository",
-    "network is unreachable",
-    "rate limit",
-    "registry unavailable",
-    "remote end hung up",
-    "service unavailable",
-    "temporary failure",
-    "tls handshake timeout",
-    "too many requests",
-)
-FAILED_RUN_EVIDENCE_LOG_TAIL_BYTES = 200_000
+# A workflow failure is logical (driver/core/CI-check) and gets `human-intervention`
+# by default. The only exception is an external dependency failure, which surfaces
+# as a typed exception at the Python boundary that issues it: GitHub (`gh`) as
+# `GitHubError` / `GitHubRateLimitExceeded`, and remote git as `GitTransportError`.
+# Maven Central and Docker registry failures have no such boundary (Gradle owns
+# them inside `./gradlew test`); they fall through to the safe logical default.
+# §FS-human-intervention-policy
 NOT_FOR_NATIVE_IMAGE_LABEL_COLOR = "5319E7"
 NOT_FOR_NATIVE_IMAGE_LABEL_DESCRIPTION = (
     "Artifact is tracked but is not applicable to GraalVM Native Image reachability metadata"
@@ -380,6 +355,7 @@ class WorkflowRunResult:
     claimed_issue: ClaimedIssue
     success: bool
     started_at: float | None = None
+    failure_was_external: bool = False
 
 
 @dataclass(frozen=True)
@@ -601,10 +577,19 @@ def gh(
         error_text = "\n".join(part for part in (result.stderr, result.stdout) if part)
         if check and is_github_rate_limit_text(error_text):
             raise GitHubRateLimitExceeded("GitHub API rate limit exceeded")
-        if attempt < max_attempts and is_github_transient_failure_text(error_text):
-            _log_github_transient_retry(error_text, attempt, max_attempts, quiet)
-            time.sleep(_github_retry_delay_seconds(attempt))
-            continue
+        if is_github_transient_failure_text(error_text):
+            if attempt < max_attempts:
+                _log_github_transient_retry(error_text, attempt, max_attempts, quiet)
+                time.sleep(_github_retry_delay_seconds(attempt))
+                continue
+            # Only type the failure when this loop owns the retries; a single attempt
+            # (max_attempts == 1) is driven by an outer retrier that needs the raw
+            # CalledProcessError so it can retry and decide.
+            if max_attempts > 1:
+                raise GitHubError(
+                    f"GitHub transient failure after {max_attempts} attempts: "
+                    f"{_format_github_retry_reason(error_text)}"
+                )
         if check:
             if not quiet:
                 print(f"ERROR: {' '.join(cmd)}\n{result.stderr}", file=sys.stderr)
@@ -2339,11 +2324,17 @@ def validate_index_files_on_current_master_candidate(
         f"Failed to create final index validation worktree for PR #{pr_number}",
     )
     try:
-        run_checked_command(
-            ["git", "fetch", "--quiet", "origin", f"refs/pull/{pr_number}/head"],
-            validation_worktree_path,
-            f"Failed to fetch PR #{pr_number} head for final index validation",
-        )
+        try:
+            run_git_transport(
+                ["fetch", "--quiet", "origin", f"refs/pull/{pr_number}/head"],
+                cwd=validation_worktree_path,
+            )
+        except GitTransportError as exc:
+            print(
+                f"ERROR: Failed to fetch PR #{pr_number} head for final index validation: {exc}",
+                file=sys.stderr,
+            )
+            raise
         fetched_head = run_checked_command(
             ["git", "rev-parse", "FETCH_HEAD"],
             validation_worktree_path,
@@ -3127,68 +3118,33 @@ def _load_dynamic_access_snapshot_from_report(claimed_issue: ClaimedIssue) -> Dy
     )
 
 
-def _read_failed_run_evidence_log_tail(log_path: str) -> str:
-    """Read the actual bounded tail of a failed-run log."""
-    log_size: int = os.path.getsize(log_path)
-    start_offset: int = max(0, log_size - FAILED_RUN_EVIDENCE_LOG_TAIL_BYTES)
-    with open(log_path, "rb") as log_file:
-        log_file.seek(start_offset)
-        return log_file.read().decode("utf-8", errors="replace")
+def is_external_failure_exception(exc: BaseException | None) -> bool:
+    """Return True when a workflow exception is an external dependency failure.
 
-
-def _collect_failed_run_evidence_text(
-        claimed_issue: ClaimedIssue,
-        run_metrics: dict | None,
-        started_at: float | None,
-) -> str:
-    """Collect bounded failed-run evidence for policy classification. §FS-human-intervention-policy"""
-    evidence_parts: list[str] = []
-    if isinstance(run_metrics, dict):
-        evidence_parts.append(json.dumps(run_metrics, sort_keys=True))
-
-    for log_path in collect_issue_log_paths(claimed_issue, started_at):
-        try:
-            evidence_parts.append(_read_failed_run_evidence_log_tail(log_path))
-        except OSError:
-            continue
-
-    return "\n".join(evidence_parts).lower()
-
-
-def _failed_run_has_transient_evidence(evidence_text: str) -> bool:
-    """Return True when failure evidence points to external or transient infrastructure."""
-    return any(
-        pattern.lower() in evidence_text
-        for pattern in HUMAN_INTERVENTION_TRANSIENT_FAILURE_PATTERNS
-    )
-
-
-def _failed_run_has_semantic_human_intervention_evidence(
-        run_metrics: dict | None,
-        coverage_snapshot: DynamicAccessCoverageSnapshot | None,
-        evidence_text: str,
-) -> bool:
-    """Return True when failed-run evidence supports the issue-side label."""
-    if coverage_snapshot is not None and coverage_snapshot.total_calls > 0:
-        return True
-
-    if isinstance(run_metrics, dict):
-        metrics = run_metrics.get("metrics")
-        if isinstance(metrics, dict) and int(metrics.get("generated_loc", 0) or 0) > 0:
+    GitHub (rate-limit or transient) and git transport surface as typed exceptions
+    (`GitHubError` / `GitTransportError`). An external failure releases the issue
+    claim for retry without `human-intervention`, while any other exception
+    (including agent timeouts) is logical. The cause/context chain is walked so a
+    wrapped external error is still recognized. §FS-human-intervention-policy
+    """
+    error: BaseException | None = exc
+    while error is not None:
+        if isinstance(error, (GitHubError, GitTransportError)):
             return True
-
-    return any(
-        pattern.lower() in evidence_text
-        for pattern in HUMAN_INTERVENTION_SEMANTIC_FAILURE_PATTERNS
-    )
+        error = error.__cause__ or error.__context__
+    return False
 
 
 def resolve_human_intervention_candidate(
         claimed_issue: ClaimedIssue,
         workflow_success: bool = True,
-        started_at: float | None = None,
 ) -> HumanInterventionCandidate | None:
-    """Return follow-up data when an issue run needs human intervention."""
+    """Return follow-up data for a logical issue failure that needs human intervention.
+
+    External failures are filtered out upstream (see `handle_failed_claimed_issue`),
+    so any library-issue failure that reaches here is logical (driver/core/CI check,
+    including agent timeouts) and is labeled. §FS-human-intervention-policy
+    """
     if claimed_issue.label not in {LABEL_LIBRARY_NEW, LABEL_LIBRARY_UPDATE}:
         return None
 
@@ -3205,29 +3161,6 @@ def resolve_human_intervention_candidate(
             return None
         if coverage_snapshot is None:
             coverage_snapshot = _load_dynamic_access_snapshot_from_report(claimed_issue)
-        evidence_text = _collect_failed_run_evidence_text(claimed_issue, run_metrics, started_at)
-        if _failed_run_has_transient_evidence(evidence_text):
-            log_stage(
-                "human-intervention",
-                (
-                    f"Not labeling issue #{claimed_issue.issue['number']}: failed-run evidence "
-                    "matches external or transient infrastructure."
-                ),
-            )
-            return None
-        if not _failed_run_has_semantic_human_intervention_evidence(
-                run_metrics,
-                coverage_snapshot,
-                evidence_text,
-        ):
-            log_stage(
-                "human-intervention",
-                (
-                    f"Not labeling issue #{claimed_issue.issue['number']}: failed-run evidence "
-                    "does not identify a semantic generated-result, metadata, or library problem."
-                ),
-            )
-            return None
         return HumanInterventionCandidate(
             strategy_name=strategy_name,
             workflow_status=workflow_status,
@@ -3924,7 +3857,7 @@ def preserve_failed_work_branch(claimed_issue: ClaimedIssue) -> FailurePreservat
     else:
         log_stage("preserve-failed-work", f"No uncommitted work found for issue #{issue_number}; pushing branch at current HEAD.")
 
-    subprocess.run(["git", "push", "-u", "origin", branch_name], cwd=repo_path, env=git_env, check=True)
+    run_git_transport(["push", "-u", "origin", branch_name], cwd=repo_path, env=git_env)
     branch_url = build_origin_branch_url(repo_path, branch_name)
     log_stage("preserve-failed-work", f"Preserved failed work for issue #{issue_number}: {branch_url}")
     return FailurePreservationResult(
@@ -4011,7 +3944,7 @@ def refresh_preserved_branch_logs(
         env=git_env,
         check=True,
     )
-    subprocess.run(["git", "push"], cwd=repo_path, env=git_env, check=True)
+    run_git_transport(["push"], cwd=repo_path, env=git_env)
     log_stage("preserve-failed-work", f"Updated preserved branch logs for issue #{issue_number}.")
 
 
@@ -4027,49 +3960,6 @@ def ensure_preserved_branch_link_in_comment(
         "Preserved work branch:\n"
         f"{preservation_result.branch_url}"
     )
-
-
-def build_failed_run_diagnostic_comment(
-        claimed_issue: ClaimedIssue,
-        started_at: float | None,
-        preservation_result: FailurePreservationResult | None,
-) -> str:
-    """Build a non-labeling failed-run diagnostic comment. §FS-human-intervention-policy"""
-    log_paths = collect_issue_log_paths(claimed_issue, started_at)
-    preserved_work_section = "Preserved work branch: unavailable"
-    if preservation_result is not None:
-        preserved_work_section = (
-            f"Preserved work branch: {preservation_result.branch_url}\n"
-            f"Branch name: `{preservation_result.branch_name}`"
-        )
-
-    return (
-        "Automation failed\n\n"
-        f"The automated `{claimed_issue.label}` job failed for `{claimed_issue.issue_coordinates}`. "
-        "Forge did not find evidence that this failure requires the `human-intervention` label, so the "
-        "issue was returned to the normal queue with diagnostics preserved.\n\n"
-        f"{preserved_work_section}\n\n"
-        "Relevant logs:\n"
-        f"{_format_log_path_list(log_paths)}\n\n"
-        "Suggested follow-up:\n"
-        "- Retry the workflow if the failure came from a transient service or runner condition.\n"
-        "- Inspect the preserved branch and logs if the same failure repeats."
-    )
-
-
-def post_failed_run_diagnostic_comment(issue_number: int, comment_body: str | None) -> None:
-    """Post a failed-run diagnostic without applying `human-intervention`."""
-    if is_user_interrupt_requested() or not comment_body:
-        return
-
-    try:
-        post_issue_comment(issue_number, comment_body)
-    except Exception as exc:
-        print(
-            f"ERROR: Failed to post failed-run diagnostic comment to issue #{issue_number}: {exc!r}",
-            file=sys.stderr,
-        )
-        traceback.print_exc()
 
 
 def post_human_intervention_comment_and_label(issue_number: int, comment_body: str | None) -> None:
@@ -4107,7 +3997,7 @@ def maybe_apply_human_intervention_follow_up(
     if is_user_interrupt_requested():
         return False
 
-    candidate = resolve_human_intervention_candidate(claimed_issue, workflow_success, started_at)
+    candidate = resolve_human_intervention_candidate(claimed_issue, workflow_success)
     if candidate is None:
         return False
 
@@ -4137,24 +4027,19 @@ def apply_failed_run_follow_up(
         started_at: float | None = None,
         preservation_result: FailurePreservationResult | None = None,
 ) -> None:
-    """Run Codex failure analysis and post the failed-run follow-up comment."""
+    """Run Codex failure analysis and apply the `human-intervention` follow-up.
+
+    Only reached for logical failures; external failures are released upstream
+    without any issue action. §FS-human-intervention-policy
+    """
     if is_user_interrupt_requested():
         raise KeyboardInterrupt
 
     candidate = resolve_human_intervention_candidate(
         claimed_issue,
         workflow_success=False,
-        started_at=started_at,
     )
     if candidate is None:
-        comment_body = build_failed_run_diagnostic_comment(
-            claimed_issue,
-            started_at,
-            preservation_result,
-        )
-        if is_user_interrupt_requested():
-            raise KeyboardInterrupt
-        post_failed_run_diagnostic_comment(claimed_issue.issue["number"], comment_body)
         return
 
     try:
@@ -4674,23 +4559,18 @@ def fetch_review_base_ref(repo_path: str) -> None:
     """Refresh the upstream PR base ref used by local review diffs."""
     remote_tracking_ref = f"refs/remotes/origin/{DEFAULT_WORKTREE_BASE_REF}"
     try:
-        subprocess.run(
+        run_git_transport(
             [
-                "git",
                 "fetch",
                 "--quiet",
                 "origin",
                 f"+{DEFAULT_WORKTREE_BASE_REF}:{remote_tracking_ref}",
             ],
             cwd=repo_path,
-            check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
         )
-    except subprocess.CalledProcessError as exc:
+    except GitTransportError as exc:
         print(
-            f"ERROR: Failed to fetch origin/{DEFAULT_WORKTREE_BASE_REF} before PR review: {exc.stdout}",
+            f"ERROR: Failed to fetch origin/{DEFAULT_WORKTREE_BASE_REF} before PR review: {exc}",
             file=sys.stderr,
         )
         raise
@@ -5159,6 +5039,7 @@ def run_claimed_issue(
 ) -> WorkflowRunResult:
     """Execute the claimed issue workflow inside its isolated worktree."""
     started_at = time.time()
+    failure_was_external = False
     try:
         success = invoke_pipeline(
             claimed_issue,
@@ -5177,9 +5058,15 @@ def run_claimed_issue(
         )
         traceback.print_exc()
         success = False
+        failure_was_external = is_external_failure_exception(exc)
     if is_user_interrupt_requested():
         raise KeyboardInterrupt
-    return WorkflowRunResult(claimed_issue=claimed_issue, success=success, started_at=started_at)
+    return WorkflowRunResult(
+        claimed_issue=claimed_issue,
+        success=success,
+        started_at=started_at,
+        failure_was_external=failure_was_external,
+    )
 
 
 def revert_issue_claim(item_id: str, issue_number: int, reason: str) -> None:
@@ -5650,10 +5537,27 @@ def handle_failed_claimed_issue(
         claimed_issue: ClaimedIssue,
         reason: str,
         started_at: float | None = None,
+        external: bool = False,
 ) -> None:
-    """Preserve failed work, run Codex analysis, apply follow-up, and revert the claim."""
+    """Handle a failed claimed issue, then revert its claim.
+
+    An external failure (a typed GitHub or git-transport exception) is not the
+    issue's fault: release the claim silently so it is retried, with no preserved
+    branch, comment, or `human-intervention` label. A logical failure preserves
+    work and applies the follow-up. §FS-human-intervention-policy
+    """
     if is_user_interrupt_requested():
         raise KeyboardInterrupt
+    if external:
+        log_stage(
+            "issue-external-failure",
+            (
+                f"Issue #{claimed_issue.issue['number']} failed on an external dependency "
+                f"({reason}); releasing the claim for retry without human-intervention."
+            ),
+        )
+        revert_claimed_issue(claimed_issue, reason)
+        return
     preservation_result = preserve_failed_work_for_follow_up(claimed_issue)
     if is_user_interrupt_requested():
         raise KeyboardInterrupt
@@ -5684,6 +5588,7 @@ def handle_completed_run(run_result: WorkflowRunResult) -> bool:
                 claimed_issue,
                 "workflow failure",
                 started_at=run_result.started_at,
+                external=run_result.failure_was_external,
             )
             return False
         try:
@@ -5698,6 +5603,7 @@ def handle_completed_run(run_result: WorkflowRunResult) -> bool:
                 claimed_issue,
                 "finalization failure",
                 started_at=run_result.started_at,
+                external=is_external_failure_exception(exc),
             )
             return False
         apply_large_library_completion_follow_up(claimed_issue)
@@ -5769,6 +5675,7 @@ def process_claimed_issue_lifecycle(
                         claimed_issue,
                         f"unhandled lifecycle failure ({type(exc).__name__})",
                         started_at=started_at,
+                        external=is_external_failure_exception(exc),
                     )
                     log_failure_banner(
                         format_issue_result_message(
