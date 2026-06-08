@@ -12,11 +12,24 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.io.IOException;
 
 import org.apache.hadoop.io.retry.AtMostOnce;
+import org.apache.hadoop.io.retry.RetryPolicies;
 import org.apache.hadoop.io.retry.RetryPolicy;
 import org.apache.hadoop.io.retry.RetryProxy;
 import org.junit.jupiter.api.Test;
 
 public class RetryInvocationHandlerTest {
+    @Test
+    void successfulInvocationReturnsValueFromImplementation() {
+        EchoService service = (EchoService) RetryProxy.create(
+                EchoService.class,
+                new EchoServiceImplementation(),
+                RetryPolicies.TRY_ONCE_THEN_FAIL);
+
+        String result = service.echo("hadoop");
+
+        assertThat(result).isEqualTo("echo:hadoop");
+    }
+
     @Test
     void failedAtMostOnceInvocationIsReportedToRetryPolicy() {
         CapturingRetryPolicy retryPolicy = new CapturingRetryPolicy();
@@ -33,6 +46,17 @@ public class RetryInvocationHandlerTest {
         assertThat(retryPolicy.observedRetries).isZero();
         assertThat(retryPolicy.observedFailovers).isZero();
         assertThat(retryPolicy.observedAtMostOnceOrIdempotent).isTrue();
+    }
+
+    public interface EchoService {
+        String echo(String value);
+    }
+
+    public static class EchoServiceImplementation implements EchoService {
+        @Override
+        public String echo(String value) {
+            return "echo:" + value;
+        }
     }
 
     public interface FailingService {
