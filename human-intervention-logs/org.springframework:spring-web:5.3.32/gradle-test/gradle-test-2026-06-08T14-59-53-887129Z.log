@@ -1,0 +1,158 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.springframework:spring-web:5.3.32
+Command: `/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8208-9c11e83a/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 3 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :extractOpenLibertyWebContainerJars UP-TO-DATE
+> Task :compileTestJava
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources UP-TO-DATE
+> Task :testClasses
+
+> Task :test
+
+JettyClientHttpResponseTest > jettyConnectorReceivesResponseStatusHeadersCookiesAndBody() FAILED
+    reactor.core.Exceptions$ReactiveException: org.eclipse.jetty.io.EofException
+        at app//reactor.core.Exceptions.propagate(Exceptions.java:392)
+        at app//reactor.core.publisher.BlockingSingleSubscriber.blockingGet(BlockingSingleSubscriber.java:137)
+        at app//reactor.core.publisher.Mono.block(Mono.java:1731)
+        at app//org_springframework.spring_web.JettyClientHttpResponseTest.jettyConnectorReceivesResponseStatusHeadersCookiesAndBody(JettyClientHttpResponseTest.java:50)
+
+        Caused by:
+        org.eclipse.jetty.io.EofException
+            at app//org.eclipse.jetty.io.SocketChannelEndPoint.flush(SocketChannelEndPoint.java:116)
+            at app//org.eclipse.jetty.io.WriteFlusher.flush(WriteFlusher.java:422)
+            at app//org.eclipse.jetty.io.WriteFlusher.write(WriteFlusher.java:275)
+            at app//org.eclipse.jetty.io.WriteFlusher.write(WriteFlusher.java:254)
+            at app//org.eclipse.jetty.io.AbstractEndPoint.write(AbstractEndPoint.java:386)
+            at app//org.eclipse.jetty.client.http.HttpSenderOverHTTP$HeadersCallback.process(HttpSenderOverHTTP.java:205)
+            at app//org.eclipse.jetty.util.IteratingCallback.processing(IteratingCallback.java:243)
+            at app//org.eclipse.jetty.util.IteratingCallback.iterate(IteratingCallback.java:224)
+            at app//org.eclipse.jetty.client.http.HttpSenderOverHTTP.sendHeaders(HttpSenderOverHTTP.java:79)
+            at app//org.eclipse.jetty.client.HttpSender$ContentConsumer.onContent(HttpSender.java:496)
+            at app//org.eclipse.jetty.client.util.AbstractRequestContent$AbstractSubscription.notifyContent(AbstractRequestContent.java:207)
+            at app//org.eclipse.jetty.client.util.AbstractRequestContent$AbstractSubscription.processContent(AbstractRequestContent.java:181)
+            at app//org.eclipse.jetty.client.util.BytesRequestContent$SubscriptionImpl.produceContent(BytesRequestContent.java:83)
+            at app//org.eclipse.jetty.client.util.AbstractRequestContent$AbstractSubscription.produce(AbstractRequestContent.java:117)
+            at app//org.eclipse.jetty.client.util.AbstractRequestContent$AbstractSubscription.demand(AbstractRequestContent.java:93)
+            at app//org.eclipse.jetty.client.HttpSender.demand(HttpSender.java:237)
+            at app//org.eclipse.jetty.client.HttpSender.send(HttpSender.java:83)
+            at app//org.eclipse.jetty.client.http.HttpChannelOverHTTP.send(HttpChannelOverHTTP.java:86)
+            at app//org.eclipse.jetty.client.HttpChannel.send(HttpChannel.java:127)
+            at app//org.eclipse.jetty.client.HttpConnection.send(HttpConnection.java:110)
+            at app//org.eclipse.jetty.client.http.HttpConnectionOverHTTP$Delegate.send(HttpConnectionOverHTTP.java:327)
+            at app//org.eclipse.jetty.client.http.HttpConnectionOverHTTP.send(HttpConnectionOverHTTP.java:159)
+            at app//org.eclipse.jetty.client.HttpDestination.send(HttpDestination.java:440)
+            at app//org.eclipse.jetty.client.HttpDestination.process(HttpDestination.java:416)
+            at app//org.eclipse.jetty.client.HttpDestination.process(HttpDestination.java:371)
+            at app//org.eclipse.jetty.client.HttpDestination.send(HttpDestination.java:354)
+            at app//org.eclipse.jetty.client.HttpDestination.succeeded(HttpDestination.java:288)
+            at app//org.eclipse.jetty.client.AbstractConnectionPool.proceed(AbstractConnectionPool.java:309)
+            at app//org.eclipse.jetty.client.AbstractConnectionPool$FutureConnection.succeeded(AbstractConnectionPool.java:556)
+            at app//org.eclipse.jetty.client.AbstractConnectionPool$FutureConnection.succeeded(AbstractConnectionPool.java:534)
+            at app//org.eclipse.jetty.util.Promise$Wrapper.succeeded(Promise.java:163)
+            at app//org.eclipse.jetty.client.http.HttpConnectionOverHTTP.onOpen(HttpConnectionOverHTTP.java:167)
+            at app//org.eclipse.jetty.io.SelectorManager.connectionOpened(SelectorManager.java:325)
+            at app//org.eclipse.jetty.io.ClientConnector$ClientSelectorManager.connectionOpened(ClientConnector.java:569)
+            at app//org.eclipse.jetty.io.ManagedSelector.createEndPoint(ManagedSelector.java:401)
+            at app//org.eclipse.jetty.io.ManagedSelector$CreateEndPoint.run(ManagedSelector.java:1078)
+            at app//org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:969)
+            at app//org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.doRunJob(QueuedThreadPool.java:1194)
+            at app//org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.run(QueuedThreadPool.java:1149)
+            at java.base@25.0.3/java.lang.Thread.run(Thread.java:1474)
+
+            Caused by:
+            java.nio.channels.ClosedChannelException
+                at java.base/sun.nio.ch.SocketChannelImpl.ensureOpenAndConnected(SocketChannelImpl.java:224)
+                at java.base/sun.nio.ch.SocketChannelImpl.implWrite(SocketChannelImpl.java:587)
+                at java.base/sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:627)
+                at java.base/java.nio.channels.SocketChannel.write(SocketChannel.java:633)
+                at org.eclipse.jetty.io.SocketChannelEndPoint.flush(SocketChannelEndPoint.java:110)
+                ... 39 more
+
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::arrayBaseOffset has been called by com.google.protobuf.UnsafeUtil$MemoryAccessor (file:/tmp/metadata-forge-gradle/22b83bbb4a1bce56/caches/modules-2/files-2.1/com.google.protobuf/protobuf-java/3.19.4/748e4e0b9e4fa6b9b1fe65690aa04a9db56cfc4d/protobuf-java-3.19.4.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.protobuf.UnsafeUtil$MemoryAccessor
+WARNING: sun.misc.Unsafe::arrayBaseOffset will be removed in a future release
+
+> Task :test FAILED
+
+12 tests completed, 1 failed
+
+
+FAILURE: Build failed with an exception.
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8208-9c11e83a/tests/src/org.springframework/spring-web/5.3.32/build/reports/problems/problems-report.html
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8208-9c11e83a/tests/src/org.springframework/spring-web/5.3.32/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 9s
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+16 actionable tasks: 3 executed, 13 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8208-9c11e83a/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.springframework:spring-web:5.3.32 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 10s
+9 actionable tasks: 1 executed, 8 up-to-date
