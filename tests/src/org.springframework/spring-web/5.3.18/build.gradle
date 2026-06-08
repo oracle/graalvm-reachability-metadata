@@ -1,0 +1,61 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+configurations {
+    openLibertyWebProfile
+}
+
+TaskProvider<Copy> extractOpenLibertyWebContainerJars = tasks.register("extractOpenLibertyWebContainerJars", Copy) {
+    from({ configurations.openLibertyWebProfile.collect { zipTree(it) } }) {
+        include "wlp/lib/com.ibm.ws.webcontainer_1.1.102.jar"
+        include "wlp/lib/com.ibm.ws.adaptable.module_1.0.102.jar"
+        include "wlp/lib/com.ibm.ws.logging_1.0.102.jar"
+        include "wlp/lib/com.ibm.ws.container.service_1.0.102.jar"
+        eachFile { details ->
+            details.path = details.name
+        }
+        includeEmptyDirs = false
+    }
+    into layout.buildDirectory.dir("openLibertyWebContainerJars")
+}
+
+FileCollection openLibertyWebContainerJars = files({
+    fileTree(layout.buildDirectory.dir("openLibertyWebContainerJars").get().asFile) {
+        include "*.jar"
+    }
+})
+openLibertyWebContainerJars.builtBy(extractOpenLibertyWebContainerJars)
+
+dependencies {
+    openLibertyWebProfile "io.openliberty:openliberty-webProfile8:25.0.0.6@zip"
+    testImplementation "org.springframework:spring-web:$libraryVersion"
+    testImplementation "org.springframework:spring-context:$libraryVersion"
+    testImplementation "org.springframework:spring-test:$libraryVersion"
+    testImplementation 'javax.servlet:javax.servlet-api:4.0.1'
+    testImplementation 'io.projectreactor:reactor-core:3.4.16'
+    testImplementation 'com.google.protobuf:protobuf-java:3.19.4'
+    testImplementation 'com.caucho:hessian:4.0.66'
+    testImplementation 'org.eclipse.jetty:jetty-reactive-httpclient:2.0.6'
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+    testRuntimeOnly openLibertyWebContainerJars
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
