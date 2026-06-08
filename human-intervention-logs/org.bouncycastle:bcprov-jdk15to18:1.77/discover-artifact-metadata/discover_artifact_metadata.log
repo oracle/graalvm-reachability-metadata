@@ -1,0 +1,1533 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ea30f-ad2a-7a52-870c-79e0dc21e561
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.bouncycastle:bcprov-jdk15to18:1.77
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "1.77" when "$version$" is replaced with "1.77".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "org.bouncycastle:bcprov-jdk15to18:1.77".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.77".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream tags, then patch the JSON in place using the repo’s existing discovered-metadata style.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json && sed -n '1,160p' build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db
+-rw-rw-r-- 1 vjovanov vjovanov 63 Jun  7 19:09 build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json
+{
+  "coordinates" : "org.bouncycastle:bcprov-jdk15to18:1.77"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"coordinates\": \"org\\.bouncycastle:bcprov|bcprov-jdk15to18|bouncycastle' build/discovered-artifact-metadata metadata tests -g '*.json' -g '*.md'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json:2:  "coordinates" : "org.bouncycastle:bcprov-jdk15to18:1.77"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:5:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:7:      "type": "org.bouncycastle.jcajce.provider.asymmetric.COMPOSITE$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:17:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:19:      "type": "org.bouncycastle.jcajce.provider.asymmetric.DH$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:29:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:31:      "type": "org.bouncycastle.jcajce.provider.asymmetric.DSA$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:41:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:43:      "type": "org.bouncycastle.jcajce.provider.asymmetric.DSTU4145$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:53:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:55:      "type": "org.bouncycastle.jcajce.provider.asymmetric.Dilithium$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:65:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:67:      "type": "org.bouncycastle.jcajce.provider.asymmetric.EC$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:77:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:79:      "type": "org.bouncycastle.jcajce.provider.asymmetric.ECGOST$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:89:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:91:      "type": "org.bouncycastle.jcajce.provider.asymmetric.EXTERNAL$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:101:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:103:      "type": "org.bouncycastle.jcajce.provider.asymmetric.EdEC$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:113:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:115:      "type": "org.bouncycastle.jcajce.provider.asymmetric.ElGamal$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:125:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:127:      "type": "org.bouncycastle.jcajce.provider.asymmetric.Falcon$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:137:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:139:      "type": "org.bouncycastle.jcajce.provider.asymmetric.GM$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:149:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:151:      "type": "org.bouncycastle.jcajce.provider.asymmetric.GOST$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:161:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:163:      "type": "org.bouncycastle.jcajce.provider.asymmetric.IES$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:173:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:175:      "type": "org.bouncycastle.jcajce.provider.asymmetric.LMS$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:185:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:187:      "type": "org.bouncycastle.jcajce.provider.asymmetric.NTRU$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:197:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:199:      "type": "org.bouncycastle.jcajce.provider.asymmetric.RSA$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:209:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:211:      "type": "org.bouncycastle.jcajce.provider.asymmetric.SPHINCSPlus$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:221:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:223:      "type": "org.bouncycastle.jcajce.provider.asymmetric.X509$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:233:        "typeReached": "org.bouncycastle.jcajce.util.ProviderJcaJceHelper"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:235:      "type": "org.bouncycastle.jcajce.provider.asymmetric.rsa.DigestSignatureSpi$SHA256",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:245:        "typeReached": "org.bouncycastle.jcajce.util.ProviderJcaJceHelper"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:247:      "type": "org.bouncycastle.jcajce.provider.asymmetric.rsa.KeyFactorySpi",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:257:        "typeReached": "org.bouncycastle.jcajce.util.ProviderJcaJceHelper"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:259:      "type": "org.bouncycastle.jcajce.provider.asymmetric.rsa.KeyPairGeneratorSpi",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:269:        "typeReached": "org.bouncycastle.cert.jcajce.ProviderCertHelper"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:271:      "type": "org.bouncycastle.jcajce.provider.asymmetric.x509.CertificateFactory",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:281:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:283:      "type": "org.bouncycastle.jcajce.provider.digest.Blake2b$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:293:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:295:      "type": "org.bouncycastle.jcajce.provider.digest.Blake2s$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:305:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:307:      "type": "org.bouncycastle.jcajce.provider.digest.Blake3$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:317:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:319:      "type": "org.bouncycastle.jcajce.provider.digest.DSTU7564$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:329:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:331:      "type": "org.bouncycastle.jcajce.provider.digest.GOST3411$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:341:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:343:      "type": "org.bouncycastle.jcajce.provider.digest.Haraka$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:353:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:355:      "type": "org.bouncycastle.jcajce.provider.digest.Keccak$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:365:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:367:      "type": "org.bouncycastle.jcajce.provider.digest.MD2$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:377:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:379:      "type": "org.bouncycastle.jcajce.provider.digest.MD4$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:389:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:391:      "type": "org.bouncycastle.jcajce.provider.digest.MD5$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:401:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:403:      "type": "org.bouncycastle.jcajce.provider.digest.RIPEMD128$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:413:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:415:      "type": "org.bouncycastle.jcajce.provider.digest.RIPEMD160$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:425:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:427:      "type": "org.bouncycastle.jcajce.provider.digest.RIPEMD256$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:437:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:439:      "type": "org.bouncycastle.jcajce.provider.digest.RIPEMD320$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:449:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:451:      "type": "org.bouncycastle.jcajce.provider.digest.SHA1$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:461:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:463:      "type": "org.bouncycastle.jcajce.provider.digest.SHA224$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:473:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:475:      "type": "org.bouncycastle.jcajce.provider.digest.SHA256$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:485:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:487:      "type": "org.bouncycastle.jcajce.provider.digest.SHA3$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:497:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:499:      "type": "org.bouncycastle.jcajce.provider.digest.SHA384$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:509:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:511:      "type": "org.bouncycastle.jcajce.provider.digest.SHA512$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:521:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:523:      "type": "org.bouncycastle.jcajce.provider.digest.SM3$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:533:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:535:      "type": "org.bouncycastle.jcajce.provider.digest.Skein$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:545:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:547:      "type": "org.bouncycastle.jcajce.provider.digest.Tiger$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:557:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:559:      "type": "org.bouncycastle.jcajce.provider.digest.Whirlpool$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:569:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:571:      "type": "org.bouncycastle.jcajce.provider.drbg.DRBG$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:581:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:583:      "type": "org.bouncycastle.jcajce.provider.keystore.BC$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:593:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:595:      "type": "org.bouncycastle.jcajce.provider.keystore.BCFKS$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:605:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:607:      "type": "org.bouncycastle.jcajce.provider.keystore.PKCS12$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:617:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:619:      "type": "org.bouncycastle.jcajce.provider.symmetric.AES$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:629:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:631:      "type": "org.bouncycastle.jcajce.provider.symmetric.ARC4$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:641:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:643:      "type": "org.bouncycastle.jcajce.provider.symmetric.ARIA$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:653:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:655:      "type": "org.bouncycastle.jcajce.provider.symmetric.Blowfish$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:665:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:667:      "type": "org.bouncycastle.jcajce.provider.symmetric.CAST5$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:677:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:679:      "type": "org.bouncycastle.jcajce.provider.symmetric.CAST6$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:689:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:691:      "type": "org.bouncycastle.jcajce.provider.symmetric.Camellia$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:701:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:703:      "type": "org.bouncycastle.jcajce.provider.symmetric.ChaCha$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:713:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:715:      "type": "org.bouncycastle.jcajce.provider.symmetric.DES$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:725:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:727:      "type": "org.bouncycastle.jcajce.provider.symmetric.DESede$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:737:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:739:      "type": "org.bouncycastle.jcajce.provider.symmetric.DSTU7624$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:749:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:751:      "type": "org.bouncycastle.jcajce.provider.symmetric.GOST28147$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:761:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:763:      "type": "org.bouncycastle.jcajce.provider.symmetric.GOST3412_2015$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:773:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:775:      "type": "org.bouncycastle.jcajce.provider.symmetric.Grain128$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:785:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:787:      "type": "org.bouncycastle.jcajce.provider.symmetric.Grainv1$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:797:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:799:      "type": "org.bouncycastle.jcajce.provider.symmetric.HC128$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:809:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:811:      "type": "org.bouncycastle.jcajce.provider.symmetric.HC256$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:821:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:823:      "type": "org.bouncycastle.jcajce.provider.symmetric.IDEA$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:833:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:835:      "type": "org.bouncycastle.jcajce.provider.symmetric.Noekeon$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:845:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:847:      "type": "org.bouncycastle.jcajce.provider.symmetric.OpenSSLPBKDF$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:857:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:859:      "type": "org.bouncycastle.jcajce.provider.symmetric.PBEPBKDF1$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:869:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:871:      "type": "org.bouncycastle.jcajce.provider.symmetric.PBEPBKDF2$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:881:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:883:      "type": "org.bouncycastle.jcajce.provider.symmetric.PBEPKCS12$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:893:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:895:      "type": "org.bouncycastle.jcajce.provider.symmetric.Poly1305$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:905:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:907:      "type": "org.bouncycastle.jcajce.provider.symmetric.RC2$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:917:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:919:      "type": "org.bouncycastle.jcajce.provider.symmetric.RC5$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:929:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:931:      "type": "org.bouncycastle.jcajce.provider.symmetric.RC6$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:941:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:943:      "type": "org.bouncycastle.jcajce.provider.symmetric.Rijndael$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:953:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:955:      "type": "org.bouncycastle.jcajce.provider.symmetric.SCRYPT$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:965:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:967:      "type": "org.bouncycastle.jcajce.provider.symmetric.SEED$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:977:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:979:      "type": "org.bouncycastle.jcajce.provider.symmetric.SM4$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:989:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:991:      "type": "org.bouncycastle.jcajce.provider.symmetric.Salsa20$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1001:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1003:      "type": "org.bouncycastle.jcajce.provider.symmetric.Serpent$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1013:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1015:      "type": "org.bouncycastle.jcajce.provider.symmetric.Shacal2$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1025:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1027:      "type": "org.bouncycastle.jcajce.provider.symmetric.SipHash$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1037:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1039:      "type": "org.bouncycastle.jcajce.provider.symmetric.SipHash128$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1049:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1051:      "type": "org.bouncycastle.jcajce.provider.symmetric.Skipjack$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1061:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1063:      "type": "org.bouncycastle.jcajce.provider.symmetric.TEA$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1073:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1075:      "type": "org.bouncycastle.jcajce.provider.symmetric.TLSKDF$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1085:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1087:      "type": "org.bouncycastle.jcajce.provider.symmetric.Threefish$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1097:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1099:      "type": "org.bouncycastle.jcajce.provider.symmetric.Twofish$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1109:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1111:      "type": "org.bouncycastle.jcajce.provider.symmetric.VMPC$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1121:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1123:      "type": "org.bouncycastle.jcajce.provider.symmetric.VMPCKSA3$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1133:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1135:      "type": "org.bouncycastle.jcajce.provider.symmetric.XSalsa20$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1145:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1147:      "type": "org.bouncycastle.jcajce.provider.symmetric.XTEA$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1157:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json:1159:      "type": "org.bouncycastle.jcajce.provider.symmetric.Zuc$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:22:      "org.bouncycastle"
+metadata/org.apache.pulsar/bouncy-castle-bc/4.2.1/reachability-metadata.json:7:      "type": "org.bouncycastle.jcajce.provider.digest.SHA256$Digest",
+metadata/org.apache.pulsar/bouncy-castle-bc/4.2.1/reachability-metadata.json:19:      "type": "org.bouncycastle.jcajce.provider.digest.SHA256$HashMac",
+metadata/org.apache.pulsar/bouncy-castle-bc/4.2.1/reachability-metadata.json:31:      "type": "org.bouncycastle.jcajce.provider.asymmetric.rsa.KeyPairGeneratorSpi",
+metadata/org.apache.pulsar/bouncy-castle-bc/4.2.1/reachability-metadata.json:43:      "type": "org.bouncycastle.jcajce.provider.asymmetric.rsa.DigestSignatureSpi$SHA256",
+metadata/org.apache.pulsar/bouncy-castle-bc/4.2.1/reachability-metadata.json:55:      "type": "org.bouncycastle.jcajce.provider.symmetric.AES$ECB",
+metadata/org.apache.pulsar/bouncy-castle-bc/4.2.1/reachability-metadata.json:67:      "type": "org.bouncycastle.jcajce.provider.symmetric.AES$GCM",
+metadata/org.apache.pulsar/bouncy-castle-bc/4.2.1/reachability-metadata.json:79:      "type": "org.bouncycastle.jcajce.provider.symmetric.AES$AlgParamsGCM",
+metadata/org.apache.pulsar/bouncy-castle-bc/4.2.1/reachability-metadata.json:91:      "type": "org.bouncycastle.jcajce.provider.asymmetric.ec.KeyPairGeneratorSpi$EC",
+metadata/org.apache.pulsar/bouncy-castle-bc/4.2.1/reachability-metadata.json:103:      "type": "org.bouncycastle.jcajce.provider.asymmetric.ec.KeyAgreementSpi$DH",
+metadata/org.apache.pulsar/bouncy-castle-bc/4.2.1/reachability-metadata.json:115:      "type": "org.bouncycastle.jcajce.provider.keystore.bcfks.BcFKSKeyStoreSpi$Std",
+metadata/org.apache.activemq/activemq-broker/6.0.0/reachability-metadata.json:245:      "type": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:7:      "type": "org.bouncycastle.jcajce.provider.asymmetric.COMPOSITE$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:19:      "type": "org.bouncycastle.jcajce.provider.asymmetric.DH$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:31:      "type": "org.bouncycastle.jcajce.provider.asymmetric.DSA$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:43:      "type": "org.bouncycastle.jcajce.provider.asymmetric.DSTU4145$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:55:      "type": "org.bouncycastle.jcajce.provider.asymmetric.EC$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:67:      "type": "org.bouncycastle.jcajce.provider.asymmetric.ECGOST$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:79:      "type": "org.bouncycastle.jcajce.provider.asymmetric.EXTERNAL$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:91:      "type": "org.bouncycastle.jcajce.provider.asymmetric.EdEC$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:103:      "type": "org.bouncycastle.jcajce.provider.asymmetric.ElGamal$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:115:      "type": "org.bouncycastle.jcajce.provider.asymmetric.GM$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:127:      "type": "org.bouncycastle.jcajce.provider.asymmetric.GOST$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:139:      "type": "org.bouncycastle.jcajce.provider.asymmetric.IES$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:151:      "type": "org.bouncycastle.jcajce.provider.asymmetric.LMS$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:163:      "type": "org.bouncycastle.jcajce.provider.asymmetric.RSA$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:175:      "type": "org.bouncycastle.jcajce.provider.asymmetric.SPHINCSPlus$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:187:      "type": "org.bouncycastle.jcajce.provider.asymmetric.X509$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:199:      "type": "org.bouncycastle.jcajce.provider.digest.Blake2b$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:211:      "type": "org.bouncycastle.jcajce.provider.digest.Blake2s$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:223:      "type": "org.bouncycastle.jcajce.provider.digest.Blake3$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:235:      "type": "org.bouncycastle.jcajce.provider.digest.DSTU7564$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:247:      "type": "org.bouncycastle.jcajce.provider.digest.GOST3411$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:259:      "type": "org.bouncycastle.jcajce.provider.digest.Haraka$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:271:      "type": "org.bouncycastle.jcajce.provider.digest.Keccak$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:283:      "type": "org.bouncycastle.jcajce.provider.digest.MD2$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:295:      "type": "org.bouncycastle.jcajce.provider.digest.MD4$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:307:      "type": "org.bouncycastle.jcajce.provider.digest.MD5$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:319:      "type": "org.bouncycastle.jcajce.provider.digest.RIPEMD128$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:331:      "type": "org.bouncycastle.jcajce.provider.digest.RIPEMD160$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:343:      "type": "org.bouncycastle.jcajce.provider.digest.RIPEMD256$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:355:      "type": "org.bouncycastle.jcajce.provider.digest.RIPEMD320$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:367:      "type": "org.bouncycastle.jcajce.provider.digest.SHA1$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:379:      "type": "org.bouncycastle.jcajce.provider.digest.SHA224$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:391:      "type": "org.bouncycastle.jcajce.provider.digest.SHA256$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:403:      "type": "org.bouncycastle.jcajce.provider.digest.SHA3$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:415:      "type": "org.bouncycastle.jcajce.provider.digest.SHA384$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:427:      "type": "org.bouncycastle.jcajce.provider.digest.SHA512$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:439:      "type": "org.bouncycastle.jcajce.provider.digest.SM3$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:451:      "type": "org.bouncycastle.jcajce.provider.digest.Skein$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:463:      "type": "org.bouncycastle.jcajce.provider.digest.Tiger$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:475:      "type": "org.bouncycastle.jcajce.provider.digest.Whirlpool$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:487:      "type": "org.bouncycastle.jcajce.provider.drbg.DRBG$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:499:      "type": "org.bouncycastle.jcajce.provider.keystore.BC$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:511:      "type": "org.bouncycastle.jcajce.provider.keystore.BCFKS$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:523:      "type": "org.bouncycastle.jcajce.provider.keystore.PKCS12$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:535:      "type": "org.bouncycastle.jcajce.provider.symmetric.AES$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:547:      "type": "org.bouncycastle.jcajce.provider.symmetric.ARC4$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:559:      "type": "org.bouncycastle.jcajce.provider.symmetric.ARIA$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:571:      "type": "org.bouncycastle.jcajce.provider.symmetric.Blowfish$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:583:      "type": "org.bouncycastle.jcajce.provider.symmetric.CAST5$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:595:      "type": "org.bouncycastle.jcajce.provider.symmetric.CAST6$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:607:      "type": "org.bouncycastle.jcajce.provider.symmetric.Camellia$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:619:      "type": "org.bouncycastle.jcajce.provider.symmetric.ChaCha$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:631:      "type": "org.bouncycastle.jcajce.provider.symmetric.DES$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:643:      "type": "org.bouncycastle.jcajce.provider.symmetric.DESede$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:655:      "type": "org.bouncycastle.jcajce.provider.symmetric.DSTU7624$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:667:      "type": "org.bouncycastle.jcajce.provider.symmetric.GOST28147$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:679:      "type": "org.bouncycastle.jcajce.provider.symmetric.GOST3412_2015$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:691:      "type": "org.bouncycastle.jcajce.provider.symmetric.Grain128$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:703:      "type": "org.bouncycastle.jcajce.provider.symmetric.Grainv1$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:715:      "type": "org.bouncycastle.jcajce.provider.symmetric.HC128$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:727:      "type": "org.bouncycastle.jcajce.provider.symmetric.HC256$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:739:      "type": "org.bouncycastle.jcajce.provider.symmetric.IDEA$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:751:      "type": "org.bouncycastle.jcajce.provider.symmetric.Noekeon$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:763:      "type": "org.bouncycastle.jcajce.provider.symmetric.OpenSSLPBKDF$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:775:      "type": "org.bouncycastle.jcajce.provider.symmetric.PBEPBKDF1$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:787:      "type": "org.bouncycastle.jcajce.provider.symmetric.PBEPBKDF2$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:799:      "type": "org.bouncycastle.jcajce.provider.symmetric.PBEPKCS12$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:811:      "type": "org.bouncycastle.jcajce.provider.symmetric.Poly1305$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:823:      "type": "org.bouncycastle.jcajce.provider.symmetric.RC2$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:835:      "type": "org.bouncycastle.jcajce.provider.symmetric.RC5$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:847:      "type": "org.bouncycastle.jcajce.provider.symmetric.RC6$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:859:      "type": "org.bouncycastle.jcajce.provider.symmetric.Rijndael$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:871:      "type": "org.bouncycastle.jcajce.provider.symmetric.SCRYPT$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:883:      "type": "org.bouncycastle.jcajce.provider.symmetric.SEED$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:895:      "type": "org.bouncycastle.jcajce.provider.symmetric.SM4$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:907:      "type": "org.bouncycastle.jcajce.provider.symmetric.Salsa20$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:919:      "type": "org.bouncycastle.jcajce.provider.symmetric.Serpent$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:931:      "type": "org.bouncycastle.jcajce.provider.symmetric.Shacal2$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:943:      "type": "org.bouncycastle.jcajce.provider.symmetric.SipHash$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:955:      "type": "org.bouncycastle.jcajce.provider.symmetric.SipHash128$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:967:      "type": "org.bouncycastle.jcajce.provider.symmetric.Skipjack$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:979:      "type": "org.bouncycastle.jcajce.provider.symmetric.TEA$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:991:      "type": "org.bouncycastle.jcajce.provider.symmetric.TLSKDF$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:1003:      "type": "org.bouncycastle.jcajce.provider.symmetric.Threefish$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:1015:      "type": "org.bouncycastle.jcajce.provider.symmetric.Twofish$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:1027:      "type": "org.bouncycastle.jcajce.provider.symmetric.VMPC$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:1039:      "type": "org.bouncycastle.jcajce.provider.symmetric.VMPCKSA3$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:1051:      "type": "org.bouncycastle.jcajce.provider.symmetric.XSalsa20$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:1063:      "type": "org.bouncycastle.jcajce.provider.symmetric.XTEA$Mappings",
+metadata/org.web3j/core/4.11.0/reachability-metadata.json:1075:      "type": "org.bouncycastle.jcajce.provider.symmetric.Zuc$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:7:      "type": "org.bouncycastle.jcajce.provider.asymmetric.COMPOSITE$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:19:      "type": "org.bouncycastle.jcajce.provider.asymmetric.DH$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:31:      "type": "org.bouncycastle.jcajce.provider.asymmetric.DSA$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:43:      "type": "org.bouncycastle.jcajce.provider.asymmetric.DSTU4145$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:55:      "type": "org.bouncycastle.jcajce.provider.asymmetric.EC$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:67:      "type": "org.bouncycastle.jcajce.provider.asymmetric.ECGOST$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:79:      "type": "org.bouncycastle.jcajce.provider.asymmetric.EXTERNAL$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:91:      "type": "org.bouncycastle.jcajce.provider.asymmetric.EdEC$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:103:      "type": "org.bouncycastle.jcajce.provider.asymmetric.ElGamal$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:115:      "type": "org.bouncycastle.jcajce.provider.asymmetric.GM$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:127:      "type": "org.bouncycastle.jcajce.provider.asymmetric.GOST$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:139:      "type": "org.bouncycastle.jcajce.provider.asymmetric.IES$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:151:      "type": "org.bouncycastle.jcajce.provider.asymmetric.LMS$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:163:      "type": "org.bouncycastle.jcajce.provider.asymmetric.RSA$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:175:      "type": "org.bouncycastle.jcajce.provider.asymmetric.SPHINCSPlus$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:187:      "type": "org.bouncycastle.jcajce.provider.asymmetric.X509$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:199:      "type": "org.bouncycastle.jcajce.provider.digest.Blake2b$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:211:      "type": "org.bouncycastle.jcajce.provider.digest.Blake2s$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:223:      "type": "org.bouncycastle.jcajce.provider.digest.Blake3$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:235:      "type": "org.bouncycastle.jcajce.provider.digest.DSTU7564$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:247:      "type": "org.bouncycastle.jcajce.provider.digest.GOST3411$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:259:      "type": "org.bouncycastle.jcajce.provider.digest.Haraka$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:271:      "type": "org.bouncycastle.jcajce.provider.digest.Keccak$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:283:      "type": "org.bouncycastle.jcajce.provider.digest.MD2$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:295:      "type": "org.bouncycastle.jcajce.provider.digest.MD4$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:307:      "type": "org.bouncycastle.jcajce.provider.digest.MD5$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:319:      "type": "org.bouncycastle.jcajce.provider.digest.RIPEMD128$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:331:      "type": "org.bouncycastle.jcajce.provider.digest.RIPEMD160$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:343:      "type": "org.bouncycastle.jcajce.provider.digest.RIPEMD256$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:355:      "type": "org.bouncycastle.jcajce.provider.digest.RIPEMD320$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:367:      "type": "org.bouncycastle.jcajce.provider.digest.SHA1$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:379:      "type": "org.bouncycastle.jcajce.provider.digest.SHA224$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:391:      "type": "org.bouncycastle.jcajce.provider.digest.SHA256$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:403:      "type": "org.bouncycastle.jcajce.provider.digest.SHA3$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:415:      "type": "org.bouncycastle.jcajce.provider.digest.SHA384$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:427:      "type": "org.bouncycastle.jcajce.provider.digest.SHA512$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:439:      "type": "org.bouncycastle.jcajce.provider.digest.SM3$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:451:      "type": "org.bouncycastle.jcajce.provider.digest.Skein$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:463:      "type": "org.bouncycastle.jcajce.provider.digest.Tiger$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:475:      "type": "org.bouncycastle.jcajce.provider.digest.Whirlpool$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:487:      "type": "org.bouncycastle.jcajce.provider.drbg.DRBG$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:499:      "type": "org.bouncycastle.jcajce.provider.keystore.BC$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:511:      "type": "org.bouncycastle.jcajce.provider.keystore.BCFKS$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:523:      "type": "org.bouncycastle.jcajce.provider.keystore.PKCS12$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:535:      "type": "org.bouncycastle.jcajce.provider.symmetric.AES$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:547:      "type": "org.bouncycastle.jcajce.provider.symmetric.ARC4$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:559:      "type": "org.bouncycastle.jcajce.provider.symmetric.ARIA$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:571:      "type": "org.bouncycastle.jcajce.provider.symmetric.Blowfish$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:583:      "type": "org.bouncycastle.jcajce.provider.symmetric.CAST5$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:595:      "type": "org.bouncycastle.jcajce.provider.symmetric.CAST6$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:607:      "type": "org.bouncycastle.jcajce.provider.symmetric.Camellia$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:619:      "type": "org.bouncycastle.jcajce.provider.symmetric.ChaCha$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:631:      "type": "org.bouncycastle.jcajce.provider.symmetric.DES$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:643:      "type": "org.bouncycastle.jcajce.provider.symmetric.DESede$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:655:      "type": "org.bouncycastle.jcajce.provider.symmetric.DSTU7624$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:667:      "type": "org.bouncycastle.jcajce.provider.symmetric.GOST28147$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:679:      "type": "org.bouncycastle.jcajce.provider.symmetric.GOST3412_2015$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:691:      "type": "org.bouncycastle.jcajce.provider.symmetric.Grain128$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:703:      "type": "org.bouncycastle.jcajce.provider.symmetric.Grainv1$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:715:      "type": "org.bouncycastle.jcajce.provider.symmetric.HC128$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:727:      "type": "org.bouncycastle.jcajce.provider.symmetric.HC256$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:739:      "type": "org.bouncycastle.jcajce.provider.symmetric.IDEA$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:751:      "type": "org.bouncycastle.jcajce.provider.symmetric.Noekeon$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:763:      "type": "org.bouncycastle.jcajce.provider.symmetric.OpenSSLPBKDF$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:775:      "type": "org.bouncycastle.jcajce.provider.symmetric.PBEPBKDF1$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:787:      "type": "org.bouncycastle.jcajce.provider.symmetric.PBEPBKDF2$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:799:      "type": "org.bouncycastle.jcajce.provider.symmetric.PBEPKCS12$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:811:      "type": "org.bouncycastle.jcajce.provider.symmetric.Poly1305$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:823:      "type": "org.bouncycastle.jcajce.provider.symmetric.RC2$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:835:      "type": "org.bouncycastle.jcajce.provider.symmetric.RC5$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:847:      "type": "org.bouncycastle.jcajce.provider.symmetric.RC6$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:859:      "type": "org.bouncycastle.jcajce.provider.symmetric.Rijndael$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:871:      "type": "org.bouncycastle.jcajce.provider.symmetric.SCRYPT$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:883:      "type": "org.bouncycastle.jcajce.provider.symmetric.SEED$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:895:      "type": "org.bouncycastle.jcajce.provider.symmetric.SM4$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:907:      "type": "org.bouncycastle.jcajce.provider.symmetric.Salsa20$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:919:      "type": "org.bouncycastle.jcajce.provider.symmetric.Serpent$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:931:      "type": "org.bouncycastle.jcajce.provider.symmetric.Shacal2$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:943:      "type": "org.bouncycastle.jcajce.provider.symmetric.SipHash$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:955:      "type": "org.bouncycastle.jcajce.provider.symmetric.SipHash128$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:967:      "type": "org.bouncycastle.jcajce.provider.symmetric.Skipjack$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:979:      "type": "org.bouncycastle.jcajce.provider.symmetric.TEA$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:991:      "type": "org.bouncycastle.jcajce.provider.symmetric.TLSKDF$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:1003:      "type": "org.bouncycastle.jcajce.provider.symmetric.Threefish$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:1015:      "type": "org.bouncycastle.jcajce.provider.symmetric.Twofish$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:1027:      "type": "org.bouncycastle.jcajce.provider.symmetric.VMPC$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:1039:      "type": "org.bouncycastle.jcajce.provider.symmetric.VMPCKSA3$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:1051:      "type": "org.bouncycastle.jcajce.provider.symmetric.XSalsa20$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:1063:      "type": "org.bouncycastle.jcajce.provider.symmetric.XTEA$Mappings",
+metadata/org.web3j/core/4.10.0/reachability-metadata.json:1075:      "type": "org.bouncycastle.jcajce.provider.symmetric.Zuc$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:5:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:7:      "type": "org.bouncycastle.jcajce.provider.asymmetric.COMPOSITE$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:17:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:19:      "type": "org.bouncycastle.jcajce.provider.asymmetric.DH$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:29:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:31:      "type": "org.bouncycastle.jcajce.provider.asymmetric.DSA$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:41:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:43:      "type": "org.bouncycastle.jcajce.provider.asymmetric.DSTU4145$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:53:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:55:      "type": "org.bouncycastle.jcajce.provider.asymmetric.Dilithium$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:65:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:67:      "type": "org.bouncycastle.jcajce.provider.asymmetric.EC$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:77:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:79:      "type": "org.bouncycastle.jcajce.provider.asymmetric.ECGOST$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:89:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:91:      "type": "org.bouncycastle.jcajce.provider.asymmetric.EXTERNAL$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:101:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:103:      "type": "org.bouncycastle.jcajce.provider.asymmetric.EdEC$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:113:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:115:      "type": "org.bouncycastle.jcajce.provider.asymmetric.ElGamal$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:125:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:127:      "type": "org.bouncycastle.jcajce.provider.asymmetric.Falcon$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:137:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:139:      "type": "org.bouncycastle.jcajce.provider.asymmetric.GM$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:149:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:151:      "type": "org.bouncycastle.jcajce.provider.asymmetric.GOST$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:161:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:163:      "type": "org.bouncycastle.jcajce.provider.asymmetric.IES$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:173:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:175:      "type": "org.bouncycastle.jcajce.provider.asymmetric.LMS$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:185:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:187:      "type": "org.bouncycastle.jcajce.provider.asymmetric.NTRU$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:197:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:199:      "type": "org.bouncycastle.jcajce.provider.asymmetric.RSA$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:209:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:211:      "type": "org.bouncycastle.jcajce.provider.asymmetric.SPHINCSPlus$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:221:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:223:      "type": "org.bouncycastle.jcajce.provider.asymmetric.X509$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:233:        "typeReached": "org.bouncycastle.jcajce.util.ProviderJcaJceHelper"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:235:      "type": "org.bouncycastle.jcajce.provider.asymmetric.rsa.DigestSignatureSpi$SHA256",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:245:        "typeReached": "org.bouncycastle.jcajce.util.ProviderJcaJceHelper"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:247:      "type": "org.bouncycastle.jcajce.provider.asymmetric.rsa.KeyFactorySpi",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:257:        "typeReached": "org.bouncycastle.jcajce.util.ProviderJcaJceHelper"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:259:      "type": "org.bouncycastle.jcajce.provider.asymmetric.rsa.KeyPairGeneratorSpi",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:269:        "typeReached": "org.bouncycastle.cert.jcajce.ProviderCertHelper"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:271:      "type": "org.bouncycastle.jcajce.provider.asymmetric.x509.CertificateFactory",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:281:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:283:      "type": "org.bouncycastle.jcajce.provider.digest.Blake2b$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:293:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:295:      "type": "org.bouncycastle.jcajce.provider.digest.Blake2s$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:305:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:307:      "type": "org.bouncycastle.jcajce.provider.digest.Blake3$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:317:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:319:      "type": "org.bouncycastle.jcajce.provider.digest.DSTU7564$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:329:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:331:      "type": "org.bouncycastle.jcajce.provider.digest.GOST3411$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:341:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:343:      "type": "org.bouncycastle.jcajce.provider.digest.Haraka$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:353:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:355:      "type": "org.bouncycastle.jcajce.provider.digest.Keccak$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:365:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:367:      "type": "org.bouncycastle.jcajce.provider.digest.MD2$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:377:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:379:      "type": "org.bouncycastle.jcajce.provider.digest.MD4$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:389:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:391:      "type": "org.bouncycastle.jcajce.provider.digest.MD5$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:401:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:403:      "type": "org.bouncycastle.jcajce.provider.digest.RIPEMD128$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:413:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:415:      "type": "org.bouncycastle.jcajce.provider.digest.RIPEMD160$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:425:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:427:      "type": "org.bouncycastle.jcajce.provider.digest.RIPEMD256$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:437:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:439:      "type": "org.bouncycastle.jcajce.provider.digest.RIPEMD320$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:449:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:451:      "type": "org.bouncycastle.jcajce.provider.digest.SHA1$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:461:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:463:      "type": "org.bouncycastle.jcajce.provider.digest.SHA224$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:473:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:475:      "type": "org.bouncycastle.jcajce.provider.digest.SHA256$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:485:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:487:      "type": "org.bouncycastle.jcajce.provider.digest.SHA3$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:497:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:499:      "type": "org.bouncycastle.jcajce.provider.digest.SHA384$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:509:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:511:      "type": "org.bouncycastle.jcajce.provider.digest.SHA512$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:521:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:523:      "type": "org.bouncycastle.jcajce.provider.digest.SM3$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:533:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:535:      "type": "org.bouncycastle.jcajce.provider.digest.Skein$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:545:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:547:      "type": "org.bouncycastle.jcajce.provider.digest.Tiger$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:557:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:559:      "type": "org.bouncycastle.jcajce.provider.digest.Whirlpool$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:569:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:571:      "type": "org.bouncycastle.jcajce.provider.drbg.DRBG$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:581:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:583:      "type": "org.bouncycastle.jcajce.provider.keystore.BC$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:593:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:595:      "type": "org.bouncycastle.jcajce.provider.keystore.BCFKS$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:605:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:607:      "type": "org.bouncycastle.jcajce.provider.keystore.PKCS12$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:617:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:619:      "type": "org.bouncycastle.jcajce.provider.symmetric.AES$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:629:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:631:      "type": "org.bouncycastle.jcajce.provider.symmetric.ARC4$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:641:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:643:      "type": "org.bouncycastle.jcajce.provider.symmetric.ARIA$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:653:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:655:      "type": "org.bouncycastle.jcajce.provider.symmetric.Blowfish$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:665:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:667:      "type": "org.bouncycastle.jcajce.provider.symmetric.CAST5$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:677:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:679:      "type": "org.bouncycastle.jcajce.provider.symmetric.CAST6$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:689:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:691:      "type": "org.bouncycastle.jcajce.provider.symmetric.Camellia$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:701:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:703:      "type": "org.bouncycastle.jcajce.provider.symmetric.ChaCha$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:713:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:715:      "type": "org.bouncycastle.jcajce.provider.symmetric.DES$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:725:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:727:      "type": "org.bouncycastle.jcajce.provider.symmetric.DESede$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:737:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:739:      "type": "org.bouncycastle.jcajce.provider.symmetric.DSTU7624$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:749:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:751:      "type": "org.bouncycastle.jcajce.provider.symmetric.GOST28147$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:761:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:763:      "type": "org.bouncycastle.jcajce.provider.symmetric.GOST3412_2015$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:773:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:775:      "type": "org.bouncycastle.jcajce.provider.symmetric.Grain128$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:785:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:787:      "type": "org.bouncycastle.jcajce.provider.symmetric.Grainv1$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:797:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:799:      "type": "org.bouncycastle.jcajce.provider.symmetric.HC128$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:809:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:811:      "type": "org.bouncycastle.jcajce.provider.symmetric.HC256$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:821:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:823:      "type": "org.bouncycastle.jcajce.provider.symmetric.IDEA$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:833:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:835:      "type": "org.bouncycastle.jcajce.provider.symmetric.Noekeon$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:845:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:847:      "type": "org.bouncycastle.jcajce.provider.symmetric.OpenSSLPBKDF$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:857:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:859:      "type": "org.bouncycastle.jcajce.provider.symmetric.PBEPBKDF1$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:869:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:871:      "type": "org.bouncycastle.jcajce.provider.symmetric.PBEPBKDF2$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:881:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:883:      "type": "org.bouncycastle.jcajce.provider.symmetric.PBEPKCS12$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:893:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:895:      "type": "org.bouncycastle.jcajce.provider.symmetric.Poly1305$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:905:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:907:      "type": "org.bouncycastle.jcajce.provider.symmetric.RC2$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:917:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:919:      "type": "org.bouncycastle.jcajce.provider.symmetric.RC5$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:929:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:931:      "type": "org.bouncycastle.jcajce.provider.symmetric.RC6$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:941:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:943:      "type": "org.bouncycastle.jcajce.provider.symmetric.Rijndael$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:953:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:955:      "type": "org.bouncycastle.jcajce.provider.symmetric.SCRYPT$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:965:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:967:      "type": "org.bouncycastle.jcajce.provider.symmetric.SEED$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:977:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:979:      "type": "org.bouncycastle.jcajce.provider.symmetric.SM4$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:989:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:991:      "type": "org.bouncycastle.jcajce.provider.symmetric.Salsa20$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1001:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1003:      "type": "org.bouncycastle.jcajce.provider.symmetric.Serpent$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1013:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1015:      "type": "org.bouncycastle.jcajce.provider.symmetric.Shacal2$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1025:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1027:      "type": "org.bouncycastle.jcajce.provider.symmetric.SipHash$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1037:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1039:      "type": "org.bouncycastle.jcajce.provider.symmetric.SipHash128$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1049:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1051:      "type": "org.bouncycastle.jcajce.provider.symmetric.Skipjack$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1061:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1063:      "type": "org.bouncycastle.jcajce.provider.symmetric.TEA$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1073:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1075:      "type": "org.bouncycastle.jcajce.provider.symmetric.TLSKDF$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1085:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1087:      "type": "org.bouncycastle.jcajce.provider.symmetric.Threefish$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1097:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1099:      "type": "org.bouncycastle.jcajce.provider.symmetric.Twofish$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1109:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1111:      "type": "org.bouncycastle.jcajce.provider.symmetric.VMPC$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1121:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1123:      "type": "org.bouncycastle.jcajce.provider.symmetric.VMPCKSA3$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1133:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1135:      "type": "org.bouncycastle.jcajce.provider.symmetric.XSalsa20$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1145:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1147:      "type": "org.bouncycastle.jcajce.provider.symmetric.XTEA$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1157:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json:1159:      "type": "org.bouncycastle.jcajce.provider.symmetric.Zuc$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:22:      "org.bouncycastle"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:5:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:7:      "type": "org.bouncycastle.jcajce.provider.asymmetric.COMPOSITE$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:17:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:19:      "type": "org.bouncycastle.jcajce.provider.asymmetric.DH$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:29:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:31:      "type": "org.bouncycastle.jcajce.provider.asymmetric.DSA$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:41:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:43:      "type": "org.bouncycastle.jcajce.provider.asymmetric.DSTU4145$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:53:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:55:      "type": "org.bouncycastle.jcajce.provider.asymmetric.EC$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:65:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:67:      "type": "org.bouncycastle.jcajce.provider.asymmetric.ECGOST$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:77:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:79:      "type": "org.bouncycastle.jcajce.provider.asymmetric.EdEC$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:89:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:91:      "type": "org.bouncycastle.jcajce.provider.asymmetric.ElGamal$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:101:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:103:      "type": "org.bouncycastle.jcajce.provider.asymmetric.GM$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:113:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:115:      "type": "org.bouncycastle.jcajce.provider.asymmetric.GOST$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:125:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:127:      "type": "org.bouncycastle.jcajce.provider.asymmetric.IES$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:137:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:139:      "type": "org.bouncycastle.jcajce.provider.asymmetric.RSA$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:149:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:151:      "type": "org.bouncycastle.jcajce.provider.asymmetric.X509$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:161:        "typeReached": "org.bouncycastle.jcajce.util.ProviderJcaJceHelper"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:163:      "type": "org.bouncycastle.jcajce.provider.asymmetric.rsa.DigestSignatureSpi$SHA256",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:173:        "typeReached": "org.bouncycastle.jcajce.util.ProviderJcaJceHelper"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:175:      "type": "org.bouncycastle.jcajce.provider.asymmetric.rsa.KeyFactorySpi",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:185:        "typeReached": "org.bouncycastle.jcajce.util.ProviderJcaJceHelper"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:187:      "type": "org.bouncycastle.jcajce.provider.asymmetric.rsa.KeyPairGeneratorSpi",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:197:        "typeReached": "org.bouncycastle.cert.jcajce.ProviderCertHelper"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:199:      "type": "org.bouncycastle.jcajce.provider.asymmetric.x509.CertificateFactory",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:209:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:211:      "type": "org.bouncycastle.jcajce.provider.digest.Blake2b$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:221:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:223:      "type": "org.bouncycastle.jcajce.provider.digest.Blake2s$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:233:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:235:      "type": "org.bouncycastle.jcajce.provider.digest.DSTU7564$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:245:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:247:      "type": "org.bouncycastle.jcajce.provider.digest.GOST3411$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:257:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:259:      "type": "org.bouncycastle.jcajce.provider.digest.Haraka$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:269:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:271:      "type": "org.bouncycastle.jcajce.provider.digest.Keccak$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:281:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:283:      "type": "org.bouncycastle.jcajce.provider.digest.MD2$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:293:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:295:      "type": "org.bouncycastle.jcajce.provider.digest.MD4$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:305:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:307:      "type": "org.bouncycastle.jcajce.provider.digest.MD5$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:317:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:319:      "type": "org.bouncycastle.jcajce.provider.digest.RIPEMD128$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:329:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:331:      "type": "org.bouncycastle.jcajce.provider.digest.RIPEMD160$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:341:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:343:      "type": "org.bouncycastle.jcajce.provider.digest.RIPEMD256$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:353:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:355:      "type": "org.bouncycastle.jcajce.provider.digest.RIPEMD320$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:365:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:367:      "type": "org.bouncycastle.jcajce.provider.digest.SHA1$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:377:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:379:      "type": "org.bouncycastle.jcajce.provider.digest.SHA224$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:389:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:391:      "type": "org.bouncycastle.jcajce.provider.digest.SHA256$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:401:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:403:      "type": "org.bouncycastle.jcajce.provider.digest.SHA3$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:413:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:415:      "type": "org.bouncycastle.jcajce.provider.digest.SHA384$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:425:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:427:      "type": "org.bouncycastle.jcajce.provider.digest.SHA512$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:437:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:439:      "type": "org.bouncycastle.jcajce.provider.digest.SM3$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:449:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:451:      "type": "org.bouncycastle.jcajce.provider.digest.Skein$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:461:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:463:      "type": "org.bouncycastle.jcajce.provider.digest.Tiger$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:473:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:475:      "type": "org.bouncycastle.jcajce.provider.digest.Whirlpool$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:485:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:487:      "type": "org.bouncycastle.jcajce.provider.drbg.DRBG$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:497:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:499:      "type": "org.bouncycastle.jcajce.provider.keystore.BC$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:509:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:511:      "type": "org.bouncycastle.jcajce.provider.keystore.BCFKS$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:521:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:523:      "type": "org.bouncycastle.jcajce.provider.keystore.PKCS12$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:533:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:535:      "type": "org.bouncycastle.jcajce.provider.symmetric.AES$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:545:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:547:      "type": "org.bouncycastle.jcajce.provider.symmetric.ARC4$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:557:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:559:      "type": "org.bouncycastle.jcajce.provider.symmetric.ARIA$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:569:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:571:      "type": "org.bouncycastle.jcajce.provider.symmetric.Blowfish$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:581:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:583:      "type": "org.bouncycastle.jcajce.provider.symmetric.CAST5$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:593:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:595:      "type": "org.bouncycastle.jcajce.provider.symmetric.CAST6$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:605:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:607:      "type": "org.bouncycastle.jcajce.provider.symmetric.Camellia$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:617:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:619:      "type": "org.bouncycastle.jcajce.provider.symmetric.ChaCha$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:629:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:631:      "type": "org.bouncycastle.jcajce.provider.symmetric.DES$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:641:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:643:      "type": "org.bouncycastle.jcajce.provider.symmetric.DESede$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:653:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:655:      "type": "org.bouncycastle.jcajce.provider.symmetric.DSTU7624$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:665:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:667:      "type": "org.bouncycastle.jcajce.provider.symmetric.GOST28147$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:677:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:679:      "type": "org.bouncycastle.jcajce.provider.symmetric.GOST3412_2015$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:689:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:691:      "type": "org.bouncycastle.jcajce.provider.symmetric.Grain128$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:701:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:703:      "type": "org.bouncycastle.jcajce.provider.symmetric.Grainv1$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:713:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:715:      "type": "org.bouncycastle.jcajce.provider.symmetric.HC128$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:725:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:727:      "type": "org.bouncycastle.jcajce.provider.symmetric.HC256$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:737:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:739:      "type": "org.bouncycastle.jcajce.provider.symmetric.IDEA$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:749:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:751:      "type": "org.bouncycastle.jcajce.provider.symmetric.Noekeon$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:761:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:763:      "type": "org.bouncycastle.jcajce.provider.symmetric.OpenSSLPBKDF$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:773:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:775:      "type": "org.bouncycastle.jcajce.provider.symmetric.PBEPBKDF1$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:785:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:787:      "type": "org.bouncycastle.jcajce.provider.symmetric.PBEPBKDF2$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:797:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:799:      "type": "org.bouncycastle.jcajce.provider.symmetric.PBEPKCS12$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:809:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:811:      "type": "org.bouncycastle.jcajce.provider.symmetric.Poly1305$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:821:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:823:      "type": "org.bouncycastle.jcajce.provider.symmetric.RC2$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:833:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:835:      "type": "org.bouncycastle.jcajce.provider.symmetric.RC5$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:845:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:847:      "type": "org.bouncycastle.jcajce.provider.symmetric.RC6$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:857:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:859:      "type": "org.bouncycastle.jcajce.provider.symmetric.Rijndael$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:869:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:871:      "type": "org.bouncycastle.jcajce.provider.symmetric.SCRYPT$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:881:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:883:      "type": "org.bouncycastle.jcajce.provider.symmetric.SEED$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:893:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:895:      "type": "org.bouncycastle.jcajce.provider.symmetric.SM4$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:905:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:907:      "type": "org.bouncycastle.jcajce.provider.symmetric.Salsa20$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:917:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:919:      "type": "org.bouncycastle.jcajce.provider.symmetric.Serpent$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:929:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:931:      "type": "org.bouncycastle.jcajce.provider.symmetric.Shacal2$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:941:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:943:      "type": "org.bouncycastle.jcajce.provider.symmetric.SipHash$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:953:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:955:      "type": "org.bouncycastle.jcajce.provider.symmetric.SipHash128$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:965:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:967:      "type": "org.bouncycastle.jcajce.provider.symmetric.Skipjack$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:977:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:979:      "type": "org.bouncycastle.jcajce.provider.symmetric.TEA$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:989:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:991:      "type": "org.bouncycastle.jcajce.provider.symmetric.TLSKDF$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:1001:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:1003:      "type": "org.bouncycastle.jcajce.provider.symmetric.Threefish$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:1013:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:1015:      "type": "org.bouncycastle.jcajce.provider.symmetric.Twofish$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:1025:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:1027:      "type": "org.bouncycastle.jcajce.provider.symmetric.VMPC$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:1037:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:1039:      "type": "org.bouncycastle.jcajce.provider.symmetric.VMPCKSA3$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:1049:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:1051:      "type": "org.bouncycastle.jcajce.provider.symmetric.XSalsa20$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:1061:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:1063:      "type": "org.bouncycastle.jcajce.provider.symmetric.XTEA$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:1073:        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json:1075:      "type": "org.bouncycastle.jcajce.provider.symmetric.Zuc$Mappings",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:5:      "org.bouncycastle"
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+metadata/io.jsonwebtoken/jjwt-impl/0.11.5/reachability-metadata.json:199:      "type": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+metadata/org.apache.ivy/ivy/2.5.0/reachability-metadata.json:455:      "type" : "org.apache.ivy.plugins.signer.bouncycastle.OpenPGPSignatureGenerator"
+tests/src/org.bouncycastle/bcpkix-jdk15to18/1.77/metadata-user-code-filter.json:3:    {"includeClasses": "org.bouncycastle.**"}
+tests/src/org.bouncycastle/bcpkix-jdk18on/1.77/metadata-user-code-filter.json:3:    {"includeClasses": "org.bouncycastle.**"}
+tests/src/org.bouncycastle/bcpkix-jdk18on/1.77/metadata-extra-filter.json:3:    {"includeClasses": "org.bouncycastle.**"}
+tests/src/org.bouncycastle/bcpkix-jdk15on/1.70/metadata-user-code-filter.json:3:    {"includeClasses": "org.bouncycastle.**"}
+tests/src/org.bouncycastle/bcpkix-jdk15to18/1.77/metadata-extra-filter.json:3:    {"includeClasses": "org.bouncycastle.**"}
+tests/src/org.bouncycastle/bcpkix-jdk15on/1.70/metadata-extra-filter.json:3:    {"includeClasses": "org.bouncycastle.**"}
+
+web search: 
+web search: Maven Central org.bouncycastle bcprov-jdk15to18 1.77 sources javadoc tests jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15to18/1.77/
+web search: 
+web search: https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15to18/1.77/bcprov-jdk15to18-1.77.pom
+web search: 
+web search: https://central.sonatype.com/artifact/org.bouncycastle/bcprov-jdk15to18/1.77
+web search: 
+web search: site:github.com/bcgit/bc-java/tree r1rv77 bcprov tests
+codex
+Maven Central has the source and javadoc artifacts for `1.77`; I’m checking whether a Maven test artifact exists before falling back to the upstream tagged test tree.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/org.bouncycastle/bcpkix-jdk15on/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db
+ succeeded in 0ms:
+[
+  {
+    "latest": true,
+    "allowed-packages": [
+      "org.bouncycastle"
+    ],
+    "metadata-version": "1.70",
+    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+    "repository-url": "https://github.com/bcgit/bc-java",
+    "test-code-url": "https://github.com/bcgit/bc-java/tree/r1rv70/pkix/src/test",
+    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+    "description": "Bouncy Castle PKIX provides Java APIs for CMS, PKCS, EAC, TSP, CMP, CRMF, OCSP, and certificate generation. It supports parsing, creating, and processing PKIX- and certificate-related cryptographic structures on JDK 1.5 and later.",
+    "tested-versions": [
+      "1.70"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "find metadata/org.bouncycastle -maxdepth 2 -name index.json -print -exec sed -n '1,80p' {} \\;" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db
+ succeeded in 0ms:
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json
+[
+  {
+    "latest": true,
+    "allowed-packages": [
+      "org.bouncycastle"
+    ],
+    "metadata-version": "1.70",
+    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+    "repository-url": "https://github.com/bcgit/bc-java",
+    "test-code-url": "https://github.com/bcgit/bc-java/tree/r1rv70/pkix/src/test",
+    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+    "description": "Bouncy Castle PKIX provides Java APIs for CMS, PKCS, EAC, TSP, CMP, CRMF, OCSP, and certificate generation. It supports parsing, creating, and processing PKIX- and certificate-related cryptographic structures on JDK 1.5 and later.",
+    "tested-versions": [
+      "1.70"
+    ]
+  }
+]
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.77",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+    "repository-url" : "https://github.com/bcgit/bc-java",
+    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+    "description" : "Bouncy Castle PKIX provides Java APIs for CMS, PKCS, EAC, TSP, CMP, CRMF, OCSP, and X.509 certificate generation on JDK 1.8 and later. It is typically used with a JCE/JCA provider such as Bouncy Castle to build and process public-key infrastructure and related cryptographic message formats.",
+    "tested-versions" : [
+      "1.77",
+      "1.78",
+      "1.78.1",
+      "1.79",
+      "1.80",
+      "1.81",
+      "1.82",
+      "1.83",
+      "1.84"
+    ],
+    "allowed-packages" : [
+      "org.bouncycastle"
+    ]
+  }
+]
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.77",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+    "repository-url" : "https://github.com/bcgit/bc-java",
+    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+    "description" : "Provides Bouncy Castle Java APIs for PKIX, CMS, PKCS, EAC, TSP, CMP, CRMF, OCSP, and certificate generation. It targets JDK 1.5 through JDK 1.8 and is typically used alongside a JCE/JCA provider such as Bouncy Castle's cryptography provider.",
+    "tested-versions" : [
+      "1.77",
+      "1.78",
+      "1.78.1",
+      "1.79",
+      "1.80",
+      "1.81",
+      "1.82",
+      "1.83",
+      "1.84"
+    ],
+    "allowed-packages" : [
+      "org.bouncycastle"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15to18/1.77/bcprov-jdk15to18-1.77.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.bouncycastle</groupId>
+  <artifactId>bcprov-jdk15to18</artifactId>
+  <packaging>jar</packaging>
+  <name>Bouncy Castle Provider</name>
+  <version>1.77</version>
+  <description>The Bouncy Castle Crypto package is a Java implementation of cryptographic algorithms. This jar contains JCE provider and lightweight API for the Bouncy Castle Cryptography APIs for JDK 1.5 to JDK 1.8.</description>
+  <url>http://www.bouncycastle.org/java.html</url>
+  <licenses>
+    <license>
+      <name>Bouncy Castle Licence</name>
+      <url>http://www.bouncycastle.org/licence.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://github.com/bcgit/bc-java</url>
+  </scm>
+  <issueManagement>
+     <system>GitHub</system>
+     <url>https://github.com/bcgit/bc-java/issues</url>
+  </issueManagement>
+  <developers>
+    <developer>
+      <id>feedback-crypto</id>
+      <name>The Legion of the Bouncy Castle Inc.</name>
+      <email>feedback-crypto@bouncycastle.org</email>
+    </developer>
+  </developers>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15to18/1.77/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/bouncycastle/bcprov-jdk15to18/1.77</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/bouncycastle/bcprov-jdk15to18/1.77</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="bcprov-jdk15to18-1.77-javadoc.jar" title="bcprov-jdk15to18-1.77-javadoc.jar">bcprov-jdk15to18-1.77-javadoc.jar</a>                 2023-11-15 04:38  11674841      
+<a href="bcprov-jdk15to18-1.77-javadoc.jar.asc" title="bcprov-jdk15to18-1.77-javadoc.jar.asc">bcprov-jdk15to18-1.77-javadoc.jar.asc</a>             2023-11-15 04:38       659      
+<a href="bcprov-jdk15to18-1.77-javadoc.jar.asc.md5" title="bcprov-jdk15to18-1.77-javadoc.jar.asc.md5">bcprov-jdk15to18-1.77-javadoc.jar.asc.md5</a>         2023-11-15 04:38        32      
+<a href="bcprov-jdk15to18-1.77-javadoc.jar.asc.sha1" title="bcprov-jdk15to18-1.77-javadoc.jar.asc.sha1">bcprov-jdk15to18-1.77-javadoc.jar.asc.sha1</a>        2023-11-15 04:38        40      
+<a href="bcprov-jdk15to18-1.77-javadoc.jar.asc.sha256" title="bcprov-jdk15to18-1.77-javadoc.jar.asc.sha256">bcprov-jdk15to18-1.77-javadoc.jar.asc.sha256</a>      2023-11-15 04:38        64      
+<a href="bcprov-jdk15to18-1.77-javadoc.jar.asc.sha512" title="bcprov-jdk15to18-1.77-javadoc.jar.asc.sha512">bcprov-jdk15to18-1.77-javadoc.jar.asc.sha512</a>      2023-11-15 04:38       128      
+<a href="bcprov-jdk15to18-1.77-javadoc.jar.md5" title="bcprov-jdk15to18-1.77-javadoc.jar.md5">bcprov-jdk15to18-1.77-javadoc.jar.md5</a>             2023-11-15 04:38        32      
+<a href="bcprov-jdk15to18-1.77-javadoc.jar.sha1" title="bcprov-jdk15to18-1.77-javadoc.jar.sha1">bcprov-jdk15to18-1.77-javadoc.jar.sha1</a>            2023-11-15 04:38        40      
+<a href="bcprov-jdk15to18-1.77-javadoc.jar.sha256" title="bcprov-jdk15to18-1.77-javadoc.jar.sha256">bcprov-jdk15to18-1.77-javadoc.jar.sha256</a>          2023-11-15 04:38        64      
+<a href="bcprov-jdk15to18-1.77-javadoc.jar.sha512" title="bcprov-jdk15to18-1.77-javadoc.jar.sha512">bcprov-jdk15to18-1.77-javadoc.jar.sha512</a>          2023-11-15 04:38       128      
+<a href="bcprov-jdk15to18-1.77-sources.jar" title="bcprov-jdk15to18-1.77-sources.jar">bcprov-jdk15to18-1.77-sources.jar</a>                 2023-11-15 04:38   4847793      
+<a href="bcprov-jdk15to18-1.77-sources.jar.asc" title="bcprov-jdk15to18-1.77-sources.jar.asc">bcprov-jdk15to18-1.77-sources.jar.asc</a>             2023-11-15 04:38       659      
+<a href="bcprov-jdk15to18-1.77-sources.jar.asc.md5" title="bcprov-jdk15to18-1.77-sources.jar.asc.md5">bcprov-jdk15to18-1.77-sources.jar.asc.md5</a>         2023-11-15 04:38        32      
+<a href="bcprov-jdk15to18-1.77-sources.jar.asc.sha1" title="bcprov-jdk15to18-1.77-sources.jar.asc.sha1">bcprov-jdk15to18-1.77-sources.jar.asc.sha1</a>        2023-11-15 04:38        40      
+<a href="bcprov-jdk15to18-1.77-sources.jar.asc.sha256" title="bcprov-jdk15to18-1.77-sources.jar.asc.sha256">bcprov-jdk15to18-1.77-sources.jar.asc.sha256</a>      2023-11-15 04:38        64      
+<a href="bcprov-jdk15to18-1.77-sources.jar.asc.sha512" title="bcprov-jdk15to18-1.77-sources.jar.asc.sha512">bcprov-jdk15to18-1.77-sources.jar.asc.sha512</a>      2023-11-15 04:38       128      
+<a href="bcprov-jdk15to18-1.77-sources.jar.md5" title="bcprov-jdk15to18-1.77-sources.jar.md5">bcprov-jdk15to18-1.77-sources.jar.md5</a>             2023-11-15 04:38        32      
+<a href="bcprov-jdk15to18-1.77-sources.jar.sha1" title="bcprov-jdk15to18-1.77-sources.jar.sha1">bcprov-jdk15to18-1.77-sources.jar.sha1</a>            2023-11-15 04:38        40      
+<a href="bcprov-jdk15to18-1.77-sources.jar.sha256" title="bcprov-jdk15to18-1.77-sources.jar.sha256">bcprov-jdk15to18-1.77-sources.jar.sha256</a>          2023-11-15 04:38        64      
+<a href="bcprov-jdk15to18-1.77-sources.jar.sha512" title="bcprov-jdk15to18-1.77-sources.jar.sha512">bcprov-jdk15to18-1.77-sources.jar.sha512</a>          2023-11-15 04:38       128      
+<a href="bcprov-jdk15to18-1.77.jar" title="bcprov-jdk15to18-1.77.jar">bcprov-jdk15to18-1.77.jar</a>                         2023-11-15 04:38   6544707      
+<a href="bcprov-jdk15to18-1.77.jar.asc" title="bcprov-jdk15to18-1.77.jar.asc">bcprov-jdk15to18-1.77.jar.asc</a>                     2023-11-15 04:38       659      
+<a href="bcprov-jdk15to18-1.77.jar.asc.md5" title="bcprov-jdk15to18-1.77.jar.asc.md5">bcprov-jdk15to18-1.77.jar.asc.md5</a>                 2023-11-15 04:38        32      
+<a href="bcprov-jdk15to18-1.77.jar.asc.sha1" title="bcprov-jdk15to18-1.77.jar.asc.sha1">bcprov-jdk15to18-1.77.jar.asc.sha1</a>                2023-11-15 04:38        40      
+<a href="bcprov-jdk15to18-1.77.jar.asc.sha256" title="bcprov-jdk15to18-1.77.jar.asc.sha256">bcprov-jdk15to18-1.77.jar.asc.sha256</a>              2023-11-15 04:38        64      
+<a href="bcprov-jdk15to18-1.77.jar.asc.sha512" title="bcprov-jdk15to18-1.77.jar.asc.sha512">bcprov-jdk15to18-1.77.jar.asc.sha512</a>              2023-11-15 04:38       128      
+<a href="bcprov-jdk15to18-1.77.jar.md5" title="bcprov-jdk15to18-1.77.jar.md5">bcprov-jdk15to18-1.77.jar.md5</a>                     2023-11-15 04:38        32      
+<a href="bcprov-jdk15to18-1.77.jar.sha1" title="bcprov-jdk15to18-1.77.jar.sha1">bcprov-jdk15to18-1.77.jar.sha1</a>                    2023-11-15 04:38        40      
+<a href="bcprov-jdk15to18-1.77.jar.sha256" title="bcprov-jdk15to18-1.77.jar.sha256">bcprov-jdk15to18-1.77.jar.sha256</a>                  2023-11-15 04:38        64      
+<a href="bcprov-jdk15to18-1.77.jar.sha512" title="bcprov-jdk15to18-1.77.jar.sha512">bcprov-jdk15to18-1.77.jar.sha512</a>                  2023-11-15 04:38       128      
+<a href="bcprov-jdk15to18-1.77.pom" title="bcprov-jdk15to18-1.77.pom">bcprov-jdk15to18-1.77.pom</a>                         2023-11-15 04:38      1145      
+<a href="bcprov-jdk15to18-1.77.pom.asc" title="bcprov-jdk15to18-1.77.pom.asc">bcprov-jdk15to18-1.77.pom.asc</a>                     2023-11-15 04:38       659      
+<a href="bcprov-jdk15to18-1.77.pom.asc.md5" title="bcprov-jdk15to18-1.77.pom.asc.md5">bcprov-jdk15to18-1.77.pom.asc.md5</a>                 2023-11-15 04:38        32      
+<a href="bcprov-jdk15to18-1.77.pom.asc.sha1" title="bcprov-jdk15to18-1.77.pom.asc.sha1">bcprov-jdk15to18-1.77.pom.asc.sha1</a>                2023-11-15 04:38        40      
+<a href="bcprov-jdk15to18-1.77.pom.asc.sha256" title="bcprov-jdk15to18-1.77.pom.asc.sha256">bcprov-jdk15to18-1.77.pom.asc.sha256</a>              2023-11-15 04:38        64      
+<a href="bcprov-jdk15to18-1.77.pom.asc.sha512" title="bcprov-jdk15to18-1.77.pom.asc.sha512">bcprov-jdk15to18-1.77.pom.asc.sha512</a>              2023-11-15 04:38       128      
+<a href="bcprov-jdk15to18-1.77.pom.md5" title="bcprov-jdk15to18-1.77.pom.md5">bcprov-jdk15to18-1.77.pom.md5</a>                     2023-11-15 04:38        32      
+<a href="bcprov-jdk15to18-1.77.pom.sha1" title="bcprov-jdk15to18-1.77.pom.sha1">bcprov-jdk15to18-1.77.pom.sha1</a>                    2023-11-15 04:38        40      
+<a href="bcprov-jdk15to18-1.77.pom.sha256" title="bcprov-jdk15to18-1.77.pom.sha256">bcprov-jdk15to18-1.77.pom.sha256</a>                  2023-11-15 04:38        64      
+<a href="bcprov-jdk15to18-1.77.pom.sha512" title="bcprov-jdk15to18-1.77.pom.sha512">bcprov-jdk15to18-1.77.pom.sha512</a>                  2023-11-15 04:38       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: repo1.maven.org org/bouncycastle/bcprov-jdk15to18/1.77 bcprov-jdk15to18-1.77-sources.jar
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15to18/1.77/bcprov-jdk15to18-1.77.pom | sed -n '/<description>/,/<\\/description>/p; /<scm>/,/<\\/scm>/p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db
+ succeeded in 0ms:
+  <description>The Bouncy Castle Crypto package is a Java implementation of cryptographic algorithms. This jar contains JCE provider and lightweight API for the Bouncy Castle Cryptography APIs for JDK 1.5 to JDK 1.8.</description>
+  <url>http://www.bouncycastle.org/java.html</url>
+  <licenses>
+    <license>
+      <name>Bouncy Castle Licence</name>
+      <url>http://www.bouncycastle.org/licence.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+  <scm>
+    <url>https://github.com/bcgit/bc-java</url>
+    <url>https://github.com/bcgit/bc-java</url>
+  </scm>
+  </scm>
+  <issueManagement>
+     <system>GitHub</system>
+     <url>https://github.com/bcgit/bc-java/issues</url>
+  </issueManagement>
+  <developers>
+    <developer>
+      <id>feedback-crypto</id>
+      <name>The Legion of the Bouncy Castle Inc.</name>
+      <email>feedback-crypto@bouncycastle.org</email>
+    </developer>
+  </developers>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test | head' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/bcgit/bc-java/tree/r1rv77/core/src/test | head' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/bcgit/bc-java.git 'refs/tags/r1rv77'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db
+ succeeded in 290ms:
+4f3a8b216b3b6285f2cad52c05987dd5c48886c4	refs/tags/r1rv77
+
+ succeeded in 613ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 17:10:15 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"8a3e075f4a51e89f165dcf69831f4a68"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+
+ succeeded in 682ms:
+HTTP/2 200 
+date: Sun, 07 Jun 2026 17:10:15 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"67d19ab307921cd05d9871c0b697a4be"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/bcgit/bc-java/r1rv77/prov/build.gradle | sed -n '1,160p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db
+exec
+/usr/bin/bash -lc "curl -fsSL -o /tmp/bcprov-jdk15to18-1.77-sources.jar https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15to18/1.77/bcprov-jdk15to18-1.77-sources.jar && jar tf /tmp/bcprov-jdk15to18-1.77-sources.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/bcgit/bc-java/contents/prov/src/test?ref=r1rv77 | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db
+ succeeded in 175ms:
+[
+  {
+    "name": "java",
+    "path": "prov/src/test/java",
+    "sha": "179aea4caf77aa41b872749911aa34ab16e91295",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/prov/src/test/java?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test/java",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/179aea4caf77aa41b872749911aa34ab16e91295",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/prov/src/test/java?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/179aea4caf77aa41b872749911aa34ab16e91295",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test/java"
+    }
+  },
+  {
+    "name": "jdk1.1",
+    "path": "prov/src/test/jdk1.1",
+    "sha": "c6df61265824882b1c6a6a419fede02f7eeb4c38",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/prov/src/test/jdk1.1?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test/jdk1.1",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/c6df61265824882b1c6a6a419fede02f7eeb4c38",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/prov/src/test/jdk1.1?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/c6df61265824882b1c6a6a419fede02f7eeb4c38",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test/jdk1.1"
+    }
+  },
+  {
+    "name": "jdk1.11",
+    "path": "prov/src/test/jdk1.11",
+    "sha": "0aa0a1fb976f911311b58a439b8ee4ac6a4b9664",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/prov/src/test/jdk1.11?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test/jdk1.11",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/0aa0a1fb976f911311b58a439b8ee4ac6a4b9664",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/prov/src/test/jdk1.11?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/0aa0a1fb976f911311b58a439b8ee4ac6a4b9664",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test/jdk1.11"
+    }
+  },
+  {
+    "name": "jdk1.15",
+    "path": "prov/src/test/jdk1.15",
+    "sha": "e836351b12bc604095e2da38474ae39ba06ddd48",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/prov/src/test/jdk1.15?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test/jdk1.15",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/e836351b12bc604095e2da38474ae39ba06ddd48",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/prov/src/test/jdk1.15?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/e836351b12bc604095e2da38474ae39ba06ddd48",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test/jdk1.15"
+    }
+  },
+  {
+    "name": "jdk1.3",
+    "path": "prov/src/test/jdk1.3",
+    "sha": "a47c24d7d719d1a5c83da1f352ca06efd83fdb28",
+    "size": 0,
+    "url": "https://api.github.com/repos/bcgit/bc-java/contents/prov/src/test/jdk1.3?ref=r1rv77",
+    "html_url": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test/jdk1.3",
+    "git_url": "https://api.github.com/repos/bcgit/bc-java/git/trees/a47c24d7d719d1a5c83da1f352ca06efd83fdb28",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/bcgit/bc-java/contents/prov/src/test/jdk1.3?ref=r1rv77",
+      "git": "https://api.github.com/repos/bcgit/bc-java/git/trees/a47c24d7d719d1a5c83da1f352ca06efd83fdb28",
+      "html": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test/jdk1.3"
+    }
+
+ succeeded in 175ms:
+dependencies {
+    implementation project(':core')
+    testImplementation files('../libs/unboundid-ldapsdk-6.0.8.jar')
+}
+
+jar.archiveBaseName = "bcprov-$vmrange"
+
+
+sourceSets {
+    main {
+        java {
+            srcDirs '../core/src/main/java'
+        }
+    }
+}
+
+task sourcesJar(type: Jar) {
+  archiveBaseName = jar.archiveBaseName
+  classifier = 'sources'
+  from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+  archiveBaseName = jar.archiveBaseName
+  classifier = 'javadoc'
+  from javadoc.destinationDir
+}
+
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
+}
+
+
+ succeeded in 675ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/bouncycastle/
+org/bouncycastle/math/
+org/bouncycastle/math/field/
+org/bouncycastle/math/field/ExtensionField.java
+org/bouncycastle/math/field/PrimeField.java
+org/bouncycastle/math/field/Polynomial.java
+org/bouncycastle/math/field/FiniteFields.java
+org/bouncycastle/math/field/GF2Polynomial.java
+org/bouncycastle/math/field/PolynomialExtensionField.java
+org/bouncycastle/math/field/GenericPolynomialExtensionField.java
+org/bouncycastle/math/field/FiniteField.java
+org/bouncycastle/math/Primes.java
+org/bouncycastle/math/ec/
+org/bouncycastle/math/ec/FixedPointPreCompInfo.java
+org/bouncycastle/math/ec/AbstractECLookupTable.java
+org/bouncycastle/math/ec/ValidityPrecompInfo.java
+org/bouncycastle/math/ec/ECMultiplier.java
+org/bouncycastle/math/ec/endo/
+org/bouncycastle/math/ec/endo/GLVEndomorphism.java
+org/bouncycastle/math/ec/endo/GLVTypeAEndomorphism.java
+org/bouncycastle/math/ec/endo/GLVTypeAParameters.java
+org/bouncycastle/math/ec/endo/ScalarSplitParameters.java
+org/bouncycastle/math/ec/endo/EndoPreCompInfo.java
+org/bouncycastle/math/ec/endo/GLVTypeBEndomorphism.java
+org/bouncycastle/math/ec/endo/GLVTypeBParameters.java
+org/bouncycastle/math/ec/endo/EndoUtil.java
+org/bouncycastle/math/ec/endo/ECEndomorphism.java
+org/bouncycastle/math/ec/SimpleLookupTable.java
+org/bouncycastle/math/ec/WTauNafMultiplier.java
+org/bouncycastle/math/ec/WNafUtil.java
+org/bouncycastle/math/ec/PreCompInfo.java
+org/bouncycastle/math/ec/ZTauElement.java
+org/bouncycastle/math/ec/ScaleXNegateYPointMap.java
+org/bouncycastle/math/ec/SimpleBigDecimal.java
+org/bouncycastle/math/ec/rfc8032/
+org/bouncycastle/math/ec/rfc8032/ScalarUtil.java
+org/bouncycastle/math/ec/rfc8032/Wnaf.java
+org/bouncycastle/math/ec/rfc8032/Scalar25519.java
+org/bouncycastle/math/ec/rfc8032/Ed25519.java
+org/bouncycastle/math/ec/rfc8032/Scalar448.java
+org/bouncycastle/math/ec/rfc8032/Codec.java
+org/bouncycastle/math/ec/rfc8032/Ed448.java
+org/bouncycastle/math/ec/ECConstants.java
+org/bouncycastle/math/ec/PreCompCallback.java
+org/bouncycastle/math/ec/ECAlgorithms.java
+org/bouncycastle/math/ec/rfc7748/
+org/bouncycastle/math/ec/rfc7748/X448.java
+org/bouncycastle/math/ec/rfc7748/X25519Field.java
+org/bouncycastle/math/ec/rfc7748/X25519.java
+org/bouncycastle/math/ec/rfc7748/X448Field.java
+org/bouncycastle/math/ec/ECPoint.java
+org/bouncycastle/math/ec/WNafPreCompInfo.java
+org/bouncycastle/math/ec/WNafL2RMultiplier.java
+org/bouncycastle/math/ec/ScaleYNegateXPointMap.java
+org/bouncycastle/math/ec/LongArray.java
+org/bouncycastle/math/ec/GLVMultiplier.java
+org/bouncycastle/math/ec/AbstractECMultiplier.java
+org/bouncycastle/math/ec/ECPointMap.java
+org/bouncycastle/math/ec/ECLookupTable.java
+org/bouncycastle/math/ec/ScaleYPointMap.java
+org/bouncycastle/math/ec/custom/
+org/bouncycastle/math/ec/custom/djb/
+org/bouncycastle/math/ec/custom/djb/Curve25519FieldElement.java
+org/bouncycastle/math/ec/custom/djb/Curve25519Field.java
+org/bouncycastle/math/ec/custom/djb/Curve25519Point.java
+org/bouncycastle/math/ec/custom/djb/Curve25519.java
+org/bouncycastle/math/ec/custom/sec/
+org/bouncycastle/math/ec/custom/sec/SecP128R1FieldElement.java
+org/bouncycastle/math/ec/custom/sec/SecP521R1Field.java
+org/bouncycastle/math/ec/custom/sec/SecT233Field.java
+org/bouncycastle/math/ec/custom/sec/SecP160R1Field.java
+org/bouncycastle/math/ec/custom/sec/SecT283K1Point.java
+org/bouncycastle/math/ec/custom/sec/SecT571K1Point.java
+org/bouncycastle/math/ec/custom/sec/SecT193Field.java
+org/bouncycastle/math/ec/custom/sec/SecT113FieldElement.java
+org/bouncycastle/math/ec/custom/sec/SecP160R2Field.java
+org/bouncycastle/math/ec/custom/sec/SecT283Field.java
+
+codex
+I found the upstream `prov` module builds the `bcprov-*` artifacts and includes `core` sources, so the closest upstream test suite is the tagged `prov/src/test` tree. The artifact is a JVM JAR with class files, not a Kotlin/Groovy/Scala-specific artifact and not a not-for-native-image case, so I’ll omit those optional fields.
+exec
+/usr/bin/bash -lc "jar tf /tmp/bcprov-jdk15to18-1.77-sources.jar | rg -n '"'^org/bouncycastle/jce/provider|''^org/bouncycastle/crypto'"' | sed -n '1,40p'; curl -fsSL -o /tmp/bcprov-jdk15to18-1.77.jar https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15to18/1.77/bcprov-jdk15to18-1.77.jar && jar tf /tmp/bcprov-jdk15to18-1.77.jar | rg -n '\\.class"'$'"' | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db
+ succeeded in 596ms:
+11:org/bouncycastle/LICENSE.class
+13:org/bouncycastle/asn1/ASN1Absent.class
+14:org/bouncycastle/asn1/ASN1BMPString$1.class
+15:org/bouncycastle/asn1/ASN1BMPString.class
+16:org/bouncycastle/asn1/ASN1BitString$1.class
+17:org/bouncycastle/asn1/ASN1BitString.class
+18:org/bouncycastle/asn1/ASN1BitStringParser.class
+19:org/bouncycastle/asn1/ASN1Boolean$1.class
+20:org/bouncycastle/asn1/ASN1Boolean.class
+21:org/bouncycastle/asn1/ASN1Choice.class
+22:org/bouncycastle/asn1/ASN1Encodable.class
+23:org/bouncycastle/asn1/ASN1EncodableVector.class
+24:org/bouncycastle/asn1/ASN1Encoding.class
+25:org/bouncycastle/asn1/ASN1Enumerated$1.class
+26:org/bouncycastle/asn1/ASN1Enumerated.class
+27:org/bouncycastle/asn1/ASN1Exception.class
+28:org/bouncycastle/asn1/ASN1External$1.class
+29:org/bouncycastle/asn1/ASN1External.class
+30:org/bouncycastle/asn1/ASN1ExternalParser.class
+31:org/bouncycastle/asn1/ASN1GeneralString$1.class
+
+codex
+I’m writing the discovered metadata now with Maven source/javadoc URLs and the upstream tagged test URL.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json
+diff --git a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json
+index fc51211b3f306fa8a7d6a857dceff23fd300fcb9..78bf6dabfbd6ddf060dd5e47a7d5c1c528675f19
+--- a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json
++++ b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.bouncycastle:bcprov-jdk15to18:1.77"
++  "coordinates" : "org.bouncycastle:bcprov-jdk15to18:1.77",
++  "repository-url" : "https://github.com/bcgit/bc-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15to18/$version$/bcprov-jdk15to18-$version$-sources.jar",
++  "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15to18/$version$/bcprov-jdk15to18-$version$-javadoc.jar",
++  "description" : "Bouncy Castle Provider is a Java implementation of cryptographic algorithms with a JCE/JCA provider and lightweight cryptography APIs. The jdk15to18 artifact targets JDK 1.5 through JDK 1.8 and supplies provider, ASN.1, and core cryptographic classes for JVM applications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json
+index fc51211b3f306fa8a7d6a857dceff23fd300fcb9..78bf6dabfbd6ddf060dd5e47a7d5c1c528675f19
+--- a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json
++++ b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.bouncycastle:bcprov-jdk15to18:1.77"
++  "coordinates" : "org.bouncycastle:bcprov-jdk15to18:1.77",
++  "repository-url" : "https://github.com/bcgit/bc-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15to18/$version$/bcprov-jdk15to18-$version$-sources.jar",
++  "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15to18/$version$/bcprov-jdk15to18-$version$-javadoc.jar",
++  "description" : "Bouncy Castle Provider is a Java implementation of cryptographic algorithms with a JCE/JCA provider and lightweight cryptography APIs. The jdk15to18 artifact targets JDK 1.5 through JDK 1.8 and supplies provider, ASN.1, and core cryptographic classes for JVM applications."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db
+ succeeded in 0ms:
+{
+  "coordinates": "org.bouncycastle:bcprov-jdk15to18:1.77",
+  "repository-url": "https://github.com/bcgit/bc-java",
+  "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15to18/$version$/bcprov-jdk15to18-$version$-sources.jar",
+  "test-code-url": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15to18/$version$/bcprov-jdk15to18-$version$-javadoc.jar",
+  "description": "Bouncy Castle Provider is a Java implementation of cryptographic algorithms with a JCE/JCA provider and lightweight cryptography APIs. The jdk15to18 artifact targets JDK 1.5 through JDK 1.8 and supplies provider, ASN.1, and core cryptographic classes for JVM applications."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json
+index fc51211b3f306fa8a7d6a857dceff23fd300fcb9..78bf6dabfbd6ddf060dd5e47a7d5c1c528675f19
+--- a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json
++++ b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.bouncycastle:bcprov-jdk15to18:1.77"
++  "coordinates" : "org.bouncycastle:bcprov-jdk15to18:1.77",
++  "repository-url" : "https://github.com/bcgit/bc-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15to18/$version$/bcprov-jdk15to18-$version$-sources.jar",
++  "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15to18/$version$/bcprov-jdk15to18-$version$-javadoc.jar",
++  "description" : "Bouncy Castle Provider is a Java implementation of cryptographic algorithms with a JCE/JCA provider and lightweight cryptography APIs. The jdk15to18 artifact targets JDK 1.5 through JDK 1.8 and supplies provider, ASN.1, and core cryptographic classes for JVM applications."
+ }
+
+codex
+The JSON parses cleanly. I’m checking the worktree status because the file is under `build/`, so it may be ignored or untracked rather than showing in a normal diff.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db
+ succeeded in 0ms:
+{
+  "coordinates" : "org.bouncycastle:bcprov-jdk15to18:1.77",
+  "repository-url" : "https://github.com/bcgit/bc-java",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15to18/$version$/bcprov-jdk15to18-$version$-sources.jar",
+  "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15to18/$version$/bcprov-jdk15to18-$version$-javadoc.jar",
+  "description" : "Bouncy Castle Provider is a Java implementation of cryptographic algorithms with a JCE/JCA provider and lightweight cryptography APIs. The jdk15to18 artifact targets JDK 1.5 through JDK 1.8 and supplies provider, ASN.1, and core cryptographic classes for JVM applications."
+}
+
+exec
+/usr/bin/bash -lc 'git ls-files --stage build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db
+diff --git a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json
+index fc51211b3f306fa8a7d6a857dceff23fd300fcb9..78bf6dabfbd6ddf060dd5e47a7d5c1c528675f19
+--- a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json
++++ b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.bouncycastle:bcprov-jdk15to18:1.77"
++  "coordinates" : "org.bouncycastle:bcprov-jdk15to18:1.77",
++  "repository-url" : "https://github.com/bcgit/bc-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15to18/$version$/bcprov-jdk15to18-$version$-sources.jar",
++  "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15to18/$version$/bcprov-jdk15to18-$version$-javadoc.jar",
++  "description" : "Bouncy Castle Provider is a Java implementation of cryptographic algorithms with a JCE/JCA provider and lightweight cryptography APIs. The jdk15to18 artifact targets JDK 1.5 through JDK 1.8 and supplies provider, ASN.1, and core cryptographic classes for JVM applications."
+ }
+
+ succeeded in 332ms:
+!! build/
+
+web search: 
+web search: bcprov-jdk15to18 1.77 Maven Central Bouncy Castle Provider
+web search: 
+web search: https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk15to18/1.77/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org%2Fbouncycastle%2Fbcprov-jdk15to18
+web search: 
+web search: https://repo.maven.apache.org/maven2/org%2Fbouncycastle%2Fbcprov-jdk15to18
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk15to18/1.77/
+codex
+Updated [org.bouncycastle-bcprov-jdk15to18-1.77.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json).
+
+I used Maven Central for the `1.77` sources and javadoc artifacts, and the upstream `r1rv77/prov/src/test` tree for tests. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk15to18/1.77/)) The artifact is a JVM JAR, so I omitted `language`, `not-for-native-image`, `reason`, and `replacement`.
+
+Validated the file with `jq`.
+diff --git a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json
+index fc51211b3f306fa8a7d6a857dceff23fd300fcb9..78bf6dabfbd6ddf060dd5e47a7d5c1c528675f19
+--- a/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json
++++ b/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.bouncycastle:bcprov-jdk15to18:1.77"
++  "coordinates" : "org.bouncycastle:bcprov-jdk15to18:1.77",
++  "repository-url" : "https://github.com/bcgit/bc-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15to18/$version$/bcprov-jdk15to18-$version$-sources.jar",
++  "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15to18/$version$/bcprov-jdk15to18-$version$-javadoc.jar",
++  "description" : "Bouncy Castle Provider is a Java implementation of cryptographic algorithms with a JCE/JCA provider and lightweight cryptography APIs. The jdk15to18 artifact targets JDK 1.5 through JDK 1.8 and supplies provider, ASN.1, and core cryptographic classes for JVM applications."
+ }
+
+tokens used
+74,120
+Updated [org.bouncycastle-bcprov-jdk15to18-1.77.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db/build/discovered-artifact-metadata/org.bouncycastle-bcprov-jdk15to18-1.77.json).
+
+I used Maven Central for the `1.77` sources and javadoc artifacts, and the upstream `r1rv77/prov/src/test` tree for tests. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk15to18/1.77/)) The artifact is a JVM JAR, so I omitted `language`, `not-for-native-image`, `reason`, and `replacement`.
+
+Validated the file with `jq`.
+Ran agent for org.bouncycastle:bcprov-jdk15to18:1.77 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db/build/agent-artifact-discovery-logs/org.bouncycastle-bcprov-jdk15to18-1.77.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1497-e87578db/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m
+9 actionable tasks: 9 executed
