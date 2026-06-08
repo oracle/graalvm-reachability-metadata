@@ -18,7 +18,9 @@ dependencies {
 graalvmNative {
     binaries {
         test {
-            buildArgs.add('--initialize-at-build-time=com.alibaba.fastjson2')
+            excludeConfig.put("com.alibaba.fastjson2:fastjson2", [
+                    ".*/com\\.alibaba\\.fastjson2/fastjson2/native-image\\.properties"
+            ])
         }
     }
 
