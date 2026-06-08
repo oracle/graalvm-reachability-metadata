@@ -8,19 +8,18 @@ package com_thoughtworks_qdox.qdox;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.thoughtworks.qdox.JavaDocBuilder;
+import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaMethod;
 import java.io.File;
 import java.io.StringReader;
 import java.nio.file.Files;
-import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 public class JavaDocBuilderTest {
     @Test
     void resolvesBinaryClassMembersThroughBuilderClassLookup() {
-        JavaDocBuilder builder = new JavaDocBuilder();
+        JavaProjectBuilder builder = new JavaProjectBuilder();
 
         JavaClass javaClass = builder.getClassByName(BinarySample.class.getName());
 
@@ -34,7 +33,7 @@ public class JavaDocBuilderTest {
 
     @Test
     void savesAndLoadsParsedSources() throws Exception {
-        JavaDocBuilder builder = new JavaDocBuilder();
+        JavaProjectBuilder builder = new JavaProjectBuilder();
         builder.addSource(new StringReader("""
                 package sample;
 
@@ -51,7 +50,7 @@ public class JavaDocBuilderTest {
         try {
             builder.save(file);
 
-            JavaDocBuilder loadedBuilder = JavaDocBuilder.load(file);
+            JavaProjectBuilder loadedBuilder = JavaProjectBuilder.load(file);
             JavaClass loadedClass = loadedBuilder.getClassByName("sample.ParsedSample");
 
             assertThat(loadedClass.getFieldByName("value")).isNotNull();
@@ -62,12 +61,11 @@ public class JavaDocBuilderTest {
     }
 
     private static boolean hasConstructor(JavaClass javaClass) {
-        return Arrays.stream(javaClass.getMethods()).anyMatch(JavaMethod::isConstructor);
+        return !javaClass.getConstructors().isEmpty();
     }
 
     private static JavaMethod methodNamed(JavaClass javaClass, String name) {
-        return Arrays.stream(javaClass.getMethods())
-                .filter(method -> !method.isConstructor())
+        return javaClass.getMethods().stream()
                 .filter(method -> name.equals(method.getName()))
                 .findFirst()
                 .orElse(null);
