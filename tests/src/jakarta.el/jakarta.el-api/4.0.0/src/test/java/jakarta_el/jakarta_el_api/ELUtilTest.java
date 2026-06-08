@@ -13,25 +13,25 @@ import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 import java.util.Locale;
 
-import javax.el.BeanELResolver;
-import javax.el.ELClass;
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
-import javax.el.FunctionMapper;
-import javax.el.MethodExpression;
-import javax.el.PropertyNotFoundException;
-import javax.el.StaticFieldELResolver;
-import javax.el.ValueExpression;
-import javax.el.VariableMapper;
+import jakarta.el.BeanELResolver;
+import jakarta.el.ELClass;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.FunctionMapper;
+import jakarta.el.MethodExpression;
+import jakarta.el.PropertyNotFoundException;
+import jakarta.el.StaticFieldELResolver;
+import jakarta.el.ValueExpression;
+import jakarta.el.VariableMapper;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class ELUtilTest {
-    private static final String EXPRESSION_FACTORY_PROPERTY = "javax.el.ExpressionFactory";
+    private static final String EXPRESSION_FACTORY_PROPERTY = "jakarta.el.ExpressionFactory";
     private static String previousExpressionFactory;
 
     @BeforeAll

@@ -10,20 +10,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.Method;
 
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ELProcessor;
-import javax.el.ELResolver;
-import javax.el.ExpressionFactory;
-import javax.el.MethodExpression;
-import javax.el.ValueExpression;
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ELProcessor;
+import jakarta.el.ELResolver;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class ELProcessorTest {
-    private static final String EXPRESSION_FACTORY_PROPERTY = "javax.el.ExpressionFactory";
+    private static final String EXPRESSION_FACTORY_PROPERTY = "jakarta.el.ExpressionFactory";
     private static String previousExpressionFactory;
 
     @BeforeAll
