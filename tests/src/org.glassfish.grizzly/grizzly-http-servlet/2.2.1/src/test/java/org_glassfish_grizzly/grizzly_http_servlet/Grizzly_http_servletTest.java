@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.ServerSocket;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -291,8 +291,8 @@ public class Grizzly_http_servletTest {
     }
 
     private static HttpURLConnection openConnection(int port, String path) throws IOException {
-        URL url = new URL("http", HOST, port, path);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        URI uri = URI.create("http://" + HOST + ":" + port + path);
+        HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
         connection.setConnectTimeout(TIMEOUT_MILLIS);
         connection.setReadTimeout(TIMEOUT_MILLIS);
         connection.setInstanceFollowRedirects(false);
