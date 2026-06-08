@@ -19,7 +19,7 @@ public class ExtensionLoaderTest {
         Map<String, Extension> extensions =
                 ExtensionLoader.loadExtension(LoadableExtension.class.getName());
 
-        assertThat(extensions).containsOnlyKeys("loadable-extension");
+        assertThat(extensions.keySet()).containsExactly("loadable-extension");
         assertThat(extensions.get("loadable-extension")).isInstanceOf(LoadableExtension.class);
     }
 
