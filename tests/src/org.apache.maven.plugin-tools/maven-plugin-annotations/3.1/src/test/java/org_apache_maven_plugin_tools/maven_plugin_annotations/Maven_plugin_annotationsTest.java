@@ -7,6 +7,11 @@
 package org_apache_maven_plugin_tools.maven_plugin_annotations;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Execute;
@@ -87,6 +92,49 @@ public class Maven_plugin_annotationsTest {
                 .containsExactly("per-lookup", "singleton", "keep-alive", "poolable");
         assertThat(InstanciationStrategy.valueOf("PER_LOOKUP")).isSameAs(InstanciationStrategy.PER_LOOKUP);
         assertThat(InstanciationStrategy.valueOf("SINGLETON")).isSameAs(InstanciationStrategy.SINGLETON);
+    }
+
+    @Test
+    void descriptorIdsCanBeUsedAsUniqueLookupKeysForMavenDescriptorValues() {
+        Map<String, LifecyclePhase> lifecyclePhasesById = Arrays.stream(LifecyclePhase.values())
+                .filter(phase -> !phase.id().isEmpty())
+                .collect(Collectors.toMap(
+                        LifecyclePhase::id,
+                        Function.identity(),
+                        (left, right) -> {
+                            throw new AssertionError("Duplicate lifecycle phase descriptor id");
+                        },
+                        LinkedHashMap::new));
+        Map<String, ResolutionScope> resolutionScopesById = Arrays.stream(ResolutionScope.values())
+                .filter(scope -> scope.id() != null)
+                .collect(Collectors.toMap(
+                        ResolutionScope::id,
+                        Function.identity(),
+                        (left, right) -> {
+                            throw new AssertionError("Duplicate resolution scope descriptor id");
+                        },
+                        LinkedHashMap::new));
+        Map<String, InstanciationStrategy> instanciationStrategiesById = Arrays
+                .stream(InstanciationStrategy.values())
+                .collect(Collectors.toMap(
+                        InstanciationStrategy::id,
+                        Function.identity(),
+                        (left, right) -> {
+                            throw new AssertionError("Duplicate instanciation strategy descriptor id");
+                        },
+                        LinkedHashMap::new));
+
+        assertThat(lifecyclePhasesById)
+                .containsEntry("generate-sources", LifecyclePhase.GENERATE_SOURCES)
+                .containsEntry("site-deploy", LifecyclePhase.SITE_DEPLOY)
+                .doesNotContainKey("");
+        assertThat(resolutionScopesById)
+                .containsEntry("compile+runtime", ResolutionScope.COMPILE_PLUS_RUNTIME)
+                .containsEntry("runtime+system", ResolutionScope.RUNTIME_PLUS_SYSTEM)
+                .doesNotContainKey(null);
+        assertThat(instanciationStrategiesById)
+                .containsEntry("per-lookup", InstanciationStrategy.PER_LOOKUP)
+                .containsEntry("poolable", InstanciationStrategy.POOLABLE);
     }
 
     @Test
