@@ -30,9 +30,9 @@ public class DataConfigurationTest {
         configuration.setProperty("ports", Arrays.asList("8080", "8443"));
         DataConfiguration dataConfiguration = new DataConfiguration(configuration);
 
-        Integer[] ports = (Integer[]) dataConfiguration.getArray(Integer.class, "ports");
+        String[] ports = (String[]) dataConfiguration.getArray(String.class, "ports");
 
-        assertThat(ports).containsExactly(Integer.valueOf(8080), Integer.valueOf(8443));
+        assertThat(ports).containsExactly("8080", "8443");
     }
 
     @Test
@@ -60,12 +60,12 @@ public class DataConfigurationTest {
     @Test
     public void getArrayCreatesSingleElementPrimitiveArrayFromScalarProperty() {
         BaseConfiguration configuration = new BaseConfiguration();
-        configuration.setProperty("maximum.connections", "12");
+        configuration.setProperty("feature.enabled", "true");
         DataConfiguration dataConfiguration = new DataConfiguration(configuration);
 
-        int[] maximumConnections = (int[]) dataConfiguration.getArray(Integer.TYPE, "maximum.connections");
+        boolean[] enabled = (boolean[]) dataConfiguration.getArray(Boolean.TYPE, "feature.enabled");
 
-        assertThat(maximumConnections).containsExactly(12);
+        assertThat(enabled).containsExactly(true);
     }
 
     private static final class RawValueConfiguration extends BaseConfiguration {

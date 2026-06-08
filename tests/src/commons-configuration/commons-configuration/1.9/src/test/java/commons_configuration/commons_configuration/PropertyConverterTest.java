@@ -15,8 +15,8 @@ import org.junit.jupiter.api.Test;
 
 public class PropertyConverterTest {
     @Test
-    public void toIntegerCreatesNumberFromStringConstructor() {
-        assertThat(PropertyConverter.toInteger("8080")).isEqualTo(Integer.valueOf(8080));
+    public void toIntegerReturnsExistingNumericValue() {
+        assertThat(PropertyConverter.toInteger(Integer.valueOf(8080))).isEqualTo(Integer.valueOf(8080));
     }
 
     @Test

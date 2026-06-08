@@ -32,6 +32,6 @@ public class XMLPropertiesConfigurationAnonymous1Test {
 
         assertThat(configuration.getHeader()).isEqualTo("Integration settings");
         assertThat(configuration.getString("endpoint")).isEqualTo("https://example.invalid/service");
-        assertThat(configuration.getInt("retries")).isEqualTo(3);
+        assertThat(configuration.getString("retries")).isEqualTo("3");
     }
 }

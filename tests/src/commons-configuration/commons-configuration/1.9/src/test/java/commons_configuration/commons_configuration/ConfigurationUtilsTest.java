@@ -17,20 +17,33 @@ import java.util.Properties;
 import org.apache.commons.configuration.BaseConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationUtils;
+import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.junit.jupiter.api.Test;
 
 public class ConfigurationUtilsTest {
     private static final String CLASSPATH_RESOURCE = "commons-configuration/configuration-utils-resource.properties";
 
     @Test
+    public void convertToHierarchicalCopiesFlatConfigurationProperties() {
+        BaseConfiguration original = new BaseConfiguration();
+        original.addProperty("message", "copied");
+
+        HierarchicalConfiguration converted = ConfigurationUtils.convertToHierarchical(original);
+
+        assertThat(converted).isNotSameAs(original);
+        assertThat(converted.getString("message")).isEqualTo("copied");
+    }
+
+    @Test
     public void cloneConfigurationInvokesPublicCloneMethod() {
         BaseConfiguration original = new BaseConfiguration();
         original.addProperty("message", "copied");
 
-        Configuration cloned = ConfigurationUtils.cloneConfiguration(original);
+        Configuration clone = ConfigurationUtils.cloneConfiguration(original);
 
-        assertThat(cloned).isNotSameAs(original);
-        assertThat(cloned.getString("message")).isEqualTo("copied");
+        assertThat(clone).isInstanceOf(BaseConfiguration.class);
+        assertThat(clone).isNotSameAs(original);
+        assertThat(clone.getString("message")).isEqualTo("copied");
     }
 
     @Test

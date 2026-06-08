@@ -9,7 +9,6 @@ package commons_configuration.commons_configuration;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
-import java.util.Properties;
 
 import org.apache.commons.configuration.beanutils.BeanDeclaration;
 import org.apache.commons.configuration.beanutils.DefaultBeanFactory;
@@ -21,10 +20,10 @@ public class DefaultBeanFactoryTest {
         DefaultBeanFactory factory = DefaultBeanFactory.INSTANCE;
         BeanDeclaration declaration = new EmptyBeanDeclaration();
 
-        Object bean = factory.createBean(Properties.class, declaration, "ignored parameter");
+        Object bean = factory.createBean(DefaultBeanFactoryTest.class, declaration, "ignored parameter");
 
-        assertThat(bean).isInstanceOf(Properties.class);
-        assertThat(((Properties) bean)).isEmpty();
+        assertThat(bean).isInstanceOf(DefaultBeanFactoryTest.class);
+        assertThat(bean).isNotSameAs(this);
         assertThat(factory.getDefaultBeanClass()).isNull();
     }
 
