@@ -10,7 +10,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.security.Permission;
 
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.util.AnnotationLiteral;
 
 import org.junit.jupiter.api.Test;
 
@@ -72,10 +72,13 @@ public class SecurityActionsTest {
 
     @SuppressWarnings("removal")
     private static boolean installSecurityManagerIfSupported(final SecurityManager securityManager) {
+        if (System.getSecurityManager() != null) {
+            return false;
+        }
         try {
             System.setSecurityManager(securityManager);
             return System.getSecurityManager() == securityManager;
-        } catch (final UnsupportedOperationException unsupportedOperationException) {
+        } catch (final SecurityException | UnsupportedOperationException unsupportedOperationException) {
             return false;
         }
     }
