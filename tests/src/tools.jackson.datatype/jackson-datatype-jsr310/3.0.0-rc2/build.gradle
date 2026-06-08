@@ -10,6 +10,12 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+configurations.configureEach {
+    resolutionStrategy.dependencySubstitution {
+        substitute module('com.fasterxml.jackson:jackson-bom') using module("tools.jackson:jackson-bom:$libraryVersion")
+    }
+}
+
 dependencies {
     testImplementation "tools.jackson.datatype:jackson-datatype-jsr310:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
