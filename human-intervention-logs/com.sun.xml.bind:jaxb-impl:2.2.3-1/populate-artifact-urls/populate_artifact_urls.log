@@ -1,0 +1,892 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ea77a-e975-71b0-9378-b62bff57760f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.sun.xml.bind:jaxb-impl:2.2.3-1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.2.3-1].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e/metadata/com.sun.xml.bind/jaxb-impl/index.json
+- Entry selector: "metadata-version" = "2.2.3-1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-impl/$version$/jaxb-impl-$version$-sources.jar
+- repository-url: https://github.com/javaee/jaxb-v2
+- test-code-url: https://github.com/javaee/jaxb-v2/tree/jaxb-2_2_3/jaxb-ri/runtime/test?version=$version$
+- documentation-url: https://javadoc.io/doc/com.sun.xml.bind/jaxb-impl/$version$/index.html
+- description: JAXB Impl is the reference implementation runtime for JAXB, providing the binding engine that marshals Java objects to XML and unmarshals XML back into Java objects. It includes the com.sun.xml.bind runtime classes used behind the javax.xml.bind API in Java applications.
+- language: <missing>
+
+Context:
+- Coordinate version: 2.2.3-1
+- Entry metadata-version: 2.2.3-1
+- Entry test-version: 2.2.3-1
+- Entry tested-versions: [2.2.3-1]
+codex
+I’ll verify the Maven and project URLs first, then patch only fields that are actually missing or stale under the requested rules. For this coordinate the likely source of truth is Maven Central for source artifacts, with the JAXB RI GitHub tag for tests if no test artifact is published.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"|source-code-url|repository-url|test-code-url|documentation-url|description|language|tested-versions' metadata/com.sun.xml.bind/jaxb-impl/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e
+4:    "metadata-version" : "2.2.3-1",
+5:    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-impl/$version$/jaxb-impl-$version$-sources.jar",
+6:    "repository-url" : "https://github.com/javaee/jaxb-v2",
+7:    "test-code-url" : "https://github.com/javaee/jaxb-v2/tree/jaxb-2_2_3/jaxb-ri/runtime/test?version=$version$",
+8:    "documentation-url" : "https://javadoc.io/doc/com.sun.xml.bind/jaxb-impl/$version$/index.html",
+9:    "description" : "JAXB Impl is the reference implementation runtime for JAXB, providing the binding engine that marshals Java objects to XML and unmarshals XML back into Java objects. It includes the com.sun.xml.bind runtime classes used behind the javax.xml.bind API in Java applications.",
+10:    "tested-versions" : [
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e
+ succeeded in 466ms:
+?? metadata/com.sun.xml.bind/
+?? tests/src/com.sun.xml.bind/
+
+web search: 
+web search: Maven Central com.sun.xml.bind jaxb-impl 2.2.3-1 sources jar tests jar
+codex
+The index already has all candidate URL fields and the two-sentence description populated, so I’m treating the existing versioned URLs as templates and checking their rendered form for `2.2.3-1`. The only missing field is `language`, and I’ll leave it absent unless evidence shows this is one of the Kotlin/Groovy/Scala-specific artifacts.
+exec
+/usr/bin/bash -lc "curl -fsS https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-impl/2.2.3-1/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/sun/xml/bind/jaxb-impl/2.2.3-1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/sun/xml/bind/jaxb-impl/2.2.3-1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jaxb-impl-2.2.3-1-sources.jar" title="jaxb-impl-2.2.3-1-sources.jar">jaxb-impl-2.2.3-1-sources.jar</a>                     2011-01-18 10:31   1123574      
+<a href="jaxb-impl-2.2.3-1-sources.jar.asc" title="jaxb-impl-2.2.3-1-sources.jar.asc">jaxb-impl-2.2.3-1-sources.jar.asc</a>                 2011-01-18 10:31       189      
+<a href="jaxb-impl-2.2.3-1-sources.jar.asc.md5" title="jaxb-impl-2.2.3-1-sources.jar.asc.md5">jaxb-impl-2.2.3-1-sources.jar.asc.md5</a>             2011-01-18 10:31        32      
+<a href="jaxb-impl-2.2.3-1-sources.jar.asc.sha1" title="jaxb-impl-2.2.3-1-sources.jar.asc.sha1">jaxb-impl-2.2.3-1-sources.jar.asc.sha1</a>            2011-01-18 10:31        40      
+<a href="jaxb-impl-2.2.3-1-sources.jar.md5" title="jaxb-impl-2.2.3-1-sources.jar.md5">jaxb-impl-2.2.3-1-sources.jar.md5</a>                 2011-01-18 10:31        32      
+<a href="jaxb-impl-2.2.3-1-sources.jar.sha1" title="jaxb-impl-2.2.3-1-sources.jar.sha1">jaxb-impl-2.2.3-1-sources.jar.sha1</a>                2011-01-18 10:31        40      
+<a href="jaxb-impl-2.2.3-1.jar" title="jaxb-impl-2.2.3-1.jar">jaxb-impl-2.2.3-1.jar</a>                             2011-01-18 10:31    890168      
+<a href="jaxb-impl-2.2.3-1.jar.asc" title="jaxb-impl-2.2.3-1.jar.asc">jaxb-impl-2.2.3-1.jar.asc</a>                         2011-01-18 10:31       189      
+<a href="jaxb-impl-2.2.3-1.jar.asc.md5" title="jaxb-impl-2.2.3-1.jar.asc.md5">jaxb-impl-2.2.3-1.jar.asc.md5</a>                     2011-01-18 10:31        32      
+<a href="jaxb-impl-2.2.3-1.jar.asc.sha1" title="jaxb-impl-2.2.3-1.jar.asc.sha1">jaxb-impl-2.2.3-1.jar.asc.sha1</a>                    2011-01-18 10:31        40      
+<a href="jaxb-impl-2.2.3-1.jar.md5" title="jaxb-impl-2.2.3-1.jar.md5">jaxb-impl-2.2.3-1.jar.md5</a>                         2011-01-18 10:31        32      
+<a href="jaxb-impl-2.2.3-1.jar.sha1" title="jaxb-impl-2.2.3-1.jar.sha1">jaxb-impl-2.2.3-1.jar.sha1</a>                        2011-01-18 10:31        40      
+<a href="jaxb-impl-2.2.3-1.pom" title="jaxb-impl-2.2.3-1.pom">jaxb-impl-2.2.3-1.pom</a>                             2011-01-18 10:31      5265      
+<a href="jaxb-impl-2.2.3-1.pom.asc" title="jaxb-impl-2.2.3-1.pom.asc">jaxb-impl-2.2.3-1.pom.asc</a>                         2011-01-18 10:31       189      
+<a href="jaxb-impl-2.2.3-1.pom.asc.md5" title="jaxb-impl-2.2.3-1.pom.asc.md5">jaxb-impl-2.2.3-1.pom.asc.md5</a>                     2011-01-18 10:31        32      
+<a href="jaxb-impl-2.2.3-1.pom.asc.sha1" title="jaxb-impl-2.2.3-1.pom.asc.sha1">jaxb-impl-2.2.3-1.pom.asc.sha1</a>                    2011-01-18 10:31        40      
+<a href="jaxb-impl-2.2.3-1.pom.md5" title="jaxb-impl-2.2.3-1.pom.md5">jaxb-impl-2.2.3-1.pom.md5</a>                         2011-01-18 10:31        32      
+<a href="jaxb-impl-2.2.3-1.pom.sha1" title="jaxb-impl-2.2.3-1.pom.sha1">jaxb-impl-2.2.3-1.pom.sha1</a>                        2011-01-18 10:31        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-impl/2.2.3-1/jaxb-impl-2.2.3-1-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 08 Jun 2026 13:45:34 GMT
+content-type: application/java-archive
+content-length: 1123574
+cf-ray: a0885676bbc5be85-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1795522
+etag: "edc1d2367949c6ec29234aaaea6376b3"
+last-modified: Tue, 18 Jan 2011 10:31:56 GMT
+x-checksum-md5: edc1d2367949c6ec29234aaaea6376b3
+x-checksum-sha1: c7853ba682b292a2f9d831af145cadc5313a7af1
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/javaee/jaxb-v2/tree/jaxb-2_2_3/jaxb-ri/runtime/test?version=2.2.3-1 | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e
+ succeeded in 651ms:
+HTTP/2 200 
+date: Mon, 08 Jun 2026 13:45:35 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"507b3505be95d84877c1a8eeae5a8e71"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=M0wsxoT9z5Fwu9tjTDcfcaSq5z1YiIWp3IIyKH%2BM09M%2FklLIpNbbt8Scv2JzdvqcaD9Cb5lWXcAqWsVGGQEecY5MOgBt6Hut7RTSd7A3eWD2vx9qCtKFN5DDmBSEtt%2BAlrbD2kau341JOG%2B3qWoYa8gMFscGDHn%2BZtF1PfpxucfhmjAzL2nAYUACYpDdqyKiJNmXPiB3pccqOeIMjZF%2Fh20Vrps3PmQgUZpXoSAV2OpRcyzI0ed5UnCME87pO3y4pUBWlL7j2cg1PC%2FC%2F9QLHQ%3D%3D--ltEUovlpaa70Yifc--eVKVIhC%2BNgLUYcJNmitjqA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.86718561.1780926334; expires=Tue, 08 Jun 2027 13:45:34 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 08 Jun 2027 13:45:34 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6215:347A96:356A814:2B8D4B0:6A26C77E
+
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://javadoc.io/doc/com.sun.xml.bind/jaxb-impl/2.2.3-1/index.html | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 08 Jun 2026 13:45:40 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/com.sun.xml.bind/jaxb-impl/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=khtgRmu9Z0XCMwy004z3ii92wGppr%2BC7eckzHy%2BmsHyWO4clPsV2Al9C%2B7NTBhtEs%2BwNLEO6UW4q5HnfUMF%2FnS8NyRj6XxYm5tftLpJ4futGggbJ74DQSjrjdJD1P5Y6o9EYGgBEG5c5"}]}
+server: cloudflare
+cf-ray: a088569c7cb93b64-GVA
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsS https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-impl/2.2.3-1/jaxb-impl-2.2.3-1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+    Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+
+    The contents of this file are subject to the terms of either the GNU
+    General Public License Version 2 only ("GPL") or the Common Development
+    and Distribution License("CDDL") (collectively, the "License").  You
+    may not use this file except in compliance with the License.  You can
+    obtain a copy of the License at
+    https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+    or packager/legal/LICENSE.txt.  See the License for the specific
+    language governing permissions and limitations under the License.
+
+    When distributing the software, include this License Header Notice in each
+    file and include the License file at packager/legal/LICENSE.txt.
+
+    GPL Classpath Exception:
+    Oracle designates this particular file as subject to the "Classpath"
+    exception as provided by Oracle in the GPL Version 2 section of the License
+    file that accompanied this code.
+
+    Modifications:
+    If applicable, add the following below the License Header, with the fields
+    enclosed by brackets [] replaced by your own identifying information:
+    "Portions Copyright [year] [name of copyright owner]"
+
+    Contributor(s):
+    If you wish your version of this file to be governed by only the CDDL or
+    only the GPL Version 2, indicate your decision by adding "[Contributor]
+    elects to include this software in this distribution under the [CDDL or GPL
+    Version 2] license."  If you don't indicate a single choice of license, a
+    recipient has the option to distribute your version of this file under
+    either the CDDL, the GPL Version 2 or to extend the choice of license to
+    its licensees as provided above.  However, if you add GPL Version 2 code
+    and therefore, elected the GPL Version 2 license, then the option applies
+    only if the new code is made subject to such option by the copyright
+    holder.
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.sun.xml.bind</groupId>
+    <artifactId>jaxb-impl</artifactId>
+    <packaging>jar</packaging>
+    <name>JAXB RI</name>
+    <version>2.2.3-1</version>
+    <description>JAXB (JSR 222) reference implementation</description>
+    <url>http://jaxb.java.net/</url>
+
+    <organization>
+        <name>Oracle Corporation</name>
+        <url>http://www.oracle.com/</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>CDDL 1.1</name>
+            <url>https://glassfish.java.net/public/CDDL+GPL_1_1.html</url>
+            <distribution>repo</distribution>
+        </license>
+        <license>
+            <name>GPL2 w/ CPE</name>
+            <url>https://glassfish.java.net/public/CDDL+GPL_1_1.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://svn.java.net/svn/jaxb~version2/jaxb-ri</url>
+    </scm>
+
+    <dependencies>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.2.2</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- fake out maven and install the binary artifact -->
+            <plugin>
+                <groupId>org.jvnet.maven-antrun-extended-plugin</groupId>
+                <artifactId>maven-antrun-extended-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <attachArtifact file="jaxb-impl.jar"/>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <extensions>
+            <extension>
+                <groupId>org.jvnet.wagon-svn</groupId>
+                <artifactId>wagon-svn</artifactId>
+                <version>1.8</version>
+            </extension>
+        </extensions>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>m2.dev.java.net</id>
+            <url>http://download.java.net/maven/2</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>maven2-repository.dev.java.net</id>
+            <name>Java.net Repository for Maven</name>
+            <url>http://download.java.net/maven/2/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <distributionManagement>
+        <repository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>java.net-maven2-repository</id>
+            <url>svn:https://svn.java.net/svn/maven2-repository~svn/trunk/repository</url>
+        </repository>
+    </distributionManagement>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsS https://javadoc.io/doc/com.sun.xml.bind/jaxb-impl/2.2.3-1/index.html | rg -n \"2\\.2\\.3|jaxb-impl|latest|JAXB\" -m 20" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e
+exec
+/usr/bin/bash -lc "curl -fsS https://api.github.com/repos/javaee/jaxb-v2/git/refs/tags/jaxb-2_2_3 | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/javaee/jaxb-v2 | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e
+ succeeded in 108ms:
+13:		<title>jaxb-impl 2.2.3-1 javadoc (com.sun.xml.bind)</title>
+51:						jaxb-impl
+63:						<a href="/doc/com.sun.xml.bind/jaxb-impl" class="dropdown-item">
+64:							jaxb-impl
+91:						2.2.3-1
+94:						<a href="/doc/com.sun.xml.bind/jaxb-impl/latest/index.html" class="dropdown-item">
+99:						<a href="/doc/com.sun.xml.bind/jaxb-impl/4.0.8/index.html" class="dropdown-item">
+103:						<a href="/doc/com.sun.xml.bind/jaxb-impl/4.0.7/index.html" class="dropdown-item">
+107:						<a href="/doc/com.sun.xml.bind/jaxb-impl/4.0.6/index.html" class="dropdown-item">
+111:						<a href="/doc/com.sun.xml.bind/jaxb-impl/4.0.5/index.html" class="dropdown-item">
+115:						<a href="/doc/com.sun.xml.bind/jaxb-impl/4.0.4/index.html" class="dropdown-item">
+119:						<a href="/doc/com.sun.xml.bind/jaxb-impl/4.0.3/index.html" class="dropdown-item">
+123:						<a href="/doc/com.sun.xml.bind/jaxb-impl/4.0.2/index.html" class="dropdown-item">
+127:						<a href="/doc/com.sun.xml.bind/jaxb-impl/4.0.1/index.html" class="dropdown-item">
+131:						<a href="/doc/com.sun.xml.bind/jaxb-impl/4.0.0/index.html" class="dropdown-item">
+135:						<a href="/doc/com.sun.xml.bind/jaxb-impl/4.0.0-M4/index.html" class="dropdown-item">
+139:						<a href="/doc/com.sun.xml.bind/jaxb-impl/4.0.0-M3/index.html" class="dropdown-item">
+143:						<a href="/doc/com.sun.xml.bind/jaxb-impl/4.0.0-M2/index.html" class="dropdown-item">
+147:						<a href="/doc/com.sun.xml.bind/jaxb-impl/4.0.0-M1/index.html" class="dropdown-item">
+151:						<a href="/doc/com.sun.xml.bind/jaxb-impl/3.1.0-M1/index.html" class="dropdown-item">
+
+ succeeded in 188ms:
+{
+  "ref": "refs/tags/jaxb-2_2_3",
+  "node_id": "MDM6UmVmODkyMzMxMjg6cmVmcy90YWdzL2pheGItMl8yXzM=",
+  "url": "https://api.github.com/repos/javaee/jaxb-v2/git/refs/tags/jaxb-2_2_3",
+  "object": {
+    "sha": "d0f816ac408bb946246ebb6d2a28ce45898d9533",
+    "type": "commit",
+    "url": "https://api.github.com/repos/javaee/jaxb-v2/git/commits/d0f816ac408bb946246ebb6d2a28ce45898d9533"
+  }
+}
+
+ succeeded in 667ms:
+HTTP/2 200 
+date: Mon, 08 Jun 2026 13:45:48 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"a7de6146b84aed1da4977e0e1ad4efc6"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=HZvKf1eEXj%2BScDxZoAVIGI20YXlNNpksH4wKdNCVJ1%2Fx%2BkiagyEgbwPQVHdRU4BYyWuJocxfDdRuNqa4bqBryhoaDCSHDrvmlx04GmLRstV5nyvko7c%2BUt3Xh33gFLAW5SiCRdStFKRfpLXfnNq%2BR1dH86ckDCVRiPsxPb5gshztEBDrxjCZfRzWliuFYdaHYv3Dov1LA54BjSSZ115gtIMXL2rBJxeEsv35WsB5gGTBbJsPL3%2FQuGv6k3Fdhjkpx7pfr%2Fuy0MwLalvMWZwHRA%3D%3D--MQKwHWPloK9iejmp--NoFyLQJm3j7uKeY5HDSWVg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.660706428.1780926348; expires=Tue, 08 Jun 2027 13:45:48 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 08 Jun 2027 13:45:48 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 61FD:2CD5C4:34981AC:2ADCF27:6A26C78C
+
+
+web search: 
+web search: com.sun.xml.bind jaxb-impl 2.2.3-1 javadoc.io
+codex
+Maven Central publishes the normal JAR, POM, and sources JAR for `2.2.3-1`, but no test-sources or tests JAR in that version directory. The GitHub `jaxb-2_2_3` tag exists and the runtime test path resolves, so the current test suite URL is the best verified versioned target I found.
+exec
+/usr/bin/bash -lc "jq . metadata/com.sun.xml.bind/jaxb-impl/index.json >/dev/null && sed -n '1,40p' metadata/com.sun.xml.bind/jaxb-impl/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.2.3-1",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-impl/$version$/jaxb-impl-$version$-sources.jar",
+    "repository-url" : "https://github.com/javaee/jaxb-v2",
+    "test-code-url" : "https://github.com/javaee/jaxb-v2/tree/jaxb-2_2_3/jaxb-ri/runtime/test?version=$version$",
+    "documentation-url" : "https://javadoc.io/doc/com.sun.xml.bind/jaxb-impl/$version$/index.html",
+    "description" : "JAXB Impl is the reference implementation runtime for JAXB, providing the binding engine that marshals Java objects to XML and unmarshals XML back into Java objects. It includes the com.sun.xml.bind runtime classes used behind the javax.xml.bind API in Java applications.",
+    "tested-versions" : [
+      "2.2.3-1"
+    ],
+    "allowed-packages" : [
+      "com.sun"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsS https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-impl/2.2.3-1/ | rg -n 'test|sources|javadoc|pom|jar'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e
+ succeeded in 0ms:
+22:<a href="jaxb-impl-2.2.3-1-sources.jar" title="jaxb-impl-2.2.3-1-sources.jar">jaxb-impl-2.2.3-1-sources.jar</a>                     2011-01-18 10:31   1123574      
+23:<a href="jaxb-impl-2.2.3-1-sources.jar.asc" title="jaxb-impl-2.2.3-1-sources.jar.asc">jaxb-impl-2.2.3-1-sources.jar.asc</a>                 2011-01-18 10:31       189      
+24:<a href="jaxb-impl-2.2.3-1-sources.jar.asc.md5" title="jaxb-impl-2.2.3-1-sources.jar.asc.md5">jaxb-impl-2.2.3-1-sources.jar.asc.md5</a>             2011-01-18 10:31        32      
+25:<a href="jaxb-impl-2.2.3-1-sources.jar.asc.sha1" title="jaxb-impl-2.2.3-1-sources.jar.asc.sha1">jaxb-impl-2.2.3-1-sources.jar.asc.sha1</a>            2011-01-18 10:31        40      
+26:<a href="jaxb-impl-2.2.3-1-sources.jar.md5" title="jaxb-impl-2.2.3-1-sources.jar.md5">jaxb-impl-2.2.3-1-sources.jar.md5</a>                 2011-01-18 10:31        32      
+27:<a href="jaxb-impl-2.2.3-1-sources.jar.sha1" title="jaxb-impl-2.2.3-1-sources.jar.sha1">jaxb-impl-2.2.3-1-sources.jar.sha1</a>                2011-01-18 10:31        40      
+28:<a href="jaxb-impl-2.2.3-1.jar" title="jaxb-impl-2.2.3-1.jar">jaxb-impl-2.2.3-1.jar</a>                             2011-01-18 10:31    890168      
+29:<a href="jaxb-impl-2.2.3-1.jar.asc" title="jaxb-impl-2.2.3-1.jar.asc">jaxb-impl-2.2.3-1.jar.asc</a>                         2011-01-18 10:31       189      
+30:<a href="jaxb-impl-2.2.3-1.jar.asc.md5" title="jaxb-impl-2.2.3-1.jar.asc.md5">jaxb-impl-2.2.3-1.jar.asc.md5</a>                     2011-01-18 10:31        32      
+31:<a href="jaxb-impl-2.2.3-1.jar.asc.sha1" title="jaxb-impl-2.2.3-1.jar.asc.sha1">jaxb-impl-2.2.3-1.jar.asc.sha1</a>                    2011-01-18 10:31        40      
+32:<a href="jaxb-impl-2.2.3-1.jar.md5" title="jaxb-impl-2.2.3-1.jar.md5">jaxb-impl-2.2.3-1.jar.md5</a>                         2011-01-18 10:31        32      
+33:<a href="jaxb-impl-2.2.3-1.jar.sha1" title="jaxb-impl-2.2.3-1.jar.sha1">jaxb-impl-2.2.3-1.jar.sha1</a>                        2011-01-18 10:31        40      
+34:<a href="jaxb-impl-2.2.3-1.pom" title="jaxb-impl-2.2.3-1.pom">jaxb-impl-2.2.3-1.pom</a>                             2011-01-18 10:31      5265      
+35:<a href="jaxb-impl-2.2.3-1.pom.asc" title="jaxb-impl-2.2.3-1.pom.asc">jaxb-impl-2.2.3-1.pom.asc</a>                         2011-01-18 10:31       189      
+36:<a href="jaxb-impl-2.2.3-1.pom.asc.md5" title="jaxb-impl-2.2.3-1.pom.asc.md5">jaxb-impl-2.2.3-1.pom.asc.md5</a>                     2011-01-18 10:31        32      
+37:<a href="jaxb-impl-2.2.3-1.pom.asc.sha1" title="jaxb-impl-2.2.3-1.pom.asc.sha1">jaxb-impl-2.2.3-1.pom.asc.sha1</a>                    2011-01-18 10:31        40      
+38:<a href="jaxb-impl-2.2.3-1.pom.md5" title="jaxb-impl-2.2.3-1.pom.md5">jaxb-impl-2.2.3-1.pom.md5</a>                         2011-01-18 10:31        32      
+39:<a href="jaxb-impl-2.2.3-1.pom.sha1" title="jaxb-impl-2.2.3-1.pom.sha1">jaxb-impl-2.2.3-1.pom.sha1</a>                        2011-01-18 10:31        40      
+
+exec
+/usr/bin/bash -lc "curl -fsS https://api.github.com/repos/javaee/jaxb-v2/contents/jaxb-ri/runtime/test?ref=jaxb-2_2_3 | sed -n '1,160p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e
+ succeeded in 155ms:
+[
+  {
+    "name": "CSTestProgram.java",
+    "path": "jaxb-ri/runtime/test/CSTestProgram.java",
+    "sha": "a8822cc46ecaf90f7182bd0714436a4133c6200a",
+    "size": 2929,
+    "url": "https://api.github.com/repos/javaee/jaxb-v2/contents/jaxb-ri/runtime/test/CSTestProgram.java?ref=jaxb-2_2_3",
+    "html_url": "https://github.com/javaee/jaxb-v2/blob/jaxb-2_2_3/jaxb-ri/runtime/test/CSTestProgram.java",
+    "git_url": "https://api.github.com/repos/javaee/jaxb-v2/git/blobs/a8822cc46ecaf90f7182bd0714436a4133c6200a",
+    "download_url": "https://raw.githubusercontent.com/javaee/jaxb-v2/jaxb-2_2_3/jaxb-ri/runtime/test/CSTestProgram.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/javaee/jaxb-v2/contents/jaxb-ri/runtime/test/CSTestProgram.java?ref=jaxb-2_2_3",
+      "git": "https://api.github.com/repos/javaee/jaxb-v2/git/blobs/a8822cc46ecaf90f7182bd0714436a4133c6200a",
+      "html": "https://github.com/javaee/jaxb-v2/blob/jaxb-2_2_3/jaxb-ri/runtime/test/CSTestProgram.java"
+    }
+  },
+  {
+    "name": "FilterList.java",
+    "path": "jaxb-ri/runtime/test/FilterList.java",
+    "sha": "ccc5114ae34199de799dcdcf96bc21c3e2822393",
+    "size": 11085,
+    "url": "https://api.github.com/repos/javaee/jaxb-v2/contents/jaxb-ri/runtime/test/FilterList.java?ref=jaxb-2_2_3",
+    "html_url": "https://github.com/javaee/jaxb-v2/blob/jaxb-2_2_3/jaxb-ri/runtime/test/FilterList.java",
+    "git_url": "https://api.github.com/repos/javaee/jaxb-v2/git/blobs/ccc5114ae34199de799dcdcf96bc21c3e2822393",
+    "download_url": "https://raw.githubusercontent.com/javaee/jaxb-v2/jaxb-2_2_3/jaxb-ri/runtime/test/FilterList.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/javaee/jaxb-v2/contents/jaxb-ri/runtime/test/FilterList.java?ref=jaxb-2_2_3",
+      "git": "https://api.github.com/repos/javaee/jaxb-v2/git/blobs/ccc5114ae34199de799dcdcf96bc21c3e2822393",
+      "html": "https://github.com/javaee/jaxb-v2/blob/jaxb-2_2_3/jaxb-ri/runtime/test/FilterList.java"
+    }
+  },
+  {
+    "name": "Util.java",
+    "path": "jaxb-ri/runtime/test/Util.java",
+    "sha": "80879bbb92e77918bfb5e9b23b65b773548975dd",
+    "size": 2930,
+    "url": "https://api.github.com/repos/javaee/jaxb-v2/contents/jaxb-ri/runtime/test/Util.java?ref=jaxb-2_2_3",
+    "html_url": "https://github.com/javaee/jaxb-v2/blob/jaxb-2_2_3/jaxb-ri/runtime/test/Util.java",
+    "git_url": "https://api.github.com/repos/javaee/jaxb-v2/git/blobs/80879bbb92e77918bfb5e9b23b65b773548975dd",
+    "download_url": "https://raw.githubusercontent.com/javaee/jaxb-v2/jaxb-2_2_3/jaxb-ri/runtime/test/Util.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/javaee/jaxb-v2/contents/jaxb-ri/runtime/test/Util.java?ref=jaxb-2_2_3",
+      "git": "https://api.github.com/repos/javaee/jaxb-v2/git/blobs/80879bbb92e77918bfb5e9b23b65b773548975dd",
+      "html": "https://github.com/javaee/jaxb-v2/blob/jaxb-2_2_3/jaxb-ri/runtime/test/Util.java"
+    }
+  },
+  {
+    "name": "XMLResolverAdapter.java",
+    "path": "jaxb-ri/runtime/test/XMLResolverAdapter.java",
+    "sha": "84c2d8570f4ae2ea95e47b912d2d021677c2019e",
+    "size": 3483,
+    "url": "https://api.github.com/repos/javaee/jaxb-v2/contents/jaxb-ri/runtime/test/XMLResolverAdapter.java?ref=jaxb-2_2_3",
+    "html_url": "https://github.com/javaee/jaxb-v2/blob/jaxb-2_2_3/jaxb-ri/runtime/test/XMLResolverAdapter.java",
+    "git_url": "https://api.github.com/repos/javaee/jaxb-v2/git/blobs/84c2d8570f4ae2ea95e47b912d2d021677c2019e",
+    "download_url": "https://raw.githubusercontent.com/javaee/jaxb-v2/jaxb-2_2_3/jaxb-ri/runtime/test/XMLResolverAdapter.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/javaee/jaxb-v2/contents/jaxb-ri/runtime/test/XMLResolverAdapter.java?ref=jaxb-2_2_3",
+      "git": "https://api.github.com/repos/javaee/jaxb-v2/git/blobs/84c2d8570f4ae2ea95e47b912d2d021677c2019e",
+      "html": "https://github.com/javaee/jaxb-v2/blob/jaxb-2_2_3/jaxb-ri/runtime/test/XMLResolverAdapter.java"
+    }
+  },
+  {
+    "name": "com",
+    "path": "jaxb-ri/runtime/test/com",
+    "sha": "1ce7ca0f44d73db0aa823d36dfd5ddc260ef54de",
+    "size": 0,
+    "url": "https://api.github.com/repos/javaee/jaxb-v2/contents/jaxb-ri/runtime/test/com?ref=jaxb-2_2_3",
+    "html_url": "https://github.com/javaee/jaxb-v2/tree/jaxb-2_2_3/jaxb-ri/runtime/test/com",
+    "git_url": "https://api.github.com/repos/javaee/jaxb-v2/git/trees/1ce7ca0f44d73db0aa823d36dfd5ddc260ef54de",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/javaee/jaxb-v2/contents/jaxb-ri/runtime/test/com?ref=jaxb-2_2_3",
+      "git": "https://api.github.com/repos/javaee/jaxb-v2/git/trees/1ce7ca0f44d73db0aa823d36dfd5ddc260ef54de",
+      "html": "https://github.com/javaee/jaxb-v2/tree/jaxb-2_2_3/jaxb-ri/runtime/test/com"
+    }
+  },
+  {
+    "name": "emma.properties",
+    "path": "jaxb-ri/runtime/test/emma.properties",
+    "sha": "9af72e3ba72031201f2856e9ece30354d0beedd5",
+    "size": 1998,
+    "url": "https://api.github.com/repos/javaee/jaxb-v2/contents/jaxb-ri/runtime/test/emma.properties?ref=jaxb-2_2_3",
+    "html_url": "https://github.com/javaee/jaxb-v2/blob/jaxb-2_2_3/jaxb-ri/runtime/test/emma.properties",
+    "git_url": "https://api.github.com/repos/javaee/jaxb-v2/git/blobs/9af72e3ba72031201f2856e9ece30354d0beedd5",
+    "download_url": "https://raw.githubusercontent.com/javaee/jaxb-v2/jaxb-2_2_3/jaxb-ri/runtime/test/emma.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/javaee/jaxb-v2/contents/jaxb-ri/runtime/test/emma.properties?ref=jaxb-2_2_3",
+      "git": "https://api.github.com/repos/javaee/jaxb-v2/git/blobs/9af72e3ba72031201f2856e9ece30354d0beedd5",
+      "html": "https://github.com/javaee/jaxb-v2/blob/jaxb-2_2_3/jaxb-ri/runtime/test/emma.properties"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-impl/2.2.3-1/jaxb-impl-2.2.3-1-test-sources.jar https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-impl/2.2.3-1/jaxb-impl-2.2.3-1-tests.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e
+ succeeded in 274ms:
+curl: (22) The requested URL returned error: 404
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Mon, 08 Jun 2026 13:46:08 GMT
+content-type: text/html
+cf-ray: a0885747fc26df5e-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/sun/xml/bind/jaxb-impl/2.2.3-1/jaxb-impl-2.2.3-1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Mon, 08 Jun 2026 13:46:08 GMT
+content-type: text/html
+cf-ray: a08857497820df5e-ZRH
+cf-cache-status: HIT
+age: 1838
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/sun/xml/bind/jaxb-impl/2.2.3-1/jaxb-impl-2.2.3-1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-impl/2.2.3-1/
+web search: 
+web search: site:javadoc.io/doc/com.sun.xml.bind/jaxb-impl/2.2.3-1/index.html jaxb-impl 2.2.3-1 javadoc
+web search: 
+web search: https://javadoc.io/doc/com.sun.xml.bind/jaxb-impl/2.2.3-1
+web search: 
+web search: https://javadoc.io/doc/com.sun.xml.bind/jaxb-impl/2.0/index.html
+web search: 
+web search: https://javadoc.io/doc/com.sun.xml.bind/jaxb-impl/2.0/index.html
+codex
+One current field is not actually valid after rendering: javadoc.io resolves the `2.2.3-1` page, but the page itself says no JavaDoc was released for `com.sun.xml.bind:jaxb-impl:2.2.3-1`. I’m checking the tagged repository for version-specific docs before deciding whether this should become `N/A`.
+exec
+/usr/bin/bash -lc "curl -fsS https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-impl/2.2.3-1/ | rg -n 'javadoc|doc'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e
+ exited 1 in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsS https://api.github.com/repos/javaee/jaxb-v2/git/trees/jaxb-2_2_3?recursive=1 | jq -r '.tree[]?.path' | rg '("'^|/)(doc|docs|www|apidocs|javadoc|README|readme|manual|users-guide)'"' | sed -n '1,200p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-impl/2.2.3-1/jaxb-impl-2.2.3-1-javadoc.jar | sed -n '1,40p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Mon, 08 Jun 2026 13:46:46 GMT
+content-type: text/html
+cf-ray: a0885836a80b931a-ZRH
+cf-cache-status: HIT
+age: 3571
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/sun/xml/bind/jaxb-impl/2.2.3-1/jaxb-impl-2.2.3-1-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsS 'https://api.github.com/search/code?q=repo:javaee/jaxb-v2+jaxb-2_2_3+documentation' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e
+ succeeded in 105ms:
+ succeeded in 355ms:
+jaxb-ri/apgen/readme.txt
+jaxb-ri/javadoc
+jaxb-ri/javadoc/javadoc.iml
+jaxb-ri/javadoc/jaxb
+jaxb-ri/javadoc/jaxb/MetaArchitectureDocument.java
+jaxb-ri/javadoc/jaxb/package-info.java
+jaxb-ri/javadoc/readme.txt
+jaxb-ri/relaxng/readme.html
+jaxb-ri/runtime-fi/readme.txt
+jaxb-ri/runtime/src/com/sun/xml/bind/v2/doc-files
+jaxb-ri/runtime/src/com/sun/xml/bind/v2/doc-files/j2s_architecture.gif
+jaxb-ri/runtime/src/com/sun/xml/bind/v2/doc-files/j2s_architecture.sxd
+jaxb-ri/runtime/src/com/sun/xml/bind/v2/doc-files/packages.png
+jaxb-ri/runtime/src/com/sun/xml/bind/v2/doc-files/packages.vsd
+jaxb-ri/runtime/src/com/sun/xml/bind/v2/doc-files/readme.txt
+jaxb-ri/tools/htmlmacro/tags/jax/readme.txt
+jaxb-ri/tools/htmlmacro/tags/sun/readme.txt
+jaxb-ri/tools/installer-builder/readme.txt
+jaxb-ri/tools/installer/readme.txt
+jaxb-ri/tools/javadoc-link
+jaxb-ri/tools/javadoc-link/j2se5.0
+jaxb-ri/tools/javadoc-link/j2se5.0/package-list
+jaxb-ri/tools/javadoc-link/jaxb-api
+jaxb-ri/tools/javadoc-link/jaxb-api/package-list
+jaxb-ri/tools/javadoc-link/readme.txt
+jaxb-ri/tools/javadoc-link/xsom
+jaxb-ri/tools/javadoc-link/xsom/package-list
+jaxb-ri/tools/lib/rebundle/compiler/readme.txt
+jaxb-ri/tools/lib/rebundle/runtime/readme.txt
+jaxb-ri/tools/lib/rebundle/runtime2/readme.txt
+jaxb-ri/tools/prelim-build/readme.txt
+jaxb-ri/tools/serialbox/readme
+jaxb-ri/tools/servlet/src/com/sun/tools/xjc/servlet/javadoc
+jaxb-ri/tools/servlet/src/com/sun/tools/xjc/servlet/javadoc/j2se
+jaxb-ri/tools/servlet/src/com/sun/tools/xjc/servlet/javadoc/j2se/package-list
+jaxb-ri/tools/servlet/src/com/sun/tools/xjc/servlet/javadoc/jwsdp
+jaxb-ri/tools/servlet/src/com/sun/tools/xjc/servlet/javadoc/jwsdp/package-list
+jaxb-ri/tools/servlet/web/javadocError.jsp
+jaxb-ri/tools/taglets/readme.txt
+jaxb-ri/xjc/src/com/sun/tools/xjc/reader/xmlschema/doc-files
+jaxb-ri/xjc/src/com/sun/tools/xjc/reader/xmlschema/doc-files/binding_chart.png
+jaxb-ri/xjc/src/com/sun/tools/xjc/reader/xmlschema/doc-files/binding_chart.sxd
+
+codex
+I found tagged documentation sources under `jaxb-ri/javadoc` in the same `jaxb-2_2_3` repository tag. Since the rendered javadoc.io page is an artifact stub, I’m going to replace only `documentation-url` with the tagged documentation path and leave the other populated fields unchanged.
+exec
+/usr/bin/bash -lc "curl -fsSI 'https://github.com/javaee/jaxb-v2/tree/jaxb-2_2_3/jaxb-ri/javadoc?version=2.2.3-1' | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e
+ succeeded in 552ms:
+HTTP/2 200 
+date: Mon, 08 Jun 2026 13:46:57 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"c707beedceac4921e514b24e20ca06b6"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=afaCcWSvP%2Fj0Y8GnCsT4uc46nw0NLu2DJtnMsroJ9nn0NZ0AtO1B5HV9%2BrJm6COw09CWdjbwTuW3Y3ti9oApMLjrx2fRLEPJiycRIWub5evjnTNx2slMDiIVE0eOSCh1KzqHfVYKLm8SdJ5W%2B1NWwR0wtHQ%2FSXsHu1LTYD50%2BB8%2BZIWQ8PCXvdFwW1sin%2FGbl%2BnQia5EhIRl61bqtuGWvJUZ9dJOXX4u4J9GrtonPbv9nqOZn1Ba7qprmp85YlvkmhL03Hhx0dm84jFgS1EJFQ%3D%3D--ZgiY4VZKFGYnUSzx--cAMIqWZETG95iEb3d7ENeQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1441141264.1780926417; expires=Tue, 08 Jun 2027 13:46:57 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 08 Jun 2027 13:46:57 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 61FD:2CD5C4:34DA186:2B12E70:6A26C7D1
+
+
+codex
+I verified the replacement documentation template by rendering it for `2.2.3-1`; it returns HTTP 200 and stays on the `jaxb-2_2_3` tag. Applying that one-field JSON edit now.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e/metadata/com.sun.xml.bind/jaxb-impl/index.json
+diff --git a/metadata/com.sun.xml.bind/jaxb-impl/index.json b/metadata/com.sun.xml.bind/jaxb-impl/index.json
+index cf2939442adfe940085499cc083df84b489983c0..90a256fc22f6819e3d8d9b5322addd61bd8d8b8f
+--- a/metadata/com.sun.xml.bind/jaxb-impl/index.json
++++ b/metadata/com.sun.xml.bind/jaxb-impl/index.json
+@@ -5,7 +5,7 @@
+     "source-code-url" : "https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-impl/$version$/jaxb-impl-$version$-sources.jar",
+     "repository-url" : "https://github.com/javaee/jaxb-v2",
+     "test-code-url" : "https://github.com/javaee/jaxb-v2/tree/jaxb-2_2_3/jaxb-ri/runtime/test?version=$version$",
+-    "documentation-url" : "https://javadoc.io/doc/com.sun.xml.bind/jaxb-impl/$version$/index.html",
++    "documentation-url" : "https://github.com/javaee/jaxb-v2/tree/jaxb-2_2_3/jaxb-ri/javadoc?version=$version$",
+     "description" : "JAXB Impl is the reference implementation runtime for JAXB, providing the binding engine that marshals Java objects to XML and unmarshals XML back into Java objects. It includes the com.sun.xml.bind runtime classes used behind the javax.xml.bind API in Java applications.",
+     "tested-versions" : [
+       "2.2.3-1"
+
+diff --git a/metadata/com.sun.xml.bind/jaxb-impl/index.json b/metadata/com.sun.xml.bind/jaxb-impl/index.json
+index cf2939442adfe940085499cc083df84b489983c0..90a256fc22f6819e3d8d9b5322addd61bd8d8b8f
+--- a/metadata/com.sun.xml.bind/jaxb-impl/index.json
++++ b/metadata/com.sun.xml.bind/jaxb-impl/index.json
+@@ -5,7 +5,7 @@
+     "source-code-url" : "https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-impl/$version$/jaxb-impl-$version$-sources.jar",
+     "repository-url" : "https://github.com/javaee/jaxb-v2",
+     "test-code-url" : "https://github.com/javaee/jaxb-v2/tree/jaxb-2_2_3/jaxb-ri/runtime/test?version=$version$",
+-    "documentation-url" : "https://javadoc.io/doc/com.sun.xml.bind/jaxb-impl/$version$/index.html",
++    "documentation-url" : "https://github.com/javaee/jaxb-v2/tree/jaxb-2_2_3/jaxb-ri/javadoc?version=$version$",
+     "description" : "JAXB Impl is the reference implementation runtime for JAXB, providing the binding engine that marshals Java objects to XML and unmarshals XML back into Java objects. It includes the com.sun.xml.bind runtime classes used behind the javax.xml.bind API in Java applications.",
+     "tested-versions" : [
+       "2.2.3-1"
+
+codex
+The repository edit is in place. I’m doing a final JSON parse and diff check so the result is valid and limited to the intended field.
+exec
+/usr/bin/bash -lc "jq . metadata/com.sun.xml.bind/jaxb-impl/index.json >/dev/null && sed -n '1,24p' metadata/com.sun.xml.bind/jaxb-impl/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.2.3-1",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-impl/$version$/jaxb-impl-$version$-sources.jar",
+    "repository-url" : "https://github.com/javaee/jaxb-v2",
+    "test-code-url" : "https://github.com/javaee/jaxb-v2/tree/jaxb-2_2_3/jaxb-ri/runtime/test?version=$version$",
+    "documentation-url" : "https://github.com/javaee/jaxb-v2/tree/jaxb-2_2_3/jaxb-ri/javadoc?version=$version$",
+    "description" : "JAXB Impl is the reference implementation runtime for JAXB, providing the binding engine that marshals Java objects to XML and unmarshals XML back into Java objects. It includes the com.sun.xml.bind runtime classes used behind the javax.xml.bind API in Java applications.",
+    "tested-versions" : [
+      "2.2.3-1"
+    ],
+    "allowed-packages" : [
+      "com.sun"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/com.sun.xml.bind/jaxb-impl/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/com.sun.xml.bind/jaxb-impl/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e
+ succeeded in 0ms:
+?? metadata/com.sun.xml.bind/jaxb-impl/index.json
+
+diff --git a/metadata/com.sun.xml.bind/jaxb-impl/index.json b/metadata/com.sun.xml.bind/jaxb-impl/index.json
+index cf2939442adfe940085499cc083df84b489983c0..90a256fc22f6819e3d8d9b5322addd61bd8d8b8f
+--- a/metadata/com.sun.xml.bind/jaxb-impl/index.json
++++ b/metadata/com.sun.xml.bind/jaxb-impl/index.json
+@@ -5,7 +5,7 @@
+     "source-code-url" : "https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-impl/$version$/jaxb-impl-$version$-sources.jar",
+     "repository-url" : "https://github.com/javaee/jaxb-v2",
+     "test-code-url" : "https://github.com/javaee/jaxb-v2/tree/jaxb-2_2_3/jaxb-ri/runtime/test?version=$version$",
+-    "documentation-url" : "https://javadoc.io/doc/com.sun.xml.bind/jaxb-impl/$version$/index.html",
++    "documentation-url" : "https://github.com/javaee/jaxb-v2/tree/jaxb-2_2_3/jaxb-ri/javadoc?version=$version$",
+     "description" : "JAXB Impl is the reference implementation runtime for JAXB, providing the binding engine that marshals Java objects to XML and unmarshals XML back into Java objects. It includes the com.sun.xml.bind runtime classes used behind the javax.xml.bind API in Java applications.",
+     "tested-versions" : [
+       "2.2.3-1"
+
+codex
+The file parses cleanly. Because this metadata directory is currently untracked in Git, `git diff` does not show the content delta, so I’m validating through the file contents and the repository’s metadata checker instead.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=com.sun.xml.bind:jaxb-impl:2.2.3-1 --stacktrace' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e
+diff --git a/metadata/com.sun.xml.bind/jaxb-impl/index.json b/metadata/com.sun.xml.bind/jaxb-impl/index.json
+index cf2939442adfe940085499cc083df84b489983c0..90a256fc22f6819e3d8d9b5322addd61bd8d8b8f
+--- a/metadata/com.sun.xml.bind/jaxb-impl/index.json
++++ b/metadata/com.sun.xml.bind/jaxb-impl/index.json
+@@ -5,7 +5,7 @@
+     "source-code-url" : "https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-impl/$version$/jaxb-impl-$version$-sources.jar",
+     "repository-url" : "https://github.com/javaee/jaxb-v2",
+     "test-code-url" : "https://github.com/javaee/jaxb-v2/tree/jaxb-2_2_3/jaxb-ri/runtime/test?version=$version$",
+-    "documentation-url" : "https://javadoc.io/doc/com.sun.xml.bind/jaxb-impl/$version$/index.html",
++    "documentation-url" : "https://github.com/javaee/jaxb-v2/tree/jaxb-2_2_3/jaxb-ri/javadoc?version=$version$",
+     "description" : "JAXB Impl is the reference implementation runtime for JAXB, providing the binding engine that marshals Java objects to XML and unmarshals XML back into Java objects. It includes the com.sun.xml.bind runtime classes used behind the javax.xml.bind API in Java applications.",
+     "tested-versions" : [
+       "2.2.3-1"
+
+ succeeded in 3137ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles
+Metadata files check passed for com.sun.xml.bind:jaxb-impl:2.2.3-1
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e/metadata/com.sun.xml.bind/jaxb-impl/index.json:8).
+
+Changed only `documentation-url` to the verified tagged documentation source:
+
+```json
+"documentation-url" : "https://github.com/javaee/jaxb-v2/tree/jaxb-2_2_3/jaxb-ri/javadoc?version=$version$"
+```
+
+Kept the existing Maven sources URL, repository URL, test suite URL, and two-sentence description. No `language` field was added because `com.sun.xml.bind:jaxb-impl` is not Kotlin, Groovy, or Scala-specific.
+
+Validation passed:
+
+```bash
+./gradlew checkMetadataFiles -Pcoordinates=com.sun.xml.bind:jaxb-impl:2.2.3-1 --stacktrace
+```
+
+Note: Git reports this `index.json` path as untracked; that was already true before my edit.
+diff --git a/metadata/com.sun.xml.bind/jaxb-impl/index.json b/metadata/com.sun.xml.bind/jaxb-impl/index.json
+index cf2939442adfe940085499cc083df84b489983c0..90a256fc22f6819e3d8d9b5322addd61bd8d8b8f
+--- a/metadata/com.sun.xml.bind/jaxb-impl/index.json
++++ b/metadata/com.sun.xml.bind/jaxb-impl/index.json
+@@ -5,7 +5,7 @@
+     "source-code-url" : "https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-impl/$version$/jaxb-impl-$version$-sources.jar",
+     "repository-url" : "https://github.com/javaee/jaxb-v2",
+     "test-code-url" : "https://github.com/javaee/jaxb-v2/tree/jaxb-2_2_3/jaxb-ri/runtime/test?version=$version$",
+-    "documentation-url" : "https://javadoc.io/doc/com.sun.xml.bind/jaxb-impl/$version$/index.html",
++    "documentation-url" : "https://github.com/javaee/jaxb-v2/tree/jaxb-2_2_3/jaxb-ri/javadoc?version=$version$",
+     "description" : "JAXB Impl is the reference implementation runtime for JAXB, providing the binding engine that marshals Java objects to XML and unmarshals XML back into Java objects. It includes the com.sun.xml.bind runtime classes used behind the javax.xml.bind API in Java applications.",
+     "tested-versions" : [
+       "2.2.3-1"
+
+tokens used
+61,095
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e/metadata/com.sun.xml.bind/jaxb-impl/index.json:8).
+
+Changed only `documentation-url` to the verified tagged documentation source:
+
+```json
+"documentation-url" : "https://github.com/javaee/jaxb-v2/tree/jaxb-2_2_3/jaxb-ri/javadoc?version=$version$"
+```
+
+Kept the existing Maven sources URL, repository URL, test suite URL, and two-sentence description. No `language` field was added because `com.sun.xml.bind:jaxb-impl` is not Kotlin, Groovy, or Scala-specific.
+
+Validation passed:
+
+```bash
+./gradlew checkMetadataFiles -Pcoordinates=com.sun.xml.bind:jaxb-impl:2.2.3-1 --stacktrace
+```
+
+Note: Git reports this `index.json` path as untracked; that was already true before my edit.
+Ran agent for com.sun.xml.bind:jaxb-impl:2.2.3-1 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e/build/agent-url-discovery-logs/com.sun.xml.bind-jaxb-impl-2.2.3-1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2607-c7e9f18e/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 17s
+9 actionable tasks: 1 executed, 8 up-to-date
