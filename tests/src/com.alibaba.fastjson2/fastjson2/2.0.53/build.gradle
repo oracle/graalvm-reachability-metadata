@@ -16,6 +16,12 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('--initialize-at-build-time=com.alibaba.fastjson2')
+        }
+    }
+
     agent {
         defaultMode = "conditional"
         modes {
