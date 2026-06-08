@@ -28,6 +28,8 @@ import groovy.xml.slurpersupport.GPathResult
 import org.apache.groovy.xml.tools.DomToGroovy
 import org.junit.jupiter.api.Test
 import org.w3c.dom.Document
+import org.w3c.dom.Element
+import org.w3c.dom.NodeList
 import org.xml.sax.Attributes
 import org.xml.sax.InputSource
 import org.xml.sax.helpers.DefaultHandler
@@ -380,6 +382,28 @@ public class Groovy_xmlTest {
                 'start:book:b2',
                 'text:GraalVM',
                 'end:catalog')
+    }
+
+    @Test
+    void domExtensionsIterateNodeListsAndSerializeElements() {
+        Document document = DOMBuilder.parse(new StringReader('''\
+                <records>
+                  <record id="b1"><title>Groovy</title></record>
+                  <record id="b2"><title>GraalVM</title></record>
+                </records>
+                '''.stripIndent()))
+        NodeList records = document.getElementsByTagName('record')
+
+        List<String> ids = []
+        for (Element record : records) {
+            ids << record.getAttribute('id')
+        }
+        Element firstRecord = records.item(0) as Element
+        String serialized = firstRecord.serialize()
+
+        assertThat(ids).containsExactly('b1', 'b2')
+        assertThat(serialized).contains('<record id="b1">')
+        assertThat(serialized).contains('<title>Groovy</title>')
     }
 
     @Test
