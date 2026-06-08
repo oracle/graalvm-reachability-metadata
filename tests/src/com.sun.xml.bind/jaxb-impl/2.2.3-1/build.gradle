@@ -15,7 +15,25 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.withType(Test).configureEach {
+    systemProperty "com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize", "true"
+}
+
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Dcom.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize=true")
+}
+
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.addAll([
+                    "-Dcom.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize=true",
+                    "--initialize-at-run-time=com.sun.xml.bind.v2.runtime.reflect.opt.Injector",
+                    "--initialize-at-build-time=org.xml.sax.helpers.DefaultHandler,org.xml.sax.helpers.LocatorImpl"
+            ])
+        }
+    }
+
     agent {
         defaultMode = "conditional"
         modes {
