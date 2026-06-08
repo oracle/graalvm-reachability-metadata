@@ -58,6 +58,28 @@ public class BootstrapperTest {
         }
     }
 
+    @Test
+    void bootstrapInvokesLauncherMainReturnedByInitialClassLoader() throws Exception {
+        String[] args = {"delta", "epsilon"};
+        SubstitutingClassLoader launcherLoader = new SubstitutingClassLoader(
+                BootstrapperTest.class.getClassLoader(), RecordingLauncher.class);
+        Bootstrapper bootstrapper = new DelegatingBootstrapper(args, launcherLoader);
+        String originalBootstrapped = System.getProperty(BOOTSTRAPPED_PROPERTY);
+        RecordingLauncher.reset();
+        try {
+            System.clearProperty(BOOTSTRAPPED_PROPERTY);
+
+            bootstrapper.bootstrap();
+
+            assertThat(launcherLoader.loadedClasses).contains(Bootstrapper.LAUNCHER_CLASS_NAME);
+            assertThat(System.getProperty(BOOTSTRAPPED_PROPERTY)).isEqualTo("true");
+            assertThat(RecordingLauncher.args).containsExactly(args);
+        } finally {
+            restoreProperty(BOOTSTRAPPED_PROPERTY, originalBootstrapped);
+            RecordingLauncher.reset();
+        }
+    }
+
     private Path writeConfiguration(Class<?> mainClass) throws Exception {
         Path configuration = tempDir.resolve("classworlds.conf");
         Files.writeString(configuration, """
@@ -93,6 +115,18 @@ public class BootstrapperTest {
         private static final long serialVersionUID = 1L;
     }
 
+    public static class RecordingLauncher {
+        private static String[] args;
+
+        public static void main(String[] arguments) {
+            args = arguments.clone();
+        }
+
+        private static void reset() {
+            args = null;
+        }
+    }
+
     private static final class DelegatingBootstrapper extends Bootstrapper {
         private final ClassLoader initialClassLoader;
 
@@ -117,6 +151,25 @@ public class BootstrapperTest {
         @Override
         public Class<?> loadClass(String name) throws ClassNotFoundException {
             loadedClasses.add(name);
+            return super.loadClass(name);
+        }
+    }
+
+    private static final class SubstitutingClassLoader extends ClassLoader {
+        private final Class<?> launcherClass;
+        private final List<String> loadedClasses = new ArrayList<>();
+
+        private SubstitutingClassLoader(ClassLoader parent, Class<?> launcherClass) {
+            super(parent);
+            this.launcherClass = launcherClass;
+        }
+
+        @Override
+        public Class<?> loadClass(String name) throws ClassNotFoundException {
+            loadedClasses.add(name);
+            if (Bootstrapper.LAUNCHER_CLASS_NAME.equals(name)) {
+                return launcherClass;
+            }
             return super.loadClass(name);
         }
     }
