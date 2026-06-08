@@ -107,6 +107,13 @@ public class Maven_plugin_annotationsTest {
     }
 
     @Test
+    void minimalAnnotationDeclarationsCanOmitOptionalDescriptorAttributes() {
+        MinimalAnnotatedMojo mojo = new MinimalAnnotatedMojo();
+
+        assertThat(mojo.parameterValue()).isEqualTo("default-parameter");
+    }
+
+    @Test
     void mojoAnnotationValuesExposePluginDescriptorConfiguration() {
         Mojo mojo = new ConfiguredMojoAnnotation();
 
@@ -182,6 +189,22 @@ public class Maven_plugin_annotationsTest {
         private String descriptorInput() {
             descriptorGenerator.run();
             return outputDirectory;
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @Mojo(name = "minimal")
+    @Execute
+    private static final class MinimalAnnotatedMojo {
+        @Parameter
+        private final String parameter = "default-parameter";
+
+        @Component
+        private final Runnable component = () -> { };
+
+        private String parameterValue() {
+            component.run();
+            return parameter;
         }
     }
 
