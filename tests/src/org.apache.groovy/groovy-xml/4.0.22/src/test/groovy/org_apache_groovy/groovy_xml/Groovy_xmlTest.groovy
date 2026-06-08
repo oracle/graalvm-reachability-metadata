@@ -32,8 +32,11 @@ import org.xml.sax.Attributes
 import org.xml.sax.InputSource
 import org.xml.sax.helpers.DefaultHandler
 
+import javax.xml.XMLConstants
+import javax.xml.parsers.SAXParser
 import javax.xml.stream.XMLOutputFactory
 import javax.xml.stream.XMLStreamWriter
+import javax.xml.transform.stream.StreamSource
 
 import static org.assertj.core.api.Assertions.assertThat
 
@@ -335,6 +338,48 @@ public class Groovy_xmlTest {
         assertThat(document.documentElement.nodeName).isEqualTo('records')
         assertThat(document.getElementsByTagName('record').item(0).attributes.getNamedItem('id').nodeValue).isEqualTo('b1')
         assertThat(handler.events).contains('start:record:b2', 'text:Groovy')
+    }
+
+    @Test
+    void xmlUtilCreatesSchemaValidatingSaxParsers() {
+        String schema = '''\
+                <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                  <xs:element name="catalog">
+                    <xs:complexType>
+                      <xs:sequence>
+                        <xs:element name="book" maxOccurs="unbounded">
+                          <xs:complexType>
+                            <xs:sequence>
+                              <xs:element name="title" type="xs:string"/>
+                            </xs:sequence>
+                            <xs:attribute name="id" type="xs:ID" use="required"/>
+                          </xs:complexType>
+                        </xs:element>
+                      </xs:sequence>
+                      <xs:attribute name="region" type="xs:string" use="required"/>
+                    </xs:complexType>
+                  </xs:element>
+                </xs:schema>
+                '''.stripIndent()
+        SAXParser parser = XmlUtil.newSAXParser(
+                XMLConstants.W3C_XML_SCHEMA_NS_URI,
+                new StreamSource(new StringReader(schema)))
+        RecordingHandler handler = new RecordingHandler()
+
+        parser.parse(new InputSource(new StringReader('''\
+                <catalog region="EU">
+                  <book id="b1"><title>Groovy</title></book>
+                  <book id="b2"><title>GraalVM</title></book>
+                </catalog>
+                '''.stripIndent())), handler)
+
+        assertThat(handler.events).contains(
+                'start:catalog:EU',
+                'start:book:b1',
+                'text:Groovy',
+                'start:book:b2',
+                'text:GraalVM',
+                'end:catalog')
     }
 
     @Test
