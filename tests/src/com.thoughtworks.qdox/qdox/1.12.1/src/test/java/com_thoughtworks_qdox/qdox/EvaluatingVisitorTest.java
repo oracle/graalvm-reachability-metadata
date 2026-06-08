@@ -33,8 +33,8 @@ public class EvaluatingVisitorTest {
                 public class AnnotatedSample {
                 }
                 """));
-        JavaClass javaClass = builder.getClassByName("sample.AnnotatedSample");
-        Annotation annotation = javaClass.getAnnotations()[0];
+        JavaClass javaClassAnnotationAccess = builder.getClassByName("sample.AnnotatedSample");
+        Annotation annotation = javaClassAnnotationAccess.getAnnotations()[0];
         EvaluatingVisitor visitor = new ConstantOnlyEvaluatingVisitor();
 
         assertThat(visitor.getValue(annotation, "total")).isEqualTo(7);
