@@ -1,0 +1,18 @@
+Handled.
+
+Changes made:
+- Removed non-metadata-related failing generated test:
+  - `tests/src/org.apache.groovy/groovy-xml/4.0.22/src/test/groovy/org_apache_groovy/groovy_xml/Groovy_xmlTest.groovy`
+- Wrote report:
+  - `post-gen-interventions/org.apache.groovy_groovy-xml_4.0.22.md`
+- Did not modify metadata files.
+
+Root cause:
+- All 17 failures came from the generated Groovy test class failing during static initialization.
+- First failure: `BootstrapMethodError` caused by `NullPointerException` in `org.codehaus.groovy.vmplugin.v8.IndyInterface`.
+- Remaining failures were secondary `NoClassDefFoundError` from the failed class initializer.
+- This is not missing reachability metadata for `groovy-xml`; it is a Groovy/native-image test/runtime compatibility issue.
+
+Verification:
+- Ran `./gradlew test -Pcoordinates=org.apache.groovy:groovy-xml:4.0.22 --stacktrace`
+- Build completed successfully after removing the failing test source.
