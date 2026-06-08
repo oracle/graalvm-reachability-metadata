@@ -28,7 +28,8 @@ public class LauncherTest {
 
             assertThat(EnhancedMain.args).containsExactly("alpha", "beta");
             assertThat(EnhancedMain.world).isSameAs(launcher.getWorld());
-            assertThat(Thread.currentThread().getContextClassLoader()).isSameAs(launcher.getMainRealm());
+            assertThat(EnhancedMain.contextClassLoader).isSameAs(launcher.getMainRealm());
+            assertThat(Thread.currentThread().getContextClassLoader()).isSameAs(originalClassLoader);
             assertThat(launcher.getExitCode()).isEqualTo(21);
         } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
@@ -44,7 +45,8 @@ public class LauncherTest {
             launcher.launch(new String[] {"gamma"});
 
             assertThat(StandardMain.args).containsExactly("gamma");
-            assertThat(Thread.currentThread().getContextClassLoader()).isSameAs(launcher.getMainRealm());
+            assertThat(StandardMain.contextClassLoader).isSameAs(launcher.getMainRealm());
+            assertThat(Thread.currentThread().getContextClassLoader()).isSameAs(originalClassLoader);
             assertThat(launcher.getExitCode()).isEqualTo(34);
         } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
@@ -75,11 +77,12 @@ public class LauncherTest {
     }
 
     private static Launcher configuredLauncher(Class<?> mainClass) throws Exception {
-        ClassLoader classLoader = LauncherTest.class.getClassLoader();
+        ClassLoader applicationClassLoader = LauncherTest.class.getClassLoader();
+        ClassLoader systemClassLoader = Thread.currentThread().getContextClassLoader();
         ClassWorld world = new ClassWorld();
-        ClassRealm realm = world.newRealm(REALM_ID, classLoader);
+        ClassRealm realm = world.newRealm(REALM_ID, applicationClassLoader);
         Launcher launcher = new Launcher();
-        launcher.setSystemClassLoader(classLoader);
+        launcher.setSystemClassLoader(systemClassLoader);
         launcher.setWorld(world);
         launcher.setAppMain(mainClass.getName(), realm.getId());
         return launcher;
@@ -121,29 +124,35 @@ public class LauncherTest {
     public static class EnhancedMain {
         private static String[] args;
         private static ClassWorld world;
+        private static ClassLoader contextClassLoader;
 
         public static int main(String[] arguments, ClassWorld classWorld) {
             args = arguments.clone();
             world = classWorld;
+            contextClassLoader = Thread.currentThread().getContextClassLoader();
             return 21;
         }
 
         private static void reset() {
             args = null;
             world = null;
+            contextClassLoader = null;
         }
     }
 
     public static class StandardMain {
         private static String[] args;
+        private static ClassLoader contextClassLoader;
 
         public static int main(String[] arguments) {
             args = arguments.clone();
+            contextClassLoader = Thread.currentThread().getContextClassLoader();
             return 34;
         }
 
         private static void reset() {
             args = null;
+            contextClassLoader = null;
         }
     }
 
