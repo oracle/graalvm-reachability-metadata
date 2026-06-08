@@ -20,7 +20,6 @@ import java.util.Set;
 
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.DefaultMavenExecutionResult;
-import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.compiler.AbstractCompilerMojo;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
@@ -35,7 +34,7 @@ public class AbstractCompilerMojoTest {
     @Test
     void requestValuesAreReadThroughMavenCompatibilityReflection() throws Exception {
         Date startTime = new Date(123456789L);
-        MavenExecutionRequest request = new DefaultMavenExecutionRequest();
+        TestExecutionRequest request = new TestExecutionRequest();
         request.setThreadCount("4");
         request.setStartTime(startTime);
 
@@ -65,6 +64,18 @@ public class AbstractCompilerMojoTest {
         assertSame(expectedToolchain, mojo.toolchain());
         assertEquals("jdk", toolchainManager.requestedType);
         assertSame(requirements, toolchainManager.requestedRequirements);
+    }
+
+    public static final class TestExecutionRequest extends DefaultMavenExecutionRequest {
+        private String threadCount;
+
+        public void setThreadCount(String threadCount) {
+            this.threadCount = threadCount;
+        }
+
+        public String getThreadCount() {
+            return threadCount;
+        }
     }
 
     static final class MojoFieldInjector extends AbstractMojoTestCase {
