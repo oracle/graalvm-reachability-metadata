@@ -1,0 +1,786 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-cd820eff/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-cd820eff/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-cd820eff
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ea8f8-01cc-7390-9f50-3b3264279e9d
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: jakarta.platform:jakarta.jakartaee-api:10.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "10.0.0" when "$version$" is replaced with "10.0.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-cd820eff/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "jakarta.platform:jakarta.jakartaee-api:10.0.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "10.0.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven/repository sources, then update the JSON in place with the resolved URLs and applicability fields.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-cd820eff
+ succeeded in 0ms:
+{
+  "coordinates" : "jakarta.platform:jakarta.jakartaee-api:10.0.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'jakarta\\.platform:jakarta\\.jakartaee-api|jakarta.jakartaee-api' metadata build/discovered-artifact-metadata -g '*.json'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-cd820eff
+ succeeded in 0ms:
+build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json:2:  "coordinates" : "jakarta.platform:jakarta.jakartaee-api:10.0.0"
+
+web search: 
+web search: jakarta.platform jakarta.jakartaee-api 10.0.0 maven scm url
+web search: 
+web search: https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/10.0.0/
+web search: 
+web search: https://jakarta.ee/specifications/platform/10/
+web search: 
+web search: jakarta-jakartaeetck-10.0.0.zip
+codex
+The Maven Central listing has both the runtime JAR and a sources JAR for `10.0.0`; it does not list a test JAR. For the test suite, I’m checking the Jakarta EE Platform TCK release that matches `10.0.0` rather than using the current maintenance TCK link.
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-cd820eff
+ succeeded in 0ms:
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r$version$/junit-jupiter-engine/src/test",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit5/tree/r5.9.2/junit-jupiter-params/src/test/java",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-sources.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:7:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala",
+metadata/com.typesafe.slick/slick_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-sources.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:7:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala/slick/test/jdbc/hikaricp",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-mustmatchers_3/$version$/scalatest-mustmatchers_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/dotty/scalatest-test/src/test/scala/org/scalatest/matchers/must",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-mustmatchers_3/$version$/scalatest-mustmatchers_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/wordspec-test/src/test/scala/org/scalatest/wordspec",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:31:    "test-code-url" : "N/A",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/diagrams-test/src/test/scala/org/scalatest/diagrams",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:31:    "test-code-url" : "N/A",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_3/$version$/scalatest-shouldmatchers_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/dotty/scalatest-test/src/test/scala/org/scalatest/matchers/should",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_3/$version$/scalatest-shouldmatchers_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/blob/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest/RefSpecSpec.scala",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:31:    "test-code-url" : "N/A",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-featurespec_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-featurespec_3/$version$/scalatest-featurespec_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-featurespec_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/featurespec-test/src/test/scala/org/scalatest/featurespec",
+metadata/org.scalatest/scalatest-featurespec_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-featurespec_3/$version$/scalatest-featurespec_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-funspec_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funspec_3/$version$/scalatest-funspec_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-funspec_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/funspec-test/src/test/scala/org/scalatest/funspec",
+metadata/org.scalatest/scalatest-funspec_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funspec_3/$version$/scalatest-funspec_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-matchers-core_2.13/$version$/scalatest-matchers-core_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest/matchers",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-matchers-core_2.13/$version$/scalatest-matchers-core_2.13-$version$-javadoc.jar",
+metadata/org.codehaus.jettison/jettison/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/jettison/jettison/$version$/jettison-$version$-sources.jar",
+metadata/org.codehaus.jettison/jettison/index.json:7:    "test-code-url" : "https://github.com/jettison-json/jettison/tree/jettison-$version$/src/test/java",
+metadata/org.codehaus.jettison/jettison/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/jettison/jettison/$version$/jettison-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/$version$/scalatest-featurespec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/featurespec-test",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/$version$/scalatest-featurespec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-featurespec_2.13/$version$/scalatest-featurespec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:31:    "test-code-url" : "N/A",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-featurespec_2.13/$version$/scalatest-featurespec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-sources.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-funsuite_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funsuite_3/$version$/scalatest-funsuite_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-funsuite_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/funsuite-test/src/test/scala/org/scalatest/funsuite",
+metadata/org.scalatest/scalatest-funsuite_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funsuite_3/$version$/scalatest-funsuite_3-$version$-javadoc.jar",
+metadata/com.sun.jersey/jersey-servlet/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-servlet/$version$/jersey-servlet-$version$-sources.jar",
+metadata/com.sun.jersey/jersey-servlet/index.json:7:    "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/$version$/tests/functional/jersey-servlet3_0-integration",
+metadata/com.sun.jersey/jersey-servlet/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-servlet/$version$/jersey-servlet-$version$-javadoc.jar",
+metadata/com.sun.jersey/jersey-servlet/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-servlet/$version$/jersey-servlet-$version$-sources.jar",
+metadata/com.sun.jersey/jersey-servlet/index.json:31:    "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/$version$/tests/functional/jersey-servlet3_0-integration",
+metadata/com.sun.jersey/jersey-servlet/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-servlet/$version$/jersey-servlet-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funsuite_2.13/$version$/scalatest-funsuite_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/funsuite-test/src/test/scala/org/scalatest/funsuite",
+
+exec
+/usr/bin/bash -lc 'curl -I -L https://download.eclipse.org/jakartaee/platform/10/jakarta-jakartaeetck-10.0.0.zip' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-cd820eff
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/10.0.0/jakarta.jakartaee-api-10.0.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-cd820eff
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2012, 2020 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License v. 2.0, which is available at
+    http://www.eclipse.org/legal/epl-2.0.
+
+    This Source Code may also be made available under the following Secondary
+    Licenses when the conditions for such availability set forth in the
+    Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+    version 2 with the GNU Classpath Exception, which is available at
+    https://www.gnu.org/software/classpath/license.html.
+
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+
+
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.eclipse.ee4j</groupId>
+    <artifactId>project</artifactId>
+    <version>1.0</version>
+  </parent>
+  <groupId>jakarta.platform</groupId>
+  <artifactId>jakarta.jakartaee-api</artifactId>
+  <version>10.0.0</version>
+  <organization>
+    <name>Eclipse Foundation</name>
+    <url>https://www.eclipse.org</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Eclipse Public License v. 2.0</name>
+      <url>https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+    <license>
+      <name>GNU General Public License, version 2 with the GNU Classpath Exception</name>
+      <url>https://www.gnu.org/software/classpath/license.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>eclipseee4j</id>
+      <name>Eclipse EE4J Developers</name>
+      <email>ee4j-pmc@eclipse.org</email>
+      <organization>Eclipse Foundation</organization>
+    </developer>
+  </developers>
+  <mailingLists>
+    <mailingList>
+      <name>Community discussions</name>
+      <subscribe>https://accounts.eclipse.org/mailing-list/jakarta.ee-community</subscribe>
+      <unsubscribe>https://accounts.eclipse.org/mailing-list/jakarta.ee-community</unsubscribe>
+      <post>jakarta.ee-community@eclipse.org</post>
+      <archive>https://dev.eclipse.org/mhonarc/lists/jakarta.ee-community/</archive>
+      <otherArchives>
+        <otherArchive>http://dev.eclipse.org/mhonarc/lists/jakarta.ee-community/maillist.rss</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>PMC discussions</name>
+      <subscribe>https://accounts.eclipse.org/mailing-list/ee4j-pmc</subscribe>
+      <unsubscribe>https://accounts.eclipse.org/mailing-list/ee4j-pmc</unsubscribe>
+      <post>ee4j-pmc@eclipse.org</post>
+      <archive>https://dev.eclipse.org/mhonarc/lists/ee4j-pmc/</archive>
+      <otherArchives>
+        <otherArchive>http://dev.eclipse.org/mhonarc/lists/ee4j-pmc/maillist.rss</otherArchive>
+      </otherArchives>
+    </mailingList>
+  </mailingLists>
+  <scm>
+    <connection>scm:git:git@github.com:eclipse-ee4j/ee4j.git/jakartaee-api-parent/jakarta.jakartaee-api</connection>
+    <developerConnection>scm:git:git@github.com:eclipse-ee4j/ee4j.git/jakartaee-api-parent/jakarta.jakartaee-api</developerConnection>
+    <url>https://github.com/eclipse-ee4j/ee4j/jakartaee-api-parent/jakarta.jakartaee-api</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub Issues</system>
+    <url>https://github.com/eclipse-ee4j/ee4j/issues</url>
+  </issueManagement>
+  <dependencies>
+    <dependency>
+      <groupId>jakarta.platform</groupId>
+      <artifactId>jakarta.jakartaee-web-api</artifactId>
+      <version>10.0.0</version>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.jms</groupId>
+      <artifactId>jakarta.jms-api</artifactId>
+      <version>3.1.0</version>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.activation</groupId>
+      <artifactId>jakarta.activation-api</artifactId>
+      <version>2.1.0</version>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.mail</groupId>
+      <artifactId>jakarta.mail-api</artifactId>
+      <version>2.1.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.resource</groupId>
+      <artifactId>jakarta.resource-api</artifactId>
+      <version>2.1.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.authorization</groupId>
+      <artifactId>jakarta.authorization-api</artifactId>
+      <version>2.1.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.batch</groupId>
+      <artifactId>jakarta.batch-api</artifactId>
+      <version>2.1.1</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+      <version>4.0.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.xml.ws</groupId>
+      <artifactId>jakarta.xml.ws-api</artifactId>
+      <version>4.0.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.xml.soap</groupId>
+      <artifactId>jakarta.xml.soap-api</artifactId>
+      <version>3.0.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>jakarta.faces</artifactId>
+      <version>4.0.0</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+  <build />
+</project>
+
+ succeeded in 964ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0  503M HTTP/2 200 
+server: nginx
+date: Mon, 08 Jun 2026 20:41:51 GMT
+content-type: application/zip
+content-length: 527767518
+last-modified: Wed, 14 Sep 2022 07:14:42 GMT
+etag: "1f7517de-5e89de1f65179"
+content-security-policy: frame-ancestors 'self'
+x-frame-options: SAMEORIGIN
+x-content-type-options: nosniff
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+cache-control: private, max-age=8m, no-transform
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+x-proxy-cache: MISS
+accept-ranges: bytes
+
+   0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+exec
+/usr/bin/bash -lc 'curl -I -L https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/10.0.0/jakarta.jakartaee-api-10.0.0-sources.jar && curl -I -L https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/10.0.0/jakarta.jakartaee-api-10.0.0-javadoc.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-cd820eff
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0HTTP/2 200 
+date: Mon, 08 Jun 2026 20:42:00 GMT
+content-type: application/java-archive
+content-length: 3913887
+cf-ray: a08ab876fba8cb74-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1715305
+etag: "fd83e2dd535c5d6b3c1e8ec8ecd07927"
+last-modified: Tue, 09 Aug 2022 04:49:39 GMT
+x-checksum-md5: fd83e2dd535c5d6b3c1e8ec8ecd07927
+x-checksum-sha1: cce5da1e7578cf4d9808a170f5b0249c8ae5d3cc
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0 3822k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0 15.6M    0     0    0     0      0      0 --:--:-- --:--:-- --:-HTTP/2 200 
+date: Mon, 08 Jun 2026 20:42:00 GMT
+content-type: application/java-archive
+content-length: 16363523
+cf-ray: a08ab8776c65039c-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 48429
+etag: "5c2e283595e9bc630b3bb4f271ffc67d"
+last-modified: Tue, 09 Aug 2022 04:49:26 GMT
+x-checksum-md5: 5c2e283595e9bc630b3bb4f271ffc67d
+x-checksum-sha1: 76c9d4ef8db32f9d33105dd054a4e7f6140c1fc5
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+-:--     0
+
+web search: 
+web search: site:mvnrepository.com jakarta.jakartaee-api 10.0.0 jakarta.platform
+web search: 
+web search: github eclipse-ee4j jakarta.jakartaee-api jakartaee-api-parent
+web search: 
+web search: github jakartaee platform-tck 10.0.0 tag Jakarta EE 10 TCK
+codex
+I found a valid `10.0.0` Jakarta EE Platform TCK archive at Eclipse downloads, so the test URL can be version-parametrized cleanly. I’m now writing the metadata with Maven Central source/javadoc artifacts and the Jakarta EE API repository root.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-cd820eff/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
+diff --git a/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json b/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
+index 68d5a42b11e7793d8b10d09ec24d9ed5d5b037a5..399d059564376b0df798017bb93ca0e8324f75df
+--- a/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
++++ b/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.platform:jakarta.jakartaee-api:10.0.0"
++  "coordinates" : "jakarta.platform:jakarta.jakartaee-api:10.0.0",
++  "repository-url" : "https://github.com/jakartaee/jakartaee-api",
++  "source-code-url" : "https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/$version$/jakarta.jakartaee-api-$version$-sources.jar",
++  "test-code-url" : "https://download.eclipse.org/jakartaee/platform/10/jakarta-jakartaeetck-$version$.zip",
++  "documentation-url" : "https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/$version$/jakarta.jakartaee-api-$version$-javadoc.jar",
++  "description" : "The Jakarta EE API is the aggregate API artifact for Jakarta EE Platform 10, combining the platform specifications and profile APIs that applications compile against. It provides interfaces, annotations, and related classes for enterprise Java features such as web components, dependency injection, persistence, messaging, transactions, security, REST, JSON, XML, mail, batch, and connectors."
+ }
+
+diff --git a/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json b/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
+index 68d5a42b11e7793d8b10d09ec24d9ed5d5b037a5..399d059564376b0df798017bb93ca0e8324f75df
+--- a/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
++++ b/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.platform:jakarta.jakartaee-api:10.0.0"
++  "coordinates" : "jakarta.platform:jakarta.jakartaee-api:10.0.0",
++  "repository-url" : "https://github.com/jakartaee/jakartaee-api",
++  "source-code-url" : "https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/$version$/jakarta.jakartaee-api-$version$-sources.jar",
++  "test-code-url" : "https://download.eclipse.org/jakartaee/platform/10/jakarta-jakartaeetck-$version$.zip",
++  "documentation-url" : "https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/$version$/jakarta.jakartaee-api-$version$-javadoc.jar",
++  "description" : "The Jakarta EE API is the aggregate API artifact for Jakarta EE Platform 10, combining the platform specifications and profile APIs that applications compile against. It provides interfaces, annotations, and related classes for enterprise Java features such as web components, dependency injection, persistence, messaging, transactions, security, REST, JSON, XML, mail, batch, and connectors."
+ }
+
+codex
+The file is updated. I’m doing a quick validation pass now: JSON parse, allowed keys, and URL reachability after substituting `10.0.0`.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-cd820eff
+ succeeded in 0ms:
+{
+  "coordinates": "jakarta.platform:jakarta.jakartaee-api:10.0.0",
+  "repository-url": "https://github.com/jakartaee/jakartaee-api",
+  "source-code-url": "https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/$version$/jakarta.jakartaee-api-$version$-sources.jar",
+  "test-code-url": "https://download.eclipse.org/jakartaee/platform/10/jakarta-jakartaeetck-$version$.zip",
+  "documentation-url": "https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/$version$/jakarta.jakartaee-api-$version$-javadoc.jar",
+  "description": "The Jakarta EE API is the aggregate API artifact for Jakarta EE Platform 10, combining the platform specifications and profile APIs that applications compile against. It provides interfaces, annotations, and related classes for enterprise Java features such as web components, dependency injection, persistence, messaging, transactions, security, REST, JSON, XML, mail, batch, and connectors."
+}
+
+exec
+/usr/bin/bash -lc 'curl -I -L https://github.com/jakartaee/jakartaee-api' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-cd820eff
+exec
+/usr/bin/bash -lc 'curl -I -L https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/10.0.0/jakarta.jakartaee-api-10.0.0-sources.jar && curl -I -L https://download.eclipse.org/jakartaee/platform/10/jakarta-jakartaeetck-10.0.0.zip && curl -I -L https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/10.0.0/jakarta.jakartaee-api-10.0.0-javadoc.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-cd820eff
+diff --git a/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json b/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
+index 68d5a42b11e7793d8b10d09ec24d9ed5d5b037a5..399d059564376b0df798017bb93ca0e8324f75df
+--- a/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
++++ b/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.platform:jakarta.jakartaee-api:10.0.0"
++  "coordinates" : "jakarta.platform:jakarta.jakartaee-api:10.0.0",
++  "repository-url" : "https://github.com/jakartaee/jakartaee-api",
++  "source-code-url" : "https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/$version$/jakarta.jakartaee-api-$version$-sources.jar",
++  "test-code-url" : "https://download.eclipse.org/jakartaee/platform/10/jakarta-jakartaeetck-$version$.zip",
++  "documentation-url" : "https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/$version$/jakarta.jakartaee-api-$version$-javadoc.jar",
++  "description" : "The Jakarta EE API is the aggregate API artifact for Jakarta EE Platform 10, combining the platform specifications and profile APIs that applications compile against. It provides interfaces, annotations, and related classes for enterprise Java features such as web components, dependency injection, persistence, messaging, transactions, security, REST, JSON, XML, mail, batch, and connectors."
+ }
+
+ succeeded in 619ms:
+
+  0  503M    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+server: nginx
+date: Mon, 08 Jun 2026 20:42:37 GMT
+content-type: application/zip
+content-length: 527767518
+last-modified: Wed, 14 Sep 2022 07:14:42 GMT
+etag: "1f7517de-5e89de1f65179"
+content-security-policy: frame-ancestors 'self'
+x-frame-options: SAMEORIGIN
+x-content-type-options: nosniff
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+cache-control: private, max-age=8m, no-transform
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+x-proxy-cache: HIT
+accept-ranges: bytes
+
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0 15.6M    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0HTTP/2 200 
+date: Mon, 08 Jun 2026 20:42:40 GMT
+content-type: application/java-archive
+content-length: 16363523
+cf-ray: a08ab9736ab8bc12-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 48469
+etag: "5c2e283595e9bc630b3bb4f271ffc67d"
+last-modified: Tue, 09 Aug 2022 04:49:26 GMT
+x-checksum-md5: 5c2e283595e9bc630b3bb4f271ffc67d
+x-checksum-sha1: 76c9d4ef8db32f9d33105dd054a4e7f6140c1fc5
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+
+ succeeded in 773ms:
+HTTP/2 200 
+date: Mon, 08 Jun 2026 20:42:40 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"d288454491838cd4e50f30078ce0caa8"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=H7BkgoJYgYig0DvswfpiiFDz6JIKdcJIBr7tO6KiJVcr%2BTyi7tM4%2Bv4Ct7CDCsJSp2il9L6Jrb1o7UchETUfPC96EILjXZizvYjDXy4mPYQknAOrheQtezbr1LgnpFXB4TJ9ZTeiCwarHOwBgAZTAJqmBUJDocERhFoF%2B74yWgDZ1mJv%2F3lPYsIoffcY94s3o%2BuwlwLqkeahVSs4AtD9XxdYybrlRdoktvNiH5XXaGiKDCrOeRgvPHlNsOQVK0jATuH1d1OnhcNaR0JtYVIhSA%3D%3D--0DOz8yDtl%2F184xMC--NipSf6hIooqAy49hV1NxVg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.525457032.1780951359; expires=Tue, 08 Jun 2027 20:42:39 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 08 Jun 2027 20:42:39 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6203:1932FF:84D2EFE:6983665:6A27293F
+
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+codex
+The URL checks all returned HTTP 200 after version substitution. I’m also checking the main artifact briefly so the Native Image applicability decision is based on the actual JAR shape, not just coordinates.
+exec
+/usr/bin/bash -lc 'tmp_file=$(mktemp) && curl -fsSL -o "$tmp_file" https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/10.0.0/jakarta.jakartaee-api-10.0.0.jar && jar tf "$tmp_file" | rg '"'\\.class"'$'"' | head -20; status="'${PIPESTATUS[2]}; rm -f "$tmp_file"; exit $status' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-cd820eff
+diff --git a/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json b/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
+index 68d5a42b11e7793d8b10d09ec24d9ed5d5b037a5..399d059564376b0df798017bb93ca0e8324f75df
+--- a/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
++++ b/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.platform:jakarta.jakartaee-api:10.0.0"
++  "coordinates" : "jakarta.platform:jakarta.jakartaee-api:10.0.0",
++  "repository-url" : "https://github.com/jakartaee/jakartaee-api",
++  "source-code-url" : "https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/$version$/jakarta.jakartaee-api-$version$-sources.jar",
++  "test-code-url" : "https://download.eclipse.org/jakartaee/platform/10/jakarta-jakartaeetck-$version$.zip",
++  "documentation-url" : "https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/$version$/jakarta.jakartaee-api-$version$-javadoc.jar",
++  "description" : "The Jakarta EE API is the aggregate API artifact for Jakarta EE Platform 10, combining the platform specifications and profile APIs that applications compile against. It provides interfaces, annotations, and related classes for enterprise Java features such as web components, dependency injection, persistence, messaging, transactions, security, REST, JSON, XML, mail, batch, and connectors."
+ }
+
+ succeeded in 284ms:
+jakarta/servlet/jsp/el/ImportELResolver.class
+jakarta/servlet/jsp/el/ExpressionEvaluator.class
+jakarta/servlet/jsp/el/VariableResolver.class
+jakarta/servlet/jsp/el/ELException.class
+jakarta/servlet/jsp/el/FunctionMapper.class
+jakarta/servlet/jsp/el/Expression.class
+jakarta/servlet/jsp/el/ImplicitObjectELResolver$ImplicitObjects$1.class
+jakarta/servlet/jsp/el/ImplicitObjectELResolver$ImplicitObjects$2.class
+jakarta/servlet/jsp/el/ImplicitObjectELResolver$ImplicitObjects$3.class
+jakarta/servlet/jsp/el/ImplicitObjectELResolver$ImplicitObjects$4.class
+jakarta/servlet/jsp/el/ImplicitObjectELResolver$ImplicitObjects$5.class
+jakarta/servlet/jsp/el/ImplicitObjectELResolver$ImplicitObjects$6.class
+jakarta/servlet/jsp/el/ImplicitObjectELResolver$ImplicitObjects$7.class
+jakarta/servlet/jsp/el/ImplicitObjectELResolver$ImplicitObjects$8.class
+jakarta/servlet/jsp/el/ImplicitObjectELResolver$ImplicitObjects$9.class
+jakarta/servlet/jsp/el/ImplicitObjectELResolver$ImplicitObjects.class
+jakarta/servlet/jsp/el/ImplicitObjectELResolver$EnumeratedMap.class
+jakarta/servlet/jsp/el/ImplicitObjectELResolver.class
+jakarta/servlet/jsp/el/ELParseException.class
+jakarta/servlet/jsp/el/ScopedAttributeELResolver.class
+
+codex
+The main artifact contains JVM `.class` files, so I left `not-for-native-image` absent. It also is not Kotlin, Groovy, or Scala-specific, so `language` stays absent.
+exec
+/usr/bin/bash -lc "git ls-remote --heads --tags https://github.com/eclipse-ee4j/ee4j.git | rg 'refs/(heads|tags)/(10\\.0\\.0|main|master|.*10.*)' | head -40" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-cd820eff
+exec
+/usr/bin/bash -lc "git ls-remote --heads --tags https://github.com/jakartaee/jakartaee-api.git | rg 'refs/(heads|tags)/(10\\.0\\.0|main|master|.*10.*)' | head -40" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-cd820eff
+ succeeded in 331ms:
+01dbce43cec080120c683c848bfeef145a154869	refs/heads/main
+
+diff --git a/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json b/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
+index 68d5a42b11e7793d8b10d09ec24d9ed5d5b037a5..399d059564376b0df798017bb93ca0e8324f75df
+--- a/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
++++ b/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.platform:jakarta.jakartaee-api:10.0.0"
++  "coordinates" : "jakarta.platform:jakarta.jakartaee-api:10.0.0",
++  "repository-url" : "https://github.com/jakartaee/jakartaee-api",
++  "source-code-url" : "https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/$version$/jakarta.jakartaee-api-$version$-sources.jar",
++  "test-code-url" : "https://download.eclipse.org/jakartaee/platform/10/jakarta-jakartaeetck-$version$.zip",
++  "documentation-url" : "https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/$version$/jakarta.jakartaee-api-$version$-javadoc.jar",
++  "description" : "The Jakarta EE API is the aggregate API artifact for Jakarta EE Platform 10, combining the platform specifications and profile APIs that applications compile against. It provides interfaces, annotations, and related classes for enterprise Java features such as web components, dependency injection, persistence, messaging, transactions, security, REST, JSON, XML, mail, batch, and connectors."
+ }
+
+ succeeded in 433ms:
+71a2762ac0d8a3cbb4c83b6e2effba7574a0d8c2	refs/heads/10.0.0-BRANCH
+c3c36f049e58a00edbf8d27e1440ea04886f59a4	refs/heads/10.0.0-RC1-BRANCH
+29fca8fbbb101fb23f907dca0883876b7a5b944f	refs/heads/main
+b65f42e103cd3b4624b45345bb05f5f9b4a1a818	refs/tags/10.0.0
+e479eafbbe27efcf55675e9bdec3546edffa82d7	refs/tags/10.0.0^{}
+e459d864ddf396155a4cb68121e46b9d28daf232	refs/tags/10.0.0-RC1
+ed9940031c8128912d02547a75b9b3fbbb2af335	refs/tags/10.0.0-RC1^{}
+
+codex
+The `jakartaee/jakartaee-api` repository has a `10.0.0` tag, while the older `eclipse-ee4j/ee4j` SCM path in the POM does not expose a matching tag. That confirms the repository root I wrote is the better root URL for this version.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/10.0.0/ | rg 'tests|test' || true" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-cd820eff
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json b/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
+index 68d5a42b11e7793d8b10d09ec24d9ed5d5b037a5..399d059564376b0df798017bb93ca0e8324f75df
+--- a/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
++++ b/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.platform:jakarta.jakartaee-api:10.0.0"
++  "coordinates" : "jakarta.platform:jakarta.jakartaee-api:10.0.0",
++  "repository-url" : "https://github.com/jakartaee/jakartaee-api",
++  "source-code-url" : "https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/$version$/jakarta.jakartaee-api-$version$-sources.jar",
++  "test-code-url" : "https://download.eclipse.org/jakartaee/platform/10/jakarta-jakartaeetck-$version$.zip",
++  "documentation-url" : "https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/$version$/jakarta.jakartaee-api-$version$-javadoc.jar",
++  "description" : "The Jakarta EE API is the aggregate API artifact for Jakarta EE Platform 10, combining the platform specifications and profile APIs that applications compile against. It provides interfaces, annotations, and related classes for enterprise Java features such as web components, dependency injection, persistence, messaging, transactions, security, REST, JSON, XML, mail, batch, and connectors."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-cd820eff
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json b/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
+index 68d5a42b11e7793d8b10d09ec24d9ed5d5b037a5..399d059564376b0df798017bb93ca0e8324f75df
+--- a/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
++++ b/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.platform:jakarta.jakartaee-api:10.0.0"
++  "coordinates" : "jakarta.platform:jakarta.jakartaee-api:10.0.0",
++  "repository-url" : "https://github.com/jakartaee/jakartaee-api",
++  "source-code-url" : "https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/$version$/jakarta.jakartaee-api-$version$-sources.jar",
++  "test-code-url" : "https://download.eclipse.org/jakartaee/platform/10/jakarta-jakartaeetck-$version$.zip",
++  "documentation-url" : "https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/$version$/jakarta.jakartaee-api-$version$-javadoc.jar",
++  "description" : "The Jakarta EE API is the aggregate API artifact for Jakarta EE Platform 10, combining the platform specifications and profile APIs that applications compile against. It provides interfaces, annotations, and related classes for enterprise Java features such as web components, dependency injection, persistence, messaging, transactions, security, REST, JSON, XML, mail, batch, and connectors."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json && git ls-files --stage build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-cd820eff
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json b/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
+index 68d5a42b11e7793d8b10d09ec24d9ed5d5b037a5..399d059564376b0df798017bb93ca0e8324f75df
+--- a/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
++++ b/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.platform:jakarta.jakartaee-api:10.0.0"
++  "coordinates" : "jakarta.platform:jakarta.jakartaee-api:10.0.0",
++  "repository-url" : "https://github.com/jakartaee/jakartaee-api",
++  "source-code-url" : "https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/$version$/jakarta.jakartaee-api-$version$-sources.jar",
++  "test-code-url" : "https://download.eclipse.org/jakartaee/platform/10/jakarta-jakartaeetck-$version$.zip",
++  "documentation-url" : "https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/$version$/jakarta.jakartaee-api-$version$-javadoc.jar",
++  "description" : "The Jakarta EE API is the aggregate API artifact for Jakarta EE Platform 10, combining the platform specifications and profile APIs that applications compile against. It provides interfaces, annotations, and related classes for enterprise Java features such as web components, dependency injection, persistence, messaging, transactions, security, REST, JSON, XML, mail, batch, and connectors."
+ }
+
+codex
+The file is under `build/`, so it appears ignored/untracked by Git; `git diff` has no tracked output even though the JSON was updated on disk. I’ve validated the on-disk content directly with `jq`.
+codex
+Updated [jakarta.platform-jakarta.jakartaee-api-10.0.0.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-cd820eff/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json) with repository, Maven sources/javadoc URLs, the matching Jakarta EE 10.0.0 TCK URL, and a two-sentence description.
+
+Validation done:
+- `jq` parses the JSON successfully.
+- All substituted URLs for `10.0.0` returned HTTP 200.
+- The main artifact JAR contains `.class` files, so `not-for-native-image` was left absent.
+- No Kotlin/Groovy/Scala language field was added.
+diff --git a/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json b/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
+index 68d5a42b11e7793d8b10d09ec24d9ed5d5b037a5..399d059564376b0df798017bb93ca0e8324f75df
+--- a/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
++++ b/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jakarta.platform:jakarta.jakartaee-api:10.0.0"
++  "coordinates" : "jakarta.platform:jakarta.jakartaee-api:10.0.0",
++  "repository-url" : "https://github.com/jakartaee/jakartaee-api",
++  "source-code-url" : "https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/$version$/jakarta.jakartaee-api-$version$-sources.jar",
++  "test-code-url" : "https://download.eclipse.org/jakartaee/platform/10/jakarta-jakartaeetck-$version$.zip",
++  "documentation-url" : "https://repo1.maven.org/maven2/jakarta/platform/jakarta.jakartaee-api/$version$/jakarta.jakartaee-api-$version$-javadoc.jar",
++  "description" : "The Jakarta EE API is the aggregate API artifact for Jakarta EE Platform 10, combining the platform specifications and profile APIs that applications compile against. It provides interfaces, annotations, and related classes for enterprise Java features such as web components, dependency injection, persistence, messaging, transactions, security, REST, JSON, XML, mail, batch, and connectors."
+ }
+
+tokens used
+74,995
+Updated [jakarta.platform-jakarta.jakartaee-api-10.0.0.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-cd820eff/build/discovered-artifact-metadata/jakarta.platform-jakarta.jakartaee-api-10.0.0.json) with repository, Maven sources/javadoc URLs, the matching Jakarta EE 10.0.0 TCK URL, and a two-sentence description.
+
+Validation done:
+- `jq` parses the JSON successfully.
+- All substituted URLs for `10.0.0` returned HTTP 200.
+- The main artifact JAR contains `.class` files, so `not-for-native-image` was left absent.
+- No Kotlin/Groovy/Scala language field was added.
+Ran agent for jakarta.platform:jakarta.jakartaee-api:10.0.0 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-cd820eff/build/agent-artifact-discovery-logs/jakarta.platform-jakarta.jakartaee-api-10.0.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-cd820eff/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 9s
+9 actionable tasks: 9 executed

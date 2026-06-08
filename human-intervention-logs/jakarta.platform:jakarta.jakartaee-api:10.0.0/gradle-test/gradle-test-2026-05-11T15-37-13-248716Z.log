@@ -1,0 +1,156 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: jakarta.platform:jakarta.jakartaee-api:10.0.0
+Command: `/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-d0ea6f27/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 36 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-d0ea6f27/tests/src/jakarta.platform/jakarta.jakartaee-api/10.0.0/src/test/java/jakarta_platform/jakarta_jakartaee_api/ValidatorMessageFactoryTest.java uses or overrides a deprecated API.
+> Task :compileTestJava
+Note: Recompile with -Xlint:deprecation for details.
+
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-d0ea6f27/tests/src/jakarta.platform/jakarta.jakartaee-api/10.0.0/src/test/java/jakarta_platform/jakarta_jakartaee_api/ValidatorMessageFactoryTest.java uses unchecked or unsafe operations.
+> Task :jarNote: Recompile with -Xlint:unchecked for details.
+ UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources
+> Task :testClasses
+WARNING: A terminally deprecated method in java.lang.System has been called
+WARNING: System::setSecurityManager has been called by jakarta_platform.jakarta_jakartaee_api.ServiceLoaderUtilTest (file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-d0ea6f27/tests/src/jakarta.platform/jakarta.jakartaee-api/10.0.0/build/classes/java/test/)
+WARNING: Please consider reporting this to the maintainers of jakarta_platform.jakarta_jakartaee_api.ServiceLoaderUtilTest
+WARNING: System::setSecurityManager will be removed in a future release
+
+> Task :test
+
+ValidatorMessageFactoryTest > requiredValidatorFallsBackToFacesMessagesBundleWhenApplicationBundleIsNotConfigured() FAILED
+    java.lang.NoClassDefFoundError: com/sun/faces/util/Util
+        at jakarta.faces.CurrentThreadToServletContext.getFactoryFinder(CurrentThreadToServletContext.java:55)
+        at jakarta.faces.FactoryFinder.getFactory(FactoryFinder.java:257)
+        at jakarta.faces.context.FacesContext.getCurrentInstance(FacesContext.java:879)
+        at jakarta.faces.component.UIComponentBase.populateDescriptorsMapIfNecessary(UIComponentBase.java:3096)
+        at jakarta.faces.component.UIComponentBase.<init>(UIComponentBase.java:185)
+        at jakarta.faces.component.UIViewRoot.<init>(UIViewRoot.java:252)
+        at jakarta_platform.jakarta_jakartaee_api.ValidatorMessageFactoryTest$TestFacesContext.<init>(ValidatorMessageFactoryTest.java:122)
+        at jakarta_platform.jakarta_jakartaee_api.ValidatorMessageFactoryTest$TestFacesContext.activate(ValidatorMessageFactoryTest.java:133)
+        at jakarta_platform.jakarta_jakartaee_api.ValidatorMessageFactoryTest.requiredValidatorFallsBackToFacesMessagesBundleWhenApplicationBundleIsNotConfigured(ValidatorMessageFactoryTest.java:57)
+
+        Caused by:
+        java.lang.ClassNotFoundException: com.sun.faces.util.Util
+            at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:641)
+            at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:188)
+            at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:526)
+            ... 9 more
+
+ValidatorMessageFactoryTest > requiredValidatorUsesApplicationMessageBundleWhenConfigured() FAILED
+    java.lang.NoClassDefFoundError: com/sun/faces/util/Util
+        at jakarta.faces.CurrentThreadToServletContext.getFactoryFinder(CurrentThreadToServletContext.java:55)
+        at jakarta.faces.FactoryFinder.getFactory(FactoryFinder.java:257)
+        at jakarta.faces.context.FacesContext.getCurrentInstance(FacesContext.java:879)
+        at jakarta.faces.component.UIComponentBase.populateDescriptorsMapIfNecessary(UIComponentBase.java:3096)
+        at jakarta.faces.component.UIComponentBase.<init>(UIComponentBase.java:185)
+        at jakarta.faces.component.UIViewRoot.<init>(UIViewRoot.java:252)
+        at jakarta_platform.jakarta_jakartaee_api.ValidatorMessageFactoryTest$TestFacesContext.<init>(ValidatorMessageFactoryTest.java:122)
+        at jakarta_platform.jakarta_jakartaee_api.ValidatorMessageFactoryTest$TestFacesContext.activate(ValidatorMessageFactoryTest.java:133)
+        at jakarta_platform.jakarta_jakartaee_api.ValidatorMessageFactoryTest.requiredValidatorUsesApplicationMessageBundleWhenConfigured(ValidatorMessageFactoryTest.java:41)
+
+        Caused by:
+        java.lang.ClassNotFoundException: com.sun.faces.util.Util
+            at jakarta.faces.CurrentThreadToServletContext.getFactoryFinder(CurrentThreadToServletContext.java:55)
+            ... 8 more
+
+ValidatorMessageFactoryTest > regexValidatorFallsBackToMojarraMessagesWhenFacesMessagesBundleDoesNotContainKey() FAILED
+    java.lang.NoClassDefFoundError: com/sun/faces/util/Util
+        at jakarta.faces.CurrentThreadToServletContext.getFactoryFinder(CurrentThreadToServletContext.java:55)
+        at jakarta.faces.FactoryFinder.getFactory(FactoryFinder.java:257)
+        at jakarta.faces.context.FacesContext.getCurrentInstance(FacesContext.java:879)
+        at jakarta.faces.component.UIComponentBase.populateDescriptorsMapIfNecessary(UIComponentBase.java:3096)
+        at jakarta.faces.component.UIComponentBase.<init>(UIComponentBase.java:185)
+        at jakarta.faces.component.UIViewRoot.<init>(UIViewRoot.java:252)
+        at jakarta_platform.jakarta_jakartaee_api.ValidatorMessageFactoryTest$TestFacesContext.<init>(ValidatorMessageFactoryTest.java:122)
+        at jakarta_platform.jakarta_jakartaee_api.ValidatorMessageFactoryTest$TestFacesContext.activate(ValidatorMessageFactoryTest.java:133)
+        at jakarta_platform.jakarta_jakartaee_api.ValidatorMessageFactoryTest.regexValidatorFallsBackToMojarraMessagesWhenFacesMessagesBundleDoesNotContainKey(ValidatorMessageFactoryTest.java:73)
+
+        Caused by:
+        java.lang.ClassNotFoundException: com.sun.faces.util.Util
+            at jakarta.faces.CurrentThreadToServletContext.getFactoryFinder(CurrentThreadToServletContext.java:55)
+            ... 8 more
+
+56 tests completed, 3 failed
+
+
+> Task :test FAILED
+FAILURE: Build failed with an exception.
+
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-d0ea6f27/tests/src/jakarta.platform/jakarta.jakartaee-api/10.0.0/build/reports/problems/problems-report.html
+* What went wrong:
+Execution failed for task ':test'.
+
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-d0ea6f27/tests/src/jakarta.platform/jakarta.jakartaee-api/10.0.0/build/reports/tests/test/index.html
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+
+* Try:
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+BUILD FAILED15 actionable tasks: 4 executed, 11 up-to-date
+ in 9s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2667-d0ea6f27/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for jakarta.platform:jakarta.jakartaee-api:10.0.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 10s
+9 actionable tasks: 1 executed, 8 up-to-date
