@@ -6,11 +6,45 @@
  */
 package com_squareup_retrofit2.retrofit;
 
+import okhttp3.ResponseBody;
 import org.junit.jupiter.api.Test;
+import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.http.GET;
 
-class RetrofitTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class RetrofitTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void createsProxyForAnnotatedServiceInterface() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://example.com/")
+                .build();
+
+        SimpleService service = retrofit.create(SimpleService.class);
+
+        assertThat(service).isInstanceOf(SimpleService.class);
+    }
+
+    @Test
+    void eagerlyValidatesDeclaredServiceMethods() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://example.com/")
+                .validateEagerly(true)
+                .build();
+
+        EagerService service = retrofit.create(EagerService.class);
+
+        assertThat(service).isInstanceOf(EagerService.class);
+    }
+
+    public interface SimpleService {
+        @GET("messages")
+        Call<ResponseBody> messages();
+    }
+
+    public interface EagerService {
+        @GET("users")
+        Call<ResponseBody> users();
     }
 }
