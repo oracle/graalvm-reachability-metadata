@@ -22,6 +22,7 @@ import org.specs2.execute.DecoratedResult
 import org.specs2.execute.Failure
 import org.specs2.execute.PendingUntilFixed
 import org.specs2.execute.Result
+import org.specs2.execute.ResultLogicalCombinators.combineResult
 import org.specs2.execute.Skipped
 import org.specs2.execute.Success
 import org.specs2.matcher.DataTable
@@ -97,6 +98,23 @@ class Specs2_core_3Test {
     assertTrue(tryFailure.toResult.isSuccess)
     assertTrue(failingResult.isFailure)
     assertTrue(failingResult.message.contains("gamma"), failingResult.message)
+  }
+
+  @Test
+  def composesResultsWithBooleanResultAlgebra(): Unit = {
+    val allSuccessful: Result = Success("validated first condition").and(Success("validated second condition"))
+    val failedConjunction: Result = Success("validated first condition").and(Failure("second condition was not met"))
+    val recoveredDisjunction: Result =
+      Failure("primary condition was not met").or(Success("fallback condition was met"))
+    val failedDisjunction: Result =
+      Failure("primary condition was not met").or(Failure("fallback condition was not met"))
+
+    assertTrue(allSuccessful.isSuccess, allSuccessful.message)
+    assertEquals("success", allSuccessful.statusName)
+    assertTrue(failedConjunction.isFailure)
+    assertEquals("failure", failedConjunction.statusName)
+    assertTrue(recoveredDisjunction.isSuccess, recoveredDisjunction.message)
+    assertTrue(failedDisjunction.isFailure)
   }
 
   @Test
