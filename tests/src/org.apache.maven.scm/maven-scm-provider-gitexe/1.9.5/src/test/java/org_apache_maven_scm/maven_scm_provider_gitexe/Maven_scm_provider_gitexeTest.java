@@ -12,7 +12,9 @@ import java.nio.file.Path;
 
 import org.apache.maven.scm.ScmFile;
 import org.apache.maven.scm.ScmFileStatus;
+import org.apache.maven.scm.command.remoteinfo.RemoteInfoScmResult;
 import org.apache.maven.scm.log.DefaultLog;
+import org.apache.maven.scm.provider.git.gitexe.command.remoteinfo.GitRemoteInfoConsumer;
 import org.apache.maven.scm.provider.git.gitexe.command.status.GitStatusConsumer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -52,5 +54,26 @@ public class Maven_scm_provider_gitexeTest {
                         tuple("old-name.txt", ScmFileStatus.RENAMED),
                         tuple("renamed.txt", ScmFileStatus.RENAMED),
                         tuple("space name.txt", ScmFileStatus.MODIFIED));
+    }
+
+    @Test
+    void remoteInfoConsumerParsesBranchesAndTagsFromLsRemoteOutput() {
+        GitRemoteInfoConsumer consumer = new GitRemoteInfoConsumer(new DefaultLog(), "git ls-remote origin");
+        consumer.consumeLine("1111111111111111111111111111111111111111\trefs/heads/main");
+        consumer.consumeLine("2222222222222222222222222222222222222222 refs/heads/feature/native-tests");
+        consumer.consumeLine("3333333333333333333333333333333333333333\trefs/tags/v1.0.0");
+        consumer.consumeLine("4444444444444444444444444444444444444444 refs/pull/7/head");
+
+        RemoteInfoScmResult result = consumer.getRemoteInfoScmResult();
+
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.getCommandLine()).isEqualTo("git ls-remote origin");
+        assertThat(result.getBranches())
+                .containsEntry("main", "1111111111111111111111111111111111111111")
+                .containsEntry("feature/native-tests", "2222222222222222222222222222222222222222")
+                .hasSize(2);
+        assertThat(result.getTags())
+                .containsEntry("v1.0.0", "3333333333333333333333333333333333333333")
+                .hasSize(1);
     }
 }
