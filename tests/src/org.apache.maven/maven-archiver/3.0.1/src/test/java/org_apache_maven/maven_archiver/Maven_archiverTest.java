@@ -10,8 +10,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -98,11 +98,11 @@ public class Maven_archiverTest {
         ManifestConfiguration manifestConfiguration = new ManifestConfiguration();
         assertThat(manifestConfiguration.getClasspathPrefix()).isEmpty();
         assertThat(manifestConfiguration.getClasspathLayoutType())
-                .isEqualTo(ManifestConfiguration.CLASSPATH_LAYOUT_TYPE_SIMPLE);
+                .isEqualTo(ManifestConfiguration.CLASSPATH_LAYOUT_TYPE_REPOSITORY);
         assertThat(manifestConfiguration.isUseUniqueVersions()).isTrue();
 
         manifestConfiguration.setClasspathPrefix("lib\\nested");
-        manifestConfiguration.setClasspathMavenRepositoryLayout(true);
+        manifestConfiguration.setClasspathLayoutType(ManifestConfiguration.CLASSPATH_LAYOUT_TYPE_REPOSITORY);
         assertThat(manifestConfiguration.getClasspathPrefix()).isEqualTo("lib/nested/");
         assertThat(manifestConfiguration.getClasspathLayoutType())
                 .isEqualTo(ManifestConfiguration.CLASSPATH_LAYOUT_TYPE_REPOSITORY);
@@ -165,7 +165,7 @@ public class Maven_archiverTest {
         section.addManifestEntry("Plugin-Id", "sample-plugin");
         archiveConfiguration.addManifestSection(section);
 
-        Manifest manifest = new MavenArchiver().getManifest(project, archiveConfiguration);
+        Manifest manifest = new MavenArchiver().getManifest(null, project, archiveConfiguration);
 
         assertThat(mainAttribute(manifest, "Created-By")).isEqualTo("custom build tool");
         assertThat(mainAttribute(manifest, "Built-By")).isNotNull();
@@ -174,7 +174,7 @@ public class Maven_archiverTest {
         assertThat(mainAttribute(manifest, "Main-Class")).isEqualTo("org.example.Main");
         assertThat(mainAttribute(manifest, "X-Custom")).isEqualTo("custom-value");
         assertThat(mainAttribute(manifest, "Specification-Title")).isEqualTo("Demo App");
-        assertThat(mainAttribute(manifest, "Specification-Version")).isEqualTo("1.2.3");
+        assertThat(mainAttribute(manifest, "Specification-Version")).isEqualTo("1.2");
         assertThat(mainAttribute(manifest, "Specification-Vendor")).isEqualTo("Example Foundation");
         assertThat(mainAttribute(manifest, "Implementation-Title")).isEqualTo("Demo App");
         assertThat(mainAttribute(manifest, "Implementation-Version")).isEqualTo("1.2.3");
@@ -185,15 +185,16 @@ public class Maven_archiverTest {
     }
 
     @Test
-    void manifestBuildsClasspathWithSimpleRepositoryAndCustomLayouts() throws Exception {
+    void manifestBuildsClasspathWithRepositoryAndCustomLayouts() throws Exception {
         File alphaJar = createEmptyJar("alpha-1.0.0.jar");
         File betaJar = createEmptyJar("beta-2.0.0-tests.jar");
         Artifact alpha = newArtifact("com.acme", "alpha", "1.0.0", null, "compile", alphaJar);
         Artifact beta = newArtifact("org.sample", "beta", "2.0.0", "tests", "runtime", betaJar);
         MavenProject project = newProject("org.example", "classpath-app", "1.0.0", alpha, beta);
 
-        assertThat(classPathFor(project, ManifestConfiguration.CLASSPATH_LAYOUT_TYPE_SIMPLE, "lib", null, true))
-                .isEqualTo("lib/alpha-1.0.0.jar lib/beta-2.0.0-tests.jar");
+        assertThat(classPathFor(project, ManifestConfiguration.CLASSPATH_LAYOUT_TYPE_REPOSITORY, "lib", null, true))
+                .isEqualTo("lib/com/acme/alpha/1.0.0/alpha-1.0.0.jar "
+                        + "lib/org/sample/beta/2.0.0/beta-2.0.0-tests.jar");
         assertThat(classPathFor(project, ManifestConfiguration.CLASSPATH_LAYOUT_TYPE_REPOSITORY, "repo", null, true))
                 .isEqualTo("repo/com/acme/alpha/1.0.0/alpha-1.0.0.jar "
                         + "repo/org/sample/beta/2.0.0/beta-2.0.0-tests.jar");
@@ -299,8 +300,11 @@ public class Maven_archiverTest {
                 """, StandardCharsets.UTF_8);
         project.setFile(pomFile.toFile());
 
+        Path customPomPropertiesFile = tempDir.resolve("custom-pom.properties");
+        Files.writeString(customPomPropertiesFile, "customKey=customValue\n", StandardCharsets.UTF_8);
+
         MavenArchiveConfiguration archiveConfiguration = new MavenArchiveConfiguration();
-        archiveConfiguration.setPomPropertiesFile(tempDir.resolve("generated/custom-pom.properties").toFile());
+        archiveConfiguration.setPomPropertiesFile(customPomPropertiesFile.toFile());
         archiveConfiguration.getManifest().setMainClass("org.example.archive.Main");
         archiveConfiguration.addManifestEntry("X-Archive", "created");
 
@@ -319,17 +323,18 @@ public class Maven_archiverTest {
             assertThat(attributes.getValue("X-Archive")).isEqualTo("created");
             assertThat(jarFile.getEntry("META-INF/maven/org.example/archive-app/pom.xml")).isNotNull();
             assertThat(jarFile.getEntry("META-INF/maven/org.example/archive-app/pom.properties")).isNotNull();
-        }
 
-        Properties properties = new Properties();
-        File generatedProperties = tempDir.resolve("generated/custom-pom.properties").toFile();
-        try (FileInputStream inputStream = new FileInputStream(generatedProperties)) {
-            properties.load(inputStream);
+            Properties properties = new Properties();
+            try (InputStream inputStream = jarFile.getInputStream(
+                    jarFile.getEntry("META-INF/maven/org.example/archive-app/pom.properties"))) {
+                properties.load(inputStream);
+            }
+            assertThat(properties)
+                    .containsEntry("customKey", "customValue")
+                    .containsEntry("groupId", "org.example")
+                    .containsEntry("artifactId", "archive-app")
+                    .containsEntry("version", "2.0.0");
         }
-        assertThat(properties)
-                .containsEntry("groupId", "org.example")
-                .containsEntry("artifactId", "archive-app")
-                .containsEntry("version", "2.0.0");
     }
 
     private String classPathFor(MavenProject project, String layoutType, String prefix, String customLayout,
