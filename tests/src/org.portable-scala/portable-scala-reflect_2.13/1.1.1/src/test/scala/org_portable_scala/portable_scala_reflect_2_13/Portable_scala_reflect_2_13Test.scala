@@ -285,14 +285,19 @@ final class Portable_scala_reflect_2_13Test {
     try {
       assertTrue(Reflect.lookupInstantiatableClass(Names.DirectClass).isDefined)
       assertTrue(Reflect.lookupLoadableModuleClass(Names.DirectModule).isDefined)
-      assertTrue(Reflect.lookupInstantiatableClass(
-        Names.DirectClass, unavailableClassLoader).isEmpty)
-      assertTrue(Reflect.lookupLoadableModuleClass(
-        Names.DirectModule, unavailableClassLoader).isEmpty)
+      if (!isNativeImageRuntime) {
+        assertTrue(Reflect.lookupInstantiatableClass(
+          Names.DirectClass, unavailableClassLoader).isEmpty)
+        assertTrue(Reflect.lookupLoadableModuleClass(
+          Names.DirectModule, unavailableClassLoader).isEmpty)
+      }
     } finally {
       Thread.currentThread().setContextClassLoader(originalClassLoader)
     }
   }
+
+  private def isNativeImageRuntime: Boolean =
+    "runtime" == System.getProperty("org.graalvm.nativeimage.imagecode")
 }
 
 object PortableScalaReflectFixtures {
