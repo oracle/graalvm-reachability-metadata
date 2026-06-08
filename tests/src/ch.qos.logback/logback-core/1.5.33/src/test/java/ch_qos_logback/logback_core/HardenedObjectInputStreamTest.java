@@ -27,6 +27,7 @@ public class HardenedObjectInputStreamTest {
         byte[] serializedPayload = serialize(payload);
 
         try (HardenedObjectInputStream inputStream = new HardenedObjectInputStream(
+                null,
                 new ByteArrayInputStream(serializedPayload),
                 List.of(SerializablePayload.class.getName()))) {
             Object deserializedObject = inputStream.readObject();
@@ -40,6 +41,7 @@ public class HardenedObjectInputStreamTest {
         byte[] serializedPayload = serialize(new SerializablePayload("blocked", 1));
 
         try (HardenedObjectInputStream inputStream = new HardenedObjectInputStream(
+                null,
                 new ByteArrayInputStream(serializedPayload),
                 new String[0])) {
             assertThatThrownBy(inputStream::readObject)
