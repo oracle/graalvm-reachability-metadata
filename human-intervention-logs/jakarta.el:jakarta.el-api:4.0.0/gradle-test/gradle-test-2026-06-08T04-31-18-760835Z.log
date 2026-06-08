@@ -1,0 +1,318 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: jakarta.el:jakarta.el-api:4.0.0
+Command: `/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6377-3da5dbcf/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 4 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources
+> Task :testClasses
+
+> Task :test FAILED
+
+BeanELResolverTest > getsJavaBeansPropertyValue() FAILED
+    java.lang.ExceptionInInitializerError
+        at jakarta.el.BeanELResolver$BeanProperty.<init>(BeanELResolver.java:149)
+        at jakarta.el.BeanELResolver$BeanProperties.<init>(BeanELResolver.java:187)
+        at jakarta.el.BeanELResolver.getBeanProperty(BeanELResolver.java:570)
+        at jakarta.el.BeanELResolver.getValue(BeanELResolver.java:291)
+        at jakarta_el.jakarta_el_api.BeanELResolverTest.getsJavaBeansPropertyValue(BeanELResolverTest.java:27)
+
+        Caused by:
+        jakarta.el.ELException: Provider com.sun.el.ExpressionFactoryImpl not found
+            at app//jakarta.el.FactoryFinder.newInstance(FactoryFinder.java:59)
+            at app//jakarta.el.FactoryFinder.find(FactoryFinder.java:135)
+            at app//jakarta.el.ExpressionFactory.newInstance(ExpressionFactory.java:140)
+            at app//jakarta.el.ExpressionFactory.newInstance(ExpressionFactory.java:110)
+            at app//jakarta.el.ELUtil.<clinit>(ELUtil.java:60)
+            ... 5 more
+
+            Caused by:
+            java.lang.ClassNotFoundException: com.sun.el.ExpressionFactoryImpl
+                at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:580)
+                at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+                at jakarta.el.FactoryFinder.newInstance(FactoryFinder.java:43)
+                ... 9 more
+
+BeanELResolverTest > setsJavaBeansPropertyValue() FAILED
+    java.lang.NoClassDefFoundError: Could not initialize class jakarta.el.ELUtil
+        at jakarta.el.BeanELResolver$BeanProperty.<init>(BeanELResolver.java:149)
+        at jakarta.el.BeanELResolver$BeanProperties.<init>(BeanELResolver.java:187)
+        at jakarta.el.BeanELResolver.getBeanProperty(BeanELResolver.java:570)
+        at jakarta.el.BeanELResolver.setValue(BeanELResolver.java:359)
+        at jakarta_el.jakarta_el_api.BeanELResolverTest.setsJavaBeansPropertyValue(BeanELResolverTest.java:39)
+
+        Caused by:
+        java.lang.ExceptionInInitializerError: Exception jakarta.el.ELException: Provider com.sun.el.ExpressionFactoryImpl not found [in thread "junit-timeout-thread-1"]
+            at jakarta.el.FactoryFinder.newInstance(FactoryFinder.java:59)
+            at jakarta.el.FactoryFinder.find(FactoryFinder.java:135)
+            at jakarta.el.ExpressionFactory.newInstance(ExpressionFactory.java:140)
+            at jakarta.el.ExpressionFactory.newInstance(ExpressionFactory.java:110)
+            at jakarta.el.ELUtil.<clinit>(ELUtil.java:60)
+            at jakarta.el.BeanELResolver$BeanProperty.<init>(BeanELResolver.java:149)
+            at jakarta.el.BeanELResolver$BeanProperties.<init>(BeanELResolver.java:187)
+            at jakarta.el.BeanELResolver.getBeanProperty(BeanELResolver.java:570)
+            at jakarta.el.BeanELResolver.getValue(BeanELResolver.java:291)
+            at jakarta_el.jakarta_el_api.BeanELResolverTest.getsJavaBeansPropertyValue(BeanELResolverTest.java:27)
+
+ELProcessorTest > definesFunctionByScanningDeclaredMethods() FAILED
+    java.lang.NoClassDefFoundError: Could not initialize class jakarta.el.ELUtil
+        at jakarta.el.ELManager.getExpressionFactory(ELManager.java:38)
+        at jakarta.el.ELProcessor.<init>(ELProcessor.java:78)
+        at jakarta_el.jakarta_el_api.ELProcessorTest.definesFunctionByScanningDeclaredMethods(ELProcessorTest.java:46)
+
+        Caused by:
+        java.lang.ExceptionInInitializerError: Exception jakarta.el.ELException: Provider com.sun.el.ExpressionFactoryImpl not found [in thread "junit-timeout-thread-1"]
+            at jakarta.el.FactoryFinder.newInstance(FactoryFinder.java:59)
+            at jakarta.el.FactoryFinder.find(FactoryFinder.java:135)
+            at jakarta.el.ExpressionFactory.newInstance(ExpressionFactory.java:140)
+            at jakarta.el.ExpressionFactory.newInstance(ExpressionFactory.java:110)
+            at jakarta.el.ELUtil.<clinit>(ELUtil.java:60)
+            at jakarta.el.BeanELResolver$BeanProperty.<init>(BeanELResolver.java:149)
+            at jakarta.el.BeanELResolver$BeanProperties.<init>(BeanELResolver.java:187)
+            at jakarta.el.BeanELResolver.getBeanProperty(BeanELResolver.java:570)
+            at jakarta.el.BeanELResolver.getValue(BeanELResolver.java:291)
+            at jakarta_el.jakarta_el_api.BeanELResolverTest.getsJavaBeansPropertyValue(BeanELResolverTest.java:27)
+            at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+            at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+            at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+            at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+            at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+            at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+            at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+            at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+            at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+            at java.base/java.lang.Thread.run(Thread.java:1474)
+
+ELProcessorTest > definesFunctionFromSignatureWithObjectAndArrayParameterTypes() FAILED
+    java.lang.NoClassDefFoundError: Could not initialize class jakarta.el.ELUtil
+        at jakarta.el.ELManager.getExpressionFactory(ELManager.java:38)
+        at jakarta.el.ELProcessor.<init>(ELProcessor.java:78)
+        at jakarta_el.jakarta_el_api.ELProcessorTest.definesFunctionFromSignatureWithObjectAndArrayParameterTypes(ELProcessorTest.java:58)
+
+        Caused by:
+        java.lang.ExceptionInInitializerError: Exception jakarta.el.ELException: Provider com.sun.el.ExpressionFactoryImpl not found [in thread "junit-timeout-thread-1"]
+            at jakarta.el.FactoryFinder.newInstance(FactoryFinder.java:59)
+            at jakarta.el.FactoryFinder.find(FactoryFinder.java:135)
+            at jakarta.el.ExpressionFactory.newInstance(ExpressionFactory.java:140)
+            at jakarta.el.ExpressionFactory.newInstance(ExpressionFactory.java:110)
+            at jakarta.el.ELUtil.<clinit>(ELUtil.java:60)
+            at jakarta.el.BeanELResolver$BeanProperty.<init>(BeanELResolver.java:149)
+            at jakarta.el.BeanELResolver$BeanProperties.<init>(BeanELResolver.java:187)
+            at jakarta.el.BeanELResolver.getBeanProperty(BeanELResolver.java:570)
+            at jakarta.el.BeanELResolver.getValue(BeanELResolver.java:291)
+            at jakarta_el.jakarta_el_api.BeanELResolverTest.getsJavaBeansPropertyValue(BeanELResolverTest.java:27)
+            at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+            at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+            at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+            at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+            at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+            at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+            at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+            at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+            at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+            at java.base/java.lang.Thread.run(Thread.java:1474)
+
+ELUtilTest > invokesPublicSuperclassMethodResolvedFromNonPublicBean() FAILED
+    java.lang.NoClassDefFoundError: Could not initialize class jakarta.el.ELUtil
+        at jakarta.el.BeanELResolver.invoke(BeanELResolver.java:430)
+        at jakarta_el.jakarta_el_api.ELUtilTest.invokesPublicSuperclassMethodResolvedFromNonPublicBean(ELUtilTest.java:106)
+
+        Caused by:
+        java.lang.ExceptionInInitializerError: Exception jakarta.el.ELException: Provider com.sun.el.ExpressionFactoryImpl not found [in thread "junit-timeout-thread-1"]
+            at jakarta.el.FactoryFinder.newInstance(FactoryFinder.java:59)
+            at jakarta.el.FactoryFinder.find(FactoryFinder.java:135)
+            at jakarta.el.ExpressionFactory.newInstance(ExpressionFactory.java:140)
+            at jakarta.el.ExpressionFactory.newInstance(ExpressionFactory.java:110)
+            at jakarta.el.ELUtil.<clinit>(ELUtil.java:60)
+            at jakarta.el.BeanELResolver$BeanProperty.<init>(BeanELResolver.java:149)
+            at jakarta.el.BeanELResolver$BeanProperties.<init>(BeanELResolver.java:187)
+            at jakarta.el.BeanELResolver.getBeanProperty(BeanELResolver.java:570)
+            at jakarta.el.BeanELResolver.getValue(BeanELResolver.java:291)
+            at jakarta_el.jakarta_el_api.BeanELResolverTest.getsJavaBeansPropertyValue(BeanELResolverTest.java:27)
+            at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+            at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+            at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+            at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+            at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+            at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+            at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+            at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+            at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+            at java.base/java.lang.Thread.run(Thread.java:1474)
+
+ELUtilTest > loadsLocalizedMessageBundleForStaticFieldErrors() FAILED
+    java.lang.AssertionError: 
+    Expecting actual throwable to be an instance of:
+      jakarta.el.PropertyNotFoundException
+    but was:
+      java.lang.NoClassDefFoundError: Could not initialize class jakarta.el.ELUtil
+    	at jakarta.el.StaticFieldELResolver.getValue(StaticFieldELResolver.java:89)
+    	at jakarta_el.jakarta_el_api.ELUtilTest.lambda$loadsLocalizedMessageBundleForStaticFieldErrors$0(ELUtilTest.java:123)
+    	at org.assertj.core.api.ThrowableAssert.catchThrowable(ThrowableAssert.java:63)
+    	...(14 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceElementsDisplayed)
+        at jakarta_el.jakarta_el_api.ELUtilTest.loadsLocalizedMessageBundleForStaticFieldErrors(ELUtilTest.java:124)
+
+ELUtilTest > invokesPublicStaticVarargsMethod() FAILED
+    java.lang.NoClassDefFoundError: Could not initialize class jakarta.el.ELUtil
+        at jakarta.el.StaticFieldELResolver.invoke(StaticFieldELResolver.java:174)
+        at jakarta_el.jakarta_el_api.ELUtilTest.invokesPublicStaticVarargsMethod(ELUtilTest.java:57)
+
+        Caused by:
+        java.lang.ExceptionInInitializerError: Exception jakarta.el.ELException: Provider com.sun.el.ExpressionFactoryImpl not found [in thread "junit-timeout-thread-1"]
+            at jakarta.el.FactoryFinder.newInstance(FactoryFinder.java:59)
+            at jakarta.el.FactoryFinder.find(FactoryFinder.java:135)
+            at jakarta.el.ExpressionFactory.newInstance(ExpressionFactory.java:140)
+            at jakarta.el.ExpressionFactory.newInstance(ExpressionFactory.java:110)
+            at jakarta.el.ELUtil.<clinit>(ELUtil.java:60)
+            at jakarta.el.BeanELResolver$BeanProperty.<init>(BeanELResolver.java:149)
+            at jakarta.el.BeanELResolver$BeanProperties.<init>(BeanELResolver.java:187)
+            at jakarta.el.BeanELResolver.getBeanProperty(BeanELResolver.java:570)
+            at jakarta.el.BeanELResolver.getValue(BeanELResolver.java:291)
+            at jakarta_el.jakarta_el_api.BeanELResolverTest.getsJavaBeansPropertyValue(BeanELResolverTest.java:27)
+            at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+            at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+            at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+            at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+            at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+            at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+            at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+            at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+            at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+            at java.base/java.lang.Thread.run(Thread.java:1474)
+
+ELUtilTest > invokesPublicInterfaceMethodResolvedFromNonPublicBean() FAILED
+    java.lang.NoClassDefFoundError: Could not initialize class jakarta.el.ELUtil
+        at jakarta.el.BeanELResolver.invoke(BeanELResolver.java:430)
+        at jakarta_el.jakarta_el_api.ELUtilTest.invokesPublicInterfaceMethodResolvedFromNonPublicBean(ELUtilTest.java:90)
+
+        Caused by:
+        java.lang.ExceptionInInitializerError: Exception jakarta.el.ELException: Provider com.sun.el.ExpressionFactoryImpl not found [in thread "junit-timeout-thread-1"]
+            at jakarta.el.FactoryFinder.newInstance(FactoryFinder.java:59)
+            at jakarta.el.FactoryFinder.find(FactoryFinder.java:135)
+            at jakarta.el.ExpressionFactory.newInstance(ExpressionFactory.java:140)
+            at jakarta.el.ExpressionFactory.newInstance(ExpressionFactory.java:110)
+            at jakarta.el.ELUtil.<clinit>(ELUtil.java:60)
+            at jakarta.el.BeanELResolver$BeanProperty.<init>(BeanELResolver.java:149)
+            at jakarta.el.BeanELResolver$BeanProperties.<init>(BeanELResolver.java:187)
+            at jakarta.el.BeanELResolver.getBeanProperty(BeanELResolver.java:570)
+            at jakarta.el.BeanELResolver.getValue(BeanELResolver.java:291)
+            at jakarta_el.jakarta_el_api.BeanELResolverTest.getsJavaBeansPropertyValue(BeanELResolverTest.java:27)
+            at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+            at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+            at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+            at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+            at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+            at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+            at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+            at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+            at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+            at java.base/java.lang.Thread.run(Thread.java:1474)
+
+ELUtilTest > invokesPublicConstructorResolvedFromNonPublicSubclass() FAILED
+    java.lang.NoClassDefFoundError: Could not initialize class jakarta.el.ELUtil
+        at jakarta.el.StaticFieldELResolver.invoke(StaticFieldELResolver.java:171)
+        at jakarta_el.jakarta_el_api.ELUtilTest.invokesPublicConstructorResolvedFromNonPublicSubclass(ELUtilTest.java:73)
+
+        Caused by:
+        java.lang.ExceptionInInitializerError: Exception jakarta.el.ELException: Provider com.sun.el.ExpressionFactoryImpl not found [in thread "junit-timeout-thread-1"]
+            at jakarta.el.FactoryFinder.newInstance(FactoryFinder.java:59)
+            at jakarta.el.FactoryFinder.find(FactoryFinder.java:135)
+            at jakarta.el.ExpressionFactory.newInstance(ExpressionFactory.java:140)
+            at jakarta.el.ExpressionFactory.newInstance(ExpressionFactory.java:110)
+            at jakarta.el.ELUtil.<clinit>(ELUtil.java:60)
+            at jakarta.el.BeanELResolver$BeanProperty.<init>(BeanELResolver.java:149)
+            at jakarta.el.BeanELResolver$BeanProperties.<init>(BeanELResolver.java:187)
+            at jakarta.el.BeanELResolver.getBeanProperty(BeanELResolver.java:570)
+            at jakarta.el.BeanELResolver.getValue(BeanELResolver.java:291)
+            at jakarta_el.jakarta_el_api.BeanELResolverTest.getsJavaBeansPropertyValue(BeanELResolverTest.java:27)
+            at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+            at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+            at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+            at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+            at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+            at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+            at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+            at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+            at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+            at java.base/java.lang.Thread.run(Thread.java:1474)
+
+
+14 tests completed, 9 failed
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6377-3da5dbcf/tests/src/jakarta.el/jakarta.el-api/4.0.0/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6377-3da5dbcf/tests/src/jakarta.el/jakarta.el-api/4.0.0/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 3s
+15 actionable tasks: 4 executed, 11 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6377-3da5dbcf/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for jakarta.el:jakarta.el-api:4.0.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 4s
+9 actionable tasks: 1 executed, 8 up-to-date
