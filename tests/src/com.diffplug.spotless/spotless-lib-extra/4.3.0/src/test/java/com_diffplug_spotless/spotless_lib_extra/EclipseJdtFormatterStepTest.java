@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -33,6 +34,7 @@ import org.junit.jupiter.api.io.TempDir;
 import com.diffplug.spotless.FormatterStep;
 import com.diffplug.spotless.Provisioner;
 import com.diffplug.spotless.extra.EquoBasedStepBuilder;
+import com.diffplug.spotless.extra.P2Provisioner;
 import com.diffplug.spotless.extra.java.EclipseJdtFormatterStep;
 
 public class EclipseJdtFormatterStepTest {
@@ -68,7 +70,7 @@ public class EclipseJdtFormatterStepTest {
 
             try (LocalP2Server p2Server = new LocalP2Server(p2Repository)) {
                 final EquoBasedStepBuilder builder = EclipseJdtFormatterStep.createBuilder(
-                        new StubFormatterProvisioner(tempDir));
+                        new StubFormatterProvisioner(tempDir), stubP2Provisioner());
                 builder.setVersion(jdtVersion);
                 builder.setP2Mirrors(Map.of(ECLIPSE_DOWNLOADS, p2Server.url()));
                 final FormatterStep formatter = builder.build();
@@ -106,6 +108,11 @@ public class EclipseJdtFormatterStepTest {
 
     private static void rethrowIfNotNativeImageDynamicClassLoadingError(Throwable throwable) {
         NativeImageDynamicClassLoadingSupport.rethrowIfNotNativeImageDynamicClassLoadingError(throwable);
+    }
+
+    private static P2Provisioner stubP2Provisioner() {
+        return (modelWrapper, mavenProvisioner, cacheDirectory) -> List.copyOf(
+                mavenProvisioner.provisionWithTransitives(false, Collections.emptyList()));
     }
 
     private static final class LocalP2Server implements AutoCloseable {
