@@ -8,7 +8,7 @@ package org_eclipse_angus.angus_mail;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.sun.mail.util.SocketFetcher;
+import org.eclipse.angus.mail.util.SocketFetcher;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.InetAddress;

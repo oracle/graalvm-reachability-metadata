@@ -8,8 +8,8 @@ package org_eclipse_angus.angus_mail;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.sun.mail.iap.Protocol;
-import com.sun.mail.util.MailLogger;
+import org.eclipse.angus.mail.iap.Protocol;
+import org.eclipse.angus.mail.util.MailLogger;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;

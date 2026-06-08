@@ -8,8 +8,8 @@ package org_eclipse_angus.angus_mail;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.sun.mail.pop3.POP3Message;
-import com.sun.mail.pop3.POP3Store;
+import org.eclipse.angus.mail.pop3.POP3Message;
+import org.eclipse.angus.mail.pop3.POP3Store;
 import jakarta.mail.Folder;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
