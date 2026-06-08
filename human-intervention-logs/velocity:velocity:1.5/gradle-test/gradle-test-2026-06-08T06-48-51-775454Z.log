@@ -1,0 +1,132 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: velocity:velocity:1.5
+Command: `/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6977-a5ef19ee/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 2 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+
+Note: Some input files use or override a deprecated API.
+> Task :compileTestJava
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources UP-TO-DATE
+> Task :testClasses
+
+> Task :test FAILED
+
+ParserTestCaseTest > evaluatesValidParserConstructsAndRejectsInvalidOnes() FAILED
+    java.lang.UnsupportedOperationException
+        at java.base/java.util.ImmutableCollections.uoe(ImmutableCollections.java:159)
+        at java.base/java.util.ImmutableCollections$AbstractImmutableMap.put(ImmutableCollections.java:1318)
+        at org.apache.velocity.VelocityContext.internalPut(VelocityContext.java:132)
+        at org.apache.velocity.context.AbstractContext.put(AbstractContext.java:169)
+        at org.apache.velocity.context.InternalContextAdapterImpl.put(InternalContextAdapterImpl.java:203)
+        at org.apache.velocity.context.InternalContextAdapterImpl.localPut(InternalContextAdapterImpl.java:211)
+        at org.apache.velocity.runtime.directive.Foreach.render(Foreach.java:430)
+        at org.apache.velocity.runtime.parser.node.ASTDirective.render(ASTDirective.java:170)
+        at org.apache.velocity.runtime.parser.node.SimpleNode.render(SimpleNode.java:318)
+        at org.apache.velocity.app.VelocityEngine.evaluate(VelocityEngine.java:356)
+        at org.apache.velocity.app.VelocityEngine.evaluate(VelocityEngine.java:228)
+        at velocity.velocity.ParserTestCaseTest.evaluate(ParserTestCaseTest.java:68)
+        at velocity.velocity.ParserTestCaseTest.evaluatesValidParserConstructsAndRejectsInvalidOnes(ParserTestCaseTest.java:31)
+
+PropertyExecutorTest > executeInvokesResolvedPropertyGetter() FAILED
+    java.lang.UnsupportedOperationException: RuntimeLoggerLog does not support this method.
+        at org.apache.velocity.runtime.log.RuntimeLoggerLog.setLogChute(RuntimeLoggerLog.java:62)
+        at org.apache.velocity.runtime.log.Log.<init>(Log.java:40)
+        at org.apache.velocity.runtime.log.RuntimeLoggerLog.<init>(RuntimeLoggerLog.java:49)
+        at org.apache.velocity.util.introspection.Introspector.<init>(Introspector.java:81)
+        at velocity.velocity.PropertyExecutorTest.executeInvokesResolvedPropertyGetter(PropertyExecutorTest.java:20)
+
+UberspectImplTest > resolvesMapClassLiteralWhenCreatingMapBackedPropertySetter() FAILED
+    java.lang.UnsupportedOperationException: RuntimeLoggerLog does not support this method.
+        at org.apache.velocity.runtime.log.RuntimeLoggerLog.setLogChute(RuntimeLoggerLog.java:62)
+        at org.apache.velocity.runtime.log.Log.<init>(Log.java:40)
+        at org.apache.velocity.runtime.log.RuntimeLoggerLog.<init>(RuntimeLoggerLog.java:49)
+        at org.apache.velocity.util.introspection.UberspectImpl.setRuntimeLogger(UberspectImpl.java:92)
+        at velocity.velocity.UberspectImplTest.resolvesMapClassLiteralWhenCreatingMapBackedPropertySetter(UberspectImplTest.java:34)
+
+UberspectImplTest > resolvesVelocityClassThroughCompilerGeneratedClassLiteralHelper() FAILED
+    java.lang.NoSuchMethodException: org.apache.velocity.util.introspection.UberspectImpl.class$(java.lang.String)
+        at java.base/java.lang.Class.getDeclaredMethod(Class.java:2422)
+        at velocity.velocity.UberspectImplTest.resolvesVelocityClassThroughCompilerGeneratedClassLiteralHelper(UberspectImplTest.java:23)
+
+
+19 tests completed, 4 failed[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6977-a5ef19ee/tests/src/velocity/velocity/1.5/build/reports/problems/problems-report.html
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6977-a5ef19ee/tests/src/velocity/velocity/1.5/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+BUILD FAILED in 4s
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+15 actionable tasks: 3 executed, 12 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6977-a5ef19ee/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for velocity:velocity:1.5 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 5s
+9 actionable tasks: 1 executed, 8 up-to-date
