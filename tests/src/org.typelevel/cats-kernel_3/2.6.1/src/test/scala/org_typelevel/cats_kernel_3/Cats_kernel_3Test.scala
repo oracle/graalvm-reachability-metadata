@@ -11,10 +11,17 @@ import java.lang.Double as JDouble
 import scala.collection.immutable.Queue
 import scala.collection.immutable.SortedMap
 import scala.collection.immutable.SortedSet
+import scala.concurrent.Await
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
 import scala.concurrent.duration.MILLISECONDS
 import scala.concurrent.duration.NANOSECONDS
+import scala.concurrent.duration.SECONDS
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
 
 import cats.kernel.BoundedEnumerable
 import cats.kernel.BoundedSemilattice
@@ -96,6 +103,23 @@ class Cats_kernel_3Test:
     val eitherEq: Eq[Either[String, Int]] = Eq[Either[String, Int]]
     assert(eitherEq.eqv(Right(42), Right(42)))
     assert(eitherEq.neqv(Left("missing"), Right(42)))
+
+  @Test
+  def combinesTryAndFutureValuesWithEffectAwareMonoids(): Unit =
+    val tryMonoid: Monoid[Try[Int]] = Monoid[Try[Int]]
+    assert(tryMonoid.empty == Success(0))
+    assert(tryMonoid.combine(Success(2), Success(5)) == Success(7))
+    assert(tryMonoid.combineAll(List(Success(1), Success(2), Success(3))) == Success(6))
+
+    val failed: Try[Int] = Failure(new IllegalArgumentException("invalid number"))
+    assert(tryMonoid.combine(failed, Success(5)) == failed)
+
+    given ExecutionContext = ExecutionContext.parasitic
+    val timeout: Duration = Duration(5, SECONDS)
+    val futureMonoid: Monoid[Future[Int]] = Monoid[Future[Int]]
+    assert(Await.result(futureMonoid.empty, timeout) == 0)
+    assert(Await.result(futureMonoid.combine(Future.successful(2), Future.successful(5)), timeout) == 7)
+    assert(Await.result(futureMonoid.combineAll(List(Future.successful(1), Future.successful(2))), timeout) == 3)
 
   @Test
   def comparesAndOrdersValuesWithEqHashPartialOrderAndOrder(): Unit =
