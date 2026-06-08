@@ -1,0 +1,749 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ea4cc-4cd6-7ac0-adaa-a6c8a4883d99
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: net.postgis:postgis-jdbc:2021.1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2021.1.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080/metadata/net.postgis/postgis-jdbc/index.json
+- Entry selector: "metadata-version" = "2021.1.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2021.1.0
+- Entry metadata-version: 2021.1.0
+- Entry test-version: 2021.1.0
+- Entry tested-versions: [2021.1.0]
+codex
+I’ll verify the artifact metadata and candidate tag URLs first, then update only the missing fields in the selected `index.json` entry.
+exec
+/usr/bin/bash -lc 'pwd && rg -n "postgis-jdbc|source-code-url|test-code-url|documentation-url|repository-url|description|language" metadata/net.postgis/postgis-jdbc/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080
+15:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+16:    "repository-url" : "https://github.com/postgis/postgis-java",
+17:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/jdbc/src/test",
+18:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+19:    "description" : "PostGIS JDBC provides PostgreSQL JDBC driver extensions that register PostGIS geometry and geography data types with Java JDBC connections. It builds on postgis-geometry and the PostgreSQL JDBC driver so applications can read, write, parse, and serialize spatial values in PostGIS databases.",
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/net.postgis/postgis-jdbc/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2021.1.0",
+    "tested-versions" : [
+      "2021.1.0"
+    ],
+    "allowed-packages" : [
+      "examples",
+      "org.postgis"
+    ]
+  },
+  {
+    "metadata-version" : "2.5.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+    "repository-url" : "https://github.com/postgis/postgis-java",
+    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/jdbc/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+    "description" : "PostGIS JDBC provides PostgreSQL JDBC driver extensions that register PostGIS geometry and geography data types with Java JDBC connections. It builds on postgis-geometry and the PostgreSQL JDBC driver so applications can read, write, parse, and serialize spatial values in PostGIS databases.",
+    "tested-versions" : [
+      "2.5.0",
+      "2.5.1"
+    ],
+    "allowed-packages" : [
+      "examples",
+      "org.postgis"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"|\"language\"' metadata/net.postgis metadata | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080
+ succeeded in 0ms:
+metadata/net.postgis/postgis-geometry/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+metadata/net.postgis/postgis-geometry/index.json:6:    "repository-url" : "https://github.com/postgis/postgis-java",
+metadata/net.postgis/postgis-geometry/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/postgis-geometry/src/test",
+metadata/net.postgis/postgis-geometry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+metadata/net.postgis/postgis-jdbc/index.json:15:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+metadata/net.postgis/postgis-jdbc/index.json:16:    "repository-url" : "https://github.com/postgis/postgis-java",
+metadata/net.postgis/postgis-jdbc/index.json:17:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/jdbc/src/test",
+metadata/net.postgis/postgis-jdbc/index.json:18:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:17:    "repository-url" : "https://github.com/paul-hammant/paranamer",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:18:    "test-code-url" : "https://github.com/paul-hammant/paranamer/tree/paranamer-$version$/paranamer/src/test",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/com.google.truth/truth/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-sources.jar",
+metadata/com.google.truth/truth/index.json:6:    "repository-url" : "https://github.com/google/truth",
+metadata/com.google.truth/truth/index.json:7:    "test-code-url" : "https://github.com/google/truth/tree/release_1_1_3/core/src/test/java?version=$version$",
+metadata/com.google.truth/truth/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-jvm-graal-ffi-jvm/$version$/mordant-jvm-graal-ffi-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/mordant",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:8:    "documentation-url" : "https://github.com/ajalt/mordant/blob/$version$/mordant-jvm-graal-ffi/README.md",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/mordant",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/mordant",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:7:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:8:    "documentation-url" : "https://github.com/ajalt/mordant/blob/$version$/mordant-jvm-ffm/README.md",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/org.apache.hadoop/hadoop-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-annotations/$version$/hadoop-annotations-$version$-sources.jar",
+metadata/org.apache.hadoop/hadoop-annotations/index.json:6:    "repository-url" : "https://github.com/apache/hadoop",
+metadata/org.apache.hadoop/hadoop-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.hadoop/hadoop-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-annotations/$version$/hadoop-annotations-$version$-javadoc.jar",
+metadata/com.spotify/completable-futures/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-sources.jar",
+metadata/com.spotify/completable-futures/index.json:6:    "repository-url" : "https://github.com/spotify/completable-futures",
+metadata/com.spotify/completable-futures/index.json:7:    "test-code-url" : "https://github.com/spotify/completable-futures/tree/v$version$/src/test/java",
+metadata/com.spotify/completable-futures/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-web-proxy/$version$/hadoop-yarn-server-web-proxy-$version$-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:6:    "repository-url" : "https://github.com/apache/hadoop",
+metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-web-proxy/$version$/hadoop-yarn-server-web-proxy-$version$-test-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-web-proxy/$version$/hadoop-yarn-server-web-proxy-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.glassfish.hk2/hk2-utils/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:34:    "repository-url" : "https://github.com/javaee/hk2",
+metadata/org.glassfish.hk2/hk2-utils/index.json:35:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-sources.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/",
+metadata/org.apache.xbean/xbean-reflect/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/xbean-reflect/src/test/",
+metadata/org.apache.xbean/xbean-reflect/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-javadoc.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-container/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-container/$version$/arquillian-junit-container-$version$-sources.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-container/index.json:6:    "repository-url" : "https://github.com/arquillian/arquillian-core",
+metadata/org.jboss.arquillian.junit/arquillian-junit-container/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-container/$version$/arquillian-junit-container-$version$-test-sources.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-container/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-container/$version$/arquillian-junit-container-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics5/metrics-core/$version$/metrics-core-$version$-sources.jar",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:6:    "repository-url" : "https://github.com/dropwizard/metrics",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:7:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-core/src/test",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics5/metrics-core/$version$/metrics-core-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:25:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics5/metrics-core/$version$/metrics-core-$version$-sources.jar",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:26:    "repository-url" : "https://github.com/dropwizard/metrics",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:27:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$-rc0/metrics-core/src/test",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:28:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics5/metrics-core/$version$/metrics-core-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.glassfish.hk2/hk2-api/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:21:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.glassfish.hk2/hk2-api/index.json:22:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:36:    "repository-url" : "https://github.com/javaee/hk2",
+metadata/org.glassfish.hk2/hk2-api/index.json:37:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:38:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/dom4j/dom4j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/dom4j/dom4j/$version$/dom4j-$version$-sources.jar",
+
+web search: 
+web search: Maven Central net.postgis postgis-jdbc 2021.1.0 sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/net/postgis/postgis-jdbc/2021.1.0/
+codex
+The existing older entry already uses Maven source and javadoc artifacts, but 2021.1.0 changed the Git tag style from `postgis-java-aggregator-*` to `v*`. I’m checking the rendered Maven and GitHub URLs now, including whether a Maven test-sources artifact exists.
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/2021.1.0/postgis-jdbc-2021.1.0-javadoc.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 08 Jun 2026 01:15:37 GMT
+content-type: application/java-archive
+content-length: 493009
+cf-ray: a0840be6fe90a43d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1193649
+etag: "e57b7163d3617a39f7317cd690659d20"
+last-modified: Wed, 04 Aug 2021 19:43:42 GMT
+x-checksum-md5: e57b7163d3617a39f7317cd690659d20
+x-checksum-sha1: a2ff2c6efb93e7bdd3ff033f70c170ef7324583c
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/2021.1.0/postgis-jdbc-2021.1.0-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/2021.1.0/postgis-jdbc-2021.1.0-test-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/2021.1.0/postgis-jdbc-2021.1.0.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+	
+    <parent>
+        <groupId>net.postgis</groupId>
+        <artifactId>postgis-java-aggregator</artifactId>
+        <version>2021.1.0</version>
+    </parent>
+
+    <artifactId>postgis-jdbc</artifactId>
+    <version>2021.1.0</version>
+    <packaging>jar</packaging>
+
+    <name>Postgis JDBC Driver</name>
+    <description>PostGIS adds support for geographic objects to the PostgreSQL object-relational database.</description>
+
+    <properties />
+
+    <dependencies>
+        <dependency>
+            <groupId>net.postgis</groupId>
+            <artifactId>postgis-geometry</artifactId>
+            <version>2021.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${dependency.postgresql-jdbc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.postgis.tools</groupId>
+            <artifactId>test-utils</artifactId>
+            <version>2021.1.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Automatic-Module-Name>net.postgis.jdbc</Automatic-Module-Name>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/postgis/postgis-java/tree/v2021.1.0/jdbc/src/test" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080
+ succeeded in 200ms:
+HTTP/2 200 
+date: Mon, 08 Jun 2026 01:15:37 GMT
+content-type: application/java-archive
+content-length: 21852
+cf-ray: a0840be6cfd701db-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "128f7e5ad088ff1ad2b0867e991fc326"
+last-modified: Wed, 04 Aug 2021 19:43:42 GMT
+x-checksum-md5: 128f7e5ad088ff1ad2b0867e991fc326
+x-checksum-sha1: af2cb264adda80ee547447b500b353aad7e40cb4
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ exited 22 in 229ms:
+HTTP/2 404 
+date: Mon, 08 Jun 2026 01:15:37 GMT
+content-type: text/html
+cf-ray: a0840be74ae79a60-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/net/postgis/postgis-jdbc/2021.1.0/postgis-jdbc-2021.1.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ exited 22 in 459ms:
+curl: (22) The requested URL returned error: 404
+404 https://github.com/postgis/postgis-java/tree/v2021.1.0/jdbc/src/test
+
+web search: 
+web search: https://github.com/postgis/postgis-java/tree/v2021.1.0
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/postgis/postgis-java/contents/postgis-jdbc/src/test?ref=v2021.1.0' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080
+exec
+/usr/bin/bash -lc "curl -fsSL -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/postgis/postgis-java/tree/v2021.1.0/postgis-jdbc/src/test" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080
+exec
+/usr/bin/bash -lc "curl -fsSL -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/postgis/postgis-java/tree/v2021.1.0/postgis-jdbc/src/main" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/postgis/postgis-java/contents/postgis-jdbc?ref=v2021.1.0' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080
+ succeeded in 170ms:
+[
+  {
+    "name": "java",
+    "path": "postgis-jdbc/src/test/java",
+    "sha": "605f520d5ddcd493806b67d39bc025fab8c00898",
+    "size": 0,
+    "url": "https://api.github.com/repos/postgis/postgis-java/contents/postgis-jdbc/src/test/java?ref=v2021.1.0",
+    "html_url": "https://github.com/postgis/postgis-java/tree/v2021.1.0/postgis-jdbc/src/test/java",
+    "git_url": "https://api.github.com/repos/postgis/postgis-java/git/trees/605f520d5ddcd493806b67d39bc025fab8c00898",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/postgis/postgis-java/contents/postgis-jdbc/src/test/java?ref=v2021.1.0",
+      "git": "https://api.github.com/repos/postgis/postgis-java/git/trees/605f520d5ddcd493806b67d39bc025fab8c00898",
+      "html": "https://github.com/postgis/postgis-java/tree/v2021.1.0/postgis-jdbc/src/test/java"
+    }
+  },
+  {
+    "name": "resources-filtered",
+    "path": "postgis-jdbc/src/test/resources-filtered",
+    "sha": "2fd5ef1fc6599dfe28f18f833373124a47d90622",
+    "size": 0,
+    "url": "https://api.github.com/repos/postgis/postgis-java/contents/postgis-jdbc/src/test/resources-filtered?ref=v2021.1.0",
+    "html_url": "https://github.com/postgis/postgis-java/tree/v2021.1.0/postgis-jdbc/src/test/resources-filtered",
+    "git_url": "https://api.github.com/repos/postgis/postgis-java/git/trees/2fd5ef1fc6599dfe28f18f833373124a47d90622",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/postgis/postgis-java/contents/postgis-jdbc/src/test/resources-filtered?ref=v2021.1.0",
+      "git": "https://api.github.com/repos/postgis/postgis-java/git/trees/2fd5ef1fc6599dfe28f18f833373124a47d90622",
+      "html": "https://github.com/postgis/postgis-java/tree/v2021.1.0/postgis-jdbc/src/test/resources-filtered"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "postgis-jdbc/src/test/resources",
+    "sha": "1987c8a8e53d15b8486d098f90855a18f0541dae",
+    "size": 0,
+    "url": "https://api.github.com/repos/postgis/postgis-java/contents/postgis-jdbc/src/test/resources?ref=v2021.1.0",
+    "html_url": "https://github.com/postgis/postgis-java/tree/v2021.1.0/postgis-jdbc/src/test/resources",
+    "git_url": "https://api.github.com/repos/postgis/postgis-java/git/trees/1987c8a8e53d15b8486d098f90855a18f0541dae",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/postgis/postgis-java/contents/postgis-jdbc/src/test/resources?ref=v2021.1.0",
+      "git": "https://api.github.com/repos/postgis/postgis-java/git/trees/1987c8a8e53d15b8486d098f90855a18f0541dae",
+      "html": "https://github.com/postgis/postgis-java/tree/v2021.1.0/postgis-jdbc/src/test/resources"
+    }
+  }
+]
+
+ succeeded in 174ms:
+[
+  {
+    "name": "COPYING_LGPL",
+    "path": "postgis-jdbc/COPYING_LGPL",
+    "sha": "b124cf581250c210960185e8fbf6c967a0538721",
+    "size": 26528,
+    "url": "https://api.github.com/repos/postgis/postgis-java/contents/postgis-jdbc/COPYING_LGPL?ref=v2021.1.0",
+    "html_url": "https://github.com/postgis/postgis-java/blob/v2021.1.0/postgis-jdbc/COPYING_LGPL",
+    "git_url": "https://api.github.com/repos/postgis/postgis-java/git/blobs/b124cf581250c210960185e8fbf6c967a0538721",
+    "download_url": "https://raw.githubusercontent.com/postgis/postgis-java/v2021.1.0/postgis-jdbc/COPYING_LGPL",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/postgis/postgis-java/contents/postgis-jdbc/COPYING_LGPL?ref=v2021.1.0",
+      "git": "https://api.github.com/repos/postgis/postgis-java/git/blobs/b124cf581250c210960185e8fbf6c967a0538721",
+      "html": "https://github.com/postgis/postgis-java/blob/v2021.1.0/postgis-jdbc/COPYING_LGPL"
+    }
+  },
+  {
+    "name": "README",
+    "path": "postgis-jdbc/README",
+    "sha": "38fea3addfe0d094524ef4f964e22b28e71d9048",
+    "size": 10250,
+    "url": "https://api.github.com/repos/postgis/postgis-java/contents/postgis-jdbc/README?ref=v2021.1.0",
+    "html_url": "https://github.com/postgis/postgis-java/blob/v2021.1.0/postgis-jdbc/README",
+    "git_url": "https://api.github.com/repos/postgis/postgis-java/git/blobs/38fea3addfe0d094524ef4f964e22b28e71d9048",
+    "download_url": "https://raw.githubusercontent.com/postgis/postgis-java/v2021.1.0/postgis-jdbc/README",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/postgis/postgis-java/contents/postgis-jdbc/README?ref=v2021.1.0",
+      "git": "https://api.github.com/repos/postgis/postgis-java/git/blobs/38fea3addfe0d094524ef4f964e22b28e71d9048",
+      "html": "https://github.com/postgis/postgis-java/blob/v2021.1.0/postgis-jdbc/README"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "postgis-jdbc/pom.xml",
+    "sha": "d89ee97fedc57fcab8975e1ca80700a1070d9a9c",
+    "size": 2012,
+    "url": "https://api.github.com/repos/postgis/postgis-java/contents/postgis-jdbc/pom.xml?ref=v2021.1.0",
+    "html_url": "https://github.com/postgis/postgis-java/blob/v2021.1.0/postgis-jdbc/pom.xml",
+    "git_url": "https://api.github.com/repos/postgis/postgis-java/git/blobs/d89ee97fedc57fcab8975e1ca80700a1070d9a9c",
+    "download_url": "https://raw.githubusercontent.com/postgis/postgis-java/v2021.1.0/postgis-jdbc/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/postgis/postgis-java/contents/postgis-jdbc/pom.xml?ref=v2021.1.0",
+      "git": "https://api.github.com/repos/postgis/postgis-java/git/blobs/d89ee97fedc57fcab8975e1ca80700a1070d9a9c",
+      "html": "https://github.com/postgis/postgis-java/blob/v2021.1.0/postgis-jdbc/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "postgis-jdbc/src",
+    "sha": "c10095f009e6362f13ca9b61a531deb76896624d",
+    "size": 0,
+    "url": "https://api.github.com/repos/postgis/postgis-java/contents/postgis-jdbc/src?ref=v2021.1.0",
+    "html_url": "https://github.com/postgis/postgis-java/tree/v2021.1.0/postgis-jdbc/src",
+    "git_url": "https://api.github.com/repos/postgis/postgis-java/git/trees/c10095f009e6362f13ca9b61a531deb76896624d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/postgis/postgis-java/contents/postgis-jdbc/src?ref=v2021.1.0",
+      "git": "https://api.github.com/repos/postgis/postgis-java/git/trees/c10095f009e6362f13ca9b61a531deb76896624d",
+      "html": "https://github.com/postgis/postgis-java/tree/v2021.1.0/postgis-jdbc/src"
+    }
+  },
+  {
+    "name": "todo.txt",
+    "path": "postgis-jdbc/todo.txt",
+    "sha": "0a8817a00923dfce2adb496f51f54064124893ee",
+    "size": 909,
+    "url": "https://api.github.com/repos/postgis/postgis-java/contents/postgis-jdbc/todo.txt?ref=v2021.1.0",
+    "html_url": "https://github.com/postgis/postgis-java/blob/v2021.1.0/postgis-jdbc/todo.txt",
+    "git_url": "https://api.github.com/repos/postgis/postgis-java/git/blobs/0a8817a00923dfce2adb496f51f54064124893ee",
+    "download_url": "https://raw.githubusercontent.com/postgis/postgis-java/v2021.1.0/postgis-jdbc/todo.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/postgis/postgis-java/contents/postgis-jdbc/todo.txt?ref=v2021.1.0",
+      "git": "https://api.github.com/repos/postgis/postgis-java/git/blobs/0a8817a00923dfce2adb496f51f54064124893ee",
+      "html": "https://github.com/postgis/postgis-java/blob/v2021.1.0/postgis-jdbc/todo.txt"
+    }
+  }
+]
+
+ succeeded in 624ms:
+200 https://github.com/postgis/postgis-java/tree/v2021.1.0/postgis-jdbc/src/main
+
+ succeeded in 671ms:
+200 https://github.com/postgis/postgis-java/tree/v2021.1.0/postgis-jdbc/src/test
+
+codex
+The Maven source and javadoc jars for `2021.1.0` return 200, while the Maven `test-sources` jar is absent. The tagged test suite exists at `v2021.1.0/postgis-jdbc/src/test`, so I’m going to add that tag template to the missing 2021 entry and leave `language` absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080/metadata/net.postgis/postgis-jdbc/index.json
+diff --git a/metadata/net.postgis/postgis-jdbc/index.json b/metadata/net.postgis/postgis-jdbc/index.json
+index d5fa18de729ea8b16be319f6ce863a8e5be1e074..fe2a900f2a9de981280c0adcea783814f62593ae
+--- a/metadata/net.postgis/postgis-jdbc/index.json
++++ b/metadata/net.postgis/postgis-jdbc/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2021.1.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
++    "repository-url" : "https://github.com/postgis/postgis-java",
++    "test-code-url" : "https://github.com/postgis/postgis-java/tree/v$version$/postgis-jdbc/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
++    "description" : "PostGIS JDBC provides PostgreSQL JDBC driver extensions that register PostGIS geometry and geography data types with Java JDBC connections. It builds on postgis-geometry and the PostgreSQL JDBC driver so applications can read, write, parse, and serialize spatial values in PostGIS databases.",
+     "tested-versions" : [
+       "2021.1.0"
+     ],
+
+diff --git a/metadata/net.postgis/postgis-jdbc/index.json b/metadata/net.postgis/postgis-jdbc/index.json
+index d5fa18de729ea8b16be319f6ce863a8e5be1e074..fe2a900f2a9de981280c0adcea783814f62593ae
+--- a/metadata/net.postgis/postgis-jdbc/index.json
++++ b/metadata/net.postgis/postgis-jdbc/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2021.1.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
++    "repository-url" : "https://github.com/postgis/postgis-java",
++    "test-code-url" : "https://github.com/postgis/postgis-java/tree/v$version$/postgis-jdbc/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
++    "description" : "PostGIS JDBC provides PostgreSQL JDBC driver extensions that register PostGIS geometry and geography data types with Java JDBC connections. It builds on postgis-geometry and the PostgreSQL JDBC driver so applications can read, write, parse, and serialize spatial values in PostGIS databases.",
+     "tested-versions" : [
+       "2021.1.0"
+     ],
+
+codex
+The JSON entry is patched. I’m validating the edited file and running the metadata-file check for the selected coordinate now.
+exec
+/usr/bin/bash -lc "sed -n '1,40p' metadata/net.postgis/postgis-jdbc/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2021.1.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+    "repository-url" : "https://github.com/postgis/postgis-java",
+    "test-code-url" : "https://github.com/postgis/postgis-java/tree/v$version$/postgis-jdbc/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+    "description" : "PostGIS JDBC provides PostgreSQL JDBC driver extensions that register PostGIS geometry and geography data types with Java JDBC connections. It builds on postgis-geometry and the PostgreSQL JDBC driver so applications can read, write, parse, and serialize spatial values in PostGIS databases.",
+    "tested-versions" : [
+      "2021.1.0"
+    ],
+    "allowed-packages" : [
+      "examples",
+      "org.postgis"
+    ]
+  },
+  {
+    "metadata-version" : "2.5.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+    "repository-url" : "https://github.com/postgis/postgis-java",
+    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/jdbc/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+    "description" : "PostGIS JDBC provides PostgreSQL JDBC driver extensions that register PostGIS geometry and geography data types with Java JDBC connections. It builds on postgis-geometry and the PostgreSQL JDBC driver so applications can read, write, parse, and serialize spatial values in PostGIS databases.",
+    "tested-versions" : [
+      "2.5.0",
+      "2.5.1"
+    ],
+    "allowed-packages" : [
+      "examples",
+      "org.postgis"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'jq . metadata/net.postgis/postgis-jdbc/index.json >/dev/null' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=net.postgis:postgis-jdbc:2021.1.0' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080
+diff --git a/metadata/net.postgis/postgis-jdbc/index.json b/metadata/net.postgis/postgis-jdbc/index.json
+index d5fa18de729ea8b16be319f6ce863a8e5be1e074..fe2a900f2a9de981280c0adcea783814f62593ae
+--- a/metadata/net.postgis/postgis-jdbc/index.json
++++ b/metadata/net.postgis/postgis-jdbc/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2021.1.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
++    "repository-url" : "https://github.com/postgis/postgis-java",
++    "test-code-url" : "https://github.com/postgis/postgis-java/tree/v$version$/postgis-jdbc/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
++    "description" : "PostGIS JDBC provides PostgreSQL JDBC driver extensions that register PostGIS geometry and geography data types with Java JDBC connections. It builds on postgis-geometry and the PostgreSQL JDBC driver so applications can read, write, parse, and serialize spatial values in PostGIS databases.",
+     "tested-versions" : [
+       "2021.1.0"
+     ],
+
+ exited 1 in 3147ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+Metadata files check failed for net.postgis:postgis-jdbc:2021.1.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080/metadata/net.postgis/postgis-jdbc/2021.1.0/
+
+> Task :checkMetadataFiles FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - net.postgis:postgis-jdbc:2021.1.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080/metadata/net.postgis/postgis-jdbc/2021.1.0/
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 2s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+The edited JSON parses cleanly. The targeted metadata check does not reach the URL metadata validation because this coordinate’s `metadata/net.postgis/postgis-jdbc/2021.1.0/` directory is missing `reachability-metadata.json`, which appears outside the requested index-field update.
+codex
+I’m doing one repo-specific index validation as a narrower check, then I’ll summarize the file change and the validation result.
+exec
+/usr/bin/bash -lc 'git diff -- metadata/net.postgis/postgis-jdbc/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080
+ succeeded in 0ms:
+diff --git i/metadata/net.postgis/postgis-jdbc/index.json w/metadata/net.postgis/postgis-jdbc/index.json
+index d5fa18de72..fe2a900f2a 100644
+--- i/metadata/net.postgis/postgis-jdbc/index.json
++++ w/metadata/net.postgis/postgis-jdbc/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2021.1.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
++    "repository-url" : "https://github.com/postgis/postgis-java",
++    "test-code-url" : "https://github.com/postgis/postgis-java/tree/v$version$/postgis-jdbc/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
++    "description" : "PostGIS JDBC provides PostgreSQL JDBC driver extensions that register PostGIS geometry and geography data types with Java JDBC connections. It builds on postgis-geometry and the PostgreSQL JDBC driver so applications can read, write, parse, and serialize spatial values in PostGIS databases.",
+     "tested-versions" : [
+       "2021.1.0"
+     ],
+
+exec
+/usr/bin/bash -lc './gradlew validateIndexFiles -Pcoordinates=net.postgis:postgis-jdbc:2021.1.0' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080
+diff --git a/metadata/net.postgis/postgis-jdbc/index.json b/metadata/net.postgis/postgis-jdbc/index.json
+index d5fa18de729ea8b16be319f6ce863a8e5be1e074..fe2a900f2a9de981280c0adcea783814f62593ae
+--- a/metadata/net.postgis/postgis-jdbc/index.json
++++ b/metadata/net.postgis/postgis-jdbc/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2021.1.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
++    "repository-url" : "https://github.com/postgis/postgis-java",
++    "test-code-url" : "https://github.com/postgis/postgis-java/tree/v$version$/postgis-jdbc/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
++    "description" : "PostGIS JDBC provides PostgreSQL JDBC driver extensions that register PostGIS geometry and geography data types with Java JDBC connections. It builds on postgis-geometry and the PostgreSQL JDBC driver so applications can read, write, parse, and serialize spatial values in PostGIS databases.",
+     "tested-versions" : [
+       "2021.1.0"
+     ],
+
+ succeeded in 518ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :validateIndexFiles
+✅ metadata/net.postgis/postgis-jdbc/index.json: Valid
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 513ms
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: https://github.com/postgis/postgis-java/tree/v2021.1.0/postgis-jdbc/src/test
+web search: 
+web search: repo.maven.apache.org maven2 net postgis postgis-jdbc 2021.1.0 postgis-jdbc-2021.1.0-sources.jar
+web search: 
+web search: https://repo1.maven.org/maven2/net/postgis/postgis-jdbc/2021.1.0/
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080/metadata/net.postgis/postgis-jdbc/index.json:2) for `metadata-version` `2021.1.0`. I used Maven Central `$version$` templates for source and javadoc, the canonical `postgis/postgis-java` repository root, and the tag-specific test suite under `v$version$/postgis-jdbc/src/test`; no `language` field was added because this is not Kotlin/Groovy/Scala-specific. ([repo1.maven.org](https://repo1.maven.org/maven2/net/postgis/postgis-jdbc/2021.1.0/))
+
+Validation: `jq` passed, and `./gradlew validateIndexFiles -Pcoordinates=net.postgis:postgis-jdbc:2021.1.0` succeeded. `./gradlew checkMetadataFiles -Pcoordinates=net.postgis:postgis-jdbc:2021.1.0` failed on an existing missing `reachability-metadata.json` in `metadata/net.postgis/postgis-jdbc/2021.1.0/`, outside the requested index-field update.
+diff --git a/metadata/net.postgis/postgis-jdbc/index.json b/metadata/net.postgis/postgis-jdbc/index.json
+index d5fa18de729ea8b16be319f6ce863a8e5be1e074..fe2a900f2a9de981280c0adcea783814f62593ae
+--- a/metadata/net.postgis/postgis-jdbc/index.json
++++ b/metadata/net.postgis/postgis-jdbc/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2021.1.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
++    "repository-url" : "https://github.com/postgis/postgis-java",
++    "test-code-url" : "https://github.com/postgis/postgis-java/tree/v$version$/postgis-jdbc/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
++    "description" : "PostGIS JDBC provides PostgreSQL JDBC driver extensions that register PostGIS geometry and geography data types with Java JDBC connections. It builds on postgis-geometry and the PostgreSQL JDBC driver so applications can read, write, parse, and serialize spatial values in PostGIS databases.",
+     "tested-versions" : [
+       "2021.1.0"
+     ],
+
+tokens used
+64,084
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080/metadata/net.postgis/postgis-jdbc/index.json:2) for `metadata-version` `2021.1.0`. I used Maven Central `$version$` templates for source and javadoc, the canonical `postgis/postgis-java` repository root, and the tag-specific test suite under `v$version$/postgis-jdbc/src/test`; no `language` field was added because this is not Kotlin/Groovy/Scala-specific. ([repo1.maven.org](https://repo1.maven.org/maven2/net/postgis/postgis-jdbc/2021.1.0/))
+
+Validation: `jq` passed, and `./gradlew validateIndexFiles -Pcoordinates=net.postgis:postgis-jdbc:2021.1.0` succeeded. `./gradlew checkMetadataFiles -Pcoordinates=net.postgis:postgis-jdbc:2021.1.0` failed on an existing missing `reachability-metadata.json` in `metadata/net.postgis/postgis-jdbc/2021.1.0/`, outside the requested index-field update.
+Ran agent for net.postgis:postgis-jdbc:2021.1.0 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080/build/agent-url-discovery-logs/net.postgis-postgis-jdbc-2021.1.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5884-9f511080/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 19s
+9 actionable tasks: 1 executed, 8 up-to-date
