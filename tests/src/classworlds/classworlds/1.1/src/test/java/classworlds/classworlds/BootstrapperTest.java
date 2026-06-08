@@ -8,6 +8,7 @@ package classworlds.classworlds;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
@@ -30,6 +31,9 @@ public class BootstrapperTest {
 
     @Test
     void bootstrapLoadsLauncherAndInvokesItsMainMethod() throws Exception {
+        assumeFalse(
+                "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode")),
+                "InitialClassLoader requires a jar code-source URL and is JVM-only");
         String[] args = {"alpha", "beta"};
         RecordingClassLoader launcherLoader = new RecordingClassLoader(BootstrapperTest.class.getClassLoader());
         Bootstrapper bootstrapper = new DelegatingBootstrapper(args, launcherLoader);
@@ -60,6 +64,9 @@ public class BootstrapperTest {
 
     @Test
     void bootstrapInvokesLauncherMainReturnedByInitialClassLoader() throws Exception {
+        assumeFalse(
+                "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode")),
+                "InitialClassLoader requires a jar code-source URL and is JVM-only");
         String[] args = {"delta", "epsilon"};
         SubstitutingClassLoader launcherLoader = new SubstitutingClassLoader(
                 BootstrapperTest.class.getClassLoader(), RecordingLauncher.class);
