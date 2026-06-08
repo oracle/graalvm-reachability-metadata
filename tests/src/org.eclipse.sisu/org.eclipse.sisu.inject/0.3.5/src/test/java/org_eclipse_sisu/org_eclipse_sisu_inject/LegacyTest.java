@@ -47,7 +47,7 @@ public class LegacyTest {
     private static void registerLegacyBeanEntryProxyInterface() {
         Object proxy = Proxy.newProxyInstance(
             org.sonatype.inject.BeanEntry.class.getClassLoader(),
-            new Class<?>[] { org.sonatype.inject.BeanEntry.class },
+            new Class<?>[] {org.sonatype.inject.BeanEntry.class},
             (proxyInstance, method, arguments) -> null);
 
         assertThat(proxy).isInstanceOf(org.sonatype.inject.BeanEntry.class);
