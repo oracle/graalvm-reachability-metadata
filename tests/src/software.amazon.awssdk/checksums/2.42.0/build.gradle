@@ -10,11 +10,18 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 String awsCrtVersion = "0.38.9"
+String awsCrtNativeLibrary = layout.buildDirectory.file("native/nativeTestCompile/libaws-crt-jni.so").get().asFile.absolutePath
 
 dependencies {
     testImplementation "software.amazon.awssdk:checksums:$libraryVersion"
     testImplementation "software.amazon.awssdk.crt:aws-crt:$awsCrtVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+tasks.named("nativeTest") {
+    String existingLdPreload = System.getenv("LD_PRELOAD")
+    String nativeTestLdPreload = existingLdPreload ? "${awsCrtNativeLibrary}:${existingLdPreload}" : awsCrtNativeLibrary
+    environment.put("LD_PRELOAD", nativeTestLdPreload)
 }
 
 graalvmNative {
