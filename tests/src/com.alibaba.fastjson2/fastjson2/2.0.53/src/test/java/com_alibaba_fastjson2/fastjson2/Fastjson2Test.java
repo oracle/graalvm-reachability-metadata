@@ -19,6 +19,8 @@ import com.alibaba.fastjson2.JSONWriter;
 import com.alibaba.fastjson2.TypeReference;
 import com.alibaba.fastjson2.annotation.JSONField;
 import com.alibaba.fastjson2.filter.ValueFilter;
+import com.alibaba.fastjson2.schema.JSONSchema;
+import com.alibaba.fastjson2.schema.ValidateResult;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -151,6 +153,53 @@ public class Fastjson2Test {
         JSONObject object = JSON.parseObject(filtered);
         assertThat(object.getString("summary")).isEqualTo("unknown");
         assertThat(object.getString("title")).isEqualTo(book.getTitle());
+    }
+
+    @Test
+    void validatesDocumentsAgainstJsonSchemaConstraints() {
+        JSONSchema schema = JSONSchema.parseSchema("""
+                {
+                  "type": "object",
+                  "required": ["sku", "quantity", "status", "tags"],
+                  "properties": {
+                    "sku": {"type": "string", "minLength": 3, "pattern": "^[A-Z]{3}-\\\\d{3}$"},
+                    "quantity": {"type": "integer", "minimum": 1, "maximum": 99},
+                    "status": {"type": "string", "enum": ["draft", "active", "archived"]},
+                    "tags": {
+                      "type": "array",
+                      "minItems": 1,
+                      "uniqueItems": true,
+                      "items": {"type": "string", "minLength": 2}
+                    }
+                  }
+                }
+                """);
+
+        JSONObject validInventoryItem = JSON.parseObject("""
+                {
+                  "sku": "ABC-123",
+                  "quantity": 12,
+                  "status": "active",
+                  "tags": ["warehouse", "fragile"]
+                }
+                """);
+        JSONObject invalidInventoryItem = JSON.parseObject("""
+                {
+                  "sku": "bad",
+                  "quantity": 0,
+                  "status": "retired",
+                  "tags": ["x", "x"]
+                }
+                """);
+
+        ValidateResult validResult = schema.validate(validInventoryItem);
+        ValidateResult invalidResult = schema.validate(invalidInventoryItem);
+
+        assertThat(schema.getType()).isEqualTo(JSONSchema.Type.Object);
+        assertThat(validResult.isSuccess()).isTrue();
+        assertThat(schema.isValid(validInventoryItem)).isTrue();
+        assertThat(invalidResult.isSuccess()).isFalse();
+        assertThat(schema.isValid(invalidInventoryItem)).isFalse();
     }
 
     private static Book sampleBook() {
