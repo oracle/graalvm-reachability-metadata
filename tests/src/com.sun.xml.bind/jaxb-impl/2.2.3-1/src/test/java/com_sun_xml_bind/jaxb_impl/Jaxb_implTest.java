@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import javax.xml.bind.Binder;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -34,9 +35,12 @@ import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -52,6 +56,10 @@ import com.sun.xml.bind.api.TypeReference;
 import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import org.junit.jupiter.api.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class Jaxb_implTest {
@@ -192,6 +200,48 @@ public class Jaxb_implTest {
                 .contains("name=\"item\"");
     }
 
+    @Test
+    void binderSynchronizesJaxbObjectsAndDomNodes() throws JAXBException, IOException, ParserConfigurationException,
+            SAXException {
+        JAXBContext context = JAXBContext.newInstance(Catalog.class);
+        Document document = parseXml("""
+                <catalog code="initial">
+                    <title>Initial Catalog</title>
+                    <book isbn="ISBN-1">First Edition</book>
+                </catalog>
+                """);
+        Binder<Node> binder = context.createBinder();
+
+        Catalog catalog = (Catalog) binder.unmarshal(document);
+
+        assertThat(catalog.code).isEqualTo("initial");
+        assertThat(catalog.title).isEqualTo("Initial Catalog");
+        assertThat(catalog.book.isbn).isEqualTo("ISBN-1");
+        assertThat(catalog.book.title).isEqualTo("First Edition");
+        assertThat(documentElement(binder.getXMLNode(catalog)).getNodeName()).isEqualTo("catalog");
+
+        Element root = document.getDocumentElement();
+        firstElement(root, "title").setTextContent("DOM Catalog");
+        firstElement(root, "book").setTextContent("DOM Edition");
+        Catalog updatedFromDom = (Catalog) binder.updateJAXB(root);
+
+        assertThat(updatedFromDom.title).isEqualTo("DOM Catalog");
+        assertThat(updatedFromDom.book.title).isEqualTo("DOM Edition");
+
+        updatedFromDom.code = "updated";
+        updatedFromDom.title = "Updated Catalog";
+        updatedFromDom.book.isbn = "ISBN-2";
+        updatedFromDom.book.title = "Second Edition";
+
+        Element updatedRoot = documentElement(binder.updateXML(updatedFromDom));
+
+        assertThat(updatedRoot.getAttribute("code")).isEqualTo("updated");
+        assertThat(firstElement(updatedRoot, "title").getTextContent()).isEqualTo("Updated Catalog");
+        Element book = firstElement(updatedRoot, "book");
+        assertThat(book.getAttribute("isbn")).isEqualTo("ISBN-2");
+        assertThat(book.getTextContent()).isEqualTo("Second Edition");
+    }
+
     private static String marshal(JAXBContext context, Object value) throws JAXBException {
         StringWriter writer = new StringWriter();
         context.createMarshaller().marshal(value, writer);
@@ -207,6 +257,23 @@ public class Jaxb_implTest {
         order.items.add(new LineItem("SKU-1", 2, "Graphite & Paper"));
         order.items.add(new LineItem("SKU-2", 1, "Notebook"));
         return order;
+    }
+
+    private static Document parseXml(String xml) throws IOException, ParserConfigurationException, SAXException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        return factory.newDocumentBuilder().parse(new InputSource(new StringReader(xml)));
+    }
+
+    private static Element firstElement(Element element, String name) {
+        return (Element) element.getElementsByTagName(name).item(0);
+    }
+
+    private static Element documentElement(Node node) {
+        if (node instanceof Document) {
+            return ((Document) node).getDocumentElement();
+        }
+        return (Element) node;
     }
 
     @XmlRootElement(name = "order", namespace = NAMESPACE_URI)
@@ -288,6 +355,35 @@ public class Jaxb_implTest {
         @Override
         public String marshal(LocalDate value) {
             return value.toString();
+        }
+    }
+
+    @XmlRootElement(name = "catalog")
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(propOrder = { "title", "book" })
+    public static class Catalog {
+        @XmlAttribute
+        private String code;
+
+        @XmlElement
+        private String title;
+
+        @XmlElement
+        private CatalogBook book;
+
+        public Catalog() {
+        }
+    }
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class CatalogBook {
+        @XmlAttribute
+        private String isbn;
+
+        @XmlValue
+        private String title;
+
+        public CatalogBook() {
         }
     }
 
