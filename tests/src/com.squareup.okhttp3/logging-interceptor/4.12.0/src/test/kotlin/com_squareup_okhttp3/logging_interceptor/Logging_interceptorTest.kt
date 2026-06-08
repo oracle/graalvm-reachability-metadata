@@ -14,6 +14,7 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
+import okhttp3.logging.LoggingEventListener
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.net.InetAddress
@@ -148,6 +149,52 @@ public class HttpLoggingInterceptorTest {
         }
 
         assertThat(logs).isEmpty()
+    }
+
+    @Test
+    fun loggingEventListenerLogsCallLifecycleEvents(): Unit = withServer { server: TestServer ->
+        server.createContext("/events") { exchange: HttpExchange ->
+            exchange.readRequestBody()
+            exchange.respond(200, "event response", "text/plain; charset=utf-8")
+        }
+        val logs: MutableList<String> = mutableListOf()
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .eventListenerFactory(LoggingEventListener.Factory { message: String -> logs.add(message) })
+            .callTimeout(5, TimeUnit.SECONDS)
+            .connectTimeout(5, TimeUnit.SECONDS)
+            .readTimeout(5, TimeUnit.SECONDS)
+            .writeTimeout(5, TimeUnit.SECONDS)
+            .build()
+
+        try {
+            val request: Request = Request.Builder()
+                .url(server.url("/events"))
+                .post("event request".toRequestBody("text/plain; charset=utf-8".toMediaType()))
+                .build()
+
+            client.newCall(request).execute().use { response: Response ->
+                assertThat(response.code).isEqualTo(200)
+                assertThat(checkNotNull(response.body).string()).isEqualTo("event response")
+            }
+        } finally {
+            client.close()
+        }
+
+        assertThat(logs.hasLineContaining("callStart:", "POST", "/events")).isTrue()
+        assertThat(logs.hasLineContaining("proxySelectStart:")).isTrue()
+        assertThat(logs.hasLineContaining("connectStart:")).isTrue()
+        assertThat(logs.hasLineContaining("connectEnd:")).isTrue()
+        assertThat(logs.hasLineContaining("connectionAcquired:")).isTrue()
+        assertThat(logs.hasLineContaining("requestHeadersStart")).isTrue()
+        assertThat(logs.hasLineContaining("requestHeadersEnd")).isTrue()
+        assertThat(logs.hasLineContaining("requestBodyStart")).isTrue()
+        assertThat(logs.hasLineContaining("requestBodyEnd: byteCount=13")).isTrue()
+        assertThat(logs.hasLineContaining("responseHeadersStart")).isTrue()
+        assertThat(logs.hasLineContaining("responseHeadersEnd:", "code=200")).isTrue()
+        assertThat(logs.hasLineContaining("responseBodyStart")).isTrue()
+        assertThat(logs.hasLineContaining("responseBodyEnd: byteCount=14")).isTrue()
+        assertThat(logs.hasLineContaining("connectionReleased")).isTrue()
+        assertThat(logs.hasLineContaining("callEnd")).isTrue()
     }
 
     @Test
