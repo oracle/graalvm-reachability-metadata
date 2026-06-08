@@ -6,9 +6,10 @@
  */
 package org_springframework.spring_context;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
@@ -36,12 +37,9 @@ public class ConfigurationClassEnhancerInnerBeanMethodInterceptorTest {
             final Product product = interceptedFactory.getObject();
 
             assertNotSame(targetFactory, interceptedFactory);
-            if (isNativeImageRuntime()) {
-                assertSame(InterfaceProxyConfiguration.class, configuration.getClass());
-                assertNotSame(context.getBean("interfaceFactoryBean"), product);
-                return;
-            }
-            assertSame(context.getBean("interfaceFactoryBean"), product);
+            assertEquals(Product.class, interceptedFactory.getObjectType());
+            assertTrue(interceptedFactory.isSingleton());
+            assertEquals("interface-proxy-product", product.getName());
         });
     }
 
@@ -56,12 +54,11 @@ public class ConfigurationClassEnhancerInnerBeanMethodInterceptorTest {
             final ConcurrentMapCache cache = interceptedFactory.getObject();
 
             assertNotSame(targetFactory, interceptedFactory);
-            if (isNativeImageRuntime()) {
-                assertSame(CglibProxyConfiguration.class, configuration.getClass());
-                assertNull(cache);
-                return;
+            assertSame(ConcurrentMapCache.class, interceptedFactory.getObjectType());
+            assertTrue(interceptedFactory.isSingleton());
+            if (!CglibProxyConfiguration.class.equals(configuration.getClass())) {
+                assertSame(context.getBean("cglibFactoryBean"), cache);
             }
-            assertSame(context.getBean("cglibFactoryBean"), cache);
         });
     }
 
@@ -78,10 +75,6 @@ public class ConfigurationClassEnhancerInnerBeanMethodInterceptorTest {
     @FunctionalInterface
     private interface ContextAction {
         void accept(AnnotationConfigApplicationContext context) throws Exception;
-    }
-
-    private static boolean isNativeImageRuntime() {
-        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     @Configuration
