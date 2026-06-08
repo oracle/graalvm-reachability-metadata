@@ -12,6 +12,7 @@ import org.junit.runner.Result
 import org.junit.runner.notification.Failure
 import spock.lang.AutoCleanup
 import spock.lang.Narrative
+import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Stepwise
 import spock.lang.Title
@@ -23,6 +24,7 @@ public class Spock_coreTest {
     static final List<String> fixtureEvents = []
     static final List<String> observedDataResults = []
     static final List<String> autoCleanupEvents = []
+    static final List<String> sharedFieldEvents = []
 
     @Test
     void runsFixtureLifecycleAndDataDrivenSpecifications() {
@@ -67,6 +69,18 @@ public class Spock_coreTest {
         assertThat(autoCleanupEvents).containsExactly(
                 'used managed-resource for request',
                 'released managed-resource')
+    }
+
+    @Test
+    void runsSharedFieldSpecification() {
+        sharedFieldEvents.clear()
+
+        Result result = JUnitCore.runClasses(SharedFieldSpec)
+
+        assertSuccessful(result)
+        assertThat(sharedFieldEvents).containsExactly(
+                'first feature shared=1 instance=1',
+                'second feature shared=2 instance=1')
     }
 
     private static void assertSuccessful(Result result) {
@@ -202,6 +216,41 @@ public class Spock_coreTest {
         def 'auto cleanup invokes configured resource method after feature completion'() {
             expect:
             resource.useFor('request') == 'managed-resource:request'
+        }
+    }
+
+    @Stepwise
+    public static class SharedFieldSpec extends Specification {
+        @Shared
+        List<String> sharedNames = []
+        List<String> instanceNames = []
+
+        def 'first feature mutates shared and instance fields'() {
+            when:
+            sharedNames << 'first'
+            instanceNames << 'first'
+
+            then:
+            sharedNames == ['first']
+            instanceNames == ['first']
+
+            cleanup:
+            Spock_coreTest.sharedFieldEvents <<
+                    "first feature shared=${sharedNames.size()} instance=${instanceNames.size()}".toString()
+        }
+
+        def 'second feature observes shared state and fresh instance state'() {
+            when:
+            sharedNames << 'second'
+            instanceNames << 'second'
+
+            then:
+            sharedNames == ['first', 'second']
+            instanceNames == ['second']
+
+            cleanup:
+            Spock_coreTest.sharedFieldEvents <<
+                    "second feature shared=${sharedNames.size()} instance=${instanceNames.size()}".toString()
         }
     }
 
