@@ -225,6 +225,24 @@ public class Jackson_datatype_jsr310Test {
     }
 
     @Test
+    void allowsStringifiedInstantTimestampsWithContextualFormatters() throws Exception {
+        ObjectMapper mapper = JsonMapper.builder()
+                .addModule(new JavaTimeModule().enable(JavaTimeFeature.ALWAYS_ALLOW_STRINGIFIED_DATE_TIMESTAMPS))
+                .build();
+        FormattedInstant expected = new FormattedInstant(Instant.parse("2022-01-01T00:00:00.123456789Z"));
+
+        FormattedInstant restored = mapper.readValue(
+                "{\"createdAt\":\"1640995200.123456789\"}", FormattedInstant.class);
+        String formattedJson = mapper.writeValueAsString(
+                new FormattedInstant(Instant.parse("2022-01-01T00:00:00Z")));
+        FormattedInstant formattedRestored = mapper.readValue(formattedJson, FormattedInstant.class);
+
+        assertThat(restored.createdAt).isEqualTo(expected.createdAt);
+        assertThat(formattedJson).contains("\"createdAt\":\"2022\\/01\\/01 00:00:00\"");
+        assertThat(formattedRestored.createdAt).isEqualTo(Instant.parse("2022-01-01T00:00:00Z"));
+    }
+
+    @Test
     void supportsOneBasedMonthFeatureForMonthEnumValues() throws Exception {
         ObjectMapper mapper = JsonMapper.builder()
                 .addModule(new JavaTimeModule().enable(JavaTimeFeature.ONE_BASED_MONTHS))
@@ -382,6 +400,18 @@ public class Jackson_datatype_jsr310Test {
         DurationUnits(Duration minutes, Duration hours) {
             this.minutes = minutes;
             this.hours = hours;
+        }
+    }
+
+    public static final class FormattedInstant {
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "uuuu/MM/dd HH:mm:ss", timezone = "UTC")
+        public Instant createdAt;
+
+        public FormattedInstant() {
+        }
+
+        FormattedInstant(Instant createdAt) {
+            this.createdAt = createdAt;
         }
     }
 }
