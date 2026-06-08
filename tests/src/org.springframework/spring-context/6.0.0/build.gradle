@@ -9,11 +9,39 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+File compiledTestClassesDir = layout.buildDirectory.dir("classes/java/test").get().asFile
+File processedTestResourcesDir = layout.buildDirectory.dir("resources/test").get().asFile
+File generatedCglibProxyMarkerFile = layout.buildDirectory.dir("generated/cglib-proxy-test-classes").get().file("done.marker").asFile
+String javaHome = System.getenv("JAVA_HOME")
 
 dependencies {
     testImplementation "org.springframework:spring-context:$libraryVersion"
     testImplementation 'org.glassfish:javax.ejb:3.1'
     testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+tasks.register("generatePredefinedCglibProxyClasses", JavaExec) { JavaExec task ->
+    task.dependsOn(tasks.named("testClasses"))
+    task.inputs.files(compiledTestClassesDir, processedTestResourcesDir, configurations.testRuntimeClasspath)
+    task.outputs.file(generatedCglibProxyMarkerFile)
+    task.classpath = files(compiledTestClassesDir, processedTestResourcesDir, configurations.testRuntimeClasspath)
+    task.mainClass = "org_springframework.spring_context.PredefinedCglibProxyClassesGenerator"
+    task.args(compiledTestClassesDir.absolutePath)
+    task.executable = new File(javaHome, "bin/java").absolutePath
+    task.environment("JAVA_HOME", javaHome)
+    task.environment("GRAALVM_HOME", System.getenv("GRAALVM_HOME"))
+    task.doLast {
+        generatedCglibProxyMarkerFile.parentFile.mkdirs()
+        generatedCglibProxyMarkerFile.text = "generated"
+    }
+}
+
+tasks.named("nativeTestCompile") {
+    dependsOn("generatePredefinedCglibProxyClasses")
+}
+
+tasks.named("nativeTraceImage") {
+    dependsOn("generatePredefinedCglibProxyClasses")
 }
 
 graalvmNative {

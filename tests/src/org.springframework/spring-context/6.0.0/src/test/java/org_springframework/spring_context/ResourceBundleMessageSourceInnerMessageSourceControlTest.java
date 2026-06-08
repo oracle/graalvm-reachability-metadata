@@ -41,11 +41,19 @@ public class ResourceBundleMessageSourceInnerMessageSourceControlTest {
         try {
             assertEquals("first", messageSource.getMessage("greeting", null, Locale.ROOT));
 
+            awaitNextMillisecond();
             classLoader.update("greeting=second\n", System.currentTimeMillis() + 60_000L);
 
             assertEquals("second", messageSource.getMessage("greeting", null, Locale.ROOT));
         } finally {
             ResourceBundle.clearCache(classLoader);
+        }
+    }
+
+    private static void awaitNextMillisecond() {
+        long currentTimeMillis = System.currentTimeMillis();
+        while (System.currentTimeMillis() == currentTimeMillis) {
+            Thread.onSpinWait();
         }
     }
 
