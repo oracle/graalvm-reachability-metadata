@@ -13,8 +13,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 
-import org.apache.maven.surefire.util.DefaultDirectoryScanner;
-import org.apache.maven.surefire.util.TestsToRun;
+import org.apache.maven.surefire.api.util.DefaultDirectoryScanner;
+import org.apache.maven.surefire.api.util.TestsToRun;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -24,6 +24,7 @@ public class DefaultDirectoryScannerTest {
     Path temporaryDirectory;
 
     @Test
+    @SuppressWarnings("deprecation")
     public void locatesScannedTestClassesThroughTheSuppliedClassLoader() throws IOException {
         final Path classFile = temporaryDirectory.resolve(
                 DefaultDirectoryScannerTest.class.getName().replace('.', '/') + ".class");

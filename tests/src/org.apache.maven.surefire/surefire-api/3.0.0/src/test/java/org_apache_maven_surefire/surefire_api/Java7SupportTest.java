@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.apache.maven.surefire.shade.org.apache.maven.shared.utils.io.Java7Support;
+import org.apache.maven.surefire.shared.utils.io.Java7Support;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 

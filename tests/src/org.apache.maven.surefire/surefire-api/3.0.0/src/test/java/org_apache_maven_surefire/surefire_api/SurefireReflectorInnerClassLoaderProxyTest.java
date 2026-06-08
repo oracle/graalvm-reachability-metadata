@@ -8,37 +8,32 @@ package org_apache_maven_surefire.surefire_api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
 
+import org.apache.maven.surefire.api.booter.BaseProviderFactory;
+import org.apache.maven.surefire.api.testset.TestArtifactInfo;
 import org.apache.maven.surefire.booter.SurefireReflector;
 import org.junit.jupiter.api.Test;
 
 public class SurefireReflectorInnerClassLoaderProxyTest {
 
     @Test
-    public void invocationHandlerDispatchesCallsToDelegateByPublicMethodSignature() throws Exception {
-        final SurefireReflector reflector = new SurefireReflector(getClass().getClassLoader());
-        final InvocationHandler handler = newClassLoaderProxy(reflector, new GreetingDelegate());
-        final GreetingService proxy = (GreetingService) Proxy.newProxyInstance(
-                getClass().getClassLoader(), new Class[] {GreetingService.class}, handler);
+    public void reflectorDispatchesConfigurationThroughSupportedProviderSetters() {
+        final ClassLoader classLoader = getClass().getClassLoader();
+        final SurefireReflector reflector = new SurefireReflector(classLoader);
+        final BaseProviderFactory providerFactory = new BaseProviderFactory(false);
+        final Map<String, String> providerProperties = Collections.singletonMap("tc.0", getClass().getName());
+        final TestArtifactInfo artifactInfo = new TestArtifactInfo("provider-version", "tests");
 
-        final String greeting = proxy.greet("Maven Surefire");
+        reflector.setTestClassLoaderAware(providerFactory, classLoader);
+        reflector.setProviderPropertiesAware(providerFactory, providerProperties);
+        reflector.setTestArtifactInfoAware(providerFactory, artifactInfo);
 
-        assertThat(greeting).isEqualTo("Hello, Maven Surefire");
-    }
-
-    private static InvocationHandler newClassLoaderProxy(final SurefireReflector reflector, final Object delegate)
-            throws Exception {
-        final Class<?> proxyClass = Arrays.stream(SurefireReflector.class.getDeclaredClasses())
-                .filter(candidate -> "ClassLoaderProxy".equals(candidate.getSimpleName()))
-                .findFirst()
-                .orElseThrow(IllegalStateException::new);
-        final Constructor<?> constructor = proxyClass.getDeclaredConstructor(SurefireReflector.class, Object.class);
-        constructor.setAccessible(true);
-        return (InvocationHandler) constructor.newInstance(reflector, delegate);
+        assertThat(providerFactory.getTestClassLoader()).isSameAs(classLoader);
+        assertThat(providerFactory.getProviderProperties()).isEqualTo(providerProperties);
+        assertThat(providerFactory.getTestArtifactInfo().getVersion()).isEqualTo(artifactInfo.getVersion());
+        assertThat(providerFactory.getTestArtifactInfo().getClassifier()).isEqualTo(artifactInfo.getClassifier());
     }
 
     public interface GreetingService {
