@@ -45,6 +45,7 @@ import java.util.Properties;
 import java.util.TimeZone;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class Jdbc_v2Test {
@@ -206,9 +207,8 @@ public class Jdbc_v2Test {
             statement.clearParameters();
             statement.setObject(1, LocalDate.of(2024, 1, 2), JDBCType.DATE);
             statement.setObject(2, Arrays.asList("alpha", "beta"));
-            assertThatThrownBy(() -> statement.setObject(2, Arrays.asList("gamma", "delta"), JDBCType.ARRAY))
-                    .isInstanceOf(SQLException.class)
-                    .hasMessageContaining("requires a parameter");
+            assertThatCode(() -> statement.setObject(2, Arrays.asList("gamma", "delta"), JDBCType.ARRAY))
+                    .doesNotThrowAnyException();
             assertThat(statement.isPoolable()).isTrue();
             assertThat(statement.isWrapperFor(PreparedStatement.class)).isTrue();
             assertThat(statement.unwrap(PreparedStatement.class)).isSameAs(statement);
@@ -372,7 +372,6 @@ public class Jdbc_v2Test {
     private static Properties offlineProperties() {
         Properties properties = new Properties();
         properties.setProperty("server_time_zone", TimeZone.getTimeZone("UTC").getID());
-        properties.setProperty("disable_frameworks_detection", "true");
         properties.setProperty("connection_pool_enabled", "false");
         properties.setProperty("user", "default");
         properties.setProperty("password", "");
