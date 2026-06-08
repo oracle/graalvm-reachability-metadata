@@ -22,13 +22,25 @@ public class DirectBufferDeallocatorInnerJava8DeallocatorTest {
     void deallocateInvokesCleanerThroughJava8Deallocator() throws Exception {
         Java8DeallocatorState.reset();
         final Unsafe unsafe = unsafe();
-        final Object java8Deallocator = unsafe.allocateInstance(java8DeallocatorClass());
+        final Class<?> java8DeallocatorClass = java8DeallocatorClass();
+        final Object java8Deallocator = unsafe.allocateInstance(java8DeallocatorClass);
         setObjectField(
-                unsafe, java8Deallocator, "cleanerAccessor", accessibleMethod(Java8CleanerAccessor.class, "cleaner"));
-        setObjectField(unsafe, java8Deallocator, "clean", accessibleMethod(Java8Cleaner.class, "clean"));
+                unsafe,
+                java8Deallocator,
+                java8DeallocatorClass.getDeclaredField("cleanerAccessor"),
+                accessibleMethod(Java8CleanerAccessor.class, "cleaner"));
+        setObjectField(
+                unsafe,
+                java8Deallocator,
+                java8DeallocatorClass.getDeclaredField("clean"),
+                accessibleMethod(Java8Cleaner.class, "clean"));
         final DirectBufferDeallocator deallocator =
                 (DirectBufferDeallocator) unsafe.allocateInstance(DirectBufferDeallocator.class);
-        setObjectField(unsafe, deallocator, "deallocator", java8Deallocator);
+        setObjectField(
+                unsafe,
+                deallocator,
+                DirectBufferDeallocator.class.getDeclaredField("deallocator"),
+                java8Deallocator);
         final ByteBuffer directBuffer = ByteBuffer.allocateDirect(Byte.BYTES);
 
         deallocator.deallocate(directBuffer);
@@ -36,13 +48,9 @@ public class DirectBufferDeallocatorInnerJava8DeallocatorTest {
         assertThat(Java8DeallocatorState.cleaned()).isTrue();
     }
 
-    private static Class<?> java8DeallocatorClass() {
-        for (Class<?> nestedClass : DirectBufferDeallocator.class.getDeclaredClasses()) {
-            if ("Java8Deallocator".equals(nestedClass.getSimpleName())) {
-                return nestedClass;
-            }
-        }
-        throw new AssertionError("Java8Deallocator nested class not found");
+    private static Class<?> java8DeallocatorClass() throws ClassNotFoundException {
+        return Class.forName(
+                "com.mongodb.internal.connection.tlschannel.util.DirectBufferDeallocator$Java8Deallocator");
     }
 
     private static Unsafe unsafe() throws ReflectiveOperationException {
@@ -59,9 +67,7 @@ public class DirectBufferDeallocatorInnerJava8DeallocatorTest {
     }
 
     private static void setObjectField(
-            final Unsafe unsafe, final Object target, final String fieldName, final Object value)
-            throws ReflectiveOperationException {
-        final Field field = target.getClass().getDeclaredField(fieldName);
+            final Unsafe unsafe, final Object target, final Field field, final Object value) {
         unsafe.putObject(target, unsafe.objectFieldOffset(field), value);
     }
 }
