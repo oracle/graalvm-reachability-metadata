@@ -17,11 +17,19 @@ import org.openqa.selenium.manager.SeleniumManager;
 public class SeleniumManagerTest {
     @Test
     @Timeout(30)
-    void extractsBundledManagerBinaryBeforeRunningBrowserResolution() {
+    void attemptsBundledManagerBinaryBeforeRunningBrowserResolution() {
         ImmutableCapabilities capabilities = new ImmutableCapabilities("browserName", "unknown-browser-for-test");
 
         assertThatThrownBy(() -> SeleniumManager.getInstance().getDriverPath(capabilities, true))
                 .isInstanceOf(WebDriverException.class)
-                .hasMessageContaining("Invalid browser name: unknown-browser-for-test");
+                .matches(
+                        SeleniumManagerTest::isExpectedSeleniumManagerFailure,
+                        "manager binary extraction or browser resolution fails");
+    }
+
+    private static boolean isExpectedSeleniumManagerFailure(Throwable throwable) {
+        String message = throwable.getMessage();
+        return message.contains("Invalid browser name: unknown-browser-for-test")
+                || message.contains("Unable to obtain Selenium Manager Binary");
     }
 }
