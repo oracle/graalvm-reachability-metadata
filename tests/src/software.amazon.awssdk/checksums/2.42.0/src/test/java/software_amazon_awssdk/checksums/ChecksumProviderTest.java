@@ -19,10 +19,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import software.amazon.awssdk.checksums.DefaultChecksumAlgorithm;
 import software.amazon.awssdk.checksums.SdkChecksum;
-import software.amazon.awssdk.checksums.internal.CrcChecksumProvider;
+import software.amazon.awssdk.checksums.internal.ChecksumProvider;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class CrcChecksumProviderTest {
+public class ChecksumProviderTest {
     private static final byte[] PAYLOAD =
         "The quick brown fox jumps over the lazy dog".getBytes(StandardCharsets.UTF_8);
     private static final byte[] EXTRA_PAYLOAD = " on native image".getBytes(StandardCharsets.UTF_8);
@@ -31,7 +31,7 @@ public class CrcChecksumProviderTest {
     @Test
     @Order(1)
     void crc32cImplementationUsesJavaCrc32cConstructor() {
-        SdkChecksum checksum = CrcChecksumProvider.crc32cImplementation();
+        SdkChecksum checksum = ChecksumProvider.crc32cImplementation();
         CRC32C expected = new CRC32C();
 
         checksum.update(PAYLOAD);
@@ -64,9 +64,9 @@ public class CrcChecksumProviderTest {
     @Test
     @Order(3)
     void packagePrivateCrtCrc32cFactoryUsesCrtConstructor() throws Throwable {
-        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(CrcChecksumProvider.class, MethodHandles.lookup());
+        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(ChecksumProvider.class, MethodHandles.lookup());
         MethodHandle createCrtCrc32C = lookup.findStatic(
-            CrcChecksumProvider.class,
+            ChecksumProvider.class,
             "createCrtCrc32C",
             MethodType.methodType(SdkChecksum.class));
 
