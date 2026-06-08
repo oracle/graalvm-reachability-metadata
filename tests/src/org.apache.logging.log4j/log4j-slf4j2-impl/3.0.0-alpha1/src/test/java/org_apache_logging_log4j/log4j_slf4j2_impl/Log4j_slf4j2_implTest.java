@@ -15,8 +15,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.slf4j.SLF4JServiceProvider;
-import org.apache.logging.slf4j.message.ThrowableConsumingMessageFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.ILoggerFactory;
@@ -225,8 +226,8 @@ public class Log4j_slf4j2_implTest {
     }
 
     @Test
-    void throwableConsumingMessageFactoryPreservesSlf4jThrowableSemantics() {
-        ThrowableConsumingMessageFactory messageFactory = new ThrowableConsumingMessageFactory();
+    void parameterizedMessageFactoryPreservesSlf4jThrowableSemantics() {
+        MessageFactory messageFactory = new ParameterizedMessageFactory();
         Throwable failure = new IllegalArgumentException("expected factory exception");
 
         Message simpleMessage = messageFactory.newMessage("plain message");
