@@ -22,6 +22,7 @@ import java.util.concurrent.Callable;
 
 import javax.xml.bind.Binder;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.SchemaOutputResolver;
@@ -30,9 +31,13 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementDecl;
+import javax.xml.bind.annotation.XmlElementRef;
+import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
@@ -242,6 +247,40 @@ public class Jaxb_implTest {
         assertThat(book.getTextContent()).isEqualTo("Second Edition");
     }
 
+    @Test
+    void elementReferencesRoundTripTypedJaxbElements() throws JAXBException {
+        JAXBContext context = JAXBContext.newInstance(Message.class, TextPart.class, AttachmentPart.class,
+                MessageElements.class);
+        MessageElements elements = new MessageElements();
+        Message message = new Message();
+        message.parts.add(elements.createText(new TextPart("Hello JAXB")));
+        message.parts.add(elements.createAttachment(new AttachmentPart("cid:logo", "logo.png")));
+
+        String xml = marshal(context, message);
+
+        assertThat(xml)
+                .contains("<message>")
+                .contains("<text>")
+                .contains("<body>Hello JAXB</body>")
+                .contains("<attachment contentId=\"cid:logo\">")
+                .contains("<fileName>logo.png</fileName>");
+
+        Message unmarshalled = (Message) context.createUnmarshaller().unmarshal(new StringReader(xml));
+
+        assertThat(unmarshalled.parts).hasSize(2);
+        JAXBElement<? extends MessagePart> textElement = unmarshalled.parts.get(0);
+        assertThat(textElement.getName()).isEqualTo(MessageElements.TEXT_QNAME);
+        assertThat(textElement.getValue()).isInstanceOf(TextPart.class);
+        assertThat(((TextPart) textElement.getValue()).body).isEqualTo("Hello JAXB");
+
+        JAXBElement<? extends MessagePart> attachmentElement = unmarshalled.parts.get(1);
+        assertThat(attachmentElement.getName()).isEqualTo(MessageElements.ATTACHMENT_QNAME);
+        assertThat(attachmentElement.getValue()).isInstanceOf(AttachmentPart.class);
+        AttachmentPart attachment = (AttachmentPart) attachmentElement.getValue();
+        assertThat(attachment.contentId).isEqualTo("cid:logo");
+        assertThat(attachment.fileName).isEqualTo("logo.png");
+    }
+
     private static String marshal(JAXBContext context, Object value) throws JAXBException {
         StringWriter writer = new StringWriter();
         context.createMarshaller().marshal(value, writer);
@@ -355,6 +394,76 @@ public class Jaxb_implTest {
         @Override
         public String marshal(LocalDate value) {
             return value.toString();
+        }
+    }
+
+    @XmlRootElement(name = "message")
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class Message {
+        @XmlElementRefs({
+                @XmlElementRef(name = "text", type = JAXBElement.class),
+                @XmlElementRef(name = "attachment", type = JAXBElement.class)
+        })
+        private List<JAXBElement<? extends MessagePart>> parts = new ArrayList<>();
+
+        public Message() {
+        }
+    }
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public abstract static class MessagePart {
+        public MessagePart() {
+        }
+    }
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "textPart", propOrder = { "body" })
+    public static class TextPart extends MessagePart {
+        @XmlElement
+        private String body;
+
+        public TextPart() {
+        }
+
+        TextPart(String body) {
+            this.body = body;
+        }
+    }
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "attachmentPart", propOrder = { "fileName" })
+    public static class AttachmentPart extends MessagePart {
+        @XmlAttribute
+        private String contentId;
+
+        @XmlElement
+        private String fileName;
+
+        public AttachmentPart() {
+        }
+
+        AttachmentPart(String contentId, String fileName) {
+            this.contentId = contentId;
+            this.fileName = fileName;
+        }
+    }
+
+    @XmlRegistry
+    public static class MessageElements {
+        private static final QName TEXT_QNAME = new QName("", "text");
+        private static final QName ATTACHMENT_QNAME = new QName("", "attachment");
+
+        public MessageElements() {
+        }
+
+        @XmlElementDecl(name = "text")
+        public JAXBElement<TextPart> createText(TextPart value) {
+            return new JAXBElement<>(TEXT_QNAME, TextPart.class, null, value);
+        }
+
+        @XmlElementDecl(name = "attachment")
+        public JAXBElement<AttachmentPart> createAttachment(AttachmentPart value) {
+            return new JAXBElement<>(ATTACHMENT_QNAME, AttachmentPart.class, null, value);
         }
     }
 
