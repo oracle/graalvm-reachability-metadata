@@ -89,7 +89,8 @@ public class ClassHelperTest {
                 new HashMap<Class<?>, IClass>(),
                 xmlTest("inner-instance"),
                 new EmptyAnnotationFinder(),
-                new DelegatingObjectFactory());
+                new DelegatingObjectFactory(),
+                true);
 
         assertThat(instance).isInstanceOf(InnerTestClass.class);
     }
@@ -104,7 +105,8 @@ public class ClassHelperTest {
                 classes,
                 xmlTest("missing-enclosing-instance"),
                 new EmptyAnnotationFinder(),
-                new SelfSupplyingObjectFactory());
+                new SelfSupplyingObjectFactory(),
+                true);
 
         assertThat(instance).isInstanceOf(PackageEnclosingClass.InnerTestTarget.class);
     }
@@ -116,7 +118,8 @@ public class ClassHelperTest {
                 new HashMap<Class<?>, IClass>(),
                 xmlTest("string-constructor-name"),
                 new EmptyAnnotationFinder(),
-                new DelegatingObjectFactory());
+                new DelegatingObjectFactory(),
+                true);
 
         assertThat(instance).isInstanceOf(StringConstructorTestClass.class);
         assertThat(((StringConstructorTestClass) instance).name).isEqualTo("string-constructor-name");
@@ -237,12 +240,6 @@ public class ClassHelperTest {
         }
 
         @Override
-        @Deprecated
-        public int getInstanceCount() {
-            return instances.size();
-        }
-
-        @Override
         public long[] getInstanceHashCodes() {
             return new long[0];
         }
@@ -261,6 +258,14 @@ public class ClassHelperTest {
 
         @Override
         public <A extends IAnnotation> A findAnnotation(Method method, Class<A> annotationClass) {
+            return null;
+        }
+
+        @Override
+        public <A extends IAnnotation> A findAnnotation(
+                Class<?> clazz,
+                Method method,
+                Class<A> annotationClass) {
             return null;
         }
 

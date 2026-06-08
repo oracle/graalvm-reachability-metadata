@@ -20,11 +20,11 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.testng.TestNG;
 import org.testng.internal.PackageUtils;
 
 public class PackageUtilsTest {
     private static final String PACKAGE_NAME = "org_testng.packageutilsfixture";
+    private static final String TEST_CLASSPATH_PROPERTY = "testng.test.classpath";
     private static final String PACKAGE_RESOURCE = "org_testng/packageutilsfixture/";
 
     @TempDir
@@ -32,7 +32,7 @@ public class PackageUtilsTest {
 
     @Test
     void findsClassesExposedByBundleResourceClassLoader() throws IOException {
-        String originalTestClasspath = System.getProperty(TestNG.TEST_CLASSPATH);
+        String originalTestClasspath = System.getProperty(TEST_CLASSPATH_PROPERTY);
         Path packageDirectory = Files.createDirectories(temporaryDirectory.resolve(PACKAGE_RESOURCE));
         Files.write(packageDirectory.resolve("BundleDiscoveredTest.class"), new byte[] {0});
         URL fileUrl = packageDirectory.toUri().toURL();
@@ -43,13 +43,13 @@ public class PackageUtilsTest {
         PackageUtils.addClassLoader(new BundleResourceClassLoader(PACKAGE_RESOURCE, bundleResourceUrl));
 
         try {
-            System.clearProperty(TestNG.TEST_CLASSPATH);
+            System.clearProperty(TEST_CLASSPATH_PROPERTY);
 
             String[] classes = PackageUtils.findClassesInPackage(PACKAGE_NAME, List.of(), List.of());
 
             assertThat(classes).containsExactly(PACKAGE_NAME + ".BundleDiscoveredTest");
         } finally {
-            restoreProperty(TestNG.TEST_CLASSPATH, originalTestClasspath);
+            restoreProperty(TEST_CLASSPATH_PROPERTY, originalTestClasspath);
         }
     }
 

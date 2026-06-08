@@ -14,7 +14,7 @@ import org.testng.internal.TestResult;
 public class TestResultTest {
     @Test
     void clonesCloneableParametersUsingDeclaredCloneMethod() {
-        TestResult result = new TestResult();
+        TestResult result = TestResult.newEmptyTestResult();
         CloneableParameter parameter = new CloneableParameter("original");
 
         result.setParameters(new Object[] {parameter});

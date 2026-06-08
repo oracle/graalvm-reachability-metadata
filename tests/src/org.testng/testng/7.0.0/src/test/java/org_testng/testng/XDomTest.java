@@ -18,6 +18,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.junit.jupiter.api.Test;
 import org.testng.xml.dom.ITagFactory;
+import org.testng.xml.dom.OnElement;
 import org.testng.xml.dom.ParentSetter;
 import org.testng.xml.dom.TagContent;
 import org.testng.xml.dom.XDom;
@@ -31,15 +32,31 @@ public class XDomTest {
                 <constructor-child/><default-child>body text</default-child></root>
                 """;
         Document document = parse(xml);
+        ParentSetterChild.parent = null;
+        ConstructorChild.parent = null;
+        DefaultChild.text = null;
 
         RootElement root = (RootElement) new XDom(new TestTagFactory(), document).parse();
 
         assertThat(root.booleanAttribute).isTrue();
         assertThat(root.intAttribute).isEqualTo(42);
         assertThat(root.stringAttribute).isEqualTo("alpha");
-        assertThat(root.parentSetterChild.parent).isSameAs(root);
-        assertThat(root.constructorChild.parent).isSameAs(root);
-        assertThat(root.defaultChild.text).isEqualTo("body text");
+        assertThat(ParentSetterChild.parent).isSameAs(root);
+        assertThat(ConstructorChild.parent).isSameAs(root);
+        assertThat(DefaultChild.text).isEqualTo("body text");
+    }
+
+    @Test
+    void invokesAnnotatedSetterForChildWithoutRegisteredTagClass() throws Exception {
+        String xml = """
+                <root><unmapped-child name="timeout" value="60"/></root>
+                """;
+        Document document = parse(xml);
+
+        RootElement root = (RootElement) new XDom(new TestTagFactory(), document).parse();
+
+        assertThat(root.unmappedChildName).isEqualTo("timeout");
+        assertThat(root.unmappedChildValue).isEqualTo("60");
     }
 
     private static Document parse(String xml) throws Exception {
@@ -72,6 +89,8 @@ public class XDomTest {
         private ParentSetterChild parentSetterChild;
         private ConstructorChild constructorChild;
         private DefaultChild defaultChild;
+        private String unmappedChildName;
+        private String unmappedChildValue;
 
         public RootElement() {
         }
@@ -99,37 +118,43 @@ public class XDomTest {
         public void addDefaultChild(DefaultChild defaultChild) {
             this.defaultChild = defaultChild;
         }
+
+        @OnElement(tag = "unmapped-child", attributes = {"name", "value"})
+        public void onUnmappedChild(String name, String value) {
+            this.unmappedChildName = name;
+            this.unmappedChildValue = value;
+        }
     }
 
     public static final class ParentSetterChild {
-        private RootElement parent;
+        private static RootElement parent;
 
         public ParentSetterChild() {
         }
 
         @ParentSetter
         public void setParent(RootElement parent) {
-            this.parent = parent;
+            ParentSetterChild.parent = parent;
         }
     }
 
     public static final class ConstructorChild {
-        private final RootElement parent;
+        private static RootElement parent;
 
         public ConstructorChild(RootElement parent) {
-            this.parent = parent;
+            ConstructorChild.parent = parent;
         }
     }
 
     public static final class DefaultChild {
-        private String text;
+        private static String text;
 
         public DefaultChild() {
         }
 
         @TagContent(name = "default-child")
         public void setText(String text) {
-            this.text = text;
+            DefaultChild.text = text;
         }
     }
 }
