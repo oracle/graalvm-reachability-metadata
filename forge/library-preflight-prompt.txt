@@ -1,0 +1,39 @@
+You are preparing a Forge workflow for a library issue. Decide whether the library needs additional setup beyond the normal workflow scaffold.
+
+Use only the bounded JSON context below. Do not edit files, run commands, or request network setup. Local Gradle and Native Image verification remain authoritative.
+
+Split any needed setup into two kinds. `deterministic_setup` is a typed list of one-time, idempotent edits the driver applies for you; supported kinds:
+  - {"kind": "dependency", "coordinate": "group:artifact:version", "scope": "testImplementation", "reason": "..."}
+  - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}
+`agent_guidance` is concise reasoning the workflow agent must apply inside the generated test code (for example, exercise a driver against a stood-up service, or set a system property before a factory lookup). Do not restate deterministic edits as guidance.
+
+Return a single JSON object with this shape:
+{
+  "action": "no_action" | "advisory_preparation",
+  "summary": "short reason",
+  "deterministic_setup": [ ... typed entries as above, if any ... ],
+  "agent_guidance": "concise guidance for the workflow agent, if any",
+  "risks": ["risk notes, if any"]
+}
+
+Choose no_action unless the context gives concrete evidence that extra setup is needed.
+
+Context:
+{
+  "issue": {
+    "number": 2653,
+    "title": "Support for org.apache.poi:poi-ooxml:4.1.2",
+    "label": "library-new-request",
+    "body": "### Full Maven coordinates\n\norg.apache.poi:poi-ooxml:4.1.2\n\n_This issue was created by automation._",
+    "body_error": ""
+  },
+  "library": "org.apache.poi:poi-ooxml:4.1.2",
+  "current_library": null,
+  "new_version": null,
+  "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+  "source_context_types": [
+    "main"
+  ],
+  "documentation": [],
+  "existing_tests": {}
+}
