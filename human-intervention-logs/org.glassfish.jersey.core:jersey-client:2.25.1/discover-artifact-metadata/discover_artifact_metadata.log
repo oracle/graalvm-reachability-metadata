@@ -1,0 +1,1439 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ea86c-9c09-7be0-8bbe-1acd2ab5225d
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.glassfish.jersey.core:jersey-client:2.25.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "2.25.1" when "$version$" is replaced with "2.25.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "org.glassfish.jersey.core:jersey-client:2.25.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.25.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream Jersey sources, then update the requested JSON directly with the discovered URLs and description.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+ succeeded in 0ms:
+{
+  "coordinates" : "org.glassfish.jersey.core:jersey-client:2.25.1"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata metadata tests | head -80' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+tests/tck-test-support/build.gradle
+tests/tck-test-support/settings.gradle
+build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json
+tests/tck-build-logic/build.gradle
+tests/tck-build-logic/settings.gradle
+tests/tck-test-support/src/main/java/org/graalvm/internal/tck/NativeImageSupport.java
+tests/tck-build-logic/src/main/resources/scaffold/Test.scala.template
+tests/tck-build-logic/src/main/resources/scaffold/user-code-filter.json.template
+tests/tck-build-logic/src/main/resources/scaffold/build.gradle.template
+tests/tck-build-logic/src/main/resources/scaffold/Test.groovy.template
+tests/tck-build-logic/src/main/resources/scaffold/reachability-metadata.json.template
+tests/tck-build-logic/src/main/resources/scaffold/build.gradle.groovy.template
+tests/tck-build-logic/src/main/resources/scaffold/gradle.properties.template
+tests/tck-build-logic/src/main/resources/scaffold/Test.kt.template
+tests/tck-build-logic/src/main/resources/scaffold/settings.gradle.template
+tests/tck-build-logic/src/main/resources/scaffold/build.gradle.scala3.template
+tests/tck-build-logic/src/main/resources/scaffold/build.gradle.scala2.template
+tests/tck-build-logic/src/main/resources/scaffold/build.gradle.kotlin.template
+tests/tck-build-logic/src/main/resources/scaffold/Test.java.template
+tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-greenmail_standalone
+tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-opengauss_opengauss
+tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-mssql_server
+tests/tck-test-support/src/test/java/org/graalvm/internal/tck/NativeImageSupportTest.java
+tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-mariadb
+tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-postgres
+tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-nats
+tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-mysql_mysql-server
+tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-eclipse-mosquitto
+tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-nginx
+tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-testcontainers_ryuk
+tests/tck-build-logic/src/main/resources/contributing/agent.template
+tests/tck-build-logic/src/main/resources/contributing/questions.json
+metadata/com.thoughtworks.paranamer/paranamer/2.8.1/reachability-metadata.json
+metadata/com.thoughtworks.paranamer/paranamer/2.3/reachability-metadata.json
+metadata/com.thoughtworks.paranamer/paranamer/index.json
+metadata/com.google.truth/truth/1.1.3/reachability-metadata.json
+metadata/com.google.truth/truth/index.json
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/FixTestNativeImageRun.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/DockerTask.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/JarUtils.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/DynamicAccessUtils.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/FilesUtils.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ColoredOutput.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/NativeImageConfigUtils.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/TestInfraLoggingUtils.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/GeneralUtils.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/InteractiveTaskUtils.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/CoordinateUtils.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ConfigurationStringBuilder.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GenerateMetadataTask.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/CheckDocLinksTask.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/DockerUtils.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/Coordinates.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GrypeTask.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/MetadataFilesCheckerTask.java
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/3.0.2/reachability-metadata.json
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/SkippedVersionEntry.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/LibraryLanguage.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java
+metadata/com.github.ajalt.mordant/mordant-core-jvm/3.0.2/reachability-metadata.json
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/contributing/Question.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java
+metadata/com.github.ajalt.mordant/mordant-jvm/index.json
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/grype/GrypeEntry.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/exceptions/ContributingException.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ScaffoldTask.java
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/3.0.2/reachability-metadata.json
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/harness/tasks/FetchExistingLibrariesWithNewerVersionsTask.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/ContributionTask.java
+metadata/org.glassfish.hk2/hk2-utils/2.5.0-b05/reachability-metadata.json
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/stats/LibraryStatsModels.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/stats/LibraryStatsSchemaValidator.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/stats/ReadmeBadgeSummarySupport.java
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/stats/LibraryStatsSupport.java
+
+exec
+/usr/bin/bash -lc "rg 'source-code-url|test-code-url|documentation-url|repository-url' build/discovered-artifact-metadata metadata -g '*.json' | head -120" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+ succeeded in 0ms:
+metadata/com.typesafe.slick/slick_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-sources.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:    "repository-url" : "https://github.com/slick/slick",
+metadata/com.typesafe.slick/slick_2.13/index.json:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala",
+metadata/com.typesafe.slick/slick_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-sources.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:    "repository-url" : "https://github.com/slick/slick",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala/slick/test/jdbc/hikaricp",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:    "repository-url" : "https://github.com/awaitility/awaitility",
+metadata/org.awaitility/awaitility/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:    "repository-url" : "https://github.com/awaitility/awaitility",
+metadata/org.awaitility/awaitility/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-mustmatchers_3/$version$/scalatest-mustmatchers_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/dotty/scalatest-test/src/test/scala/org/scalatest/matchers/must",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-mustmatchers_3/$version$/scalatest-mustmatchers_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/wordspec-test/src/test/scala/org/scalatest/wordspec",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:    "test-code-url" : "N/A",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/diagrams-test/src/test/scala/org/scalatest/diagrams",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:    "test-code-url" : "N/A",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_3/$version$/scalatest-shouldmatchers_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/dotty/scalatest-test/src/test/scala/org/scalatest/matchers/should",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_3/$version$/scalatest-shouldmatchers_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:    "test-code-url" : "https://github.com/scalatest/scalatest/blob/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest/RefSpecSpec.scala",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:    "test-code-url" : "N/A",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-javadoc.jar",
+metadata/com.twitter/hpack/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/twitter/hpack/$version$/hpack-$version$-sources.jar",
+metadata/com.twitter/hpack/index.json:    "repository-url" : "https://github.com/twitter/hpack",
+metadata/com.twitter/hpack/index.json:    "test-code-url" : "https://github.com/twitter/hpack/tree/hpack-parent-$version$/hpack/src/test",
+metadata/com.twitter/hpack/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/twitter/hpack/$version$/hpack-$version$-javadoc.jar",
+metadata/io.helidon.common.features/helidon-common-features-metadata/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/helidon/common/features/helidon-common-features-metadata/$version$/helidon-common-features-metadata-$version$-sources.jar",
+metadata/io.helidon.common.features/helidon-common-features-metadata/index.json:    "repository-url" : "https://github.com/helidon-io/helidon",
+metadata/io.helidon.common.features/helidon-common-features-metadata/index.json:    "test-code-url" : "N/A",
+metadata/io.helidon.common.features/helidon-common-features-metadata/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/helidon/common/features/helidon-common-features-metadata/$version$/helidon-common-features-metadata-$version$-javadoc.jar",
+metadata/io.gsonfire/gson-fire/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/gsonfire/gson-fire/$version$/gson-fire-$version$-sources.jar",
+metadata/io.gsonfire/gson-fire/index.json:    "repository-url" : "https://github.com/julman99/gson-fire",
+metadata/io.gsonfire/gson-fire/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/io/gsonfire/gson-fire/$version$/gson-fire-$version$-tests.jar",
+metadata/io.gsonfire/gson-fire/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/gsonfire/gson-fire/$version$/gson-fire-$version$-javadoc.jar",
+metadata/com.sun.jersey/jersey-servlet/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-servlet/$version$/jersey-servlet-$version$-sources.jar",
+metadata/com.sun.jersey/jersey-servlet/index.json:    "repository-url" : "https://github.com/javaee/jersey-1.x",
+metadata/com.sun.jersey/jersey-servlet/index.json:    "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/$version$/tests/functional/jersey-servlet3_0-integration",
+metadata/com.sun.jersey/jersey-servlet/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-servlet/$version$/jersey-servlet-$version$-javadoc.jar",
+metadata/com.sun.jersey/jersey-servlet/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-servlet/$version$/jersey-servlet-$version$-sources.jar",
+metadata/com.sun.jersey/jersey-servlet/index.json:    "repository-url" : "https://github.com/javaee/jersey-1.x",
+metadata/com.sun.jersey/jersey-servlet/index.json:    "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/$version$/tests/functional/jersey-servlet3_0-integration",
+metadata/com.sun.jersey/jersey-servlet/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-servlet/$version$/jersey-servlet-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-featurespec_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-featurespec_3/$version$/scalatest-featurespec_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-featurespec_3/index.json:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-featurespec_3/index.json:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/featurespec-test/src/test/scala/org/scalatest/featurespec",
+metadata/org.scalatest/scalatest-featurespec_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-featurespec_3/$version$/scalatest-featurespec_3-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/io.helidon.common.features/helidon-common-features-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/helidon/common/features/helidon-common-features-api/$version$/helidon-common-features-api-$version$-sources.jar",
+metadata/io.helidon.common.features/helidon-common-features-api/index.json:    "repository-url" : "https://github.com/helidon-io/helidon",
+metadata/io.helidon.common.features/helidon-common-features-api/index.json:    "test-code-url" : "N/A",
+metadata/io.helidon.common.features/helidon-common-features-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/helidon/common/features/helidon-common-features-api/$version$/helidon-common-features-api-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+metadata/org.apache.httpcomponents/httpclient/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-sources.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+metadata/org.apache.httpcomponents/httpclient/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-tests.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-javadoc.jar",
+metadata/org.eclipse.collections/eclipse-collections-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/collections/eclipse-collections-api/$version$/eclipse-collections-api-$version$-sources.jar",
+metadata/org.eclipse.collections/eclipse-collections-api/index.json:    "repository-url" : "https://github.com/eclipse/eclipse-collections",
+metadata/org.eclipse.collections/eclipse-collections-api/index.json:    "test-code-url" : "https://github.com/eclipse/eclipse-collections/tree/$version$/unit-tests/src/test/java",
+metadata/org.eclipse.collections/eclipse-collections-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/collections/eclipse-collections-api/$version$/eclipse-collections-api-$version$-javadoc.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:    "repository-url" : "https://github.com/javaee/jaxb-istack-commons",
+metadata/com.sun.istack/istack-commons-runtime/index.json:    "test-code-url" : "https://github.com/javaee/jaxb-istack-commons/tree/$version$-RELEASE/istack-commons/test",
+metadata/com.sun.istack/istack-commons-runtime/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-javadoc.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons",
+metadata/com.sun.istack/istack-commons-runtime/index.json:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/$version$/istack-commons/runtime/src/test",
+metadata/com.sun.istack/istack-commons-runtime/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-jmx/$version$/metrics-jmx-$version$-sources.jar",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:    "repository-url" : "https://github.com/dropwizard/metrics",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:    "test-code-url" : "https://github.com/dropwizard/metrics/tree/v$version$/metrics-jmx/src/test/java",
+metadata/io.dropwizard.metrics/metrics-jmx/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-jmx/$version$/metrics-jmx-$version$-javadoc.jar",
+metadata/org.sangria-graphql/sangria-ast_3/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-ast_3/$version$/sangria-ast_3-$version$-sources.jar",
+metadata/org.sangria-graphql/sangria-ast_3/index.json:    "repository-url" : "https://github.com/sangria-graphql/sangria",
+metadata/org.sangria-graphql/sangria-ast_3/index.json:    "test-code-url" : "N/A",
+metadata/org.sangria-graphql/sangria-ast_3/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-ast_3/$version$/sangria-ast_3-$version$-javadoc.jar",
+
+web search: 
+web search: Maven org.glassfish.jersey.core jersey-client 2.25.1 sources tests javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/glassfish/jersey/core/jersey-client/2.25.1/
+codex
+Maven Central has the release JAR, sources JAR, and javadoc JAR for `2.25.1`, but no `-tests.jar`, so I’m checking the upstream tag layout for the test URL.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/glassfish/jersey/core/jersey-client/2.25.1/jersey-client-2.25.1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+    Copyright (c) 2011-2017 Oracle and/or its affiliates. All rights reserved.
+
+    The contents of this file are subject to the terms of either the GNU
+    General Public License Version 2 only ("GPL") or the Common Development
+    and Distribution License("CDDL") (collectively, the "License").  You
+    may not use this file except in compliance with the License.  You can
+    obtain a copy of the License at
+    http://glassfish.java.net/public/CDDL+GPL_1_1.html
+    or packager/legal/LICENSE.txt.  See the License for the specific
+    language governing permissions and limitations under the License.
+
+    When distributing the software, include this License Header Notice in each
+    file and include the License file at packager/legal/LICENSE.txt.
+
+    GPL Classpath Exception:
+    Oracle designates this particular file as subject to the "Classpath"
+    exception as provided by Oracle in the GPL Version 2 section of the License
+    file that accompanied this code.
+
+    Modifications:
+    If applicable, add the following below the License Header, with the fields
+    enclosed by brackets [] replaced by your own identifying information:
+    "Portions Copyright [year] [name of copyright owner]"
+
+    Contributor(s):
+    If you wish your version of this file to be governed by only the CDDL or
+    only the GPL Version 2, indicate your decision by adding "[Contributor]
+    elects to include this software in this distribution under the [CDDL or GPL
+    Version 2] license."  If you don't indicate a single choice of license, a
+    recipient has the option to distribute your version of this file under
+    either the CDDL, the GPL Version 2 or to extend the choice of license to
+    its licensees as provided above.  However, if you add GPL Version 2 code
+    and therefore, elected the GPL Version 2 license, then the option applies
+    only if the new code is made subject to such option by the copyright
+    holder.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.glassfish.jersey</groupId>
+        <artifactId>project</artifactId>
+        <version>2.25.1</version>
+    </parent>
+
+    <groupId>org.glassfish.jersey.core</groupId>
+    <artifactId>jersey-client</artifactId>
+    <packaging>jar</packaging>
+    <name>jersey-core-client</name>
+
+    <description>Jersey core client implementation</description>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.sun.istack</groupId>
+                <artifactId>maven-istack-commons-plugin</artifactId>
+                <inherited>true</inherited>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <inherited>true</inherited>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <inherited>false</inherited>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <compilerArguments>
+                        <!-- Do not warn about using sun.misc.Unsafe -->
+                        <XDignore.symbol.file />
+                    </compilerArguments>
+                    <showWarnings>false</showWarnings>
+                    <fork>false</fork>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!-- Execute test classes in parallel - 1 thread per CPU core. -->
+                    <parallel>classesAndMethods</parallel>
+                    <perCoreThreadCount>true</perCoreThreadCount>
+                    <threadCount>1</threadCount>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <inherited>true</inherited>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>hk2-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.hk2.external</groupId>
+            <artifactId>javax.inject</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>hk2-locator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <properties>
+        <java.version>1.6</java.version>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>sonar</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <!-- disable 'reuseForks' because 'AutoDiscoverableClientTest.testAutoDiscoverableClosing' test fails if executed together with JaCoCo agent with other tests in a single JVM -->
+                            <reuseForks>false</reuseForks>
+
+                            <!-- disable JaCoCo listener because with switched 'reuseForks' to 'false' (due to
+                            https://jira.sonarsource.com/browse/SONARJAVA-728 (https://github.com/SonarSource/sonar-java/pull/324) -->
+                            <properties combine.self="override" />
+
+                            <!-- parallel execution doesn't need to be disabled since JaCoCo listener is disabled -->
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/glassfish/jersey/core/jersey-client/2.25.1/ | rg 'tests|sources|javadoc|\\.jar'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+ succeeded in 0ms:
+<a href="jersey-client-2.25.1-javadoc.jar" title="jersey-client-2.25.1-javadoc.jar">jersey-client-2.25.1-javadoc.jar</a>                  2017-01-19 17:21    270523      
+<a href="jersey-client-2.25.1-javadoc.jar.asc" title="jersey-client-2.25.1-javadoc.jar.asc">jersey-client-2.25.1-javadoc.jar.asc</a>              2017-01-19 17:21       473      
+<a href="jersey-client-2.25.1-javadoc.jar.asc.md5" title="jersey-client-2.25.1-javadoc.jar.asc.md5">jersey-client-2.25.1-javadoc.jar.asc.md5</a>          2017-01-19 17:21        32      
+<a href="jersey-client-2.25.1-javadoc.jar.asc.sha1" title="jersey-client-2.25.1-javadoc.jar.asc.sha1">jersey-client-2.25.1-javadoc.jar.asc.sha1</a>         2017-01-19 17:21        40      
+<a href="jersey-client-2.25.1-javadoc.jar.md5" title="jersey-client-2.25.1-javadoc.jar.md5">jersey-client-2.25.1-javadoc.jar.md5</a>              2017-01-19 17:21        32      
+<a href="jersey-client-2.25.1-javadoc.jar.sha1" title="jersey-client-2.25.1-javadoc.jar.sha1">jersey-client-2.25.1-javadoc.jar.sha1</a>             2017-01-19 17:21        40      
+<a href="jersey-client-2.25.1-sources.jar" title="jersey-client-2.25.1-sources.jar">jersey-client-2.25.1-sources.jar</a>                  2017-01-19 17:21    128977      
+<a href="jersey-client-2.25.1-sources.jar.asc" title="jersey-client-2.25.1-sources.jar.asc">jersey-client-2.25.1-sources.jar.asc</a>              2017-01-19 17:21       473      
+<a href="jersey-client-2.25.1-sources.jar.asc.md5" title="jersey-client-2.25.1-sources.jar.asc.md5">jersey-client-2.25.1-sources.jar.asc.md5</a>          2017-01-19 17:21        32      
+<a href="jersey-client-2.25.1-sources.jar.asc.sha1" title="jersey-client-2.25.1-sources.jar.asc.sha1">jersey-client-2.25.1-sources.jar.asc.sha1</a>         2017-01-19 17:21        40      
+<a href="jersey-client-2.25.1-sources.jar.md5" title="jersey-client-2.25.1-sources.jar.md5">jersey-client-2.25.1-sources.jar.md5</a>              2017-01-19 17:21        32      
+<a href="jersey-client-2.25.1-sources.jar.sha1" title="jersey-client-2.25.1-sources.jar.sha1">jersey-client-2.25.1-sources.jar.sha1</a>             2017-01-19 17:21        40      
+<a href="jersey-client-2.25.1.jar" title="jersey-client-2.25.1.jar">jersey-client-2.25.1.jar</a>                          2017-01-19 17:21    168997      
+<a href="jersey-client-2.25.1.jar.asc" title="jersey-client-2.25.1.jar.asc">jersey-client-2.25.1.jar.asc</a>                      2017-01-19 17:21       473      
+<a href="jersey-client-2.25.1.jar.asc.md5" title="jersey-client-2.25.1.jar.asc.md5">jersey-client-2.25.1.jar.asc.md5</a>                  2017-01-19 17:21        32      
+<a href="jersey-client-2.25.1.jar.asc.sha1" title="jersey-client-2.25.1.jar.asc.sha1">jersey-client-2.25.1.jar.asc.sha1</a>                 2017-01-19 17:21        40      
+<a href="jersey-client-2.25.1.jar.md5" title="jersey-client-2.25.1.jar.md5">jersey-client-2.25.1.jar.md5</a>                      2017-01-19 17:21        32      
+<a href="jersey-client-2.25.1.jar.sha1" title="jersey-client-2.25.1.jar.sha1">jersey-client-2.25.1.jar.sha1</a>                     2017-01-19 17:21        40      
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/eclipse-ee4j/jersey.git '*2.25.1*'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/jersey/jersey.git '*2.25.1*'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+ succeeded in 287ms:
+ succeeded in 434ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/glassfish/jersey/bundles/project/2.25.1/project-2.25.1.pom | rg -n '<url>|<connection>|<developerConnection>|<tag>|<scm>|<description>|<name>' -C 2 || true" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+ succeeded in 0ms:
+54-    <artifactId>project</artifactId>
+55-    <packaging>pom</packaging>
+56:    <name>jersey-bundles</name>
+57-
+58:    <description>Jersey bundles providers umbrella project module.</description>
+59-
+60-    <modules>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/glassfish/jersey/project/2.25.1/project-2.25.1.pom | rg -n '<url>|<connection>|<developerConnection>|<tag>|<scm>|<description>|<name>' -C 2" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+ succeeded in 0ms:
+54-    <packaging>pom</packaging>
+55-    <version>2.25.1</version>
+56:    <name>jersey</name>
+57:    <description>
+58-        Jersey is the open source (under dual CDDL+GPL license) JAX-RS 2.0 (JSR 339)
+59-        production quality Reference Implementation for building RESTful Web services.
+60-    </description>
+61-
+62:    <url>https://jersey.java.net/</url>
+63-
+64-    <!-- prerequisites -->
+--
+66-    <issueManagement>
+67-        <system>JIRA</system>
+68:        <url>http://java.net/jira/browse/JERSEY/</url>
+69-    </issueManagement>
+70-
+71-    <ciManagement>
+72-        <system>Hudson</system>
+73:        <url>http://hudson.glassfish.org/job/Jersey-trunk-multiplatform/</url>
+74-    </ciManagement>
+75-
+--
+78-    <mailingLists>
+79-        <mailingList>
+80:            <name>Announcements</name>
+81-            <archive>http://java.net/projects/jersey/lists/announce/archive</archive>
+82-            <post>announce@jersey.java.net</post>
+83-        </mailingList>
+84-        <mailingList>
+85:            <name>Users List</name>
+86-            <archive>http://java.net/projects/jersey/lists/users/archive</archive>
+87-            <post>users@jersey.java.net</post>
+88-        </mailingList>
+89-        <mailingList>
+90:            <name>Developers List</name>
+91-            <archive>http://java.net/projects/jersey/lists/dev/archive</archive>
+92-            <post>dev@jersey.java.net</post>
+93-        </mailingList>
+94-        <mailingList>
+95:            <name>Issues</name>
+96-            <archive>http://java.net/projects/jersey/lists/issues/archive</archive>
+97-            <post>issues@jersey.java.net</post>
+98-        </mailingList>
+99-        <mailingList>
+100:            <name>Commits</name>
+101-            <archive>http://java.net/projects/jersey/lists/commits/archive</archive>
+102-            <post>commits@jersey.java.net</post>
+--
+106-    <developers>
+107-        <developer>
+108:            <name>Pavel Bucek</name>
+109-            <organization>Oracle Corporation</organization>
+110-            <organizationUrl>http://www.oracle.com/</organizationUrl>
+111:            <url>https://blogs.oracle.com/PavelBucek</url>
+112-        </developer>
+113-        <developer>
+114:            <name>Jakub Podlesak</name>
+115-            <organization>Oracle Corporation</organization>
+116-            <organizationUrl>http://www.oracle.com/</organizationUrl>
+117-        </developer>
+118-        <developer>
+119:            <name>Santiago Pericas-Geertsen</name>
+120-            <organization>Oracle Corporation</organization>
+121-            <organizationUrl>http://www.oracle.com/</organizationUrl>
+122-        </developer>
+123-        <developer>
+124:            <name>Marek Potociar</name>
+125-            <organization>Oracle Corporation</organization>
+126-            <organizationUrl>http://www.oracle.com/</organizationUrl>
+127-        </developer>
+128-        <developer>
+129:            <name>Libor Kramolis</name>
+130-            <organization>Oracle Corporation</organization>
+131-            <organizationUrl>http://www.oracle.com</organizationUrl>
+132-        </developer>
+133-        <developer>
+134:            <name>Adam Lindenthal</name>
+135-            <organization>Oracle Corporation</organization>
+136-            <organizationUrl>http://www.oracle.com</organizationUrl>
+137-        </developer>
+138-        <developer>
+139:            <name>Stepan Vavra</name>
+140-            <organization>Oracle Corporation</organization>
+141-            <organizationUrl>http://www.oracle.com</organizationUrl>
+142-        </developer>
+143-        <developer>
+144:            <name>Petr Bouda</name>
+145-            <organization>Oracle Corporation</organization>
+146-            <organizationUrl>http://www.oracle.com</organizationUrl>
+147-        </developer>
+148-        <developer>
+149:            <name>Petr Janouch</name>
+150-            <organization>Oracle Corporation</organization>
+151-            <organizationUrl>http://www.oracle.com</organizationUrl>
+--
+155-    <contributors>
+156-        <contributor>
+157:            <name>Michal Gajdos</name>
+158-        </contributor>
+159-    </contributors>
+--
+161-    <licenses>
+162-        <license>
+163:            <name>CDDL+GPL License</name>
+164:            <url>http://glassfish.java.net/public/CDDL+GPL_1_1.html</url>
+165-            <distribution>repo</distribution>
+166-        </license>
+167-    </licenses>
+168-
+169:    <scm>
+170:        <connection>scm:git:git://java.net/jersey~code</connection>
+171:        <developerConnection>scm:git:ssh://git.java.net/jersey~code</developerConnection>
+172:        <url>http://java.net/projects/jersey/sources/code/show</url>
+173:        <tag>2.25.1</tag>
+174-    </scm>
+175-
+176-    <organization>
+177:        <name>Oracle Corporation</name>
+178:        <url>http://www.oracle.com/</url>
+179-    </organization>
+180-
+--
+541-                        <excludeFile>etc/config/copyright-exclude</excludeFile>
+542-                        <!--svn|mercurial|git - defaults to svn-->
+543:                        <scm>git</scm>
+544-                        <!-- turn on/off debugging -->
+545-                        <debug>false</debug>
+--
+709-                (and also maven-failsafe-plugin) skip tests execution -->
+710-                <property>
+711:                    <name>skipTests</name>
+712-                    <value>true</value>
+713-                </property>
+--
+741-                <activeByDefault>false</activeByDefault>
+742-                <property>
+743:                  <name>!tests.excluded</name>
+744-                </property>
+745-            </activation>
+--
+753-                <activeByDefault>false</activeByDefault>
+754-                <property>
+755:                    <name>!examples.excluded</name>
+756-                </property>
+757-            </activation>
+--
+765-                <activeByDefault>false</activeByDefault>
+766-                <property>
+767:                    <name>!bundles.excluded</name>
+768-                </property>
+769-            </activation>
+--
+777-                <activeByDefault>false</activeByDefault>
+778-                <property>
+779:                    <name>!test-framework.excluded</name>
+780-                </property>
+781-            </activation>
+--
+847-            <activation>
+848-                <property>
+849:                    <name>xdk</name>
+850-                </property>
+851-            </activation>
+--
+899-            <activation>
+900-                <property>
+901:                    <name>moxy</name>
+902-                </property>
+903-            </activation>
+--
+912-                <repository>
+913-                    <id>eclipselink.repository</id>
+914:                    <name>Eclipse Maven Repository</name>
+915:                    <url>http://www.eclipse.org/downloads/download.php?r=1&amp;nf=1&amp;file=/rt/eclipselink/maven.repo</url>
+916-                    <layout>default</layout>
+917-                </repository>
+--
+949-                <site>
+950-                    <id>localhost</id>
+951:                    <url>http://localhost</url>
+952-                </site>
+953-            </distributionManagement>
+--
+1023-                <jdk>1.8</jdk>
+1024-                <property>
+1025:                    <name>!examples.excluded</name>
+1026-                </property>
+1027-            </activation>
+--
+1173-                                <properties>
+1174-                                    <property>
+1175:                                        <name>listener</name>
+1176-                                        <value>org.sonar.java.jacoco.JUnitListener</value>
+1177-                                    </property>
+--
+1186-                                <properties>
+1187-                                    <property>
+1188:                                        <name>listener</name>
+1189-                                        <value>org.sonar.java.jacoco.JUnitListener</value>
+1190-                                    </property>
+
+exec
+/usr/bin/bash -lc 'git ls-remote --tags https://github.com/eclipse-ee4j/jersey.git | tail -80' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+exec
+/usr/bin/bash -lc 'git ls-remote --tags https://github.com/javaee/jersey.git | tail -40' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+ succeeded in 298ms:
+646c4453b9b25a7a61d74dbe4a9ba230126e5d87	refs/tags/2.26-b01^{}
+75b28b3f48d9f922f61268aac4b3bb4b132676ec	refs/tags/2.26-b02
+e7f1e6474ea7ff41ce3b0951d8fe48d5e9433e5f	refs/tags/2.26-b02^{}
+a25c5b7c66164238c940dc0b804ae01682767f4f	refs/tags/2.26-b03
+75116d04a7795ec45a0049f33de6f37f273975be	refs/tags/2.26-b03^{}
+7ed2e0aea7fe16c86786f66cf62f3926a9a629a1	refs/tags/2.26-b04
+c8add1c0893bb9e2c0ec787972508407e68a97ea	refs/tags/2.26-b04^{}
+f90136356eb5a924858b31c7018711b34106a0cf	refs/tags/2.26-b05
+a77787848fdb607ff9a3f9d6754c0ac606e453f0	refs/tags/2.26-b05^{}
+6eb0c436baeab8511106f5a3f18ed6816c1b7525	refs/tags/2.26-b06
+02e3fe94e4d5a73864b71bea14b5ff38e96223ba	refs/tags/2.26-b06^{}
+18f1d3ac1751aab881f7827a2d4f256c9d6277da	refs/tags/2.26-b07
+2dac778bf09c11e4c3455346db200e4a63aead8c	refs/tags/2.26-b07^{}
+fc401fe97e6faab84e2814586a30eab47e8762bc	refs/tags/2.26-b08
+d93b5dfece2fc406ea271ac2dbc18384779c4de8	refs/tags/2.26-b08^{}
+59d8ff93097f00b6b0613e89685eb71aa21e7a2a	refs/tags/2.26-b09
+cf96f07215723dfcf1320ba60c02b3e3d20a2e11	refs/tags/2.26-b09^{}
+4f92596cf6f60bc76b863b7a62d17d18ed8af819	refs/tags/2.27
+8e2466c2d3826b31cd28593cb515b26be8cd1065	refs/tags/2.27^{}
+2462e222e29bef483528e4788c6b5204d31befd2	refs/tags/2.3
+49aa8161bc038daaf1e726beeb49d3c872d56abb	refs/tags/2.3^{}
+dab315dbf25b00b1d2e0730a07b8243db9477b95	refs/tags/2.3.1
+f1c95f65d38a329dca92d3cdcf0415dab5865128	refs/tags/2.3.1^{}
+261e89f6fce56b38eb1d3a26e68d203c968dab9e	refs/tags/2.4
+23f8b698c6d156f2bde5e6bc7ec5036d25026908	refs/tags/2.4.1
+8578484dc821fa7b7596485dfb4c095f0bfe3178	refs/tags/2.4.1^{}
+63799d717a3ea0109157b0fb1a51537736c790da	refs/tags/2.5
+e921feb9af836333ac9c50c62e9ee2e279dad59e	refs/tags/2.5^{}
+b092d6702db0730d1348fcca0efb8297c0d68803	refs/tags/2.5.1
+2b2fe8f90bc7112d40ce7e544bf19bbe04dfaaa6	refs/tags/2.5.1^{}
+13c728e94204df3942a7e4799ad5bc86e43f951f	refs/tags/2.5.2
+5afb919b0ff5252acfd3c5115ed4a7cbcc565c0e	refs/tags/2.5.2^{}
+ce39eb79fb2e80c734666cdcfd29dbcffe047b44	refs/tags/2.6
+7daa97eef1cc6b6f72dd8aa9bcf67ecbe0078db6	refs/tags/2.6^{}
+a191ee0d1fb09c6b73dfb0eadf6afedbcc5ff6fd	refs/tags/2.7
+06753a44e60654414c269cff1250d6dba6c0a4e6	refs/tags/2.7^{}
+8dabeb837c86fa8958fe8d9af7c2fe7b6e8d6963	refs/tags/2.8
+4c1977884af9a723beb70358676e870ba70c3f33	refs/tags/2.8^{}
+a5c735df0ca15bdd3d955ee288418c99f305dbaf	refs/tags/2.9
+034b0987cd9c5a51abc1bc29484b428120a616c2	refs/tags/2.9.1
+
+ succeeded in 315ms:
+62a062259c755de8f344226cd428344856fee87b	refs/tags/3.0.17^{}
+92e6758c9f21bb5294202b0eda6d9585afdac8c6	refs/tags/3.0.18
+789b39fd1d088d7ddd2cc98ffcd6e52c61f15916	refs/tags/3.0.18^{}
+ee5cfd6d96ca830a494f814e67235079b8121957	refs/tags/3.0.2
+0a9fc211e890804603bbf7370e794d3f88e1c9d6	refs/tags/3.0.2^{}
+14151205e2e256db34976d793cf3b849127dabbf	refs/tags/3.0.3
+305632f0c5c6841ff039ec23832a23258005ff7d	refs/tags/3.0.3^{}
+1b53d929b5d169328f93355ee19a7ca857a48836	refs/tags/3.0.4
+108ec1cf0ab7c36913536cb61e3ed3502ad37da3	refs/tags/3.0.4^{}
+8e83e15b1e675fcf9e538cfc050b5ae4047260fb	refs/tags/3.0.5
+eea1322df66cc307842b81114c7e55313281e0ce	refs/tags/3.0.5^{}
+2a1c3d6dc4d936f37a747d75f0c360e55d83fc51	refs/tags/3.0.6
+79f453b0ea7a1d43da070f71d04d57bf46519f7d	refs/tags/3.0.6^{}
+9306c990a9e18cfa9bf6cccd3fe2b2f83a237e25	refs/tags/3.0.7
+64cb354484e684d50ee44133238b3400bddfb482	refs/tags/3.0.7^{}
+285973467c6bed9c860c9f6fe5312c0324ba2751	refs/tags/3.0.8
+3084b0f0c0fe3ed4a1ecd44fb74cf09a48fa9b20	refs/tags/3.0.8^{}
+ccee0fac37441a2227d143484fb2848e5d129628	refs/tags/3.0.9
+cf2408a92e18f3b07b84b74f6bba62c753983f55	refs/tags/3.0.9^{}
+d21e1a485294414cc9465ffe9320cf378e50d6ae	refs/tags/3.1.0
+a2f40030226694f8f21e23af0ad1c1239b972180	refs/tags/3.1.0^{}
+b089b7bd4f7bd134276d4a561c62033b975d16f4	refs/tags/3.1.0-M1
+afd9b04c90dee639c30b271b041358feae1dfcea	refs/tags/3.1.0-M1^{}
+0324b4e6b166983466510574fabb5d93a7a9057a	refs/tags/3.1.0-M2
+3b1d027234cc1a4375177adad80436192d5dac5f	refs/tags/3.1.0-M2^{}
+be889e6f8ee762f869f5e81c7ac68dc8fabb5765	refs/tags/3.1.0-M3
+ae80b310e6399db2196e06a76b9fab8fb740235b	refs/tags/3.1.0-M3^{}
+1aa920fe040dd5912fa0a45fb53cd097da4bc841	refs/tags/3.1.0-M4
+29298e43c6a58b375c17d6997a6e8fd0099c9c32	refs/tags/3.1.0-M4^{}
+e7886a1917854fb82bb1249a0edc5b778be3d61a	refs/tags/3.1.0-M5
+8b6949d76cada1fa2a9cde2a7f5eb501273c5827	refs/tags/3.1.0-M5^{}
+dcdbc7f0c6ead4d0d5334783b31ee8ad2f2e26a1	refs/tags/3.1.0-M6
+9a0ef6d19818b56988006e46b50a50c791e469b1	refs/tags/3.1.0-M6^{}
+8aa580591a28b8a1fb053370f6bd7340cb875cc4	refs/tags/3.1.0-M7
+68f3b506b7f8ce9dc3cb5c8373d25a4affa15ab3	refs/tags/3.1.0-M7^{}
+445091b946006d44781feb44ec9ec0ee6106d9b2	refs/tags/3.1.0-M8
+ed7e9d8c78098e43c144524b8a61f50900812f17	refs/tags/3.1.0-M8^{}
+12e58d85876150a78d8798608047b1adb4143e80	refs/tags/3.1.1
+d64cfaf0693afdd91b91bc3176daf7619abd1831	refs/tags/3.1.1^{}
+a802e312da8d9b3680d921fd93f1a4b1ad3264fd	refs/tags/3.1.10
+237a78e995e6c8ced732a7f97e3a8765e55e8058	refs/tags/3.1.10^{}
+6dfeaecfcbaa9911821fb4fec107a132da09926a	refs/tags/3.1.11
+c72deecb709304f3338d53d909622963c026ab6e	refs/tags/3.1.11^{}
+95996a51c33270b095c08644848459dcbc802f0c	refs/tags/3.1.11-M1
+deec1a6cb237237d5ea19f36a0fae9d4dfde55ed	refs/tags/3.1.11-M1^{}
+99e5c98833a43c5d36fa751f2f4334df404c334c	refs/tags/3.1.2
+aa298e061b69ef8cdc60edd1bb135235066a83dd	refs/tags/3.1.2^{}
+f8c4933bdfffae04e1accdad02dcf38272ac31dd	refs/tags/3.1.3
+66dbf685bacd633a1ec90d8141122d7f0188fa9c	refs/tags/3.1.3^{}
+6c6b61179545ffe7bfb4105ff1b87008755a7aaa	refs/tags/3.1.4
+72337d34fae65995efcaf4f200095e0dc9d39b1f	refs/tags/3.1.4^{}
+85bee5dc79d1b5aa9a18daabce79da6c97d52f12	refs/tags/3.1.5
+7c32ab05a831d8e2e070c9b978374d2d7979601c	refs/tags/3.1.5^{}
+6cf665eff847f65da7c180ce45d019d2856e37fa	refs/tags/3.1.6
+7214d76b0123829cb104159b581b826b6dfaa2f1	refs/tags/3.1.6^{}
+877bb67126da6f4aeb3b2010197e8c1120e9d6ee	refs/tags/3.1.7
+df92150aeb0837f4fb8041b78962cebf51f515ab	refs/tags/3.1.7^{}
+98e0b5d25c451077e632711c70044bcdc166ec75	refs/tags/3.1.8
+4649c2b6a4de97c2c6e0b1f2d0402a0573f0929d	refs/tags/3.1.8^{}
+55a9cea9dc7968c2cec4923b9262214077e25220	refs/tags/3.1.9
+f35691f4e4f1e6440ba2d384de798c4efdb2f932	refs/tags/3.1.9^{}
+e62ff8881e140bb2b994afb1733adb4e5d2bf466	refs/tags/4.0-M1-GF1
+59a5d506e4196fa9031f1d9410a4f8d05d7b1289	refs/tags/4.0-M1-GF1^{}
+080d414e156087579a627f4907f3fc91e9ba3301	refs/tags/4.0.0
+a3fd96f6dda02d0385f18721a26d04a22fe813b7	refs/tags/4.0.0^{}
+75e23423f5bb87c22ed4bec28bcdd5339c458310	refs/tags/4.0.0-M1
+65f4c98e1481a63841b55e9aec12a7e8d29514ba	refs/tags/4.0.0-M1^{}
+a1ba428ba0d65f871ff1b4758c47d416a23968f0	refs/tags/4.0.0-M2
+35ba7aa2208d6a1b25c981949c8fa3e53d937b7c	refs/tags/4.0.0-M2^{}
+f445f0e45e482454cfbcffc9d6001eaa39912b03	refs/tags/4.0.0-M3
+6a9fb2897daba57618dfe989a8fefecd2ac90640	refs/tags/4.0.0-M3^{}
+72426b0147735e160ebac77f170dfa121b23a443	refs/tags/4.0.0-M4
+78b9cecc7649d7978f7adacb472289f38f1b5632	refs/tags/4.0.0-M4^{}
+80aa62de1f1d515928fb545971b883291eeceb3d	refs/tags/4.0.1-RELEASE
+e17d8c4bc2f08a0444864184aead6fa925e0e59d	refs/tags/4.0.1-RELEASE^{}
+ff11a0adb27e9281f873db71d378506405227736	refs/tags/4.0.2-RELEASE
+965b823869418400d5541e99c471aa6da28afb19	refs/tags/4.0.2-RELEASE^{}
+bd8868232b60390d83360019c47b6efe78fda71c	refs/tags/5.0.0-M1-RELEASE
+18a4ca9c541740009c6f55aa0e7f01940e1a2370	refs/tags/5.0.0-M1-RELEASE^{}
+12a057315292a624ceb31b58bd04eec3cb19a819	refs/tags/initial_contribution
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/javaee/jersey.git 'refs/tags/2.25.1*'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/eclipse-ee4j/jersey.git 'refs/tags/2.25*'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/javaee/jersey.git 'refs/tags/2.25*'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/jersey/jersey.git 'refs/tags/2.25*' || true" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+ succeeded in 266ms:
+ succeeded in 285ms:
+e2d45e8e63fecf79414c84ddd4109c23453d4f55	refs/tags/2.25
+58864062738c15801b93941b346e4539d3d38fe4	refs/tags/2.25^{}
+48d810686c6edaab8cd1bfd7bff7e04e6ec5f9c6	refs/tags/2.25.1
+994b5993f2cba14d33f809fe75f6f9dd25a0d58e	refs/tags/2.25.1^{}
+
+ succeeded in 297ms:
+ succeeded in 301ms:
+48d810686c6edaab8cd1bfd7bff7e04e6ec5f9c6	refs/tags/2.25.1
+994b5993f2cba14d33f809fe75f6f9dd25a0d58e	refs/tags/2.25.1^{}
+
+codex
+The upstream release tag is in `javaee/jersey` as `2.25.1`. I’m resolving the module path under that tag so the test URL lands on the actual test directory, while sources and javadocs can stay on Maven Central.
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/org/glassfish/jersey/core/jersey-client/2.25.1/jersey-client-2.25.1-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 08 Jun 2026 18:09:51 GMT
+content-type: application/java-archive
+content-length: 128977
+cf-ray: a089d99bbfc629a7-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 249846
+etag: "a1f4558d6800609494a06cbeb07851b5"
+last-modified: Thu, 19 Jan 2017 17:11:11 GMT
+x-checksum-md5: a1f4558d6800609494a06cbeb07851b5
+x-checksum-sha1: 753404f68c295f40f25cdda40b05be518ede99b3
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/javaee/jersey/git/trees/2.25.1?recursive=1' | rg 'jersey-client|core-client|src/test' | head -200" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/org/glassfish/jersey/core/jersey-client/2.25.1/jersey-client-2.25.1-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 08 Jun 2026 18:09:52 GMT
+content-type: application/java-archive
+content-length: 270523
+cf-ray: a089d99bdb56bc5c-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 184216
+etag: "b96f10191876a91df2b1a8e3c97a7dc4"
+last-modified: Thu, 19 Jan 2017 17:02:07 GMT
+x-checksum-md5: b96f10191876a91df2b1a8e3c97a7dc4
+x-checksum-sha1: 8a027a1702dea2345c1457ef80609c0026183276
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/org/glassfish/jersey/core/jersey-client/2.25.1/jersey-client-2.25.1-tests.jar | sed -n '1,20p' || true" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+ succeeded in 268ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Mon, 08 Jun 2026 18:09:52 GMT
+content-type: text/html
+cf-ray: a089d99c0f7b24c4-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/glassfish/jersey/core/jersey-client/2.25.1/jersey-client-2.25.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 542ms:
+      "path": "archetypes/jersey-heroku-webapp/src/main/resources/archetype-resources/src/test",
+      "path": "archetypes/jersey-heroku-webapp/src/main/resources/archetype-resources/src/test/java",
+      "path": "archetypes/jersey-heroku-webapp/src/main/resources/archetype-resources/src/test/java/MyResourceTest.java",
+      "path": "archetypes/jersey-quickstart-grizzly2/src/main/resources/archetype-resources/src/test",
+      "path": "archetypes/jersey-quickstart-grizzly2/src/main/resources/archetype-resources/src/test/java",
+      "path": "archetypes/jersey-quickstart-grizzly2/src/main/resources/archetype-resources/src/test/java/MyResourceTest.java",
+      "path": "connectors/apache-connector/src/test",
+      "path": "connectors/apache-connector/src/test/java",
+      "path": "connectors/apache-connector/src/test/java/org",
+      "path": "connectors/apache-connector/src/test/java/org/glassfish",
+      "path": "connectors/apache-connector/src/test/java/org/glassfish/jersey",
+      "path": "connectors/apache-connector/src/test/java/org/glassfish/jersey/apache",
+      "path": "connectors/apache-connector/src/test/java/org/glassfish/jersey/apache/connector",
+      "path": "connectors/apache-connector/src/test/java/org/glassfish/jersey/apache/connector/AsyncTest.java",
+      "path": "connectors/apache-connector/src/test/java/org/glassfish/jersey/apache/connector/AuthTest.java",
+      "path": "connectors/apache-connector/src/test/java/org/glassfish/jersey/apache/connector/CookieTest.java",
+      "path": "connectors/apache-connector/src/test/java/org/glassfish/jersey/apache/connector/CustomLoggingFilter.java",
+      "path": "connectors/apache-connector/src/test/java/org/glassfish/jersey/apache/connector/DisableContentEncodingTest.java",
+      "path": "connectors/apache-connector/src/test/java/org/glassfish/jersey/apache/connector/FollowRedirectsTest.java",
+      "path": "connectors/apache-connector/src/test/java/org/glassfish/jersey/apache/connector/GZIPContentEncodingTest.java",
+      "path": "connectors/apache-connector/src/test/java/org/glassfish/jersey/apache/connector/HelloWorldTest.java",
+      "path": "connectors/apache-connector/src/test/java/org/glassfish/jersey/apache/connector/HttpHeadersTest.java",
+      "path": "connectors/apache-connector/src/test/java/org/glassfish/jersey/apache/connector/HttpMethodTest.java",
+      "path": "connectors/apache-connector/src/test/java/org/glassfish/jersey/apache/connector/HttpMethodWithClientFilterTest.java",
+      "path": "connectors/apache-connector/src/test/java/org/glassfish/jersey/apache/connector/ManagedClientTest.java",
+      "path": "connectors/apache-connector/src/test/java/org/glassfish/jersey/apache/connector/NoEntityTest.java",
+      "path": "connectors/apache-connector/src/test/java/org/glassfish/jersey/apache/connector/SpecialHeaderTest.java",
+      "path": "connectors/apache-connector/src/test/java/org/glassfish/jersey/apache/connector/StreamingTest.java",
+      "path": "connectors/apache-connector/src/test/java/org/glassfish/jersey/apache/connector/TimeoutTest.java",
+      "path": "connectors/apache-connector/src/test/java/org/glassfish/jersey/apache/connector/TraceSupportTest.java",
+      "path": "connectors/apache-connector/src/test/java/org/glassfish/jersey/apache/connector/UnderlyingCookieStoreAccessTest.java",
+      "path": "connectors/apache-connector/src/test/java/org/glassfish/jersey/apache/connector/UnderlyingHttpClientAccessTest.java",
+      "path": "connectors/grizzly-connector/src/test",
+      "path": "connectors/grizzly-connector/src/test/java",
+      "path": "connectors/grizzly-connector/src/test/java/org",
+      "path": "connectors/grizzly-connector/src/test/java/org/glassfish",
+      "path": "connectors/grizzly-connector/src/test/java/org/glassfish/jersey",
+      "path": "connectors/grizzly-connector/src/test/java/org/glassfish/jersey/grizzly",
+      "path": "connectors/grizzly-connector/src/test/java/org/glassfish/jersey/grizzly/connector",
+      "path": "connectors/grizzly-connector/src/test/java/org/glassfish/jersey/grizzly/connector/AsyncTest.java",
+      "path": "connectors/grizzly-connector/src/test/java/org/glassfish/jersey/grizzly/connector/CustomizersTest.java",
+      "path": "connectors/grizzly-connector/src/test/java/org/glassfish/jersey/grizzly/connector/FollowRedirectsTest.java",
+      "path": "connectors/grizzly-connector/src/test/java/org/glassfish/jersey/grizzly/connector/HttpHeadersTest.java",
+      "path": "connectors/grizzly-connector/src/test/java/org/glassfish/jersey/grizzly/connector/HugeEntityTest.java",
+      "path": "connectors/grizzly-connector/src/test/java/org/glassfish/jersey/grizzly/connector/MethodTest.java",
+      "path": "connectors/grizzly-connector/src/test/java/org/glassfish/jersey/grizzly/connector/NoEntityTest.java",
+      "path": "connectors/grizzly-connector/src/test/java/org/glassfish/jersey/grizzly/connector/ParallelTest.java",
+      "path": "connectors/grizzly-connector/src/test/java/org/glassfish/jersey/grizzly/connector/TimeoutTest.java",
+      "path": "connectors/grizzly-connector/src/test/java/org/glassfish/jersey/grizzly/connector/TraceSupportTest.java",
+      "path": "connectors/grizzly-connector/src/test/java/org/glassfish/jersey/grizzly/connector/UnderlyingHttpClientAccessTest.java",
+      "path": "connectors/jetty-connector/src/test",
+      "path": "connectors/jetty-connector/src/test/java",
+      "path": "connectors/jetty-connector/src/test/java/org",
+      "path": "connectors/jetty-connector/src/test/java/org/glassfish",
+      "path": "connectors/jetty-connector/src/test/java/org/glassfish/jersey",
+      "path": "connectors/jetty-connector/src/test/java/org/glassfish/jersey/jetty",
+      "path": "connectors/jetty-connector/src/test/java/org/glassfish/jersey/jetty/connector",
+      "path": "connectors/jetty-connector/src/test/java/org/glassfish/jersey/jetty/connector/AsyncTest.java",
+      "path": "connectors/jetty-connector/src/test/java/org/glassfish/jersey/jetty/connector/AuthFilterTest.java",
+      "path": "connectors/jetty-connector/src/test/java/org/glassfish/jersey/jetty/connector/AuthTest.java",
+      "path": "connectors/jetty-connector/src/test/java/org/glassfish/jersey/jetty/connector/CookieTest.java",
+      "path": "connectors/jetty-connector/src/test/java/org/glassfish/jersey/jetty/connector/CustomLoggingFilter.java",
+      "path": "connectors/jetty-connector/src/test/java/org/glassfish/jersey/jetty/connector/EntityTest.java",
+      "path": "connectors/jetty-connector/src/test/java/org/glassfish/jersey/jetty/connector/ErrorTest.java",
+      "path": "connectors/jetty-connector/src/test/java/org/glassfish/jersey/jetty/connector/FollowRedirectsTest.java",
+      "path": "connectors/jetty-connector/src/test/java/org/glassfish/jersey/jetty/connector/GZIPContentEncodingTest.java",
+      "path": "connectors/jetty-connector/src/test/java/org/glassfish/jersey/jetty/connector/HelloWorldTest.java",
+      "path": "connectors/jetty-connector/src/test/java/org/glassfish/jersey/jetty/connector/HttpHeadersTest.java",
+      "path": "connectors/jetty-connector/src/test/java/org/glassfish/jersey/jetty/connector/ManagedClientTest.java",
+      "path": "connectors/jetty-connector/src/test/java/org/glassfish/jersey/jetty/connector/MethodTest.java",
+      "path": "connectors/jetty-connector/src/test/java/org/glassfish/jersey/jetty/connector/NoEntityTest.java",
+      "path": "connectors/jetty-connector/src/test/java/org/glassfish/jersey/jetty/connector/TimeoutTest.java",
+      "path": "connectors/jetty-connector/src/test/java/org/glassfish/jersey/jetty/connector/TraceSupportTest.java",
+      "path": "connectors/jetty-connector/src/test/java/org/glassfish/jersey/jetty/connector/UnderlyingHttpClientAccessTest.java",
+      "path": "connectors/netty-connector/src/test",
+      "path": "connectors/netty-connector/src/test/java",
+      "path": "connectors/netty-connector/src/test/java/org",
+      "path": "connectors/netty-connector/src/test/java/org/glassfish",
+      "path": "connectors/netty-connector/src/test/java/org/glassfish/jersey",
+      "path": "connectors/netty-connector/src/test/java/org/glassfish/jersey/netty",
+      "path": "connectors/netty-connector/src/test/java/org/glassfish/jersey/netty/connector",
+      "path": "connectors/netty-connector/src/test/java/org/glassfish/jersey/netty/connector/AsyncTest.java",
+      "path": "connectors/netty-connector/src/test/java/org/glassfish/jersey/netty/connector/CustomLoggingFilter.java",
+      "path": "connectors/netty-connector/src/test/java/org/glassfish/jersey/netty/connector/HelloWorldTest.java",
+      "path": "connectors/netty-connector/src/test/java/org/glassfish/jersey/netty/connector/HttpHeadersTest.java",
+      "path": "connectors/netty-connector/src/test/java/org/glassfish/jersey/netty/connector/HugeEntityTest.java",
+      "path": "connectors/netty-connector/src/test/java/org/glassfish/jersey/netty/connector/MethodTest.java",
+      "path": "connectors/netty-connector/src/test/java/org/glassfish/jersey/netty/connector/NoEntityTest.java",
+      "path": "connectors/netty-connector/src/test/java/org/glassfish/jersey/netty/connector/ParallelTest.java",
+      "path": "connectors/netty-connector/src/test/java/org/glassfish/jersey/netty/connector/TimeoutTest.java",
+      "path": "connectors/netty-connector/src/test/java/org/glassfish/jersey/netty/connector/TraceSupportTest.java",
+      "path": "containers/jdk-http/src/test",
+      "path": "containers/jdk-http/src/test/java",
+      "path": "containers/jdk-http/src/test/java/org",
+      "path": "containers/jdk-http/src/test/java/org/glassfish",
+      "path": "containers/jdk-http/src/test/java/org/glassfish/jersey",
+      "path": "containers/jdk-http/src/test/java/org/glassfish/jersey/jdkhttp",
+      "path": "containers/jdk-http/src/test/java/org/glassfish/jersey/jdkhttp/AbstractJdkHttpServerTester.java",
+      "path": "containers/jdk-http/src/test/java/org/glassfish/jersey/jdkhttp/BasicJdkHttpServerTest.java",
+      "path": "containers/jdk-http/src/test/java/org/glassfish/jersey/jdkhttp/JdkHttpPackageTest.java",
+      "path": "containers/jdk-http/src/test/java/org/glassfish/jersey/jdkhttp/JdkHttpsServerTest.java",
+      "path": "containers/jdk-http/src/test/java/org/glassfish/jersey/jdkhttp/LifecycleListenerTest.java",
+      "path": "containers/jdk-http/src/test/java/org/glassfish/jersey/jdkhttp/RuntimeDelegateTest.java",
+      "path": "containers/jdk-http/src/test/resources",
+      "path": "containers/jdk-http/src/test/resources/org",
+      "path": "containers/jdk-http/src/test/resources/org/glassfish",
+      "path": "containers/jdk-http/src/test/resources/org/glassfish/jersey",
+      "path": "containers/jdk-http/src/test/resources/org/glassfish/jersey/jdkhttp",
+      "path": "containers/jdk-http/src/test/resources/org/glassfish/jersey/jdkhttp/keystore_client",
+      "path": "containers/jdk-http/src/test/resources/org/glassfish/jersey/jdkhttp/keystore_server",
+      "path": "containers/jdk-http/src/test/resources/org/glassfish/jersey/jdkhttp/truststore_client",
+      "path": "containers/jdk-http/src/test/resources/org/glassfish/jersey/jdkhttp/truststore_server",
+      "path": "containers/jersey-servlet-core/src/test",
+      "path": "containers/jersey-servlet-core/src/test/java",
+      "path": "containers/jersey-servlet-core/src/test/java/org",
+      "path": "containers/jersey-servlet-core/src/test/java/org/glassfish",
+      "path": "containers/jersey-servlet-core/src/test/java/org/glassfish/jersey",
+      "path": "containers/jersey-servlet-core/src/test/java/org/glassfish/jersey/servlet",
+      "path": "containers/jersey-servlet-core/src/test/java/org/glassfish/jersey/servlet/internal",
+      "path": "containers/jersey-servlet-core/src/test/java/org/glassfish/jersey/servlet/internal/ThreadLocalInvokerTest.java",
+      "path": "containers/jetty-http/src/test",
+      "path": "containers/jetty-http/src/test/java",
+      "path": "containers/jetty-http/src/test/java/org",
+      "path": "containers/jetty-http/src/test/java/org/glassfish",
+      "path": "containers/jetty-http/src/test/java/org/glassfish/jersey",
+      "path": "containers/jetty-http/src/test/java/org/glassfish/jersey/jetty",
+      "path": "containers/jetty-http/src/test/java/org/glassfish/jersey/jetty/AbstractJettyServerTester.java",
+      "path": "containers/jetty-http/src/test/java/org/glassfish/jersey/jetty/AsyncTest.java",
+      "path": "containers/jetty-http/src/test/java/org/glassfish/jersey/jetty/ExceptionTest.java",
+      "path": "containers/jetty-http/src/test/java/org/glassfish/jersey/jetty/LifecycleListenerTest.java",
+      "path": "containers/jetty-http/src/test/java/org/glassfish/jersey/jetty/OptionsTest.java",
+      "path": "containers/simple-http/src/test",
+      "path": "containers/simple-http/src/test/java",
+      "path": "containers/simple-http/src/test/java/org",
+      "path": "containers/simple-http/src/test/java/org/glassfish",
+      "path": "containers/simple-http/src/test/java/org/glassfish/jersey",
+      "path": "containers/simple-http/src/test/java/org/glassfish/jersey/simple",
+      "path": "containers/simple-http/src/test/java/org/glassfish/jersey/simple/AbstractSimpleServerTester.java",
+      "path": "containers/simple-http/src/test/java/org/glassfish/jersey/simple/AsyncTest.java",
+      "path": "containers/simple-http/src/test/java/org/glassfish/jersey/simple/ExceptionTest.java",
+      "path": "containers/simple-http/src/test/java/org/glassfish/jersey/simple/LifecycleListenerTest.java",
+      "path": "containers/simple-http/src/test/java/org/glassfish/jersey/simple/OptionsTest.java",
+      "path": "containers/simple-http/src/test/java/org/glassfish/jersey/simple/ParallelTest.java",
+      "path": "containers/simple-http/src/test/java/org/glassfish/jersey/simple/TraceTest.java",
+      "path": "core-client",
+      "path": "core-client/pom.xml",
+      "path": "core-client/src",
+      "path": "core-client/src/main",
+      "path": "core-client/src/main/java",
+      "path": "core-client/src/main/java/org",
+      "path": "core-client/src/main/java/org/glassfish",
+      "path": "core-client/src/main/java/org/glassfish/jersey",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/AbortException.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/ChunkParser.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/ChunkedInput.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/ChunkedInputReader.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/ClientAsyncExecutor.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/ClientAsyncExecutorLiteral.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/ClientBinder.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/ClientConfig.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/ClientFilteringStages.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/ClientLifecycleListener.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/ClientProperties.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/ClientRequest.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/ClientResponse.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/ClientRuntime.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/CustomProvidersFeature.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/DefaultClientAsyncExecutorProvider.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/HttpUrlConnectorProvider.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/InboundJaxrsResponse.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/Initializable.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/JerseyClient.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/JerseyClientBuilder.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/JerseyInvocation.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/JerseyWebTarget.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/RequestEntityProcessing.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/RequestProcessingInitializationStage.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/ResponseCallback.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/ServiceLocatorClientProvider.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/authentication",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/authentication/BasicAuthenticator.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/authentication/DigestAuthenticator.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/authentication/HttpAuthenticationFeature.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/authentication/HttpAuthenticationFilter.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/authentication/RequestAuthenticationException.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/authentication/ResponseAuthenticationException.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/authentication/package-info.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/filter",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/filter/CsrfProtectionFilter.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/filter/EncodingFeature.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/filter/EncodingFilter.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/filter/package-info.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/internal",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/internal/HttpUrlConnector.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/package-info.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/spi",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/spi/AsyncConnectorCallback.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/spi/CachingConnectorProvider.java",
+      "path": "core-client/src/main/java/org/glassfish/jersey/client/spi/Connector.java",
+curl: (23) Failure writing output to destination
+
+codex
+I found the module as `core-client` in the release tree. I’m doing a final narrow check for its test directory and then I’ll write the JSON with only the allowed keys.
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/javaee/jersey/git/trees/2.25.1?recursive=1' | rg '\"path\": \"core-client/src/test' | head -120" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/javaee/jersey/tree/2.25.1/core-client/src/test | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/javaee/jersey/2.25.1/core-client/pom.xml | rg -n '<artifactId>|<name>|<description>|<packaging>' -C 1 | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22org.glassfish.jersey.core%22+AND+a:%22jersey-client%22+AND+v:%222.25.1%22&rows=20&wt=json'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+ succeeded in 169ms:
+{"responseHeader":{"status":0,"QTime":11,"params":{"q":"g:\"org.glassfish.jersey.core\" AND a:\"jersey-client\" AND v:\"2.25.1\"","core":"","indent":"off","fl":"id,g,a,v,p,ec,timestamp,tags","start":"","sort":"score desc,timestamp desc,g asc,a asc,v desc","rows":"20","wt":"json","version":"2.2"}},"response":{"numFound":1,"start":0,"docs":[{"id":"org.glassfish.jersey.core:jersey-client:2.25.1","g":"org.glassfish.jersey.core","a":"jersey-client","v":"2.25.1","p":"jar","timestamp":1484846474000,"ec":["-javadoc.jar","-sources.jar",".jar",".pom"],"tags":["client","jersey","implementation","core"]}]}}
+ succeeded in 214ms:
+47-        <groupId>org.glassfish.jersey</groupId>
+48:        <artifactId>project</artifactId>
+49-        <version>2.25.1</version>
+--
+52-    <groupId>org.glassfish.jersey.core</groupId>
+53:    <artifactId>jersey-client</artifactId>
+54:    <packaging>jar</packaging>
+55:    <name>jersey-core-client</name>
+56-
+57:    <description>Jersey core client implementation</description>
+58-
+--
+62-                <groupId>com.sun.istack</groupId>
+63:                <artifactId>maven-istack-commons-plugin</artifactId>
+64-                <inherited>true</inherited>
+--
+67-                <groupId>org.codehaus.mojo</groupId>
+68:                <artifactId>build-helper-maven-plugin</artifactId>
+69-                <inherited>true</inherited>
+--
+72-                <groupId>org.apache.maven.plugins</groupId>
+73:                <artifactId>maven-compiler-plugin</artifactId>
+74-                <inherited>false</inherited>
+--
+87-                <groupId>org.apache.maven.plugins</groupId>
+88:                <artifactId>maven-surefire-plugin</artifactId>
+89-                <configuration>
+--
+98-                <groupId>org.apache.maven.plugins</groupId>
+99:                <artifactId>maven-jar-plugin</artifactId>
+100-                <executions>
+--
+111-                <groupId>org.apache.felix</groupId>
+112:                <artifactId>maven-bundle-plugin</artifactId>
+113-                <inherited>true</inherited>
+--
+120-            <groupId>javax.ws.rs</groupId>
+121:            <artifactId>javax.ws.rs-api</artifactId>
+122-        </dependency>
+--
+125-            <groupId>org.glassfish.jersey.core</groupId>
+126:            <artifactId>jersey-common</artifactId>
+127-            <version>${project.version}</version>
+--
+131-            <groupId>org.glassfish.hk2</groupId>
+132:            <artifactId>hk2-api</artifactId>
+133-        </dependency>
+--
+136-            <groupId>org.glassfish.hk2.external</groupId>
+137:            <artifactId>javax.inject</artifactId>
+138-        </dependency>
+--
+141-            <groupId>org.glassfish.hk2</groupId>
+142:            <artifactId>hk2-locator</artifactId>
+143-        </dependency>
+--
+146-            <groupId>junit</groupId>
+147:            <artifactId>junit</artifactId>
+148-            <scope>test</scope>
+--
+152-            <groupId>org.hamcrest</groupId>
+153:            <artifactId>hamcrest-library</artifactId>
+154-            <scope>test</scope>
+--
+158-            <groupId>org.mockito</groupId>
+159:            <artifactId>mockito-all</artifactId>
+160-            <scope>test</scope>
+--
+173-                        <groupId>org.apache.maven.plugins</groupId>
+174:                        <artifactId>maven-surefire-plugin</artifactId>
+175-                        <configuration>
+
+ succeeded in 430ms:
+      "path": "core-client/src/test",
+      "path": "core-client/src/test/java",
+      "path": "core-client/src/test/java/org",
+      "path": "core-client/src/test/java/org/glassfish",
+      "path": "core-client/src/test/java/org/glassfish/jersey",
+      "path": "core-client/src/test/java/org/glassfish/jersey/client",
+      "path": "core-client/src/test/java/org/glassfish/jersey/client/AutoDiscoverableClientTest.java",
+      "path": "core-client/src/test/java/org/glassfish/jersey/client/ClientConfigTest.java",
+      "path": "core-client/src/test/java/org/glassfish/jersey/client/ClientRequestTest.java",
+      "path": "core-client/src/test/java/org/glassfish/jersey/client/CustomConnectorTest.java",
+      "path": "core-client/src/test/java/org/glassfish/jersey/client/DefaultSslContextProviderTest.java",
+      "path": "core-client/src/test/java/org/glassfish/jersey/client/FixedBoundaryParserTest.java",
+      "path": "core-client/src/test/java/org/glassfish/jersey/client/FixedMultiBoundaryParserTest.java",
+      "path": "core-client/src/test/java/org/glassfish/jersey/client/HttpUrlConnectorTest.java",
+      "path": "core-client/src/test/java/org/glassfish/jersey/client/JerseyClientBuilderTest.java",
+      "path": "core-client/src/test/java/org/glassfish/jersey/client/JerseyClientTest.java",
+      "path": "core-client/src/test/java/org/glassfish/jersey/client/JerseyInvocationTest.java",
+      "path": "core-client/src/test/java/org/glassfish/jersey/client/JerseyWebTargetTest.java",
+      "path": "core-client/src/test/java/org/glassfish/jersey/client/LinkTest.java",
+      "path": "core-client/src/test/java/org/glassfish/jersey/client/ShutdownHookLeakTest.java",
+      "path": "core-client/src/test/java/org/glassfish/jersey/client/WebTargetPropertiesTest.java",
+      "path": "core-client/src/test/java/org/glassfish/jersey/client/authentication",
+      "path": "core-client/src/test/java/org/glassfish/jersey/client/authentication/HttpDigestAuthFilterTest.java",
+      "path": "core-client/src/test/java/org/glassfish/jersey/client/filter",
+      "path": "core-client/src/test/java/org/glassfish/jersey/client/filter/ClientProviderInstanceInjectionTest.java",
+      "path": "core-client/src/test/java/org/glassfish/jersey/client/filter/CsrfProtectionFilterTest.java",
+      "path": "core-client/src/test/java/org/glassfish/jersey/client/filter/EncodingFilterTest.java",
+      "path": "core-client/src/test/java/org/glassfish/jersey/client/filter/HttpBasicAuthFilterTest.java",
+      "path": "core-client/src/test/java/org/glassfish/jersey/client/spi",
+      "path": "core-client/src/test/java/org/glassfish/jersey/client/spi/CachingConnectorProviderTest.java",
+      "path": "core-client/src/test/resources",
+      "path": "core-client/src/test/resources/META-INF",
+      "path": "core-client/src/test/resources/META-INF/services",
+      "path": "core-client/src/test/resources/META-INF/services/org.glassfish.jersey.internal.spi.AutoDiscoverable",
+
+ succeeded in 597ms:
+HTTP/2 200 
+date: Mon, 08 Jun 2026 18:09:58 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"24dc3b725ad84ff4ca22ca05824063c6"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=jas2liGOy3BdEAJfASB8rUNz4Yfr4Hpi38WyB5Vyw4Z0NzEgL1GT32RL2HG5nEApBd7Epze0RDZyp5ImvLx0Wh45Os0NiWDwRBB%2FQoF7LeqGftxNl4X%2Bv6LHShiE8mZFgIIP5FD2Mx%2Bd2vmrO27jUCILvSIH677%2FD5f8YCbFX1aolZ80e30O4TeYGaD54zVxpd118zpMFglxTFizWPd%2BozFVBer8TL0GNDFmycHwvpCm%2FGF%2BdxdTh%2Fx9AoIVNUJKHQ3sSYRjRcNrTNp2DYSX%2FA%3D%3D--09QJzIAu4OsO%2BPqe--6ur71a46d8%2BS%2BHcmt3ppuQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.849204168.1780942197; expires=Tue, 08 Jun 2027 18:09:57 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 08 Jun 2027 18:09:57 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6221:FC353:690FFA6:54615A3:6A270575
+
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/glassfish/jersey/core/jersey-client/2.25.1/
+web search: 
+web search: repo.maven.apache.org maven2 org glassfish jersey core jersey-client 2.25.1 sources javadoc
+web search: 
+web search: site:github.com/javaee/jersey/tree/2.25.1/core-client/src/test javaee jersey core-client src test 2.25.1
+web search: 
+web search: javaee jersey 2.25.1 core-client src test
+codex
+I’m updating the metadata now: Maven Central for sources and javadocs, GitHub tag `2.25.1` for the module tests, no language-specific marker, and no `not-for-native-image` because this is a JVM JAR.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json
+diff --git a/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json b/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json
+index 72a4b597edca3d729ee81a8999180a294fdd7321..62221432b862b982ffbef2bd03ac7afee0e7db11
+--- a/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json
++++ b/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.jersey.core:jersey-client:2.25.1"
++  "coordinates" : "org.glassfish.jersey.core:jersey-client:2.25.1",
++  "repository-url" : "https://github.com/javaee/jersey",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jersey/core/jersey-client/$version$/jersey-client-$version$-sources.jar",
++  "test-code-url" : "https://github.com/javaee/jersey/tree/$version$/core-client/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jersey/core/jersey-client/$version$/jersey-client-$version$-javadoc.jar",
++  "description" : "Jersey Client is the core client-side implementation for Jersey's JAX-RS 2.0 stack. It provides APIs and runtime support for building HTTP/REST clients, configuring requests, filters, authentication, and connector behavior on the JVM."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json b/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json
+index 72a4b597edca3d729ee81a8999180a294fdd7321..62221432b862b982ffbef2bd03ac7afee0e7db11
+--- a/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json
++++ b/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.jersey.core:jersey-client:2.25.1"
++  "coordinates" : "org.glassfish.jersey.core:jersey-client:2.25.1",
++  "repository-url" : "https://github.com/javaee/jersey",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jersey/core/jersey-client/$version$/jersey-client-$version$-sources.jar",
++  "test-code-url" : "https://github.com/javaee/jersey/tree/$version$/core-client/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jersey/core/jersey-client/$version$/jersey-client-$version$-javadoc.jar",
++  "description" : "Jersey Client is the core client-side implementation for Jersey's JAX-RS 2.0 stack. It provides APIs and runtime support for building HTTP/REST clients, configuring requests, filters, authentication, and connector behavior on the JVM."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+ succeeded in 0ms:
+{
+  "coordinates": "org.glassfish.jersey.core:jersey-client:2.25.1",
+  "repository-url": "https://github.com/javaee/jersey",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/glassfish/jersey/core/jersey-client/$version$/jersey-client-$version$-sources.jar",
+  "test-code-url": "https://github.com/javaee/jersey/tree/$version$/core-client/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/glassfish/jersey/core/jersey-client/$version$/jersey-client-$version$-javadoc.jar",
+  "description": "Jersey Client is the core client-side implementation for Jersey's JAX-RS 2.0 stack. It provides APIs and runtime support for building HTTP/REST clients, configuring requests, filters, authentication, and connector behavior on the JVM."
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/org/glassfish/jersey/core/jersey-client/2.25.1/jersey-client-2.25.1-sources.jar | sed -n '1p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+ succeeded in 0ms:
+HTTP/2 200 
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/javaee/jersey/tree/2.25.1/core-client/src/test | sed -n '1p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+ succeeded in 0ms:
+HTTP/2 200 
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/org/glassfish/jersey/core/jersey-client/2.25.1/jersey-client-2.25.1-javadoc.jar | sed -n '1p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+ succeeded in 0ms:
+HTTP/2 200 
+
+diff --git a/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json b/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json
+index 72a4b597edca3d729ee81a8999180a294fdd7321..62221432b862b982ffbef2bd03ac7afee0e7db11
+--- a/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json
++++ b/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.jersey.core:jersey-client:2.25.1"
++  "coordinates" : "org.glassfish.jersey.core:jersey-client:2.25.1",
++  "repository-url" : "https://github.com/javaee/jersey",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jersey/core/jersey-client/$version$/jersey-client-$version$-sources.jar",
++  "test-code-url" : "https://github.com/javaee/jersey/tree/$version$/core-client/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jersey/core/jersey-client/$version$/jersey-client-$version$-javadoc.jar",
++  "description" : "Jersey Client is the core client-side implementation for Jersey's JAX-RS 2.0 stack. It provides APIs and runtime support for building HTTP/REST clients, configuring requests, filters, authentication, and connector behavior on the JVM."
+ }
+
+codex
+The JSON parses cleanly, and the three version-substituted URLs return `HTTP 200` for `2.25.1`. I’m doing one final diff check to make sure only the requested file changed.
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5
+diff --git a/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json b/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json
+index 72a4b597edca3d729ee81a8999180a294fdd7321..62221432b862b982ffbef2bd03ac7afee0e7db11
+--- a/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json
++++ b/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.jersey.core:jersey-client:2.25.1"
++  "coordinates" : "org.glassfish.jersey.core:jersey-client:2.25.1",
++  "repository-url" : "https://github.com/javaee/jersey",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jersey/core/jersey-client/$version$/jersey-client-$version$-sources.jar",
++  "test-code-url" : "https://github.com/javaee/jersey/tree/$version$/core-client/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jersey/core/jersey-client/$version$/jersey-client-$version$-javadoc.jar",
++  "description" : "Jersey Client is the core client-side implementation for Jersey's JAX-RS 2.0 stack. It provides APIs and runtime support for building HTTP/REST clients, configuring requests, filters, authentication, and connector behavior on the JVM."
+ }
+
+ succeeded in 365ms:
+codex
+Updated [org.glassfish.jersey.core-jersey-client-2.25.1.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json:1).
+
+I set Maven Central URLs for sources and javadocs, the `javaee/jersey` `2.25.1` tag for tests, and a two-sentence description. I left `language` and `not-for-native-image` absent because this is a regular JVM JAR, not a Kotlin/Groovy/Scala-specific or non-JVM artifact.
+
+Validation: JSON parses with `jq`; source, test, and documentation URLs return `HTTP 200` after replacing `$version$` with `2.25.1`.
+diff --git a/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json b/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json
+index 72a4b597edca3d729ee81a8999180a294fdd7321..62221432b862b982ffbef2bd03ac7afee0e7db11
+--- a/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json
++++ b/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.jersey.core:jersey-client:2.25.1"
++  "coordinates" : "org.glassfish.jersey.core:jersey-client:2.25.1",
++  "repository-url" : "https://github.com/javaee/jersey",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jersey/core/jersey-client/$version$/jersey-client-$version$-sources.jar",
++  "test-code-url" : "https://github.com/javaee/jersey/tree/$version$/core-client/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jersey/core/jersey-client/$version$/jersey-client-$version$-javadoc.jar",
++  "description" : "Jersey Client is the core client-side implementation for Jersey's JAX-RS 2.0 stack. It provides APIs and runtime support for building HTTP/REST clients, configuring requests, filters, authentication, and connector behavior on the JVM."
+ }
+
+tokens used
+72,539
+Updated [org.glassfish.jersey.core-jersey-client-2.25.1.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5/build/discovered-artifact-metadata/org.glassfish.jersey.core-jersey-client-2.25.1.json:1).
+
+I set Maven Central URLs for sources and javadocs, the `javaee/jersey` `2.25.1` tag for tests, and a two-sentence description. I left `language` and `not-for-native-image` absent because this is a regular JVM JAR, not a Kotlin/Groovy/Scala-specific or non-JVM artifact.
+
+Validation: JSON parses with `jq`; source, test, and documentation URLs return `HTTP 200` after replacing `$version$` with `2.25.1`.
+Ran agent for org.glassfish.jersey.core:jersey-client:2.25.1 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5/build/agent-artifact-discovery-logs/org.glassfish.jersey.core-jersey-client-2.25.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2637-6b538db5/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 48s
+9 actionable tasks: 9 executed
