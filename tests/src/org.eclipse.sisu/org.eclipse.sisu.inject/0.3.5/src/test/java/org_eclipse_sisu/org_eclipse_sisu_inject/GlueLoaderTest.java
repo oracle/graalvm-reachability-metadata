@@ -21,8 +21,9 @@ import com.google.inject.Injector;
 
 public class GlueLoaderTest {
     @Test
-    void dynamicBeanDependencyIsBackedByGeneratedProviderProxy() {
+    void dynamicBeanDependencyIsBackedByGeneratedProviderProxy() throws Exception {
         try {
+            registerGuicePrimitiveParserMethods();
             Injector injector = Guice.createInjector(new WireModule(new AbstractModule() {
                 @Override
                 protected void configure() {
@@ -44,6 +45,16 @@ public class GlueLoaderTest {
                 throw exception;
             }
         }
+    }
+
+    private static void registerGuicePrimitiveParserMethods() throws NoSuchMethodException {
+        Integer.class.getMethod("parseInt", String.class);
+        Long.class.getMethod("parseLong", String.class);
+        Boolean.class.getMethod("parseBoolean", String.class);
+        Byte.class.getMethod("parseByte", String.class);
+        Short.class.getMethod("parseShort", String.class);
+        Float.class.getMethod("parseFloat", String.class);
+        Double.class.getMethod("parseDouble", String.class);
     }
 
     private static boolean isUnsupportedDynamicGlueFailure(Throwable throwable) {

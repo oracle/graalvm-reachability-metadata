@@ -27,7 +27,8 @@ import com.google.inject.Key;
 
 public class QualifyingStrategyAnonymous4Test {
     @Test
-    void locateUpgradesMarkerOnlyBindingToQualifierInstance() {
+    void locateUpgradesMarkerOnlyBindingToQualifierInstance() throws Exception {
+        registerGuicePrimitiveParserMethods();
         MarkerBoundService service = new MarkerBoundService();
         Injector injector = Guice.createInjector(new AbstractModule() {
             @Override
@@ -53,6 +54,16 @@ public class QualifyingStrategyAnonymous4Test {
     @Qualifier
     @Retention(RetentionPolicy.RUNTIME)
     private @interface Marker {
+    }
+
+    private static void registerGuicePrimitiveParserMethods() throws NoSuchMethodException {
+        Integer.class.getMethod("parseInt", String.class);
+        Long.class.getMethod("parseLong", String.class);
+        Boolean.class.getMethod("parseBoolean", String.class);
+        Byte.class.getMethod("parseByte", String.class);
+        Short.class.getMethod("parseShort", String.class);
+        Float.class.getMethod("parseFloat", String.class);
+        Double.class.getMethod("parseDouble", String.class);
     }
 
     private static final class MarkerBoundService {

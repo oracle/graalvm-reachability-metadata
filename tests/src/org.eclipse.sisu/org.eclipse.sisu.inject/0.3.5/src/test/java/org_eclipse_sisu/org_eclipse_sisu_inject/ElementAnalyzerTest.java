@@ -29,7 +29,8 @@ import com.google.inject.Module;
 
 public class ElementAnalyzerTest {
     @Test
-    void wireModuleAcceptsLegacyLocatorBindingsWhenCompatibilityApiIsPresent() {
+    void wireModuleAcceptsLegacyLocatorBindingsWhenCompatibilityApiIsPresent() throws Exception {
+        registerGuicePrimitiveParserMethods();
         BeanLocator legacyLocator = new LegacyBeanLocator();
         Module applicationModule = new AbstractModule() {
             @Override
@@ -45,7 +46,8 @@ public class ElementAnalyzerTest {
     }
 
     @Test
-    void wireModuleRoutesUnresolvedConstructorDependenciesToCustomWiring() {
+    void wireModuleRoutesUnresolvedConstructorDependenciesToCustomWiring() throws Exception {
+        registerGuicePrimitiveParserMethods();
         Collaborator collaborator = new WiredCollaborator();
         List<Key<?>> wiredKeys = new ArrayList<>();
         Module applicationModule = new AbstractModule() {
@@ -67,6 +69,16 @@ public class ElementAnalyzerTest {
 
         assertThat(injector.getInstance(NeedsCollaborator.class).collaborator()).isSameAs(collaborator);
         assertThat(wiredKeys).containsExactly(Key.get(Collaborator.class));
+    }
+
+    private static void registerGuicePrimitiveParserMethods() throws NoSuchMethodException {
+        Integer.class.getMethod("parseInt", String.class);
+        Long.class.getMethod("parseLong", String.class);
+        Boolean.class.getMethod("parseBoolean", String.class);
+        Byte.class.getMethod("parseByte", String.class);
+        Short.class.getMethod("parseShort", String.class);
+        Float.class.getMethod("parseFloat", String.class);
+        Double.class.getMethod("parseDouble", String.class);
     }
 
     private static final class LegacyBeanLocator implements BeanLocator {

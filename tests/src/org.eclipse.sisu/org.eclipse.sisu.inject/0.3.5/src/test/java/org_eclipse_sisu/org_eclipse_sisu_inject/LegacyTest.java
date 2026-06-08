@@ -8,12 +8,15 @@ package org_eclipse_sisu.org_eclipse_sisu_inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.reflect.Proxy;
+
 import org.eclipse.sisu.inject.Legacy;
 import org.junit.jupiter.api.Test;
 
 public class LegacyTest {
     @Test
     void proxyForwardsInterfaceCallsToDelegate() {
+        registerLegacyBeanEntryProxyInterface();
         GreetingService delegate = new GreetingService() {
             @Override
             public String greet(String name) {
@@ -35,9 +38,19 @@ public class LegacyTest {
 
     @Test
     void proxyReturnsNullForNullDelegate() {
+        registerLegacyBeanEntryProxyInterface();
         GreetingService proxy = Legacy.as(GreetingService.class).proxy(null);
 
         assertThat(proxy).isNull();
+    }
+
+    private static void registerLegacyBeanEntryProxyInterface() {
+        Object proxy = Proxy.newProxyInstance(
+            org.sonatype.inject.BeanEntry.class.getClassLoader(),
+            new Class<?>[] { org.sonatype.inject.BeanEntry.class },
+            (proxyInstance, method, arguments) -> null);
+
+        assertThat(proxy).isInstanceOf(org.sonatype.inject.BeanEntry.class);
     }
 
     public interface GreetingService {

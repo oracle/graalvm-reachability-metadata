@@ -24,9 +24,9 @@ public class URLClassSpaceTest {
     void loadClassDelegatesToBackingClassLoader() {
         URLClassSpace classSpace = new URLClassSpace(URLClassSpaceTest.class.getClassLoader());
 
-        Class<?> loadedClass = classSpace.loadClass(URLClassSpace.class.getName());
+        Class<?> loadedClass = classSpace.loadClass(String.class.getName());
 
-        assertThat(loadedClass).isSameAs(URLClassSpace.class);
+        assertThat(loadedClass).isSameAs(String.class);
     }
 
     @Test
