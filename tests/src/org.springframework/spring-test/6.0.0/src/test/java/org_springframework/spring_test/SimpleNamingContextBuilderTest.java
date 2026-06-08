@@ -7,7 +7,6 @@
 package org_springframework.spring_test;
 
 import java.util.Hashtable;
-import java.util.Properties;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -15,33 +14,32 @@ import javax.naming.spi.InitialContextFactory;
 
 import org.junit.jupiter.api.Test;
 
-import org.springframework.mock.jndi.SimpleNamingContextBuilder;
+import org.springframework.core.env.Profiles;
+import org.springframework.mock.env.MockEnvironment;
+import org.springframework.mock.env.MockPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SimpleNamingContextBuilderTest {
     @Test
-    void createsInitialContextFactoryFromEnvironmentClass() {
-        SimpleNamingContextBuilder builder = new SimpleNamingContextBuilder();
-        builder.deactivate();
-        TestInitialContextFactory.createdInstances = 0;
+    void resolvesClassValuedPropertiesAndProfilesFromMockPropertySources() {
+        MockPropertySource propertySource = new MockPropertySource("testProperties")
+                .withProperty(Context.INITIAL_CONTEXT_FACTORY, TestInitialContextFactory.class)
+                .withProperty("application.name", "reachability-metadata")
+                .withProperty("application.retries", "3");
 
-        Properties environment = new Properties();
-        environment.put(Context.INITIAL_CONTEXT_FACTORY, TestInitialContextFactory.class);
+        MockEnvironment environment = new MockEnvironment();
+        environment.getPropertySources().addFirst(propertySource);
+        environment.setActiveProfiles("native", "test");
 
-        InitialContextFactory factory = builder.createInitialContextFactory(environment);
-
-        assertThat(factory).isInstanceOf(TestInitialContextFactory.class);
-        assertThat(TestInitialContextFactory.createdInstances).isEqualTo(1);
+        assertThat(environment.getProperty(Context.INITIAL_CONTEXT_FACTORY, Object.class))
+                .isSameAs(TestInitialContextFactory.class);
+        assertThat(environment.getRequiredProperty("application.name")).isEqualTo("reachability-metadata");
+        assertThat(environment.getProperty("application.retries", Integer.class)).isEqualTo(3);
+        assertThat(environment.acceptsProfiles(Profiles.of("native & test"))).isTrue();
     }
 
     public static class TestInitialContextFactory implements InitialContextFactory {
-        static int createdInstances;
-
-        public TestInitialContextFactory() {
-            createdInstances++;
-        }
-
         @Override
         public Context getInitialContext(Hashtable<?, ?> environment) throws NamingException {
             return null;
