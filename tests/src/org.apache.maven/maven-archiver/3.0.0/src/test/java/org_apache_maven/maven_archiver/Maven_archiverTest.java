@@ -17,8 +17,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.jar.Attributes;
@@ -33,13 +33,17 @@ import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.repository.ArtifactRepositoryPolicy;
+import org.apache.maven.artifact.repository.Authentication;
 import org.apache.maven.artifact.repository.layout.ArtifactRepositoryLayout;
 import org.apache.maven.artifact.versioning.VersionRange;
+import org.apache.maven.execution.DefaultMavenExecutionRequest;
+import org.apache.maven.execution.DefaultMavenExecutionResult;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Organization;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.repository.Proxy;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.archiver.jar.Manifest;
 import org.codehaus.plexus.archiver.jar.ManifestException;
@@ -129,10 +133,11 @@ public class Maven_archiverTest {
     @Test
     void manifestCreatedByIncludesMavenVersionFromSession() throws Exception {
         MavenProject project = newProject("org.example", "session-app", "1.0.0");
-        Properties executionProperties = new Properties();
-        executionProperties.setProperty("maven.version", "test-session-version");
-        MavenSession session = new MavenSession(null, null, null, null, null, Collections.emptyList(),
-                tempDir.toString(), executionProperties, new Date(0L));
+        Properties userProperties = new Properties();
+        userProperties.setProperty("maven.version", "test-session-version");
+        DefaultMavenExecutionRequest request = new DefaultMavenExecutionRequest();
+        request.setUserProperties(userProperties);
+        MavenSession session = new MavenSession(null, request, new DefaultMavenExecutionResult(), project);
 
         Manifest manifest = new MavenArchiver().getManifest(session, project, new ManifestConfiguration());
 
@@ -267,7 +272,7 @@ public class Maven_archiverTest {
         Files.createDirectories(tempDir.resolve("target"));
         File archiveFile = tempDir.resolve("target/manifest-file-app.jar").toFile();
         mavenArchiver.setOutputFile(archiveFile);
-        mavenArchiver.createArchive(project, archiveConfiguration);
+        mavenArchiver.createArchive(null, project, archiveConfiguration);
 
         try (JarFile jarFile = new JarFile(archiveFile)) {
             java.util.jar.Manifest jarManifest = jarFile.getManifest();
@@ -304,7 +309,7 @@ public class Maven_archiverTest {
         Files.createDirectories(tempDir.resolve("target"));
         File archiveFile = tempDir.resolve("target/archive-app.jar").toFile();
         mavenArchiver.setOutputFile(archiveFile);
-        mavenArchiver.createArchive(project, archiveConfiguration);
+        mavenArchiver.createArchive(null, project, archiveConfiguration);
 
         assertThat(archiveFile).isFile();
         try (JarFile jarFile = new JarFile(archiveFile)) {
@@ -439,7 +444,12 @@ public class Maven_archiverTest {
     }
 
     private static final class TestArtifactRepository implements ArtifactRepository {
-        private final String url;
+        private String id = "test";
+        private String url;
+        private ArtifactRepositoryLayout layout;
+        private Authentication authentication;
+        private Proxy proxy;
+        private List<ArtifactRepository> mirroredRepositories = Collections.emptyList();
 
         private TestArtifactRepository(String url) {
             this.url = url;
@@ -467,6 +477,11 @@ public class Maven_archiverTest {
         }
 
         @Override
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        @Override
         public String getBasedir() {
             return null;
         }
@@ -478,7 +493,12 @@ public class Maven_archiverTest {
 
         @Override
         public String getId() {
-            return "test";
+            return id;
+        }
+
+        @Override
+        public void setId(String id) {
+            this.id = id;
         }
 
         @Override
@@ -487,18 +507,31 @@ public class Maven_archiverTest {
         }
 
         @Override
+        public void setSnapshotUpdatePolicy(ArtifactRepositoryPolicy policy) {
+        }
+
+        @Override
         public ArtifactRepositoryPolicy getReleases() {
             return null;
         }
 
         @Override
+        public void setReleaseUpdatePolicy(ArtifactRepositoryPolicy policy) {
+        }
+
+        @Override
         public ArtifactRepositoryLayout getLayout() {
-            return null;
+            return layout;
+        }
+
+        @Override
+        public void setLayout(ArtifactRepositoryLayout layout) {
+            this.layout = layout;
         }
 
         @Override
         public String getKey() {
-            return "test";
+            return id;
         }
 
         @Override
@@ -513,6 +546,49 @@ public class Maven_archiverTest {
         @Override
         public boolean isBlacklisted() {
             return false;
+        }
+
+        @Override
+        public Artifact find(Artifact artifact) {
+            return artifact;
+        }
+
+        @Override
+        public List<String> findVersions(Artifact artifact) {
+            return Collections.singletonList(artifact.getVersion());
+        }
+
+        @Override
+        public boolean isProjectAware() {
+            return false;
+        }
+
+        @Override
+        public void setAuthentication(Authentication authentication) {
+            this.authentication = authentication;
+        }
+
+        @Override
+        public Authentication getAuthentication() {
+            return authentication;
+        }
+
+        @Override
+        public void setProxy(Proxy proxy) {
+            this.proxy = proxy;
+        }
+
+        @Override
+        public Proxy getProxy() {
+            return proxy;
+        }
+
+        public List<ArtifactRepository> getMirroredRepositories() {
+            return mirroredRepositories;
+        }
+
+        public void setMirroredRepositories(List<ArtifactRepository> mirroredRepositories) {
+            this.mirroredRepositories = mirroredRepositories;
         }
     }
 }
