@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.sql.SQLException;
 
 import org.junit.jupiter.api.Test;
-import org.postgis.DriverWrapper;
+import net.postgis.jdbc.DriverWrapper;
 
 public class DriverWrapperTest {
 

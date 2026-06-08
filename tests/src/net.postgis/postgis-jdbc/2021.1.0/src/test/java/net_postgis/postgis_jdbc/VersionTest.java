@@ -9,7 +9,7 @@ package net_postgis.postgis_jdbc;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
-import org.postgis.Version;
+import net.postgis.jdbc.Version;
 
 public class VersionTest {
 
