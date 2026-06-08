@@ -6,7 +6,10 @@
  */
 package org_apache_maven_plugins.maven_source_plugin;
 
-import org.apache.maven.plugin.logging.Log;
+import java.util.function.Supplier;
+
+import org.apache.maven.api.plugin.Log;
+import org.apache.maven.api.plugin.testing.MojoExtension;
 import org.apache.maven.plugins.maven_source_plugin.HelpMojo;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +20,7 @@ public class HelpMojoTest {
     public void executeReadsBundledPluginHelpResource() throws Exception {
         HelpMojo mojo = new HelpMojo();
         CapturingLog log = new CapturingLog();
-        mojo.setLog(log);
+        MojoExtension.setVariableValueToObject(mojo, "logger", log);
 
         mojo.execute();
 
@@ -64,6 +67,17 @@ public class HelpMojoTest {
         }
 
         @Override
+        public void debug(Supplier<String> content) {
+            append(debugMessages, content.get());
+        }
+
+        @Override
+        public void debug(Supplier<String> content, Throwable error) {
+            append(debugMessages, content.get());
+            append(debugMessages, error);
+        }
+
+        @Override
         public boolean isInfoEnabled() {
             return true;
         }
@@ -81,6 +95,17 @@ public class HelpMojoTest {
 
         @Override
         public void info(Throwable error) {
+            append(infoMessages, error);
+        }
+
+        @Override
+        public void info(Supplier<String> content) {
+            append(infoMessages, content.get());
+        }
+
+        @Override
+        public void info(Supplier<String> content, Throwable error) {
+            append(infoMessages, content.get());
             append(infoMessages, error);
         }
 
@@ -106,6 +131,17 @@ public class HelpMojoTest {
         }
 
         @Override
+        public void warn(Supplier<String> content) {
+            append(warnMessages, content.get());
+        }
+
+        @Override
+        public void warn(Supplier<String> content, Throwable error) {
+            append(warnMessages, content.get());
+            append(warnMessages, error);
+        }
+
+        @Override
         public boolean isErrorEnabled() {
             return true;
         }
@@ -123,6 +159,17 @@ public class HelpMojoTest {
 
         @Override
         public void error(Throwable error) {
+            append(errorMessages, error);
+        }
+
+        @Override
+        public void error(Supplier<String> content) {
+            append(errorMessages, content.get());
+        }
+
+        @Override
+        public void error(Supplier<String> content, Throwable error) {
+            append(errorMessages, content.get());
             append(errorMessages, error);
         }
 
