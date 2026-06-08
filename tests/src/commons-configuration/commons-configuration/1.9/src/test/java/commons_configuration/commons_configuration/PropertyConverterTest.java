@@ -20,6 +20,11 @@ public class PropertyConverterTest {
     }
 
     @Test
+    public void toIntegerConvertsStringValueThroughNumberConstructor() {
+        assertThat(PropertyConverter.toInteger("8080")).isEqualTo(Integer.valueOf(8080));
+    }
+
+    @Test
     public void dataConfigurationConvertsStringValueToEnumByValueOf() {
         String originalJavaVersion = useLegacyJavaVersionString();
         try {
