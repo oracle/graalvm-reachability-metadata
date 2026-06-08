@@ -1,0 +1,45 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "commons-configuration:commons-configuration:$libraryVersion"
+    testImplementation 'commons-beanutils:commons-beanutils:1.8.3'
+    testImplementation 'commons-digester:commons-digester:1.8.1'
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+String defaultFileSystemClass = "org.apache.commons.configuration.DefaultFileSystem"
+
+tasks.withType(Test).configureEach {
+    systemProperty "org.apache.commons.configuration.filesystem", defaultFileSystemClass
+}
+
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Dorg.apache.commons.configuration.filesystem=$defaultFileSystemClass")
+}
+
+graalvmNative {
+    binaries {
+        test {
+            buildArgs.add("-Dorg.apache.commons.configuration.filesystem=$defaultFileSystemClass")
+        }
+    }
+
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
