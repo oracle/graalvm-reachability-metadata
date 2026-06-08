@@ -21,10 +21,14 @@ import com.alibaba.fastjson2.annotation.JSONField;
 import com.alibaba.fastjson2.filter.ValueFilter;
 import com.alibaba.fastjson2.schema.JSONSchema;
 import com.alibaba.fastjson2.schema.ValidateResult;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 public class Fastjson2Test {
@@ -153,6 +157,39 @@ public class Fastjson2Test {
         JSONObject object = JSON.parseObject(filtered);
         assertThat(object.getString("summary")).isEqualTo("unknown");
         assertThat(object.getString("title")).isEqualTo(book.getTitle());
+    }
+
+    @Test
+    void streamsJsonThroughReaderAndWriterApis() throws IOException {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        try (JSONWriter writer = JSONWriter.ofUTF8()) {
+            writer.startObject();
+            writer.writeName("name");
+            writer.writeColon();
+            writer.writeString("streaming");
+            writer.writeName("quantities");
+            writer.writeColon();
+            writer.startArray();
+            writer.writeInt32(3);
+            writer.writeComma();
+            writer.writeInt32(5);
+            writer.endArray();
+            writer.writeName("active");
+            writer.writeColon();
+            writer.writeBool(true);
+            writer.endObject();
+
+            assertThat(writer.flushTo(output)).isPositive();
+        }
+
+        try (JSONReader reader = JSONReader.of(
+                new ByteArrayInputStream(output.toByteArray()), StandardCharsets.UTF_8)) {
+            Map<String, Object> document = reader.readObject();
+
+            assertThat(document.get("name")).isEqualTo("streaming");
+            assertThat(document.get("quantities")).isEqualTo(List.of(3, 5));
+            assertThat(document.get("active")).isEqualTo(Boolean.TRUE);
+        }
     }
 
     @Test
