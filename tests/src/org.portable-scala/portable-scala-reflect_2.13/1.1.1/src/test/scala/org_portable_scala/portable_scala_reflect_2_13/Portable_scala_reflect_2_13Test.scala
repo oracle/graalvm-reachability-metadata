@@ -53,6 +53,18 @@ final class Portable_scala_reflect_2_13Test {
   }
 
   @Test
+  def lookupInstantiatableClassFindsClassesEnabledByAnAnnotatedSuperclass(): Unit = {
+    val instantiatableClass = Reflect.lookupInstantiatableClass(Names.SuperclassEnabledClass)
+
+    assertTrue(instantiatableClass.isDefined)
+    assertEquals(Names.SuperclassEnabledClass, instantiatableClass.get.runtimeClass.getName)
+
+    val instance = instantiatableClass.get.newInstance().asInstanceOf[Accessors]
+    assertEquals(202, instance.x)
+    assertEquals("SuperclassEnabledClass", instance.y)
+  }
+
+  @Test
   def lookupLoadableModuleClassFindsAnnotatedSingletonObjects(): Unit = {
     for (name <- Seq(Names.DirectModule, Names.IndirectModule)) {
       val loadableModuleClass = Reflect.lookupLoadableModuleClass(name)
@@ -342,6 +354,14 @@ object PortableScalaReflectFixtures {
   class IndirectClassWithoutPublicConstructor private (val x: Int, val y: String)
       extends EnablingTrait with Accessors
 
+  @EnableReflectiveInstantiation
+  class AnnotatedSuperclass
+
+  class SuperclassEnabledClass extends AnnotatedSuperclass with Accessors {
+    val x = 202
+    val y = "SuperclassEnabledClass"
+  }
+
   class UnannotatedClass(val x: Int, val y: String) extends Accessors
 
   object UnannotatedModule extends Accessors {
@@ -399,6 +419,7 @@ object Names {
   final val IndirectAbstractClass = Prefix + "IndirectAbstractClass"
   final val IndirectClassWithoutPublicConstructor =
     Prefix + "IndirectClassWithoutPublicConstructor"
+  final val SuperclassEnabledClass = Prefix + "SuperclassEnabledClass"
   final val UnannotatedClass = Prefix + "UnannotatedClass"
   final val UnannotatedModule = Prefix + "UnannotatedModule$"
   final val UnannotatedTrait = Prefix + "UnannotatedTrait"
