@@ -37,6 +37,7 @@ import cats.kernel.Order
 import cats.kernel.PartialOrder
 import cats.kernel.Semigroup
 import cats.kernel.Semilattice
+import cats.kernel.UnboundedEnumerable
 import cats.kernel.UpperBounded
 import cats.kernel.instances.all.*
 import org.junit.jupiter.api.Test
@@ -180,6 +181,16 @@ class Cats_kernel_3Test:
     assert(charEnumerable.partialPrevious('b') == Some('a'))
     assert(charEnumerable.minBound == Char.MinValue)
     assert(charEnumerable.maxBound == Char.MaxValue)
+
+  @Test
+  def enumeratesUnboundedBigIntValues(): Unit =
+    val bigIntEnumerable: UnboundedEnumerable[BigInt] = summon[UnboundedEnumerable[BigInt]]
+    assert(bigIntEnumerable.next(BigInt(0)) == BigInt(1))
+    assert(bigIntEnumerable.previous(BigInt(0)) == BigInt(-1))
+    assert(bigIntEnumerable.partialNext(BigInt(10)) == Some(BigInt(11)))
+    assert(bigIntEnumerable.partialPrevious(BigInt(-10)) == Some(BigInt(-11)))
+    assert(bigIntEnumerable.order.compare(BigInt(-1), BigInt(1)) < 0)
+    assert(bigIntEnumerable.partialOrder.lteqv(BigInt(2), BigInt(3)))
 
   @Test
   def exposesLowerAndUpperBoundsForSupportedTypes(): Unit =
