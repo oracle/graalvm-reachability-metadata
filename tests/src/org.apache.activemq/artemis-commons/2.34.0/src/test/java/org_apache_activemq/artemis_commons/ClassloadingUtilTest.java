@@ -7,6 +7,7 @@
 package org_apache_activemq.artemis_commons;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.net.URL;
 import java.sql.DriverManager;
@@ -23,7 +24,8 @@ public class ClassloadingUtilTest {
     public void createsInstanceWithOwnerClassLoader() {
         Object instance = ClassloadingUtil.newInstanceFromClassLoader(
                 ClassloadingUtilTest.class,
-                ActiveMQTimeoutException.class.getName());
+                ActiveMQTimeoutException.class.getName(),
+                ActiveMQTimeoutException.class);
 
         assertThat(instance).isInstanceOf(ActiveMQTimeoutException.class);
     }
@@ -35,7 +37,8 @@ public class ClassloadingUtilTest {
         try {
             Object instance = ClassloadingUtil.newInstanceFromClassLoader(
                     DriverManager.class,
-                    ActiveMQTimeoutException.class.getName());
+                    ActiveMQTimeoutException.class.getName(),
+                    ActiveMQTimeoutException.class);
 
             assertThat(instance).isInstanceOf(ActiveMQTimeoutException.class);
         } finally {
@@ -44,10 +47,12 @@ public class ClassloadingUtilTest {
     }
 
     @Test
-    public void createsInstanceWithConstructorArguments() {
-        Object instance = ClassloadingUtil.newInstanceFromClassLoader(
-                ClassloadingUtilTest.class,
+    public void createsInstanceWithConstructorArguments() throws Exception {
+        Object instance = ClassloadingUtil.getInstanceForParamsWithTypeCheck(
                 ActiveMQTimeoutException.class.getName(),
+                ActiveMQTimeoutException.class,
+                ClassloadingUtilTest.class.getClassLoader(),
+                new Class<?>[] {String.class},
                 TIMEOUT_MESSAGE);
 
         assertThat(instance).isInstanceOfSatisfying(
@@ -56,19 +61,14 @@ public class ClassloadingUtilTest {
     }
 
     @Test
-    public void createsVarargsInstanceWithContextClassLoaderFallback() {
-        ClassLoader originalLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(ClassloadingUtilTest.class.getClassLoader());
-        try {
-            Object instance = ClassloadingUtil.newInstanceFromClassLoader(
-                    DriverManager.class,
-                    ActiveMQTimeoutException.class.getName(),
-                    TIMEOUT_MESSAGE);
-
-            assertThat(instance).isInstanceOf(ActiveMQTimeoutException.class);
-        } finally {
-            Thread.currentThread().setContextClassLoader(originalLoader);
-        }
+    public void rejectsInstanceThatDoesNotMatchExpectedType() {
+        assertThatThrownBy(() -> ClassloadingUtil.newInstanceFromClassLoader(
+                ClassloadingUtilTest.class,
+                ActiveMQTimeoutException.class.getName(),
+                DriverManager.class))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining(ActiveMQTimeoutException.class.getName())
+                .hasMessageContaining(DriverManager.class.getName());
     }
 
     @Test
