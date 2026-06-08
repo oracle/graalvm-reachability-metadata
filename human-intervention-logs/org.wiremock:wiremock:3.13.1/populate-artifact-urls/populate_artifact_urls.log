@@ -1,0 +1,317 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-93eaafa3
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ea7da-0b05-7173-af8c-846c9700b883
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.wiremock:wiremock:3.13.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [3.13.1].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-93eaafa3/metadata/org.wiremock/wiremock/index.json
+- Entry selector: "metadata-version" = "3.13.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-sources.jar
+- repository-url: https://github.com/wiremock/wiremock
+- test-code-url: https://repo1.maven.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-tests.jar
+- documentation-url: https://repo1.maven.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-javadoc.jar
+- description: WireMock is a JVM library and server for mocking HTTP services in tests and development environments. It lets applications define stubs, match and verify requests, record and replay traffic, proxy upstream services, and generate dynamic responses.
+- language: <missing>
+
+Context:
+- Coordinate version: 3.13.1
+- Entry metadata-version: 3.13.1
+- Entry test-version: 3.13.1
+- Entry tested-versions: [3.13.1]
+codex
+I’ll verify the Maven artifacts and the existing index entry before touching the file. Since the current values are already populated, the main decision is whether `language` should be added and whether any populated URL is actually stale or invalid.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"3.13.1\")' metadata/org.wiremock/wiremock/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-93eaafa3
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "3.13.1",
+  "source-code-url": "https://repo1.maven.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-sources.jar",
+  "repository-url": "https://github.com/wiremock/wiremock",
+  "test-code-url": "https://repo1.maven.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-tests.jar",
+  "documentation-url": "https://repo1.maven.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-javadoc.jar",
+  "description": "WireMock is a JVM library and server for mocking HTTP services in tests and development environments. It lets applications define stubs, match and verify requests, record and replay traffic, proxy upstream services, and generate dynamic responses.",
+  "tested-versions": [
+    "3.13.1"
+  ],
+  "allowed-packages": [
+    "com.github.tomakehurst.wiremock",
+    "org.wiremock",
+    "wiremock"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.wiremock/wiremock/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-93eaafa3
+ succeeded in 0ms:
+?? metadata/org.wiremock/wiremock/index.json
+
+web search: 
+web search: Maven Central org.wiremock wiremock 3.13.1 sources jar tests jar javadoc jar
+codex
+The entry is currently untracked in this worktree, so I’m treating it as user-owned state and avoiding incidental rewrites. I found Maven Central entries for the source, tests, and javadoc jars; next I’m checking the exact rendered URLs rather than trusting the templates.
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/org/wiremock/wiremock/3.13.1/wiremock-3.13.1-javadoc.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-93eaafa3
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 08 Jun 2026 15:29:21 GMT
+content-type: application/java-archive
+content-length: 2534250
+cf-ray: a088ee7a6edac115-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 23192
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/org/wiremock/wiremock/3.13.1/wiremock-3.13.1-sources.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-93eaafa3
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 08 Jun 2026 15:29:21 GMT
+content-type: application/java-archive
+content-length: 3918085
+cf-ray: a088ee7a6af2273b-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 130577
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/org/wiremock/wiremock/3.13.1/wiremock-3.13.1-tests.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-93eaafa3
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 08 Jun 2026 15:29:21 GMT
+content-type: application/java-archive
+content-length: 1131757
+cf-ray: a088ee7a6ba6bb0d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 78
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/wiremock/wiremock | sed -n '1,8p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-93eaafa3
+ succeeded in 663ms:
+HTTP/2 200 
+date: Mon, 08 Jun 2026 15:29:21 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"aa4267de3f5aeb3d3a410c0f64283c1e"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+
+web search: 
+web search: site:mvnrepository.com/artifact/org.wiremock/wiremock/3.13.1 org.wiremock wiremock 3.13.1
+web search: 
+web search: https://central.sonatype.com/artifact/org.wiremock/wiremock/3.13.1
+web search: 
+web search: WireMock documentation Java API stubbing request matching verification proxy recording dynamic responses
+codex
+The rendered Maven URLs all return `200`, including the `tests.jar`, so the Maven-preferred templates are valid for the only tested-version alias, `3.13.1`. I’m also checking the artifact contents briefly to decide the language classification rather than inferring it from the JVM packaging alone.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/wiremock/wiremock/3.13.1/wiremock-3.13.1-sources.jar | jar tf /dev/stdin | awk 'BEGIN{java=0;kt=0;groovy=0;scala=0} /\\.java"'$/{java++} /'"\\.kt"'$/{kt++} /'"\\.groovy"'$/{groovy++} /'"\\.scala"'$/{scala++} END{printf "java=%d kt=%d groovy=%d scala=%d'"\\n\", java, kt, groovy, scala}'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-93eaafa3
+ succeeded in 0ms:
+java.util.zip.ZipException: zip file is empty
+	at java.base/java.util.zip.ZipFile$Source.zerror(ZipFile.java:1831)
+	at java.base/java.util.zip.ZipFile$Source.findEND(ZipFile.java:1609)
+	at java.base/java.util.zip.ZipFile$Source.initCEN(ZipFile.java:1701)
+	at java.base/java.util.zip.ZipFile$Source.<init>(ZipFile.java:1542)
+	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1506)
+	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:704)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:204)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:150)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:131)
+	at jdk.jartool/sun.tools.jar.Main.list(Main.java:1553)
+	at jdk.jartool/sun.tools.jar.Main.run(Main.java:361)
+	at jdk.jartool/sun.tools.jar.Main.main(Main.java:1731)
+java=0 kt=0 groovy=0 scala=0
+curl: (23) Failure writing output to destination
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/wiremock/wiremock/3.13.1/wiremock-3.13.1.pom | sed -n '/<scm>/,/<\\/scm>/p; /<description>/p; /<url>/p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-93eaafa3
+ succeeded in 0ms:
+  <description>A web service test double for all occasions</description>
+  <url>http://wiremock.org</url>
+  <scm>
+    <connection>https://github.com/wiremock/wiremock.git</connection>
+    <developerConnection>https://github.com/wiremock/wiremock.git</developerConnection>
+    <url>https://github.com/wiremock/wiremock</url>
+    <url>https://github.com/wiremock/wiremock</url>
+  </scm>
+      <url>http://www.apache.org/license/LICENSE-2.0.txt</url>
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.wiremock/wiremock/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-93eaafa3
+ succeeded in 0ms:
+codex
+The POM confirms the canonical SCM URL is the existing repository root. My first attempt to inspect the sources jar through stdin hit a `jar` tooling limitation, so I’m rerunning that with a temporary file.
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp); trap '"'rm -f \""'$tmp"'"' EXIT; curl -fsSL -o \""'$tmp" https://repo1.maven.org/maven2/org/wiremock/wiremock/3.13.1/wiremock-3.13.1-tests.jar; jar tf "$tmp" | sed -n '"'1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-93eaafa3
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp); trap '"'rm -f \""'$tmp"'"' EXIT; curl -fsSL -o \""'$tmp" https://repo1.maven.org/maven2/org/wiremock/wiremock/3.13.1/wiremock-3.13.1-sources.jar; jar tf "$tmp" | awk '"'BEGIN{java=0;kt=0;groovy=0;scala=0} /\\.java"'$/{java++} /'"\\.kt"'$/{kt++} /'"\\.groovy"'$/{groovy++} /'"\\.scala"'$/{scala++} END{printf "java=%d kt=%d groovy=%d scala=%d'"\\n\", java, kt, groovy, scala}'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-93eaafa3
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp); trap '"'rm -f \""'$tmp"'"' EXIT; curl -fsSL -o \""'$tmp" https://repo1.maven.org/maven2/org/wiremock/wiremock/3.13.1/wiremock-3.13.1-javadoc.jar; jar tf "$tmp" | sed -n '"'1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-93eaafa3
+ succeeded in 329ms:
+META-INF/
+META-INF/MANIFEST.MF
+benchmarks/
+benchmarks/HandlebarsOptimizedTemplateBenchmark$HandlebarsOptimizedTemplateBenchmarkState.class
+benchmarks/HandlebarsOptimizedTemplateBenchmark.class
+benchmarks/JsonPathAdvancedMatchingBenchmark$BenchmarkState.class
+benchmarks/JsonPathAdvancedMatchingBenchmark.class
+benchmarks/JsonPathMatchingBenchTest.class
+benchmarks/JsonPathSimpleMatchingBenchmark$BenchmarkState.class
+benchmarks/JsonPathSimpleMatchingBenchmark.class
+benchmarks/PathAndMethodMatchingBenchmark$PathAndMethodBenchmarkState.class
+benchmarks/PathAndMethodMatchingBenchmark.class
+com/
+com/github/
+com/github/tomakehurst/
+com/github/tomakehurst/wiremock/
+com/github/tomakehurst/wiremock/AcceptanceTestBase.class
+com/github/tomakehurst/wiremock/AdminApiTest$1.class
+com/github/tomakehurst/wiremock/AdminApiTest$TestExtendedSettingsData.class
+com/github/tomakehurst/wiremock/AdminApiTest.class
+
+ succeeded in 405ms:
+java=581 kt=0 groovy=0 scala=0
+
+ succeeded in 504ms:
+META-INF/
+META-INF/MANIFEST.MF
+allclasses-index.html
+allclasses.html
+allpackages-index.html
+constant-values.html
+deprecated-list.html
+element-list
+help-doc.html
+index-all.html
+index.html
+jquery-ui.overrides.css
+member-search-index.js
+member-search-index.zip
+overview-summary.html
+overview-tree.html
+package-search-index.js
+package-search-index.zip
+script.js
+search.js
+
+web search: 
+web search: WireMock official documentation mocking HTTP services stubbing request matching verification
+codex
+The sources jar contains Java sources and no Kotlin, Groovy, or Scala source files, so it does not meet the requested language-specific cases. Because every requested field that should exist is already non-blank and valid, and `language` should remain absent, there is no safe content change to make.
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.wiremock/wiremock/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-93eaafa3
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.wiremock/wiremock/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-93eaafa3
+ succeeded in 0ms:
+?? metadata/org.wiremock/wiremock/index.json
+
+web search: 
+web search: https://wiremock.org/docs/
+web search: 
+web search: https://repo1.maven.org/maven2/org/wiremock/wiremock/3.13.1/
+web search: 
+web search: https://github.com/wiremock/wiremock
+codex
+I verified the existing entry in [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-93eaafa3/metadata/org.wiremock/wiremock/index.json). No edit was needed: the source, tests, and javadoc Maven artifacts for `3.13.1` exist, the GitHub repository root is canonical, the description is already exactly two sentences, and `language` should remain absent because this is not a Kotlin/Groovy/Scala-specific library. ([repo1.maven.org](https://repo1.maven.org/maven2/org/wiremock/wiremock/3.13.1/))
+
+```json
+{
+  "source-code-url": "https://repo1.maven.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-sources.jar",
+  "repository-url": "https://github.com/wiremock/wiremock",
+  "test-code-url": "https://repo1.maven.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-tests.jar",
+  "documentation-url": "https://repo1.maven.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-javadoc.jar",
+  "description": "WireMock is a JVM library and server for mocking HTTP services in tests and development environments. It lets applications define stubs, match and verify requests, record and replay traffic, proxy upstream services, and generate dynamic responses."
+}
+```
+
+Verification: `jq empty metadata/org.wiremock/wiremock/index.json` passed. The file is currently untracked in this worktree, and I left it unchanged.
+tokens used
+54,587
+I verified the existing entry in [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-93eaafa3/metadata/org.wiremock/wiremock/index.json). No edit was needed: the source, tests, and javadoc Maven artifacts for `3.13.1` exist, the GitHub repository root is canonical, the description is already exactly two sentences, and `language` should remain absent because this is not a Kotlin/Groovy/Scala-specific library. ([repo1.maven.org](https://repo1.maven.org/maven2/org/wiremock/wiremock/3.13.1/))
+
+```json
+{
+  "source-code-url": "https://repo1.maven.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-sources.jar",
+  "repository-url": "https://github.com/wiremock/wiremock",
+  "test-code-url": "https://repo1.maven.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-tests.jar",
+  "documentation-url": "https://repo1.maven.org/maven2/org/wiremock/wiremock/$version$/wiremock-$version$-javadoc.jar",
+  "description": "WireMock is a JVM library and server for mocking HTTP services in tests and development environments. It lets applications define stubs, match and verify requests, record and replay traffic, proxy upstream services, and generate dynamic responses."
+}
+```
+
+Verification: `jq empty metadata/org.wiremock/wiremock/index.json` passed. The file is currently untracked in this worktree, and I left it unchanged.
+Ran agent for org.wiremock:wiremock:3.13.1 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-93eaafa3/build/agent-url-discovery-logs/org.wiremock-wiremock-3.13.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2636-93eaafa3/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 14s
+9 actionable tasks: 1 executed, 8 up-to-date
