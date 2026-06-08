@@ -20,6 +20,7 @@ import org.specs2.Specification
 import org.specs2.control.ExecuteActions.ActionRunOps
 import org.specs2.execute.DecoratedResult
 import org.specs2.execute.Failure
+import org.specs2.execute.PendingUntilFixed
 import org.specs2.execute.Result
 import org.specs2.execute.Skipped
 import org.specs2.execute.Success
@@ -161,6 +162,17 @@ class Specs2_core_3Test {
   }
 
   @Test
+  def tracksPendingUntilFixedExpectations(): Unit = {
+    val pendingResult: Result = Specs2CoreExpectations.pendingUntilFixedForUnmetExpectation
+    val fixedResult: Result = Specs2CoreExpectations.pendingUntilFixedForMetExpectation
+
+    assertEquals("pending", pendingResult.statusName)
+    assertTrue(pendingResult.message.contains("Pending until fixed"), pendingResult.message)
+    assertTrue(fixedResult.isFailure)
+    assertTrue(fixedResult.message.contains("Fixed now"), fixedResult.message)
+  }
+
+  @Test
   def buffersReporterLinesAndClassifiesResultStatistics(): Unit = {
     val logger = LineLogger.stringLogger
     logger.infoLog("starting specs2")
@@ -227,7 +239,7 @@ final class MutableCollectionSpecification extends org.specs2.mutable.Specificat
   }
 }
 
-object Specs2CoreExpectations extends MustMatchers with Tables {
+object Specs2CoreExpectations extends MustMatchers with Tables with PendingUntilFixed {
   def combinedCollectionAndStringExpectation: MatchResult[Any] = {
     (List("alpha", "beta", "gamma") must contain("beta")) and
       ("specs2-core" must startWith("specs2")) and
@@ -246,6 +258,16 @@ object Specs2CoreExpectations extends MustMatchers with Tables {
 
   def equalExpectation(actual: Int, expected: Int): MatchResult[Any] =
     actual must_== expected
+
+  def pendingUntilFixedForUnmetExpectation: Result =
+    pendingUntilFixed("feature is intentionally pending") {
+      "accepted" must_== "implemented"
+    }
+
+  def pendingUntilFixedForMetExpectation: Result =
+    pendingUntilFixed("feature is ready") {
+      1 + 1 must_== 2
+    }
 
   def multiplicationTableResult: DecoratedResult[DataTable] = {
     val firstRow: DataRow2[Int, Int] = toDataRow(1).!(2)
