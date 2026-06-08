@@ -11,14 +11,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.web.reactive.socket.server.support.HandshakeWebSocketService;
-import org.springframework.web.reactive.socket.server.upgrade.Jetty10RequestUpgradeStrategy;
+import org.springframework.web.reactive.socket.server.upgrade.JettyRequestUpgradeStrategy;
 
 public class HandshakeWebSocketServiceTest {
     @Test
     void defaultConstructorInstantiatesDetectedUpgradeStrategy() {
         HandshakeWebSocketService service = new HandshakeWebSocketService();
 
-        assertThat(service.getUpgradeStrategy()).isInstanceOf(Jetty10RequestUpgradeStrategy.class);
+        assertThat(service.getUpgradeStrategy()).isInstanceOf(JettyRequestUpgradeStrategy.class);
         assertThat(service.isRunning()).isFalse();
     }
 }
