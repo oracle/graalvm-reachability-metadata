@@ -136,7 +136,7 @@ public class ModelAttributeMethodProcessorInnerFieldAwareConstructorParameterTes
         private final Map<String, Object> sessionAttributes = new HashMap<>();
 
         private SimpleNativeWebRequest(String parameterName, String parameterValue) {
-            this.parameters = Collections.singletonMap(parameterName, new String[] { parameterValue });
+            this.parameters = Collections.singletonMap(parameterName, new String[] {parameterValue });
         }
 
         @Override

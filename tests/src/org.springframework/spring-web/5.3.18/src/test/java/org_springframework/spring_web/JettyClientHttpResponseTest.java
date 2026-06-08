@@ -62,8 +62,7 @@ public class JettyClientHttpResponseTest {
             assertThat(readBody(response)).isEqualTo("hello jetty");
 
             serverExchange.get(10, TimeUnit.SECONDS);
-        }
-        finally {
+        } finally {
             if (httpClient.isStarted()) {
                 httpClient.stop();
             }
@@ -87,8 +86,7 @@ public class JettyClientHttpResponseTest {
             output.write(body);
             output.flush();
             return null;
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             throw new IllegalStateException("Failed to serve test HTTP response", ex);
         }
     }
@@ -102,11 +100,9 @@ public class JettyClientHttpResponseTest {
             }
             if ((state == 0 || state == 2) && value == '\r') {
                 state++;
-            }
-            else if ((state == 1 || state == 3) && value == '\n') {
+            } else if ((state == 1 || state == 3) && value == '\n') {
                 state++;
-            }
-            else {
+            } else {
                 state = (value == '\r' ? 1 : 0);
             }
         }
@@ -125,8 +121,7 @@ public class JettyClientHttpResponseTest {
             byte[] bytes = new byte[dataBuffer.readableByteCount()];
             dataBuffer.read(bytes);
             return new String(bytes, StandardCharsets.UTF_8);
-        }
-        finally {
+        } finally {
             DataBufferUtils.release(dataBuffer);
         }
     }

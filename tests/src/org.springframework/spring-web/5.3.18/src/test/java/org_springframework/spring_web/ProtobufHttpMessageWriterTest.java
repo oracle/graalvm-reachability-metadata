@@ -126,8 +126,7 @@ public class ProtobufHttpMessageWriterTest {
                 byte[] bytes = new byte[dataBuffer.readableByteCount()];
                 dataBuffer.read(bytes);
                 this.body.write(bytes, 0, bytes.length);
-            }
-            finally {
+            } finally {
                 DataBufferUtils.release(dataBuffer);
             }
         }
