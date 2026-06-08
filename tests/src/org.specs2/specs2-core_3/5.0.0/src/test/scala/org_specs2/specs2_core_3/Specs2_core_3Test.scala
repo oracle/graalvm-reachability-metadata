@@ -7,6 +7,7 @@
 package org_specs2.specs2_core_3
 
 import scala.collection.mutable.ArrayBuffer
+import scala.concurrent.Await
 import scala.concurrent.duration.DurationInt
 import scala.util.Failure as TryFailure
 import scala.util.Success as TrySuccess
@@ -16,8 +17,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.specs2.Specification
-import org.specs2.control.ExecuteActions.ActionRunOps
+import org.specs2.Spec
 import org.specs2.execute.DecoratedResult
 import org.specs2.execute.Failure
 import org.specs2.execute.PendingUntilFixed
@@ -26,9 +26,8 @@ import org.specs2.execute.ResultLogicalCombinators.combineResult
 import org.specs2.execute.Skipped
 import org.specs2.execute.Success
 import org.specs2.matcher.DataTable
-import org.specs2.matcher.MatchResult
 import org.specs2.matcher.MustMatchers
-import org.specs2.reporter.LineLogger
+import org.specs2.reporter.PrinterLogger
 import org.specs2.specification.After
 import org.specs2.specification.Before
 import org.specs2.specification.BeforeAfter
@@ -49,7 +48,7 @@ class Specs2_core_3Test {
     val specification: CalculatorAcceptanceSpecification = new CalculatorAcceptanceSpecification
 
     withEnv { env =>
-      val fragments: List[Fragment] = specification.structure(env).fragmentsList(env.specs2ExecutionEnv)
+      val fragments: List[Fragment] = specification.structure.fragmentsList(env.specs2ExecutionEnv)
       val renderedText: String = fragments.map(_.description.show).mkString("\n")
       val examples: List[Fragment] = fragments.filter(Fragment.isExample)
 
@@ -72,7 +71,7 @@ class Specs2_core_3Test {
     val specification: MutableCollectionSpecification = new MutableCollectionSpecification
 
     withEnv { env =>
-      val fragments: List[Fragment] = specification.structure(env).fragmentsList(env.specs2ExecutionEnv)
+      val fragments: List[Fragment] = specification.structure.fragmentsList(env.specs2ExecutionEnv)
       val renderedText: String = fragments.map(_.description.show).mkString("\n")
 
       assertTrue(renderedText.contains("A mutable collection specification"))
@@ -88,14 +87,14 @@ class Specs2_core_3Test {
 
   @Test
   def evaluatesCoreMatchersAndReportsFailuresWithoutThrowing(): Unit = {
-    val combinedSuccess: MatchResult[Any] = Specs2CoreExpectations.combinedCollectionAndStringExpectation
-    val failingResult: Result = Specs2CoreExpectations.failingStringExpectation.toResult
-    val trySuccess: MatchResult[Try[Int]] = Specs2CoreExpectations.tryExpectation(TrySuccess(7))
-    val tryFailure: MatchResult[Try[Int]] = Specs2CoreExpectations.tryFailureExpectation(TryFailure(new IllegalArgumentException("boom")))
+    val combinedSuccess: Result = Specs2CoreExpectations.combinedCollectionAndStringExpectation
+    val failingResult: Result = Specs2CoreExpectations.failingStringExpectation
+    val trySuccess: Result = Specs2CoreExpectations.tryExpectation(TrySuccess(7))
+    val tryFailure: Result = Specs2CoreExpectations.tryFailureExpectation(TryFailure(new IllegalArgumentException("boom")))
 
-    assertTrue(combinedSuccess.toResult.isSuccess)
-    assertTrue(trySuccess.toResult.isSuccess)
-    assertTrue(tryFailure.toResult.isSuccess)
+    assertTrue(combinedSuccess.isSuccess)
+    assertTrue(trySuccess.isSuccess)
+    assertTrue(tryFailure.isSuccess)
     assertTrue(failingResult.isFailure)
     assertTrue(failingResult.message.contains("gamma"), failingResult.message)
   }
@@ -181,8 +180,8 @@ class Specs2_core_3Test {
 
   @Test
   def tracksPendingUntilFixedExpectations(): Unit = {
-    val pendingResult: Result = Specs2CoreExpectations.pendingUntilFixedForUnmetExpectation
-    val fixedResult: Result = Specs2CoreExpectations.pendingUntilFixedForMetExpectation
+    val pendingResult: Result = executeExecution(Specs2CoreExpectations.pendingUntilFixedForUnmetExpectation)
+    val fixedResult: Result = executeExecution(Specs2CoreExpectations.pendingUntilFixedForMetExpectation)
 
     assertEquals("pending", pendingResult.statusName)
     assertTrue(pendingResult.message.contains("Pending until fixed"), pendingResult.message)
@@ -192,12 +191,15 @@ class Specs2_core_3Test {
 
   @Test
   def buffersReporterLinesAndClassifiesResultStatistics(): Unit = {
-    val logger = LineLogger.stringLogger
+    val logger = PrinterLogger.stringPrinterLogger
     logger.infoLog("starting specs2")
     logger.infoLog(" core\n")
     logger.warnLog("watch this")
+    logger.newline()
     logger.failureLog("expectation failed")
+    logger.newline()
     logger.errorLog("unexpected error")
+    logger.newline()
     logger.close()
 
     val pendingStats: Stats = Stats(Skipped("not selected"))
@@ -220,33 +222,38 @@ class Specs2_core_3Test {
     }
   }
 
+  private def executeExecution(execution: Execution): Result =
+    withEnv { env =>
+      execution.startExecution(env).executionResult.run(env.specs2ExecutionEnv)
+    }
+
   private def withEnv[A](f: Env => A): A = {
-    val env: Env = Env().setWithoutIsolation
+    val env: Env = Env()
     try f(env)
-    finally env.shutdown()
+    finally Await.result(env.shutdown, 10.seconds)
   }
 }
 
-final class CalculatorAcceptanceSpecification extends Specification {
+final class CalculatorAcceptanceSpecification extends Spec {
   def is: SpecStructure = s2"""
  Calculator acceptance
    adds positive integers $addsPositiveIntegers
    finds a maximum       $findsAMaximum
   """
 
-  def addsPositiveIntegers: MatchResult[Any] =
-    (2 + 3) must_== 5
+  def addsPositiveIntegers: Result =
+    (2 + 3) === 5
 
-  def findsAMaximum: MatchResult[Any] =
-    List(1, 9, 4).max must_== 9
+  def findsAMaximum: Result =
+    List(1, 9, 4).max === 9
 }
 
-final class MutableCollectionSpecification extends org.specs2.mutable.Specification {
+final class MutableCollectionSpecification extends org.specs2.mutable.Specification with MustMatchers {
   "A mutable collection specification" should {
     "preserve insertion order" in {
       val values: Vector[String] = Vector("first", "second", "third")
 
-      values.mkString(",") must_== "first,second,third"
+      values.mkString(",") === "first,second,third"
     }
 
     "support option expectations" in {
@@ -258,43 +265,43 @@ final class MutableCollectionSpecification extends org.specs2.mutable.Specificat
 }
 
 object Specs2CoreExpectations extends MustMatchers with Tables with PendingUntilFixed {
-  def combinedCollectionAndStringExpectation: MatchResult[Any] = {
+  def combinedCollectionAndStringExpectation: Result = {
     (List("alpha", "beta", "gamma") must contain("beta")) and
       ("specs2-core" must startWith("specs2")) and
       (Option("metadata") must beSome("metadata")) and
       (Right(42) must beRight(42))
   }
 
-  def failingStringExpectation: MatchResult[String] =
+  def failingStringExpectation: Result =
     "alpha beta" must contain("gamma")
 
-  def tryExpectation(value: Try[Int]): MatchResult[Try[Int]] =
+  def tryExpectation(value: Try[Int]): Result =
     value must beSuccessfulTry(7)
 
-  def tryFailureExpectation(value: Try[Int]): MatchResult[Try[Int]] =
-    value must beFailedTry.like { case e: IllegalArgumentException => e.getMessage must_== "boom" }
+  def tryFailureExpectation(value: Try[Int]): Result =
+    value must beFailedTry.like { case e: IllegalArgumentException => e.getMessage === "boom" }
 
-  def equalExpectation(actual: Int, expected: Int): MatchResult[Any] =
-    actual must_== expected
+  def equalExpectation(actual: Int, expected: Int): Result =
+    actual === expected
 
-  def pendingUntilFixedForUnmetExpectation: Result =
+  def pendingUntilFixedForUnmetExpectation: Execution =
     pendingUntilFixed("feature is intentionally pending") {
-      "accepted" must_== "implemented"
+      "accepted" === "implemented"
     }
 
-  def pendingUntilFixedForMetExpectation: Result =
+  def pendingUntilFixedForMetExpectation: Execution =
     pendingUntilFixed("feature is ready") {
-      1 + 1 must_== 2
+      1 + 1 === 2
     }
 
   def multiplicationTableResult: DecoratedResult[DataTable] = {
-    val firstRow: DataRow2[Int, Int] = toDataRow(1).!(2)
-    val secondRow: DataRow2[Int, Int] = toDataRow(4).!(8)
-    val thirdRow: DataRow2[Int, Int] = toDataRow(7).!(14)
-    val table: Table2[Int, Int] = toTableHeader("value").|("double").|>(firstRow).|(secondRow).|(thirdRow)
+    val firstRow: DataRow2[Int, Int] = DataRow2(1, 2)
+    val secondRow: DataRow2[Int, Int] = DataRow2(4, 8)
+    val thirdRow: DataRow2[Int, Int] = DataRow2(7, 14)
+    val table: Table2[Int, Int] = TableHeader(List("value")).|("double").|>(firstRow).|(secondRow).|(thirdRow)
 
     table.|> { (value: Int, double: Int) =>
-      value * 2 must_== double
+      value * 2 === double
     }
   }
 }
