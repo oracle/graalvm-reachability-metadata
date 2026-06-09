@@ -20,6 +20,6 @@ class ScalaObjectDeserializerTest {
     val value: Module = mapper.readValue("{}", ScalaObjectDeserializerModule.getClass)
 
     assertThat(value).isSameAs(ScalaObjectDeserializerModule)
-    assertThat(value.getModuleName).isEqualTo("JacksonModule")
+    assertThat(value.getModuleName).isEqualTo("ScalaObjectDeserializerModule")
   }
 }
