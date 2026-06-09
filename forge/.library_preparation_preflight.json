@@ -1,0 +1,33 @@
+{
+  "status": "completed",
+  "action": "no_action",
+  "issue_number": 8228,
+  "issue_label": "fails-java-run",
+  "library": "org.apache.maven.scm:maven-scm-provider-gitexe:1.10.0",
+  "summary": "No additional deterministic setup is needed: maven-scm-provider-gitexe is a Git CLI-backed Maven SCM provider whose runtime dependencies resolve transitively, and meaningful coverage is reachable through command-line factory and output-consumer APIs without optional Maven dependencies or Docker services.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": [
+    "If the generated test chooses to execute real SCM operations instead of only constructing commands or testing consumers, it must use an isolated temporary local Git repository and avoid network remotes; this is test logic, not repository setup.",
+    "The reported failure appears to be version-sensitive command-line executable quoting rather than a missing dependency or service."
+  ],
+  "applied_setup": [],
+  "input_evidence": [
+    {
+      "name": "issue",
+      "summary": "#8228 [Automation] java run fails for org.apache.maven.scm:maven-scm-provider-gitexe:1.10.0; label=fails-java-run; body_chars=8015"
+    },
+    {
+      "name": "existing_tests",
+      "summary": "7 existing test file path(s) included"
+    }
+  ],
+  "current_library": "org.apache.maven.scm:maven-scm-provider-gitexe:1.9.5",
+  "new_version": "1.10.0",
+  "model": "oca/gpt-5.5",
+  "input_tokens_used": 76358,
+  "output_tokens_used": 3215,
+  "prompt_path": "library-preflight-prompt.txt",
+  "raw_response_path": "library-preflight-response.txt",
+  "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.apache.maven.scm:maven-scm-provider-gitexe:1.10.0/library-preparation-preflight/pi-generation-2026-06-09T15-53-00-460321Z.log"
+}
