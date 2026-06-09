@@ -11,6 +11,7 @@ import scala.concurrent.duration.*
 import cats.effect.Deferred
 import cats.effect.IO
 import cats.effect.std.AtomicCell
+import cats.effect.std.CountDownLatch
 import cats.effect.std.Dispatcher
 import cats.effect.std.Queue
 import cats.effect.std.Random
@@ -107,6 +108,25 @@ class Cats_effect_std_3Test:
     assertEquals(42, result.signaled)
 
   @Test
+  def countDownLatchReleasesAwaitingFibersAfterRequiredSignals(): Unit =
+    val result: CountDownLatchResult = run {
+      for
+        latch <- CountDownLatch[IO](2)
+        released <- Deferred[IO, String]
+        awaitingFiber <- (latch.await >> released.complete("released")).start
+        _ <- IO.cede
+        _ <- latch.release
+        stillWaitingAfterOneRelease <- released.tryGet.map(_.isEmpty)
+        _ <- latch.release
+        value <- released.get
+        _ <- awaitingFiber.joinWithNever
+      yield CountDownLatchResult(stillWaitingAfterOneRelease, value)
+    }
+
+    assertTrue(result.stillWaitingAfterOneRelease)
+    assertEquals("released", result.value)
+
+  @Test
   def randomProducesBoundedValuesAndShufflesCollections(): Unit =
     val result: RandomResult = run {
       for
@@ -157,5 +177,7 @@ class Cats_effect_std_3Test:
   private final case class AtomicCellResult(observedUpdates: List[Int], finalValue: Int)
 
   private final case class DispatcherResult(futureValue: String, signaled: Int)
+
+  private final case class CountDownLatchResult(stillWaitingAfterOneRelease: Boolean, value: String)
 
   private final case class RandomResult(boundedValues: List[Int], shuffled: List[String])
