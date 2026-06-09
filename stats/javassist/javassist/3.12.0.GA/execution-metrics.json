@@ -1,0 +1,100 @@
+{
+  "add_new_library_support:2026-06-09": {
+    "timestamp": "2026-06-09T05:02:09.227227Z",
+    "library": "javassist:javassist:3.12.0.GA",
+    "starting_commit": "a8b02bb67341c20a99866a566d1fbaddbaa3ebd8",
+    "ending_commit": "f51e58f9bf80050608f7073fbc4cc37e71a20df5",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "3.12.0.GA",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.959184,
+            "coveredCalls": 94,
+            "totalCalls": 98
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 7,
+            "totalCalls": 7
+          }
+        },
+        "coverageRatio": 0.961905,
+        "coveredCalls": 101,
+        "totalCalls": 105
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 17567,
+          "missed": 65303,
+          "ratio": 0.211983,
+          "total": 82870
+        },
+        "line": {
+          "covered": 4124,
+          "missed": 15299,
+          "ratio": 0.212326,
+          "total": 19423
+        },
+        "method": {
+          "covered": 868,
+          "missed": 2469,
+          "ratio": 0.260114,
+          "total": 3337
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 2858,
+      "issue_label": "library-new-request",
+      "library": "javassist:javassist:3.12.0.GA",
+      "summary": "Javassist 3.12.0.GA is self-contained and needs no Maven add-ons or Docker service, but meaningful tests should initialize an explicit ClassPool/class path and avoid JPMS-sensitive class loading paths.",
+      "deterministic_setup": [],
+      "agent_guidance": "Use core Javassist APIs with an initialized ClassPool, e.g. new ClassPool(true) and insertClassPath(new ClassClassPath(TestClass.class)) when reading test helper classes. Exercise makeClass/get/toBytecode/write/read/bytecode inspection. Be careful with CtClass.toClass(): this old version reflectively opens ClassLoader.defineClass and fails on modern JDKs without java.base/java.lang opens; prefer bytecode generation/inspection or a compatible loading approach.",
+      "risks": [
+        "The POM has only test-scoped JUnit and old optional tools.jar build profiles; adding Maven dependencies would be unnecessary.",
+        "Some auxiliary packages such as HotSwapper/RMI/web tooling touch jdk.jdi, applet, or network-style APIs; they are not required for core library coverage.",
+        "Version 3.12.0.GA predates modern classfile versions, so parsing freshly compiled Java 21 helper classes may be fragile unless tests use simple generated classes or compatible classpath inputs."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#2858 Support for javassist:javassist:3.12.0.GA; label=library-new-request; body_chars=98"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 28704,
+      "output_tokens_used": 4267,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/javassist:javassist:3.12.0.GA/library-preparation-preflight/pi-generation-2026-06-09T02-04-47-738733Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 1540484,
+      "cached_input_tokens_used": 15739392,
+      "output_tokens_used": 189521,
+      "iterations": 39,
+      "cost_usd": 13.5553,
+      "generated_loc": 1993,
+      "tested_library_loc": 4124,
+      "metadata_entries": 69,
+      "test_only_metadata_entries": 43,
+      "code_coverage_percent": 21.23
+    },
+    "artifacts": {
+      "test_file": "tests/src/javassist/javassist/3.12.0.GA/src/test/java/javassist/javassist/SerializedProxyTest.java",
+      "metadata_file": "metadata/javassist/javassist/3.12.0.GA/reachability-metadata.json"
+    }
+  }
+}
