@@ -13,12 +13,49 @@ import com.esotericsoftware.kryo.Registration;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
+import com.esotericsoftware.kryo.serializers.FieldSerializer.CachedField;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import org.junit.jupiter.api.Test;
 import org.objenesis.instantiator.ObjectInstantiator;
 
 public class ObjectFieldInnerObjectIntFieldTest {
     @Test
     void serializesReadsAndCopiesPrivateIntFieldWithObjectCachedField() {
+        Kryo kryo = newKryoWithIntFieldSerializer();
+
+        IntFieldBean original = new IntFieldBean(270_544_960);
+        byte[] bytes = writeObject(kryo, original);
+        IntFieldBean restored = kryo.readObject(new Input(bytes), IntFieldBean.class);
+        IntFieldBean copied = kryo.copy(original);
+
+        assertThat(restored.getValue()).isEqualTo(original.getValue());
+        assertThat(copied).isNotSameAs(original);
+        assertThat(copied.getValue()).isEqualTo(original.getValue());
+    }
+
+    @Test
+    void serializesAndReadsPrivateIntFieldWithFixedWidthEncoding() throws ReflectiveOperationException {
+        Kryo kryo = newKryoWithIntFieldSerializer();
+        CachedField cachedField = ((FieldSerializer<?>) kryo.getSerializer(IntFieldBean.class)).getField("value");
+        setVarIntsEnabled(cachedField, false);
+
+        IntFieldBean original = new IntFieldBean(0x10203040);
+        byte[] bytes = writeObject(kryo, original);
+        IntFieldBean restored = kryo.readObject(new Input(bytes), IntFieldBean.class);
+
+        assertThat(restored.getValue()).isEqualTo(original.getValue());
+    }
+
+    @Test
+    void getsPrivateIntFieldThroughObjectCachedFieldMethod() throws ReflectiveOperationException {
+        Kryo kryo = newKryoWithIntFieldSerializer();
+        CachedField cachedField = ((FieldSerializer<?>) kryo.getSerializer(IntFieldBean.class)).getField("value");
+
+        assertThat(invokeObjectIntFieldGetField(cachedField, new IntFieldBean(42))).isEqualTo(42);
+    }
+
+    private static Kryo newKryoWithIntFieldSerializer() {
         Kryo kryo = new Kryo();
         kryo.setRegistrationRequired(true);
         kryo.setReferences(false);
@@ -35,15 +72,21 @@ public class ObjectFieldInnerObjectIntFieldTest {
 
         assertThat(serializer.getField("value").getClass().getName())
                 .isEqualTo("com.esotericsoftware.kryo.serializers.ObjectField$ObjectIntField");
+        return kryo;
+    }
 
-        IntFieldBean original = new IntFieldBean(270_544_960);
-        byte[] bytes = writeObject(kryo, original);
-        IntFieldBean restored = kryo.readObject(new Input(bytes), IntFieldBean.class);
-        IntFieldBean copied = kryo.copy(original);
+    private static void setVarIntsEnabled(CachedField cachedField, boolean varIntsEnabled)
+            throws ReflectiveOperationException {
+        Field varIntsEnabledField = CachedField.class.getDeclaredField("varIntsEnabled");
+        varIntsEnabledField.setAccessible(true);
+        varIntsEnabledField.setBoolean(cachedField, varIntsEnabled);
+    }
 
-        assertThat(restored.getValue()).isEqualTo(original.getValue());
-        assertThat(copied).isNotSameAs(original);
-        assertThat(copied.getValue()).isEqualTo(original.getValue());
+    private static Object invokeObjectIntFieldGetField(CachedField cachedField, IntFieldBean bean)
+            throws ReflectiveOperationException {
+        Method getField = cachedField.getClass().getMethod("getField", Object.class);
+        getField.setAccessible(true);
+        return getField.invoke(cachedField, bean);
     }
 
     private static byte[] writeObject(Kryo kryo, IntFieldBean original) {
