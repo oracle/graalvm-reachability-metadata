@@ -1,0 +1,56 @@
+{
+  "status": "completed",
+  "action": "advisory_preparation",
+  "issue_number": 3643,
+  "issue_label": "library-new-request",
+  "library": "com.diffplug.spotless:spotless-maven-plugin:2.43.0",
+  "summary": "Spotless Maven Plugin is normally run inside Maven, and its artifact omits Maven-provided compileOnly APIs that tests need when exercising Mojo/configuration classes directly.",
+  "deterministic_setup": [
+    {
+      "kind": "dependency",
+      "coordinate": "org.apache.maven:maven-plugin-api:3.0",
+      "scope": "testImplementation",
+      "reason": "Spotless Mojo classes extend Maven plugin API types that are compileOnly/provided by Maven, not exposed by the resolved artifact."
+    },
+    {
+      "kind": "dependency",
+      "coordinate": "org.apache.maven:maven-core:3.0",
+      "scope": "testImplementation",
+      "reason": "Spotless configuration and Mojo code reference MavenProject and related Maven runtime types used when exercising plugin behavior outside Maven."
+    },
+    {
+      "kind": "dependency",
+      "coordinate": "org.eclipse.aether:aether-api:1.1.0",
+      "scope": "testImplementation",
+      "reason": "The plugin references Eclipse Aether repository/session types as compileOnly Maven runtime inputs."
+    },
+    {
+      "kind": "dependency",
+      "coordinate": "org.apache.maven.plugin-tools:maven-plugin-annotations:3.0",
+      "scope": "testImplementation",
+      "reason": "Mojo classes carry Maven plugin annotations that are compileOnly in the upstream build and useful for annotation/reflection coverage."
+    }
+  ],
+  "agent_guidance": "Exercise the plugin as a Maven plugin/configuration library against a temporary project with real files. Prefer built-in generic steps such as trimTrailingWhitespace, endWithNewline, replace/replaceRegex, or licenseHeader so coverage does not depend on external formatter downloads, npm, or a service. If invoking Mojo classes directly, initialize the temporary base/build directories and required Maven-style fields/components before calling execute.",
+  "risks": [
+    "Many advanced Spotless formatters provision external artifacts or tools; avoid making the core test depend on network-installed formatters.",
+    "Direct Mojo execution without Maven container injection can fail unless required fields are initialized explicitly."
+  ],
+  "applied_setup": [],
+  "input_evidence": [
+    {
+      "name": "issue",
+      "summary": "#3643 Support for com.diffplug.spotless:spotless-maven-plugin:2.43.0; label=library-new-request; body_chars=436"
+    },
+    {
+      "name": "existing_tests",
+      "summary": "0 existing test file path(s) included"
+    }
+  ],
+  "model": "oca/gpt-5.5",
+  "input_tokens_used": 58498,
+  "output_tokens_used": 6936,
+  "prompt_path": "library-preflight-prompt.txt",
+  "raw_response_path": "library-preflight-response.txt",
+  "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/com.diffplug.spotless:spotless-maven-plugin:2.43.0/library-preparation-preflight/pi-generation-2026-06-09T18-41-20-285795Z.log"
+}
