@@ -101,6 +101,11 @@ evidence, selected deterministic setup, advisory guidance, and the result of
 applying each deterministic action. A preflight decision must not allow tests to
 rely on untracked downloads, undeclared optional dependencies, or Docker images
 that CI would reject (§FS-local-ci-equivalent-verification).
+The dispatcher stores preflight handoff and prompt/response evidence in an
+ignored per-run `local_repositories/preflight_info/` directory, not in the
+isolated reachability worktree; the workflow receives only the explicit handoff
+path, and durable evidence is the normalized record embedded in run metrics
+(§FS-forge-run-metrics).
 
 If the preflight decision cannot run or returns invalid, unavailable, or unsafe
 output, orchestration must degrade to a recorded no-action advisory result. It

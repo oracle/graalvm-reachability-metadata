@@ -222,6 +222,7 @@ LABEL_NOT_FOR_NATIVE_IMAGE = "not-for-native-image"
 FIXTURE_AUTHENTICATED_USER = "fixture-runner"
 
 SCRATCH_WORKTREE_DIRNAME = "forge_worktrees"
+PREFLIGHT_INFO_DIRNAME = "preflight_info"
 SCRATCH_REVIEW_WORKTREE_DIRNAME = "forge_review_worktrees"
 SCRATCH_FINAL_INDEX_VALIDATION_WORKTREE_DIRNAME = "forge_final_index_validation_worktrees"
 SCRATCH_METRICS_DIRNAME = "forge_run_metrics"
@@ -308,6 +309,7 @@ class ClaimedIssue:
     new_version: str | None = None
     large_library_resume_artifact: str | None = None
     large_library_part: int | None = None
+    preflight_info_path: str | None = None
 
 
 @dataclass(frozen=True)
@@ -4572,6 +4574,19 @@ def build_issue_run_id(issue_number: int) -> str:
     return f"{issue_number}-{uuid.uuid4().hex[:8]}"
 
 
+def create_preflight_info_dir(worktree_path: str) -> str:
+    """Create the ignored per-run directory for preflight handoff and evidence."""
+    run_id = os.path.basename(os.path.abspath(worktree_path))
+    preflight_info_path = os.path.join(
+        get_repo_root(),
+        "local_repositories",
+        PREFLIGHT_INFO_DIRNAME,
+        run_id,
+    )
+    os.makedirs(preflight_info_path, exist_ok=True)
+    return preflight_info_path
+
+
 def build_review_run_id(pr_number: int) -> str:
     """Create a unique ID for an isolated pull-request review run."""
     return f"pr-{pr_number}-{uuid.uuid4().hex[:8]}"
@@ -4719,6 +4734,8 @@ def cleanup_issue_workspace(claimed_issue: ClaimedIssue, canonical_metrics_repo_
         canonical_metrics_repo_path,
         claimed_issue.issue["number"],
     )
+    if claimed_issue.preflight_info_path:
+        shutil.rmtree(claimed_issue.preflight_info_path, ignore_errors=True)
     if claimed_issue.worktree_path in preservation_failed_worktree_paths:
         print(
             (
@@ -4961,6 +4978,7 @@ def claim_issue_for_processing(
             canonical_metrics_repo_path,
             issue["number"],
         )
+        preflight_info_path = create_preflight_info_dir(worktree_path)
         if large_library_resume_artifact:
             large_library_state = LargeLibraryProgressState.load(large_library_resume_artifact)
             large_library_state.save(large_library_state.default_path(scratch_metrics_repo_path))
@@ -4989,6 +5007,7 @@ def claim_issue_for_processing(
         new_version=new_version,
         large_library_resume_artifact=large_library_resume_artifact,
         large_library_part=large_library_part,
+        preflight_info_path=preflight_info_path,
     )
 
 
@@ -5017,11 +5036,13 @@ def build_fixture_claimed_issue(
             canonical_metrics_repo_path,
             issue_number,
         )
+        preflight_info_path = create_preflight_info_dir(worktree_path)
         log_stage(
             "fixture-worktree",
             (
                 f"Created isolated fixture worktree for issue #{issue_number}: "
-                f"worktree={worktree_path}, metrics={scratch_metrics_repo_path}"
+                f"worktree={worktree_path}, metrics={scratch_metrics_repo_path}, "
+                f"preflight={preflight_info_path}"
             ),
         )
     except BaseException as exc:
@@ -5072,6 +5093,7 @@ def build_fixture_claimed_issue(
         issue_coordinates=issue_coordinates,
         current_coordinates=current_coordinates,
         new_version=new_version,
+        preflight_info_path=preflight_info_path,
     )
 
 
@@ -5515,14 +5537,26 @@ def preserve_fixture_preflight_evidence(claimed_issue: ClaimedIssue) -> None:
     )
     os.makedirs(evidence_dir, exist_ok=True)
     evidence_files = [
-        (PENDING_METRICS_FILENAME, "pending-metrics.json"),
-        (LIBRARY_PREPARATION_PREFLIGHT_FILENAME, LIBRARY_PREPARATION_PREFLIGHT_FILENAME),
-        ("library-preflight-prompt.txt", "library-preflight-prompt.txt"),
-        ("library-preflight-response.txt", "library-preflight-response.txt"),
+        (claimed_issue.scratch_metrics_repo_path, PENDING_METRICS_FILENAME, "pending-metrics.json"),
+        (
+            claimed_issue.preflight_info_path or claimed_issue.scratch_metrics_repo_path,
+            LIBRARY_PREPARATION_PREFLIGHT_FILENAME,
+            LIBRARY_PREPARATION_PREFLIGHT_FILENAME,
+        ),
+        (
+            claimed_issue.preflight_info_path or claimed_issue.scratch_metrics_repo_path,
+            "library-preflight-prompt.txt",
+            "library-preflight-prompt.txt",
+        ),
+        (
+            claimed_issue.preflight_info_path or claimed_issue.scratch_metrics_repo_path,
+            "library-preflight-response.txt",
+            "library-preflight-response.txt",
+        ),
     ]
     copied_files: list[str] = []
-    for source_name, target_name in evidence_files:
-        source_path = os.path.join(claimed_issue.scratch_metrics_repo_path, source_name)
+    for source_root, source_name, target_name in evidence_files:
+        source_path = os.path.join(source_root, source_name)
         if not os.path.isfile(source_path):
             continue
         target_path = os.path.join(evidence_dir, target_name)

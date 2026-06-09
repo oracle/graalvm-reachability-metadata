@@ -425,6 +425,11 @@ def _preflight_run_mode(fixture_response: Any | None) -> str:
     return "fixture (configured response)"
 
 
+def _preflight_artifact_root(claimed_issue: Any) -> str:
+    """Return the directory used for dispatcher preflight handoff and evidence."""
+    return getattr(claimed_issue, "preflight_info_path", None) or claimed_issue.scratch_metrics_repo_path
+
+
 def _write_and_log_preflight(claimed_issue: Any, record: dict[str, Any]) -> str:
     """Persist the record and log a one-line outcome, covering every decision path."""
     detail = f"status={record.get('status')} action={record.get('action')}"
@@ -438,7 +443,7 @@ def _write_and_log_preflight(claimed_issue: Any, record: dict[str, Any]) -> str:
         "library-preflight",
         f"Preflight decision for issue #{record.get('issue_number')}: {detail}",
     )
-    return write_library_preparation_preflight(claimed_issue.scratch_metrics_repo_path, record)
+    return write_library_preparation_preflight(_preflight_artifact_root(claimed_issue), record)
 
 
 def run_library_preparation_preflight(
@@ -469,8 +474,9 @@ def run_library_preparation_preflight(
         ),
     )
     prompt = _library_preflight_prompt(input_bundle)
+    preflight_artifact_root = _preflight_artifact_root(claimed_issue)
     prompt_path = _write_text_artifact(
-        claimed_issue.scratch_metrics_repo_path,
+        preflight_artifact_root,
         "library-preflight-prompt.txt",
         prompt,
     )
@@ -492,7 +498,7 @@ def run_library_preparation_preflight(
         try:
             response_text = _fixture_response_text(fixture_response)
             raw_response_path = _write_text_artifact(
-                claimed_issue.scratch_metrics_repo_path,
+                preflight_artifact_root,
                 "library-preflight-response.txt",
                 response_text,
             )
@@ -543,13 +549,13 @@ def run_library_preparation_preflight(
         )
         response_text = agent.send_prompt(prompt)
         raw_response_path = _write_text_artifact(
-            claimed_issue.scratch_metrics_repo_path,
+            preflight_artifact_root,
             "library-preflight-response.txt",
             response_text,
         )
         session_log_path = _relative_or_absolute_path(
             getattr(agent, "_session_log_path", None),
-            claimed_issue.scratch_metrics_repo_path,
+            preflight_artifact_root,
         )
         response_payload = _extract_preflight_json_response(response_text)
         record = _completed_library_preflight_record(
@@ -566,7 +572,7 @@ def run_library_preparation_preflight(
         if session_log_path is None and agent is not None:
             session_log_path = _relative_or_absolute_path(
                 getattr(agent, "_session_log_path", None),
-                claimed_issue.scratch_metrics_repo_path,
+                preflight_artifact_root,
             )
         record = _degraded_library_preflight_record(
             claimed_issue,
