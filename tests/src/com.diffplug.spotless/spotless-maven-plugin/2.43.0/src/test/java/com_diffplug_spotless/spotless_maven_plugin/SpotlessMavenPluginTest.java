@@ -47,6 +47,8 @@ import com.diffplug.spotless.maven.generic.EndWithNewline;
 import com.diffplug.spotless.maven.generic.Format;
 import com.diffplug.spotless.maven.generic.ToggleOffOn;
 import com.diffplug.spotless.maven.generic.TrimTrailingWhitespace;
+import com.diffplug.spotless.maven.groovy.Groovy;
+import com.diffplug.spotless.maven.groovy.RemoveSemicolons;
 import com.diffplug.spotless.maven.java.Java;
 import com.diffplug.spotless.maven.pom.Pom;
 
@@ -123,6 +125,34 @@ public class SpotlessMavenPluginTest {
                     sourceFile.toFile());
 
             assertThat(formatted).isEqualTo("before\nspotless:off\nkept  \nspotless:on\nafter");
+        }
+    }
+
+    @Test
+    void groovyFormatterRemovesTrailingSemicolons() throws Exception {
+        final Groovy groovyFormatter = new Groovy();
+        groovyFormatter.addRemoveSemicolons(new RemoveSemicolons());
+
+        final FormatterConfig config = new FormatterConfig(
+                temporaryDirectory.toFile(),
+                "UTF-8",
+                LineEnding.UNIX,
+                Optional.empty(),
+                EMPTY_PROVISIONER,
+                fileLocator(),
+                List.of(),
+                Optional.empty());
+        final Path sourceFile = Files.writeString(temporaryDirectory.resolve("Example.groovy"), "println 'ready';");
+
+        try (Formatter formatter = groovyFormatter.newFormatter(() -> List.of(sourceFile.toFile()), config)) {
+            assertThat(formatter.getSteps()).extracting(FormatterStep::getName)
+                    .containsExactly("Remove unnecessary semicolons");
+
+            final String formatted = formatter.compute(
+                    "def answer = 42;\nprintln answer;\nprintln 'semi;colon';",
+                    sourceFile.toFile());
+
+            assertThat(formatted).isEqualTo("def answer = 42\nprintln answer\nprintln 'semi;colon'\n");
         }
     }
 
