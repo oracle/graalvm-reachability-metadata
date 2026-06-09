@@ -44,12 +44,12 @@ public class GitExeCommandLineConstructionTest {
 
         Commandline checkoutCommandLine =
                 GitCheckOutCommand.createCommandLine(repository, workingDirectory, featureBranch);
-        assertThat(checkoutCommandLine.getExecutable()).isEqualTo("git");
+        assertGitExecutable(checkoutCommandLine);
         assertThat(checkoutCommandLine.getWorkingDirectory()).isEqualTo(workingDirectory);
         assertThat(checkoutCommandLine.getArguments()).containsExactly("checkout", "feature/native-tests");
 
         Commandline updateCommandLine = GitUpdateCommand.createCommandLine(repository, workingDirectory, featureBranch);
-        assertThat(updateCommandLine.getExecutable()).isEqualTo("git");
+        assertGitExecutable(updateCommandLine);
         assertThat(updateCommandLine.getWorkingDirectory()).isEqualTo(workingDirectory);
         assertThat(updateCommandLine.getArguments())
                 .containsExactly("pull", "https://example.invalid/team/project.git", "feature/native-tests");
@@ -60,7 +60,7 @@ public class GitExeCommandLineConstructionTest {
                 .containsExactly("log", "-n1", "--date-order", "feature/native-tests");
 
         Commandline remoteInfoCommandLine = GitRemoteInfoCommand.createCommandLine(repository);
-        assertThat(remoteInfoCommandLine.getExecutable()).isEqualTo("git");
+        assertGitExecutable(remoteInfoCommandLine);
         File temporaryRoot = new File(System.getProperty("java.io.tmpdir"));
         assertThat(remoteInfoCommandLine.getWorkingDirectory()).isEqualTo(temporaryRoot);
         assertThat(remoteInfoCommandLine.getArguments())
@@ -89,7 +89,7 @@ public class GitExeCommandLineConstructionTest {
         ScmTag endTag = new ScmTag("v1.1.0");
 
         Commandline cachedDiffCommandLine = GitDiffCommand.createCommandLine(workingDirectory, startTag, endTag, true);
-        assertThat(cachedDiffCommandLine.getExecutable()).isEqualTo("git");
+        assertGitExecutable(cachedDiffCommandLine);
         assertThat(cachedDiffCommandLine.getArguments())
                 .containsExactly("diff", "--cached", "v1.0.0", "v1.1.0");
 
@@ -107,13 +107,34 @@ public class GitExeCommandLineConstructionTest {
                 .containsExactly("push", "https://example.invalid/team/project.git", "refs/tags/v1.1.0");
 
         ScmFileSet trackedFileSet = new ScmFileSet(workingDirectory, trackedPath.toFile());
-        Commandline commitCommandLine =
+        Commandline explicitCommitCommandLine =
                 GitCheckInCommand.createCommitCommandLine(repository, trackedFileSet, messagePath.toFile());
-        assertThat(commitCommandLine.getArguments())
-                .contains("commit", "--verbose", "-F", messagePath.toAbsolutePath().toString(), "tracked.txt");
+        assertThat(explicitCommitCommandLine.getArguments())
+                .containsExactly("commit", "--verbose", "-F", messagePath.toAbsolutePath().toString());
+
+        ScmFileSet allFilesSet = new ScmFileSet(workingDirectory);
+        Commandline allFilesCommitCommandLine =
+                GitCheckInCommand.createCommitCommandLine(repository, allFilesSet, messagePath.toFile());
+        assertThat(allFilesCommitCommandLine.getArguments())
+                .containsExactly("commit", "--verbose", "-F", messagePath.toAbsolutePath().toString(), "-a");
 
         Commandline removeCommandLine = GitRemoveCommand.createCommandLine(
                 workingDirectory, List.of(removableDirectory.toFile(), trackedPath.toFile()));
         assertThat(removeCommandLine.getArguments()).contains("rm", "-r", "directory-to-remove", "tracked.txt");
+    }
+
+    private static void assertGitExecutable(Commandline commandLine) {
+        assertThat(unquote(commandLine.getExecutable())).isEqualTo("git");
+    }
+
+    private static String unquote(String value) {
+        if (value.length() >= 2) {
+            char first = value.charAt(0);
+            char last = value.charAt(value.length() - 1);
+            if ((first == '\'' && last == '\'') || (first == '"' && last == '"')) {
+                return value.substring(1, value.length() - 1);
+            }
+        }
+        return value;
     }
 }
