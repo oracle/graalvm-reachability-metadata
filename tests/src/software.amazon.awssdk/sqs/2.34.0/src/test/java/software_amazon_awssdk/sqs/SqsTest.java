@@ -8,7 +8,7 @@ package software_amazon_awssdk.sqs;
 
 import org.junit.jupiter.api.Test;
 
-class SqsTest {
+public class SqsTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
