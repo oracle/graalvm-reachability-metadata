@@ -31,8 +31,7 @@ public class TestBeanOverrideHandlerTest {
 
             assertThat(testInstance.messageService).isSameAs(bean);
             assertThat(bean.message()).isEqualTo("test override");
-        }
-        finally {
+        } finally {
             manager.afterTestClass();
         }
     }
