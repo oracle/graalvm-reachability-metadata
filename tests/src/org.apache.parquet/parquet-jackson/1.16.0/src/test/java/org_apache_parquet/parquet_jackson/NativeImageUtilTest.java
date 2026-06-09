@@ -21,6 +21,13 @@ public class NativeImageUtilTest {
     void detectsClassesWithAvailableReflectionMembers() {
         assertThat(NativeImageUtil.isInNativeImageAndIsAtRuntime()).isTrue();
         assertThat(NativeImageUtil.needsReflectionConfiguration(ReflectionVisibleBean.class)).isFalse();
+        assertThat(NativeImageUtil.needsReflectionConfiguration(MethodOnlyBean.class)).isFalse();
+    }
+
+    public static class MethodOnlyBean {
+        public String value() {
+            return "value";
+        }
     }
 
     public static class ReflectionVisibleBean {
