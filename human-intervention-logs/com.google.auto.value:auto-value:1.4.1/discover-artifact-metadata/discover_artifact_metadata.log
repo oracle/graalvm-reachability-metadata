@@ -1,0 +1,660 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2755-17478c63/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2755-17478c63/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.133.0
+--------
+workdir: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2755-17478c63
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ea956-96c9-7422-9434-a9801820770d
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.google.auto.value:auto-value:1.4.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "1.4.1" when "$version$" is replaced with "1.4.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2755-17478c63/build/discovered-artifact-metadata/com.google.auto.value-auto-value-1.4.1.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "com.google.auto.value:auto-value:1.4.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.4.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the target JSON and the local metadata patterns first, then verify the Maven POM/source artifacts and upstream tag URLs before editing.
+exec
+/usr/bin/zsh -lc 'pwd && ls -l build/discovered-artifact-metadata/com.google.auto.value-auto-value-1.4.1.json' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2755-17478c63
+ succeeded in 0ms:
+/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2755-17478c63
+-rw-rw-r-- 1 mihailo mihailo 63 Jun  9 00:24 build/discovered-artifact-metadata/com.google.auto.value-auto-value-1.4.1.json
+
+exec
+/usr/bin/zsh -lc "sed -n '1,160p' build/discovered-artifact-metadata/com.google.auto.value-auto-value-1.4.1.json" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2755-17478c63
+ succeeded in 0ms:
+{
+  "coordinates" : "com.google.auto.value:auto-value:1.4.1"
+}
+
+exec
+/usr/bin/zsh -lc "rg -n \"com\\.google\\.auto\\.value:auto-value|auto-value\" build/discovered-artifact-metadata metadata tests docs -g '*.json' -g '*.md'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2755-17478c63
+ succeeded in 125ms:
+metadata/com.google.auto.value/auto-value-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/$version$/auto-value-annotations-$version$-sources.jar",
+metadata/com.google.auto.value/auto-value-annotations/index.json:7:    "test-code-url" : "https://github.com/google/auto/tree/auto-value-$version$/value/src/test/java",
+metadata/com.google.auto.value/auto-value-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/$version$/auto-value-annotations-$version$-javadoc.jar",
+metadata/com.google.auto.value/auto-value-annotations/index.json:25:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/$version$/auto-value-annotations-$version$-sources.jar",
+metadata/com.google.auto.value/auto-value-annotations/index.json:27:    "test-code-url" : "https://github.com/google/auto/tree/auto-value-$version$/value/src/test/java",
+metadata/com.google.auto.value/auto-value-annotations/index.json:28:    "documentation-url" : "https://javadoc.io/doc/com.google.auto.value/auto-value-annotations/$version$/index.html",
+
+codex
+The existing metadata for `auto-value-annotations` points at `google/auto`, so I’m checking the `auto-value` POM and the 1.4.1 source/javadoc artifacts rather than assuming the same URLs blindly.
+exec
+/usr/bin/zsh -lc 'curl -fsI https://repo1.maven.org/maven2/com/google/auto/value/auto-value/1.4.1/auto-value-1.4.1-sources.jar' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2755-17478c63
+exec
+/usr/bin/zsh -lc 'curl -fsI https://repo1.maven.org/maven2/com/google/auto/value/auto-value/1.4.1/auto-value-1.4.1-javadoc.jar' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2755-17478c63
+exec
+/usr/bin/zsh -lc 'curl -fsI https://github.com/google/auto/tree/auto-value-1.4.1/value/src/test/java' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2755-17478c63
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://repo1.maven.org/maven2/com/google/auto/value/auto-value/1.4.1/auto-value-1.4.1.pom' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2755-17478c63
+ succeeded in 172ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>auto-parent</artifactId>
+    <groupId>com.google.auto</groupId>
+    <version>3</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.google.auto.value</groupId>
+  <artifactId>auto-value</artifactId>
+  <name>AutoValue</name>
+  <version>1.4.1</version>
+  <description>Immutable value-type code generation for Java 1.6+.</description>
+  <scm>
+    <connection>scm:git:git://github.com/google/auto.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/google/auto.git</developerConnection>
+    <url>http://github.com/google/auto</url>
+  </scm>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/java</directory>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <testExcludes>
+            <exclude>${exclude.tests}</exclude>
+          </testExcludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.6</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-invoker-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <goals>
+              <goal>install</goal>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <addTestClassPath>true</addTestClassPath>
+          <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+          <filterProperties>
+            <auto.version>${project.version}</auto.version>
+          </filterProperties>
+          <pomIncludes>
+            <pomInclude>*/pom.xml</pomInclude>
+          </pomIncludes>
+          <streamLogs>true</streamLogs>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.immutables.tools</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <minimizeJar>true</minimizeJar>
+              <relocations>
+                <relocation>
+                  <pattern>org.objectweb</pattern>
+                  <shadedPattern>autovalue.shaded.org.objectweb$</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google</pattern>
+                  <shadedPattern>autovalue.shaded.com.google$</shadedPattern>
+                  <excludes>
+                    <exclude>com.google.auto.value.**</exclude>
+                  </excludes>
+                </relocation>
+                <relocation>
+                  <pattern>com.squareup.javapoet</pattern>
+                  <shadedPattern>autovalue.shaded.com.squareup.javapoet$</shadedPattern>
+                </relocation>
+              </relocations>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <profile>
+      <id>disable-java8-doclint</id>
+      <properties>
+        <additionalparam>-Xdoclint:none</additionalparam>
+      </properties>
+    </profile>
+    <profile>
+      <id>older-compile-testing</id>
+      <properties>
+        <exclude.tests>**/TypeSimplifierTest.java</exclude.tests>
+        <compile.testing.version>0.9</compile.testing.version>
+      </properties>
+    </profile>
+  </profiles>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.velocity</groupId>
+      <artifactId>velocity</artifactId>
+      <version>1.7</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-collections</artifactId>
+          <groupId>commons-collections</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>commons-lang</artifactId>
+          <groupId>commons-lang</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava-testlib</artifactId>
+      <version>19.0</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>jsr305</artifactId>
+          <groupId>com.google.code.findbugs</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>error_prone_annotations</artifactId>
+          <groupId>com.google.errorprone</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>hamcrest-core</artifactId>
+          <groupId>org.hamcrest</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.google.truth</groupId>
+      <artifactId>truth</artifactId>
+      <version>0.30</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>error_prone_annotations</artifactId>
+          <groupId>com.google.errorprone</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.google.testing.compile</groupId>
+      <artifactId>compile-testing</artifactId>
+      <version>0.10</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>tools</artifactId>
+          <groupId>com.sun</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>auto-value</artifactId>
+          <groupId>com.google.auto.value</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+  <properties>
+    <exclude.tests>this-matches-nothing</exclude.tests>
+    <guava.version>19.0</guava.version>
+    <compile.testing.version>0.10</compile.testing.version>
+  </properties>
+</project>
+
+
+ succeeded in 347ms:
+HTTP/2 200 
+date: Mon, 08 Jun 2026 22:25:13 GMT
+content-type: application/java-archive
+content-length: 132975
+cf-ray: a08b4fa97f05e292-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "667d55d7a66c9098298cc05aee4ec8ad"
+last-modified: Fri, 07 Apr 2017 01:29:17 GMT
+x-checksum-md5: 667d55d7a66c9098298cc05aee4ec8ad
+x-checksum-sha1: db8c65394f0d5f85df1b115a7d6bcae757a1dbcc
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 556ms:
+HTTP/2 200 
+date: Mon, 08 Jun 2026 22:25:13 GMT
+content-type: application/java-archive
+content-length: 140827
+cf-ray: a08b4fa97fbd1b8b-BEG
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "a1dffbdcef0eeeec1c0616d12e0dad8a"
+last-modified: Fri, 07 Apr 2017 01:29:18 GMT
+x-checksum-md5: a1dffbdcef0eeeec1c0616d12e0dad8a
+x-checksum-sha1: a96296e32ab06f069ec2908e51107d597ccc18d3
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 698ms:
+HTTP/2 200 
+date: Mon, 08 Jun 2026 22:25:13 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"b6f5c286f5868c34babb3d2efef31658"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=Jm9LDD6Ql28u7Hg8k8m4JQwUJCQorCudAb7YLchW%2BPNCI3f%2FTARNDs6bhxwVMFb3AR5jZu6QCe8mphSIu%2BrX7VQpKyGMI%2F%2FfeoIXcDEDmnOFt7qx4YiMNHMKFL1c%2FOgi8uNzimDwKzkIZvuiAZLTsubvB6nNeaxiVT4I0PRjPhZg%2FDdfQK5Ov%2FqNQ3mdh%2FHrvggKsGAw%2B1b53L1YeX640VkNzwsW0WnDP2yPGSXT9rSDzfJmv3zuVz21UB4ChQIFaNyjKZGXCeE09kLcNBGbxg%3D%3D--9Oo3svXALsxdA8i%2B--Obwv1jFXiwOvkM5u%2Buz2GA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1264908733.1780957513; expires=Tue, 08 Jun 2027 22:25:13 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 08 Jun 2027 22:25:13 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: DB02:182748:8D0DC62:7022B6D:6A274149
+
+
+codex
+The Maven POM confirms the SCM root and the artifact description, and Maven Central has both `sources.jar` and `javadoc.jar` for 1.4.1. I’m checking whether a test-source artifact exists; if it does not, I’ll use the tagged upstream test tree.
+exec
+/usr/bin/zsh -lc "sed -n '1,80p' metadata/com.google.auto.value/auto-value-annotations/index.json" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2755-17478c63
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.10",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/$version$/auto-value-annotations-$version$-sources.jar",
+    "repository-url" : "https://github.com/google/auto",
+    "test-code-url" : "https://github.com/google/auto/tree/auto-value-$version$/value/src/test/java",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/$version$/auto-value-annotations-$version$-javadoc.jar",
+    "description" : "AutoValue Annotations provides the annotation types used to mark immutable value classes and AutoValue extension points in Java. It lets consumers reference those annotations without depending on the AutoValue processor artifact itself.",
+    "tested-versions" : [
+      "1.10",
+      "1.10.1",
+      "1.10.2",
+      "1.10.3",
+      "1.10.4",
+      "1.11.0",
+      "1.11.1"
+    ],
+    "allowed-packages" : [
+      "com.google.auto.value"
+    ]
+  },
+  {
+    "metadata-version" : "1.9",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/$version$/auto-value-annotations-$version$-sources.jar",
+    "repository-url" : "https://github.com/google/auto",
+    "test-code-url" : "https://github.com/google/auto/tree/auto-value-$version$/value/src/test/java",
+    "documentation-url" : "https://javadoc.io/doc/com.google.auto.value/auto-value-annotations/$version$/index.html",
+    "description" : "AutoValue Annotations provides the annotation types used to declare immutable value types and related extensions in Java. It is the annotation artifact of Google AutoValue, enabling code generation integrations without requiring the processor at runtime.",
+    "tested-versions" : [
+      "1.9"
+    ],
+    "allowed-packages" : [
+      "com.google.auto.value"
+    ]
+  }
+]
+
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/com/google/auto/value/auto-value/1.4.1/ | sed -n '1,220p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2755-17478c63
+exec
+/usr/bin/zsh -lc 'curl -fsI https://repo1.maven.org/maven2/com/google/auto/value/auto-value/1.4.1/auto-value-1.4.1-test-sources.jar || true' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2755-17478c63
+exec
+/usr/bin/zsh -lc 'curl -fsI https://javadoc.io/doc/com.google.auto.value/auto-value/1.4.1/index.html' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2755-17478c63
+ succeeded in 182ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/google/auto/value/auto-value/1.4.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/google/auto/value/auto-value/1.4.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="auto-value-1.4.1-javadoc.jar" title="auto-value-1.4.1-javadoc.jar">auto-value-1.4.1-javadoc.jar</a>                      2017-04-07 01:29    140827      
+<a href="auto-value-1.4.1-javadoc.jar.asc" title="auto-value-1.4.1-javadoc.jar.asc">auto-value-1.4.1-javadoc.jar.asc</a>                  2017-04-07 01:29       496      
+<a href="auto-value-1.4.1-javadoc.jar.asc.md5" title="auto-value-1.4.1-javadoc.jar.asc.md5">auto-value-1.4.1-javadoc.jar.asc.md5</a>              2017-04-07 01:29        32      
+<a href="auto-value-1.4.1-javadoc.jar.asc.sha1" title="auto-value-1.4.1-javadoc.jar.asc.sha1">auto-value-1.4.1-javadoc.jar.asc.sha1</a>             2017-04-07 01:29        40      
+<a href="auto-value-1.4.1-javadoc.jar.md5" title="auto-value-1.4.1-javadoc.jar.md5">auto-value-1.4.1-javadoc.jar.md5</a>                  2017-04-07 01:29        32      
+<a href="auto-value-1.4.1-javadoc.jar.sha1" title="auto-value-1.4.1-javadoc.jar.sha1">auto-value-1.4.1-javadoc.jar.sha1</a>                 2017-04-07 01:29        40      
+<a href="auto-value-1.4.1-site.jar" title="auto-value-1.4.1-site.jar">auto-value-1.4.1-site.jar</a>                         2017-04-07 01:29     45352      
+<a href="auto-value-1.4.1-site.jar.asc" title="auto-value-1.4.1-site.jar.asc">auto-value-1.4.1-site.jar.asc</a>                     2017-04-07 01:29       496      
+<a href="auto-value-1.4.1-site.jar.asc.md5" title="auto-value-1.4.1-site.jar.asc.md5">auto-value-1.4.1-site.jar.asc.md5</a>                 2017-04-07 01:29        32      
+<a href="auto-value-1.4.1-site.jar.asc.sha1" title="auto-value-1.4.1-site.jar.asc.sha1">auto-value-1.4.1-site.jar.asc.sha1</a>                2017-04-07 01:29        40      
+<a href="auto-value-1.4.1-site.jar.md5" title="auto-value-1.4.1-site.jar.md5">auto-value-1.4.1-site.jar.md5</a>                     2017-04-07 01:29        32      
+<a href="auto-value-1.4.1-site.jar.sha1" title="auto-value-1.4.1-site.jar.sha1">auto-value-1.4.1-site.jar.sha1</a>                    2017-04-07 01:29        40      
+<a href="auto-value-1.4.1-sources.jar" title="auto-value-1.4.1-sources.jar">auto-value-1.4.1-sources.jar</a>                      2017-04-07 01:29    132975      
+<a href="auto-value-1.4.1-sources.jar.asc" title="auto-value-1.4.1-sources.jar.asc">auto-value-1.4.1-sources.jar.asc</a>                  2017-04-07 01:29       496      
+<a href="auto-value-1.4.1-sources.jar.asc.md5" title="auto-value-1.4.1-sources.jar.asc.md5">auto-value-1.4.1-sources.jar.asc.md5</a>              2017-04-07 01:29        32      
+<a href="auto-value-1.4.1-sources.jar.asc.sha1" title="auto-value-1.4.1-sources.jar.asc.sha1">auto-value-1.4.1-sources.jar.asc.sha1</a>             2017-04-07 01:29        40      
+<a href="auto-value-1.4.1-sources.jar.md5" title="auto-value-1.4.1-sources.jar.md5">auto-value-1.4.1-sources.jar.md5</a>                  2017-04-07 01:29        32      
+<a href="auto-value-1.4.1-sources.jar.sha1" title="auto-value-1.4.1-sources.jar.sha1">auto-value-1.4.1-sources.jar.sha1</a>                 2017-04-07 01:29        40      
+<a href="auto-value-1.4.1.jar" title="auto-value-1.4.1.jar">auto-value-1.4.1.jar</a>                              2017-04-07 01:29   1504726      
+<a href="auto-value-1.4.1.jar.asc" title="auto-value-1.4.1.jar.asc">auto-value-1.4.1.jar.asc</a>                          2017-04-07 01:29       496      
+<a href="auto-value-1.4.1.jar.asc.md5" title="auto-value-1.4.1.jar.asc.md5">auto-value-1.4.1.jar.asc.md5</a>                      2017-04-07 01:29        32      
+<a href="auto-value-1.4.1.jar.asc.sha1" title="auto-value-1.4.1.jar.asc.sha1">auto-value-1.4.1.jar.asc.sha1</a>                     2017-04-07 01:29        40      
+<a href="auto-value-1.4.1.jar.md5" title="auto-value-1.4.1.jar.md5">auto-value-1.4.1.jar.md5</a>                          2017-04-07 01:29        32      
+<a href="auto-value-1.4.1.jar.sha1" title="auto-value-1.4.1.jar.sha1">auto-value-1.4.1.jar.sha1</a>                         2017-04-07 01:29        40      
+<a href="auto-value-1.4.1.pom" title="auto-value-1.4.1.pom">auto-value-1.4.1.pom</a>                              2017-04-07 01:29      6377      
+<a href="auto-value-1.4.1.pom.asc" title="auto-value-1.4.1.pom.asc">auto-value-1.4.1.pom.asc</a>                          2017-04-07 01:29       496      
+<a href="auto-value-1.4.1.pom.asc.md5" title="auto-value-1.4.1.pom.asc.md5">auto-value-1.4.1.pom.asc.md5</a>                      2017-04-07 01:29        32      
+<a href="auto-value-1.4.1.pom.asc.sha1" title="auto-value-1.4.1.pom.asc.sha1">auto-value-1.4.1.pom.asc.sha1</a>                     2017-04-07 01:29        40      
+<a href="auto-value-1.4.1.pom.md5" title="auto-value-1.4.1.pom.md5">auto-value-1.4.1.pom.md5</a>                          2017-04-07 01:29        32      
+<a href="auto-value-1.4.1.pom.sha1" title="auto-value-1.4.1.pom.sha1">auto-value-1.4.1.pom.sha1</a>                         2017-04-07 01:29        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 258ms:
+HTTP/2 200 
+date: Mon, 08 Jun 2026 22:25:29 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/com.google.auto.value/auto-value/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=%2Bf4kPI1VQTVLHadBJAGh6ozyxpAMx9u7W4B18dv0u7tyStv2GdCGOTKzWCt%2BYFQxWQ1zFDifCmTBvBTEIpWpeDv5Pgc17c23dCHg8tk7IK60Tc5hhwlEa4aBzx5z"}]}
+server: cloudflare
+cf-ray: a08b500c39590a8e-BEG
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 348ms:
+HTTP/2 404 
+date: Mon, 08 Jun 2026 22:25:29 GMT
+content-type: text/html
+cf-ray: a08b500bf81a0a8e-BEG
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/google/auto/value/auto-value/1.4.1/auto-value-1.4.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+There is no Maven test-sources classifier for this artifact, so the test URL will be the upstream tagged test directory. The artifact is a normal JVM jar, so I will not set `not-for-native-image`; it does not meet the Android-only/native-JS/empty-classfile exclusions.
+exec
+/usr/bin/zsh -lc 'git ls-remote --tags https://github.com/google/auto.git refs/tags/auto-value-1.4.1' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2755-17478c63
+exec
+/usr/bin/zsh -lc "curl -fsSL https://raw.githubusercontent.com/google/auto/auto-value-1.4.1/value/README.md | sed -n '1,120p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2755-17478c63
+exec
+/usr/bin/zsh -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/auto-value-1.4.1.jar" https://repo1.maven.org/maven2/com/google/auto/value/auto-value/1.4.1/auto-value-1.4.1.jar; jar tf "$tmp/auto-value-1.4.1.jar" | rg '"'\\.class"'$'"' | head -20; rm -rf \""'$tmp"' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2755-17478c63
+ succeeded in 408ms:
+# AutoValue
+
+*Generated immutable value classes for Java 1.6+* <br />
+***Kevin Bourrillion, Éamonn McManus*** <br />
+**Google, Inc.**
+
+**Value classes** are extremely common in Java projects. These are classes for
+which you want to treat any two instances with suitably equal field values as
+interchangeable. That's right: we're talking about those classes where you wind
+up implementing `equals`, `hashCode` and `toString` in a bloated, repetitive,
+formulaic yet error-prone fashion.
+
+Writing these methods the first time is not too bad, with the aid of a few
+helper methods and IDE templates. But once written they continue to burden
+reviewers, editors and future readers. Their wide expanses of boilerplate
+sharply decrease the signal-to-noise ratio of your code... and they love to
+harbor hard-to-spot bugs.
+
+AutoValue provides an easier way to create immutable value classes, with a lot
+less code and less room for error, while **not restricting your freedom** to
+code almost any aspect of your class exactly the way you want it.
+
+For more information, consult the
+[detailed
+documentation](userguide/index.md)
+
+ succeeded in 531ms:
+834e6d7e980000af536de2f357e856ff3b902bc2	refs/tags/auto-value-1.4.1
+
+ succeeded in 552ms:
+com/google/auto/value/AutoAnnotation.class
+com/google/auto/value/AutoValue$Builder.class
+com/google/auto/value/AutoValue$CopyAnnotations.class
+com/google/auto/value/AutoValue.class
+com/google/auto/value/extension/AutoValueExtension$Context.class
+com/google/auto/value/extension/AutoValueExtension.class
+com/google/auto/value/extension/memoized/Memoized.class
+com/google/auto/value/extension/memoized/MemoizeExtension$1.class
+com/google/auto/value/extension/memoized/MemoizeExtension$Generator$MethodOverrider$CheckBooleanField.class
+com/google/auto/value/extension/memoized/MemoizeExtension$Generator$MethodOverrider$InitializationStrategy.class
+com/google/auto/value/extension/memoized/MemoizeExtension$Generator$MethodOverrider$NullMeansUninitialized.class
+com/google/auto/value/extension/memoized/MemoizeExtension$Generator$MethodOverrider.class
+com/google/auto/value/extension/memoized/MemoizeExtension$Generator.class
+com/google/auto/value/extension/memoized/MemoizeExtension.class
+com/google/auto/value/processor/AbortProcessingException.class
+com/google/auto/value/processor/AnnotationOutput$1.class
+com/google/auto/value/processor/AnnotationOutput$AnnotationSourceFormVisitor.class
+com/google/auto/value/processor/AnnotationOutput$InitializerSourceFormVisitor.class
+com/google/auto/value/processor/AnnotationOutput$SourceFormVisitor.class
+com/google/auto/value/processor/AnnotationOutput.class
+
+codex
+I have enough evidence now. I’m replacing the placeholder JSON with the discovered repository root, Maven source/javadoc artifacts, the tagged upstream test directory, and a two-sentence Java-focused description.
+apply patch
+patch: completed
+/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2755-17478c63/build/discovered-artifact-metadata/com.google.auto.value-auto-value-1.4.1.json
+diff --git a/build/discovered-artifact-metadata/com.google.auto.value-auto-value-1.4.1.json b/build/discovered-artifact-metadata/com.google.auto.value-auto-value-1.4.1.json
+index 7d864a23e0eaead5ac9dade9582e0c72bb9964bf..77a63362682278285f732466d978fa3958c38d51
+--- a/build/discovered-artifact-metadata/com.google.auto.value-auto-value-1.4.1.json
++++ b/build/discovered-artifact-metadata/com.google.auto.value-auto-value-1.4.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.auto.value:auto-value:1.4.1"
++  "coordinates" : "com.google.auto.value:auto-value:1.4.1",
++  "repository-url" : "https://github.com/google/auto",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value/$version$/auto-value-$version$-sources.jar",
++  "test-code-url" : "https://github.com/google/auto/tree/auto-value-$version$/value/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value/$version$/auto-value-$version$-javadoc.jar",
++  "description" : "AutoValue is a Java annotation processor that generates immutable value classes from abstract types annotated with @AutoValue. It removes boilerplate such as equals, hashCode, toString, builders, and related extension hooks while preserving normal Java APIs."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.google.auto.value-auto-value-1.4.1.json b/build/discovered-artifact-metadata/com.google.auto.value-auto-value-1.4.1.json
+index 7d864a23e0eaead5ac9dade9582e0c72bb9964bf..77a63362682278285f732466d978fa3958c38d51
+--- a/build/discovered-artifact-metadata/com.google.auto.value-auto-value-1.4.1.json
++++ b/build/discovered-artifact-metadata/com.google.auto.value-auto-value-1.4.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.auto.value:auto-value:1.4.1"
++  "coordinates" : "com.google.auto.value:auto-value:1.4.1",
++  "repository-url" : "https://github.com/google/auto",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value/$version$/auto-value-$version$-sources.jar",
++  "test-code-url" : "https://github.com/google/auto/tree/auto-value-$version$/value/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value/$version$/auto-value-$version$-javadoc.jar",
++  "description" : "AutoValue is a Java annotation processor that generates immutable value classes from abstract types annotated with @AutoValue. It removes boilerplate such as equals, hashCode, toString, builders, and related extension hooks while preserving normal Java APIs."
+ }
+
+codex
+The file is updated. I’ll run a lightweight JSON parse check and inspect the final content; no project tests are needed for this metadata-only edit.
+exec
+/usr/bin/zsh -lc "sed -n '1,120p' build/discovered-artifact-metadata/com.google.auto.value-auto-value-1.4.1.json" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2755-17478c63
+ succeeded in 0ms:
+{
+  "coordinates" : "com.google.auto.value:auto-value:1.4.1",
+  "repository-url" : "https://github.com/google/auto",
+  "source-code-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value/$version$/auto-value-$version$-sources.jar",
+  "test-code-url" : "https://github.com/google/auto/tree/auto-value-$version$/value/src/test/java",
+  "documentation-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value/$version$/auto-value-$version$-javadoc.jar",
+  "description" : "AutoValue is a Java annotation processor that generates immutable value classes from abstract types annotated with @AutoValue. It removes boilerplate such as equals, hashCode, toString, builders, and related extension hooks while preserving normal Java APIs."
+}
+
+exec
+/usr/bin/zsh -lc 'jq . build/discovered-artifact-metadata/com.google.auto.value-auto-value-1.4.1.json >/dev/null' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2755-17478c63
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.google.auto.value-auto-value-1.4.1.json b/build/discovered-artifact-metadata/com.google.auto.value-auto-value-1.4.1.json
+index 7d864a23e0eaead5ac9dade9582e0c72bb9964bf..77a63362682278285f732466d978fa3958c38d51
+--- a/build/discovered-artifact-metadata/com.google.auto.value-auto-value-1.4.1.json
++++ b/build/discovered-artifact-metadata/com.google.auto.value-auto-value-1.4.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.auto.value:auto-value:1.4.1"
++  "coordinates" : "com.google.auto.value:auto-value:1.4.1",
++  "repository-url" : "https://github.com/google/auto",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value/$version$/auto-value-$version$-sources.jar",
++  "test-code-url" : "https://github.com/google/auto/tree/auto-value-$version$/value/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value/$version$/auto-value-$version$-javadoc.jar",
++  "description" : "AutoValue is a Java annotation processor that generates immutable value classes from abstract types annotated with @AutoValue. It removes boilerplate such as equals, hashCode, toString, builders, and related extension hooks while preserving normal Java APIs."
+ }
+
+codex
+Updated [com.google.auto.value-auto-value-1.4.1.json](/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2755-17478c63/build/discovered-artifact-metadata/com.google.auto.value-auto-value-1.4.1.json) with repository, Maven source/javadoc URLs, tagged GitHub test URL, and a two-sentence description.
+
+I omitted `language` because this is not Kotlin/Groovy/Scala-specific, and omitted `not-for-native-image` because the artifact is a normal JVM jar with class files. Verified the JSON parses with `jq`.
+diff --git a/build/discovered-artifact-metadata/com.google.auto.value-auto-value-1.4.1.json b/build/discovered-artifact-metadata/com.google.auto.value-auto-value-1.4.1.json
+index 7d864a23e0eaead5ac9dade9582e0c72bb9964bf..77a63362682278285f732466d978fa3958c38d51
+--- a/build/discovered-artifact-metadata/com.google.auto.value-auto-value-1.4.1.json
++++ b/build/discovered-artifact-metadata/com.google.auto.value-auto-value-1.4.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.auto.value:auto-value:1.4.1"
++  "coordinates" : "com.google.auto.value:auto-value:1.4.1",
++  "repository-url" : "https://github.com/google/auto",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value/$version$/auto-value-$version$-sources.jar",
++  "test-code-url" : "https://github.com/google/auto/tree/auto-value-$version$/value/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value/$version$/auto-value-$version$-javadoc.jar",
++  "description" : "AutoValue is a Java annotation processor that generates immutable value classes from abstract types annotated with @AutoValue. It removes boilerplate such as equals, hashCode, toString, builders, and related extension hooks while preserving normal Java APIs."
+ }
+
+tokens used
+29,679
+Updated [com.google.auto.value-auto-value-1.4.1.json](/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2755-17478c63/build/discovered-artifact-metadata/com.google.auto.value-auto-value-1.4.1.json) with repository, Maven source/javadoc URLs, tagged GitHub test URL, and a two-sentence description.
+
+I omitted `language` because this is not Kotlin/Groovy/Scala-specific, and omitted `not-for-native-image` because the artifact is a normal JVM jar with class files. Verified the JSON parses with `jq`.
+Ran agent for com.google.auto.value:auto-value:1.4.1 (exit 0). Log: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2755-17478c63/build/agent-artifact-discovery-logs/com.google.auto.value-auto-value-1.4.1.log
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2755-17478c63/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 22s
+9 actionable tasks: 9 executed
