@@ -56,7 +56,7 @@ public class FactoryHelperTest {
             Class<?> initializer = Class.forName(
                     IsolatedFactoryHelperInitializer.class.getName(), true, loader);
 
-            assertThat(initializer.getClassLoader()).isSameAs(loader);
+            assertThat(initializer.getClassLoader()).isIn((Object[]) expectedLoaders(loader));
         } catch (Error error) {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
@@ -84,6 +84,17 @@ public class FactoryHelperTest {
 
         private IsolatedFactoryHelperInitializer() {
         }
+    }
+
+    private static ClassLoader[] expectedLoaders(ClassLoader loader) {
+        if (isNativeImageRuntime()) {
+            return new ClassLoader[] { loader, ClassLoader.getSystemClassLoader() };
+        }
+        return new ClassLoader[] { loader };
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private static final class ChildFirstJavassistLoader extends URLClassLoader {
