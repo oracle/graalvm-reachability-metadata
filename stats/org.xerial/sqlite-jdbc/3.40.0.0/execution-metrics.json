@@ -1,0 +1,144 @@
+{
+  "fix_ni_run:2026-06-09": {
+    "timestamp": "2026-06-09T13:36:01.055809Z",
+    "library": "org.xerial:sqlite-jdbc:3.40.0.0",
+    "starting_commit": "950384c0d3d507e034f6f2b1afc935310f3ded8b",
+    "ending_commit": "4bed52fd4441107183cd6cc2d7c302ba9e03379f",
+    "previous_library": "org.xerial:sqlite-jdbc:3.36.0.3",
+    "strategy_name": "library_update_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "3.40.0.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 5,
+            "totalCalls": 5
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 8,
+        "totalCalls": 8
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 5746,
+          "missed": 15635,
+          "ratio": 0.268743,
+          "total": 21381
+        },
+        "line": {
+          "covered": 1262,
+          "missed": 3559,
+          "ratio": 0.261771,
+          "total": 4821
+        },
+        "method": {
+          "covered": 264,
+          "missed": 1106,
+          "ratio": 0.192701,
+          "total": 1370
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "3.36.0.3",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 5,
+            "totalCalls": 5
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 8,
+        "totalCalls": 8
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 5428,
+          "missed": 13999,
+          "ratio": 0.279405,
+          "total": 19427
+        },
+        "line": {
+          "covered": 1132,
+          "missed": 3132,
+          "ratio": 0.265478,
+          "total": 4264
+        },
+        "method": {
+          "covered": 236,
+          "missed": 1041,
+          "ratio": 0.184808,
+          "total": 1277
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 7659,
+      "issue_label": "fails-native-image-run",
+      "library": "org.xerial:sqlite-jdbc:3.40.0.0",
+      "summary": "sqlite-jdbc is a self-contained embedded JDBC driver: its published artifact has no runtime Maven dependencies, bundles native SQLite libraries and Java service registration, and does not need Docker or an external database service. Meaningful coverage should explicitly exercise driver/native-library loading and real SQLite operations.",
+      "deterministic_setup": [],
+      "agent_guidance": "Use the driver against an embedded SQLite database, preferably `jdbc:sqlite::memory:` or a temporary file/resource database. Exercise `DriverManager` or `SQLiteDataSource`, execute real DDL/DML/query operations, and include a path that triggers `SQLiteJDBCLoader.initialize()`; if testing extraction directly, set `org.sqlite.tmpdir` to a temporary directory and restore any changed system properties.",
+      "risks": [
+        "Native-image verification may still expose platform linker/runtime issues in the bundled JNI library; local Gradle and Native Image runs remain authoritative.",
+        "Avoid tests that only instantiate classes without opening a JDBC connection, because they may not reach native library extraction/loading paths."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#7659 [Automation] native-image run fails for org.xerial:sqlite-jdbc:3.40.0.0; label=fails-native-image-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "24 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.xerial:sqlite-jdbc:3.36.0.3",
+      "new_version": "3.40.0.0",
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 26932,
+      "output_tokens_used": 2416,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.xerial:sqlite-jdbc:3.40.0.0/library-preparation-preflight/pi-generation-2026-06-09T13-21-17-545870Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 0,
+      "cached_input_tokens_used": 0,
+      "output_tokens_used": 0,
+      "iterations": 0,
+      "cost_usd": 0.0,
+      "tested_library_loc": 1262,
+      "metadata_entries": 54,
+      "test_only_metadata_entries": 1,
+      "previous_library_metadata_entries": 32,
+      "previous_library_test_only_metadata_entries": 1,
+      "code_coverage_percent": 26.18,
+      "previous_library_coverage_percent": 26.55
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.xerial/sqlite-jdbc/3.36.0.3/src/test/java/org_xerial/sqlite_jdbc/SQLiteConnectionTest.java",
+      "metadata_file": "metadata/org.xerial/sqlite-jdbc/3.40.0.0/reachability-metadata.json"
+    }
+  }
+}
