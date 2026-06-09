@@ -7,7 +7,6 @@
 package org_specs2.specs2_core_3
 
 import scala.collection.mutable.ArrayBuffer
-import scala.concurrent.Await
 import scala.concurrent.duration.DurationInt
 import scala.util.Failure as TryFailure
 import scala.util.Success as TrySuccess
@@ -230,7 +229,7 @@ class Specs2_core_3Test {
   private def withEnv[A](f: Env => A): A = {
     val env: Env = Env()
     try f(env)
-    finally Await.result(env.shutdown, 10.seconds)
+    finally env.shutdown(10.seconds)
   }
 }
 
