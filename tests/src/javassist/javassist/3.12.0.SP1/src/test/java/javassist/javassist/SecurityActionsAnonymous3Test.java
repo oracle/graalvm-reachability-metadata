@@ -39,7 +39,7 @@ public class SecurityActionsAnonymous3Test {
             }
 
             Method method = getDeclaredMethod(MethodTarget.class, "message",
-                    new Class<?>[] { String.class });
+                    new Class<?>[] {String.class });
 
             assertThat(method.getDeclaringClass()).isEqualTo(MethodTarget.class);
             assertThat(method.getParameterTypes()).containsExactly(String.class);
