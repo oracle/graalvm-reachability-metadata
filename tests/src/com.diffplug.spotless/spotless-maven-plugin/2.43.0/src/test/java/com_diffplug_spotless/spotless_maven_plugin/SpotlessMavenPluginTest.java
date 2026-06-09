@@ -18,6 +18,8 @@ import com.diffplug.spotless.maven.FormatterConfig;
 import com.diffplug.spotless.maven.SpotlessApplyMojo;
 import com.diffplug.spotless.maven.SpotlessCheckMojo;
 import com.diffplug.spotless.maven.generic.EndWithNewline;
+import com.diffplug.spotless.maven.generic.Format;
+import com.diffplug.spotless.maven.generic.ReplaceRegex;
 import com.diffplug.spotless.maven.generic.TrimTrailingWhitespace;
 import com.diffplug.spotless.maven.java.Java;
 import com.diffplug.spotless.maven.incremental.UpToDateChecking;
@@ -41,6 +43,7 @@ import java.util.Set;
 import org.apache.maven.model.Build;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.configurator.BasicComponentConfigurator;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
@@ -144,6 +147,21 @@ public class SpotlessMavenPluginTest {
         assertThat(Files.readString(sourceFile)).isEqualTo("package demo;\npublic class App { }\n");
     }
 
+    @Test
+    void applyMojoFormatsArbitraryFilesUsingGenericFormatReplaceRegex() throws Exception {
+        Path documentDirectory = projectDirectory.resolve("docs");
+        Files.createDirectories(documentDirectory);
+        Path document = documentDirectory.resolve("status.txt");
+        Files.writeString(document, "status: draft\n", StandardCharsets.UTF_8);
+        Format textFormat = genericTextFormat(
+                "docs/*.txt", replaceRegex("normalize-status", "status: draft", "status: ready"));
+
+        SpotlessApplyMojo mojo = configuredApplyMojo(javaFormatter(), project(), Collections.singletonList(textFormat));
+        mojo.execute();
+
+        assertThat(Files.readString(document)).isEqualTo("status: ready\n");
+    }
+
     private Path writeJavaSource(String content) throws IOException {
         Path sourceDirectory = projectDirectory.resolve("src/main/java/demo");
         Files.createDirectories(sourceDirectory);
@@ -157,6 +175,46 @@ public class SpotlessMavenPluginTest {
         formatter.addTrimTrailingWhitespace(new TrimTrailingWhitespace());
         formatter.addEndWithNewline(new EndWithNewline());
         return formatter;
+    }
+
+    private Format genericTextFormat(String include, ReplaceRegex replaceRegex) throws ComponentConfigurationException {
+        Format format = new Format();
+        DefaultPlexusConfiguration configuration = new DefaultPlexusConfiguration("format");
+        DefaultPlexusConfiguration includes = new DefaultPlexusConfiguration("includes");
+        includes.addChild("include", include);
+        configuration.addChild(includes);
+
+        BasicComponentConfigurator configurator = new BasicComponentConfigurator();
+        configurator.configureComponent(
+                format,
+                configuration,
+                new MapExpressionEvaluator(Collections.emptyMap(), projectDirectory.toFile()),
+                testClassRealm(),
+                (ConfigurationListener) null);
+        format.addReplaceRegex(replaceRegex);
+        return format;
+    }
+
+    private ReplaceRegex replaceRegex(String name, String searchRegex, String replacement)
+            throws ComponentConfigurationException {
+        ReplaceRegex replaceRegex = new ReplaceRegex();
+        DefaultPlexusConfiguration configuration = new DefaultPlexusConfiguration("replaceRegex");
+        configuration.addChild("name", name);
+        configuration.addChild("searchRegex", searchRegex);
+        configuration.addChild("replacement", replacement);
+
+        BasicComponentConfigurator configurator = new BasicComponentConfigurator();
+        configurator.configureComponent(
+                replaceRegex,
+                configuration,
+                new MapExpressionEvaluator(Collections.emptyMap(), projectDirectory.toFile()),
+                (ClassRealm) null,
+                (ConfigurationListener) null);
+        return replaceRegex;
+    }
+
+    private ClassRealm testClassRealm() {
+        return new ClassRealm(new ClassWorld(), "spotless-test", getClass().getClassLoader());
     }
 
     private String javaFileMask(String first, String second, String third) {
@@ -203,6 +261,14 @@ public class SpotlessMavenPluginTest {
         return mojo;
     }
 
+    private SpotlessApplyMojo configuredApplyMojo(
+            Java javaFormatter, MavenProject project, List<Format> genericFormats)
+            throws ComponentConfigurationException, IOException {
+        SpotlessApplyMojo mojo = new SpotlessApplyMojo();
+        configureMojo(mojo, "apply", javaFormatter, project, genericFormats);
+        return mojo;
+    }
+
     private SpotlessCheckMojo configuredCheckMojo(Java javaFormatter, MavenProject project)
             throws ComponentConfigurationException, IOException {
         SpotlessCheckMojo mojo = new SpotlessCheckMojo();
@@ -211,6 +277,12 @@ public class SpotlessMavenPluginTest {
     }
 
     private void configureMojo(Object mojo, String goal, Java javaFormatter, MavenProject project)
+            throws ComponentConfigurationException, IOException {
+        configureMojo(mojo, goal, javaFormatter, project, new ArrayList<>());
+    }
+
+    private void configureMojo(
+            Object mojo, String goal, Java javaFormatter, MavenProject project, List<Format> genericFormats)
             throws ComponentConfigurationException, IOException {
         Path buildDirectory = projectDirectory.resolve(project.getBuild().getDirectory());
         Files.createDirectories(buildDirectory);
@@ -221,7 +293,7 @@ public class SpotlessMavenPluginTest {
         values.put("buildDir", buildDirectory.toFile());
         values.put("javaFormatter", javaFormatter);
         values.put("lineEndings", LineEnding.UNIX);
-        values.put("formats", new ArrayList<>());
+        values.put("formats", genericFormats);
         values.put("repositories", new ArrayList<>());
         values.put("upToDateChecking", new UpToDateChecking());
         values.put("repositorySystem", new UnusedRepositorySystem());
