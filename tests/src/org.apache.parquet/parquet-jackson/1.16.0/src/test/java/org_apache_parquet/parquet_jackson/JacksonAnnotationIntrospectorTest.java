@@ -13,24 +13,29 @@ import org.junit.jupiter.api.Test;
 import shaded.parquet.com.fasterxml.jackson.annotation.JsonAlias;
 import shaded.parquet.com.fasterxml.jackson.annotation.JsonProperty;
 import shaded.parquet.com.fasterxml.jackson.databind.ObjectMapper;
+import shaded.parquet.com.fasterxml.jackson.databind.SerializationConfig;
+import shaded.parquet.com.fasterxml.jackson.databind.introspect.AnnotatedClass;
 import shaded.parquet.com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 
 public class JacksonAnnotationIntrospectorTest {
     @Test
     void readsJsonPropertyAndAliasAnnotationsFromEnumConstants() {
         final JacksonAnnotationIntrospector introspector = new JacksonAnnotationIntrospector();
+        final ObjectMapper mapper = new ObjectMapper();
+        final SerializationConfig config = mapper.getSerializationConfig();
+        final AnnotatedClass annotatedClass = config.introspectClassAnnotations(AnnotatedEnum.class)
+                .getClassInfo();
         final AnnotatedEnum[] enumValues = AnnotatedEnum.values();
         final String[] names = {"ALPHA", "BETA"};
         final String[][] aliases = new String[enumValues.length][];
 
-        assertThat(introspector.findEnumValue(AnnotatedEnum.ALPHA)).isEqualTo("alpha-json");
-        assertThat(introspector.findEnumValues(AnnotatedEnum.class, enumValues, names))
+        assertThat(introspector.findEnumValues(config, annotatedClass, enumValues, names))
                 .containsExactly("alpha-json", "BETA");
 
-        introspector.findEnumAliases(AnnotatedEnum.class, enumValues, aliases);
+        introspector.findEnumAliases(config, annotatedClass, enumValues, aliases);
 
         assertThat(aliases[0]).containsExactly("alpha-alias", "first-alias");
-        assertThat(aliases[1]).isNull();
+        assertThat(aliases[1]).isEmpty();
     }
 
     @Test
