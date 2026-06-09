@@ -1,0 +1,147 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest FAILED
+====================
+Testing library: io.trino.hadoop:hadoop-apache:3.2.0-12
+Command: `/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3017-e96d6695/gradlew nativeTest`
+Executing test...
+-------
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+
+> Task :compileTestJava
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3017-e96d6695/tests/src/io.trino.hadoop/hadoop-apache/3.2.0-12/src/test/java/io_trino_hadoop/hadoop_apache/FileSystemTest.java uses unchecked or unsafe operations.
+
+Note: Recompile with -Xlint:unchecked for details.
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::loadLibrary has been called by org.apache.hadoop.util.NativeCodeLoader in an unnamed module (file:/tmp/metadata-forge-gradle/7642d99034dd2fe8/caches/modules-2/files-2.1/io.trino.hadoop/hadoop-apache/3.2.0-12/793095cf098d4942db09002f8a68de6d4c04c2e1/hadoop-apache-3.2.0-12.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::arrayBaseOffset has been called by org.apache.hadoop.io.FastByteComparisons$LexicographicalComparerHolder$UnsafeComparer (file:/tmp/metadata-forge-gradle/7642d99034dd2fe8/caches/modules-2/files-2.1/io.trino.hadoop/hadoop-apache/3.2.0-12/793095cf098d4942db09002f8a68de6d4c04c2e1/hadoop-apache-3.2.0-12.jar)
+WARNING: Please consider reporting this to the maintainers of class org.apache.hadoop.io.FastByteComparisons$LexicographicalComparerHolder$UnsafeComparer
+WARNING: sun.misc.Unsafe::arrayBaseOffset will be removed in a future release
+
+> Task :test FAILED
+
+FileSystemTest > globStatusUsesPathFilters() FAILED
+    java.lang.UnsupportedOperationException: getSubject is not supported
+        at java.base/javax.security.auth.Subject.getSubject(Subject.java:277)
+        at org.apache.hadoop.security.UserGroupInformation.getCurrentUser(UserGroupInformation.java:569)
+        at org.apache.hadoop.fs.FileSystem$Cache$Key.<init>(FileSystem.java:3487)
+        at org.apache.hadoop.fs.FileSystem$Cache.getUnique(FileSystem.java:3325)
+        at org.apache.hadoop.fs.FileSystem.newInstance(FileSystem.java:532)
+        at org.apache.hadoop.fs.FileSystem.newInstanceLocal(FileSystem.java:555)
+        at io_trino_hadoop.hadoop_apache.FileSystemTest.globStatusUsesPathFilters(FileSystemTest.java:60)
+
+FileSystemTest > localFileSystemWritesReadsListsAndDeletesFiles() FAILED
+    java.lang.UnsupportedOperationException: getSubject is not supported
+        at java.base/javax.security.auth.Subject.getSubject(Subject.java:277)
+        at org.apache.hadoop.security.UserGroupInformation.getCurrentUser(UserGroupInformation.java:569)
+        at org.apache.hadoop.fs.FileSystem$Cache$Key.<init>(FileSystem.java:3487)
+        at org.apache.hadoop.fs.FileSystem$Cache.getUnique(FileSystem.java:3325)
+        at org.apache.hadoop.fs.FileSystem.newInstance(FileSystem.java:532)
+        at org.apache.hadoop.fs.FileSystem.newInstanceLocal(FileSystem.java:555)
+        at io_trino_hadoop.hadoop_apache.FileSystemTest.localFileSystemWritesReadsListsAndDeletesFiles(FileSystemTest.java:30)
+
+SequenceFileTest > writerAndReaderRoundTripWritableKeysValuesAndMetadata() FAILED
+    java.lang.UnsupportedOperationException: getSubject is not supported
+        at java.base/javax.security.auth.Subject.getSubject(Subject.java:277)
+        at org.apache.hadoop.security.UserGroupInformation.getCurrentUser(UserGroupInformation.java:569)
+        at org.apache.hadoop.fs.FileSystem$Cache$Key.<init>(FileSystem.java:3487)
+        at org.apache.hadoop.fs.FileSystem$Cache$Key.<init>(FileSystem.java:3477)
+        at org.apache.hadoop.fs.FileSystem$Cache.get(FileSystem.java:3319)
+        at org.apache.hadoop.fs.FileSystem.get(FileSystem.java:479)
+        at org.apache.hadoop.fs.Path.getFileSystem(Path.java:361)
+        at org.apache.hadoop.io.SequenceFile$Writer.<init>(SequenceFile.java:1108)
+        at org.apache.hadoop.io.SequenceFile.createWriter(SequenceFile.java:285)
+        at io_trino_hadoop.hadoop_apache.SequenceFileTest.writerAndReaderRoundTripWritableKeysValuesAndMetadata(SequenceFileTest.java:30)
+
+UserGroupInformationTest > proxyUserKeepsRealUserGroupsAndRunsPrivilegedAction() FAILED
+    java.lang.UnsupportedOperationException: getSubject is not supported
+        at java.base/javax.security.auth.Subject.getSubject(Subject.java:277)
+        at org.apache.hadoop.security.UserGroupInformation.getCurrentUser(UserGroupInformation.java:569)
+        at io_trino_hadoop.hadoop_apache.UserGroupInformationTest.lambda$proxyUserKeepsRealUserGroupsAndRunsPrivilegedAction$0(UserGroupInformationTest.java:33)
+        at java.base/jdk.internal.vm.ScopedValueContainer.callWithoutScope(ScopedValueContainer.java:162)
+        at java.base/jdk.internal.vm.ScopedValueContainer.call(ScopedValueContainer.java:147)
+        at java.base/java.lang.ScopedValue$Carrier.call(ScopedValue.java:419)
+        at java.base/javax.security.auth.Subject.callAs(Subject.java:331)
+        at java.base/javax.security.auth.Subject.doAs(Subject.java:440)
+        at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1730)
+        at io_trino_hadoop.hadoop_apache.UserGroupInformationTest.proxyUserKeepsRealUserGroupsAndRunsPrivilegedAction(UserGroupInformationTest.java:34)
+
+21 tests completed, 4 failed
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3017-e96d6695/tests/src/io.trino.hadoop/hadoop-apache/3.2.0-12/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3017-e96d6695/tests/src/io.trino.hadoop/hadoop-apache/3.2.0-12/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 1s
+14 actionable tasks: 3 executed, 11 up-to-date
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3017-e96d6695/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for io.trino.hadoop:hadoop-apache:3.2.0-12 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 2s
+9 actionable tasks: 1 executed, 8 up-to-date
