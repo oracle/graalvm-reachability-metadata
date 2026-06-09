@@ -8,27 +8,26 @@ package org_apache_hadoop_thirdparty.hadoop_shaded_guava;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.apache.hadoop.thirdparty.com.google.common.cache.AbstractCache.SimpleStatsCounter;
-import org.apache.hadoop.thirdparty.com.google.common.cache.CacheStats;
+import java.nio.charset.StandardCharsets;
+
+import org.apache.hadoop.thirdparty.com.google.common.hash.BloomFilter;
+import org.apache.hadoop.thirdparty.com.google.common.hash.Funnels;
 import org.junit.jupiter.api.Test;
 
 public class Striped64Anonymous1Test {
     @Test
-    void simpleStatsCounterRecordsValuesWithLongAdderBackedCounters() {
-        SimpleStatsCounter counter = new SimpleStatsCounter();
+    void bloomFilterUsesHashPackageLongAdderForBitCounting() {
+        BloomFilter<CharSequence> filter = BloomFilter.create(
+                Funnels.stringFunnel(StandardCharsets.UTF_8),
+                100,
+                0.01);
 
-        counter.recordHits(2);
-        counter.recordMisses(3);
-        counter.recordLoadSuccess(11);
-        counter.recordLoadException(7);
-        counter.recordEviction();
+        assertThat(filter.put("alpha")).isTrue();
+        filter.put("beta");
+        assertThat(filter.put("alpha")).isFalse();
 
-        CacheStats stats = counter.snapshot();
-        assertThat(stats.hitCount()).isEqualTo(2);
-        assertThat(stats.missCount()).isEqualTo(3);
-        assertThat(stats.loadSuccessCount()).isEqualTo(1);
-        assertThat(stats.loadExceptionCount()).isEqualTo(1);
-        assertThat(stats.totalLoadTime()).isEqualTo(18);
-        assertThat(stats.evictionCount()).isEqualTo(1);
+        assertThat(filter.mightContain("alpha")).isTrue();
+        assertThat(filter.mightContain("beta")).isTrue();
+        assertThat(filter.approximateElementCount()).isBetween(1L, 3L);
     }
 }
