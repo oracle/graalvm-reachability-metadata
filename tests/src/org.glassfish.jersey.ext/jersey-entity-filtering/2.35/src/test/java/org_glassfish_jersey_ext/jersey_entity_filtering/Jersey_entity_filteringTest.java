@@ -73,6 +73,20 @@ public class Jersey_entity_filteringTest {
     }
 
     @Test
+    void selectableEntityFilteringFeatureUsesConfiguredQueryParameterName() throws Exception {
+        try {
+            ResourceConfig config = new ResourceConfig(SelectableResource.class)
+                    .property(SelectableEntityFilteringFeature.QUERY_PARAM_NAME, "fields")
+                    .register(SelectableEntityFilteringFeature.class);
+
+            assertThat(get(config, "selectable?fields=summary", RoleSecurityContext.anonymous()))
+                    .isEqualTo("Document(fields=[summary],subgraphs={})");
+        } finally {
+            resetSelectableQueryParameterName();
+        }
+    }
+
+    @Test
     void securityEntityFilteringFeatureUsesCurrentSecurityContextRoles() throws Exception {
         ResourceConfig config = new ResourceConfig(SecurityResource.class)
                 .register(SecurityEntityFilteringFeature.class);
@@ -113,6 +127,14 @@ public class Jersey_entity_filteringTest {
         } finally {
             handler.onShutdown(null);
         }
+    }
+
+    private static void resetSelectableQueryParameterName() throws Exception {
+        ResourceConfig config = new ResourceConfig(SelectableResource.class)
+                .property(SelectableEntityFilteringFeature.QUERY_PARAM_NAME, "select")
+                .register(SelectableEntityFilteringFeature.class);
+
+        get(config, "selectable?select=title", RoleSecurityContext.anonymous());
     }
 
     private static String describe(ObjectGraph graph) {
