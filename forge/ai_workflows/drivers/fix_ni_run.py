@@ -265,8 +265,14 @@ def build_strategy_and_agent(
         artifact: str,
         version: str,
         library_preparation_preflight_context,
+        explore: bool,
 ):
-    """Construct the dynamic-access strategy object and its agent for the new coordinate."""
+    """Construct the dynamic-access strategy object and its agent for the new coordinate.
+
+    Source contexts are downloaded only when exploring: the skip-exploration path
+    finalizes the seed through `_finalize_successful_iteration`, which sends no
+    agent prompts and needs neither downloaded sources nor a live agent session.
+    """
     strategy = require_strategy_by_name(strategy_name)
     workflow_name = strategy.get("workflow")
     if not workflow_name:
@@ -281,14 +287,23 @@ def build_strategy_and_agent(
     build_gradle_file = os.path.join(tests_dir, "build.gradle")
     test_source_layout = resolve_test_source_layout(reachability_metadata_path, library, tests_dir)
 
-    forge_repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    source_context_types = normalize_source_context_types(strategy.get("parameters", {}).get("source-context-types"))
-    prepared_source_context = prepare_source_contexts(
-        repo_root=forge_repo_root,
-        reachability_repo_path=reachability_metadata_path,
-        coordinate=library,
-        source_context_types=source_context_types,
-    )
+    source_context_overview = ""
+    source_context_available = False
+    source_context_files: list[str] = []
+    if explore:
+        forge_repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        source_context_types = normalize_source_context_types(
+            strategy.get("parameters", {}).get("source-context-types"),
+        )
+        prepared_source_context = prepare_source_contexts(
+            repo_root=forge_repo_root,
+            reachability_repo_path=reachability_metadata_path,
+            coordinate=library,
+            source_context_types=source_context_types,
+        )
+        source_context_overview = prepared_source_context.to_prompt_overview()
+        source_context_available = prepared_source_context.is_available
+        source_context_files = list(prepared_source_context.read_only_files)
 
     strategy_class = WorkflowStrategy.get_class(workflow_name)
     strategy_obj = strategy_class(
@@ -297,9 +312,9 @@ def build_strategy_and_agent(
         library=library,
         test_version=test_version,
         build_gradle_file=build_gradle_file,
-        source_context_overview=prepared_source_context.to_prompt_overview(),
-        source_context_available=prepared_source_context.is_available,
-        source_context_files=prepared_source_context.read_only_files,
+        source_context_overview=source_context_overview,
+        source_context_available=source_context_available,
+        source_context_files=source_context_files,
         test_language=test_source_layout.language,
         test_language_display_name=test_source_layout.display_language,
         test_source_dir_name=test_source_layout.source_dir_name,
@@ -314,7 +329,7 @@ def build_strategy_and_agent(
     agent = agent_class(
         model_name=model_name,
         editable_files=editable_files,
-        read_only_files=list(prepared_source_context.read_only_files),
+        read_only_files=source_context_files,
         working_dir=reachability_metadata_path,
         provider=strategy.get("provider"),
         library=library,
@@ -443,6 +458,7 @@ def main(argv=None) -> int:
         artifact=artifact,
         version=new_version,
         library_preparation_preflight_context=library_preparation_preflight_context,
+        explore=explore,
     )
 
     iterations = 0

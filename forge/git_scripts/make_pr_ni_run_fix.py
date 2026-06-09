@@ -200,7 +200,7 @@ def build_forge_metrics_summary_section(metrics_repo_path: str | None) -> str:
     if not strategy_name and not metrics:
         return ""
     return (
-        "\n\n"
+        "\n"
         f"- Strategy: {strategy_name}\n"
         f"- Agent: {get_agent_name(strategy_name)}\n"
         f"- Model: {get_model_display_name(strategy_name)}\n"
@@ -259,7 +259,7 @@ def build_pull_request_preview(
     if new_test_entries > 0:
         new_test_entries_line = f"- Test-only metadata entries (new `{new_coordinates}`): {new_test_entries}\n"
     metrics_section = (
-        f"\n\n"
+        f"\n\nSummary:\n"
         f"- Metadata entries (previous `{old_coordinates}`): {previous_entries}\n"
         f"{previous_test_entries_line}"
         f"- Metadata entries (new `{new_coordinates}`): {new_entries}\n"
@@ -269,6 +269,7 @@ def build_pull_request_preview(
     )
     title = f"[Automation] Generated metadata for {new_coordinates}"
     body = (
+        f"## What does this PR do?\n\n"
         f"Fixes: {REPO}#{issue_no}\n\n"
         f"This PR provides new metadata needed for the {new_coordinates}, "
         f"addressing Native Image run failures caused by changes in the updated library version."
