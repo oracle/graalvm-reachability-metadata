@@ -1,0 +1,32 @@
+{
+  "status": "completed",
+  "action": "no_action",
+  "issue_number": 8258,
+  "issue_label": "fails-java-run",
+  "library": "org.springframework:spring-test:7.0.0",
+  "summary": "No extra deterministic setup is needed: spring-test 7.0.0 resolves only spring-core transitively, and the existing test scaffold already supplies the Spring context/JUnit/assertion dependencies needed by the current failing tests. The failure is a changed Spring 7 AOT/TestContext assertion, not a missing dependency, Docker service, or required initialization step.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": [
+    "spring-test has many optional integrations such as servlet/MockMvc, WebFlux, HtmlUnit, Selenium, Mockito, TestNG, and JSONPath; if the agent broadens coverage into those APIs, targeted optional test dependencies may become necessary, but they are not required for the current failing TestContext/AOT coverage."
+  ],
+  "applied_setup": [],
+  "input_evidence": [
+    {
+      "name": "issue",
+      "summary": "#8258 [Automation] java run fails for org.springframework:spring-test:7.0.0; label=fails-java-run; body_chars=8015"
+    },
+    {
+      "name": "existing_tests",
+      "summary": "12 existing test file path(s) included"
+    }
+  ],
+  "current_library": "org.springframework:spring-test:6.0.0",
+  "new_version": "7.0.0",
+  "model": "oca/gpt-5.5",
+  "input_tokens_used": 73744,
+  "output_tokens_used": 4497,
+  "prompt_path": "library-preflight-prompt.txt",
+  "raw_response_path": "library-preflight-response.txt",
+  "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.springframework:spring-test:7.0.0/library-preparation-preflight/pi-generation-2026-06-09T16-46-45-514844Z.log"
+}
