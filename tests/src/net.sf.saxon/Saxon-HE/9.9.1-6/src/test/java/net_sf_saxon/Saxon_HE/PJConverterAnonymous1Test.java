@@ -11,22 +11,28 @@ import net.sf.saxon.expr.PJConverter;
 import net.sf.saxon.expr.StaticProperty;
 import net.sf.saxon.s9api.XdmAtomicValue;
 import net.sf.saxon.type.BuiltInAtomicType;
+import net.sf.saxon.value.UntypedAtomicValue;
 
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PJConverterTest {
+public class PJConverterAnonymous1Test {
     @Test
-    void allocatesConverterForUntypedAtomicValueToTargetWithStringConstructor() throws Exception {
+    void convertsUntypedAtomicValueToTargetWithStringConstructor() throws Exception {
         Configuration configuration = Configuration.newConfiguration();
-
         PJConverter converter = PJConverter.allocate(
                 configuration,
                 BuiltInAtomicType.UNTYPED_ATOMIC,
                 StaticProperty.ALLOWS_ONE,
                 XdmAtomicValue.class);
 
-        assertThat(converter).isNotNull();
+        Object converted = converter.convert(
+                new UntypedAtomicValue("created reflectively"),
+                XdmAtomicValue.class,
+                null);
+
+        assertThat(converted).isInstanceOf(XdmAtomicValue.class);
+        assertThat(((XdmAtomicValue) converted).getStringValue()).isEqualTo("created reflectively");
     }
 }
