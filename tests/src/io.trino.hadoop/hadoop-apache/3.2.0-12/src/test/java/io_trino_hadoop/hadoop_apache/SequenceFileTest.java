@@ -26,6 +26,45 @@ public class SequenceFileTest {
     java.nio.file.Path tempDir;
 
     @Test
+    void readerSyncSeeksToRecordBoundaryAfterMarker() throws Exception {
+        Configuration conf = new Configuration(false);
+        Path file = new Path(tempDir.resolve("sync-records.seq").toUri());
+        long syncPosition;
+
+        try (RawLocalFileSystem fileSystem = createRawLocalFileSystem(conf)) {
+            try (FSDataOutputStream outputStream = fileSystem.create(file, true);
+                    SequenceFile.Writer writer = SequenceFile.createWriter(
+                            conf,
+                            SequenceFile.Writer.stream(outputStream),
+                            SequenceFile.Writer.keyClass(Text.class),
+                            SequenceFile.Writer.valueClass(IntWritable.class),
+                            SequenceFile.Writer.compression(SequenceFile.CompressionType.NONE))) {
+                writer.append(new Text("before-sync"), new IntWritable(1));
+                syncPosition = writer.getLength();
+                writer.sync();
+                writer.append(new Text("after-sync"), new IntWritable(2));
+            }
+
+            long fileLength = fileSystem.getFileStatus(file).getLen();
+            try (FSDataInputStream inputStream = fileSystem.open(file);
+                    SequenceFile.Reader reader = new SequenceFile.Reader(
+                            conf,
+                            SequenceFile.Reader.stream(inputStream),
+                            SequenceFile.Reader.length(fileLength))) {
+                Text key = new Text();
+                IntWritable value = new IntWritable();
+
+                reader.sync(syncPosition);
+
+                assertThat(reader.next(key, value)).isTrue();
+                assertThat(key.toString()).isEqualTo("after-sync");
+                assertThat(value.get()).isEqualTo(2);
+                assertThat(reader.next(key, value)).isFalse();
+            }
+        }
+    }
+
+    @Test
     void writerAndReaderRoundTripWritableKeysValuesAndMetadata() throws Exception {
         Configuration conf = new Configuration(false);
         Path file = new Path(tempDir.resolve("records.seq").toUri());
