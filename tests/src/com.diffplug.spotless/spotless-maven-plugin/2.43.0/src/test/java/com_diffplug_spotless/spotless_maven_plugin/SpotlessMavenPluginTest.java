@@ -9,10 +9,12 @@ package com_diffplug_spotless.spotless_maven_plugin;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import com.diffplug.spotless.Formatter;
 import com.diffplug.spotless.FormatterStep;
 import com.diffplug.spotless.LineEnding;
 import com.diffplug.spotless.Provisioner;
 import com.diffplug.spotless.generic.PipeStepPair;
+import com.diffplug.spotless.maven.FileLocator;
 import com.diffplug.spotless.maven.FormatterConfig;
 import com.diffplug.spotless.maven.FormatterFactory;
 import com.diffplug.spotless.maven.FormatterStepConfig;
@@ -39,13 +41,20 @@ import com.diffplug.spotless.maven.sql.Sql;
 import com.diffplug.spotless.maven.typescript.Typescript;
 import com.diffplug.spotless.maven.yaml.Yaml;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.maven.model.Build;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.resource.PlexusResource;
+import org.codehaus.plexus.resource.ResourceManager;
+import org.codehaus.plexus.resource.loader.FileResourceCreationException;
+import org.codehaus.plexus.resource.loader.ResourceNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -204,6 +213,100 @@ public class SpotlessMavenPluginTest {
                 .isEqualTo("value\n");
         assertThat(endWithNewline.newFormatterStep(config).format("value", SAMPLE_FILE))
                 .isEqualTo("value\n");
+    }
+
+    @Test
+    void formatterFactoryAppliesGlobalAndFormatterSpecificStepsToFiles() throws Exception {
+        Path sourceFile = projectDirectory.resolve("notes.txt");
+        Files.writeString(sourceFile, "alpha  \nbeta", StandardCharsets.UTF_8);
+
+        FormatterConfig config = new FormatterConfig(
+                projectDirectory.toFile(),
+                StandardCharsets.UTF_8.name(),
+                LineEnding.UNIX,
+                Optional.empty(),
+                (withTransitives, mavenCoordinates) -> Set.of(),
+                fileLocator(),
+                List.of(new TrimTrailingWhitespace()),
+                Optional.empty());
+        Format format = new Format();
+        format.addEndWithNewline(new EndWithNewline());
+
+        try (Formatter formatter = format.newFormatter(() -> List.of(sourceFile.toFile()), config)) {
+            assertThat(formatter.getRootDir()).isEqualTo(projectDirectory);
+            assertThat(formatter.getEncoding()).isEqualTo(StandardCharsets.UTF_8);
+            assertThat(formatter.getSteps()).hasSize(2);
+            assertThat(formatter.isClean(sourceFile.toFile())).isFalse();
+
+            formatter.applyTo(sourceFile.toFile());
+
+            assertThat(Files.readString(sourceFile, StandardCharsets.UTF_8)).isEqualTo("alpha\nbeta\n");
+            assertThat(formatter.isClean(sourceFile.toFile())).isTrue();
+        }
+    }
+
+    private FileLocator fileLocator() {
+        return new FileLocator(
+                unusedResourceManager(),
+                projectDirectory.toFile(),
+                projectDirectory.resolve("target").toFile());
+    }
+
+    private ResourceManager unusedResourceManager() {
+        return new ResourceManager() {
+            @Override
+            public InputStream getResourceAsInputStream(String name) throws ResourceNotFoundException {
+                throw new ResourceNotFoundException(name);
+            }
+
+            @Override
+            public File getResourceAsFile(String name)
+                    throws ResourceNotFoundException, FileResourceCreationException {
+                throw new ResourceNotFoundException(name);
+            }
+
+            @Override
+            public File getResourceAsFile(String name, String outputFile)
+                    throws ResourceNotFoundException, FileResourceCreationException {
+                throw new ResourceNotFoundException(name);
+            }
+
+            @Override
+            public void setOutputDirectory(File outputDirectory) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public void addSearchPath(String loaderId, String searchPath) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public File resolveLocation(String location, String baseDirectory) throws IOException {
+                return new File(baseDirectory, location);
+            }
+
+            @Override
+            public File resolveLocation(String location) throws IOException {
+                return new File(location);
+            }
+
+            @Override
+            public PlexusResource getResource(String name) throws ResourceNotFoundException {
+                throw new ResourceNotFoundException(name);
+            }
+
+            @Override
+            public File getResourceAsFile(PlexusResource resource) throws FileResourceCreationException {
+                throw new FileResourceCreationException(resource.getName());
+            }
+
+            @Override
+            public void createResourceAsFile(PlexusResource resource, File outputFile)
+                    throws FileResourceCreationException {
+                throw new FileResourceCreationException(resource.getName());
+            }
+        };
     }
 
     private FormatterStepConfig defaultStepConfig() {
