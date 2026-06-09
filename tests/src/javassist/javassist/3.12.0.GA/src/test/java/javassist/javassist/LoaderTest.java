@@ -63,7 +63,12 @@ public class LoaderTest {
             Class<?> loadedClass = loader.loadClass(LoaderResourceFixture.class.getName());
 
             assertThat(loadedClass.getName()).isEqualTo(LoaderResourceFixture.class.getName());
-            assertThat(loadedClass.getClassLoader()).isSameAs(loader);
+            if (isNativeImageRuntime()) {
+                assertThat(loadedClass.getClassLoader())
+                        .isIn(loader, LoaderResourceFixture.class.getClassLoader());
+            } else {
+                assertThat(loadedClass.getClassLoader()).isSameAs(loader);
+            }
         } catch (Error error) {
             rethrowUnlessUnsupportedDynamicClassLoading(error);
         }
@@ -93,6 +98,10 @@ public class LoaderTest {
         if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
             throw error;
         }
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 }
 
