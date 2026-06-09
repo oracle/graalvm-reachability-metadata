@@ -11,6 +11,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.reflect.Method;
 import java.security.Permission;
 
 import javassist.util.proxy.FactoryHelper;
@@ -20,6 +24,33 @@ import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("removal")
 public class SecurityActionsAnonymous3Test {
+    @Test
+    void getsDeclaredMethodWithSecurityManagerInstalled() throws Throwable {
+        SecurityManager originalManager = System.getSecurityManager();
+        SecurityManager manager = null;
+        boolean installed = false;
+        try {
+            try {
+                manager = new PermissiveSecurityManager();
+                System.setSecurityManager(manager);
+                installed = System.getSecurityManager() == manager;
+            } catch (UnsupportedOperationException exception) {
+                assertThat(exception).isInstanceOf(UnsupportedOperationException.class);
+            }
+
+            Method method = getDeclaredMethod(MethodTarget.class, "message",
+                    new Class<?>[] { String.class });
+
+            assertThat(method.getDeclaringClass()).isEqualTo(MethodTarget.class);
+            assertThat(method.getParameterTypes()).containsExactly(String.class);
+            assertThat(method.getReturnType()).isEqualTo(String.class);
+        } finally {
+            if (installed) {
+                System.setSecurityManager(originalManager);
+            }
+        }
+    }
+
     @Test
     void factoryHelperFindsClassLoaderDefineClassMethodsWithSecurityManagerInstalled() throws Exception {
         SecurityManager originalManager = System.getSecurityManager();
@@ -57,6 +88,17 @@ public class SecurityActionsAnonymous3Test {
         }
     }
 
+    private static Method getDeclaredMethod(
+            Class<?> targetClass, String name, Class<?>[] parameterTypes) throws Throwable {
+        Class<?> securityActions = Class.forName("javassist.util.proxy.SecurityActions");
+        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(
+                securityActions, MethodHandles.lookup());
+        MethodHandle getDeclaredMethod = lookup.findStatic(
+                securityActions, "getDeclaredMethod",
+                MethodType.methodType(Method.class, Class.class, String.class, Class[].class));
+        return (Method) getDeclaredMethod.invoke(targetClass, name, parameterTypes);
+    }
+
     private static boolean hasUnsupportedFeatureError(Throwable throwable) {
         Throwable current = throwable;
         while (current != null) {
@@ -77,6 +119,12 @@ public class SecurityActionsAnonymous3Test {
         @Override
         public void checkPermission(Permission permission, Object context) {
             // Permit all operations while the Javassist security-manager branch is exercised.
+        }
+    }
+
+    public static final class MethodTarget {
+        public String message(String value) {
+            return value;
         }
     }
 
