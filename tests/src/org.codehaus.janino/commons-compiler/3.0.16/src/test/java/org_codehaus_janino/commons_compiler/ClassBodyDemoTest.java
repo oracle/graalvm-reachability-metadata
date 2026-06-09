@@ -29,7 +29,7 @@ public class ClassBodyDemoTest {
 
         System.clearProperty(INVOCATION_PROPERTY);
         try {
-            ClassBodyDemo.main(new String[] { classBody, "alpha", "beta" });
+            ClassBodyDemo.main(new String[] {classBody, "alpha", "beta"});
             assertThat(System.getProperty(INVOCATION_PROPERTY)).isEqualTo("alpha:beta:2");
         } catch (RuntimeException exception) {
             if (!isUnsupportedNativeImageGeneratedClassFailure(exception, "SC")) {
