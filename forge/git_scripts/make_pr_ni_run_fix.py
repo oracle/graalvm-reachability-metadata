@@ -4,6 +4,7 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 import argparse
+import json
 import os
 import subprocess
 import sys
@@ -17,15 +18,20 @@ from git_scripts.common_git import (
     find_issue_for_coordinates as find_issue_common,
     format_stats_diff,
     format_forge_revision_section,
+    get_model_display_name,
+    get_agent_name,
     build_ai_branch_name,
     delete_remote_branch_if_exists,
     get_configured_reviewers,
     run_git_transport,
 )
+from git_scripts.make_pr_javac_fix import generate_diff_text
+from utility_scripts.metadata_index import resolve_test_version
 from utility_scripts.metrics_writer import (
     count_metadata_entries,
     count_test_only_metadata_entries,
     collect_version_coverage_metrics,
+    read_pending_metrics,
 )
 from utility_scripts.library_stats import stats_artifact_dir
 from utility_scripts.local_ci_verification import (
@@ -140,6 +146,7 @@ def create_pull_request(
         repo_path: str,
         local_ci_verification: LocalCIVerificationResult | None = None,
         issue_number: int | None = None,
+        metrics_repo_path: str | None = None,
 ):
     """Create a GitHub pull request for the current branch."""
     origin_owner = get_origin_owner(cwd=repo_path)
@@ -158,6 +165,7 @@ def create_pull_request(
         repo_path=repo_path,
         local_ci_verification=local_ci_verification,
         issue_number=issue_number,
+        metrics_repo_path=metrics_repo_path,
     )
     cmd = [
         "gh", "pr", "create",
@@ -175,6 +183,52 @@ def create_pull_request(
     gh(*cmd[1:])
 
 
+def build_forge_metrics_summary_section(metrics_repo_path: str | None) -> str:
+    """Format the strategy/agent/token summary from pending run metrics, when available."""
+    if not metrics_repo_path:
+        return ""
+    try:
+        metrics_entry = read_pending_metrics(metrics_repo_path)
+    except (json.JSONDecodeError, TypeError, FileNotFoundError, OSError):
+        return ""
+    if not isinstance(metrics_entry, dict):
+        return ""
+    metrics = metrics_entry.get("metrics", {})
+    if not isinstance(metrics, dict):
+        metrics = {}
+    strategy_name = metrics_entry.get("strategy_name", "")
+    if not strategy_name and not metrics:
+        return ""
+    return (
+        "\n\n"
+        f"- Strategy: {strategy_name}\n"
+        f"- Agent: {get_agent_name(strategy_name)}\n"
+        f"- Model: {get_model_display_name(strategy_name)}\n"
+        f"- Input tokens: {int(metrics.get('input_tokens_used', 0) or 0)}\n"
+        f"- Cached input tokens: {int(metrics.get('cached_input_tokens_used', 0) or 0)}\n"
+        f"- Output tokens: {int(metrics.get('output_tokens_used', 0) or 0)}\n"
+        f"- Iterations: {int(metrics.get('iterations', 0) or 0)}"
+    )
+
+
+def build_test_comparison_section(group: str, artifact: str, old_version: str, new_version: str, repo_path: str) -> str:
+    """Format an old-vs-new test diff when exploration produced a version-specific suite.
+
+    The metadata-first seed keeps tests shared under the old version (no new-version
+    test dir), so the diff section is emitted only when exploration split a
+    version-specific suite (§WF-native-image-run-fix-workflow.3).
+    """
+    new_test_dir = os.path.join(repo_path, "tests", "src", group, artifact, new_version)
+    if not os.path.isdir(new_test_dir):
+        return ""
+    return (
+        "\n\n**Comparison between existing test version and AI-Generated update**\n\n"
+        "```diff\n"
+        f"{generate_diff_text(group, artifact, old_version, new_version, repo_path)}\n"
+        "```"
+    )
+
+
 def build_pull_request_preview(
         old_coordinates: str,
         new_coordinates: str,
@@ -183,6 +237,7 @@ def build_pull_request_preview(
         repo_path: str,
         local_ci_verification: LocalCIVerificationResult | None = None,
         issue_number: int | None = None,
+        metrics_repo_path: str | None = None,
 ) -> tuple[str, str, bool, bool]:
     """Build the PR title/body without creating a GitHub pull request."""
     issue_no = issue_number if issue_number is not None else find_issue_common(new_coordinates, REPO)
@@ -218,8 +273,10 @@ def build_pull_request_preview(
         f"This PR provides new metadata needed for the {new_coordinates}, "
         f"addressing Native Image run failures caused by changes in the updated library version."
         f"{metrics_section}"
+        f"{build_forge_metrics_summary_section(metrics_repo_path)}"
         f"\n\n{format_forge_revision_section()}"
         f"{format_stats_diff(repo_path, old_coordinates, new_coordinates)}"
+        f"{build_test_comparison_section(group, artifact, old_version, new_version, repo_path)}"
     )
     if severe_metadata_drop:
         body += format_severe_metadata_drop_pr_section(
@@ -315,10 +372,14 @@ def push_current_branch_to_origin(
         cwd=repo_path,
         check=True,
     )
+    # Exploration splits the seed's shared entry into a version-specific one, so
+    # the resolved test version is the new version; otherwise tests stay shared
+    # under the old version (metadata-first seed).
+    resolved_test_version = resolve_test_version(repo_path, group, artifact, new_version)
     stage_and_commit(
         group=group,
         artifact=artifact,
-        test_version=old_version,
+        test_version=resolved_test_version,
         metadata_version=new_version,
         coordinates=new_coordinates,
         repo_path=repo_path,
@@ -360,6 +421,7 @@ def main(argv=None):
         repo_path=repo_path,
         local_ci_verification=local_ci_verification,
         issue_number=issue_number,
+        metrics_repo_path=metrics_repo_path,
     )
 
 
