@@ -1,0 +1,610 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3633-5fb310c5/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3633-5fb310c5/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.130.0
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3633-5fb310c5
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ead5d-ed94-7201-91ac-87c0e32be1e3
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.camel:camel-core:2.16.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "2.16.2" when "$version$" is replaced with "2.16.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3633-5fb310c5/build/discovered-artifact-metadata/org.apache.camel-camel-core-2.16.2.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "org.apache.camel:camel-core:2.16.2".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.16.2".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the Maven artifacts and upstream tag before editing the JSON, since the URL fields need to resolve cleanly for the exact `2.16.2` version.
+exec
+/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/camel/camel-core/2.16.2/camel-core-2.16.2.pom | sed -n '1,220p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3633-5fb310c5
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>camel-parent</artifactId>
+    <groupId>org.apache.camel</groupId>
+    <version>2.16.2</version>
+    <relativePath>../parent/pom.xml</relativePath>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>camel-core</artifactId>
+  <packaging>bundle</packaging>
+  <name>Camel :: Core</name>
+  <description>The Core Camel Java DSL based router</description>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>${lifecycle-mapping-version}</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.camel</groupId>
+                    <artifactId>camel-package-maven-plugin</artifactId>
+                    <versionRange>${project.version}</versionRange>
+                    <goals>
+                      <goal>generate-eips-list</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <includes>
+                  <include>com.googlecode.concurrentlinkedhashmap:concurrentlinkedhashmap-lru</include>
+                </includes>
+                <excludes>
+                  <exclude>org.apache.camel:apt</exclude>
+                </excludes>
+              </artifactSet>
+              <relocations>
+                <relocation>
+                  <pattern>com.googlecode.concurrentlinkedhashmap</pattern>
+                  <shadedPattern>org.apache.camel.com.googlecode.concurrentlinkedhashmap</shadedPattern>
+                </relocation>
+              </relocations>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <excludes>
+            <exclude>log4j.properties</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>org/apache/camel/component/file/stress/**.java</exclude>
+            <exclude>**/DistributedCompletionIntervalTest.java</exclude>
+            <exclude>**/DistributedConcurrentPerCorrelationKeyTest.java</exclude>
+            <exclude>${platform.skip.tests}</exclude>
+          </excludes>
+          <forkedProcessTimeoutInSeconds>3000</forkedProcessTimeoutInSeconds>
+          <environmentVariables>
+            <FOO_SERVICE_HOST>myserver</FOO_SERVICE_HOST>
+            <FOO_SERVICE_PORT>8081</FOO_SERVICE_PORT>
+          </environmentVariables>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-package-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <executions>
+          <execution>
+            <id>components</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>generate-components-list</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>eips</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>generate-eips-list</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>dataformats</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>generate-dataformats-list</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>languages</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>generate-languages-list</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>validate</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>validate-components</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.9.1</version>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+                <configuration>
+                  <links>
+                    <link>http://download.oracle.com/javase/7/docs/api/</link>
+                    <link>http://download.oracle.com/javaee/7/api/</link>
+                  </links>
+                  <linksource>true</linksource>
+                  <maxmemory>256m</maxmemory>
+                  <groups>
+                    <group>
+                      <title>Camel API</title>
+                      <packages>org.apache.camel</packages>
+                    </group>
+                    <group>
+                      <title>Fluent API (DSL) for building EIP rules</title>
+                      <packages>org.apache.camel.builder:org.apache.camel.builder.*</packages>
+                    </group>
+                    <group>
+                      <title>The bean and JAXB2 model for EIP rule definitions</title>
+                      <packages>org.apache.camel.model:org.apache.camel.model.*</packages>
+                    </group>
+                    <group>
+                      <title>Strategy APIs for implementors extending Camel</title>
+                      <packages>org.apache.camel.spi</packages>
+                    </group>
+                    <group>
+                      <title>Language APIs and plugins for Expressions and Predicates</title>
+                      <packages>org.apache.camel.language:org.apache.camel.language.*</packages>
+                    </group>
+                    <group>
+                      <title>Processors to implement the Enterprise Integration Patterns</title>
+                      <packages>org.apache.camel.processor:org.apache.camel.processor.*</packages>
+                    </group>
+                    <group>
+                      <title>Camel Components</title>
+                      <packages>org.apache.camel.component.*</packages>
+                    </group>
+                    <group>
+                      <title>Camel Support having base classes to extend</title>
+                      <packages>org.apache.camel.support</packages>
+                    </group>
+                    <group>
+                      <title>Support APIs for implementors</title>
+                      <packages>org.apache.camel.support.*</packages>
+                    </group>
+                    <group>
+                      <title>Main class for running Camel standalone</title>
+                      <packages>org.apache.camel.main.*</packages>
+                    </group>
+                    <group>
+                      <title>Camel Runtime</title>
+                      <packages>org.apache.camel.impl:org.apache.camel.impl.*</packages>
+                    </group>
+                    <group>
+                      <title>Camel Starters</title>
+                      <packages>org.apache.camel.main</packages>
+                    </group>
+                    <group>
+                      <title>Type conversion helper classes</title>
+                      <packages>org.apache.camel.converter:org.apache.camel.converter.*</packages>
+                    </group>
+                    <group>
+
+exec
+/bin/bash -lc 'curl -I -L https://github.com/apache/camel/tree/camel-2.16.2/camel-core' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3633-5fb310c5
+exec
+/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/camel/camel-core/2.16.2/ | sed -n '1,220p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3633-5fb310c5
+ succeeded in 250ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/camel/camel-core/2.16.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/camel/camel-core/2.16.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="camel-core-2.16.2-camelComponent.properties" title="camel-core-2.16.2-camelComponent.properties">camel-core-2.16.2-camelComponent.properties</a>       2016-01-22 19:18       402      
+<a href="camel-core-2.16.2-camelComponent.properties.asc" title="camel-core-2.16.2-camelComponent.properties.asc">camel-core-2.16.2-camelComponent.properties.a...</a>  2016-01-22 19:18       819      
+<a href="camel-core-2.16.2-camelComponent.properties.asc.md5" title="camel-core-2.16.2-camelComponent.properties.asc.md5">camel-core-2.16.2-camelComponent.properties.a...</a>  2016-01-22 19:18        32      
+<a href="camel-core-2.16.2-camelComponent.properties.asc.sha1" title="camel-core-2.16.2-camelComponent.properties.asc.sha1">camel-core-2.16.2-camelComponent.properties.a...</a>  2016-01-22 19:18        40      
+<a href="camel-core-2.16.2-camelComponent.properties.md5" title="camel-core-2.16.2-camelComponent.properties.md5">camel-core-2.16.2-camelComponent.properties.m...</a>  2016-01-22 19:18        32      
+<a href="camel-core-2.16.2-camelComponent.properties.sha1" title="camel-core-2.16.2-camelComponent.properties.sha1">camel-core-2.16.2-camelComponent.properties.s...</a>  2016-01-22 19:18        40      
+<a href="camel-core-2.16.2-camelDataFormat.properties" title="camel-core-2.16.2-camelDataFormat.properties">camel-core-2.16.2-camelDataFormat.properties</a>      2016-01-22 19:18       259      
+<a href="camel-core-2.16.2-camelDataFormat.properties.asc" title="camel-core-2.16.2-camelDataFormat.properties.asc">camel-core-2.16.2-camelDataFormat.properties....</a>  2016-01-22 19:18       819      
+<a href="camel-core-2.16.2-camelDataFormat.properties.asc.md5" title="camel-core-2.16.2-camelDataFormat.properties.asc.md5">camel-core-2.16.2-camelDataFormat.properties....</a>  2016-01-22 19:18        32      
+<a href="camel-core-2.16.2-camelDataFormat.properties.asc.sha1" title="camel-core-2.16.2-camelDataFormat.properties.asc.sha1">camel-core-2.16.2-camelDataFormat.properties....</a>  2016-01-22 19:18        40      
+<a href="camel-core-2.16.2-camelDataFormat.properties.md5" title="camel-core-2.16.2-camelDataFormat.properties.md5">camel-core-2.16.2-camelDataFormat.properties....</a>  2016-01-22 19:18        32      
+<a href="camel-core-2.16.2-camelDataFormat.properties.sha1" title="camel-core-2.16.2-camelDataFormat.properties.sha1">camel-core-2.16.2-camelDataFormat.properties....</a>  2016-01-22 19:18        40      
+<a href="camel-core-2.16.2-camelLanguage.properties" title="camel-core-2.16.2-camelLanguage.properties">camel-core-2.16.2-camelLanguage.properties</a>        2016-01-22 19:18       306      
+<a href="camel-core-2.16.2-camelLanguage.properties.asc" title="camel-core-2.16.2-camelLanguage.properties.asc">camel-core-2.16.2-camelLanguage.properties.as...</a>  2016-01-22 19:18       819      
+<a href="camel-core-2.16.2-camelLanguage.properties.asc.md5" title="camel-core-2.16.2-camelLanguage.properties.asc.md5">camel-core-2.16.2-camelLanguage.properties.as...</a>  2016-01-22 19:18        32      
+<a href="camel-core-2.16.2-camelLanguage.properties.asc.sha1" title="camel-core-2.16.2-camelLanguage.properties.asc.sha1">camel-core-2.16.2-camelLanguage.properties.as...</a>  2016-01-22 19:18        40      
+<a href="camel-core-2.16.2-camelLanguage.properties.md5" title="camel-core-2.16.2-camelLanguage.properties.md5">camel-core-2.16.2-camelLanguage.properties.md...</a>  2016-01-22 19:18        32      
+<a href="camel-core-2.16.2-camelLanguage.properties.sha1" title="camel-core-2.16.2-camelLanguage.properties.sha1">camel-core-2.16.2-camelLanguage.properties.sh...</a>  2016-01-22 19:18        40      
+<a href="camel-core-2.16.2-camelModel.properties" title="camel-core-2.16.2-camelModel.properties">camel-core-2.16.2-camelModel.properties</a>           2016-01-22 19:18      1597      
+<a href="camel-core-2.16.2-camelModel.properties.asc" title="camel-core-2.16.2-camelModel.properties.asc">camel-core-2.16.2-camelModel.properties.asc</a>       2016-01-22 19:18       819      
+<a href="camel-core-2.16.2-camelModel.properties.asc.md5" title="camel-core-2.16.2-camelModel.properties.asc.md5">camel-core-2.16.2-camelModel.properties.asc.m...</a>  2016-01-22 19:18        32      
+<a href="camel-core-2.16.2-camelModel.properties.asc.sha1" title="camel-core-2.16.2-camelModel.properties.asc.sha1">camel-core-2.16.2-camelModel.properties.asc.s...</a>  2016-01-22 19:18        40      
+<a href="camel-core-2.16.2-camelModel.properties.md5" title="camel-core-2.16.2-camelModel.properties.md5">camel-core-2.16.2-camelModel.properties.md5</a>       2016-01-22 19:18        32      
+<a href="camel-core-2.16.2-camelModel.properties.sha1" title="camel-core-2.16.2-camelModel.properties.sha1">camel-core-2.16.2-camelModel.properties.sha1</a>      2016-01-22 19:18        40      
+<a href="camel-core-2.16.2-javadoc.jar" title="camel-core-2.16.2-javadoc.jar">camel-core-2.16.2-javadoc.jar</a>                     2016-01-22 19:18  15013812      
+<a href="camel-core-2.16.2-javadoc.jar.asc" title="camel-core-2.16.2-javadoc.jar.asc">camel-core-2.16.2-javadoc.jar.asc</a>                 2016-01-22 19:18       819      
+<a href="camel-core-2.16.2-javadoc.jar.asc.md5" title="camel-core-2.16.2-javadoc.jar.asc.md5">camel-core-2.16.2-javadoc.jar.asc.md5</a>             2016-01-22 19:18        32      
+<a href="camel-core-2.16.2-javadoc.jar.asc.sha1" title="camel-core-2.16.2-javadoc.jar.asc.sha1">camel-core-2.16.2-javadoc.jar.asc.sha1</a>            2016-01-22 19:18        40      
+<a href="camel-core-2.16.2-javadoc.jar.md5" title="camel-core-2.16.2-javadoc.jar.md5">camel-core-2.16.2-javadoc.jar.md5</a>                 2016-01-22 19:18        32      
+<a href="camel-core-2.16.2-javadoc.jar.sha1" title="camel-core-2.16.2-javadoc.jar.sha1">camel-core-2.16.2-javadoc.jar.sha1</a>                2016-01-22 19:18        40      
+<a href="camel-core-2.16.2-sources.jar" title="camel-core-2.16.2-sources.jar">camel-core-2.16.2-sources.jar</a>                     2016-01-22 19:18   2469086      
+<a href="camel-core-2.16.2-sources.jar.asc" title="camel-core-2.16.2-sources.jar.asc">camel-core-2.16.2-sources.jar.asc</a>                 2016-01-22 19:18       819      
+<a href="camel-core-2.16.2-sources.jar.asc.md5" title="camel-core-2.16.2-sources.jar.asc.md5">camel-core-2.16.2-sources.jar.asc.md5</a>             2016-01-22 19:18        32      
+<a href="camel-core-2.16.2-sources.jar.asc.sha1" title="camel-core-2.16.2-sources.jar.asc.sha1">camel-core-2.16.2-sources.jar.asc.sha1</a>            2016-01-22 19:18        40      
+<a href="camel-core-2.16.2-sources.jar.md5" title="camel-core-2.16.2-sources.jar.md5">camel-core-2.16.2-sources.jar.md5</a>                 2016-01-22 19:18        32      
+<a href="camel-core-2.16.2-sources.jar.sha1" title="camel-core-2.16.2-sources.jar.sha1">camel-core-2.16.2-sources.jar.sha1</a>                2016-01-22 19:18        40      
+<a href="camel-core-2.16.2-tests.jar" title="camel-core-2.16.2-tests.jar">camel-core-2.16.2-tests.jar</a>                       2016-01-22 19:18   7024908      
+<a href="camel-core-2.16.2-tests.jar.asc" title="camel-core-2.16.2-tests.jar.asc">camel-core-2.16.2-tests.jar.asc</a>                   2016-01-22 19:18       819      
+<a href="camel-core-2.16.2-tests.jar.asc.md5" title="camel-core-2.16.2-tests.jar.asc.md5">camel-core-2.16.2-tests.jar.asc.md5</a>               2016-01-22 19:18        32      
+<a href="camel-core-2.16.2-tests.jar.asc.sha1" title="camel-core-2.16.2-tests.jar.asc.sha1">camel-core-2.16.2-tests.jar.asc.sha1</a>              2016-01-22 19:18        40      
+<a href="camel-core-2.16.2-tests.jar.md5" title="camel-core-2.16.2-tests.jar.md5">camel-core-2.16.2-tests.jar.md5</a>                   2016-01-22 19:18        32      
+<a href="camel-core-2.16.2-tests.jar.sha1" title="camel-core-2.16.2-tests.jar.sha1">camel-core-2.16.2-tests.jar.sha1</a>                  2016-01-22 19:18        40      
+<a href="camel-core-2.16.2.jar" title="camel-core-2.16.2.jar">camel-core-2.16.2.jar</a>                             2016-01-22 19:18   3391933      
+<a href="camel-core-2.16.2.jar.asc" title="camel-core-2.16.2.jar.asc">camel-core-2.16.2.jar.asc</a>                         2016-01-22 19:18       819      
+<a href="camel-core-2.16.2.jar.asc.md5" title="camel-core-2.16.2.jar.asc.md5">camel-core-2.16.2.jar.asc.md5</a>                     2016-01-22 19:18        32      
+<a href="camel-core-2.16.2.jar.asc.sha1" title="camel-core-2.16.2.jar.asc.sha1">camel-core-2.16.2.jar.asc.sha1</a>                    2016-01-22 19:18        40      
+<a href="camel-core-2.16.2.jar.md5" title="camel-core-2.16.2.jar.md5">camel-core-2.16.2.jar.md5</a>                         2016-01-22 19:18        32      
+<a href="camel-core-2.16.2.jar.sha1" title="camel-core-2.16.2.jar.sha1">camel-core-2.16.2.jar.sha1</a>                        2016-01-22 19:18        40      
+<a href="camel-core-2.16.2.pom" title="camel-core-2.16.2.pom">camel-core-2.16.2.pom</a>                             2016-01-22 19:18     28230      
+<a href="camel-core-2.16.2.pom.asc" title="camel-core-2.16.2.pom.asc">camel-core-2.16.2.pom.asc</a>                         2016-01-22 19:18       819      
+<a href="camel-core-2.16.2.pom.asc.md5" title="camel-core-2.16.2.pom.asc.md5">camel-core-2.16.2.pom.asc.md5</a>                     2016-01-22 19:18        32      
+<a href="camel-core-2.16.2.pom.asc.sha1" title="camel-core-2.16.2.pom.asc.sha1">camel-core-2.16.2.pom.asc.sha1</a>                    2016-01-22 19:18        40      
+<a href="camel-core-2.16.2.pom.md5" title="camel-core-2.16.2.pom.md5">camel-core-2.16.2.pom.md5</a>                         2016-01-22 19:18        32      
+<a href="camel-core-2.16.2.pom.sha1" title="camel-core-2.16.2.pom.sha1">camel-core-2.16.2.pom.sha1</a>                        2016-01-22 19:18        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 609ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+date: Tue, 09 Jun 2026 17:11:27 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"c9e136e4609aca8995c5812b475e93f6"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=euur2iYWMGepfT5Nuvy9MMQ1S8vbIMzzVOcvn%2FMbHxJO75W3EPWmEO1AvjXNBbdVf1SUnc%2FIxpqK%2FjplRkbvNg9FXffPi4qz%2BmDlJ0ZId0h%2FjxNPpzpHx9g9nqSyfbDN4qcY1h3DUTxkaj69QLSe%2FABoK%2BJD5ZeWDetwWGG7KSqvdclUXrCSCfhL7UO7unB%2FquShma6xWhewNp80f1vWq8uqI%2BrUD8MjaVLnRLaM7grkXE%2BNcArx4TQTNid5r9GC8x5GXLNOsZlQBBR%2BcDEjgw%3D%3D--enwI2IYwN8hpQzTZ--7YHpAzNKIYjpIIHdcOUEXQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.813190261.1781025086; expires=Wed, 09 Jun 2027 17:11:26 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 09 Jun 2027 17:11:26 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: E228:2190A4:3BC061E:304CF63:6A28493E
+
+
+web search: 
+web search: Maven Central org.apache.camel camel-core 2.16.2 sources tests javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/camel/camel-core/2.16.2/
+codex
+Maven Central has the normal JAR, sources JAR, tests JAR, and javadoc JAR for this exact version, so those should be the strongest URLs for source/test/docs. The artifact is a JVM `bundle`/JAR, not a Scala/Kotlin/Groovy-specific or non-native-image-only package.
+exec
+/bin/bash -lc "test -f build/discovered-artifact-metadata/org.apache.camel-camel-core-2.16.2.json && sed -n '1,200p' build/discovered-artifact-metadata/org.apache.camel-camel-core-2.16.2.json || true" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3633-5fb310c5
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.camel:camel-core:2.16.2"
+}
+
+exec
+/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/org/apache/camel/camel-core/2.16.2/camel-core-2.16.2-sources.jar && curl -fsI https://repo1.maven.org/maven2/org/apache/camel/camel-core/2.16.2/camel-core-2.16.2-tests.jar && curl -fsI https://repo1.maven.org/maven2/org/apache/camel/camel-core/2.16.2/camel-core-2.16.2-javadoc.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3633-5fb310c5
+ succeeded in 1463ms:
+HTTP/2 200 
+date: Tue, 09 Jun 2026 17:11:40 GMT
+content-type: application/java-archive
+content-length: 2469086
+cf-ray: a091c1bdaa4ee293-BEG
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "77ba9b6784cfa389c92b831335acd003"
+last-modified: Fri, 22 Jan 2016 19:19:07 GMT
+x-checksum-md5: 77ba9b6784cfa389c92b831335acd003
+x-checksum-sha1: d14ef1f82ce487d4ac7c2651d6614f4f947f1da0
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Tue, 09 Jun 2026 17:11:41 GMT
+content-type: application/java-archive
+content-length: 7024908
+cf-ray: a091c1c0d89c71a6-BEG
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "bb4951ef2e282f1a7ac1bb1a49f703a8"
+last-modified: Fri, 22 Jan 2016 19:19:44 GMT
+x-checksum-md5: bb4951ef2e282f1a7ac1bb1a49f703a8
+x-checksum-sha1: 5abc821b8cce52c7744739e72345128406f69fcb
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Tue, 09 Jun 2026 17:11:41 GMT
+content-type: application/java-archive
+content-length: 15013812
+cf-ray: a091c1c41a89e295-BEG
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "f357d4f59a2ab77bc86e28005c83729d"
+last-modified: Fri, 22 Jan 2016 19:19:14 GMT
+x-checksum-md5: f357d4f59a2ab77bc86e28005c83729d
+x-checksum-sha1: 27970cd13d28b083cde5affe7510f8dca5dc0cb7
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/org/apache/camel/camel-core/2.16.2/camel-core-2.16.2.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3633-5fb310c5
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 09 Jun 2026 17:11:51 GMT
+content-type: application/java-archive
+content-length: 3391933
+cf-ray: a091c2037eeb3267-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 733046
+etag: "dfa206138291d09ed707f3d4cc2b41f7"
+last-modified: Fri, 22 Jan 2016 19:18:41 GMT
+x-checksum-md5: dfa206138291d09ed707f3d4cc2b41f7
+x-checksum-sha1: 0c22ed0b30a474c821cc8998cd5a3f8518a60c60
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+I’m going to write the metadata using Maven Central artifact URLs for source, tests, and javadocs, with `$version$` in the artifact path as requested.
+apply patch
+patch: completed
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3633-5fb310c5/build/discovered-artifact-metadata/org.apache.camel-camel-core-2.16.2.json
+diff --git a/build/discovered-artifact-metadata/org.apache.camel-camel-core-2.16.2.json b/build/discovered-artifact-metadata/org.apache.camel-camel-core-2.16.2.json
+index 3c89729792b168464b5f4e37260f47c1e2d974f9..81c70ff5350d4d0fd39fce45f449ace14860a72e
+--- a/build/discovered-artifact-metadata/org.apache.camel-camel-core-2.16.2.json
++++ b/build/discovered-artifact-metadata/org.apache.camel-camel-core-2.16.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.camel:camel-core:2.16.2"
++  "coordinates": "org.apache.camel:camel-core:2.16.2",
++  "repository-url": "https://github.com/apache/camel",
++  "source-code-url": "https://repo1.maven.org/maven2/org/apache/camel/camel-core/$version$/camel-core-$version$-sources.jar",
++  "test-code-url": "https://repo1.maven.org/maven2/org/apache/camel/camel-core/$version$/camel-core-$version$-tests.jar",
++  "documentation-url": "https://repo1.maven.org/maven2/org/apache/camel/camel-core/$version$/camel-core-$version$-javadoc.jar",
++  "description": "Apache Camel Core provides the core routing engine, Java DSL, and Enterprise Integration Pattern implementations used to build message-oriented integration routes. The camel-core artifact contains the runtime services, route model, processors, component support, and utilities that Camel applications and other Camel modules depend on."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.camel-camel-core-2.16.2.json b/build/discovered-artifact-metadata/org.apache.camel-camel-core-2.16.2.json
+index 3c89729792b168464b5f4e37260f47c1e2d974f9..81c70ff5350d4d0fd39fce45f449ace14860a72e
+--- a/build/discovered-artifact-metadata/org.apache.camel-camel-core-2.16.2.json
++++ b/build/discovered-artifact-metadata/org.apache.camel-camel-core-2.16.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.camel:camel-core:2.16.2"
++  "coordinates": "org.apache.camel:camel-core:2.16.2",
++  "repository-url": "https://github.com/apache/camel",
++  "source-code-url": "https://repo1.maven.org/maven2/org/apache/camel/camel-core/$version$/camel-core-$version$-sources.jar",
++  "test-code-url": "https://repo1.maven.org/maven2/org/apache/camel/camel-core/$version$/camel-core-$version$-tests.jar",
++  "documentation-url": "https://repo1.maven.org/maven2/org/apache/camel/camel-core/$version$/camel-core-$version$-javadoc.jar",
++  "description": "Apache Camel Core provides the core routing engine, Java DSL, and Enterprise Integration Pattern implementations used to build message-oriented integration routes. The camel-core artifact contains the runtime services, route model, processors, component support, and utilities that Camel applications and other Camel modules depend on."
+ }
+
+codex
+The file is updated. I’ll do a quick JSON parse check and confirm the final shape only contains the allowed keys.
+exec
+/bin/bash -lc "jq -r 'keys_unsorted[]' build/discovered-artifact-metadata/org.apache.camel-camel-core-2.16.2.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3633-5fb310c5
+ succeeded in 0ms:
+coordinates
+repository-url
+source-code-url
+test-code-url
+documentation-url
+description
+
+exec
+/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.camel-camel-core-2.16.2.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3633-5fb310c5
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.camel:camel-core:2.16.2",
+  "repository-url": "https://github.com/apache/camel",
+  "source-code-url": "https://repo1.maven.org/maven2/org/apache/camel/camel-core/$version$/camel-core-$version$-sources.jar",
+  "test-code-url": "https://repo1.maven.org/maven2/org/apache/camel/camel-core/$version$/camel-core-$version$-tests.jar",
+  "documentation-url": "https://repo1.maven.org/maven2/org/apache/camel/camel-core/$version$/camel-core-$version$-javadoc.jar",
+  "description": "Apache Camel Core provides the core routing engine, Java DSL, and Enterprise Integration Pattern implementations used to build message-oriented integration routes. The camel-core artifact contains the runtime services, route model, processors, component support, and utilities that Camel applications and other Camel modules depend on."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.apache.camel-camel-core-2.16.2.json b/build/discovered-artifact-metadata/org.apache.camel-camel-core-2.16.2.json
+index 3c89729792b168464b5f4e37260f47c1e2d974f9..81c70ff5350d4d0fd39fce45f449ace14860a72e
+--- a/build/discovered-artifact-metadata/org.apache.camel-camel-core-2.16.2.json
++++ b/build/discovered-artifact-metadata/org.apache.camel-camel-core-2.16.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.camel:camel-core:2.16.2"
++  "coordinates": "org.apache.camel:camel-core:2.16.2",
++  "repository-url": "https://github.com/apache/camel",
++  "source-code-url": "https://repo1.maven.org/maven2/org/apache/camel/camel-core/$version$/camel-core-$version$-sources.jar",
++  "test-code-url": "https://repo1.maven.org/maven2/org/apache/camel/camel-core/$version$/camel-core-$version$-tests.jar",
++  "documentation-url": "https://repo1.maven.org/maven2/org/apache/camel/camel-core/$version$/camel-core-$version$-javadoc.jar",
++  "description": "Apache Camel Core provides the core routing engine, Java DSL, and Enterprise Integration Pattern implementations used to build message-oriented integration routes. The camel-core artifact contains the runtime services, route model, processors, component support, and utilities that Camel applications and other Camel modules depend on."
+ }
+
+web search: 
+web search: repo1.maven.org/maven2/org/apache/camel/camel-core/2.16.2 camel-core-2.16.2-sources.jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/camel/camel-core/2.16.2/
+web search: 
+web search: https://github.com/apache/camel
+codex
+Updated [org.apache.camel-camel-core-2.16.2.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3633-5fb310c5/build/discovered-artifact-metadata/org.apache.camel-camel-core-2.16.2.json).
+
+I used Maven Central URLs for sources, tests, and javadocs because `camel-core:2.16.2` publishes all three artifacts there, and set the repository root to `apache/camel`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/camel/camel-core/2.16.2/)) The artifact is a JVM JAR, so I left `language`, `not-for-native-image`, `reason`, and `replacement` absent.
+
+Validation: `jq . build/discovered-artifact-metadata/org.apache.camel-camel-core-2.16.2.json` passes.
+diff --git a/build/discovered-artifact-metadata/org.apache.camel-camel-core-2.16.2.json b/build/discovered-artifact-metadata/org.apache.camel-camel-core-2.16.2.json
+index 3c89729792b168464b5f4e37260f47c1e2d974f9..81c70ff5350d4d0fd39fce45f449ace14860a72e
+--- a/build/discovered-artifact-metadata/org.apache.camel-camel-core-2.16.2.json
++++ b/build/discovered-artifact-metadata/org.apache.camel-camel-core-2.16.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.camel:camel-core:2.16.2"
++  "coordinates": "org.apache.camel:camel-core:2.16.2",
++  "repository-url": "https://github.com/apache/camel",
++  "source-code-url": "https://repo1.maven.org/maven2/org/apache/camel/camel-core/$version$/camel-core-$version$-sources.jar",
++  "test-code-url": "https://repo1.maven.org/maven2/org/apache/camel/camel-core/$version$/camel-core-$version$-tests.jar",
++  "documentation-url": "https://repo1.maven.org/maven2/org/apache/camel/camel-core/$version$/camel-core-$version$-javadoc.jar",
++  "description": "Apache Camel Core provides the core routing engine, Java DSL, and Enterprise Integration Pattern implementations used to build message-oriented integration routes. The camel-core artifact contains the runtime services, route model, processors, component support, and utilities that Camel applications and other Camel modules depend on."
+ }
+
+tokens used
+55,038
+Updated [org.apache.camel-camel-core-2.16.2.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3633-5fb310c5/build/discovered-artifact-metadata/org.apache.camel-camel-core-2.16.2.json).
+
+I used Maven Central URLs for sources, tests, and javadocs because `camel-core:2.16.2` publishes all three artifacts there, and set the repository root to `apache/camel`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/camel/camel-core/2.16.2/)) The artifact is a JVM JAR, so I left `language`, `not-for-native-image`, `reason`, and `replacement` absent.
+
+Validation: `jq . build/discovered-artifact-metadata/org.apache.camel-camel-core-2.16.2.json` passes.
+Ran agent for org.apache.camel:camel-core:2.16.2 (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3633-5fb310c5/build/agent-artifact-discovery-logs/org.apache.camel-camel-core-2.16.2.log
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3633-5fb310c5/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 58s
+9 actionable tasks: 9 executed
