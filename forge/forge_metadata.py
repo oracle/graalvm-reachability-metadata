@@ -4097,11 +4097,6 @@ def run_library_preparation_preflight(
         strategy_name: str | None,
 ) -> str:
     """Run and persist the library-specific preparation preflight before workflow dispatch."""
-    fixture_response = False
-    if is_fixture_testing_enabled():
-        fixture_response = require_fixture_github_state().get_issue_library_preparation_preflight_response(
-            int(claimed_issue.issue["number"])
-        )
     return run_preflight_decision(
         claimed_issue=claimed_issue,
         strategy_name=strategy_name,
@@ -4109,7 +4104,6 @@ def run_library_preparation_preflight(
         init_agent=init_workflow_agent,
         default_strategy_name=DEFAULT_WORK_QUEUE_STRATEGY_NAME,
         default_model_name=DEFAULT_MODEL_NAME,
-        fixture_response=fixture_response,
     )
 
 
@@ -6508,8 +6502,8 @@ def process_fixture_issues_for_label(
 ) -> int:
     """Run the local fixture issues for one label, sequentially, one `run.log` each.
 
-    Fixture selection is local to the loaded YAML and has no live claim, preflight,
-    or work-queue concurrency to model, so a queue/label run is simply each matching
+    Fixture selection is local to the loaded YAML and has no live claim or
+    work-queue concurrency to model, so a queue/label run is simply each matching
     issue processed in turn under its own issue-scoped tee (§E2E-forge-workflow-testing.2).
     """
     if not environment_already_validated:

@@ -408,22 +408,6 @@ def _write_text_artifact(root: str, file_name: str, content: str) -> str:
     return os.path.relpath(path, root)
 
 
-def _fixture_response_text(fixture_response: Any) -> str:
-    """Serialize a configured fixture response like an agent response body."""
-    if isinstance(fixture_response, str):
-        return fixture_response
-    return json.dumps(fixture_response, indent=2, ensure_ascii=False)
-
-
-def _preflight_run_mode(fixture_response: Any | None) -> str:
-    """Describe how the preflight decision is being produced, for logging."""
-    if fixture_response is False:
-        return "live"
-    if fixture_response is None:
-        return "fixture (no response configured)"
-    return "fixture (configured response)"
-
-
 def _preflight_artifact_root(claimed_issue: Any) -> str:
     """Return the directory used for dispatcher preflight handoff and evidence."""
     return getattr(claimed_issue, "preflight_info_path", None) or claimed_issue.scratch_metrics_repo_path
@@ -452,7 +436,6 @@ def run_library_preparation_preflight(
         init_agent: Callable[..., Any],
         default_strategy_name: str,
         default_model_name: str = DEFAULT_LIBRARY_PREFLIGHT_MODEL_NAME,
-        fixture_response: Any | None = None,
 ) -> str:
     """Run and persist the library-specific preparation preflight before workflow dispatch."""
     selected_strategy_name = (
@@ -468,7 +451,7 @@ def run_library_preparation_preflight(
         "library-preflight",
         (
             f"Running preflight for issue #{claimed_issue.issue['number']} "
-            f"({_preflight_run_mode(fixture_response)}) "
+            "(live) "
             f"library={input_bundle.get('library')} strategy={selected_strategy_name}"
         ),
     )
@@ -482,46 +465,6 @@ def run_library_preparation_preflight(
     raw_response_path: str | None = None
     session_log_path: str | None = None
     model_name = default_model_name
-
-    if fixture_response is None:
-        record = _degraded_library_preflight_record(
-            claimed_issue,
-            input_bundle,
-            "fixture-testing mode did not configure a library preparation preflight response",
-            model_name="fixture-no-response",
-            prompt_path=prompt_path,
-        )
-        return _write_and_log_preflight(claimed_issue, record)
-
-    if fixture_response is not False:
-        try:
-            response_text = _fixture_response_text(fixture_response)
-            raw_response_path = _write_text_artifact(
-                preflight_artifact_root,
-                "library-preflight-response.txt",
-                response_text,
-            )
-            response_payload = _extract_preflight_json_response(response_text)
-            record = _completed_library_preflight_record(
-                claimed_issue,
-                input_bundle,
-                response_payload,
-                "fixture-configured-response",
-                None,
-                prompt_path,
-                raw_response_path,
-                None,
-            )
-        except Exception as exc:
-            record = _degraded_library_preflight_record(
-                claimed_issue,
-                input_bundle,
-                f"{type(exc).__name__}: {exc}",
-                model_name="fixture-configured-response",
-                prompt_path=prompt_path,
-                raw_response_path=raw_response_path,
-            )
-        return _write_and_log_preflight(claimed_issue, record)
 
     strategy = load_strategy_by_name(selected_strategy_name)
     if strategy is None:
