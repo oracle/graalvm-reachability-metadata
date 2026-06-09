@@ -11,6 +11,7 @@ import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.engine.mock.toByteArray
 import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.HttpRedirect
 import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.HttpTimeoutCapability
@@ -118,6 +119,48 @@ public class Ktor_client_core_jvmTest {
                 val storedCookies = client.cookies("https://example.test/account")
                 assertThat(storedCookies.map { it.name to it.value }).contains("session" to "alpha")
                 assertThat(engine.requestHistory).hasSize(2)
+            } finally {
+                client.close()
+            }
+        }
+    }
+
+    @Test
+    public fun `redirect plugin follows location header to the target resource`(): Unit = runBlocking {
+        withTimeout(TEST_TIMEOUT_MILLIS) {
+            val engine = MockEngine { request ->
+                when (request.url.encodedPath) {
+                    "/start" -> {
+                        assertThat(request.method).isEqualTo(HttpMethod.Get)
+                        assertThat(request.headers["X-Trace"]).isEqualTo("redirect-flow")
+                        respond(
+                            content = "redirecting",
+                            status = HttpStatusCode.Found,
+                            headers = headersOf(HttpHeaders.Location, "/target?from=redirect"),
+                        )
+                    }
+
+                    "/target" -> {
+                        assertThat(request.url.parameters["from"]).isEqualTo("redirect")
+                        respond(content = "redirected", status = HttpStatusCode.OK)
+                    }
+
+                    else -> error("Unexpected request path: ${request.url.encodedPath}")
+                }
+            }
+            val client = HttpClient(engine) {
+                install(HttpRedirect)
+            }
+
+            try {
+                val body: String = client.get("https://example.test/start") {
+                    header("X-Trace", "redirect-flow")
+                }.bodyAsText()
+
+                assertThat(body).isEqualTo("redirected")
+                assertThat(engine.requestHistory).hasSize(2)
+                assertThat(engine.requestHistory.last().url.toString())
+                    .isEqualTo("https://example.test/target?from=redirect")
             } finally {
                 client.close()
             }
