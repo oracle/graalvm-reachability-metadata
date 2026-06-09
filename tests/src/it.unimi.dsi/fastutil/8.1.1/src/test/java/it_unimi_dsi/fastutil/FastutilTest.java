@@ -23,6 +23,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntBidirectionalIterator;
 import it.unimi.dsi.fastutil.ints.IntBigArrays;
+import it.unimi.dsi.fastutil.ints.IntHeapIndirectPriorityQueue;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.io.BinIO;
@@ -170,6 +171,38 @@ public class FastutilTest {
         assertTrue(identities.add(secondText));
         assertFalse(identities.add(shared));
         assertEquals(3, identities.size());
+    }
+
+    @Test
+    void indirectPriorityQueuesUpdateOrderingWhenReferencedPrioritiesChange() {
+        int[] priorities = {30, 10, 20, 10};
+        IntHeapIndirectPriorityQueue queue = new IntHeapIndirectPriorityQueue(priorities);
+        queue.enqueue(0);
+        queue.enqueue(1);
+        queue.enqueue(2);
+        queue.enqueue(3);
+
+        int[] front = new int[priorities.length];
+        int frontSize = queue.front(front);
+        Set<Integer> tiedFront = new HashSet<>();
+        for (int i = 0; i < frontSize; i++) {
+            tiedFront.add(front[i]);
+        }
+        assertEquals(Set.of(1, 3), tiedFront);
+
+        priorities[0] = 5;
+        queue.changed(0);
+        assertEquals(0, queue.first());
+        assertTrue(queue.contains(2));
+        assertTrue(queue.remove(2));
+        assertFalse(queue.contains(2));
+
+        priorities[3] = 7;
+        queue.changed(3);
+        assertEquals(0, queue.dequeue());
+        assertEquals(3, queue.dequeue());
+        assertEquals(1, queue.dequeue());
+        assertEquals(0, queue.size());
     }
 
     @Test
