@@ -10,6 +10,7 @@ import scala.concurrent.duration.*
 
 import cats.effect.Deferred
 import cats.effect.IO
+import cats.effect.std.AtomicCell
 import cats.effect.std.Dispatcher
 import cats.effect.std.Queue
 import cats.effect.std.Random
@@ -70,6 +71,24 @@ class Cats_effect_std_3Test:
     assertFalse(result.deniedWhileHeld)
     assertFalse(result.deniedInsidePermit)
     assertTrue(result.acquiredAfterPermit)
+
+  @Test
+  def atomicCellSerializesConcurrentEffectfulUpdates(): Unit =
+    val result: AtomicCellResult = run {
+      for
+        cell <- AtomicCell[IO].of(0)
+        observedUpdates <- (1 to 20).toList.parTraverse { _ =>
+          cell.evalModify { current =>
+            val next: Int = current + 1
+            IO.cede.as((next, next))
+          }
+        }
+        finalValue <- cell.get
+      yield AtomicCellResult(observedUpdates, finalValue)
+    }
+
+    assertEquals((1 to 20).toList, result.observedUpdates.sorted)
+    assertEquals(20, result.finalValue)
 
   @Test
   def dispatcherRunsEffectsFromUnsafeCallbacksAndFutures(): Unit =
@@ -134,6 +153,8 @@ class Cats_effect_std_3Test:
       deniedWhileHeld: Boolean,
       deniedInsidePermit: Boolean,
       acquiredAfterPermit: Boolean)
+
+  private final case class AtomicCellResult(observedUpdates: List[Int], finalValue: Int)
 
   private final case class DispatcherResult(futureValue: String, signaled: Int)
 
