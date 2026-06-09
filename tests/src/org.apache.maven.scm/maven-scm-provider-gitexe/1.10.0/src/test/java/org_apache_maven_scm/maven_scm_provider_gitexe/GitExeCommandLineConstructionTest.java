@@ -17,6 +17,7 @@ import org.apache.maven.scm.CommandParameters;
 import org.apache.maven.scm.ScmBranch;
 import org.apache.maven.scm.ScmFileSet;
 import org.apache.maven.scm.ScmTag;
+import org.apache.maven.scm.provider.git.gitexe.command.AnonymousCommandLine;
 import org.apache.maven.scm.provider.git.gitexe.command.checkin.GitCheckInCommand;
 import org.apache.maven.scm.provider.git.gitexe.command.checkout.GitCheckOutCommand;
 import org.apache.maven.scm.provider.git.gitexe.command.diff.GitDiffCommand;
@@ -26,6 +27,7 @@ import org.apache.maven.scm.provider.git.gitexe.command.remove.GitRemoveCommand;
 import org.apache.maven.scm.provider.git.gitexe.command.tag.GitTagCommand;
 import org.apache.maven.scm.provider.git.gitexe.command.update.GitUpdateCommand;
 import org.apache.maven.scm.provider.git.repository.GitScmProviderRepository;
+import org.apache.maven.scm.provider.git.util.GitUtil;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -44,12 +46,12 @@ public class GitExeCommandLineConstructionTest {
 
         Commandline checkoutCommandLine =
                 GitCheckOutCommand.createCommandLine(repository, workingDirectory, featureBranch);
-        assertThat(checkoutCommandLine.getExecutable()).isEqualTo("git");
+        assertThat(checkoutCommandLine.getExecutable()).isEqualTo(configuredGitCommand());
         assertThat(checkoutCommandLine.getWorkingDirectory()).isEqualTo(workingDirectory);
         assertThat(checkoutCommandLine.getArguments()).containsExactly("checkout", "feature/native-tests");
 
         Commandline updateCommandLine = GitUpdateCommand.createCommandLine(repository, workingDirectory, featureBranch);
-        assertThat(updateCommandLine.getExecutable()).isEqualTo("git");
+        assertThat(updateCommandLine.getExecutable()).isEqualTo(configuredGitCommand());
         assertThat(updateCommandLine.getWorkingDirectory()).isEqualTo(workingDirectory);
         assertThat(updateCommandLine.getArguments())
                 .containsExactly("pull", "https://example.invalid/team/project.git", "feature/native-tests");
@@ -60,7 +62,7 @@ public class GitExeCommandLineConstructionTest {
                 .containsExactly("log", "-n1", "--date-order", "feature/native-tests");
 
         Commandline remoteInfoCommandLine = GitRemoteInfoCommand.createCommandLine(repository);
-        assertThat(remoteInfoCommandLine.getExecutable()).isEqualTo("git");
+        assertThat(remoteInfoCommandLine.getExecutable()).isEqualTo(configuredGitCommand());
         File temporaryRoot = new File(System.getProperty("java.io.tmpdir"));
         assertThat(remoteInfoCommandLine.getWorkingDirectory()).isEqualTo(temporaryRoot);
         assertThat(remoteInfoCommandLine.getArguments())
@@ -75,7 +77,7 @@ public class GitExeCommandLineConstructionTest {
     }
 
     @Test
-    void diffTagCommitAndRemoveFactoriesIncludeTargetFilesAndMessageFiles() throws Exception {
+    void diffTagCommitAndRemoveFactoriesHandleTargetFilesAndMessageFiles() throws Exception {
         File workingDirectory = temporaryDirectory.toFile();
         Path trackedPath = temporaryDirectory.resolve("tracked.txt");
         Path messagePath = temporaryDirectory.resolve("message.txt");
@@ -89,7 +91,7 @@ public class GitExeCommandLineConstructionTest {
         ScmTag endTag = new ScmTag("v1.1.0");
 
         Commandline cachedDiffCommandLine = GitDiffCommand.createCommandLine(workingDirectory, startTag, endTag, true);
-        assertThat(cachedDiffCommandLine.getExecutable()).isEqualTo("git");
+        assertThat(cachedDiffCommandLine.getExecutable()).isEqualTo(configuredGitCommand());
         assertThat(cachedDiffCommandLine.getArguments())
                 .containsExactly("diff", "--cached", "v1.0.0", "v1.1.0");
 
@@ -110,10 +112,22 @@ public class GitExeCommandLineConstructionTest {
         Commandline commitCommandLine =
                 GitCheckInCommand.createCommitCommandLine(repository, trackedFileSet, messagePath.toFile());
         assertThat(commitCommandLine.getArguments())
-                .contains("commit", "--verbose", "-F", messagePath.toAbsolutePath().toString(), "tracked.txt");
+                .containsExactly("commit", "--verbose", "-F", messagePath.toAbsolutePath().toString());
+
+        ScmFileSet emptyFileSet = new ScmFileSet(workingDirectory);
+        Commandline commitAllCommandLine =
+                GitCheckInCommand.createCommitCommandLine(repository, emptyFileSet, messagePath.toFile());
+        assertThat(commitAllCommandLine.getArguments())
+                .containsExactly("commit", "--verbose", "-F", messagePath.toAbsolutePath().toString(), "-a");
 
         Commandline removeCommandLine = GitRemoveCommand.createCommandLine(
                 workingDirectory, List.of(removableDirectory.toFile(), trackedPath.toFile()));
         assertThat(removeCommandLine.getArguments()).contains("rm", "-r", "directory-to-remove", "tracked.txt");
+    }
+
+    private static String configuredGitCommand() {
+        Commandline commandline = new AnonymousCommandLine();
+        commandline.setExecutable(GitUtil.getSettings().getGitCommand());
+        return commandline.getExecutable();
     }
 }
