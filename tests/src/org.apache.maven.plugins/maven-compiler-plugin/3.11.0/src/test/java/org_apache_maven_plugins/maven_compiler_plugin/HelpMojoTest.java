@@ -8,7 +8,7 @@ package org_apache_maven_plugins.maven_compiler_plugin;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.apache.maven.plugin.compiler.HelpMojo;
+import org.apache.maven.plugins.maven_compiler_plugin.HelpMojo;
 import org.apache.maven.plugin.logging.Log;
 import org.junit.jupiter.api.Test;
 

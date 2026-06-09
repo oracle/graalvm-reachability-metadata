@@ -32,10 +32,10 @@ import org.junit.jupiter.api.Test;
 
 public class AbstractCompilerMojoTest {
     @Test
-    void requestValuesAreReadThroughMavenCompatibilityReflection() throws Exception {
+    void requestValuesAreReadFromMavenExecutionRequest() throws Exception {
         Date startTime = new Date(123456789L);
-        TestExecutionRequest request = new TestExecutionRequest();
-        request.setThreadCount("4");
+        DefaultMavenExecutionRequest request = new DefaultMavenExecutionRequest();
+        request.setDegreeOfConcurrency(4);
         request.setStartTime(startTime);
 
         TestCompilerMojo mojo = new TestCompilerMojo();
@@ -64,18 +64,6 @@ public class AbstractCompilerMojoTest {
         assertSame(expectedToolchain, mojo.toolchain());
         assertEquals("jdk", toolchainManager.requestedType);
         assertSame(requirements, toolchainManager.requestedRequirements);
-    }
-
-    public static final class TestExecutionRequest extends DefaultMavenExecutionRequest {
-        private String threadCount;
-
-        public void setThreadCount(String threadCount) {
-            this.threadCount = threadCount;
-        }
-
-        public String getThreadCount() {
-            return threadCount;
-        }
     }
 
     static final class MojoFieldInjector extends AbstractMojoTestCase {
@@ -169,6 +157,16 @@ public class AbstractCompilerMojoTest {
         @Override
         protected String getDebugFileName() {
             return null;
+        }
+
+        @Override
+        protected Set<String> getIncludes() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        protected Set<String> getExcludes() {
+            return Collections.emptySet();
         }
     }
 
