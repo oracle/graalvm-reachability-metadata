@@ -1,0 +1,10 @@
+{
+  "action": "advisory_preparation",
+  "summary": "No extra Maven dependencies or Docker service are needed; the artifact is a Git executable Maven SCM provider whose compile/runtime dependencies resolve transitively, but meaningful execution-style tests need a temporary local Git repository rather than a remote service.",
+  "deterministic_setup": [],
+  "agent_guidance": "If tests execute provider commands instead of only constructing command lines or parsing consumers, create a temp Git repository with `git init`, configure local `user.name` and `user.email`, add/commit files as needed, and use local paths/file URLs. Do not rely on network remotes or signed tags; for `GitTagCommand.createCommandLine` in 1.11.1 pass the new `boolean sign` argument.",
+  "risks": [
+    "Execution-style coverage assumes the test environment has the `git` executable on PATH.",
+    "Remote Git operations and signed tags can be flaky or require credentials/GPG configuration; prefer local repositories and unsigned tags."
+  ]
+}
