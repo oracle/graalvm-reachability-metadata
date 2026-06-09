@@ -1,0 +1,9 @@
+{
+  "action": "no_action",
+  "summary": "No extra deterministic setup is needed: spring-test 7.0.0 declares only spring-core as a required dependency, and the failing existing TestContext AOT coverage does not require Docker, a service, or additional optional Maven dependencies.",
+  "deterministic_setup": [],
+  "agent_guidance": "Do not solve this by adding service setup or optional dependencies. The observed failure is consistent with Spring 7 changing the registered web resource hint pattern from a single-level pattern to a recursive classpath directory pattern; adjust the test logic to assert the Spring 7 hint shape.",
+  "risks": [
+    "If the generated test expands into MockMvc or servlet-specific APIs, it may then need web/servlet test dependencies, but the current failing AOT TestContext path does not."
+  ]
+}
