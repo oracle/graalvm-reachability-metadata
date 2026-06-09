@@ -35,6 +35,7 @@ import com.diffplug.spotless.maven.generic.Replace;
 import com.diffplug.spotless.maven.generic.ReplaceRegex;
 import com.diffplug.spotless.maven.generic.ToggleOffOn;
 import com.diffplug.spotless.maven.generic.TrimTrailingWhitespace;
+import com.diffplug.spotless.maven.java.FormatAnnotations;
 import com.diffplug.spotless.maven.java.Java;
 import com.diffplug.spotless.maven.json.Json;
 import com.diffplug.spotless.maven.pom.Pom;
@@ -104,6 +105,43 @@ public class SpotlessMavenPluginTest {
                             + "beta   \n"
                             + "fmt:on\n"
                             + "gamma\n");
+        }
+    }
+
+    @Test
+    void javaFormatAnnotationsKeepsTypeAnnotationsWithAnnotatedTypes() throws IOException {
+        Path source = tempDir.resolve("Example.java");
+        String original = """
+                package app;
+
+                class Example {
+                    @NonNull
+                    String name;
+
+                    // @Nullable
+                    Object commentIsLeftAlone;
+                }
+                """;
+
+        FormatterStep formatAnnotations = new FormatAnnotations().newFormatterStep(formatterStepConfig());
+
+        try (Formatter formatter = Formatter.builder()
+                .name("spotless-maven-java-format-annotations")
+                .encoding(StandardCharsets.UTF_8)
+                .lineEndingsPolicy(LineEnding.UNIX.createPolicy())
+                .steps(List.of(formatAnnotations))
+                .rootDir(tempDir)
+                .build()) {
+            assertThat(formatter.compute(original, source.toFile())).isEqualTo("""
+                    package app;
+
+                    class Example {
+                        @NonNull String name;
+
+                        // @Nullable
+                        Object commentIsLeftAlone;
+                    }
+                    """);
         }
     }
 
