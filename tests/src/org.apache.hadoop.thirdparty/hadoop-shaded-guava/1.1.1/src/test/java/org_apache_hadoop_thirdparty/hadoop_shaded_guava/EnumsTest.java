@@ -23,7 +23,8 @@ public class EnumsTest {
         assertThat(field.getName()).isEqualTo("RUNNING");
         assertThat(field.getDeclaringClass()).isSameAs(LifecycleState.class);
         assertThat(field.getType()).isSameAs(LifecycleState.class);
-        assertThat(field.getAnnotation(DisplayName.class).value()).isEqualTo("Running");
+        Field fieldAnnotationAccess = field;
+        assertThat(fieldAnnotationAccess.getAnnotation(DisplayName.class).value()).isEqualTo("Running");
     }
 
     private enum LifecycleState {

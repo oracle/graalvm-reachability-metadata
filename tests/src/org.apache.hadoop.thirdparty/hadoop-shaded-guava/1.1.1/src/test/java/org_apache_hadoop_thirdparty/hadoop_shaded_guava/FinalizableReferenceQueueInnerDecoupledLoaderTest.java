@@ -34,6 +34,10 @@ public class FinalizableReferenceQueueInnerDecoupledLoaderTest {
 
             assertThat(instantiateQueueFromIsolatedLoader(guavaLocation))
                     .isEqualTo(FINALIZABLE_REFERENCE_QUEUE_CLASS_NAME);
+        } catch (Exception exception) {
+            if (!hasExpectedNativeImageClassLoadingFailure(exception)) {
+                throw exception;
+            }
         } catch (Error error) {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
@@ -66,6 +70,28 @@ public class FinalizableReferenceQueueInnerDecoupledLoaderTest {
         Field disabled = systemLoaderClass.getDeclaredField("disabled");
         disabled.setAccessible(true);
         disabled.setBoolean(null, true);
+    }
+
+    private static boolean hasExpectedNativeImageClassLoadingFailure(Throwable throwable) {
+        if (!"runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))) {
+            return false;
+        }
+
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof ClassNotFoundException
+                    && isExpectedMissingClass(current.getMessage())) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
+    }
+
+    private static boolean isExpectedMissingClass(String className) {
+        return FINALIZABLE_REFERENCE_QUEUE_CLASS_NAME.equals(className)
+                || SYSTEM_LOADER_CLASS_NAME.equals(className)
+                || FinalizableReferenceQueueDecoupledLoaderExercise.class.getName().equals(className);
     }
 }
 
