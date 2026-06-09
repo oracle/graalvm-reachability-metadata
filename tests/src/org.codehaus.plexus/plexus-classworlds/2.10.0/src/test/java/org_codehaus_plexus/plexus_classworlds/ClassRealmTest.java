@@ -37,6 +37,16 @@ public class ClassRealmTest {
     }
 
     @Test
+    void getResourcesLoadsResourcesThroughRealmClassLoader() throws Exception {
+        ClassRealm realm = newRealm();
+
+        Enumeration<URL> resources = realm.getResources("classworlds.conf");
+
+        assertThat(resources).isNotNull();
+        assertThat(resources.hasMoreElements()).isTrue();
+    }
+
+    @Test
     void loadClassUsesParentClassLoaderWhenRealmHasNoMatchingClass() throws Exception {
         ClassRealm realm = new ClassWorld().newRealm("parent-class-loader-realm", null);
         realm.setParentClassLoader(ClassRealmTest.class.getClassLoader());

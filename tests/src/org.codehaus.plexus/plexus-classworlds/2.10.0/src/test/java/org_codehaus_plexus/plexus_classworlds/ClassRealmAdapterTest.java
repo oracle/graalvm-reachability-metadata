@@ -10,15 +10,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.URL;
 
-import org.codehaus.classworlds.ClassRealm;
-import org.codehaus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.junit.jupiter.api.Test;
 
 public class ClassRealmAdapterTest {
     @Test
-    void getResourceDelegatesThroughLegacyRealmAdapter() throws Exception {
+    void getResourceDelegatesThroughRealmClassLoader() throws Exception {
         ClassWorld world = new ClassWorld();
-        ClassRealm realm = world.newRealm("legacy-adapter-realm", ClassRealmAdapterTest.class.getClassLoader());
+        ClassRealm realm = world.newRealm("adapter-realm", ClassRealmAdapterTest.class.getClassLoader());
 
         URL resource = realm.getResource("classworlds.conf");
 
