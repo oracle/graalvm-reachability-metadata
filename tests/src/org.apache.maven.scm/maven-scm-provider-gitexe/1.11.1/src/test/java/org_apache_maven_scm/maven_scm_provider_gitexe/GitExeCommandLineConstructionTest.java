@@ -97,9 +97,14 @@ public class GitExeCommandLineConstructionTest {
         assertThat(rawDiffCommandLine.getArguments()).containsExactly("diff", "--raw", "HEAD");
 
         Commandline tagCommandLine = GitTagCommand.createCommandLine(
-                repository, workingDirectory, "v1.1.0", messagePath.toFile());
+                repository, workingDirectory, "v1.1.0", messagePath.toFile(), false);
         assertThat(tagCommandLine.getArguments())
                 .containsExactly("tag", "-F", messagePath.toAbsolutePath().toString(), "v1.1.0");
+
+        Commandline signedTagCommandLine = GitTagCommand.createCommandLine(
+                repository, workingDirectory, "v1.1.0", messagePath.toFile(), true);
+        assertThat(signedTagCommandLine.getArguments())
+                .containsExactly("tag", "-s", "-F", messagePath.toAbsolutePath().toString(), "v1.1.0");
 
         Commandline tagPushCommandLine = GitTagCommand.createPushCommandLine(
                 repository, new ScmFileSet(workingDirectory, trackedPath.toFile()), "v1.1.0");
