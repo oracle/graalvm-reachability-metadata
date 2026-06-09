@@ -1,0 +1,10 @@
+{
+  "action": "no_action",
+  "summary": "No Docker service, optional dependency, or one-time library setup is needed. The artifact is a Maven plugin whose normal reachable surface can be exercised in-process; the reported javac failure is caused by the generated HelpMojo package moving in 3.4.0, not by missing setup.",
+  "deterministic_setup": [],
+  "agent_guidance": "For 3.4.0, use `org.apache.maven.plugins.maven_jar_plugin.HelpMojo` rather than the old `org.apache.maven.plugins.jar.HelpMojo`; invoking the help mojo exercises bundled plugin-help metadata without requiring a Maven runtime or external service.",
+  "risks": [
+    "Exercising `JarMojo`/`TestJarMojo` beyond construction may require Maven-project field injection and careful temporary project setup; the simpler help-goal path avoids that complexity while still covering plugin resource access.",
+    "The existing scaffold already adds `maven-plugin-api`; do not add Maven core or plugin-testing harness unless the generated test deliberately performs full Maven mojo lookup/execution."
+  ]
+}

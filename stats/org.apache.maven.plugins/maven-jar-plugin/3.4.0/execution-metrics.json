@@ -1,0 +1,60 @@
+{
+  "fix_javac_fail:2026-06-09": {
+    "timestamp": "2026-06-09T06:16:38.936443Z",
+    "library": "org.apache.maven.plugins:maven-jar-plugin:3.4.0",
+    "starting_commit": "812c19889d3ba9d453a3b581d3f985e691a47717",
+    "ending_commit": "5f0667b0a949c3e18e4c4f881fbdb42980e2e262",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8227,
+      "issue_label": "fails-javac-compile",
+      "library": "org.apache.maven.plugins:maven-jar-plugin:3.4.0",
+      "summary": "No Docker service, optional dependency, or one-time library setup is needed. The artifact is a Maven plugin whose normal reachable surface can be exercised in-process; the reported javac failure is caused by the generated HelpMojo package moving in 3.4.0, not by missing setup.",
+      "deterministic_setup": [],
+      "agent_guidance": "For 3.4.0, use `org.apache.maven.plugins.maven_jar_plugin.HelpMojo` rather than the old `org.apache.maven.plugins.jar.HelpMojo`; invoking the help mojo exercises bundled plugin-help metadata without requiring a Maven runtime or external service.",
+      "risks": [
+        "Exercising `JarMojo`/`TestJarMojo` beyond construction may require Maven-project field injection and careful temporary project setup; the simpler help-goal path avoids that complexity while still covering plugin resource access.",
+        "The existing scaffold already adds `maven-plugin-api`; do not add Maven core or plugin-testing harness unless the generated test deliberately performs full Maven mojo lookup/execution."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8227 [Automation] javac compile fails for org.apache.maven.plugins:maven-jar-plugin:3.4.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.apache.maven.plugins:maven-jar-plugin:3.3.0",
+      "new_version": "3.4.0",
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 37138,
+      "output_tokens_used": 3942,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.apache.maven.plugins:maven-jar-plugin:3.4.0/library-preparation-preflight/pi-generation-2026-06-09T06-08-11-187075Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 15586,
+      "cached_input_tokens_used": 110080,
+      "output_tokens_used": 844,
+      "iterations": 1,
+      "cost_usd": 0.0803,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "test_file": "None",
+      "metadata_file": "None"
+    }
+  }
+}
