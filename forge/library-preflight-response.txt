@@ -1,0 +1,10 @@
+{
+  "action": "no_action",
+  "summary": "No extra deterministic setup is needed. The resolved jackson-mapper-asl 1.9.0 POM declares only jackson-core-asl 1.9.0 as a normal transitive dependency, and the library is an in-process JSON data-binding library used through ObjectMapper, not a service-backed client.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": [
+    "jackson-mapper-asl contains optional handlers for XML/DOM and Joda-Time types, but these are optional integration paths and do not justify adding extra dependencies for this native-image runtime failure.",
+    "The reported failures are native-image reflection metadata issues in existing in-memory Jackson tests, not missing external setup."
+  ]
+}
