@@ -1,0 +1,32 @@
+{
+  "status": "completed",
+  "action": "no_action",
+  "issue_number": 8258,
+  "issue_label": "fails-java-run",
+  "library": "org.springframework:spring-test:7.0.0",
+  "summary": "No extra deterministic setup is needed: spring-test 7.0.0 declares only spring-core as a required dependency, and the existing scaffold already supplies the Spring context/JUnit/logging/assertion dependencies used by the tests. The reported failure is a version-behavior assertion mismatch, not missing service/dependency setup.",
+  "deterministic_setup": [],
+  "agent_guidance": "For the failing AOT web-resource hint coverage, account for Spring 7 behavior: @WebAppConfiguration classpath base paths are registered with recursive '**' resource patterns rather than the Spring 6 one-level '*' pattern.",
+  "risks": [
+    "spring-test contains optional integrations for servlet/web, reactive, Mockito, TestNG, HtmlUnit, and related APIs; do not add those dependencies unless the generated test deliberately exercises those optional packages."
+  ],
+  "applied_setup": [],
+  "input_evidence": [
+    {
+      "name": "issue",
+      "summary": "#8258 [Automation] java run fails for org.springframework:spring-test:7.0.0; label=fails-java-run; body_chars=8015"
+    },
+    {
+      "name": "existing_tests",
+      "summary": "12 existing test file path(s) included"
+    }
+  ],
+  "current_library": "org.springframework:spring-test:6.0.0",
+  "new_version": "7.0.0",
+  "model": "oca/gpt-5.5",
+  "input_tokens_used": 45627,
+  "output_tokens_used": 3493,
+  "prompt_path": "library-preflight-prompt.txt",
+  "raw_response_path": "library-preflight-response.txt",
+  "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.springframework:spring-test:7.0.0/library-preparation-preflight/pi-generation-2026-06-09T13-53-34-664007Z.log"
+}

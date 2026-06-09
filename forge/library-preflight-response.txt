@@ -1,0 +1,9 @@
+{
+  "action": "no_action",
+  "summary": "No extra deterministic setup is needed: spring-test 7.0.0 declares only spring-core as a required dependency, and the existing scaffold already supplies the Spring context/JUnit/logging/assertion dependencies used by the tests. The reported failure is a version-behavior assertion mismatch, not missing service/dependency setup.",
+  "deterministic_setup": [],
+  "agent_guidance": "For the failing AOT web-resource hint coverage, account for Spring 7 behavior: @WebAppConfiguration classpath base paths are registered with recursive '**' resource patterns rather than the Spring 6 one-level '*' pattern.",
+  "risks": [
+    "spring-test contains optional integrations for servlet/web, reactive, Mockito, TestNG, HtmlUnit, and related APIs; do not add those dependencies unless the generated test deliberately exercises those optional packages."
+  ]
+}
