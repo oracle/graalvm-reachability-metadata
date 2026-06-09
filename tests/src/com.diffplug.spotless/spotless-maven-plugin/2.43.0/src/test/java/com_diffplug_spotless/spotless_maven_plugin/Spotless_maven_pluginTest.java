@@ -21,6 +21,7 @@ import com.diffplug.spotless.maven.generic.EndWithNewline;
 import com.diffplug.spotless.maven.generic.ToggleOffOn;
 import com.diffplug.spotless.maven.generic.TrimTrailingWhitespace;
 import com.diffplug.spotless.maven.groovy.RemoveSemicolons;
+import com.diffplug.spotless.maven.java.FormatAnnotations;
 import com.diffplug.spotless.maven.java.ImportOrder;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -97,6 +98,32 @@ public class Spotless_maven_pluginTest {
 
         assertThat(removeSemicolons.getName()).isEqualTo("Remove unnecessary semicolons");
         assertThat(removeSemicolons.format(source, NO_FILE)).isEqualTo(expected);
+    }
+
+    @Test
+    void formatAnnotationsFactoryJoinsDefaultTypeAnnotationsWithFollowingType() throws Exception {
+        FormatterStep formatAnnotations = new FormatAnnotations().newFormatterStep(stepConfig());
+        String source = """
+                class Sample {
+                    @NonNull
+                    String name;
+                    @Nullable("field")
+                    Object maybe;
+                    @Regular
+                    Object custom;
+                }
+                """;
+        String expected = """
+                class Sample {
+                    @NonNull String name;
+                    @Nullable("field") Object maybe;
+                    @Regular
+                    Object custom;
+                }
+                """;
+
+        assertThat(formatAnnotations.getName()).isEqualTo("No line break between type annotation and type");
+        assertThat(formatAnnotations.format(source, NO_FILE)).isEqualTo(expected);
     }
 
     @Test
