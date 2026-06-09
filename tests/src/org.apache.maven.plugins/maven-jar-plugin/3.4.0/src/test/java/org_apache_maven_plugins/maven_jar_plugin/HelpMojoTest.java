@@ -8,7 +8,7 @@ package org_apache_maven_plugins.maven_jar_plugin;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 
-import org.apache.maven.plugins.jar.HelpMojo;
+import org.apache.maven.plugins.maven_jar_plugin.HelpMojo;
 import org.junit.jupiter.api.Test;
 
 public class HelpMojoTest {
