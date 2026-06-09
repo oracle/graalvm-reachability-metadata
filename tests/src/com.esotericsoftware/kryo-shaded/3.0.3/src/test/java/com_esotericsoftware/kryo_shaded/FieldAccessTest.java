@@ -17,6 +17,7 @@ public class FieldAccessTest {
     void generatedFieldAccessorReadsAndWritesPublicFields() {
         try {
             FieldAccess access = FieldAccess.get(AccessedBean.class);
+            FieldAccess cachedAccess = FieldAccess.get(AccessedBean.class);
             AccessedBean bean = new AccessedBean();
 
             int countIndex = access.getIndex("count");
@@ -27,6 +28,7 @@ public class FieldAccessTest {
             access.set(bean, nameIndex, "reflectasm");
             access.setBoolean(bean, activeIndex, true);
 
+            assertThat(cachedAccess.getClass()).isEqualTo(access.getClass());
             assertThat(access.getFieldNames()).containsExactlyInAnyOrder("count", "name", "active");
             assertThat(access.getFieldTypes()).containsExactlyInAnyOrder(int.class, String.class, boolean.class);
             assertThat(access.getFieldCount()).isEqualTo(3);
