@@ -19,6 +19,7 @@ import io.ktor.client.plugins.UserAgent
 import io.ktor.client.plugins.cookies.HttpCookies
 import io.ktor.client.plugins.cookies.cookies
 import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.observer.ResponseObserver
 import io.ktor.client.plugins.timeout
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
@@ -40,6 +41,7 @@ import io.ktor.http.withCharset
 import io.ktor.utils.io.ByteReadChannel
 import java.nio.charset.StandardCharsets
 import java.util.function.Consumer
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import org.assertj.core.api.Assertions.assertThat
@@ -294,6 +296,41 @@ public class Ktor_client_core_jvmTest {
                 }.bodyAsText()
 
                 assertThat(body).isEqualTo("timeout-configured")
+            } finally {
+                client.close()
+            }
+        }
+    }
+
+    @Test
+    public fun `response observer inspects matching responses without consuming application body`(): Unit = runBlocking {
+        withTimeout(TEST_TIMEOUT_MILLIS) {
+            val observedResponse = CompletableDeferred<String>()
+            val engine = MockEngine { request ->
+                when (request.url.encodedPath) {
+                    "/ignored" -> respond(content = "ignored-body", status = HttpStatusCode.OK)
+                    "/observed" -> respond(content = "observed-body", status = HttpStatusCode.OK)
+                    else -> error("Unexpected request path: ${request.url.encodedPath}")
+                }
+            }
+            val client = HttpClient(engine) {
+                install(ResponseObserver) {
+                    filter { call -> call.request.url.encodedPath == "/observed" }
+                    onResponse { response ->
+                        observedResponse.complete("${response.status.value}:${response.bodyAsText()}")
+                    }
+                }
+            }
+
+            try {
+                val ignoredBody: String = client.get("https://example.test/ignored").bodyAsText()
+                assertThat(ignoredBody).isEqualTo("ignored-body")
+                assertThat(observedResponse.isCompleted).isFalse()
+
+                val observedBody: String = client.get("https://example.test/observed").bodyAsText()
+                assertThat(observedBody).isEqualTo("observed-body")
+                assertThat(observedResponse.await()).isEqualTo("200:observed-body")
+                assertThat(engine.requestHistory).hasSize(2)
             } finally {
                 client.close()
             }
