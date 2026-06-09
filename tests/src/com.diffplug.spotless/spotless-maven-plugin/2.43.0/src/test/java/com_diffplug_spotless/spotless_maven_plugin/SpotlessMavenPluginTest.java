@@ -20,6 +20,7 @@ import com.diffplug.spotless.maven.SpotlessCheckMojo;
 import com.diffplug.spotless.maven.generic.EndWithNewline;
 import com.diffplug.spotless.maven.generic.Format;
 import com.diffplug.spotless.maven.generic.ReplaceRegex;
+import com.diffplug.spotless.maven.generic.ToggleOffOn;
 import com.diffplug.spotless.maven.generic.TrimTrailingWhitespace;
 import com.diffplug.spotless.maven.java.Java;
 import com.diffplug.spotless.maven.incremental.UpToDateChecking;
@@ -162,6 +163,24 @@ public class SpotlessMavenPluginTest {
         assertThat(Files.readString(document)).isEqualTo("status: ready\n");
     }
 
+    @Test
+    void applyMojoHonorsGenericFormatToggleOffOnMarkers() throws Exception {
+        Path documentDirectory = projectDirectory.resolve("docs");
+        Files.createDirectories(documentDirectory);
+        Path document = documentDirectory.resolve("notes.txt");
+        Files.writeString(
+                document,
+                "trimmed   \nformatter:off\nkept   \nformatter:on\ntrimmed too   \n",
+                StandardCharsets.UTF_8);
+        Format textFormat = genericTextFormatWithTrimAndToggle("docs/*.txt", "formatter:off", "formatter:on");
+
+        SpotlessApplyMojo mojo = configuredApplyMojo(javaFormatter(), project(), Collections.singletonList(textFormat));
+        mojo.execute();
+
+        assertThat(Files.readString(document))
+                .isEqualTo("trimmed\nformatter:off\nkept   \nformatter:on\ntrimmed too\n");
+    }
+
     private Path writeJavaSource(String content) throws IOException {
         Path sourceDirectory = projectDirectory.resolve("src/main/java/demo");
         Files.createDirectories(sourceDirectory);
@@ -178,6 +197,23 @@ public class SpotlessMavenPluginTest {
     }
 
     private Format genericTextFormat(String include, ReplaceRegex replaceRegex) throws ComponentConfigurationException {
+        Format format = genericTextFormat(include);
+        format.addReplaceRegex(replaceRegex);
+        return format;
+    }
+
+    private Format genericTextFormatWithTrimAndToggle(String include, String offMarker, String onMarker)
+            throws ComponentConfigurationException {
+        Format format = genericTextFormat(include);
+        ToggleOffOn toggleOffOn = new ToggleOffOn();
+        toggleOffOn.off = offMarker;
+        toggleOffOn.on = onMarker;
+        format.addTrimTrailingWhitespace(new TrimTrailingWhitespace());
+        format.addToggleOffOn(toggleOffOn);
+        return format;
+    }
+
+    private Format genericTextFormat(String include) throws ComponentConfigurationException {
         Format format = new Format();
         DefaultPlexusConfiguration configuration = new DefaultPlexusConfiguration("format");
         DefaultPlexusConfiguration includes = new DefaultPlexusConfiguration("includes");
@@ -191,7 +227,6 @@ public class SpotlessMavenPluginTest {
                 new MapExpressionEvaluator(Collections.emptyMap(), projectDirectory.toFile()),
                 testClassRealm(),
                 (ConfigurationListener) null);
-        format.addReplaceRegex(replaceRegex);
         return format;
     }
 
