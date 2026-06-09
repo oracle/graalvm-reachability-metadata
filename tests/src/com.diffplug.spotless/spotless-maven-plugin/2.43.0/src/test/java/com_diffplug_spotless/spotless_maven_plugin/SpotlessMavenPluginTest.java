@@ -245,11 +245,103 @@ public class SpotlessMavenPluginTest {
         }
     }
 
+    @Test
+    void fileLocatorResolvesExistingFilesAndMavenResources() throws Exception {
+        Path existingFile = Files.createDirectories(projectDirectory.resolve("config")).resolve("rules.txt");
+        Files.writeString(existingFile, "local rules", StandardCharsets.UTF_8);
+        String[] resourceRequest = new String[2];
+        FileLocator locator = new FileLocator(
+                resourceBackedResourceManager(projectDirectory.resolve("resolved-resources"), resourceRequest),
+                projectDirectory.toFile(),
+                projectDirectory.resolve("target").toFile());
+
+        assertThat(locator.locateFile(null)).isNull();
+        assertThat(locator.locateFile("")).isNull();
+        assertThat(locator.locateFile(existingFile.toString())).isEqualTo(existingFile.toFile());
+        assertThat(resourceRequest[0]).isNull();
+
+        File resolvedResource = locator.locateFile("classpath/spotless-rules.txt");
+
+        assertThat(resourceRequest[0]).isEqualTo("classpath/spotless-rules.txt");
+        assertThat(resourceRequest[1]).endsWith(".txt");
+        assertThat(Files.readString(resolvedResource.toPath(), StandardCharsets.UTF_8))
+                .isEqualTo("resolved classpath/spotless-rules.txt");
+    }
+
     private FileLocator fileLocator() {
         return new FileLocator(
                 unusedResourceManager(),
                 projectDirectory.toFile(),
                 projectDirectory.resolve("target").toFile());
+    }
+
+    private ResourceManager resourceBackedResourceManager(Path resourceDirectory, String[] resourceRequest) {
+        return new ResourceManager() {
+            @Override
+            public InputStream getResourceAsInputStream(String name) throws ResourceNotFoundException {
+                throw new ResourceNotFoundException(name);
+            }
+
+            @Override
+            public File getResourceAsFile(String name)
+                    throws ResourceNotFoundException, FileResourceCreationException {
+                throw new ResourceNotFoundException(name);
+            }
+
+            @Override
+            public File getResourceAsFile(String name, String outputFile)
+                    throws ResourceNotFoundException, FileResourceCreationException {
+                resourceRequest[0] = name;
+                resourceRequest[1] = outputFile;
+                try {
+                    Files.createDirectories(resourceDirectory);
+                    Path resourceFile = resourceDirectory.resolve(outputFile);
+                    Files.createDirectories(resourceFile.getParent());
+                    Files.writeString(resourceFile, "resolved " + name, StandardCharsets.UTF_8);
+                    return resourceFile.toFile();
+                } catch (IOException exception) {
+                    FileResourceCreationException creationException = new FileResourceCreationException(outputFile);
+                    creationException.initCause(exception);
+                    throw creationException;
+                }
+            }
+
+            @Override
+            public void setOutputDirectory(File outputDirectory) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public void addSearchPath(String loaderId, String searchPath) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public File resolveLocation(String location, String baseDirectory) throws IOException {
+                return new File(baseDirectory, location);
+            }
+
+            @Override
+            public File resolveLocation(String location) throws IOException {
+                return new File(location);
+            }
+
+            @Override
+            public PlexusResource getResource(String name) throws ResourceNotFoundException {
+                throw new ResourceNotFoundException(name);
+            }
+
+            @Override
+            public File getResourceAsFile(PlexusResource resource) throws FileResourceCreationException {
+                throw new FileResourceCreationException(resource.getName());
+            }
+
+            @Override
+            public void createResourceAsFile(PlexusResource resource, File outputFile)
+                    throws FileResourceCreationException {
+                throw new FileResourceCreationException(resource.getName());
+            }
+        };
     }
 
     private ResourceManager unusedResourceManager() {
