@@ -1,0 +1,34 @@
+{
+  "status": "completed",
+  "action": "advisory_preparation",
+  "issue_number": 8274,
+  "issue_label": "fails-javac-compile",
+  "library": "org.apache.maven.scm:maven-scm-provider-gitexe:1.11.1",
+  "summary": "No extra Maven dependencies or Docker service are needed. The artifact is the Maven SCM Git executable provider and depends only on normal transitive Maven SCM/Plexus/Commons libraries; meaningful end-to-end command coverage, if attempted, requires a local Git repository initialized by the test.",
+  "deterministic_setup": [],
+  "agent_guidance": "Prefer updating the existing command-construction/consumer tests for the 1.11.1 API change. If exercising real provider commands rather than only static command builders, create a temporary local git repository or bare file:// remote in the test, run git init, configure user.name and user.email locally, and create an initial commit before invoking Maven SCM GitExe operations. Avoid network remotes.",
+  "risks": [
+    "Tests that execute git depend on the git executable being available on PATH.",
+    "Real git command tests can be flaky unless they use only temp directories, local file:// remotes, and local repository config.",
+    "The compile failure shown is an API signature change in GitTagCommand.createCommandLine requiring the new boolean sign parameter, not a missing dependency or service."
+  ],
+  "applied_setup": [],
+  "input_evidence": [
+    {
+      "name": "issue",
+      "summary": "#8274 [Automation] javac compile fails for org.apache.maven.scm:maven-scm-provider-gitexe:1.11.1; label=fails-javac-compile; body_chars=8015"
+    },
+    {
+      "name": "existing_tests",
+      "summary": "8 existing test file path(s) included"
+    }
+  ],
+  "current_library": "org.apache.maven.scm:maven-scm-provider-gitexe:1.10.0",
+  "new_version": "1.11.1",
+  "model": "oca/gpt-5.5",
+  "input_tokens_used": 55438,
+  "output_tokens_used": 3546,
+  "prompt_path": "library-preflight-prompt.txt",
+  "raw_response_path": "library-preflight-response.txt",
+  "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.apache.maven.scm:maven-scm-provider-gitexe:1.11.1/library-preparation-preflight/pi-generation-2026-06-09T22-05-20-276454Z.log"
+}

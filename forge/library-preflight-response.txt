@@ -1,0 +1,11 @@
+{
+  "action": "advisory_preparation",
+  "summary": "No extra Maven dependencies or Docker service are needed. The artifact is the Maven SCM Git executable provider and depends only on normal transitive Maven SCM/Plexus/Commons libraries; meaningful end-to-end command coverage, if attempted, requires a local Git repository initialized by the test.",
+  "deterministic_setup": [],
+  "agent_guidance": "Prefer updating the existing command-construction/consumer tests for the 1.11.1 API change. If exercising real provider commands rather than only static command builders, create a temporary local git repository or bare file:// remote in the test, run git init, configure user.name and user.email locally, and create an initial commit before invoking Maven SCM GitExe operations. Avoid network remotes.",
+  "risks": [
+    "Tests that execute git depend on the git executable being available on PATH.",
+    "Real git command tests can be flaky unless they use only temp directories, local file:// remotes, and local repository config.",
+    "The compile failure shown is an API signature change in GitTagCommand.createCommandLine requiring the new boolean sign parameter, not a missing dependency or service."
+  ]
+}
