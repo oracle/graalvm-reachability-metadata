@@ -1,0 +1,61 @@
+{
+  "fix_javac_fail:2026-06-09": {
+    "timestamp": "2026-06-09T23:38:55.138014Z",
+    "library": "org.apache.maven.scm:maven-scm-provider-gitexe:1.11.1",
+    "starting_commit": "9e03e324d0f4019ea3097057ed1167d8388ba704",
+    "ending_commit": "82adc073ca950268664fdfbb0255b94e0861fed7",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8274,
+      "issue_label": "fails-javac-compile",
+      "library": "org.apache.maven.scm:maven-scm-provider-gitexe:1.11.1",
+      "summary": "No deterministic setup is needed. The resolved artifact is the Git CLI-backed Maven SCM provider and its normal compile/runtime dependencies are transitive; the reported failure is generated-test API drift in GitTagCommand.createCommandLine, not a missing dependency, Docker service, environment variable, or system property.",
+      "deterministic_setup": [],
+      "agent_guidance": "No special environment variable or system property is required. If tests execute real git commands rather than only command-line builders/consumers, create a temporary local git repository and configure repository-local user.name and user.email inside the test before commit/tag operations; avoid relying on network remotes or host-global git config.",
+      "risks": [
+        "The provider shells out to the git executable. Ubuntu runners normally provide git, but tests that execute real commands can fail on hosts without git.",
+        "Real commit/tag coverage may be sensitive to local git identity/config unless the test sets repository-local config explicitly.",
+        "Avoid adding upstream test-helper artifacts unless a specific generated test actually needs them; meaningful provider coverage is reachable through public provider classes and transitive dependencies."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8274 [Automation] javac compile fails for org.apache.maven.scm:maven-scm-provider-gitexe:1.11.1; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "8 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.apache.maven.scm:maven-scm-provider-gitexe:1.10.0",
+      "new_version": "1.11.1",
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 39431,
+      "output_tokens_used": 4197,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.apache.maven.scm:maven-scm-provider-gitexe:1.11.1/library-preparation-preflight/pi-generation-2026-06-09T23-34-41-051320Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 18023,
+      "cached_input_tokens_used": 76800,
+      "output_tokens_used": 1067,
+      "iterations": 1,
+      "cost_usd": 0.0704,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "test_file": "None",
+      "metadata_file": "None"
+    }
+  }
+}
