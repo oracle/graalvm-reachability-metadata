@@ -12,15 +12,27 @@ import java.util.function.Supplier;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import org_springframework.spring_test.TestBeanOverrideHandlerTest.NoOpApplicationContextInitializer;
+
 public final class AotTestContextInitializers__Generated {
+    private static final String TEST_BEAN_TEST_CASE =
+            "org_springframework.spring_test.TestBeanOverrideHandlerTest$TestBeanTestCase";
+
     private AotTestContextInitializers__Generated() {
     }
 
-    public static Map<String, Supplier<ApplicationContextInitializer<ConfigurableApplicationContext>>> getContextInitializers() {
-        return Map.of();
+    public static Map<String, Supplier<ApplicationContextInitializer<ConfigurableApplicationContext>>>
+            getContextInitializers() {
+
+        return Map.of(TEST_BEAN_TEST_CASE, NoOpApplicationContextInitializer::new);
     }
 
     public static Map<String, Class<ApplicationContextInitializer<?>>> getContextInitializerClasses() {
-        return Map.of();
+        return Map.of(TEST_BEAN_TEST_CASE, initializerClass());
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Class<ApplicationContextInitializer<?>> initializerClass() {
+        return (Class<ApplicationContextInitializer<?>>) (Class<?>) NoOpApplicationContextInitializer.class;
     }
 }
