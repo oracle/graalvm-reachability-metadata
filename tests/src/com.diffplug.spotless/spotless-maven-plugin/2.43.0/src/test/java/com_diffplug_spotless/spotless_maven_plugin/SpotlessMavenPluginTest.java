@@ -45,6 +45,7 @@ import com.diffplug.spotless.maven.SpotlessApplyMojo;
 import com.diffplug.spotless.maven.SpotlessCheckMojo;
 import com.diffplug.spotless.maven.generic.EndWithNewline;
 import com.diffplug.spotless.maven.generic.Format;
+import com.diffplug.spotless.maven.generic.ToggleOffOn;
 import com.diffplug.spotless.maven.generic.TrimTrailingWhitespace;
 import com.diffplug.spotless.maven.java.Java;
 import com.diffplug.spotless.maven.pom.Pom;
@@ -91,6 +92,38 @@ public class SpotlessMavenPluginTest {
         assertThat(trimTrailingWhitespace.format("alpha  \n beta\t", new File("sample.txt"))).isEqualTo("alpha\n beta");
         assertThat(endWithNewline.getName()).isEqualTo("endWithNewline");
         assertThat(endWithNewline.format("alpha", new File("sample.txt"))).isEqualTo("alpha\n");
+    }
+
+    @Test
+    void formatterTogglePreservesDisabledSections() throws Exception {
+        final ToggleOffOn toggle = new ToggleOffOn();
+        toggle.off = "spotless:off";
+        toggle.on = "spotless:on";
+
+        final Java javaFormatter = new Java();
+        javaFormatter.addTrimTrailingWhitespace(new TrimTrailingWhitespace());
+        javaFormatter.addToggleOffOn(toggle);
+
+        final FormatterConfig config = new FormatterConfig(
+                temporaryDirectory.toFile(),
+                "UTF-8",
+                LineEnding.UNIX,
+                Optional.empty(),
+                EMPTY_PROVISIONER,
+                fileLocator(),
+                List.of(),
+                Optional.empty());
+        final Path sourceFile = Files.writeString(
+                temporaryDirectory.resolve("ToggleExample.java"),
+                "class ToggleExample {}\n");
+
+        try (Formatter formatter = javaFormatter.newFormatter(() -> List.of(sourceFile.toFile()), config)) {
+            final String formatted = formatter.compute(
+                    "before  \nspotless:off\nkept  \nspotless:on\nafter  ",
+                    sourceFile.toFile());
+
+            assertThat(formatted).isEqualTo("before\nspotless:off\nkept  \nspotless:on\nafter");
+        }
     }
 
     @Test
