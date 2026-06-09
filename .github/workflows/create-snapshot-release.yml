@@ -1,5 +1,5 @@
 # Snapshot release: packages metadata after master updates and publishes it on the
-# floating latest tag. §CI-create-snapshot-release; §FS-repository-functional-spec.4.4.
+# floating SNAPSHOT tag. §CI-create-snapshot-release; §FS-repository-functional-spec.4.4.
 name: "Create snapshot release"
 
 on:
@@ -36,9 +36,9 @@ jobs:
       - name: "🔎 Determine diff base"
         id: get-base-ref
         run: |
-          if git rev-parse --verify latest >/dev/null 2>&1; then
-            echo "Using existing latest tag as base"
-            echo "BASE_COMMIT=$(git rev-parse latest)" >> ${GITHUB_ENV}
+          if git rev-parse --verify SNAPSHOT >/dev/null 2>&1; then
+            echo "Using existing SNAPSHOT tag as base"
+            echo "BASE_COMMIT=$(git rev-parse SNAPSHOT)" >> ${GITHUB_ENV}
             echo "snapshot-release-exists=true" >> ${GITHUB_OUTPUT}
             exit 0
           fi
@@ -79,7 +79,7 @@ jobs:
 
       - name: "⬆️ Update version"
         run: |
-          sed -i "s/project.version(\"1.0.0-SNAPSHOT\")/project.version(\"latest\")/g" build.gradle
+          sed -i "s/project.version(\"1.0.0-SNAPSHOT\")/project.version(\"SNAPSHOT\")/g" build.gradle
 
       - name: "🔍 Run spotless check"
         run: |
@@ -92,7 +92,7 @@ jobs:
       - name: "🧹 Delete previous snapshot release and tag"
         if: needs.get-changed-metadata.outputs.snapshot-release-exists == 'true'
         run: |
-          gh release delete latest --cleanup-tag -y
+          gh release delete SNAPSHOT --cleanup-tag -y
 
       - name: "📄 Commit changes"
         run: |
@@ -100,9 +100,9 @@ jobs:
           git config --local user.name "Github Actions"
           git add .
           git commit -m "Update snapshot release"
-          git tag -f latest
-          git push origin refs/tags/latest --force
+          git tag -f SNAPSHOT
+          git push origin refs/tags/SNAPSHOT --force
 
       - name: "📝 Publish a release"
         run: |
-          gh release create latest build/graalvm-reachability-metadata-*.zip --title "SNAPSHOT" --latest=false
+          gh release create SNAPSHOT build/graalvm-reachability-metadata-*.zip --title "SNAPSHOT" --latest=false

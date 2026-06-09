@@ -66,15 +66,15 @@ The harness uses a single coordinates filter `-Pcoordinates=` accepting `all`, `
 GitHub Actions, configured by [`ci.json`](../ci.json) as the single source of truth for OS/JDK matrix, run the workflows enumerated in [ci.md](ci.md):
 - PR-scoped: changed-metadata, changed-infrastructure, new-library-version, Spring AOT smoke, library-stats validation, library-and-framework-list validation, checkstyle.
 - Schedule-driven: full metadata sweep every three days to prevent incomplete or breaking metadata from shipping in releases, new-library-version compatibility (every six hours), Docker image vulnerability scans, scheduled release every Monday, scheduled coverage publication.
-- Event-driven snapshot publication: every push to `master` may refresh the floating `SNAPSHOT` release when metadata changed since the previous `latest` tag.
+- Event-driven snapshot publication: every push to `master` may refresh the floating `SNAPSHOT` release when metadata changed since the previous `SNAPSHOT` tag.
 
 CI must pass before any merge, and is the authoritative gate — local runs are best-effort.
 
 ### 4.4 Releases
 
-Every Monday the `create-scheduled-release` workflow packages metadata into the next numbered release if it has changed and the latest completed test-all metadata workflow passed (§CI-create-scheduled-release). Manual release dispatches bypass this test-all gate. Numbered releases consider only semantic version tags when computing the previous version tag, so floating snapshot tags such as `latest` cannot affect the permanent release cadence.
+Every Monday the `create-scheduled-release` workflow packages metadata into the next numbered release if it has changed and the latest completed test-all metadata workflow passed (§CI-create-scheduled-release). Manual release dispatches bypass this test-all gate. Numbered releases consider only semantic version tags when computing the previous version tag, so floating snapshot tags such as `SNAPSHOT` cannot affect the permanent release cadence.
 
-The `create-snapshot-release` workflow refreshes a floating `SNAPSHOT` GitHub Release on the `latest` tag after `master` pushes when metadata changed since the previous `latest` tag, or since the latest numbered release when bootstrapping (§CI-create-snapshot-release). It packages the repository with version `latest`, replaces the previous snapshot release/tag, and provides a continuously updated snapshot-style metadata bundle between numbered releases without taking GitHub's Latest marker from the newest numbered release. The packaged artifacts are what the GraalVM Gradle/Maven plugins consume.
+The `create-snapshot-release` workflow refreshes a floating `SNAPSHOT` GitHub Release on the `SNAPSHOT` tag after `master` pushes when metadata changed since the previous `SNAPSHOT` tag, or since the latest numbered release when bootstrapping (§CI-create-snapshot-release). It packages the repository with version `SNAPSHOT`, replaces the previous snapshot release/tag, and provides a continuously updated snapshot-style metadata bundle between numbered releases without taking GitHub's Latest marker from the newest numbered release. The packaged artifacts are what the GraalVM Gradle/Maven plugins consume.
 
 ### 4.5 Coverage and metrics dashboard
 
@@ -159,7 +159,7 @@ sequenceDiagram
 
 native-build-tools consumes this repository through exactly four observable elements. Changes to any of them are breaking changes for plugin users.
 
-**1. Distribution artifact.** The `package` Gradle task produces `graalvm-reachability-metadata-<repo-version>.zip`, which the scheduled release workflow attaches as a GitHub Release asset on a `<repo-version>` tag every Monday, and which the snapshot-release workflow attaches as `SNAPSHOT` on the floating `latest` tag after metadata-changing pushes to `master`. The ZIP is a verbatim copy of the repository's `metadata/` directory — there is no separate top-level manifest. Its contents at the ZIP root are exactly:
+**1. Distribution artifact.** The `package` Gradle task produces `graalvm-reachability-metadata-<repo-version>.zip`, which the scheduled release workflow attaches as a GitHub Release asset on a `<repo-version>` tag every Monday, and which the snapshot-release workflow attaches on the floating `SNAPSHOT` tag after metadata-changing pushes to `master`. The ZIP is a verbatim copy of the repository's `metadata/` directory — there is no separate top-level manifest. Its contents at the ZIP root are exactly:
 
 ```text
 library-and-framework-list.json                          # the master list of supported libraries (schema-validated)
