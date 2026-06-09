@@ -33,6 +33,7 @@ import com.diffplug.spotless.maven.FormatterStepFactory;
 import com.diffplug.spotless.maven.generic.EndWithNewline;
 import com.diffplug.spotless.maven.generic.Format;
 import com.diffplug.spotless.maven.generic.TrimTrailingWhitespace;
+import com.diffplug.spotless.maven.java.FormatAnnotations;
 import com.diffplug.spotless.maven.java.Java;
 
 public class Spotless_maven_pluginTest {
@@ -106,6 +107,33 @@ public class Spotless_maven_pluginTest {
         assertThat(stepConfig.getProvisioner()).isSameAs(NOOP_PROVISIONER);
         assertThat(stepConfig.getFileLocator()).isNull();
         assertThat(stepConfig.spotlessSetLicenseHeaderYearsFromGitHistory()).contains("true");
+    }
+
+    @Test
+    void javaFormatAnnotationsStepKeepsTypeAnnotationWithType() throws Exception {
+        final Path sourceFile = tempDir.resolve("src/main/java/example/Annotated.java");
+        Files.createDirectories(sourceFile.getParent());
+        final String javaSource = """
+                package example;
+
+                class Annotated {
+                    private @Nullable
+                            String name;
+                }
+                """;
+        Files.writeString(sourceFile, javaSource, StandardCharsets.UTF_8);
+
+        final FormatterStep formatAnnotations = new FormatAnnotations().newFormatterStep(stepConfig());
+
+        assertThat(formatAnnotations.getName()).containsIgnoringCase("annotation");
+        assertThat(formatAnnotations.format(Files.readString(sourceFile), sourceFile.toFile()))
+                .isEqualTo("""
+                        package example;
+
+                        class Annotated {
+                            private @Nullable String name;
+                        }
+                        """);
     }
 
     @Test
