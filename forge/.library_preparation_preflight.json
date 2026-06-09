@@ -1,0 +1,33 @@
+{
+  "status": "completed",
+  "action": "no_action",
+  "issue_number": 8274,
+  "issue_label": "fails-javac-compile",
+  "library": "org.apache.maven.scm:maven-scm-provider-gitexe:1.11.1",
+  "summary": "No extra deterministic setup is needed. The artifact is a Maven SCM provider that builds/executes local `git` command lines; its runtime dependencies are normal Maven transitive dependencies and it does not require a Docker-backed service or optional test dependency for meaningful coverage.",
+  "deterministic_setup": [],
+  "agent_guidance": "Keep tests focused on public Maven SCM/gitexe APIs and local temporary files. For version 1.11.1, `GitTagCommand.createCommandLine` has an added `boolean sign` parameter; pass `false` to preserve the previous unsigned tag behavior, or assert `-s` only when intentionally testing signed tags. Avoid network remotes; command-line construction can use example.invalid URLs.",
+  "risks": [
+    "Tests that actually execute git commands, rather than only constructing command lines, may need local `git init` setup and user identity configuration in a temp repository, but this is test logic rather than repository deterministic setup.",
+    "Upstream has test-scoped helpers such as `maven-scm-provider-gittest`, but they are not required for the existing coverage style and should not be added unless the generated tests deliberately depend on those fixtures."
+  ],
+  "applied_setup": [],
+  "input_evidence": [
+    {
+      "name": "issue",
+      "summary": "#8274 [Automation] javac compile fails for org.apache.maven.scm:maven-scm-provider-gitexe:1.11.1; label=fails-javac-compile; body_chars=8015"
+    },
+    {
+      "name": "existing_tests",
+      "summary": "8 existing test file path(s) included"
+    }
+  ],
+  "current_library": "org.apache.maven.scm:maven-scm-provider-gitexe:1.10.0",
+  "new_version": "1.11.1",
+  "model": "oca/gpt-5.5",
+  "input_tokens_used": 22376,
+  "output_tokens_used": 2021,
+  "prompt_path": "library-preflight-prompt.txt",
+  "raw_response_path": "library-preflight-response.txt",
+  "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.apache.maven.scm:maven-scm-provider-gitexe:1.11.1/library-preparation-preflight/pi-generation-2026-06-09T21-06-50-339141Z.log"
+}
