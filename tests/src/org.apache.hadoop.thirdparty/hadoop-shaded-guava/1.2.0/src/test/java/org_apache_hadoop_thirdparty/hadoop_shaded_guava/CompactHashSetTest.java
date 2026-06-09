@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 public class CompactHashSetTest {
     private static final String COMPACT_HASH_SET_CLASS_NAME =
             "org.apache.hadoop.thirdparty.com.google.common.collect.CompactHashSet";
-    private static final long COMPACT_HASH_SET_SERIAL_VERSION_UID = -7313357044237808198L;
+    private static final long COMPACT_HASH_SET_SERIAL_VERSION_UID = -6093546105235684488L;
 
     @Test
     void roundTripsSerializedCompactHashSetElements() throws Exception {

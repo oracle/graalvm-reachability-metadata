@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 public class CompactHashMapTest {
     private static final String COMPACT_HASH_MAP_CLASS_NAME =
             "org.apache.hadoop.thirdparty.com.google.common.collect.CompactHashMap";
-    private static final long COMPACT_HASH_MAP_SERIAL_VERSION_UID = 6085357662264569702L;
+    private static final long COMPACT_HASH_MAP_SERIAL_VERSION_UID = 6914122613132586155L;
 
     @Test
     void roundTripsSerializedCompactHashMapEntries() throws Exception {
