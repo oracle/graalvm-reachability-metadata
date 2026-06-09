@@ -19,6 +19,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntAVLTreeSet;
+import it.unimi.dsi.fastutil.ints.IntArrayFIFOQueue;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntBidirectionalIterator;
@@ -171,6 +172,34 @@ public class FastutilTest {
         assertTrue(identities.add(secondText));
         assertFalse(identities.add(shared));
         assertEquals(3, identities.size());
+    }
+
+    @Test
+    void primitiveArrayFifoQueuesSupportBothEndsAndWrapAround() {
+        IntArrayFIFOQueue queue = new IntArrayFIFOQueue(2);
+        queue.enqueue(10);
+        queue.enqueue(20);
+
+        assertEquals(10, queue.firstInt());
+        assertEquals(20, queue.lastInt());
+        assertEquals(10, queue.dequeueInt());
+
+        queue.enqueue(30);
+        queue.enqueueFirst(5);
+        assertEquals(5, queue.firstInt());
+        assertEquals(30, queue.lastInt());
+        assertEquals(30, queue.dequeueLastInt());
+        assertEquals(5, queue.dequeueInt());
+        assertEquals(20, queue.dequeueInt());
+        assertEquals(0, queue.size());
+
+        queue.enqueue(40);
+        queue.enqueue(50);
+        queue.clear();
+        assertEquals(0, queue.size());
+        queue.enqueue(60);
+        queue.trim();
+        assertEquals(60, queue.firstInt());
     }
 
     @Test
