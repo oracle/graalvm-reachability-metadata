@@ -1,0 +1,133 @@
+{
+  "fix_ni_run:2026-06-09": {
+    "timestamp": "2026-06-09T17:41:03.340432Z",
+    "library": "org.codehaus.jackson:jackson-mapper-asl:1.9.0",
+    "starting_commit": "d4e305fd84b9df612177a52dcb0aaf0ab2464c40",
+    "ending_commit": "9d34152ef7c8d56e1b9f04f0685388345ee4df53",
+    "previous_library": "org.codehaus.jackson:jackson-mapper-asl:1.8.3",
+    "strategy_name": "library_update_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "1.9.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 51,
+            "totalCalls": 51
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 51,
+        "totalCalls": 51
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 17940,
+          "missed": 42295,
+          "ratio": 0.297833,
+          "total": 60235
+        },
+        "line": {
+          "covered": 4242,
+          "missed": 9351,
+          "ratio": 0.312072,
+          "total": 13593
+        },
+        "method": {
+          "covered": 1043,
+          "missed": 2378,
+          "ratio": 0.304882,
+          "total": 3421
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "1.8.3",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 55,
+            "totalCalls": 55
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 55,
+        "totalCalls": 55
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 16051,
+          "missed": 35045,
+          "ratio": 0.314134,
+          "total": 51096
+        },
+        "line": {
+          "covered": 3824,
+          "missed": 7793,
+          "ratio": 0.329173,
+          "total": 11617
+        },
+        "method": {
+          "covered": 923,
+          "missed": 2000,
+          "ratio": 0.315771,
+          "total": 2923
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 6264,
+      "issue_label": "fails-native-image-run",
+      "library": "org.codehaus.jackson:jackson-mapper-asl:1.9.0",
+      "summary": "No extra deterministic setup is needed. The resolved jackson-mapper-asl 1.9.0 POM declares only jackson-core-asl 1.9.0 as a normal transitive dependency, and the library is an in-process JSON data-binding library used through ObjectMapper, not a service-backed client.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "jackson-mapper-asl contains optional handlers for XML/DOM and Joda-Time types, but these are optional integration paths and do not justify adding extra dependencies for this native-image runtime failure.",
+        "The reported failures are native-image reflection metadata issues in existing in-memory Jackson tests, not missing external setup."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#6264 [Automation] native-image run fails for org.codehaus.jackson:jackson-mapper-asl:1.9.0; label=fails-native-image-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "33 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.codehaus.jackson:jackson-mapper-asl:1.8.3",
+      "new_version": "1.9.0",
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 24228,
+      "output_tokens_used": 2052,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.codehaus.jackson:jackson-mapper-asl:1.9.0/library-preparation-preflight/pi-generation-2026-06-09T16-56-09-656048Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 243356,
+      "cached_input_tokens_used": 1702400,
+      "output_tokens_used": 16726,
+      "iterations": 5,
+      "cost_usd": 1.353,
+      "tested_library_loc": 4242,
+      "metadata_entries": 46,
+      "test_only_metadata_entries": 147,
+      "previous_library_metadata_entries": 12,
+      "code_coverage_percent": 31.21,
+      "previous_library_coverage_percent": 32.92
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.codehaus.jackson/jackson-mapper-asl/1.9.0/src/test/java/org_codehaus_jackson/jackson_mapper_asl/OptionalHandlerFactoryTest.java",
+      "metadata_file": "metadata/org.codehaus.jackson/jackson-mapper-asl/1.9.0/reachability-metadata.json"
+    }
+  }
+}
