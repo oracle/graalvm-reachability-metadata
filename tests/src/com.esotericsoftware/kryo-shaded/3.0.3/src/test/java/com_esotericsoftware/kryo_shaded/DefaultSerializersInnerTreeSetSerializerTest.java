@@ -59,4 +59,13 @@ public class DefaultSerializersInnerTreeSetSerializerTest {
             return right.compareTo(left);
         }
     }
+
+    /**
+     * Occupies the constructor accessor class name that ReflectASM derives from {@link ReverseStringComparator},
+     * so Kryo falls back to reflective construction when bytecode generation is unavailable.
+     */
+    public static class ReverseStringComparatorConstructorAccess {
+        public ReverseStringComparatorConstructorAccess() {
+        }
+    }
 }
