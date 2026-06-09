@@ -20,6 +20,7 @@ import com.diffplug.spotless.maven.FormatterStepFactory;
 import com.diffplug.spotless.maven.generic.EndWithNewline;
 import com.diffplug.spotless.maven.generic.ToggleOffOn;
 import com.diffplug.spotless.maven.generic.TrimTrailingWhitespace;
+import com.diffplug.spotless.maven.groovy.RemoveSemicolons;
 import com.diffplug.spotless.maven.java.ImportOrder;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -85,6 +86,17 @@ public class Spotless_maven_pluginTest {
         assertThat(pair.in().getName()).isNotBlank();
         assertThat(pair.out().getName()).isNotBlank();
         assertThat(restoredText).isEqualTo(source);
+    }
+
+    @Test
+    void removeSemicolonsFactoryRemovesUnnecessaryGroovyStatementSemicolons() throws Exception {
+        FormatterStep removeSemicolons = new RemoveSemicolons().newFormatterStep(stepConfig());
+        String source = "def answer = 42;\nprintln answer;\n";
+        String expected = "def answer = 42" + System.lineSeparator()
+                + "println answer" + System.lineSeparator();
+
+        assertThat(removeSemicolons.getName()).isEqualTo("Remove unnecessary semicolons");
+        assertThat(removeSemicolons.format(source, NO_FILE)).isEqualTo(expected);
     }
 
     @Test
