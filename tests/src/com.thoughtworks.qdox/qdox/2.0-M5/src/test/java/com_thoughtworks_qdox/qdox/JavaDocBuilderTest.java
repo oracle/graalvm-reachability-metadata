@@ -23,12 +23,35 @@ public class JavaDocBuilderTest {
 
         JavaClass javaClass = builder.getClassByName(BinarySample.class.getName());
 
-        assertThat(javaClass.getFullyQualifiedName()).isEqualTo(BinarySample.class.getName());
+        assertThat(javaClass.getBinaryName()).isEqualTo(BinarySample.class.getName());
+        assertThat(javaClass.getFullyQualifiedName()).isEqualTo(BinarySample.class.getCanonicalName());
         assertThat(javaClass.getFieldByName("label")).isNotNull();
         assertThat(javaClass.getFieldByName("count")).isNotNull();
         assertThat(hasConstructor(javaClass)).isTrue();
         assertThat(methodNamed(javaClass, "describe")).isNotNull();
         assertThat(methodNamed(javaClass, "reset")).isNotNull();
+    }
+
+    @Test
+    void parsesSourceMembers() {
+        JavaProjectBuilder builder = new JavaProjectBuilder();
+        builder.addSource(new StringReader("""
+                package sample;
+
+                /** A parsed source used to verify member lookup. */
+                public class ParsedSample {
+                    private int value;
+
+                    public String describe() {
+                        return String.valueOf(value);
+                    }
+                }
+                """));
+
+        JavaClass parsedClass = builder.getClassByName("sample.ParsedSample");
+
+        assertThat(parsedClass.getFieldByName("value")).isNotNull();
+        assertThat(methodNamed(parsedClass, "describe")).isNotNull();
     }
 
     @Test
@@ -38,12 +61,7 @@ public class JavaDocBuilderTest {
                 package sample;
 
                 /** A parsed source used to verify persistence. */
-                public class ParsedSample {
-                    private int value;
-
-                    public String describe() {
-                        return String.valueOf(value);
-                    }
+                public class PersistentSample {
                 }
                 """));
         File file = Files.createTempFile("qdox-builder", ".ser").toFile();
@@ -51,10 +69,12 @@ public class JavaDocBuilderTest {
             builder.save(file);
 
             JavaProjectBuilder loadedBuilder = JavaProjectBuilder.load(file);
-            JavaClass loadedClass = loadedBuilder.getClassByName("sample.ParsedSample");
+            JavaClass loadedClass = loadedBuilder.getClassByName("sample.PersistentSample");
 
-            assertThat(loadedClass.getFieldByName("value")).isNotNull();
-            assertThat(methodNamed(loadedClass, "describe")).isNotNull();
+            assertThat(loadedBuilder.getSources())
+                    .anySatisfy(source -> assertThat(source.getCodeBlock()).contains("class PersistentSample"));
+            assertThat(loadedClass).isNotNull();
+            assertThat(loadedClass.getComment()).contains("parsed source used to verify persistence");
         } finally {
             Files.deleteIfExists(file.toPath());
         }
