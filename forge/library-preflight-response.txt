@@ -1,0 +1,23 @@
+{
+  "action": "advisory_preparation",
+  "summary": "Sisu Inject is a JSR-330 container built on Google Guice; its POM marks Guice as provided and its lifecycle APIs reference optional javax.annotation types, so core tests need explicit test dependencies but no Docker service.",
+  "deterministic_setup": [
+    {
+      "kind": "dependency",
+      "coordinate": "com.google.inject:guice:5.1.0",
+      "scope": "testImplementation",
+      "reason": "org.eclipse.sisu.inject uses Guice as its DI engine and declares it with provided scope, so generated tests that create injectors, modules, bindings, or Sisu locators need Guice on the test classpath."
+    },
+    {
+      "kind": "dependency",
+      "coordinate": "javax.annotation:javax.annotation-api:1.3.2",
+      "scope": "testImplementation",
+      "reason": "Sisu lifecycle support uses javax.annotation.PostConstruct and PreDestroy, which are not provided by modern JDKs such as JDK 25."
+    }
+  ],
+  "agent_guidance": "Exercise Sisu through normal Guice usage: create Guice modules/injectors and, for 0.9.0.M1, register injectors with DefaultBeanLocator by wrapping them in InjectorBindings because MutableBeanLocator.add now accepts a BindingPublisher, not an Injector plus rank. Preserve existing native-image helper behavior that touches Guice primitive parser methods before injector creation when those paths are tested.",
+  "risks": [
+    "The artifact has optional OSGi, servlet, SLF4J, JUnit, and TestNG imports; avoid exercising those integrations unless matching test dependencies are intentionally added.",
+    "Existing tests using the old MutableBeanLocator.add(injector, rank) API will fail javac against 0.9.0.M1 and must be updated to the BindingPublisher API."
+  ]
+}
