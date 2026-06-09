@@ -51,7 +51,7 @@ public class SerializedProxyTest {
         ProxyFactory factory = new ProxyFactory();
         factory.setUseCache(true);
         factory.setUseWriteReplace(true);
-        factory.setInterfaces(new Class[] { GreetingContract.class });
+        factory.setInterfaces(new Class[] {GreetingContract.class });
         factory.setFilter(new GreetingMethodFilter());
         return factory.create(new Class[0], new Object[0], new SerializableHandler());
     }

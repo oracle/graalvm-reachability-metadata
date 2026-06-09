@@ -26,7 +26,7 @@ public class RuntimeSupportInnerDefaultMethodHandlerTest {
                 service,
                 method,
                 method,
-                new Object[] { "body", Integer.valueOf(4) });
+                new Object[] {"body", Integer.valueOf(4) });
 
         assertThat(result).isEqualTo("prefix:body:4");
     }

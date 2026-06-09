@@ -8,8 +8,9 @@ package javassist.javassist;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.Permission;
 
 import javassist.util.proxy.FactoryHelper;
@@ -33,15 +34,8 @@ public class SecurityActionsAnonymous3Test {
                 assertThat(exception).isInstanceOf(UnsupportedOperationException.class);
             }
 
-            URL testCodeSource = SecurityActionsAnonymous3Test.class.getProtectionDomain()
-                    .getCodeSource()
-                    .getLocation();
-            URL libraryCodeSource = FactoryHelper.class.getProtectionDomain()
-                    .getCodeSource()
-                    .getLocation();
-
             try (ChildFirstJavassistLoader loader = new ChildFirstJavassistLoader(
-                    testCodeSource, libraryCodeSource)) {
+                    SecurityActionsAnonymous3Test.class.getClassLoader())) {
                 Class<?> initializer = Class.forName(
                         IsolatedFactoryHelperInitializer.class.getName(), true, loader);
 
@@ -93,30 +87,68 @@ public class SecurityActionsAnonymous3Test {
         }
     }
 
-    private static final class ChildFirstJavassistLoader extends URLClassLoader {
-        private ChildFirstJavassistLoader(URL testCodeSource, URL libraryCodeSource) {
-            super(new URL[] { testCodeSource, libraryCodeSource }, null);
+    private static final class ChildFirstJavassistLoader extends ClassLoader implements AutoCloseable {
+        private final ClassLoader resourceLoader;
+
+        private ChildFirstJavassistLoader(ClassLoader resourceLoader) {
+            super(resourceLoader);
+            this.resourceLoader = resourceLoader;
         }
 
         @Override
         protected synchronized Class<?> loadClass(String name, boolean resolve)
                 throws ClassNotFoundException {
-            if (!name.startsWith("javassist.")) {
-                return super.loadClass(name, resolve);
-            }
-
             Class<?> loadedClass = findLoadedClass(name);
-            if (loadedClass == null) {
+            if (loadedClass == null && shouldLoadChildFirst(name)) {
                 try {
                     loadedClass = findClass(name);
                 } catch (ClassNotFoundException exception) {
                     loadedClass = super.loadClass(name, false);
                 }
             }
+            if (loadedClass == null) {
+                loadedClass = super.loadClass(name, false);
+            }
             if (resolve) {
                 resolveClass(loadedClass);
             }
             return loadedClass;
+        }
+
+        @Override
+        protected Class<?> findClass(String name) throws ClassNotFoundException {
+            if (!shouldLoadChildFirst(name)) {
+                throw new ClassNotFoundException(name);
+            }
+            byte[] bytes = readClassBytes(name);
+            return defineClass(name, bytes, 0, bytes.length);
+        }
+
+        private byte[] readClassBytes(String name) throws ClassNotFoundException {
+            String resourceName = name.replace('.', '/') + ".class";
+            try (InputStream input = resourceLoader.getResourceAsStream(resourceName)) {
+                if (input == null) {
+                    throw new ClassNotFoundException(name);
+                }
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                input.transferTo(output);
+                return output.toByteArray();
+            } catch (IOException exception) {
+                ClassNotFoundException classNotFoundException = new ClassNotFoundException(name);
+                classNotFoundException.initCause(exception);
+                throw classNotFoundException;
+            }
+        }
+
+        private static boolean shouldLoadChildFirst(String name) {
+            return name.equals(IsolatedFactoryHelperInitializer.class.getName())
+                    || name.equals(FactoryHelper.class.getName())
+                    || name.equals("javassist.util.proxy.SecurityActions")
+                    || name.equals("javassist.util.proxy.SecurityActions$3");
+        }
+
+        @Override
+        public void close() {
         }
     }
 }

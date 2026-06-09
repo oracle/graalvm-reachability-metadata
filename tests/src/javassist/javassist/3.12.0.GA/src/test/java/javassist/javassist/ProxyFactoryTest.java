@@ -30,8 +30,8 @@ public class ProxyFactoryTest {
             factory.setFilter(method -> method.getName().equals("message"));
 
             GreetingService proxy = (GreetingService) factory.create(
-                    new Class[] { String.class },
-                    new Object[] { "original" },
+                    new Class[] {String.class },
+                    new Object[] {"original" },
                     (self, method, proceed, arguments) -> "handled:" + proceed.invoke(self, arguments));
 
             assertThat(ProxyFactory.isProxyClass(proxy.getClass())).isTrue();
@@ -83,7 +83,7 @@ public class ProxyFactoryTest {
     public static class SerializableProxyFixture implements ProxyObject, Serializable {
         private static final long serialVersionUID = 1L;
 
-        public static byte[] _filter_signature = new byte[] { 1, 2, 3 };
+        @SuppressWarnings("checkstyle:StaticVariableName") public static byte[] _filter_signature = new byte[] {1, 2, 3 };
 
         private transient MethodHandler handler = new RecordingMethodHandler();
 

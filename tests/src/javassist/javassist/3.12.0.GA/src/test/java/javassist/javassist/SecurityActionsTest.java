@@ -25,7 +25,7 @@ public class SecurityActionsTest {
             MethodType.methodType(Constructor.class, Class.class, Class[].class));
 
         Constructor<?> constructor = (Constructor<?>) getDeclaredConstructor.invoke(SecurityActionsTarget.class,
-            new Class<?>[] { String.class, int.class });
+            new Class<?>[] {String.class, int.class });
 
         assertThat(constructor.getDeclaringClass()).isEqualTo(SecurityActionsTarget.class);
         assertThat(constructor.getParameterTypes()).containsExactly(String.class, int.class);

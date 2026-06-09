@@ -35,7 +35,7 @@ public class ArrayMemberValueTest {
         ArrayMemberValue firstRow = newStringArrayMemberValue(constPool, "alpha", "beta");
         ArrayMemberValue secondRow = newStringArrayMemberValue(constPool, "gamma");
         ArrayMemberValue memberValue = new ArrayMemberValue(firstRow, constPool);
-        memberValue.setValue(new MemberValue[] { firstRow, secondRow });
+        memberValue.setValue(new MemberValue[] {firstRow, secondRow });
         Annotation annotation = newAnnotation(NestedArrayCarrier.class, constPool, memberValue);
 
         NestedArrayCarrier proxy = (NestedArrayCarrier) annotation.toAnnotationType(

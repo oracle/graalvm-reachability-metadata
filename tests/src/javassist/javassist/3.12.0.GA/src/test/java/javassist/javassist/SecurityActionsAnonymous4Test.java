@@ -33,7 +33,7 @@ public class SecurityActionsAnonymous4Test {
             }
 
             Constructor<?> constructor = getDeclaredConstructor(ConstructorTarget.class,
-                    new Class<?>[] { String.class, int.class });
+                    new Class<?>[] {String.class, int.class });
 
             assertThat(constructor.getDeclaringClass()).isEqualTo(ConstructorTarget.class);
             assertThat(constructor.getParameterTypes()).containsExactly(String.class, int.class);

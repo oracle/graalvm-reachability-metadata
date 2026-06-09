@@ -26,8 +26,8 @@ public class AnnotationImplTest {
 
         RuntimeFixtureAnnotation proxy = (RuntimeFixtureAnnotation) annotation.toAnnotationType(
                 AnnotationImplTest.class.getClassLoader(), null);
-        RuntimeFixtureAnnotation runtimeAnnotation = AnnotatedFixture.class.getAnnotation(
-                RuntimeFixtureAnnotation.class);
+        RuntimeFixtureAnnotation runtimeAnnotation = AnnotatedFixture.class.getAnnotationsByType(
+                RuntimeFixtureAnnotation.class)[0];
 
         assertThat(proxy.annotationType()).isSameAs(RuntimeFixtureAnnotation.class);
         assertThat(proxy.name()).isEqualTo("alpha");
