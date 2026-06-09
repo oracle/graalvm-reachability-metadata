@@ -69,8 +69,12 @@ import jakarta.servlet.jsp.tagext.TagAdapter;
 import jakarta.servlet.jsp.tagext.TagAttributeInfo;
 import jakarta.servlet.jsp.tagext.TagData;
 import jakarta.servlet.jsp.tagext.TagExtraInfo;
+import jakarta.servlet.jsp.tagext.TagFileInfo;
+import jakarta.servlet.jsp.tagext.TagInfo;
+import jakarta.servlet.jsp.tagext.TagLibraryInfo;
 import jakarta.servlet.jsp.tagext.TagLibraryValidator;
 import jakarta.servlet.jsp.tagext.TagSupport;
+import jakarta.servlet.jsp.tagext.TagVariableInfo;
 import jakarta.servlet.jsp.tagext.TryCatchFinally;
 import jakarta.servlet.jsp.tagext.ValidationMessage;
 import jakarta.servlet.jsp.tagext.VariableInfo;
@@ -320,6 +324,70 @@ public class Jakarta_servlet_jsp_apiTest {
         assertThat(tagExtraInfo.validate(tagData)).isNull();
         assertThat(validator.getInitParameters()).containsEntry("mode", "strict");
         assertThat(validator.validate("test", "urn:test", new StringPageData("<jsp:root />"))).isNull();
+    }
+
+    @Test
+    void tagLibraryInfoFindsTagsTagFilesAndFunctions() {
+        TagAttributeInfo nameAttribute = new TagAttributeInfo("name", true, "java.lang.String", false);
+        TagVariableInfo variableInfo = new TagVariableInfo(
+                "resolvedName", "name", "java.lang.String", true, VariableInfo.NESTED);
+        TagInfo tagInfo = new TagInfo(
+                "lookup",
+                "example.LookupTag",
+                TagInfo.BODY_CONTENT_SCRIPTLESS,
+                "Looks up an item",
+                null,
+                new TestTagExtraInfo(),
+                new TagAttributeInfo[] {nameAttribute},
+                "Lookup",
+                "lookup-small.png",
+                "lookup-large.png",
+                new TagVariableInfo[] {variableInfo},
+                true);
+        TagFileInfo tagFileInfo = new TagFileInfo("fileLookup", "/WEB-INF/tags/fileLookup.tag", tagInfo);
+        FunctionInfo functionInfo = new FunctionInfo(
+                "normalize", "example.Functions", "java.lang.String normalize(java.lang.String)");
+        TestTagLibraryInfo libraryInfo = new TestTagLibraryInfo(
+                "test", "urn:test", new TagInfo[] {tagInfo}, new TagFileInfo[] {tagFileInfo},
+                new FunctionInfo[] {functionInfo});
+
+        tagInfo.setTagLibrary(libraryInfo);
+
+        assertThat(libraryInfo.getPrefixString()).isEqualTo("test");
+        assertThat(libraryInfo.getURI()).isEqualTo("urn:test");
+        assertThat(libraryInfo.getShortName()).isEqualTo("test-tags");
+        assertThat(libraryInfo.getReliableURN()).isEqualTo("urn:test:reliable");
+        assertThat(libraryInfo.getInfoString()).isEqualTo("Test tag library");
+        assertThat(libraryInfo.getRequiredVersion()).isEqualTo("3.1");
+        assertThat(libraryInfo.getTags()).containsExactly(tagInfo);
+        assertThat(libraryInfo.getTagFiles()).containsExactly(tagFileInfo);
+        assertThat(libraryInfo.getFunctions()).containsExactly(functionInfo);
+        assertThat(libraryInfo.getTag("lookup")).isSameAs(tagInfo);
+        assertThat(libraryInfo.getTag("missing")).isNull();
+        assertThat(libraryInfo.getTagFile("fileLookup")).isSameAs(tagFileInfo);
+        assertThat(libraryInfo.getTagFile("missing")).isNull();
+        assertThat(libraryInfo.getFunction("normalize")).isSameAs(functionInfo);
+        assertThat(libraryInfo.getFunction("missing")).isNull();
+        assertThat(libraryInfo.getTagLibraryInfos()).isEmpty();
+        assertThat(tagInfo.getTagLibrary()).isSameAs(libraryInfo);
+        assertThat(tagInfo.getTagName()).isEqualTo("lookup");
+        assertThat(tagInfo.getTagClassName()).isEqualTo("example.LookupTag");
+        assertThat(tagInfo.getBodyContent()).isEqualTo(TagInfo.BODY_CONTENT_SCRIPTLESS);
+        assertThat(tagInfo.getInfoString()).isEqualTo("Looks up an item");
+        assertThat(tagInfo.getAttributes()).containsExactly(nameAttribute);
+        assertThat(tagInfo.getDisplayName()).isEqualTo("Lookup");
+        assertThat(tagInfo.getSmallIcon()).isEqualTo("lookup-small.png");
+        assertThat(tagInfo.getLargeIcon()).isEqualTo("lookup-large.png");
+        assertThat(tagInfo.getTagVariableInfos()).containsExactly(variableInfo);
+        assertThat(tagInfo.hasDynamicAttributes()).isTrue();
+        assertThat(tagFileInfo.getName()).isEqualTo("fileLookup");
+        assertThat(tagFileInfo.getPath()).isEqualTo("/WEB-INF/tags/fileLookup.tag");
+        assertThat(tagFileInfo.getTagInfo()).isSameAs(tagInfo);
+        assertThat(variableInfo.getNameGiven()).isEqualTo("resolvedName");
+        assertThat(variableInfo.getNameFromAttribute()).isEqualTo("name");
+        assertThat(variableInfo.getClassName()).isEqualTo("java.lang.String");
+        assertThat(variableInfo.getDeclare()).isTrue();
+        assertThat(variableInfo.getScope()).isEqualTo(VariableInfo.NESTED);
     }
 
     @Test
@@ -1003,6 +1071,25 @@ public class Jakarta_servlet_jsp_apiTest {
     }
 
     private static final class TestTagExtraInfo extends TagExtraInfo {
+    }
+
+    private static final class TestTagLibraryInfo extends TagLibraryInfo {
+        private TestTagLibraryInfo(String prefix, String uri, TagInfo[] tags, TagFileInfo[] tagFiles,
+                FunctionInfo[] functions) {
+            super(prefix, uri);
+            this.tags = tags;
+            this.tagFiles = tagFiles;
+            this.functions = functions;
+            shortname = "test-tags";
+            urn = "urn:test:reliable";
+            info = "Test tag library";
+            jspversion = "3.1";
+        }
+
+        @Override
+        public TagLibraryInfo[] getTagLibraryInfos() {
+            return new TagLibraryInfo[0];
+        }
     }
 
     private static final class TestTagLibraryValidator extends TagLibraryValidator {
