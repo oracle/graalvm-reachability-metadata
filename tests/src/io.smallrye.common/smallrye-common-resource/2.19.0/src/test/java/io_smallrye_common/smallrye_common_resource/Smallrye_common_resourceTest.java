@@ -209,16 +209,22 @@ public class Smallrye_common_resourceTest {
     }
 
     @Test
-    void jarResourceLoaderResolvesRuntimeVersionedEntriesFromMultiReleaseArchives() throws IOException {
+    void jarResourceLoaderReadsBaseAndExplicitVersionedEntriesFromMultiReleaseArchives() throws IOException {
         Path jarPath = Files.createTempFile("smallrye-resource-multi-release", ".jar");
         createMultiReleaseJar(jarPath);
 
         try (JarFileResourceLoader loader = new JarFileResourceLoader(jarPath)) {
-            Resource resource = loader.findResource("versioned/data.txt");
+            assertThat(loader.manifest().getMainAttributes().getValue("Multi-Release")).isEqualTo("true");
 
-            assertThat(resource).isNotNull();
-            assertThat(resource.pathName()).isEqualTo("versioned/data.txt");
-            assertThat(resource.asString(StandardCharsets.UTF_8)).isEqualTo("runtime-specific data");
+            Resource baseResource = loader.findResource("versioned/data.txt");
+            assertThat(baseResource).isNotNull();
+            assertThat(baseResource.pathName()).isEqualTo("versioned/data.txt");
+            assertThat(baseResource.asString(StandardCharsets.UTF_8)).isEqualTo("base data");
+
+            Resource versionedResource = loader.findResource("META-INF/versions/9/versioned/data.txt");
+            assertThat(versionedResource).isNotNull();
+            assertThat(versionedResource.pathName()).isEqualTo("META-INF/versions/9/versioned/data.txt");
+            assertThat(versionedResource.asString(StandardCharsets.UTF_8)).isEqualTo("runtime-specific data");
         }
     }
 
