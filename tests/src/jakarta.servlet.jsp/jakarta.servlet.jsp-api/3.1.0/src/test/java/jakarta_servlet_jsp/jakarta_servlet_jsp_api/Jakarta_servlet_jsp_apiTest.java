@@ -327,6 +327,48 @@ public class Jakarta_servlet_jsp_apiTest {
     }
 
     @Test
+    void tagAttributeInfoExposesDeferredExpressionMetadata() {
+        TagAttributeInfo deferredValueAttribute = new TagAttributeInfo(
+                "total",
+                false,
+                "jakarta.el.ValueExpression",
+                true,
+                false,
+                "Total amount",
+                true,
+                false,
+                "java.math.BigDecimal",
+                null);
+        TagAttributeInfo deferredMethodAttribute = new TagAttributeInfo(
+                "onSelect",
+                false,
+                "jakarta.el.MethodExpression",
+                true,
+                false,
+                "Selection callback",
+                false,
+                true,
+                null,
+                "void select(java.lang.String)");
+        TagAttributeInfo fragmentAttribute = new TagAttributeInfo(
+                "body", false, "jakarta.servlet.jsp.tagext.JspFragment", false, true);
+
+        assertThat(deferredValueAttribute.getName()).isEqualTo("total");
+        assertThat(deferredValueAttribute.getDescription()).isEqualTo("Total amount");
+        assertThat(deferredValueAttribute.isDeferredValue()).isTrue();
+        assertThat(deferredValueAttribute.isDeferredMethod()).isFalse();
+        assertThat(deferredValueAttribute.getExpectedTypeName()).isEqualTo("java.math.BigDecimal");
+        assertThat(deferredValueAttribute.getMethodSignature()).isNull();
+        assertThat(deferredMethodAttribute.getName()).isEqualTo("onSelect");
+        assertThat(deferredMethodAttribute.getDescription()).isEqualTo("Selection callback");
+        assertThat(deferredMethodAttribute.isDeferredValue()).isFalse();
+        assertThat(deferredMethodAttribute.isDeferredMethod()).isTrue();
+        assertThat(deferredMethodAttribute.getExpectedTypeName()).isNull();
+        assertThat(deferredMethodAttribute.getMethodSignature()).isEqualTo("void select(java.lang.String)");
+        assertThat(fragmentAttribute.isFragment()).isTrue();
+    }
+
+    @Test
     void tagLibraryInfoFindsTagsTagFilesAndFunctions() {
         TagAttributeInfo nameAttribute = new TagAttributeInfo("name", true, "java.lang.String", false);
         TagVariableInfo variableInfo = new TagVariableInfo(
