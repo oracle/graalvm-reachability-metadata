@@ -1,0 +1,132 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: net.sourceforge.htmlunit:htmlunit-core-js:2.70.0
+Command: `/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 3 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :compileTestJava
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+
+> Task :test FAILED
+
+JavaAdapterTest > createsAdapterFromJavaScriptAndRoundTripsSerializationDescriptor() FAILED
+    net.sourceforge.htmlunit.corejs.javascript.WrappedException: Wrapped java.lang.reflect.InaccessibleObjectException: Unable to make field protected transient int java.util.AbstractList.modCount accessible: module java.base does not "opens java.util" to unnamed module @3c7f66c4 (javaAdapterTest#1)
+        at app//net.sourceforge.htmlunit.corejs.javascript.Context.throwAsScriptRuntimeEx(Context.java:1904)
+        at app//net.sourceforge.htmlunit.corejs.javascript.JavaAdapter.js_createAdapter(JavaAdapter.java:212)
+        at app//net.sourceforge.htmlunit.corejs.javascript.JavaAdapter.execIdCall(JavaAdapter.java:84)
+        at app//net.sourceforge.htmlunit.corejs.javascript.IdFunctionObject.call(IdFunctionObject.java:84)
+        at app//net.sourceforge.htmlunit.corejs.javascript.BaseFunction.construct(BaseFunction.java:402)
+        at app//net.sourceforge.htmlunit.corejs.javascript.ScriptRuntime.newObject(ScriptRuntime.java:2713)
+        at net.sourceforge.htmlunit.corejs.javascript.gen.javaAdapterTest_1._c_script_0(javaAdapterTest:1)
+        at net.sourceforge.htmlunit.corejs.javascript.gen.javaAdapterTest_1.call(javaAdapterTest)
+        at app//net.sourceforge.htmlunit.corejs.javascript.ContextFactory.doTopCall(ContextFactory.java:392)
+        at app//net.sourceforge.htmlunit.corejs.javascript.ScriptRuntime.doTopCall(ScriptRuntime.java:3916)
+        at net.sourceforge.htmlunit.corejs.javascript.gen.javaAdapterTest_1.call(javaAdapterTest)
+        at net.sourceforge.htmlunit.corejs.javascript.gen.javaAdapterTest_1.exec(javaAdapterTest)
+        at app//net.sourceforge.htmlunit.corejs.javascript.Context.evaluateString(Context.java:1216)
+        at app//net_sourceforge_htmlunit.htmlunit_core_js.JavaAdapterTest.createAdapterFromJavaScriptAndRoundTripSerializationDescriptor(JavaAdapterTest.java:76)
+        at app//net_sourceforge_htmlunit.htmlunit_core_js.JavaAdapterTest.createsAdapterFromJavaScriptAndRoundTripsSerializationDescriptor(JavaAdapterTest.java:51)
+
+        Caused by:
+        java.lang.reflect.InaccessibleObjectException: Unable to make field protected transient int java.util.AbstractList.modCount accessible: module java.base does not "opens java.util" to unnamed module @3c7f66c4
+            at java.base/java.lang.reflect.AccessibleObject.throwInaccessibleObjectException(AccessibleObject.java:353)
+            at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:329)
+            at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:277)
+            at java.base/java.lang.reflect.Field.checkCanSetAccessible(Field.java:179)
+            at java.base/java.lang.reflect.Field.setAccessible(Field.java:173)
+            at net.sourceforge.htmlunit.corejs.javascript.JavaMembers.getAccessibleFields(JavaMembers.java:661)
+            at net.sourceforge.htmlunit.corejs.javascript.JavaMembers.reflect(JavaMembers.java:476)
+            at net.sourceforge.htmlunit.corejs.javascript.JavaMembers.<init>(JavaMembers.java:56)
+            at net.sourceforge.htmlunit.corejs.javascript.JavaMembers_jdk11.<init>(JavaMembers_jdk11.java:18)
+            at net.sourceforge.htmlunit.corejs.javascript.JavaMembers.createJavaMembers(JavaMembers.java:827)
+            at net.sourceforge.htmlunit.corejs.javascript.JavaMembers.lookupClass(JavaMembers.java:788)
+            at net.sourceforge.htmlunit.corejs.javascript.NativeJavaObject.initMembers(NativeJavaObject.java:63)
+            at net.sourceforge.htmlunit.corejs.javascript.NativeJavaObject.<init>(NativeJavaObject.java:53)
+            at net.sourceforge.htmlunit.corejs.javascript.JavaAdapter.createAdapterWrapper(JavaAdapter.java:101)
+            at adapter1.<init>(<adapter>)
+            at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+            at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+            at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+            at net.sourceforge.htmlunit.corejs.javascript.JavaAdapter.js_createAdapter(JavaAdapter.java:196)
+            ... 13 more
+
+3 tests completed, 1 failed
+
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8/tests/src/net.sourceforge.htmlunit/htmlunit-core-js/2.70.0/build/reports/problems/problems-report.html
+FAILURE: Build failed with an exception.
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+* What went wrong:
+
+Execution failed for task ':test'.
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+> For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8/tests/src/net.sourceforge.htmlunit/htmlunit-core-js/2.70.0/build/reports/tests/test/index.html
+14 actionable tasks: 3 executed, 11 up-to-date
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 3s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for net.sourceforge.htmlunit:htmlunit-core-js:2.70.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 4s
+9 actionable tasks: 1 executed, 8 up-to-date

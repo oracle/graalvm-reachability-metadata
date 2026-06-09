@@ -1,0 +1,827 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019eae4a-1255-7670-a54c-1646c7bea096
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: net.sourceforge.htmlunit:htmlunit-core-js:2.70.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "2.70.0" when "$version$" is replaced with "2.70.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.70.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the project’s tagged sources, then update the JSON directly with only the requested keys.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8
+{
+  "coordinates" : "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "htmlunit-core-js|net.sourceforge.htmlunit" metadata tests build/discovered-artifact-metadata -S' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8
+ succeeded in 0ms:
+build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json:2:  "coordinates" : "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0"
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:5:        "typeReached": "net.sourceforge.htmlunit.xerces.parsers.AbstractDOMParser"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:7:      "type": "net.sourceforge.htmlunit.xerces.dom.DocumentImpl",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:19:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:25:        "typeReached": "net.sourceforge.htmlunit.cyberneko.HTMLConfiguration$ErrorReporter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:27:      "glob": "net/sourceforge/htmlunit/cyberneko/res/ErrorMessages.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:31:        "typeReached": "net.sourceforge.htmlunit.cyberneko.HTMLConfiguration$ErrorReporter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:33:      "glob": "net/sourceforge/htmlunit/cyberneko/res/ErrorMessages_en.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:37:        "typeReached": "net.sourceforge.htmlunit.cyberneko.HTMLConfiguration$ErrorReporter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:39:      "glob": "net/sourceforge/htmlunit/cyberneko/res/ErrorMessages_en_US.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:43:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:45:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/DOMMessages.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:49:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:51:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/DOMMessages_en.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:55:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:57:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/DOMMessages_en_US.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:61:        "typeReached": "net.sourceforge.htmlunit.xerces.util.SAXMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:63:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/SAXMessages.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:67:        "typeReached": "net.sourceforge.htmlunit.xerces.util.SAXMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:69:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/SAXMessages_en.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:73:        "typeReached": "net.sourceforge.htmlunit.xerces.util.SAXMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:75:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/SAXMessages_en_US.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:79:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:81:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/XMLMessages.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:85:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:87:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/XMLMessages_en.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:91:        "typeReached": "net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:93:      "glob": "net/sourceforge/htmlunit/xerces/impl/msg/XMLMessages_en_US.properties"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:96:      "bundle": "net.sourceforge.htmlunit.xerces.impl.msg.DOMMessages"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:99:      "bundle": "net.sourceforge.htmlunit.xerces.impl.msg.SAXMessages"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:102:      "bundle": "net.sourceforge.htmlunit.xerces.impl.msg.XMLMessages"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/reachability-metadata.json:105:      "bundle": "net/sourceforge/htmlunit/cyberneko/res/ErrorMessages"
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:14:      "net.sourceforge.htmlunit"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:14:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:16:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncBoolean",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:26:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:28:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncCeiling",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:38:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:40:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncConcat",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:50:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:52:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncContains",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:62:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:64:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncCount",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:74:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:76:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncFalse",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:86:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:88:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncFloor",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:98:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:100:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncId",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:110:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:112:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncLang",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:122:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:124:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncLast",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:134:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:136:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncLocalPart",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:146:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:148:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncNamespace",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:158:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:160:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncNormalizeSpace",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:170:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:172:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncNot",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:182:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:184:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncNumber",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:194:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:196:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncPosition",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:206:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:208:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncQname",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:218:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:220:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncRound",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:230:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:232:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncStartsWith",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:242:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:244:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncString",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:254:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:256:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncStringLength",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:266:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:268:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncSubstring",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:278:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:280:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncSubstringAfter",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:290:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:292:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncSubstringBefore",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:302:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:304:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncSum",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:314:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:316:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncTranslate",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:326:        "typeReached": "net.sourceforge.htmlunit.xpath.compiler.FunctionTable"
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/reachability-metadata.json:328:      "type": "net.sourceforge.htmlunit.xpath.functions.FuncTrue",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:14:      "net.sourceforge.htmlunit.xpath"
+tests/src/net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/build.gradle:14:    testImplementation "net.sourceforge.htmlunit:htmlunit-cssparser:$libraryVersion"
+tests/src/net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/settings.gradle:20:rootProject.name = 'net.sourceforge.htmlunit.htmlunit-cssparser_tests'
+tests/src/net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/src/test/java/net_sourceforge_htmlunit/htmlunit_cssparser/CSSStyleSheetImplTest.java:7:package net_sourceforge_htmlunit.htmlunit_cssparser;
+tests/src/net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/src/test/java/net_sourceforge_htmlunit/htmlunit_cssparser/CSSMediaRuleImplTest.java:7:package net_sourceforge_htmlunit.htmlunit_cssparser;
+tests/src/net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/gradle.properties:4:library.coordinates = net.sourceforge.htmlunit:htmlunit-cssparser:1.14.0
+tests/src/net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/gradle.properties:6:metadata.dir = net.sourceforge.htmlunit/htmlunit-cssparser/1.14.0/
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/build.gradle:14:    testImplementation "net.sourceforge.htmlunit:neko-htmlunit:$libraryVersion"
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/settings.gradle:20:rootProject.name = 'net.sourceforge.htmlunit.neko-htmlunit_tests'
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/XMLMessageFormatterTest.java:7:package net_sourceforge_htmlunit.neko_htmlunit;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/XMLMessageFormatterTest.java:9:import net.sourceforge.htmlunit.xerces.impl.msg.XMLMessageFormatter;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/SAXMessageFormatterTest.java:7:package net_sourceforge_htmlunit.neko_htmlunit;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/SAXMessageFormatterTest.java:11:import net.sourceforge.htmlunit.xerces.util.SAXMessageFormatter;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/HTMLConfigurationInnerErrorReporterTest.java:7:package net_sourceforge_htmlunit.neko_htmlunit;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/HTMLConfigurationInnerErrorReporterTest.java:9:import net.sourceforge.htmlunit.cyberneko.HTMLConfiguration;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/HTMLConfigurationInnerErrorReporterTest.java:10:import net.sourceforge.htmlunit.cyberneko.HTMLErrorReporter;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/HTMLConfigurationInnerErrorReporterTest.java:11:import net.sourceforge.htmlunit.xerces.xni.parser.XMLConfigurationException;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/DOMMessageFormatterTest.java:7:package net_sourceforge_htmlunit.neko_htmlunit;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/DOMMessageFormatterTest.java:9:import net.sourceforge.htmlunit.xerces.dom.DOMMessageFormatter;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/AbstractDOMParserTest.java:7:package net_sourceforge_htmlunit.neko_htmlunit;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/AbstractDOMParserTest.java:11:import net.sourceforge.htmlunit.cyberneko.parsers.DOMParser;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/src/test/java/net_sourceforge_htmlunit/neko_htmlunit/AbstractDOMParserTest.java:12:import net.sourceforge.htmlunit.xerces.dom.DocumentImpl;
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/gradle.properties:4:library.coordinates = net.sourceforge.htmlunit:neko-htmlunit:2.70.0
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/gradle.properties:6:metadata.dir = net.sourceforge.htmlunit/neko-htmlunit/2.70.0/
+tests/src/net.sourceforge.htmlunit/neko-htmlunit/2.70.0/user-code-filter.json:7:      "includeClasses" : "net.sourceforge.htmlunit.**"
+tests/src/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/build.gradle:14:    testImplementation "net.sourceforge.htmlunit:htmlunit-xpath:$libraryVersion"
+tests/src/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/settings.gradle:20:rootProject.name = 'net.sourceforge.htmlunit.htmlunit-xpath_tests'
+tests/src/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/src/test/java/net_sourceforge_htmlunit/htmlunit_xpath/FunctionTableTest.java:7:package net_sourceforge_htmlunit.htmlunit_xpath;
+tests/src/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/src/test/java/net_sourceforge_htmlunit/htmlunit_xpath/FunctionTableTest.java:14:import net.sourceforge.htmlunit.xpath.XPath;
+tests/src/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/src/test/java/net_sourceforge_htmlunit/htmlunit_xpath/FunctionTableTest.java:15:import net.sourceforge.htmlunit.xpath.XPathAPI;
+tests/src/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/src/test/java/net_sourceforge_htmlunit/htmlunit_xpath/FunctionTableTest.java:16:import net.sourceforge.htmlunit.xpath.XPathContext;
+tests/src/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/src/test/java/net_sourceforge_htmlunit/htmlunit_xpath/FunctionTableTest.java:17:import net.sourceforge.htmlunit.xpath.compiler.FunctionTable;
+tests/src/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/src/test/java/net_sourceforge_htmlunit/htmlunit_xpath/FunctionTableTest.java:18:import net.sourceforge.htmlunit.xpath.functions.FuncTrue;
+tests/src/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/src/test/java/net_sourceforge_htmlunit/htmlunit_xpath/FunctionTableTest.java:19:import net.sourceforge.htmlunit.xpath.objects.XObject;
+tests/src/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/src/test/java/net_sourceforge_htmlunit/htmlunit_xpath/FunctionTableTest.java:20:import net.sourceforge.htmlunit.xpath.xml.utils.PrefixResolverDefault;
+tests/src/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/gradle.properties:4:library.coordinates = net.sourceforge.htmlunit:htmlunit-xpath:2.70.0
+tests/src/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/gradle.properties:6:metadata.dir = net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/
+tests/src/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/user-code-filter.json:7:      "includeClasses" : "net.sourceforge.htmlunit.xpath.**"
+tests/src/net.sourceforge.htmlunit/htmlunit-xpath/2.70.0/user-code-filter.json:10:      "includeClasses" : "net_sourceforge_htmlunit.htmlunit_xpath.**"
+
+web search: 
+web search: Maven Central net.sourceforge.htmlunit htmlunit-core-js 2.70.0 pom scm source test jar
+web search: 
+web search: https://github.com/HtmlUnit/htmlunit-core-js
+web search: 
+web search: https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.70.0/htmlunit-core-js-2.70.0.pom
+codex
+The local file only has coordinates so far. I found the project is a standalone HtmlUnit `htmlunit-core-js` repository, and I’m checking Maven Central artifacts now because the repository guidelines prefer Maven-hosted sources/tests/docs when available.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.70.0/htmlunit-core-js-2.70.0.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.sourceforge.htmlunit</groupId>
+  <artifactId>htmlunit-core-js</artifactId>
+  <version>2.70.0</version>
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>5.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <name>HtmlUnit Core JS</name>
+  <organization>
+    <name>Gargoyle Software Inc.</name>
+    <url>http://www.GargoyleSoftware.com/</url>
+  </organization>
+  <packaging>jar</packaging>
+  <url>http://htmlunit.sourceforge.net</url>
+  <description>HtmlUnit adaptation of Mozilla Rhino Javascript engine for Java. Changes are documented by a diff (rhinoDiff.txt) contained in the generated jar files.</description>
+  <licenses>
+    <license>
+      <name>Mozilla Public License, Version 2.0</name>
+      <url>http://www.mozilla.org/MPL/2.0/index.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:git:git@github.com:HtmlUnit/htmlunit-core-js.git</connection>
+    <developerConnection>scm:git:git@github.com:HtmlUnit/htmlunit-core-js.git</developerConnection>
+    <url>https://github.com/htmlunit</url>
+  </scm>
+  <developers>
+    <developer>
+      <name>Mozilla Rhino Team</name>
+      <id>MozillaRhinoTeam</id>
+    </developer>
+    <developer>
+      <name>HtmlUnit Team</name>
+      <id>HtmlUnitTeam</id>
+    </developer>
+  </developers>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.70.0/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/HtmlUnit/htmlunit-core-js.git | rg '2\\.70\\.0|htmlunit-core-js'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8
+ succeeded in 270ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: net/sourceforge/htmlunit/htmlunit-core-js/2.70.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>net/sourceforge/htmlunit/htmlunit-core-js/2.70.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="htmlunit-core-js-2.70.0-javadoc.jar" title="htmlunit-core-js-2.70.0-javadoc.jar">htmlunit-core-js-2.70.0-javadoc.jar</a>               2023-01-22 11:00   1869868      
+<a href="htmlunit-core-js-2.70.0-javadoc.jar.asc" title="htmlunit-core-js-2.70.0-javadoc.jar.asc">htmlunit-core-js-2.70.0-javadoc.jar.asc</a>           2023-01-22 11:00       486      
+<a href="htmlunit-core-js-2.70.0-javadoc.jar.asc.md5" title="htmlunit-core-js-2.70.0-javadoc.jar.asc.md5">htmlunit-core-js-2.70.0-javadoc.jar.asc.md5</a>       2023-01-22 11:00        32      
+<a href="htmlunit-core-js-2.70.0-javadoc.jar.asc.sha1" title="htmlunit-core-js-2.70.0-javadoc.jar.asc.sha1">htmlunit-core-js-2.70.0-javadoc.jar.asc.sha1</a>      2023-01-22 11:00        40      
+<a href="htmlunit-core-js-2.70.0-javadoc.jar.md5" title="htmlunit-core-js-2.70.0-javadoc.jar.md5">htmlunit-core-js-2.70.0-javadoc.jar.md5</a>           2023-01-22 11:00        32      
+<a href="htmlunit-core-js-2.70.0-javadoc.jar.sha1" title="htmlunit-core-js-2.70.0-javadoc.jar.sha1">htmlunit-core-js-2.70.0-javadoc.jar.sha1</a>          2023-01-22 11:00        40      
+<a href="htmlunit-core-js-2.70.0-sources.jar" title="htmlunit-core-js-2.70.0-sources.jar">htmlunit-core-js-2.70.0-sources.jar</a>               2023-01-22 11:00    990484      
+<a href="htmlunit-core-js-2.70.0-sources.jar.asc" title="htmlunit-core-js-2.70.0-sources.jar.asc">htmlunit-core-js-2.70.0-sources.jar.asc</a>           2023-01-22 11:00       486      
+<a href="htmlunit-core-js-2.70.0-sources.jar.asc.md5" title="htmlunit-core-js-2.70.0-sources.jar.asc.md5">htmlunit-core-js-2.70.0-sources.jar.asc.md5</a>       2023-01-22 11:00        32      
+<a href="htmlunit-core-js-2.70.0-sources.jar.asc.sha1" title="htmlunit-core-js-2.70.0-sources.jar.asc.sha1">htmlunit-core-js-2.70.0-sources.jar.asc.sha1</a>      2023-01-22 11:00        40      
+<a href="htmlunit-core-js-2.70.0-sources.jar.md5" title="htmlunit-core-js-2.70.0-sources.jar.md5">htmlunit-core-js-2.70.0-sources.jar.md5</a>           2023-01-22 11:00        32      
+<a href="htmlunit-core-js-2.70.0-sources.jar.sha1" title="htmlunit-core-js-2.70.0-sources.jar.sha1">htmlunit-core-js-2.70.0-sources.jar.sha1</a>          2023-01-22 11:00        40      
+<a href="htmlunit-core-js-2.70.0.jar" title="htmlunit-core-js-2.70.0.jar">htmlunit-core-js-2.70.0.jar</a>                       2023-01-22 11:00   1346966      
+<a href="htmlunit-core-js-2.70.0.jar.asc" title="htmlunit-core-js-2.70.0.jar.asc">htmlunit-core-js-2.70.0.jar.asc</a>                   2023-01-22 11:00       486      
+<a href="htmlunit-core-js-2.70.0.jar.asc.md5" title="htmlunit-core-js-2.70.0.jar.asc.md5">htmlunit-core-js-2.70.0.jar.asc.md5</a>               2023-01-22 11:00        32      
+<a href="htmlunit-core-js-2.70.0.jar.asc.sha1" title="htmlunit-core-js-2.70.0.jar.asc.sha1">htmlunit-core-js-2.70.0.jar.asc.sha1</a>              2023-01-22 11:00        40      
+<a href="htmlunit-core-js-2.70.0.jar.md5" title="htmlunit-core-js-2.70.0.jar.md5">htmlunit-core-js-2.70.0.jar.md5</a>                   2023-01-22 11:00        32      
+<a href="htmlunit-core-js-2.70.0.jar.sha1" title="htmlunit-core-js-2.70.0.jar.sha1">htmlunit-core-js-2.70.0.jar.sha1</a>                  2023-01-22 11:00        40      
+<a href="htmlunit-core-js-2.70.0.pom" title="htmlunit-core-js-2.70.0.pom">htmlunit-core-js-2.70.0.pom</a>                       2023-01-22 11:00      1763      
+<a href="htmlunit-core-js-2.70.0.pom.asc" title="htmlunit-core-js-2.70.0.pom.asc">htmlunit-core-js-2.70.0.pom.asc</a>                   2023-01-22 11:00       486      
+<a href="htmlunit-core-js-2.70.0.pom.asc.md5" title="htmlunit-core-js-2.70.0.pom.asc.md5">htmlunit-core-js-2.70.0.pom.asc.md5</a>               2023-01-22 11:00        32      
+<a href="htmlunit-core-js-2.70.0.pom.asc.sha1" title="htmlunit-core-js-2.70.0.pom.asc.sha1">htmlunit-core-js-2.70.0.pom.asc.sha1</a>              2023-01-22 11:00        40      
+<a href="htmlunit-core-js-2.70.0.pom.md5" title="htmlunit-core-js-2.70.0.pom.md5">htmlunit-core-js-2.70.0.pom.md5</a>                   2023-01-22 11:00        32      
+<a href="htmlunit-core-js-2.70.0.pom.sha1" title="htmlunit-core-js-2.70.0.pom.sha1">htmlunit-core-js-2.70.0.pom.sha1</a>                  2023-01-22 11:00        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 347ms:
+17700b40c0f62fb6db9a92ec732367cf7138c215	refs/tags/2.70.0
+
+exec
+/usr/bin/bash -lc "curl -fsSL -I https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.70.0/htmlunit-core-js-2.70.0-tests.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Tue, 09 Jun 2026 21:29:40 GMT
+content-type: text/html
+cf-ray: a0933bacac477f38-ZRH
+cf-cache-status: HIT
+age: 124
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.70.0/htmlunit-core-js-2.70.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/HtmlUnit/htmlunit-core-js/contents?ref=2.70.0' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/HtmlUnit/htmlunit-core-js/git/trees/2.70.0?recursive=1 | rg '\"path\": \"(src/test|src/main|README|pom.xml|rhinoDiff)'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8
+ succeeded in 200ms:
+[
+  {
+    "name": ".gitattributes",
+    "path": ".gitattributes",
+    "sha": "3df88ba63be6fb1b8deb4bde303f44d91140dc07",
+    "size": 306,
+    "url": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/contents/.gitattributes?ref=2.70.0",
+    "html_url": "https://github.com/HtmlUnit/htmlunit-core-js/blob/2.70.0/.gitattributes",
+    "git_url": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/git/blobs/3df88ba63be6fb1b8deb4bde303f44d91140dc07",
+    "download_url": "https://raw.githubusercontent.com/HtmlUnit/htmlunit-core-js/2.70.0/.gitattributes",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/contents/.gitattributes?ref=2.70.0",
+      "git": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/git/blobs/3df88ba63be6fb1b8deb4bde303f44d91140dc07",
+      "html": "https://github.com/HtmlUnit/htmlunit-core-js/blob/2.70.0/.gitattributes"
+    }
+  },
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "129560db7e3ca0913f7a7f49316aa849e4f7dc5d",
+    "size": 0,
+    "url": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/contents/.github?ref=2.70.0",
+    "html_url": "https://github.com/HtmlUnit/htmlunit-core-js/tree/2.70.0/.github",
+    "git_url": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/git/trees/129560db7e3ca0913f7a7f49316aa849e4f7dc5d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/contents/.github?ref=2.70.0",
+      "git": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/git/trees/129560db7e3ca0913f7a7f49316aa849e4f7dc5d",
+      "html": "https://github.com/HtmlUnit/htmlunit-core-js/tree/2.70.0/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "ac3de66d12a2575d23125a83fbb20504dea3758c",
+    "size": 98,
+    "url": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/contents/.gitignore?ref=2.70.0",
+    "html_url": "https://github.com/HtmlUnit/htmlunit-core-js/blob/2.70.0/.gitignore",
+    "git_url": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/git/blobs/ac3de66d12a2575d23125a83fbb20504dea3758c",
+    "download_url": "https://raw.githubusercontent.com/HtmlUnit/htmlunit-core-js/2.70.0/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/contents/.gitignore?ref=2.70.0",
+      "git": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/git/blobs/ac3de66d12a2575d23125a83fbb20504dea3758c",
+      "html": "https://github.com/HtmlUnit/htmlunit-core-js/blob/2.70.0/.gitignore"
+    }
+  },
+  {
+    "name": "LICENSE.txt",
+    "path": "LICENSE.txt",
+    "sha": "e8613b027d3d09930067059991d02a59e771c1f6",
+    "size": 426,
+    "url": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/contents/LICENSE.txt?ref=2.70.0",
+    "html_url": "https://github.com/HtmlUnit/htmlunit-core-js/blob/2.70.0/LICENSE.txt",
+    "git_url": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/git/blobs/e8613b027d3d09930067059991d02a59e771c1f6",
+    "download_url": "https://raw.githubusercontent.com/HtmlUnit/htmlunit-core-js/2.70.0/LICENSE.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/contents/LICENSE.txt?ref=2.70.0",
+      "git": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/git/blobs/e8613b027d3d09930067059991d02a59e771c1f6",
+      "html": "https://github.com/HtmlUnit/htmlunit-core-js/blob/2.70.0/LICENSE.txt"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "08a49dc2ba1f001cee8e0d760a1a94e62f038890",
+    "size": 3028,
+    "url": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/contents/README.md?ref=2.70.0",
+    "html_url": "https://github.com/HtmlUnit/htmlunit-core-js/blob/2.70.0/README.md",
+    "git_url": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/git/blobs/08a49dc2ba1f001cee8e0d760a1a94e62f038890",
+    "download_url": "https://raw.githubusercontent.com/HtmlUnit/htmlunit-core-js/2.70.0/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/contents/README.md?ref=2.70.0",
+      "git": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/git/blobs/08a49dc2ba1f001cee8e0d760a1a94e62f038890",
+      "html": "https://github.com/HtmlUnit/htmlunit-core-js/blob/2.70.0/README.md"
+    }
+  },
+  {
+    "name": "build.gradle",
+    "path": "build.gradle",
+    "sha": "db32e6ecb9d232c3a1cace3a9aa28b7fdabd2e34",
+    "size": 4964,
+    "url": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/contents/build.gradle?ref=2.70.0",
+    "html_url": "https://github.com/HtmlUnit/htmlunit-core-js/blob/2.70.0/build.gradle",
+    "git_url": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/git/blobs/db32e6ecb9d232c3a1cace3a9aa28b7fdabd2e34",
+    "download_url": "https://raw.githubusercontent.com/HtmlUnit/htmlunit-core-js/2.70.0/build.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/contents/build.gradle?ref=2.70.0",
+      "git": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/git/blobs/db32e6ecb9d232c3a1cace3a9aa28b7fdabd2e34",
+      "html": "https://github.com/HtmlUnit/htmlunit-core-js/blob/2.70.0/build.gradle"
+    }
+  },
+  {
+    "name": "eclipse.formatter.prefs",
+    "path": "eclipse.formatter.prefs",
+    "sha": "d6c5caac741abd33f4c14bda18b10d2fa671b141",
+    "size": 24387,
+    "url": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/contents/eclipse.formatter.prefs?ref=2.70.0",
+    "html_url": "https://github.com/HtmlUnit/htmlunit-core-js/blob/2.70.0/eclipse.formatter.prefs",
+    "git_url": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/git/blobs/d6c5caac741abd33f4c14bda18b10d2fa671b141",
+    "download_url": "https://raw.githubusercontent.com/HtmlUnit/htmlunit-core-js/2.70.0/eclipse.formatter.prefs",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/contents/eclipse.formatter.prefs?ref=2.70.0",
+      "git": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/git/blobs/d6c5caac741abd33f4c14bda18b10d2fa671b141",
+      "html": "https://github.com/HtmlUnit/htmlunit-core-js/blob/2.70.0/eclipse.formatter.prefs"
+    }
+  },
+  {
+    "name": "gradle",
+    "path": "gradle",
+    "sha": "6329253422d76be39c8101d0490c6c2c9c4b1669",
+    "size": 0,
+    "url": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/contents/gradle?ref=2.70.0",
+    "html_url": "https://github.com/HtmlUnit/htmlunit-core-js/tree/2.70.0/gradle",
+    "git_url": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/git/trees/6329253422d76be39c8101d0490c6c2c9c4b1669",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/contents/gradle?ref=2.70.0",
+      "git": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/git/trees/6329253422d76be39c8101d0490c6c2c9c4b1669",
+      "html": "https://github.com/HtmlUnit/htmlunit-core-js/tree/2.70.0/gradle"
+    }
+  },
+  {
+    "name": "gradlew",
+    "path": "gradlew",
+    "sha": "cccdd3d517fc5249beaefa600691cf150f2fa3e6",
+    "size": 5296,
+    "url": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/contents/gradlew?ref=2.70.0",
+    "html_url": "https://github.com/HtmlUnit/htmlunit-core-js/blob/2.70.0/gradlew",
+    "git_url": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/git/blobs/cccdd3d517fc5249beaefa600691cf150f2fa3e6",
+    "download_url": "https://raw.githubusercontent.com/HtmlUnit/htmlunit-core-js/2.70.0/gradlew",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/contents/gradlew?ref=2.70.0",
+      "git": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/git/blobs/cccdd3d517fc5249beaefa600691cf150f2fa3e6",
+      "html": "https://github.com/HtmlUnit/htmlunit-core-js/blob/2.70.0/gradlew"
+    }
+  },
+  {
+    "name": "gradlew.bat",
+    "path": "gradlew.bat",
+    "sha": "f9553162f122c71b34635112e717c3e733b5b212",
+    "size": 2176,
+    "url": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/contents/gradlew.bat?ref=2.70.0",
+    "html_url": "https://github.com/HtmlUnit/htmlunit-core-js/blob/2.70.0/gradlew.bat",
+    "git_url": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/git/blobs/f9553162f122c71b34635112e717c3e733b5b212",
+    "download_url": "https://raw.githubusercontent.com/HtmlUnit/htmlunit-core-js/2.70.0/gradlew.bat",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/contents/gradlew.bat?ref=2.70.0",
+      "git": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/git/blobs/f9553162f122c71b34635112e717c3e733b5b212",
+      "html": "https://github.com/HtmlUnit/htmlunit-core-js/blob/2.70.0/gradlew.bat"
+    }
+  },
+  {
+    "name": "settings.gradle",
+    "path": "settings.gradle",
+    "sha": "4b452bd429ef409902b1706296738de4e356f40d",
+    "size": 187,
+    "url": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/contents/settings.gradle?ref=2.70.0",
+    "html_url": "https://github.com/HtmlUnit/htmlunit-core-js/blob/2.70.0/settings.gradle",
+    "git_url": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/git/blobs/4b452bd429ef409902b1706296738de4e356f40d",
+    "download_url": "https://raw.githubusercontent.com/HtmlUnit/htmlunit-core-js/2.70.0/settings.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/contents/settings.gradle?ref=2.70.0",
+      "git": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/git/blobs/4b452bd429ef409902b1706296738de4e356f40d",
+      "html": "https://github.com/HtmlUnit/htmlunit-core-js/blob/2.70.0/settings.gradle"
+    }
+  },
+  {
+    "name": "src",
+    "path": "src",
+    "sha": "74032ae9f06ac4484cc96eff1c5f2fa86ec8ba0f",
+    "size": 0,
+    "url": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/contents/src?ref=2.70.0",
+    "html_url": "https://github.com/HtmlUnit/htmlunit-core-js/tree/2.70.0/src",
+    "git_url": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/git/trees/74032ae9f06ac4484cc96eff1c5f2fa86ec8ba0f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/contents/src?ref=2.70.0",
+      "git": "https://api.github.com/repos/HtmlUnit/htmlunit-core-js/git/trees/74032ae9f06ac4484cc96eff1c5f2fa86ec8ba0f",
+      "html": "https://github.com/HtmlUnit/htmlunit-core-js/tree/2.70.0/src"
+    }
+  }
+]
+
+ succeeded in 316ms:
+      "path": "README.md",
+      "path": "src/test",
+      "path": "src/test/java",
+      "path": "src/test/java/net",
+      "path": "src/test/java/net/sourceforge",
+      "path": "src/test/java/net/sourceforge/htmlunit",
+      "path": "src/test/java/net/sourceforge/htmlunit/ArgumentsTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/ArrayConcatTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/ContextActionImpl.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/ContextMethodsTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/DecompileTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/DelegatorAndHostObjectTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/EvalScopeTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/ExceptionMessageTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/ExceptionPropertiesTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/FunctionCallerTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/FunctionNullSetTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/FunctionTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/HostExceptionsTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/LookupSetterTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/MemberBoxTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/NativeArrayTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/NativeErrorTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/NativeGlobalTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/NativeObjectTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/NativeRegExpTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/NumberTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/ParserTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/PrimitiveTypeScopeResolutionTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/PropertiesOrderTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/RegExpImplSubclassingTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/RegExpUnescapedSlashTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/ScriptRuntimeTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/ScriptableObjectTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/StackTraceTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/UpperCaseHexTest.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/Utilities.java",
+      "path": "src/test/java/net/sourceforge/htmlunit/Utils.java",
+
+codex
+Maven Central has the main JAR, sources JAR, and Javadoc JAR for `2.70.0`, but no tests JAR. I’m using the tagged GitHub `src/test` directory for the test suite URL and leaving language/native-image special fields absent because this is a normal JVM JAR, not a Kotlin/Groovy/Scala or non-JVM artifact.
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.70.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+    "description" : "NekoHtmlUnit is HtmlUnit's adaptation of NekoHTML, a tolerant HTML parser for Java. It preserves NekoHTML-style parsing while exposing HTML element classes in a way HtmlUnit can override and integrate into its browser simulation stack.",
+    "tested-versions" : [
+      "2.70.0"
+    ],
+    "allowed-packages" : [
+      "net.sourceforge.htmlunit"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.70.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-sources.jar",
+    "repository-url" : "https://github.com/HtmlUnit/htmlunit-xpath",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+    "description" : "HtmlUnit-XPath is the XPath engine used by HtmlUnit for evaluating XPath expressions over DOM-like document structures. It is a maintained fork of Apache Xalan's XPath functionality with nonessential Xalan components removed and unit tests and Maven-based build support added.",
+    "tested-versions" : [
+      "2.70.0"
+    ],
+    "allowed-packages" : [
+      "net.sourceforge.htmlunit.xpath"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d); curl -fsSL -o "$tmpdir/htmlunit-core-js.jar" https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.70.0/htmlunit-core-js-2.70.0.jar; jar tf "$tmpdir/htmlunit-core-js.jar" | sed -n '"'1,40p'; rm -rf \""'$tmpdir"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8
+ succeeded in 174ms:
+META-INF/
+META-INF/MANIFEST.MF
+net/
+net/sourceforge/
+net/sourceforge/htmlunit/
+net/sourceforge/htmlunit/corejs/
+net/sourceforge/htmlunit/corejs/classfile/
+net/sourceforge/htmlunit/corejs/classfile/ByteCode.class
+net/sourceforge/htmlunit/corejs/classfile/ClassFileField.class
+net/sourceforge/htmlunit/corejs/classfile/ClassFileMethod.class
+net/sourceforge/htmlunit/corejs/classfile/ClassFileWriter$BootstrapEntry.class
+net/sourceforge/htmlunit/corejs/classfile/ClassFileWriter$ClassFileFormatException.class
+net/sourceforge/htmlunit/corejs/classfile/ClassFileWriter$MHandle.class
+net/sourceforge/htmlunit/corejs/classfile/ClassFileWriter$StackMapTable.class
+net/sourceforge/htmlunit/corejs/classfile/ClassFileWriter.class
+net/sourceforge/htmlunit/corejs/classfile/ConstantEntry.class
+net/sourceforge/htmlunit/corejs/classfile/ConstantPool.class
+net/sourceforge/htmlunit/corejs/classfile/ExceptionTableEntry.class
+net/sourceforge/htmlunit/corejs/classfile/FieldOrMethodRef.class
+net/sourceforge/htmlunit/corejs/classfile/SuperBlock.class
+net/sourceforge/htmlunit/corejs/classfile/TypeInfo.class
+net/sourceforge/htmlunit/corejs/javascript/
+net/sourceforge/htmlunit/corejs/javascript/AbstractEcmaObjectOperations$INTEGRITY_LEVEL.class
+net/sourceforge/htmlunit/corejs/javascript/AbstractEcmaObjectOperations.class
+net/sourceforge/htmlunit/corejs/javascript/AccessorSlot$FunctionGetter.class
+net/sourceforge/htmlunit/corejs/javascript/AccessorSlot$FunctionSetter.class
+net/sourceforge/htmlunit/corejs/javascript/AccessorSlot$Getter.class
+net/sourceforge/htmlunit/corejs/javascript/AccessorSlot$MemberBoxGetter.class
+net/sourceforge/htmlunit/corejs/javascript/AccessorSlot$MemberBoxSetter.class
+net/sourceforge/htmlunit/corejs/javascript/AccessorSlot$Setter.class
+net/sourceforge/htmlunit/corejs/javascript/AccessorSlot.class
+net/sourceforge/htmlunit/corejs/javascript/annotations/
+net/sourceforge/htmlunit/corejs/javascript/annotations/JSConstructor.class
+net/sourceforge/htmlunit/corejs/javascript/annotations/JSFunction.class
+net/sourceforge/htmlunit/corejs/javascript/annotations/JSGetter.class
+net/sourceforge/htmlunit/corejs/javascript/annotations/JSSetter.class
+net/sourceforge/htmlunit/corejs/javascript/annotations/JSStaticFunction.class
+net/sourceforge/htmlunit/corejs/javascript/Arguments$1.class
+net/sourceforge/htmlunit/corejs/javascript/Arguments$ThrowTypeError.class
+net/sourceforge/htmlunit/corejs/javascript/Arguments.class
+
+codex
+I’m updating the JSON now with Maven-hosted sources/Javadoc, GitHub-tagged tests, and the concise description.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
+diff --git a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
+index d9dd23416aedb60e5761204d1af11d43d405059d..9bde3d9b947f5be4bf14c089c96e43dcc564678c
+--- a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
++++ b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0"
++  "coordinates" : "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0",
++  "repository-url" : "https://github.com/HtmlUnit/htmlunit-core-js",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/$version$/htmlunit-core-js-$version$-sources.jar",
++  "test-code-url" : "https://github.com/HtmlUnit/htmlunit-core-js/tree/$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/$version$/htmlunit-core-js-$version$-javadoc.jar",
++  "description" : "htmlunit-core-js is HtmlUnit's Java adaptation of the Mozilla Rhino JavaScript engine. It provides the JavaScript runtime pieces used by HtmlUnit to parse, execute, and integrate JavaScript while preserving HtmlUnit-specific changes from upstream Rhino."
+ }
+
+diff --git a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
+index d9dd23416aedb60e5761204d1af11d43d405059d..9bde3d9b947f5be4bf14c089c96e43dcc564678c
+--- a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
++++ b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0"
++  "coordinates" : "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0",
++  "repository-url" : "https://github.com/HtmlUnit/htmlunit-core-js",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/$version$/htmlunit-core-js-$version$-sources.jar",
++  "test-code-url" : "https://github.com/HtmlUnit/htmlunit-core-js/tree/$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/$version$/htmlunit-core-js-$version$-javadoc.jar",
++  "description" : "htmlunit-core-js is HtmlUnit's Java adaptation of the Mozilla Rhino JavaScript engine. It provides the JavaScript runtime pieces used by HtmlUnit to parse, execute, and integrate JavaScript while preserving HtmlUnit-specific changes from upstream Rhino."
+ }
+
+web search: 
+web search: https://github.com/HtmlUnit/htmlunit-core-js/tree/2.70.0/src/test
+web search: 
+web search: repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.70.0/htmlunit-core-js-2.70.0.pom
+web search: 
+web search: central sonatype htmlunit-core-js 2.70.0
+codex
+The file is written. I’m doing a quick JSON parse and URL substitution check so the stored template URLs resolve for `2.70.0`.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8
+ succeeded in 0ms:
+{
+  "coordinates": "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0",
+  "repository-url": "https://github.com/HtmlUnit/htmlunit-core-js",
+  "source-code-url": "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/$version$/htmlunit-core-js-$version$-sources.jar",
+  "test-code-url": "https://github.com/HtmlUnit/htmlunit-core-js/tree/$version$/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/$version$/htmlunit-core-js-$version$-javadoc.jar",
+  "description": "htmlunit-core-js is HtmlUnit's Java adaptation of the Mozilla Rhino JavaScript engine. It provides the JavaScript runtime pieces used by HtmlUnit to parse, execute, and integrate JavaScript while preserving HtmlUnit-specific changes from upstream Rhino."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  'https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.70.0/htmlunit-core-js-2.70.0-sources.jar' \\
+  'https://github.com/HtmlUnit/htmlunit-core-js/tree/2.70.0/src/test' \\
+  'https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.70.0/htmlunit-core-js-2.70.0-javadoc.jar'; do \\
+  code="'$(curl -fsSL -o /dev/null -w '"'%{http_code}' \""'$url"); '"\\
+  printf '%s %s\\n' \""'$code" "$url"; '"\\
+done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8
+diff --git a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
+index d9dd23416aedb60e5761204d1af11d43d405059d..9bde3d9b947f5be4bf14c089c96e43dcc564678c
+--- a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
++++ b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0"
++  "coordinates" : "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0",
++  "repository-url" : "https://github.com/HtmlUnit/htmlunit-core-js",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/$version$/htmlunit-core-js-$version$-sources.jar",
++  "test-code-url" : "https://github.com/HtmlUnit/htmlunit-core-js/tree/$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/$version$/htmlunit-core-js-$version$-javadoc.jar",
++  "description" : "htmlunit-core-js is HtmlUnit's Java adaptation of the Mozilla Rhino JavaScript engine. It provides the JavaScript runtime pieces used by HtmlUnit to parse, execute, and integrate JavaScript while preserving HtmlUnit-specific changes from upstream Rhino."
+ }
+
+ succeeded in 1541ms:
+200 https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.70.0/htmlunit-core-js-2.70.0-sources.jar
+200 https://github.com/HtmlUnit/htmlunit-core-js/tree/2.70.0/src/test
+200 https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/2.70.0/htmlunit-core-js-2.70.0-javadoc.jar
+
+codex
+The JSON parses cleanly, and all three version-substituted URLs returned HTTP 200.
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8
+diff --git a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
+index d9dd23416aedb60e5761204d1af11d43d405059d..9bde3d9b947f5be4bf14c089c96e43dcc564678c
+--- a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
++++ b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0"
++  "coordinates" : "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0",
++  "repository-url" : "https://github.com/HtmlUnit/htmlunit-core-js",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/$version$/htmlunit-core-js-$version$-sources.jar",
++  "test-code-url" : "https://github.com/HtmlUnit/htmlunit-core-js/tree/$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/$version$/htmlunit-core-js-$version$-javadoc.jar",
++  "description" : "htmlunit-core-js is HtmlUnit's Java adaptation of the Mozilla Rhino JavaScript engine. It provides the JavaScript runtime pieces used by HtmlUnit to parse, execute, and integrate JavaScript while preserving HtmlUnit-specific changes from upstream Rhino."
+ }
+
+ succeeded in 359ms:
+codex
+Updated [net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json) with the repository, Maven sources/Javadoc URLs, tagged GitHub test suite URL, and two-sentence description.
+
+I left `language`, `not-for-native-image`, `reason`, and `replacement` absent because this is a JVM JAR with class files and is not Kotlin/Groovy/Scala-specific. Validation: `jq` parsed the JSON, and all substituted URLs for `2.70.0` returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
+index d9dd23416aedb60e5761204d1af11d43d405059d..9bde3d9b947f5be4bf14c089c96e43dcc564678c
+--- a/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
++++ b/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0"
++  "coordinates" : "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0",
++  "repository-url" : "https://github.com/HtmlUnit/htmlunit-core-js",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/$version$/htmlunit-core-js-$version$-sources.jar",
++  "test-code-url" : "https://github.com/HtmlUnit/htmlunit-core-js/tree/$version$/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-core-js/$version$/htmlunit-core-js-$version$-javadoc.jar",
++  "description" : "htmlunit-core-js is HtmlUnit's Java adaptation of the Mozilla Rhino JavaScript engine. It provides the JavaScript runtime pieces used by HtmlUnit to parse, execute, and integrate JavaScript while preserving HtmlUnit-specific changes from upstream Rhino."
+ }
+
+tokens used
+61,541
+Updated [net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8/build/discovered-artifact-metadata/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.json) with the repository, Maven sources/Javadoc URLs, tagged GitHub test suite URL, and two-sentence description.
+
+I left `language`, `not-for-native-image`, `reason`, and `replacement` absent because this is a JVM JAR with class files and is not Kotlin/Groovy/Scala-specific. Validation: `jq` parsed the JSON, and all substituted URLs for `2.70.0` returned HTTP 200.
+Ran agent for net.sourceforge.htmlunit:htmlunit-core-js:2.70.0 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8/build/agent-artifact-discovery-logs/net.sourceforge.htmlunit-htmlunit-core-js-2.70.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3824-7ff975c8/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 38s
+9 actionable tasks: 9 executed
