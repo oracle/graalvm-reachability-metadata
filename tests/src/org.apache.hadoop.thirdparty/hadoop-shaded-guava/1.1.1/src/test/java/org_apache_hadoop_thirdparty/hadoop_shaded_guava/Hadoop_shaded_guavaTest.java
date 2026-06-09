@@ -8,7 +8,7 @@ package org_apache_hadoop_thirdparty.hadoop_shaded_guava;
 
 import org.junit.jupiter.api.Test;
 
-class Hadoop_shaded_guavaTest {
+public class Hadoop_shaded_guavaTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
