@@ -11,7 +11,10 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
-    testImplementation "com.diffplug.spotless:spotless-maven-plugin:$libraryVersion"
+    testImplementation("com.diffplug.spotless:spotless-maven-plugin:$libraryVersion") {
+        exclude group: 'com.diffplug.spotless', module: 'spotless-lib-extra'
+        exclude group: 'org.eclipse.jgit', module: 'org.eclipse.jgit'
+    }
     testImplementation 'com.diffplug.spotless:spotless-lib:2.45.0'
     testImplementation 'org.apache.maven:maven-core:3.9.6'
     testImplementation 'org.codehaus.plexus:plexus-resources:1.2.0'

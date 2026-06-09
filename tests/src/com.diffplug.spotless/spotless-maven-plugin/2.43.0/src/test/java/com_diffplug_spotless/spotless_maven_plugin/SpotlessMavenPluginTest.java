@@ -12,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -37,6 +38,7 @@ import org.w3c.dom.NodeList;
 
 import com.diffplug.spotless.Formatter;
 import com.diffplug.spotless.FormatterStep;
+import com.diffplug.spotless.FormatExceptionPolicyStrict;
 import com.diffplug.spotless.LineEnding;
 import com.diffplug.spotless.Provisioner;
 import com.diffplug.spotless.maven.FileLocator;
@@ -47,7 +49,6 @@ import com.diffplug.spotless.maven.generic.EndWithNewline;
 import com.diffplug.spotless.maven.generic.Format;
 import com.diffplug.spotless.maven.generic.ToggleOffOn;
 import com.diffplug.spotless.maven.generic.TrimTrailingWhitespace;
-import com.diffplug.spotless.maven.groovy.Groovy;
 import com.diffplug.spotless.maven.groovy.RemoveSemicolons;
 import com.diffplug.spotless.maven.java.Java;
 import com.diffplug.spotless.maven.pom.Pom;
@@ -130,21 +131,17 @@ public class SpotlessMavenPluginTest {
 
     @Test
     void groovyFormatterRemovesTrailingSemicolons() throws Exception {
-        final Groovy groovyFormatter = new Groovy();
-        groovyFormatter.addRemoveSemicolons(new RemoveSemicolons());
-
-        final FormatterConfig config = new FormatterConfig(
-                temporaryDirectory.toFile(),
-                "UTF-8",
-                LineEnding.UNIX,
-                Optional.empty(),
-                EMPTY_PROVISIONER,
-                fileLocator(),
-                List.of(),
-                Optional.empty());
         final Path sourceFile = Files.writeString(temporaryDirectory.resolve("Example.groovy"), "println 'ready';");
+        final FormatterStep removeSemicolons = new RemoveSemicolons().newFormatterStep(null);
 
-        try (Formatter formatter = groovyFormatter.newFormatter(() -> List.of(sourceFile.toFile()), config)) {
+        try (Formatter formatter = Formatter.builder()
+                .name("Groovy")
+                .encoding(StandardCharsets.UTF_8)
+                .lineEndingsPolicy(LineEnding.UNIX.createPolicy(temporaryDirectory.toFile(), () -> List.of(sourceFile.toFile())))
+                .exceptionPolicy(new FormatExceptionPolicyStrict())
+                .steps(List.of(removeSemicolons))
+                .rootDir(temporaryDirectory)
+                .build()) {
             assertThat(formatter.getSteps()).extracting(FormatterStep::getName)
                     .containsExactly("Remove unnecessary semicolons");
 
