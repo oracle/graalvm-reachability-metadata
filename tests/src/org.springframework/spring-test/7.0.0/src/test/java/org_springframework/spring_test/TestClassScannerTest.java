@@ -40,8 +40,7 @@ public class TestClassScannerTest {
 
             assertThat(testClasses)
                     .contains(TestClassScannerTest.class, TestClassScannerTest.NestedSpringTestCase.class);
-        }
-        catch (Error error) {
+        } catch (Error error) {
             rethrowIfNotNativeImageDynamicClassLoadingError(error);
         }
     }
