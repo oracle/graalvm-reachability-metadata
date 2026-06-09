@@ -35,8 +35,7 @@ public class TestBeanOverrideHandlerTest {
             assertThat(testInstance.greetingService).isSameAs(contextService);
             assertThat(testInstance.greetingService.greeting()).isEqualTo("test greeting");
             assertThat(applicationContext.getBean(GreetingConsumer.class).greeting()).isEqualTo("test greeting");
-        }
-        finally {
+        } finally {
             manager.getTestContext().markApplicationContextDirty(HierarchyMode.EXHAUSTIVE);
         }
     }
@@ -54,6 +53,10 @@ public class TestBeanOverrideHandlerTest {
 
         static int getFactoryInvocationCount() {
             return factoryInvocationCount;
+        }
+
+        static GreetingService createAotGreetingService() {
+            return greetingService();
         }
 
         private static GreetingService greetingService() {
