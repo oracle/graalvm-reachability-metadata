@@ -39,6 +39,22 @@ public class JacksonAnnotationIntrospectorTest {
     }
 
     @Test
+    void legacyEnumAnnotationLookupReadsDeclaredEnumFields() {
+        final JacksonAnnotationIntrospector introspector = new JacksonAnnotationIntrospector();
+        final AnnotatedEnum[] enumValues = AnnotatedEnum.values();
+        final String[] names = {"ALPHA", "BETA"};
+        final String[][] aliases = new String[enumValues.length][];
+
+        assertThat(introspector.findEnumValues(AnnotatedEnum.class, enumValues, names))
+                .containsExactly("alpha-json", "BETA");
+
+        introspector.findEnumAliases(AnnotatedEnum.class, enumValues, aliases);
+
+        assertThat(aliases[0]).containsExactly("alpha-alias", "first-alias");
+        assertThat(aliases[1]).isNull();
+    }
+
+    @Test
     void objectMapperUsesAnnotatedEnumNamesAndAliases() throws Exception {
         final ObjectMapper mapper = new ObjectMapper();
 
