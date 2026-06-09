@@ -1,0 +1,1293 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ea927-b47a-7512-986f-4e72f2f394ab
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.mozilla:rhino:1.7R5
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "1.7R5" when "$version$" is replaced with "1.7R5".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "org.mozilla:rhino:1.7R5".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.7R5".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and upstream Rhino tags, then update the JSON directly with URLs that preserve the `$version$` placeholder convention.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a
+ succeeded in 0ms:
+{
+  "coordinates" : "org.mozilla:rhino:1.7R5"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org\\.mozilla-rhino-1\\.7R5\\.json"'$|org'"\\.mozilla-rhino'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a
+build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+
+exec
+/usr/bin/bash -lc "rg -n 'org\\.mozilla:rhino|mozilla.*rhino|source-code-url.*\\"'$version'"\\"'$'"' metadata build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json:2:  "coordinates" : "org.mozilla:rhino:1.7R5"
+metadata/org.apache.hadoop/hadoop-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-annotations/$version$/hadoop-annotations-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-container/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-container/$version$/arquillian-junit-container-$version$-sources.jar",
+metadata/com.spotify/completable-futures/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/spotify/completable-futures/$version$/completable-futures-$version$-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-web-proxy/$version$/hadoop-yarn-server-web-proxy-$version$-sources.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-core/$version$/arquillian-junit-core-$version$-sources.jar",
+metadata/com.google.truth/truth/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics5/metrics-core/$version$/metrics-core-$version$-sources.jar",
+metadata/io.dropwizard.metrics5/metrics-core/index.json:25:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics5/metrics-core/$version$/metrics-core-$version$-sources.jar",
+metadata/dom4j/dom4j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/dom4j/dom4j/$version$/dom4j-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-jvm-graal-ffi-jvm/$version$/mordant-jvm-graal-ffi-jvm-$version$-sources.jar",
+metadata/org.scalacheck/scalacheck_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalacheck/scalacheck_2.13/$version$/scalacheck_2.13-$version$-sources.jar",
+metadata/org.scalacheck/scalacheck_2.13/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalacheck/scalacheck_2.13/$version$/scalacheck_2.13-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/antlr/antlr/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/antlr/antlr/$version$/antlr-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/io.helidon.builder/helidon-builder-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/helidon/builder/helidon-builder-api/$version$/helidon-builder-api-$version$-sources.jar",
+metadata/org.json4s/json4s-native-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/json4s/json4s-native-core_3/$version$/json4s-native-core_3-$version$-sources.jar",
+metadata/org.apache.hadoop/hadoop-common/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-common/$version$/hadoop-common-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:37:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-sources.jar",
+metadata/org.typelevel/cats-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/cats-core_3/$version$/cats-core_3-$version$-sources.jar",
+metadata/commons-io/commons-io/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-sources.jar",
+metadata/commons-io/commons-io/index.json:24:    "source-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm7-shaded/$version$/xbean-asm7-shaded-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_httpserver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_httpserver/$version$/simpleclient_httpserver-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/org.json4s/json4s-jackson_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/json4s/json4s-jackson_2.13/$version$/json4s-jackson_2.13-$version$-sources.jar",
+metadata/org.json4s/json4s-jackson_2.13/index.json:28:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/json4s/json4s-jackson_2.13/$version$/json4s-jackson_2.13-$version$-sources.jar",
+metadata/org.typelevel/twiddles-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/twiddles-core_3/$version$/twiddles-core_3-$version$-sources.jar",
+metadata/org.crac/crac/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/crac/crac/$version$/crac-$version$-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-sources.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:35:    "source-code-url" : "https://github.com/apache/hadoop/tree/rel/release-$version$/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common",
+metadata/com.beust/jcommander/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/beust/jcommander/$version$/jcommander-$version$-sources.jar",
+metadata/com.beust/jcommander/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/com/beust/jcommander/$version$/jcommander-$version$-sources.jar",
+metadata/com.beust/jcommander/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/com/beust/jcommander/$version$/jcommander-$version$-sources.jar",
+metadata/com.beust/jcommander/index.json:47:    "source-code-url" : "https://repo1.maven.org/maven2/com/beust/jcommander/$version$/jcommander-$version$-sources.jar",
+metadata/com.beust/jcommander/index.json:61:    "source-code-url" : "https://repo1.maven.org/maven2/com/beust/jcommander/$version$/jcommander-$version$-sources.jar",
+metadata/org.json4s/json4s-ast_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/json4s/json4s-ast_3/$version$/json4s-ast_3-$version$-sources.jar",
+metadata/net.postgis/postgis-geometry/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+metadata/org.threeten/threetenbp/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threetenbp/$version$/threetenbp-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/jakarta.transaction/jakarta.transaction-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-sources.jar",
+metadata/org.typelevel/cats-effect_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/cats-effect_3/$version$/cats-effect_3-$version$-sources.jar",
+metadata/com.github.virtuald/curvesapi/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/virtuald/curvesapi/$version$/curvesapi-$version$-sources.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:13:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-sources.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:28:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-sources.jar",
+metadata/org.json4s/json4s-ast_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/json4s/json4s-ast_2.13/$version$/json4s-ast_2.13-$version$-sources.jar",
+metadata/org.threeten/threeten-extra/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/threeten/threeten-extra/$version$/threeten-extra-$version$-sources.jar",
+metadata/net.postgis/postgis-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/org.json4s/json4s-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/json4s/json4s-core_3/$version$/json4s-core_3-$version$-sources.jar",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/ccil/cowan/tagsoup/tagsoup/$version$/tagsoup-$version$-sources.jar",
+metadata/org.typelevel/alleycats-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/alleycats-core_3/$version$/alleycats-core_3-$version$-sources.jar",
+metadata/org.jooq/jooq/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-sources.jar",
+metadata/org.jooq/jooq/index.json:39:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-sources.jar",
+metadata/org.jooq/jooq/index.json:115:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-sources.jar",
+metadata/com.comcast/ip4s-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-sources.jar",
+metadata/jdom/jdom/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jdom/jdom/$version$/jdom-$version$-sources.jar",
+metadata/org.fusesource.hawtjni/hawtjni-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/fusesource/hawtjni/hawtjni-runtime/$version$/hawtjni-runtime-$version$-sources.jar",
+metadata/org.fusesource.hawtjni/hawtjni-runtime/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/org/fusesource/hawtjni/hawtjni-runtime/$version$/hawtjni-runtime-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-netty/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-netty/$version$/spring-boot-netty-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/org.json4s/json4s-scalap_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/json4s/json4s-scalap_3/$version$/json4s-scalap_3-$version$-sources.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-sources.jar",
+metadata/org.typelevel/scalac-compat-annotation_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/typelevel/scalac-compat-annotation_3/$version$/scalac-compat-annotation_3-$version$-sources.jar",
+
+web search: 
+web search: Maven Central org.mozilla rhino 1.7R5 sources jar test jar
+web search: 
+web search: https://github.com/mozilla/rhino
+web search: 
+web search: https://rhino.github.io/releases/
+codex
+The artifact is a normal Maven `jar`, and upstream has a dedicated `Rhino1_7R5_RELEASE` tag. I’m checking Maven classifiers now so sources/tests prefer Maven Central where they actually exist.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/mozilla/rhino/1.7R5/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/mozilla/rhino/1.7R5</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/mozilla/rhino/1.7R5</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="rhino-1.7R5-javadoc.jar" title="rhino-1.7R5-javadoc.jar">rhino-1.7R5-javadoc.jar</a>                           2015-01-30 00:14   1162852      
+<a href="rhino-1.7R5-javadoc.jar.asc" title="rhino-1.7R5-javadoc.jar.asc">rhino-1.7R5-javadoc.jar.asc</a>                       2015-01-30 00:14       487      
+<a href="rhino-1.7R5-javadoc.jar.asc.md5" title="rhino-1.7R5-javadoc.jar.asc.md5">rhino-1.7R5-javadoc.jar.asc.md5</a>                   2015-01-30 00:14        32      
+<a href="rhino-1.7R5-javadoc.jar.asc.sha1" title="rhino-1.7R5-javadoc.jar.asc.sha1">rhino-1.7R5-javadoc.jar.asc.sha1</a>                  2015-01-30 00:14        40      
+<a href="rhino-1.7R5-javadoc.jar.md5" title="rhino-1.7R5-javadoc.jar.md5">rhino-1.7R5-javadoc.jar.md5</a>                       2015-01-30 00:14        32      
+<a href="rhino-1.7R5-javadoc.jar.sha1" title="rhino-1.7R5-javadoc.jar.sha1">rhino-1.7R5-javadoc.jar.sha1</a>                      2015-01-30 00:14        40      
+<a href="rhino-1.7R5-sources.jar" title="rhino-1.7R5-sources.jar">rhino-1.7R5-sources.jar</a>                           2015-01-30 00:14   5464423      
+<a href="rhino-1.7R5-sources.jar.asc" title="rhino-1.7R5-sources.jar.asc">rhino-1.7R5-sources.jar.asc</a>                       2015-01-30 00:14       487      
+<a href="rhino-1.7R5-sources.jar.asc.md5" title="rhino-1.7R5-sources.jar.asc.md5">rhino-1.7R5-sources.jar.asc.md5</a>                   2015-01-30 00:14        32      
+<a href="rhino-1.7R5-sources.jar.asc.sha1" title="rhino-1.7R5-sources.jar.asc.sha1">rhino-1.7R5-sources.jar.asc.sha1</a>                  2015-01-30 00:14        40      
+<a href="rhino-1.7R5-sources.jar.md5" title="rhino-1.7R5-sources.jar.md5">rhino-1.7R5-sources.jar.md5</a>                       2015-01-30 00:14        32      
+<a href="rhino-1.7R5-sources.jar.sha1" title="rhino-1.7R5-sources.jar.sha1">rhino-1.7R5-sources.jar.sha1</a>                      2015-01-30 00:14        40      
+<a href="rhino-1.7R5.jar" title="rhino-1.7R5.jar">rhino-1.7R5.jar</a>                                   2015-01-30 00:14   1142627      
+<a href="rhino-1.7R5.jar.asc" title="rhino-1.7R5.jar.asc">rhino-1.7R5.jar.asc</a>                               2015-01-30 00:14       487      
+<a href="rhino-1.7R5.jar.asc.md5" title="rhino-1.7R5.jar.asc.md5">rhino-1.7R5.jar.asc.md5</a>                           2015-01-30 00:14        32      
+<a href="rhino-1.7R5.jar.asc.sha1" title="rhino-1.7R5.jar.asc.sha1">rhino-1.7R5.jar.asc.sha1</a>                          2015-01-30 00:14        40      
+<a href="rhino-1.7R5.jar.md5" title="rhino-1.7R5.jar.md5">rhino-1.7R5.jar.md5</a>                               2015-01-30 00:14        32      
+<a href="rhino-1.7R5.jar.sha1" title="rhino-1.7R5.jar.sha1">rhino-1.7R5.jar.sha1</a>                              2015-01-30 00:14        40      
+<a href="rhino-1.7R5.pom" title="rhino-1.7R5.pom">rhino-1.7R5.pom</a>                                   2015-01-30 00:14      1320      
+<a href="rhino-1.7R5.pom.asc" title="rhino-1.7R5.pom.asc">rhino-1.7R5.pom.asc</a>                               2015-01-30 00:14       487      
+<a href="rhino-1.7R5.pom.asc.md5" title="rhino-1.7R5.pom.asc.md5">rhino-1.7R5.pom.asc.md5</a>                           2015-01-30 00:14        32      
+<a href="rhino-1.7R5.pom.asc.sha1" title="rhino-1.7R5.pom.asc.sha1">rhino-1.7R5.pom.asc.sha1</a>                          2015-01-30 00:14        40      
+<a href="rhino-1.7R5.pom.md5" title="rhino-1.7R5.pom.md5">rhino-1.7R5.pom.md5</a>                               2015-01-30 00:14        32      
+<a href="rhino-1.7R5.pom.sha1" title="rhino-1.7R5.pom.sha1">rhino-1.7R5.pom.sha1</a>                              2015-01-30 00:14        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/mozilla/rhino.git 'Rhino1_7R5*'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/mozilla/rhino/git/trees/Rhino1_7R5_RELEASE?recursive=1 | rg '\"path\": \"(src|test|testsrc|docs|examples|README|build|pom)' | head -120" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a
+ succeeded in 262ms:
+584e7ec09c84de6b5e556a450a6b581f087a4aea	refs/tags/Rhino1_7R5_RELEASE
+
+ succeeded in 372ms:
+      "path": "README.md",
+      "path": "build-date",
+      "path": "build.properties",
+      "path": "build.xml",
+      "path": "examples",
+      "path": "examples/Control.java",
+      "path": "examples/Counter.java",
+      "path": "examples/CounterTest.java",
+      "path": "examples/DynamicScopes.java",
+      "path": "examples/E4X",
+      "path": "examples/E4X/e4x_example.js",
+      "path": "examples/File.java",
+      "path": "examples/Foo.java",
+      "path": "examples/Matrix.java",
+      "path": "examples/NervousText.html",
+      "path": "examples/NervousText.js",
+      "path": "examples/PrimitiveWrapFactory.java",
+      "path": "examples/RunScript.java",
+      "path": "examples/RunScript2.java",
+      "path": "examples/RunScript3.java",
+      "path": "examples/RunScript4.java",
+      "path": "examples/Shell.java",
+      "path": "examples/SwingApplication.js",
+      "path": "examples/checkParam.js",
+      "path": "examples/enum.js",
+      "path": "examples/jsdoc.js",
+      "path": "examples/liveConnect.js",
+      "path": "examples/unique.js",
+      "path": "src",
+      "path": "src/build.xml",
+      "path": "src/manifest",
+      "path": "src/org",
+      "path": "src/org/mozilla",
+      "path": "src/org/mozilla/classfile",
+      "path": "src/org/mozilla/classfile/ByteCode.java",
+      "path": "src/org/mozilla/classfile/ClassFileWriter.java",
+      "path": "src/org/mozilla/javascript",
+      "path": "src/org/mozilla/javascript/Arguments.java",
+      "path": "src/org/mozilla/javascript/BaseFunction.java",
+      "path": "src/org/mozilla/javascript/BoundFunction.java",
+      "path": "src/org/mozilla/javascript/Callable.java",
+      "path": "src/org/mozilla/javascript/ClassCache.java",
+      "path": "src/org/mozilla/javascript/ClassShutter.java",
+      "path": "src/org/mozilla/javascript/CodeGenerator.java",
+      "path": "src/org/mozilla/javascript/CompilerEnvirons.java",
+      "path": "src/org/mozilla/javascript/ConsString.java",
+      "path": "src/org/mozilla/javascript/ConstProperties.java",
+      "path": "src/org/mozilla/javascript/Context.java",
+      "path": "src/org/mozilla/javascript/ContextAction.java",
+      "path": "src/org/mozilla/javascript/ContextFactory.java",
+      "path": "src/org/mozilla/javascript/ContextListener.java",
+      "path": "src/org/mozilla/javascript/ContinuationPending.java",
+      "path": "src/org/mozilla/javascript/DToA.java",
+      "path": "src/org/mozilla/javascript/Decompiler.java",
+      "path": "src/org/mozilla/javascript/DefaultErrorReporter.java",
+      "path": "src/org/mozilla/javascript/DefiningClassLoader.java",
+      "path": "src/org/mozilla/javascript/Delegator.java",
+      "path": "src/org/mozilla/javascript/EcmaError.java",
+      "path": "src/org/mozilla/javascript/ErrorReporter.java",
+      "path": "src/org/mozilla/javascript/Evaluator.java",
+      "path": "src/org/mozilla/javascript/EvaluatorException.java",
+      "path": "src/org/mozilla/javascript/Function.java",
+      "path": "src/org/mozilla/javascript/FunctionObject.java",
+      "path": "src/org/mozilla/javascript/GeneratedClassLoader.java",
+      "path": "src/org/mozilla/javascript/IRFactory.java",
+      "path": "src/org/mozilla/javascript/Icode.java",
+      "path": "src/org/mozilla/javascript/IdFunctionCall.java",
+      "path": "src/org/mozilla/javascript/IdFunctionObject.java",
+      "path": "src/org/mozilla/javascript/IdScriptableObject.java",
+      "path": "src/org/mozilla/javascript/ImporterTopLevel.java",
+      "path": "src/org/mozilla/javascript/InterfaceAdapter.java",
+      "path": "src/org/mozilla/javascript/InterpretedFunction.java",
+      "path": "src/org/mozilla/javascript/Interpreter.java",
+      "path": "src/org/mozilla/javascript/InterpreterData.java",
+      "path": "src/org/mozilla/javascript/JavaAdapter.java",
+      "path": "src/org/mozilla/javascript/JavaMembers.java",
+      "path": "src/org/mozilla/javascript/JavaScriptException.java",
+      "path": "src/org/mozilla/javascript/Kit.java",
+      "path": "src/org/mozilla/javascript/LazilyLoadedCtor.java",
+      "path": "src/org/mozilla/javascript/MemberBox.java",
+      "path": "src/org/mozilla/javascript/NativeArray.java",
+      "path": "src/org/mozilla/javascript/NativeBoolean.java",
+      "path": "src/org/mozilla/javascript/NativeCall.java",
+      "path": "src/org/mozilla/javascript/NativeContinuation.java",
+      "path": "src/org/mozilla/javascript/NativeDate.java",
+      "path": "src/org/mozilla/javascript/NativeError.java",
+      "path": "src/org/mozilla/javascript/NativeFunction.java",
+      "path": "src/org/mozilla/javascript/NativeGenerator.java",
+      "path": "src/org/mozilla/javascript/NativeGlobal.java",
+      "path": "src/org/mozilla/javascript/NativeIterator.java",
+      "path": "src/org/mozilla/javascript/NativeJSON.java",
+      "path": "src/org/mozilla/javascript/NativeJavaArray.java",
+      "path": "src/org/mozilla/javascript/NativeJavaClass.java",
+      "path": "src/org/mozilla/javascript/NativeJavaConstructor.java",
+      "path": "src/org/mozilla/javascript/NativeJavaMethod.java",
+      "path": "src/org/mozilla/javascript/NativeJavaObject.java",
+      "path": "src/org/mozilla/javascript/NativeJavaPackage.java",
+      "path": "src/org/mozilla/javascript/NativeJavaTopPackage.java",
+      "path": "src/org/mozilla/javascript/NativeMath.java",
+      "path": "src/org/mozilla/javascript/NativeNumber.java",
+      "path": "src/org/mozilla/javascript/NativeObject.java",
+      "path": "src/org/mozilla/javascript/NativeScript.java",
+      "path": "src/org/mozilla/javascript/NativeString.java",
+      "path": "src/org/mozilla/javascript/NativeWith.java",
+      "path": "src/org/mozilla/javascript/Node.java",
+      "path": "src/org/mozilla/javascript/NodeTransformer.java",
+      "path": "src/org/mozilla/javascript/ObjArray.java",
+      "path": "src/org/mozilla/javascript/ObjToIntMap.java",
+      "path": "src/org/mozilla/javascript/Parser.java",
+      "path": "src/org/mozilla/javascript/PolicySecurityController.java",
+      "path": "src/org/mozilla/javascript/Ref.java",
+      "path": "src/org/mozilla/javascript/RefCallable.java",
+      "path": "src/org/mozilla/javascript/RegExpProxy.java",
+      "path": "src/org/mozilla/javascript/RhinoException.java",
+      "path": "src/org/mozilla/javascript/RhinoSecurityManager.java",
+      "path": "src/org/mozilla/javascript/Script.java",
+      "path": "src/org/mozilla/javascript/ScriptRuntime.java",
+      "path": "src/org/mozilla/javascript/ScriptStackElement.java",
+      "path": "src/org/mozilla/javascript/Scriptable.java",
+      "path": "src/org/mozilla/javascript/ScriptableObject.java",
+curl: (23) Failure writing output to destination
+
+codex
+Maven Central has the main jar, sources jar, and javadoc jar for `1.7R5`, but no test classifier in that version directory. For tests I’m using the upstream release tag because the tag exposes the versioned test tree.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a
+ succeeded in 0ms:
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
+
+  <groupId>org.mozilla</groupId>
+  <artifactId>rhino</artifactId>
+  <name>Mozilla Rhino</name>
+  <version>1.7R5</version>
+
+  <packaging>jar</packaging>
+  <description>
+      Rhino is an open-source implementation of JavaScript written entirely in Java. It is typically
+      embedded into Java applications to provide scripting to end users.
+  </description>
+  <url>https://developer.mozilla.org/en/Rhino</url>
+
+  <licenses>
+    <license>
+      <name>Mozilla Public License, Version 2.0</name>
+      <url>http://www.mozilla.org/MPL/2.0/index.txt</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git@github.com:mozilla/rhino.git</connection>
+    <developerConnection>scm:git:git@github.com:mozilla/rhino.git</developerConnection>
+    <url>git@github.com:mozilla/rhino.git</url>
+  </scm>
+
+  <organization>
+    <name>The Mozilla Foundation</name>
+    <url>http://www.mozilla.org</url>
+  </organization>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/mozilla/rhino/Rhino1_7R5_RELEASE/README.md | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-tests.jar || true' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/mozilla/rhino/git/trees/Rhino1_7R5_RELEASE?recursive=1 | rg '\"path\": \"(testsrc|tests|test|docs|javadoc|README|examples)' | head -200" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a
+ succeeded in 0ms:
+      "path": "README.md",
+      "path": "examples",
+      "path": "examples/Control.java",
+      "path": "examples/Counter.java",
+      "path": "examples/CounterTest.java",
+      "path": "examples/DynamicScopes.java",
+      "path": "examples/E4X",
+      "path": "examples/E4X/e4x_example.js",
+      "path": "examples/File.java",
+      "path": "examples/Foo.java",
+      "path": "examples/Matrix.java",
+      "path": "examples/NervousText.html",
+      "path": "examples/NervousText.js",
+      "path": "examples/PrimitiveWrapFactory.java",
+      "path": "examples/RunScript.java",
+      "path": "examples/RunScript2.java",
+      "path": "examples/RunScript3.java",
+      "path": "examples/RunScript4.java",
+      "path": "examples/Shell.java",
+      "path": "examples/SwingApplication.js",
+      "path": "examples/checkParam.js",
+      "path": "examples/enum.js",
+      "path": "examples/jsdoc.js",
+      "path": "examples/liveConnect.js",
+      "path": "examples/unique.js",
+      "path": "testsrc",
+      "path": "testsrc/base.skip",
+      "path": "testsrc/benchmarks",
+      "path": "testsrc/benchmarks/sunspider-0.9.1",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/3d-cube.js",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/3d-morph.js",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/3d-raytrace.js",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/LIST",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/access-binary-trees.js",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/access-fannkuch.js",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/access-nbody.js",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/access-nsieve.js",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/bitops-3bit-bits-in-byte.js",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/bitops-bits-in-byte.js",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/bitops-bitwise-and.js",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/bitops-nsieve-bits.js",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/controlflow-recursive.js",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/crypto-aes.js",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/crypto-md5.js",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/crypto-sha1.js",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/date-format-tofte.js",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/date-format-xparb.js",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/math-cordic.js",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/math-partial-sums.js",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/math-spectral-norm.js",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/regexp-dna.js",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/run.js",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/string-base64.js",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/string-fasta.js",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/string-tagcloud.js",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/string-unpack-code.js",
+      "path": "testsrc/benchmarks/sunspider-0.9.1/string-validate-input.js",
+      "path": "testsrc/benchmarks/v8-benchmarks-v5",
+      "path": "testsrc/benchmarks/v8-benchmarks-v5/README.txt",
+      "path": "testsrc/benchmarks/v8-benchmarks-v5/base.js",
+      "path": "testsrc/benchmarks/v8-benchmarks-v5/crypto.js",
+      "path": "testsrc/benchmarks/v8-benchmarks-v5/deltablue.js",
+      "path": "testsrc/benchmarks/v8-benchmarks-v5/earley-boyer.js",
+      "path": "testsrc/benchmarks/v8-benchmarks-v5/raytrace.js",
+      "path": "testsrc/benchmarks/v8-benchmarks-v5/regexp.js",
+      "path": "testsrc/benchmarks/v8-benchmarks-v5/richards.js",
+      "path": "testsrc/benchmarks/v8-benchmarks-v5/run.js",
+      "path": "testsrc/benchmarks/v8-benchmarks-v5/splay.js",
+      "path": "testsrc/benchmarks/v8-benchmarks-v6",
+      "path": "testsrc/benchmarks/v8-benchmarks-v6/README.txt",
+      "path": "testsrc/benchmarks/v8-benchmarks-v6/base.js",
+      "path": "testsrc/benchmarks/v8-benchmarks-v6/crypto.js",
+      "path": "testsrc/benchmarks/v8-benchmarks-v6/deltablue.js",
+      "path": "testsrc/benchmarks/v8-benchmarks-v6/earley-boyer.js",
+      "path": "testsrc/benchmarks/v8-benchmarks-v6/raytrace.js",
+      "path": "testsrc/benchmarks/v8-benchmarks-v6/regexp.js",
+      "path": "testsrc/benchmarks/v8-benchmarks-v6/richards.js",
+      "path": "testsrc/benchmarks/v8-benchmarks-v6/run.js",
+      "path": "testsrc/benchmarks/v8-benchmarks-v6/splay.js",
+      "path": "testsrc/build.xml",
+      "path": "testsrc/doctests",
+      "path": "testsrc/doctests/368019.doctest",
+      "path": "testsrc/doctests/369860.doctest",
+      "path": "testsrc/doctests/393794.doctest",
+      "path": "testsrc/doctests/413838.doctest",
+      "path": "testsrc/doctests/423557.doctest",
+      "path": "testsrc/doctests/429121.doctest",
+      "path": "testsrc/doctests/433878.doctest",
+      "path": "testsrc/doctests/434041.doctest",
+      "path": "testsrc/doctests/439530.doctest",
+      "path": "testsrc/doctests/441417.doctest",
+      "path": "testsrc/doctests/442922.doctest",
+      "path": "testsrc/doctests/467396.doctest",
+      "path": "testsrc/doctests/473761.doctest",
+      "path": "testsrc/doctests/477233.doctest",
+      "path": "testsrc/doctests/480758.doctest",
+      "path": "testsrc/doctests/524931.doctest",
+      "path": "testsrc/doctests/623246.doctest",
+      "path": "testsrc/doctests/700651.doctest",
+      "path": "testsrc/doctests/773573.doctest",
+      "path": "testsrc/doctests/784358.doctest",
+      "path": "testsrc/doctests/Counter.doctest",
+      "path": "testsrc/doctests/Matrix.doctest",
+      "path": "testsrc/doctests/arguments.doctest",
+      "path": "testsrc/doctests/array.dense.doctest",
+      "path": "testsrc/doctests/array.isarray.doctest",
+      "path": "testsrc/doctests/array.length.doctest",
+      "path": "testsrc/doctests/array.sparse.doctest",
+      "path": "testsrc/doctests/arrays.doctest",
+      "path": "testsrc/doctests/canonicalize.doctest",
+      "path": "testsrc/doctests/controlchars.doctest",
+      "path": "testsrc/doctests/date.parse.doctest",
+      "path": "testsrc/doctests/date.toisostring.doctest",
+      "path": "testsrc/doctests/date.tojson.doctest",
+      "path": "testsrc/doctests/error.tostring.doctest",
+      "path": "testsrc/doctests/eval.doctest",
+      "path": "testsrc/doctests/expressionclosure.doctest",
+      "path": "testsrc/doctests/function.bind.doctest",
+      "path": "testsrc/doctests/iterable.doctest",
+      "path": "testsrc/doctests/iteratorKeys.doctest",
+      "path": "testsrc/doctests/javaadapter.doctest",
+      "path": "testsrc/doctests/json.doctest",
+      "path": "testsrc/doctests/number.tostring.doctest",
+      "path": "testsrc/doctests/object.create.doctest",
+      "path": "testsrc/doctests/object.defineproperties.doctest",
+      "path": "testsrc/doctests/object.defineproperty.doctest",
+      "path": "testsrc/doctests/object.extensible.doctest",
+      "path": "testsrc/doctests/object.freeze.doctest",
+      "path": "testsrc/doctests/object.getownpropertydescriptor.doctest",
+      "path": "testsrc/doctests/object.getownpropertynames.doctest",
+      "path": "testsrc/doctests/object.getprototypeof.doctest",
+      "path": "testsrc/doctests/object.isfrozen.doctest",
+      "path": "testsrc/doctests/object.issealed.doctest",
+      "path": "testsrc/doctests/object.keys.doctest",
+      "path": "testsrc/doctests/object.seal.doctest",
+      "path": "testsrc/doctests/parseint.doctest",
+      "path": "testsrc/doctests/regexp.class-overflow.doctest",
+      "path": "testsrc/doctests/regexp.literals.doctest",
+      "path": "testsrc/doctests/regexp.source.doctest",
+      "path": "testsrc/doctests/serialize.doctest",
+      "path": "testsrc/doctests/string.trim.doctest",
+      "path": "testsrc/doctests/tail-call-in-try.doctest",
+      "path": "testsrc/doctests/test2.doctest",
+      "path": "testsrc/doctests/util.js",
+      "path": "testsrc/doctests/whitespace.doctest",
+      "path": "testsrc/doctests/with.doctest",
+      "path": "testsrc/doctests/xmlOptions.doctest",
+      "path": "testsrc/jstests",
+      "path": "testsrc/jstests/401561.jstest",
+      "path": "testsrc/jstests/420012.jstest",
+      "path": "testsrc/jstests/437988.jstest",
+      "path": "testsrc/jstests/524931.jstest",
+      "path": "testsrc/jstests/577141.jstest",
+      "path": "testsrc/jstests/608235.jstest",
+      "path": "testsrc/jstests/660799.jstest",
+      "path": "testsrc/jstests/688458.jstest",
+      "path": "testsrc/jstests/728286.jstest",
+      "path": "testsrc/jstests/772011.jstest",
+      "path": "testsrc/jstests/772833.jstest",
+      "path": "testsrc/jstests/778549.jstest",
+      "path": "testsrc/jstests/780147.jstest",
+      "path": "testsrc/jstests/destructuringLvalue.jstest",
+      "path": "testsrc/opt-1.tests",
+      "path": "testsrc/opt0.tests",
+      "path": "testsrc/opt1.skip",
+      "path": "testsrc/opt9.tests",
+      "path": "testsrc/org",
+      "path": "testsrc/org/mozilla",
+      "path": "testsrc/org/mozilla/javascript",
+      "path": "testsrc/org/mozilla/javascript/benchmarks",
+      "path": "testsrc/org/mozilla/javascript/benchmarks/SunSpiderBenchmark.java",
+      "path": "testsrc/org/mozilla/javascript/benchmarks/V8Benchmark.java",
+      "path": "testsrc/org/mozilla/javascript/drivers",
+      "path": "testsrc/org/mozilla/javascript/drivers/JsDriver.java",
+      "path": "testsrc/org/mozilla/javascript/drivers/JsTestsBase.java",
+      "path": "testsrc/org/mozilla/javascript/drivers/ShellTest.java",
+      "path": "testsrc/org/mozilla/javascript/drivers/StandardTests.java",
+      "path": "testsrc/org/mozilla/javascript/drivers/TestUtils.java",
+      "path": "testsrc/org/mozilla/javascript/drivers/results.html",
+      "path": "testsrc/org/mozilla/javascript/testing",
+      "path": "testsrc/org/mozilla/javascript/testing/TestErrorReporter.java",
+      "path": "testsrc/org/mozilla/javascript/tests",
+      "path": "testsrc/org/mozilla/javascript/tests/ApplyOnPrimitiveNumberTest.java",
+      "path": "testsrc/org/mozilla/javascript/tests/ArrayConcatTest.java",
+      "path": "testsrc/org/mozilla/javascript/tests/Bug409702Test.java",
+      "path": "testsrc/org/mozilla/javascript/tests/Bug412433Test.java",
+      "path": "testsrc/org/mozilla/javascript/tests/Bug419940Test.java",
+      "path": "testsrc/org/mozilla/javascript/tests/Bug421071Test.java",
+      "path": "testsrc/org/mozilla/javascript/tests/Bug448816Test.java",
+      "path": "testsrc/org/mozilla/javascript/tests/Bug466207Test.java",
+      "path": "testsrc/org/mozilla/javascript/tests/Bug467396Test.java",
+      "path": "testsrc/org/mozilla/javascript/tests/Bug482203.js",
+      "path": "testsrc/org/mozilla/javascript/tests/Bug482203Test.java",
+      "path": "testsrc/org/mozilla/javascript/tests/Bug491621Test.java",
+      "path": "testsrc/org/mozilla/javascript/tests/Bug492525Test.java",
+      "path": "testsrc/org/mozilla/javascript/tests/Bug496585Test.java",
+      "path": "testsrc/org/mozilla/javascript/tests/Bug637811Test.java",
+      "path": "testsrc/org/mozilla/javascript/tests/Bug685403Test.java",
+      "path": "testsrc/org/mozilla/javascript/tests/Bug687669Test.java",
+      "path": "testsrc/org/mozilla/javascript/tests/Bug688018Test.java",
+curl: (23) Failure writing output to destination
+
+ succeeded in 158ms:
+# Rhino: JavaScript in Java
+
+Rhino is an implementation of JavaScript in Java.
+
+## License
+
+Rhino is licensed under the [MPL 2.0](./LICENSE.txt).
+
+## Releases
+
+See here for [Release Notes](./RELEASE-NOTES)
+
+## Building
+
+### Status of "master" branch
+
+<table>
+<tr><td><b>Java 6</b></td><td>
+  <a href="http://ci.apigee.io/job/Mozilla%20Rhino%20Java%206">
+    <img src="http://ci.apigee.io/buildStatus/icon?job=Mozilla%20Rhino%20Java%206"/>
+  </a></td></tr>
+<tr><td><b>Java 7</b></td><td>
+  <a href="http://ci.apigee.io/job/Mozilla%20Rhino">
+    <img src="http://ci.apigee.io/buildStatus/icon?job=Mozilla%20Rhino"/>
+  </a></td></tr>
+<tr><td><b>Java 8</b></td><td>
+  <a href="http://ci.apigee.io/job/Mozilla%20Rhino%20Java%208">
+    <img src="http://ci.apigee.io/buildStatus/icon?job=Mozilla%20Rhino%20Java%208"/>
+  </a></td></tr>
+</table>
+
+### How to Build
+
+Rhino builds with Ant. Here are some useful tasks:
+
+    ant jar
+
+Build and create "js.jar" in the build/VERSION directory.
+
+    ant junit-all
+
+Build and run all the tests.
+
+    ant help
+
+to find out about the rest.
+
+## Running
+
+Rhino can run as a stand-alone interpreter from the command line:
+
+    java -jar build/rhino1_7R5pre/js.jar
+    Rhino 1.7 release 5 PRERELEASE 2015 01 28
+    js> print('Hello, World!');
+    Hello, World!
+    js>
+
+You can also embed it, as most people do. See below for more docs.
+
+## Issues
+
+Most issues are managed on GitHub:
+
+[https://github.com/mozilla/rhino/issues](https://github.com/mozilla/rhino/issues)
+
+## Additional Documentation
+
+Additional Documentation may be found on the Mozilla site:
+
+[https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino)
+
+## More Help
+
+The Google group is the best place to go with questions:
+
+[https://groups.google.com/forum/#!forum/mozilla-rhino](https://groups.google.com/forum/#!forum/mozilla-rhino)
+
+
+
+ succeeded in 234ms:
+HTTP/2 404 
+date: Mon, 08 Jun 2026 21:33:59 GMT
+content-type: text/html
+cf-ray: a08b049e9f377dd2-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\".*javadoc|\"documentation-url\".*repo\\.maven|\"documentation-url\".*github.*tree.*\\"'$version'"\\"'$|"documentation-url".*docs'"' metadata build/discovered-artifact-metadata | head -120" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a
+ succeeded in 0ms:
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.springframework/spring-web/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-web/$version$/spring-web-$version$-javadoc.jar",
+metadata/org.codehaus.jettison/jettison/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/jettison/jettison/$version$/jettison-$version$-javadoc.jar",
+metadata/org.springframework/spring-context-support/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context-support/$version$/spring-context-support-$version$-javadoc.jar",
+metadata/io.helidon.common.features/helidon-common-features-metadata/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/helidon/common/features/helidon-common-features-metadata/$version$/helidon-common-features-metadata-$version$-javadoc.jar",
+metadata/io.helidon.common.features/helidon-common-features-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/helidon/common/features/helidon-common-features-api/$version$/helidon-common-features-api-$version$-javadoc.jar",
+metadata/com.sun.jersey/jersey-servlet/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-servlet/$version$/jersey-servlet-$version$-javadoc.jar",
+metadata/com.sun.jersey/jersey-servlet/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-servlet/$version$/jersey-servlet-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:82:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:117:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:131:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-javadoc.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents.core5/httpcore5-h2/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5-h2/$version$/httpcore5-h2-$version$-javadoc.jar",
+metadata/oro/oro/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/jakarta/oro/tags/oro-$version$/docs/index.html",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:95:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:112:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:129:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:146:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/javadoc-api/org/springframework/expression/package-summary.html",
+metadata/org.springframework/spring-expression/index.json:163:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/javadoc-api/org/springframework/expression/package-summary.html",
+metadata/org.springframework/spring-expression/index.json:180:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:197:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:214:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-javadoc.jar",
+metadata/org.springframework/spring-test/index.json:8:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/reference/html/testing.html",
+metadata/org.springframework/spring-test/index.json:22:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/javadoc-api/org/springframework/test/package-summary.html",
+metadata/com.itextpdf/forms/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-javadoc.jar",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/org.springframework/spring-aspects/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+metadata/org.springframework/spring-webflux/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-webflux/$version$/spring-webflux-$version$-javadoc.jar",
+metadata/com.itextpdf/layout/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/$version$/layout-$version$-javadoc.jar",
+metadata/com.itextpdf/svg/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/$version$/svg-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/io.gsonfire/gson-fire/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/gsonfire/gson-fire/$version$/gson-fire-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:29:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/com.google.truth/truth/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-javadoc.jar",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/soap/jakarta.xml.soap-api/$version$/jakarta.xml.soap-api-$version$-javadoc.jar",
+metadata/com.itextpdf/io/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/$version$/io-$version$-javadoc.jar",
+metadata/org.springframework/spring-aop/index.json:8:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/javadoc-api/org/springframework/aop/package-summary.html",
+metadata/org.springframework/spring-aop/index.json:29:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/reference/html/core.html#aop",
+metadata/org.springframework/spring-aop/index.json:47:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aop/$version$/spring-aop-$version$-javadoc.jar",
+metadata/org.springframework/spring-aop/index.json:81:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aop/$version$/spring-aop-$version$-javadoc.jar",
+metadata/org.springframework/spring-aop/index.json:100:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aop/$version$/spring-aop-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-javadoc.jar",
+metadata/jakarta.transaction/jakarta.transaction-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-annotations/$version$/hadoop-annotations-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/org.springframework/spring-jcl/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-jcl/$version$/spring-jcl-$version$-javadoc.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-javadoc.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/$version$/istack-commons-runtime-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-mustmatchers_3/$version$/scalatest-mustmatchers_3-$version$-javadoc.jar",
+metadata/org.springframework/spring-context/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context/$version$/spring-context-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-web-proxy/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-web-proxy/$version$/hadoop-yarn-server-web-proxy-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-javadoc.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:27:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-yaml-provider/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-yaml-provider/$version$/jackson-jakarta-rs-yaml-provider-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-yaml-provider/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-yaml-provider/$version$/jackson-jakarta-rs-yaml-provider-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-javadoc.jar",
+metadata/org.jctools/jctools-core/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/$version$/jctools-core-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-javadoc.jar",
+metadata/net.postgis/postgis-geometry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-common/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-common/$version$/hadoop-common-$version$-javadoc.jar",
+metadata/io.helidon.service/helidon-service-metadata/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/helidon/service/helidon-service-metadata/$version$/helidon-service-metadata-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_3/$version$/scalatest-shouldmatchers_3-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-json-provider/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-json-provider/$version$/jackson-jakarta-rs-json-provider-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-json-provider/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-json-provider/$version$/jackson-jakarta-rs-json-provider-$version$-javadoc.jar",
+metadata/net.postgis/postgis-jdbc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:38:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-javadoc.jar",
+metadata/io.helidon.service/helidon-service-registry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/helidon/service/helidon-service-registry/$version$/helidon-service-registry-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-base/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-base/$version$/jackson-jakarta-rs-base-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+metadata/com.google.re2j/re2j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-javadoc.jar",
+metadata/com.comcast/ip4s-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/hadoop/hadoop-yarn-server-common/$version$/hadoop-yarn-server-common-$version$-javadoc.jar",
+metadata/org.apache.hadoop/hadoop-yarn-server-common/index.json:38:    "documentation-url" : "https://hadoop.apache.org/docs/r$version$/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common/apidocs/",
+metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/$version$/kotlin-scripting-jvm-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+metadata/com.google.dagger/dagger/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/dagger/dagger/$version$/dagger-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-javadoc.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-compiler-embeddable/$version$/kotlin-scripting-compiler-embeddable-$version$-javadoc.jar",
+metadata/io.smallrye.reactive/mutiny/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/reactive/mutiny/$version$/mutiny-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/mozilla/rhino/contents?ref=Rhino1_7R5_RELEASE | rg '\"name\": \"(docs|README.md|RELEASE-NOTES|LICENSE.txt)' -C 2" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar && curl -fsI https://repo.maven.apache.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-javadoc.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/mozilla/rhino/tree/Rhino1_7R5_RELEASE/testsrc && curl -fsI https://github.com/mozilla/rhino/tree/Rhino1_7R5_RELEASE | head -20' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a
+ succeeded in 214ms:
+  },
+  {
+    "name": "LICENSE.txt",
+    "path": "LICENSE.txt",
+    "sha": "c0e7c21fbffb41bcd70d669ab6fbf2a51289b2cc",
+--
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "80954aa28a03309d9b8eb6115e3b6a36a9c54e3e",
+--
+  },
+  {
+    "name": "RELEASE-NOTES.md",
+    "path": "RELEASE-NOTES.md",
+    "sha": "2328b974841a6ef7c9707cb9120c01a3204ffbfc",
+
+ succeeded in 275ms:
+HTTP/2 200 
+date: Mon, 08 Jun 2026 21:34:08 GMT
+content-type: application/java-archive
+content-length: 1162852
+cf-ray: a08b04d6d86701f0-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "e359125cd0de764f88caedb88eef341a"
+last-modified: Fri, 30 Jan 2015 00:14:19 GMT
+x-checksum-md5: e359125cd0de764f88caedb88eef341a
+x-checksum-sha1: a439b01da1c8eab8ef369d82a4ca237243f3a6bc
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 1258ms:
+HTTP/2 200 
+date: Mon, 08 Jun 2026 21:34:08 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"e80d67fd3c006820cb3ea0004657f8b2"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=A1vzRQG4ICnN6FcruQpdP9aPRM8%2Bq3yMtqIQsLzw%2FOCAQ5RYQQhJrkVrq2I%2F7JOjTEDVdrsSBg1UeYEVOntCNw5PQq6Pjk4Jzg9Qwnih2oSa%2FxLktUK2Meij5v26BaOKh9JwNgHvH%2BizQgZ8v9Q7IoDJaQJ3VD%2B7UjhLROXdOSeuwmc9kWis5LpUDdz46j7YVcT7cybzbAynddrZ%2F%2F%2FBZsKcmXvSBtEpm2Ur7BsFObNp3niAGCU2mr7N9CxqPONBWd%2F9FFGDfsUZiBxoZ6VaKA%3D%3D--AzyjqTREPOdneQRd--Pzq2WWLDdy5SEFhja8P23g%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1492380402.1780954448; expires=Tue, 08 Jun 2027 21:34:08 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 08 Jun 2027 21:34:08 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6212:167BB8:8A65248:6DF4CF5:6A273550
+
+HTTP/2 200 
+date: Mon, 08 Jun 2026 21:34:09 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"b7851fb7c462f45f1c859f4249aa4caf"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=AWny7ly1rlRbTpo8P7RmUBs4%2BlAag%2B9w8A5zs5vllK0OP5GzjnlndFrIZAw31INiJv74J8nebwOkPDZa10UQJ3Ziks6z71IV%2BmToDWtaTmFHuJ2lDcG%2BobOaSn%2BA9NRNs%2BSed7VljseiJlk9K5MIDPAxwVCw2%2FeAziQSNfcplJFaEsHkBTnKiPlgk7lMVvu9B3bisALDZBT2RHhyHi2jLMlKxlYrBiTUM4nnIsQrPuJ%2FxgiWY28fwolUBb0NrKRtEBraVmFY8V%2BX9qO2xQsimQ%3D%3D--7iK6C8fyT%2BiySHuf--eyliyEVsW8ZKqfY%2FoKuMHA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2143222356.1780954448; expires=Tue, 08 Jun 2027 21:34:08 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 08 Jun 2027 21:34:08 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6215:16B4:363ADB7:298E71E:6A273550
+
+
+exec
+/usr/bin/bash -lc "for url in https://github.com/mozilla/rhino/tree/1.7R5/testsrc https://github.com/mozilla/rhino/tree/v1.7R5/testsrc https://github.com/mozilla/rhino/tree/rhino-1.7R5/testsrc https://github.com/mozilla/rhino/releases/tag/1.7R5; do printf '%s -> ' \""'$url"; curl -fsI -o /dev/null -w '"'%{http_code}\\n' \""'$url" || true; done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/mozilla/rhino.git '*1.7R5*' '*1_7R5*' '*1.7.5*'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/mozilla/rhino/releases/tags/Rhino1_7R5_RELEASE | rg '\"(tag_name|html_url|name|browser_download_url)\"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a
+ succeeded in 207ms:
+  "html_url": "https://github.com/mozilla/rhino/releases/tag/Rhino1_7R5_RELEASE",
+    "html_url": "https://github.com/gbrail",
+  "tag_name": "Rhino1_7R5_RELEASE",
+  "name": "Rhino 1.7R5",
+      "name": "js.jar",
+        "html_url": "https://github.com/gbrail",
+      "browser_download_url": "https://github.com/mozilla/rhino/releases/download/Rhino1_7R5_RELEASE/js.jar"
+      "name": "rhino1_7R5.zip",
+        "html_url": "https://github.com/gbrail",
+      "browser_download_url": "https://github.com/mozilla/rhino/releases/download/Rhino1_7R5_RELEASE/rhino1_7R5.zip"
+
+ succeeded in 286ms:
+584e7ec09c84de6b5e556a450a6b581f087a4aea	refs/tags/Rhino1_7R5_RELEASE
+
+ succeeded in 1773ms:
+404
+https://github.com/mozilla/rhino/tree/v1.7R5/testsrc -> 404
+https://github.com/mozilla/rhino/tree/rhino-1.7R5/testsrc -> 404
+https://github.com/mozilla/rhino/releases/tag/1.7R5 -> 404
+
+codex
+There’s a small wrinkle with Rhino’s historical tag: upstream names it `Rhino1_7R5_RELEASE`, not a literal `1.7R5` tag. I’m checking the Maven sources jar contents because if it carries `testsrc`, that gives us a version-placeholder URL without relying on the transformed Git tag.
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/rhino.jar" https://repo.maven.apache.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5.jar; jar tf "$tmp/rhino.jar" | rg '"'\\.class"'$'"' | head -20; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/rhino-sources.jar" https://repo.maven.apache.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar; jar tf "$tmp/rhino-sources.jar" | sed -n '"'1,80p'; printf '\\n-- testsrc hits --\\n'; jar tf \""'$tmp/rhino-sources.jar" | rg '"'"'^(testsrc|src/test|org/mozilla/javascript/tests|README|RELEASE)'"' | head -80; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/rhino.zip" https://github.com/mozilla/rhino/releases/download/Rhino1_7R5_RELEASE/rhino1_7R5.zip; unzip -l "$tmp/rhino.zip" | sed -n '"'1,80p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a
+ succeeded in 1728ms:
+org/mozilla/classfile/ByteCode.class
+org/mozilla/classfile/ClassFileField.class
+org/mozilla/classfile/ClassFileMethod.class
+org/mozilla/classfile/ClassFileWriter$ClassFileFormatException.class
+org/mozilla/classfile/ClassFileWriter$StackMapTable.class
+org/mozilla/classfile/ClassFileWriter.class
+org/mozilla/classfile/ConstantPool.class
+org/mozilla/classfile/ExceptionTableEntry.class
+org/mozilla/classfile/FieldOrMethodRef.class
+org/mozilla/classfile/SuperBlock.class
+org/mozilla/classfile/TypeInfo.class
+org/mozilla/javascript/Arguments.class
+org/mozilla/javascript/BaseFunction.class
+org/mozilla/javascript/BeanProperty.class
+org/mozilla/javascript/BoundFunction.class
+org/mozilla/javascript/Callable.class
+org/mozilla/javascript/ClassCache.class
+org/mozilla/javascript/ClassDefinitionException.class
+org/mozilla/javascript/ClassShutter.class
+org/mozilla/javascript/CodeGenerator.class
+
+ succeeded in 3988ms:
+rhino1_7R5/
+rhino1_7R5/deprecatedsrc/
+rhino1_7R5/deprecatedsrc/org/
+rhino1_7R5/deprecatedsrc/org/mozilla/
+rhino1_7R5/deprecatedsrc/org/mozilla/javascript/
+rhino1_7R5/deprecatedsrc/org/mozilla/javascript/xml/
+rhino1_7R5/deprecatedsrc/org/mozilla/javascript/xml/impl/
+rhino1_7R5/deprecatedsrc/org/mozilla/javascript/xml/impl/xmlbeans/
+rhino1_7R5/examples/
+rhino1_7R5/examples/E4X/
+rhino1_7R5/src/
+rhino1_7R5/src/org/
+rhino1_7R5/src/org/mozilla/
+rhino1_7R5/src/org/mozilla/classfile/
+rhino1_7R5/src/org/mozilla/javascript/
+rhino1_7R5/src/org/mozilla/javascript/annotations/
+rhino1_7R5/src/org/mozilla/javascript/ast/
+rhino1_7R5/src/org/mozilla/javascript/commonjs/
+rhino1_7R5/src/org/mozilla/javascript/commonjs/module/
+rhino1_7R5/src/org/mozilla/javascript/commonjs/module/provider/
+rhino1_7R5/src/org/mozilla/javascript/debug/
+rhino1_7R5/src/org/mozilla/javascript/jdk13/
+rhino1_7R5/src/org/mozilla/javascript/jdk15/
+rhino1_7R5/src/org/mozilla/javascript/json/
+rhino1_7R5/src/org/mozilla/javascript/optimizer/
+rhino1_7R5/src/org/mozilla/javascript/regexp/
+rhino1_7R5/src/org/mozilla/javascript/resources/
+rhino1_7R5/src/org/mozilla/javascript/serialize/
+rhino1_7R5/src/org/mozilla/javascript/v8dtoa/
+rhino1_7R5/src/org/mozilla/javascript/xml/
+rhino1_7R5/testsrc/
+rhino1_7R5/testsrc/benchmarks/
+rhino1_7R5/testsrc/benchmarks/sunspider-0.9.1/
+rhino1_7R5/testsrc/benchmarks/v8-benchmarks-v5/
+rhino1_7R5/testsrc/benchmarks/v8-benchmarks-v6/
+rhino1_7R5/testsrc/doctests/
+rhino1_7R5/testsrc/jstests/
+rhino1_7R5/testsrc/org/
+rhino1_7R5/testsrc/org/mozilla/
+rhino1_7R5/testsrc/org/mozilla/javascript/
+rhino1_7R5/testsrc/org/mozilla/javascript/benchmarks/
+rhino1_7R5/testsrc/org/mozilla/javascript/drivers/
+rhino1_7R5/testsrc/org/mozilla/javascript/testing/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/absolute/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/absolute/submodule/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/cyclic/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/determinism/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/determinism/submodule/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/exactExports/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/hasOwnProperty/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/method/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/missing/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/monkeys/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/nested/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/nested/a/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/nested/a/b/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/nested/a/b/c/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/relative/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/relative/submodule/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/transitive/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/x/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/x/y/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/es5/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/json/
+rhino1_7R5/testsrc/tests/
+rhino1_7R5/testsrc/tests/e4x/
+rhino1_7R5/testsrc/tests/e4x/Expressions/
+rhino1_7R5/testsrc/tests/e4x/GC/
+rhino1_7R5/testsrc/tests/e4x/Global/
+rhino1_7R5/testsrc/tests/e4x/Namespace/
+rhino1_7R5/testsrc/tests/e4x/QName/
+rhino1_7R5/testsrc/tests/e4x/Regress/
+rhino1_7R5/testsrc/tests/e4x/Statements/
+rhino1_7R5/testsrc/tests/e4x/TypeConversion/
+rhino1_7R5/testsrc/tests/e4x/Types/
+rhino1_7R5/testsrc/tests/e4x/XML/
+
+-- testsrc hits --
+
+ succeeded in 7038ms:
+Archive:  /tmp/tmp.aDrPubzPFD/rhino.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2015-01-29 16:38   rhino1_7R5/
+        0  2015-01-29 16:38   rhino1_7R5/deprecatedsrc/
+        0  2015-01-29 16:38   rhino1_7R5/deprecatedsrc/org/
+        0  2015-01-29 16:38   rhino1_7R5/deprecatedsrc/org/mozilla/
+        0  2015-01-29 16:38   rhino1_7R5/deprecatedsrc/org/mozilla/javascript/
+        0  2015-01-29 16:38   rhino1_7R5/deprecatedsrc/org/mozilla/javascript/xml/
+        0  2015-01-29 16:38   rhino1_7R5/deprecatedsrc/org/mozilla/javascript/xml/impl/
+        0  2015-01-29 16:38   rhino1_7R5/deprecatedsrc/org/mozilla/javascript/xml/impl/xmlbeans/
+        0  2015-01-29 16:38   rhino1_7R5/examples/
+        0  2015-01-29 16:38   rhino1_7R5/examples/E4X/
+        0  2015-01-29 16:38   rhino1_7R5/javadoc/
+        0  2015-01-29 16:38   rhino1_7R5/javadoc/org/
+        0  2015-01-29 16:38   rhino1_7R5/javadoc/org/mozilla/
+        0  2015-01-29 16:38   rhino1_7R5/javadoc/org/mozilla/classfile/
+        0  2015-01-29 16:38   rhino1_7R5/javadoc/org/mozilla/javascript/
+        0  2015-01-29 16:38   rhino1_7R5/javadoc/org/mozilla/javascript/annotations/
+        0  2015-01-29 16:38   rhino1_7R5/javadoc/org/mozilla/javascript/ast/
+        0  2015-01-29 16:38   rhino1_7R5/javadoc/org/mozilla/javascript/commonjs/
+        0  2015-01-29 16:38   rhino1_7R5/javadoc/org/mozilla/javascript/commonjs/module/
+        0  2015-01-29 16:38   rhino1_7R5/javadoc/org/mozilla/javascript/commonjs/module/provider/
+        0  2015-01-29 16:38   rhino1_7R5/javadoc/org/mozilla/javascript/debug/
+        0  2015-01-29 16:38   rhino1_7R5/javadoc/org/mozilla/javascript/jdk13/
+        0  2015-01-29 16:38   rhino1_7R5/javadoc/org/mozilla/javascript/jdk15/
+        0  2015-01-29 16:38   rhino1_7R5/javadoc/org/mozilla/javascript/json/
+        0  2015-01-29 16:38   rhino1_7R5/javadoc/org/mozilla/javascript/optimizer/
+        0  2015-01-29 16:38   rhino1_7R5/javadoc/org/mozilla/javascript/regexp/
+        0  2015-01-29 16:38   rhino1_7R5/javadoc/org/mozilla/javascript/serialize/
+        0  2015-01-29 16:38   rhino1_7R5/javadoc/org/mozilla/javascript/v8dtoa/
+        0  2015-01-29 16:38   rhino1_7R5/javadoc/org/mozilla/javascript/xml/
+        0  2015-01-29 16:38   rhino1_7R5/javadoc/resources/
+        0  2015-01-29 16:38   rhino1_7R5/src/
+        0  2015-01-29 16:38   rhino1_7R5/src/org/
+        0  2015-01-29 16:38   rhino1_7R5/src/org/mozilla/
+        0  2015-01-29 16:38   rhino1_7R5/src/org/mozilla/classfile/
+        0  2015-01-29 16:38   rhino1_7R5/src/org/mozilla/javascript/
+        0  2015-01-29 16:38   rhino1_7R5/src/org/mozilla/javascript/annotations/
+        0  2015-01-29 16:38   rhino1_7R5/src/org/mozilla/javascript/ast/
+        0  2015-01-29 16:38   rhino1_7R5/src/org/mozilla/javascript/commonjs/
+        0  2015-01-29 16:38   rhino1_7R5/src/org/mozilla/javascript/commonjs/module/
+        0  2015-01-29 16:38   rhino1_7R5/src/org/mozilla/javascript/commonjs/module/provider/
+        0  2015-01-29 16:38   rhino1_7R5/src/org/mozilla/javascript/debug/
+        0  2015-01-29 16:38   rhino1_7R5/src/org/mozilla/javascript/jdk13/
+        0  2015-01-29 16:38   rhino1_7R5/src/org/mozilla/javascript/jdk15/
+        0  2015-01-29 16:38   rhino1_7R5/src/org/mozilla/javascript/json/
+        0  2015-01-29 16:38   rhino1_7R5/src/org/mozilla/javascript/optimizer/
+        0  2015-01-29 16:38   rhino1_7R5/src/org/mozilla/javascript/regexp/
+        0  2015-01-29 16:38   rhino1_7R5/src/org/mozilla/javascript/resources/
+        0  2015-01-29 16:38   rhino1_7R5/src/org/mozilla/javascript/serialize/
+        0  2015-01-29 16:38   rhino1_7R5/src/org/mozilla/javascript/v8dtoa/
+        0  2015-01-29 16:38   rhino1_7R5/src/org/mozilla/javascript/xml/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/benchmarks/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/benchmarks/sunspider-0.9.1/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/benchmarks/v8-benchmarks-v5/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/benchmarks/v8-benchmarks-v6/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/doctests/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/jstests/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/org/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/org/mozilla/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/org/mozilla/javascript/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/org/mozilla/javascript/benchmarks/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/org/mozilla/javascript/drivers/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/org/mozilla/javascript/testing/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/org/mozilla/javascript/tests/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/absolute/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/absolute/submodule/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/cyclic/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/determinism/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/determinism/submodule/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/exactExports/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/hasOwnProperty/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/method/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/missing/
+        0  2015-01-29 16:38   rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/monkeys/
+
+codex
+The Maven sources jar includes `testsrc/`, so I can use Maven Central for both source and test-code URLs while preserving the literal `$version$` placeholder. I’m updating the JSON with Maven sources/javadocs, the GitHub repository root, and no language or not-for-native-image flags because this is a JVM jar with `.class` files.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+diff --git a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+index 4ef3063821c5c1b7fd0778ca5115acce27dd7429..b4ace61e6b6db8c885a6d473ba6c81cb1b82377b
+--- a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
++++ b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mozilla:rhino:1.7R5"
++  "coordinates" : "org.mozilla:rhino:1.7R5",
++  "repository-url" : "https://github.com/mozilla/rhino",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-javadoc.jar",
++  "description" : "Rhino is an open-source JavaScript engine implemented in Java. It can run scripts from the command line or be embedded in Java applications to provide scripting capabilities."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+index 4ef3063821c5c1b7fd0778ca5115acce27dd7429..b4ace61e6b6db8c885a6d473ba6c81cb1b82377b
+--- a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
++++ b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mozilla:rhino:1.7R5"
++  "coordinates" : "org.mozilla:rhino:1.7R5",
++  "repository-url" : "https://github.com/mozilla/rhino",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-javadoc.jar",
++  "description" : "Rhino is an open-source JavaScript engine implemented in Java. It can run scripts from the command line or be embedded in Java applications to provide scripting capabilities."
+ }
+
+codex
+The file is patched. I’m doing a quick structural check on the JSON and the rendered URLs for `1.7R5`.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a
+ succeeded in 0ms:
+{
+  "coordinates": "org.mozilla:rhino:1.7R5",
+  "repository-url": "https://github.com/mozilla/rhino",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-sources.jar",
+  "test-code-url": "https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-sources.jar",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-javadoc.jar",
+  "description": "Rhino is an open-source JavaScript engine implemented in Java. It can run scripts from the command line or be embedded in Java applications to provide scripting capabilities."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-javadoc.jar \\
+  https://github.com/mozilla/rhino; do printf '%s -> ' \""'$url"; curl -fsI -o /dev/null -w '"'%{http_code}\\n' \""'$url" || true; done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a
+diff --git a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+index 4ef3063821c5c1b7fd0778ca5115acce27dd7429..b4ace61e6b6db8c885a6d473ba6c81cb1b82377b
+--- a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
++++ b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mozilla:rhino:1.7R5"
++  "coordinates" : "org.mozilla:rhino:1.7R5",
++  "repository-url" : "https://github.com/mozilla/rhino",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-javadoc.jar",
++  "description" : "Rhino is an open-source JavaScript engine implemented in Java. It can run scripts from the command line or be embedded in Java applications to provide scripting capabilities."
+ }
+
+ succeeded in 780ms:
+200
+
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json && sed -n '1,80p' build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a
+diff --git a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+index 4ef3063821c5c1b7fd0778ca5115acce27dd7429..b4ace61e6b6db8c885a6d473ba6c81cb1b82377b
+--- a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
++++ b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mozilla:rhino:1.7R5"
++  "coordinates" : "org.mozilla:rhino:1.7R5",
++  "repository-url" : "https://github.com/mozilla/rhino",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-javadoc.jar",
++  "description" : "Rhino is an open-source JavaScript engine implemented in Java. It can run scripts from the command line or be embedded in Java applications to provide scripting capabilities."
+ }
+
+ succeeded in 105ms:
+{
+  "coordinates" : "org.mozilla:rhino:1.7R5",
+  "repository-url" : "https://github.com/mozilla/rhino",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-sources.jar",
+  "test-code-url" : "https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-sources.jar",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-javadoc.jar",
+  "description" : "Rhino is an open-source JavaScript engine implemented in Java. It can run scripts from the command line or be embedded in Java applications to provide scripting capabilities."
+}
+
+codex
+Updated [org.mozilla-rhino-1.7R5.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json).
+
+Validated:
+- JSON parses with `jq`.
+- Rendered Maven sources and javadoc URLs return `200`.
+- Maven sources jar includes `testsrc/`, so it is used for `test-code-url`.
+- No `language` field added; this is not Kotlin/Groovy/Scala-specific.
+- No `not-for-native-image` fields added; the artifact is a JVM jar with `.class` files.
+diff --git a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+index 4ef3063821c5c1b7fd0778ca5115acce27dd7429..b4ace61e6b6db8c885a6d473ba6c81cb1b82377b
+--- a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
++++ b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mozilla:rhino:1.7R5"
++  "coordinates" : "org.mozilla:rhino:1.7R5",
++  "repository-url" : "https://github.com/mozilla/rhino",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/mozilla/rhino/$version$/rhino-$version$-javadoc.jar",
++  "description" : "Rhino is an open-source JavaScript engine implemented in Java. It can run scripts from the command line or be embedded in Java applications to provide scripting capabilities."
+ }
+
+tokens used
+71,126
+Updated [org.mozilla-rhino-1.7R5.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json).
+
+Validated:
+- JSON parses with `jq`.
+- Rendered Maven sources and javadoc URLs return `200`.
+- Maven sources jar includes `testsrc/`, so it is used for `test-code-url`.
+- No `language` field added; this is not Kotlin/Groovy/Scala-specific.
+- No `not-for-native-image` fields added; the artifact is a JVM jar with `.class` files.
+Ran agent for org.mozilla:rhino:1.7R5 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a/build/agent-artifact-discovery-logs/org.mozilla-rhino-1.7R5.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 8s
+9 actionable tasks: 9 executed

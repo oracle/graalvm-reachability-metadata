@@ -1,0 +1,130 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.mozilla:rhino:1.7R5
+Command: `/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 34 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :jar UP-TO-DATE
+
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a/tests/src/org.mozilla/rhino/1.7R5/src/test/java/org_mozilla/rhino/TypeInfoTest.java:34: warning: Unsafe is internal proprietary API and may be removed in a future release
+import sun.misc.Unsafe;
+               ^
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a/tests/src/org.mozilla/rhino/1.7R5/src/test/java/org_mozilla/rhino/TypeInfoTest.java:79: warning: Unsafe is internal proprietary API and may be removed in a future release
+        Unsafe unsafe = unsafe();
+        ^
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a/tests/src/org.mozilla/rhino/1.7R5/src/test/java/org_mozilla/rhino/TypeInfoTest.java:88: warning: Unsafe is internal proprietary API and may be removed in a future release
+    private static Unsafe unsafe() throws Exception {
+                   ^
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a/tests/src/org.mozilla/rhino/1.7R5/src/test/java/org_mozilla/rhino/TypeInfoTest.java:89: warning: Unsafe is internal proprietary API and may be removed in a future release
+        Field unsafe = Unsafe.class.getDeclaredField("theUnsafe");
+> Task :compileTestJava
+                       ^
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a/tests/src/org.mozilla/rhino/1.7R5/src/test/java/org_mozilla/rhino/TypeInfoTest.java:91: warning: Unsafe is internal proprietary API and may be removed in a future release
+        return (Unsafe) unsafe.get(null);
+                ^
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a/tests/src/org.mozilla/rhino/1.7R5/src/test/java/org_mozilla/rhino/TypeInfoTest.java:117: warning: Unsafe is internal proprietary API and may be removed in a future release
+        private final Unsafe unsafe;
+                      ^
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a/tests/src/org.mozilla/rhino/1.7R5/src/test/java/org_mozilla/rhino/TypeInfoTest.java:122: warning: Unsafe is internal proprietary API and may be removed in a future release
+        StackMapGenerationSwitch(Unsafe unsafe, Object base, long offset, boolean previous) {
+                                 ^
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a/tests/src/org.mozilla/rhino/1.7R5/src/test/java/org_mozilla/rhino/TypeInfoTest.java uses or overrides a deprecated API.
+
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+Note: Recompile with -Xlint:deprecation for details.
+> Task :testClasses7 warnings
+
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+
+WARNING: sun.misc.Unsafe::staticFieldBase has been called by org_mozilla.rhino.TypeInfoTest (file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a/tests/src/org.mozilla/rhino/1.7R5/build/classes/java/test/)
+WARNING: Please consider reporting this to the maintainers of class org_mozilla.rhino.TypeInfoTest
+WARNING: sun.misc.Unsafe::staticFieldBase will be removed in a future release
+> Task :test FAILED
+
+TypeInfoTest > mergesDifferentObjectTypesWhenGeneratingStackMap() FAILED
+    java.lang.NullPointerException: Cannot read the array length because "a" is null
+        at java.base/java.util.Arrays.sort(Arrays.java:122)
+        at org.mozilla.classfile.ClassFileWriter.finalizeSuperBlockStarts(ClassFileWriter.java:4140)
+        at org.mozilla.classfile.ClassFileWriter.stopMethod(ClassFileWriter.java:288)
+        at org_mozilla.rhino.TypeInfoTest$StackMapMergeExercise.call(TypeInfoTest.java:157)
+        at org_mozilla.rhino.TypeInfoTest.generateMergedObjectStackMapClass(TypeInfoTest.java:71)
+        at org_mozilla.rhino.TypeInfoTest.mergesDifferentObjectTypesWhenGeneratingStackMap(TypeInfoTest.java:51)
+
+28 tests completed, 1 failed
+
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a/tests/src/org.mozilla/rhino/1.7R5/build/reports/problems/problems-report.html
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a/tests/src/org.mozilla/rhino/1.7R5/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 3s
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+14 actionable tasks: 3 executed, 11 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.mozilla:rhino:1.7R5 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 4s
+9 actionable tasks: 1 executed, 8 up-to-date

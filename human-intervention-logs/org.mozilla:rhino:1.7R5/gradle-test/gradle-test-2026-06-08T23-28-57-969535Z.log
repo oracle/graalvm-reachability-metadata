@@ -1,0 +1,132 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.mozilla:rhino:1.7R5
+Command: `/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 34 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+
+> Task :compileTestJava
+
+> Task :jar UP-TO-DATE
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a/tests/src/org.mozilla/rhino/1.7R5/src/test/java/org_mozilla/rhino/SecureCallerAnonymous2Test.java uses or overrides a deprecated API.
+> Task :checkTestTimeoutAnnotationsNote: Recompile with -Xlint:deprecation for details.
+
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+
+> Task :test
+
+SecureCallerAnonymous2Test > enhancedJavaAccessInvokesSecureCallerWithCodeSource() FAILED
+    java.lang.reflect.InaccessibleObjectException: Unable to make protected void java.lang.Object.finalize() throws java.lang.Throwable accessible: module java.base does not "opens java.lang" to unnamed module @4803b726
+        at java.base/java.lang.reflect.AccessibleObject.throwInaccessibleObjectException(AccessibleObject.java:353)
+        at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:329)
+        at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:277)
+        at java.base/java.lang.reflect.Method.checkCanSetAccessible(Method.java:182)
+        at java.base/java.lang.reflect.Method.setAccessible(Method.java:176)
+        at org.mozilla.javascript.JavaMembers.discoverAccessibleMethods(JavaMembers.java:325)
+        at org.mozilla.javascript.JavaMembers.discoverAccessibleMethods(JavaMembers.java:302)
+        at org.mozilla.javascript.JavaMembers.reflect(JavaMembers.java:419)
+        at org.mozilla.javascript.JavaMembers.<init>(JavaMembers.java:43)
+        at org.mozilla.javascript.JavaMembers.lookupClass(JavaMembers.java:807)
+        at org.mozilla.javascript.NativeJavaClass.initMembers(NativeJavaClass.java:49)
+        at org.mozilla.javascript.NativeJavaObject.<init>(NativeJavaObject.java:44)
+        at org.mozilla.javascript.NativeJavaClass.<init>(NativeJavaClass.java:43)
+        at org.mozilla.javascript.NativeJavaClass.<init>(NativeJavaClass.java:39)
+        at org.mozilla.javascript.WrapFactory.wrapJavaClass(WrapFactory.java:134)
+        at org.mozilla.javascript.NativeJavaPackage.getPkgProperty(NativeJavaPackage.java:133)
+        at org.mozilla.javascript.NativeJavaPackage.get(NativeJavaPackage.java:82)
+        at org.mozilla.javascript.ScriptableObject.getProperty(ScriptableObject.java:2184)
+        at org.mozilla.javascript.ScriptRuntime.getObjectProp(ScriptRuntime.java:1492)
+        at org.mozilla.javascript.ScriptRuntime.getObjectProp(ScriptRuntime.java:1485)
+        at org.mozilla.javascript.gen.secure_caller_test_js_8._c_script_0(secure-caller-test.js:1)
+        at org.mozilla.javascript.gen.secure_caller_test_js_8.call(secure-caller-test.js)
+        at org.mozilla.javascript.ContextFactory.doTopCall(ContextFactory.java:394)
+        at org.mozilla.javascript.ScriptRuntime.doTopCall(ScriptRuntime.java:3090)
+        at org.mozilla.javascript.gen.secure_caller_test_js_8.call(secure-caller-test.js)
+        at org.mozilla.javascript.gen.secure_caller_test_js_8.exec(secure-caller-test.js)
+        at org.mozilla.javascript.Context.evaluateString(Context.java:1079)
+        at org_mozilla.rhino.SecureCallerAnonymous2Test.lambda$exerciseSecureCaller$0(SecureCallerAnonymous2Test.java:65)
+        at org.mozilla.javascript.Context.call(Context.java:489)
+        at org.mozilla.javascript.ContextFactory.call(ContextFactory.java:504)
+        at org_mozilla.rhino.SecureCallerAnonymous2Test.exerciseSecureCaller(SecureCallerAnonymous2Test.java:49)
+        at org_mozilla.rhino.SecureCallerAnonymous2Test.enhancedJavaAccessInvokesSecureCallerWithCodeSource(SecureCallerAnonymous2Test.java:29)
+
+20 tests completed, 1 failed
+
+> Task :test FAILED
+
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a/tests/src/org.mozilla/rhino/1.7R5/build/reports/problems/problems-report.html
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a/tests/src/org.mozilla/rhino/1.7R5/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 7s
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+14 actionable tasks: 3 executed, 11 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2735-fbbdc93a/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.mozilla:rhino:1.7R5 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 8s
+9 actionable tasks: 1 executed, 8 up-to-date
