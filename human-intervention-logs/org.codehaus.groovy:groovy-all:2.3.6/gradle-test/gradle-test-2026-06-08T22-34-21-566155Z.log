@@ -1,0 +1,181 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.codehaus.groovy:groovy-all:2.3.6
+Command: `/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2666-24ba94ee/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 11 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :compileGroovy NO-SOURCE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :compileTestJava NO-SOURCE
+> Task :compileTestGroovy
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+
+> Task :test FAILED
+
+SqlTest > reportsClassNotFoundWhenDriverCannotBeResolved() FAILED
+    org.opentest4j.AssertionFailedError: Unexpected exception type thrown, expected: <java.lang.ClassNotFoundException> but was: <java.lang.ClassCircularityError>
+        at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+        at app//org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:67)
+        at app//org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+        at app//org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3083)
+        at app//org_codehaus_groovy.groovy_all.SqlTest.reportsClassNotFoundWhenDriverCannotBeResolved(SqlTest.groovy:54)
+
+        Caused by:
+        java.lang.ClassCircularityError: java/lang/ClassNotFoundExceptionBeanInfo
+            at java.base/java.lang.Class.forName0(Native Method)
+            at java.base/java.lang.Class.forName(Class.java:534)
+            at java.base/java.lang.Class.forName(Class.java:513)
+            at java.desktop/com.sun.beans.finder.ClassFinder.findClass(ClassFinder.java:67)
+            at java.desktop/com.sun.beans.finder.ClassFinder.findClass(ClassFinder.java:106)
+            at java.desktop/com.sun.beans.finder.InstanceFinder.instantiate(InstanceFinder.java:94)
+            at java.desktop/com.sun.beans.finder.InstanceFinder.find(InstanceFinder.java:66)
+            at java.desktop/com.sun.beans.finder.BeanInfoFinder.find(BeanInfoFinder.java:41)
+            at java.desktop/java.beans.Introspector.findExplicitBeanInfo(Introspector.java:468)
+            at java.desktop/java.beans.Introspector.<init>(Introspector.java:418)
+            at java.desktop/java.beans.Introspector.getBeanInfo(Introspector.java:195)
+            at groovy.lang.MetaClassImpl.lambda$addProperties$25(MetaClassImpl.java:3472)
+            at java.base/java.security.AccessController.doPrivileged(AccessController.java:571)
+            at groovy.lang.MetaClassImpl.doPrivileged(MetaClassImpl.java:3525)
+            at groovy.lang.MetaClassImpl.addProperties(MetaClassImpl.java:3472)
+            at groovy.lang.MetaClassImpl.reinitialize(MetaClassImpl.java:3454)
+            at groovy.lang.MetaClassImpl.initialize(MetaClassImpl.java:3447)
+            at org.codehaus.groovy.reflection.ClassInfo.getMetaClassUnderLock(ClassInfo.java:272)
+            at org.codehaus.groovy.reflection.ClassInfo.getMetaClass(ClassInfo.java:314)
+            at org.codehaus.groovy.runtime.metaclass.MetaClassRegistryImpl.getMetaClass(MetaClassRegistryImpl.java:269)
+            at org.codehaus.groovy.vmplugin.v8.Selector$InitSelector.getMetaClass(Selector.java:419)
+            at org.codehaus.groovy.vmplugin.v8.Selector$MethodSelector.setCallSiteTarget(Selector.java:1033)
+            at org.codehaus.groovy.vmplugin.v8.IndyInterface.fallback(IndyInterface.java:360)
+            at org.codehaus.groovy.vmplugin.v8.IndyInterface.access$000(IndyInterface.java:50)
+            at org.codehaus.groovy.vmplugin.v8.IndyInterface$FallbackSupplier.get(IndyInterface.java:282)
+            at org.codehaus.groovy.vmplugin.v8.IndyInterface.lambda$fromCache$1(IndyInterface.java:304)
+            at org.codehaus.groovy.vmplugin.v8.CacheableCallSite.getAndPut(CacheableCallSite.java:70)
+            at org.codehaus.groovy.vmplugin.v8.IndyInterface.lambda$fromCache$2(IndyInterface.java:301)
+            at org.codehaus.groovy.vmplugin.v8.IndyInterface.doWithCallSite(IndyInterface.java:376)
+            at org.codehaus.groovy.vmplugin.v8.IndyInterface.fromCache(IndyInterface.java:298)
+            at org_codehaus_groovy.groovy_all.SqlTest$RejectingClassLoader.loadClass(SqlTest.groovy:90)
+            at java.base/java.lang.Class.forName0(Native Method)
+            at java.base/java.lang.Class.forName(Class.java:534)
+            at java.base/java.lang.Class.forName(Class.java:513)
+            at java.desktop/com.sun.beans.finder.ClassFinder.findClass(ClassFinder.java:67)
+            at java.desktop/com.sun.beans.finder.ClassFinder.findClass(ClassFinder.java:106)
+            at java.desktop/com.sun.beans.finder.InstanceFinder.instantiate(InstanceFinder.java:94)
+            at java.desktop/com.sun.beans.finder.InstanceFinder.find(InstanceFinder.java:66)
+            at java.desktop/com.sun.beans.finder.BeanInfoFinder.find(BeanInfoFinder.java:41)
+            at java.desktop/java.beans.Introspector.findExplicitBeanInfo(Introspector.java:468)
+            at java.desktop/java.beans.Introspector.<init>(Introspector.java:418)
+            at java.desktop/java.beans.Introspector.getBeanInfo(Introspector.java:195)
+            at groovy.lang.MetaClassImpl.lambda$addProperties$25(MetaClassImpl.java:3472)
+            at java.base/java.security.AccessController.doPrivileged(AccessController.java:571)
+            at groovy.lang.MetaClassImpl.doPrivileged(MetaClassImpl.java:3525)
+            at groovy.lang.MetaClassImpl.addProperties(MetaClassImpl.java:3472)
+            at groovy.lang.MetaClassImpl.reinitialize(MetaClassImpl.java:3454)
+            at groovy.lang.MetaClassImpl.initialize(MetaClassImpl.java:3447)
+            at org.codehaus.groovy.reflection.ClassInfo.getMetaClassUnderLock(ClassInfo.java:272)
+            at org.codehaus.groovy.reflection.ClassInfo.getMetaClass(ClassInfo.java:314)
+            at org.codehaus.groovy.runtime.metaclass.MetaClassRegistryImpl.getMetaClass(MetaClassRegistryImpl.java:269)
+            at org.codehaus.groovy.vmplugin.v8.Selector$InitSelector.getMetaClass(Selector.java:419)
+            at org.codehaus.groovy.vmplugin.v8.Selector$MethodSelector.setCallSiteTarget(Selector.java:1033)
+            at org.codehaus.groovy.vmplugin.v8.IndyInterface.fallback(IndyInterface.java:360)
+            at org.codehaus.groovy.vmplugin.v8.IndyInterface.access$000(IndyInterface.java:50)
+            at org.codehaus.groovy.vmplugin.v8.IndyInterface$FallbackSupplier.get(IndyInterface.java:282)
+            at org.codehaus.groovy.vmplugin.v8.IndyInterface.lambda$fromCache$1(IndyInterface.java:304)
+            at org.codehaus.groovy.vmplugin.v8.CacheableCallSite.getAndPut(CacheableCallSite.java:70)
+            at org.codehaus.groovy.vmplugin.v8.IndyInterface.lambda$fromCache$2(IndyInterface.java:301)
+            at org.codehaus.groovy.vmplugin.v8.IndyInterface.doWithCallSite(IndyInterface.java:376)
+            at org.codehaus.groovy.vmplugin.v8.IndyInterface.fromCache(IndyInterface.java:298)
+            at org_codehaus_groovy.groovy_all.SqlTest$RejectingClassLoader.loadClass(SqlTest.groovy:90)
+            at groovy.sql.Sql.loadDriver(Sql.java:706)
+            at org_codehaus_groovy.groovy_all.SqlTest$_reportsClassNotFoundWhenDriverCannotBeResolved_closure1.doCall(SqlTest.groovy:55)
+            at org_codehaus_groovy.groovy_all.SqlTest$_reportsClassNotFoundWhenDriverCannotBeResolved_closure1.doCall(SqlTest.groovy)
+            at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+            at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+            at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:343)
+            at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:328)
+            at org.codehaus.groovy.runtime.metaclass.ClosureMetaClass.invokeMethod(ClosureMetaClass.java:280)
+            at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1007)
+            at groovy.lang.Closure.call(Closure.java:433)
+            at org.codehaus.groovy.runtime.ConvertedClosure.invokeCustom(ConvertedClosure.java:52)
+            at org.codehaus.groovy.runtime.ConversionHandler.invoke(ConversionHandler.java:113)
+            at jdk.proxy3/jdk.proxy3.$Proxy29.execute(Unknown Source)
+            at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
+            ... 3 more
+
+16 tests completed, 1 failed
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+
+> [Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2666-24ba94ee/tests/src/org.codehaus.groovy/groovy-all/2.3.6/build/reports/problems/problems-report.html
+There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2666-24ba94ee/tests/src/org.codehaus.groovy/groovy-all/2.3.6/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 6s
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+14 actionable tasks: 3 executed, 11 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2666-24ba94ee/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.codehaus.groovy:groovy-all:2.3.6 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 7s
+9 actionable tasks: 1 executed, 8 up-to-date
