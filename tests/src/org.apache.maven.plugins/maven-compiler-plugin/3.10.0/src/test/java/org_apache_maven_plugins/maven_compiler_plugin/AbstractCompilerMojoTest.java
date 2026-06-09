@@ -165,6 +165,11 @@ public class AbstractCompilerMojoTest {
         protected File getGeneratedSourcesDirectory() {
             return new File("target/generated-sources/annotations");
         }
+
+        @Override
+        protected String getDebugFileName() {
+            return null;
+        }
     }
 
     public static final class TestToolchainManager implements ToolchainManager {
