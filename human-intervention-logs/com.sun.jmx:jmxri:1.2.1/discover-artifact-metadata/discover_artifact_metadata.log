@@ -1,0 +1,880 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019eacd3-a6d3-7641-ae72-e303a73d4081
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.sun.jmx:jmxri:1.2.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "1.2.1" when "$version$" is replaced with "1.2.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "com.sun.jmx:jmxri:1.2.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.2.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll look up the published artifact metadata first, then verify whether the JAR contains JVM class files before updating the JSON.
+web search: 
+web search: Maven com.sun.jmx jmxri 1.2.1 sources
+web search: 
+web search: https://repo1.maven.org/maven2/com/sun/jmx/jmxri/1.2.1/
+codex
+The Maven Central listing for `com.sun.jmx:jmxri:1.2.1` only exposes a POM, so I’m checking mirrors and the old Sun/JMX RI bundle next to avoid inventing source or test URLs.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json && sed -n '1,160p' build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+-rw-rw-r-- 1 vjovanov vjovanov 48 Jun  9 16:40 build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
+{
+  "coordinates" : "com.sun.jmx:jmxri:1.2.1"
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.sun.jmx</groupId>
+  <artifactId>jmxri</artifactId>
+  <version>1.2.1</version>
+</project>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/sun/jmx/jmxri/1.2.1/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/sun/jmx/jmxri/1.2.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/sun/jmx/jmxri/1.2.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jmxri-1.2.1.pom" title="jmxri-1.2.1.pom">jmxri-1.2.1.pom</a>                                   2005-12-06 20:10       155      
+<a href="jmxri-1.2.1.pom.md5" title="jmxri-1.2.1.pom.md5">jmxri-1.2.1.pom.md5</a>                               2005-12-06 20:10        32      
+<a href="jmxri-1.2.1.pom.sha1" title="jmxri-1.2.1.pom.sha1">jmxri-1.2.1.pom.sha1</a>                              2005-12-06 20:10        40      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2005-12-06 20:10       115      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2005-12-06 20:10        79      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2005-12-06 20:10       134      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: "jmxri-1.2.1"
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/javax/management/jmxri/1.2.1/jmxri-1.2.1.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javax.management</groupId>
+  <artifactId>jmxri</artifactId>
+  <version>1.2.1</version>
+  <name>JMX 1.2.1 Reference Implementation</name>
+  <url>http://java.sun.com/products/JavaManagement/</url>
+
+  <distributionManagement>
+    <downloadUrl>http://java.sun.com/products/JavaManagement/download.html</downloadUrl>
+  </distributionManagement>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/javax/management/jmxri/1.2.1/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+ succeeded in 0ms:
+<html>
+<head><title>Index of /maven2/javax/management/jmxri/1.2.1/</title></head>
+<body bgcolor=white>
+<h1>Index of /maven2/javax/management/jmxri/1.2.1/</h1>
+<hr>
+<pre>
+<a href=../>../</a>
+<a href="jmxri-1.2.1.pom.sha1">jmxri-1.2.1.pom.sha1</a>                               2006-03-16 22:12                  145
+<a href="jmxri-1.2.1.pom">jmxri-1.2.1.pom</a>                                    2006-03-16 21:27                  410
+<a href="jmxri-1.2.1.pom.md5">jmxri-1.2.1.pom.md5</a>                                2006-03-16 22:12                  137
+</pre>
+<hr>
+</body>
+</html>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://download.dcache.org/nexus/service/rest/repository/browse/public-snapshots/com/sun/jmx/jmxri/1.2.1/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+ succeeded in 193ms:
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Index of /com/sun/jmx/jmxri/1.2.1</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+
+    <link rel="icon" type="image/png" href="../../../../../../../../../../static/rapture/resources/safari-favicon-32x32.png?3.70.3-01" sizes="32x32">
+    <link rel="mask-icon" href="../../../../../../../../../../static/rapture/resources/favicon-white.svg?3.70.3-01" color="#00bb6c">
+    <link rel="icon" type="image/png" href="../../../../../../../../../../static/rapture/resources/favicon.svg?3.70.3-01" sizes="16x16">
+
+    <link rel="stylesheet" type="text/css" href="../../../../../../../../../../static/css/nexus-content.css?3.70.3-01"/>
+</head>
+<body class="htmlIndex">
+<h1>Index of /com/sun/jmx/jmxri/1.2.1</h1>
+
+
+<table cellspacing="10">
+    <tr>
+        <th align="left">Name</th>
+        <th>Last Modified</th>
+        <th>Size</th>
+        <th>Description</th>
+    </tr>
+        <tr>
+            <td><a href="../">Parent Directory</a></td>
+        </tr>
+        <tr>
+            <td><a href="https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.jar">jmxri-1.2.1.jar</a></td>
+            <td>
+                    Tue Mar 13 07:12:16 GMT 2018
+            </td>
+            <td align="right">
+                    365858
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.jar.md5">jmxri-1.2.1.jar.md5</a></td>
+            <td>
+                    Tue Mar 13 07:12:40 GMT 2018
+            </td>
+            <td align="right">
+                    32
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.jar.sha1">jmxri-1.2.1.jar.sha1</a></td>
+            <td>
+                    Tue Mar 13 07:12:40 GMT 2018
+            </td>
+            <td align="right">
+                    40
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.pom">jmxri-1.2.1.pom</a></td>
+            <td>
+                    Tue Mar 13 07:12:16 GMT 2018
+            </td>
+            <td align="right">
+                    303
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.pom.md5">jmxri-1.2.1.pom.md5</a></td>
+            <td>
+                    Tue Mar 13 07:12:16 GMT 2018
+            </td>
+            <td align="right">
+                    32
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.pom.sha1">jmxri-1.2.1.pom.sha1</a></td>
+            <td>
+                    Tue Mar 13 07:12:16 GMT 2018
+            </td>
+            <td align="right">
+                    40
+            </td>
+            <td></td>
+        </tr>
+</table>
+</body>
+</html>
+
+codex
+I found an alternate Maven repository with an actual `jmxri-1.2.1.jar`, while Central has only the POM. I’m going to inspect that JAR and its POM now; this matters for whether the artifact is a Native Image target and for picking Maven-hosted URLs where possible.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/jmxri-1.2.1.jar" https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1.jar; jar tf "$tmp/jmxri-1.2.1.jar" | sed -n '"'1,80p'; echo CLASS_COUNT="'$(jar tf "$tmp/jmxri-1.2.1.jar" | rg -c '"'\\.class"'$'"' || true); rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+exec
+/usr/bin/bash -lc 'curl -fsSL https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/ | rg -n "sources|test|javadoc|jar|pom"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+ succeeded in 107ms:
+9:    <link rel="icon" type="image/png" href="../../../../../../../static/rapture/resources/safari-favicon-32x32.png?3.70.3-01" sizes="32x32">
+10:  <link rel="mask-icon" href="../../../../../../../static/rapture/resources/favicon-white.svg?3.70.3-01" color="#00bb6c">
+11:    <link rel="icon" type="image/png" href="../../../../../../../static/rapture/resources/favicon.svg?3.70.3-01" sizes="16x16">
+19:      <img src="../../../../../../../static/rapture/resources/nxrm-reverse-icon.png?3.70.3-01" alt="Product logo"/>
+34:    <img src="../../../../../../../static/rapture/resources/icons/x32/database.png?3.70.3-01" alt="Repository image"/>
+
+ succeeded in 1608ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javax.management</groupId>
+  <artifactId>jmxri</artifactId>
+  <version>1.2.1</version>
+  <name>JMX 1.2.1 Reference Implementation</name>
+  <url>http://java.sun.com/products/JavaManagement/</url>
+</project>
+
+ succeeded in 1987ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/sun/
+com/sun/jmx/
+com/sun/jmx/mbeanserver/
+com/sun/jmx/interceptor/
+com/sun/jmx/trace/
+com/sun/jmx/defaults/
+com/sun/management/
+com/sun/management/jmx/
+javax/
+javax/management/
+javax/management/loading/
+javax/management/openmbean/
+javax/management/relation/
+javax/management/timer/
+javax/management/modelmbean/
+javax/management/monitor/
+com/sun/jmx/mbeanserver/MetaData.class
+com/sun/jmx/mbeanserver/Repository.class
+com/sun/jmx/mbeanserver/JmxMBeanServerBuilder.class
+com/sun/jmx/mbeanserver/MBeanInstantiatorImpl.class
+com/sun/jmx/mbeanserver/MBeanInstantiator.class
+com/sun/jmx/mbeanserver/ModifiableClassLoaderRepository.class
+com/sun/jmx/mbeanserver/JmxMBeanServer$1.class
+com/sun/jmx/mbeanserver/JmxMBeanServer.class
+com/sun/jmx/mbeanserver/SunJmxMBeanServer.class
+com/sun/jmx/mbeanserver/SecureClassLoaderRepository.class
+com/sun/jmx/mbeanserver/Introspector.class
+com/sun/jmx/mbeanserver/MBeanServerDelegateImpl.class
+com/sun/jmx/mbeanserver/ObjectInputStreamWithLoader.class
+com/sun/jmx/mbeanserver/GetPropertyAction.class
+com/sun/jmx/mbeanserver/ClassLoaderRepositorySupport$LoaderEntry.class
+com/sun/jmx/mbeanserver/ClassLoaderRepositorySupport.class
+com/sun/jmx/mbeanserver/DynamicMetaDataImpl.class
+com/sun/jmx/mbeanserver/BaseMetaDataImpl.class
+com/sun/jmx/mbeanserver/StandardMetaDataImpl.class
+com/sun/jmx/mbeanserver/MetaDataImpl$PrivateStandardMeta.class
+com/sun/jmx/mbeanserver/MetaDataImpl$PrivateDynamicMeta.class
+com/sun/jmx/mbeanserver/MetaDataImpl.class
+com/sun/jmx/mbeanserver/NamedObject.class
+com/sun/jmx/mbeanserver/RepositorySupport$ObjectNamePattern.class
+com/sun/jmx/mbeanserver/RepositorySupport.class
+com/sun/jmx/interceptor/MBeanServerInterceptor.class
+com/sun/jmx/interceptor/InterceptorNotPresentException.class
+com/sun/jmx/interceptor/ForwardingMBeanServerInterceptor.class
+com/sun/jmx/interceptor/InterceptorCycleException.class
+com/sun/jmx/interceptor/DefaultMBeanServerInterceptor$ListenerWrapper.class
+com/sun/jmx/interceptor/DefaultMBeanServerInterceptor$1.class
+com/sun/jmx/interceptor/DefaultMBeanServerInterceptor.class
+com/sun/jmx/trace/TraceTags.class
+com/sun/jmx/trace/TraceDestination.class
+com/sun/jmx/trace/Trace.class
+com/sun/jmx/trace/TraceImplementation.class
+com/sun/jmx/trace/TraceManager.class
+com/sun/jmx/defaults/ServiceName.class
+com/sun/jmx/defaults/JmxProperties.class
+com/sun/management/jmx/Trace.class
+com/sun/management/jmx/TraceListener.class
+com/sun/management/jmx/ServiceName.class
+com/sun/management/jmx/MBeanServerImpl.class
+com/sun/management/jmx/Introspector.class
+com/sun/management/jmx/JMProperties.class
+com/sun/management/jmx/TraceFilter.class
+com/sun/management/jmx/TraceNotification.class
+javax/management/NotCompliantMBeanException.class
+javax/management/OperationsException.class
+javax/management/JMException.class
+javax/management/ObjectName$PropertyLengthCouple.class
+javax/management/ObjectName$Property.class
+javax/management/ObjectName$1.class
+javax/management/ObjectName.class
+javax/management/QueryExp.class
+javax/management/MalformedObjectNameException.class
+javax/management/MBeanServer.class
+javax/management/MBeanServerConnection.class
+javax/management/BadStringOperationException.class
+javax/management/BadBinaryOpValueExpException.class
+javax/management/loading/ClassLoaderRepository.class
+CLASS_COUNT=222
+
+exec
+/usr/bin/bash -lc "rg -n '\"N/A\"' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"documentation-url\"|\"test-code-url\"' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n 'maven2|repo1.maven|download\\.dcache|java\\.sun\\.com|Oracle' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+ succeeded in 0ms:
+codex
+This directory appears to contain only the target JSON, so there is no local precedent to mirror. I’m checking the project’s index schema and a few existing metadata entries outside `build/` for how `N/A` and Maven-hosted artifact URLs are usually represented.
+exec
+/usr/bin/bash -lc "ls -la build/discovered-artifact-metadata | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+ succeeded in 0ms:
+total 12
+drwxrwxr-x 2 vjovanov vjovanov 4096 Jun  9 16:40 .
+drwxrwxr-x 4 vjovanov vjovanov 4096 Jun  9 16:40 ..
+-rw-rw-r-- 1 vjovanov vjovanov   48 Jun  9 16:40 com.sun.jmx-jmxri-1.2.1.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"not-for-native-image\"|\"language\"' metadata tests docs | head -120" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+ succeeded in 0ms:
+docs/CONTRIBUTING.md:140:     "source-code-url": "https://github.com/example/repo/tree/main/metadata/org.example/library/$version$",
+docs/CONTRIBUTING.md:142:     "test-code-url": "https://github.com/example/repo/tree/main/tests/src/org.example/library/$version$",
+docs/CONTRIBUTING.md:143:     "documentation-url": "https://github.com/example/repo/tree/main/README.md",
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:229:                promoteUrl("source-code-url", entry.sourceCodeUrl(), oldVersion, newVersion),
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:230:                promoteUrl("test-code-url", entry.testCodeUrl(), oldVersion, newVersion),
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/TestedVersionUpdaterTask.java:231:                promoteUrl("documentation-url", entry.documentationUrl(), oldVersion, newVersion)
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:27:        @JsonProperty("source-code-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:31:        @JsonProperty("test-code-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:33:        @JsonProperty("documentation-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:37:        @JsonProperty("language")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:47:        @JsonProperty("not-for-native-image")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:18:        @JsonProperty("source-code-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:22:        @JsonProperty("test-code-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:24:        @JsonProperty("documentation-url")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:28:        @JsonProperty("language")
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:30:        @JsonProperty("not-for-native-image")
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:57:            "source-code-url",
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:58:            "test-code-url",
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTask.java:59:            "documentation-url"
+metadata/jakarta.transaction/jakarta.transaction-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-sources.jar",
+metadata/jakarta.transaction/jakarta.transaction-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.transaction/jakarta.transaction-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:7:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:280:                Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:285:                If the library is not language-specific, leave the "language" field absent.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:298:                - Set the "language" field only when the library is language-specific.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:358:                    - Set "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:361:                    - Set "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:362:                    - Set "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:363:                    - Treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:368:                    - Set "language" to the structured language object when the library is language-specific; otherwise leave the field absent.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:372:                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:375:                - Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:378:                - Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:379:                - Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:380:                - When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:385:                - Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:7:    "test-code-url" : "https://github.com/HtmlUnit/htmlunit-cssparser/tree/$version$/src/test",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-javadoc.jar",
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:154:                Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:159:                If the library is not language-specific, leave the "language" field absent.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:161:                Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:162:                If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:163:                If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:172:                - Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:176:                - Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "%s".
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:179:                - Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-javadoc.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-javadoc.jar",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:210:                    .containsEntry("source-code-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-sources.jar")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:211:                    .containsEntry("documentation-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-javadoc.jar");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:212:            assertThat(indexEntries.get(0)).containsEntry("test-code-url", "N/A");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:250:                    .containsEntry("source-code-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-sources.jar")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:251:                    .containsEntry("documentation-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-javadoc.jar");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:286:                    .containsEntry("test-code-url", baseUrl + "/maven/com/example/demo/$version$/demo-$version$-tests.jar");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:321:                    .containsEntry("test-code-url", baseUrl + "/svn/demo/tags/$version$/src/test");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:436:        appendUrlField(fields, "source-code-url", sourceCodeUrl);
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:437:        appendUrlField(fields, "test-code-url", testCodeUrl);
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/TestedVersionUpdaterTaskTests.java:438:        appendUrlField(fields, "documentation-url", documentationUrl);
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/yetus-project/$version$/yetus-project-$version$-source-release.tar.gz",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:22:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:24:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:25:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-javadoc.jar",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:144:                    "not-for-native-image": true,
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:155:                .hasMessageContaining("not-for-native-image");
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:229:                .containsEntry("source-code-url", "https://example.com/source")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:231:                .containsEntry("test-code-url", "https://example.com/tests")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:232:                .containsEntry("documentation-url", "https://example.com/docs")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:234:                .containsEntry("language", Map.of("name", "kotlin", "version", "2.0"));
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:278:                .containsEntry("source-code-url", "https://example.com/source")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:280:                .containsEntry("test-code-url", "https://example.com/tests")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:281:                .containsEntry("documentation-url", "https://example.com/docs")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:283:                .containsEntry("language", Map.of("name", "groovy", "version", "4.0"));
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-websocket/websocket-api/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-javadoc.jar",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:256:                    "source-code-url": "https://example.com/source-a",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:258:                    "test-code-url": "https://example.com/tests-a",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:259:                    "documentation-url": "https://example.com/docs-a",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-javadoc.jar",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:80:                  "source-code-url": "https://github.com/ktorio/ktor/tree/$version$",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:82:                  "test-code-url": "https://github.com/ktorio/ktor/tree/$version$/ktor-server",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:83:                  "documentation-url": "https://github.com/ktorio/ktor/tree/$version$/README.md",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:29:                    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-sources.jar",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:30:                    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:49:                        .contains("source-code-url")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:52:                        .contains("documentation-url")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:62:                    "source-code-url": "https://repo.maven.apache.org/maven2/com/example/demo/$version$/demo-$version$-sources.jar",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/ValidateIndexFilesTaskTests.java:63:                    "documentation-url": "https://repo.maven.apache.org/maven2/com/example/demo/$version$/demo-$version$-javadoc.jar",
+metadata/io.suzaku/boopickle_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_2.13/$version$/boopickle_2.13-$version$-sources.jar",
+metadata/io.suzaku/boopickle_2.13/index.json:7:    "test-code-url" : "https://github.com/suzaku-io/boopickle/tree/v$version$/boopickle/shared/src/test",
+metadata/io.suzaku/boopickle_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_2.13/$version$/boopickle_2.13-$version$-javadoc.jar",
+metadata/io.suzaku/boopickle_2.13/index.json:10:    "language" : {
+
+exec
+/usr/bin/bash -lc "rg --files | rg 'index\\.json"'$|discovered-artifact-metadata|artifact-metadata'"' | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+ succeeded in 0ms:
+metadata/org.springframework/spring-instrument/index.json
+metadata/org.springframework/spring-web/index.json
+metadata/org.springframework/spring-context-support/index.json
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-yaml-provider/index.json
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-json-provider/index.json
+metadata/org.springframework/spring-tx/index.json
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-base/index.json
+metadata/jakarta.authentication/jakarta.authentication-api/index.json
+metadata/org.apache.thrift/libthrift/index.json
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json
+metadata/com.aayushatharva.brotli4j/service/index.json
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json
+metadata/jakarta.transaction/jakarta.transaction-api/index.json
+metadata/org.junit.jupiter/junit-jupiter/index.json
+metadata/io.github.oshai/kotlin-logging-jvm/index.json
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json
+metadata/org.junit.jupiter/junit-jupiter-params/index.json
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json
+metadata/com.typesafe.slick/slick_2.13/index.json
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json
+metadata/org.apache.yetus/audience-annotations/index.json
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json
+metadata/org.awaitility/awaitility/index.json
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json
+metadata/io.suzaku/boopickle_2.13/index.json
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json
+metadata/io.suzaku/boopickle_3/index.json
+metadata/org.scalatest/scalatest_2.13/index.json
+metadata/com.google.javascript/closure-compiler-externs/index.json
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json
+metadata/net.bytebuddy/byte-buddy-agent/index.json
+metadata/org.scalatest/scalatest-diagrams_3/index.json
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json
+metadata/org.scalatest/scalatest-refspec_2.13/index.json
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json
+metadata/com.google.api.grpc/grpc-google-common-protos/index.json
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json
+metadata/org.scalatest/scalatest-featurespec_3/index.json
+metadata/org.scalatest/scalatest-funspec_3/index.json
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json
+metadata/org.springframework/spring-expression/index.json
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json
+metadata/com.google.api.grpc/proto-google-cloud-secretmanager-v1beta1/index.json
+metadata/org.springframework/spring-test/index.json
+metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json
+metadata/org.springframework/spring-aspects/index.json
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json
+metadata/org.scalatest/scalatest-compatible/index.json
+metadata/org.springframework/spring-webflux/index.json
+metadata/org.scalatest/scalatest-funsuite_3/index.json
+metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json
+metadata/com.google.api.grpc/proto-google-cloud-monitoring-v3/index.json
+metadata/org.scalatest/scalatest-funspec_2.13/index.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/index.json
+metadata/com.google.api.grpc/proto-google-common-protos/index.json
+metadata/org.scalatest/scalatest-flatspec_3/index.json
+metadata/org.springframework/spring-aop/index.json
+metadata/org.scalatest/scalatest-freespec_2.13/index.json
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/index.json
+metadata/org.scalatest/scalatest_3/index.json
+metadata/org.springframework/spring-jcl/index.json
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/index.json
+metadata/org.scalatest/scalatest-wordspec_3/index.json
+metadata/org.springframework/spring-context/index.json
+metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-database-v1/index.json
+metadata/com.google.api.grpc/proto-google-cloud-logging-v2/index.json
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-executor-v1/index.json
+metadata/com.google.api.grpc/proto-google-iam-v1/index.json
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json
+
+web search: 
+web search: "JMX 1.2.1 Reference Implementation"
+web search: 
+web search: https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/
+exec
+/usr/bin/bash -lc 'curl -fsSL https://search.maven.org/solrsearch/select?q=g:%22com.sun.jmx%22%20AND%20a:%22jmxri%22%20AND%20v:%221.2.1%22&core=gav&rows=20&wt=json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+ succeeded in 51ms:
+exec
+/usr/bin/bash -lc "for u in \\
+  https://repo1.maven.org/maven2/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1-sources.jar \\
+  https://repo1.maven.org/maven2/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1-tests.jar \\
+  https://repo1.maven.org/maven2/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1-javadoc.jar \\
+  https://repo1.maven.org/maven2/javax/management/jmxri/1.2.1/jmxri-1.2.1-sources.jar \\
+  https://repo1.maven.org/maven2/javax/management/jmxri/1.2.1/jmxri-1.2.1-tests.jar \\
+  https://repo1.maven.org/maven2/javax/management/jmxri/1.2.1/jmxri-1.2.1-javadoc.jar \\
+  https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1-sources.jar \\
+  https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1-tests.jar \\
+  https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1-javadoc.jar; do code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$u"); printf '"'%s %s\\n' \""'$code" "$u"; done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22javax.management%22%20AND%20a:%22jmxri%22%20AND%20v:%221.2.1%22&core=gav&rows=20&wt=json'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+ succeeded in 0ms:
+{"responseHeader":{"status":0,"QTime":4,"params":{"q":"g:\"javax.management\" AND a:\"jmxri\" AND v:\"1.2.1\"","core":"gav","indent":"off","fl":"id,g,a,v,p,ec,timestamp,tags","start":"","sort":"score desc,timestamp desc,g asc,a asc,v desc","rows":"20","wt":"json","version":"2.2"}},"response":{"numFound":1,"start":0,"docs":[{"id":"javax.management:jmxri:1.2.1","g":"javax.management","a":"jmxri","v":"1.2.1","p":"jar","timestamp":1142566034000,"ec":[".pom"]}]}}
+ succeeded in 10752ms:
+404 https://repo1.maven.org/maven2/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1-tests.jar
+404 https://repo1.maven.org/maven2/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1-javadoc.jar
+404 https://repo1.maven.org/maven2/javax/management/jmxri/1.2.1/jmxri-1.2.1-sources.jar
+404 https://repo1.maven.org/maven2/javax/management/jmxri/1.2.1/jmxri-1.2.1-tests.jar
+404 https://repo1.maven.org/maven2/javax/management/jmxri/1.2.1/jmxri-1.2.1-javadoc.jar
+404 https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1-sources.jar
+404 https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1-tests.jar
+404 https://download.dcache.org/nexus/repository/public-snapshots/com/sun/jmx/jmxri/1.2.1/jmxri-1.2.1-javadoc.jar
+
+codex
+The JAR has 222 `.class` files, so I will not mark it `not-for-native-image`. The Maven repositories I checked do not publish `sources`, `tests`, or `javadoc` classifiers for this artifact, so URL fields that cannot be verified will stay `N/A`.
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22com.sun.jmx%22%20AND%20a:%22jmxri%22%20AND%20v:%221.2.1%22&core=gav&rows=20&wt=json'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+ succeeded in 0ms:
+{"responseHeader":{"status":0,"QTime":3,"params":{"q":"g:\"com.sun.jmx\" AND a:\"jmxri\" AND v:\"1.2.1\"","core":"gav","indent":"off","fl":"id,g,a,v,p,ec,timestamp,tags","start":"","sort":"score desc,timestamp desc,g asc,a asc,v desc","rows":"20","wt":"json","version":"2.2"}},"response":{"numFound":1,"start":0,"docs":[{"id":"com.sun.jmx:jmxri:1.2.1","g":"com.sun.jmx","a":"jmxri","v":"1.2.1","p":"jar","timestamp":1133899843000,"ec":[".pom"]}]}}
+exec
+/usr/bin/bash -lc "curl -I -L --max-time 20 http://java.sun.com/products/JavaManagement/ | sed -n '1,40p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+exec
+/usr/bin/bash -lc "curl -I -L --max-time 20 http://java.sun.com/products/JavaManagement/download.html | sed -n '1,40p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+exec
+/usr/bin/bash -lc "curl -I -L --max-time 20 https://www.javainthebox.net/laboratory/J2SE1.5/MonitoringAndManagement/JMX/materials/jmx-1_2_1-ri/jmx-1_2_1-bin/doc/ | sed -n '1,40p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+ succeeded in 496ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/1.1 301 Moved Permanently
+Server: AkamaiGHost
+Content-Length: 0
+Location: https://java.sun.com/products/JavaManagement/
+Cache-Control: max-age=0
+Expires: Tue, 09 Jun 2026 14:41:54 GMT
+Date: Tue, 09 Jun 2026 14:41:54 GMT
+Connection: keep-alive
+Akamai-Request-BC: [a=92.123.27.87,b=479407574,c=g,n=CH_ZH_GLATTBRUGG,o=20940]
+Akamai-GRN: 0.571b7b5c.1781016114.1c932dd6
+
+HTTP/2 301 
+server: AkamaiGHost
+content-length: 0
+location: http://www.oracle.com/technetwork/java/javase/tech/javamanagement-140525.html
+cache-control: max-age=0
+expires: Tue, 09 Jun 2026 14:41:55 GMT
+date: Tue, 09 Jun 2026 14:41:55 GMT
+akamai-request-bc: [a=92.123.27.52,b=497608910,c=g,n=CH_ZH_GLATTBRUGG,o=20940]
+akamai-grn: 0.341b7b5c.1781016115.1da8e8ce
+
+HTTP/1.1 301 Moved Permanently
+Server: AkamaiGHost
+Content-Length: 0
+Location: https://www.oracle.com/technetwork/java/javase/tech/javamanagement-140525.html
+Date: Tue, 09 Jun 2026 14:41:55 GMT
+Connection: keep-alive
+Akamai-Request-BC: [a=173.222.108.103,b=272451125,c=g,n=CH_ZH_GLATTBRUGG,o=20940]
+Akamai-GRN: 0.676cdead.1781016115.103d4635
+Set-Cookie: akaas_aud-seg-ocom-prod=2147483647~rv=49~id=dcd74e777bbe49ed46f77b1a5f407806; path=/
+X-Frame-Options: sameorigin
+Content-Security-Policy: frame-ancestors 'self' https://my.oracle.com https://eeho.fa.us2.oraclecloud.com https://blogs.oracle.com *.khapps.com *.khapps.jp *.lsapps.oracle.com *.lsapps.oracle.jp *.dev-lsapps.oracle.com https://oraclesso.sharepoint.com https://oracle.sharepoint.com https://partners.oracle.com https://partners-stage.oracle.com https://partners-test.oracle.com https://partners-sit.oracle.com https://partners-dev.oracle.com
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1
+Origin-Cache-Control: NO_HEADER_PRESENTED
+Origin-Edge-Control: NO_HEADER_PRESENTED
+Actual-Object-TTL: -1
+Server-Timing: ak_p; desc="1781016115258_2917035111_272451125_7_8695_7_0_-";dur=1
+
+HTTP/2 301 
+
+ succeeded in 497ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/1.1 301 Moved Permanently
+Server: AkamaiGHost
+Content-Length: 0
+Location: https://java.sun.com/products/JavaManagement/download.html
+Cache-Control: max-age=0
+Expires: Tue, 09 Jun 2026 14:41:54 GMT
+Date: Tue, 09 Jun 2026 14:41:54 GMT
+Connection: keep-alive
+Akamai-Request-BC: [a=92.123.27.87,b=479407575,c=g,n=CH_ZH_GLATTBRUGG,o=20940]
+Akamai-GRN: 0.571b7b5c.1781016114.1c932dd7
+
+HTTP/2 301 
+server: AkamaiGHost
+content-length: 0
+location: http://www.oracle.com/technetwork/java/javase/tech/javamanagement-140525.html
+cache-control: max-age=0
+expires: Tue, 09 Jun 2026 14:41:55 GMT
+date: Tue, 09 Jun 2026 14:41:55 GMT
+akamai-request-bc: [a=92.123.27.87,b=479407621,c=g,n=CH_ZH_GLATTBRUGG,o=20940]
+akamai-grn: 0.571b7b5c.1781016114.1c932e05
+
+HTTP/1.1 301 Moved Permanently
+Server: AkamaiGHost
+Content-Length: 0
+Location: https://www.oracle.com/technetwork/java/javase/tech/javamanagement-140525.html
+Date: Tue, 09 Jun 2026 14:41:55 GMT
+Connection: keep-alive
+Akamai-Request-BC: [a=173.222.108.102,b=156633762,c=g,n=CH_ZH_GLATTBRUGG,o=20940]
+Akamai-GRN: 0.666cdead.1781016115.9560aa2
+Set-Cookie: akaas_aud-seg-ocom-prod=2147483647~rv=91~id=ee0f7b40710df4fd89dd1de293f42b87; path=/
+X-Frame-Options: sameorigin
+Content-Security-Policy: frame-ancestors 'self' https://my.oracle.com https://eeho.fa.us2.oraclecloud.com https://blogs.oracle.com *.khapps.com *.khapps.jp *.lsapps.oracle.com *.lsapps.oracle.jp *.dev-lsapps.oracle.com https://oraclesso.sharepoint.com https://oracle.sharepoint.com https://partners.oracle.com https://partners-stage.oracle.com https://partners-test.oracle.com https://partners-sit.oracle.com https://partners-dev.oracle.com
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1
+Origin-Cache-Control: NO_HEADER_PRESENTED
+Origin-Edge-Control: NO_HEADER_PRESENTED
+Actual-Object-TTL: -1
+Server-Timing: ak_p; desc="1781016115167_2917035110_156633762_7_8345_6_0_-";dur=1
+
+HTTP/2 301 
+
+ succeeded in 1471ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+  0  3921    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+HTTP/2 200 
+content-type: text/html
+last-modified: Tue, 15 Jul 2003 08:24:26 GMT
+accept-ranges: bytes
+content-length: 3921
+date: Tue, 09 Jun 2026 14:41:57 GMT
+server: LiteSpeed
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, quic=":443"; ma=2592000; v="43,46"
+
+
+exec
+/usr/bin/bash -lc "curl -L -s -o /dev/null -w '%{url_effective}\\n%{http_code}\\n' http://java.sun.com/products/JavaManagement/" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+ succeeded in 164ms:
+https://www.oracle.com/java/technologies/javase/javamanagement.html
+200
+
+codex
+I’m updating the discovered metadata now: product root from the published POM redirect, Maven classifier URLs as `N/A` because they are absent, no language marker, and no Native Image exclusion.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
+diff --git a/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json b/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
+index 34416ce0d157d5f2de8610c1dbcf049fd70753c7..be84f4f9be52da815df1ca206fd6b0c0e961ca86
+--- a/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
++++ b/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.jmx:jmxri:1.2.1"
++  "coordinates" : "com.sun.jmx:jmxri:1.2.1",
++  "repository-url" : "https://www.oracle.com/java/technologies/javase/javamanagement.html",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "JMX RI 1.2.1 is Sun's reference implementation of the Java Management Extensions API, providing MBean server, monitoring, relation, timer, and model MBean classes for managing Java applications. It predates the JMX APIs bundled in the JDK and supplies the runtime classes used by older applications that depend directly on the standalone JMX RI artifact."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json b/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
+index 34416ce0d157d5f2de8610c1dbcf049fd70753c7..be84f4f9be52da815df1ca206fd6b0c0e961ca86
+--- a/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
++++ b/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.jmx:jmxri:1.2.1"
++  "coordinates" : "com.sun.jmx:jmxri:1.2.1",
++  "repository-url" : "https://www.oracle.com/java/technologies/javase/javamanagement.html",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "JMX RI 1.2.1 is Sun's reference implementation of the Java Management Extensions API, providing MBean server, monitoring, relation, timer, and model MBean classes for managing Java applications. It predates the JMX APIs bundled in the JDK and supplies the runtime classes used by older applications that depend directly on the standalone JMX RI artifact."
+ }
+
+codex
+I’ll do a quick parse check and inspect the final file to catch formatting or key drift before closing this out.
+exec
+/usr/bin/bash -lc "rg -n 'metadata-version|language|not-for-native-image|reason|replacement' build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json || true" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8
+ succeeded in 0ms:
+{
+  "coordinates": "com.sun.jmx:jmxri:1.2.1",
+  "repository-url": "https://www.oracle.com/java/technologies/javase/javamanagement.html",
+  "source-code-url": "N/A",
+  "test-code-url": "N/A",
+  "documentation-url": "N/A",
+  "description": "JMX RI 1.2.1 is Sun's reference implementation of the Java Management Extensions API, providing MBean server, monitoring, relation, timer, and model MBean classes for managing Java applications. It predates the JMX APIs bundled in the JDK and supplies the runtime classes used by older applications that depend directly on the standalone JMX RI artifact."
+}
+
+diff --git a/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json b/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
+index 34416ce0d157d5f2de8610c1dbcf049fd70753c7..be84f4f9be52da815df1ca206fd6b0c0e961ca86
+--- a/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
++++ b/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.jmx:jmxri:1.2.1"
++  "coordinates" : "com.sun.jmx:jmxri:1.2.1",
++  "repository-url" : "https://www.oracle.com/java/technologies/javase/javamanagement.html",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "JMX RI 1.2.1 is Sun's reference implementation of the Java Management Extensions API, providing MBean server, monitoring, relation, timer, and model MBean classes for managing Java applications. It predates the JMX APIs bundled in the JDK and supplies the runtime classes used by older applications that depend directly on the standalone JMX RI artifact."
+ }
+
+codex
+Updated [com.sun.jmx-jmxri-1.2.1.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json) with the discovered metadata.
+
+I left `language` absent and did not set `not-for-native-image` because the available JAR contains JVM `.class` files. `source-code-url`, `test-code-url`, and `documentation-url` are `N/A` because I could not verify Maven-hosted sources, tests, or javadocs for `1.2.1`.
+
+Validation: `jq .` parses successfully.
+diff --git a/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json b/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
+index 34416ce0d157d5f2de8610c1dbcf049fd70753c7..be84f4f9be52da815df1ca206fd6b0c0e961ca86
+--- a/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
++++ b/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.sun.jmx:jmxri:1.2.1"
++  "coordinates" : "com.sun.jmx:jmxri:1.2.1",
++  "repository-url" : "https://www.oracle.com/java/technologies/javase/javamanagement.html",
++  "source-code-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "JMX RI 1.2.1 is Sun's reference implementation of the Java Management Extensions API, providing MBean server, monitoring, relation, timer, and model MBean classes for managing Java applications. It predates the JMX APIs bundled in the JDK and supplies the runtime classes used by older applications that depend directly on the standalone JMX RI artifact."
+ }
+
+tokens used
+57,472
+Updated [com.sun.jmx-jmxri-1.2.1.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8/build/discovered-artifact-metadata/com.sun.jmx-jmxri-1.2.1.json) with the discovered metadata.
+
+I left `language` absent and did not set `not-for-native-image` because the available JAR contains JVM `.class` files. `source-code-url`, `test-code-url`, and `documentation-url` are `N/A` because I could not verify Maven-hosted sources, tests, or javadocs for `1.2.1`.
+
+Validation: `jq .` parses successfully.
+Ran agent for com.sun.jmx:jmxri:1.2.1 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8/build/agent-artifact-discovery-logs/com.sun.jmx-jmxri-1.2.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3039-684b2bf8/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 33s
+9 actionable tasks: 9 executed
