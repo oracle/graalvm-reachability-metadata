@@ -353,31 +353,30 @@ def _completed_library_preflight_record(
 def _library_preflight_prompt(input_bundle: dict[str, Any]) -> str:
     """Build the LLM prompt instructing the agent to research preparation needs."""
     return (
-        "You are preparing a Forge workflow for a library issue. Decide whether this "
-        "library needs additional setup beyond the normal generated test scaffold, "
-        "such as optional Maven dependencies, a Docker-backed service and its allowed "
-        "image, or library initialization the test must perform before meaningful "
-        "coverage is reachable.\n\n"
+        "You are preparing a Forge workflow for a library issue. Decide whether the "
+        "library needs setup beyond the normal generated test scaffold before "
+        "meaningful coverage is reachable.\n\n"
         "Research the library yourself to make this decision. Investigate the resolved "
         "artifact and its dependencies, how the library is normally used, and its "
         "documentation. The JSON context below is only a starting point, not the limit "
         "of what you may consider. Do not modify the repository or apply any setup "
-        "yourself — return only the decision. The driver applies deterministic setup, "
-        "and local Gradle and Native Image verification remain authoritative.\n\n"
-        "Split any needed setup into two kinds. `deterministic_setup` is a typed list of "
-        "one-time, idempotent edits the driver applies for you; supported kinds:\n"
+        "yourself — return only the decision. Local Gradle and Native Image verification "
+        "remain authoritative.\n\n"
+        "The setup can be one of three things: an extra Maven dependency, a Docker "
+        "image the tests need, or an environment/system property the generated tests "
+        "must set. Represent dependencies and Docker images as `deterministic_setup` "
+        "entries the driver can apply before generation:\n"
         '  - {"kind": "dependency", "coordinate": "group:artifact:version", '
         '"scope": "testImplementation", "reason": "..."}\n'
         '  - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}\n'
-        "`agent_guidance` is concise reasoning the workflow agent must apply inside the generated "
-        "test code (for example, exercise a driver against a stood-up service, or set a system "
-        "property before a factory lookup). Do not restate deterministic edits as guidance.\n\n"
+        "Put environment variables, system properties, and other test-code setup in "
+        "`agent_guidance`. Do not restate deterministic entries as guidance.\n\n"
         "Return a single JSON object with this shape:\n"
         "{\n"
         '  "action": "no_action" | "advisory_preparation",\n'
         '  "summary": "short reason",\n'
-        '  "deterministic_setup": [ ... typed entries as above, if any ... ],\n'
-        '  "agent_guidance": "concise guidance for the workflow agent, if any",\n'
+        '  "deterministic_setup": [ ... dependency or docker_image entries, if any ... ],\n'
+        '  "agent_guidance": "environment/system property/test setup guidance, if any",\n'
         '  "risks": ["risk notes, if any"]\n'
         "}\n\n"
         "Choose no_action unless your research finds concrete evidence that extra setup is needed.\n\n"
@@ -409,20 +408,9 @@ def _write_text_artifact(root: str, file_name: str, content: str) -> str:
     return os.path.relpath(path, root)
 
 
-def _fixture_response_text(fixture_response: Any) -> str:
-    """Serialize a configured fixture response like an agent response body."""
-    if isinstance(fixture_response, str):
-        return fixture_response
-    return json.dumps(fixture_response, indent=2, ensure_ascii=False)
-
-
-def _preflight_run_mode(fixture_response: Any | None) -> str:
-    """Describe how the preflight decision is being produced, for logging."""
-    if fixture_response is False:
-        return "live"
-    if fixture_response is None:
-        return "fixture (no response configured)"
-    return "fixture (configured response)"
+def _preflight_artifact_root(claimed_issue: Any) -> str:
+    """Return the directory used for dispatcher preflight handoff and evidence."""
+    return getattr(claimed_issue, "preflight_info_path", None) or claimed_issue.scratch_metrics_repo_path
 
 
 def _write_and_log_preflight(claimed_issue: Any, record: dict[str, Any]) -> str:
@@ -438,7 +426,7 @@ def _write_and_log_preflight(claimed_issue: Any, record: dict[str, Any]) -> str:
         "library-preflight",
         f"Preflight decision for issue #{record.get('issue_number')}: {detail}",
     )
-    return write_library_preparation_preflight(claimed_issue.scratch_metrics_repo_path, record)
+    return write_library_preparation_preflight(_preflight_artifact_root(claimed_issue), record)
 
 
 def run_library_preparation_preflight(
@@ -448,7 +436,6 @@ def run_library_preparation_preflight(
         init_agent: Callable[..., Any],
         default_strategy_name: str,
         default_model_name: str = DEFAULT_LIBRARY_PREFLIGHT_MODEL_NAME,
-        fixture_response: Any | None = None,
 ) -> str:
     """Run and persist the library-specific preparation preflight before workflow dispatch."""
     selected_strategy_name = (
@@ -464,59 +451,20 @@ def run_library_preparation_preflight(
         "library-preflight",
         (
             f"Running preflight for issue #{claimed_issue.issue['number']} "
-            f"({_preflight_run_mode(fixture_response)}) "
+            "(live) "
             f"library={input_bundle.get('library')} strategy={selected_strategy_name}"
         ),
     )
     prompt = _library_preflight_prompt(input_bundle)
+    preflight_artifact_root = _preflight_artifact_root(claimed_issue)
     prompt_path = _write_text_artifact(
-        claimed_issue.scratch_metrics_repo_path,
+        preflight_artifact_root,
         "library-preflight-prompt.txt",
         prompt,
     )
     raw_response_path: str | None = None
     session_log_path: str | None = None
     model_name = default_model_name
-
-    if fixture_response is None:
-        record = _degraded_library_preflight_record(
-            claimed_issue,
-            input_bundle,
-            "fixture-testing mode did not configure a library preparation preflight response",
-            model_name="fixture-no-response",
-            prompt_path=prompt_path,
-        )
-        return _write_and_log_preflight(claimed_issue, record)
-
-    if fixture_response is not False:
-        try:
-            response_text = _fixture_response_text(fixture_response)
-            raw_response_path = _write_text_artifact(
-                claimed_issue.scratch_metrics_repo_path,
-                "library-preflight-response.txt",
-                response_text,
-            )
-            response_payload = _extract_preflight_json_response(response_text)
-            record = _completed_library_preflight_record(
-                claimed_issue,
-                input_bundle,
-                response_payload,
-                "fixture-configured-response",
-                None,
-                prompt_path,
-                raw_response_path,
-                None,
-            )
-        except Exception as exc:
-            record = _degraded_library_preflight_record(
-                claimed_issue,
-                input_bundle,
-                f"{type(exc).__name__}: {exc}",
-                model_name="fixture-configured-response",
-                prompt_path=prompt_path,
-                raw_response_path=raw_response_path,
-            )
-        return _write_and_log_preflight(claimed_issue, record)
 
     strategy = load_strategy_by_name(selected_strategy_name)
     if strategy is None:
@@ -543,13 +491,13 @@ def run_library_preparation_preflight(
         )
         response_text = agent.send_prompt(prompt)
         raw_response_path = _write_text_artifact(
-            claimed_issue.scratch_metrics_repo_path,
+            preflight_artifact_root,
             "library-preflight-response.txt",
             response_text,
         )
         session_log_path = _relative_or_absolute_path(
             getattr(agent, "_session_log_path", None),
-            claimed_issue.scratch_metrics_repo_path,
+            preflight_artifact_root,
         )
         response_payload = _extract_preflight_json_response(response_text)
         record = _completed_library_preflight_record(
@@ -566,7 +514,7 @@ def run_library_preparation_preflight(
         if session_log_path is None and agent is not None:
             session_log_path = _relative_or_absolute_path(
                 getattr(agent, "_session_log_path", None),
-                claimed_issue.scratch_metrics_repo_path,
+                preflight_artifact_root,
             )
         record = _degraded_library_preflight_record(
             claimed_issue,
@@ -749,6 +697,24 @@ def _describe_setup_entry(entry: dict[str, str]) -> str:
     return str(entry)
 
 
+def _applied_setup_descriptions(preflight: dict[str, Any]) -> list[str]:
+    """Describe deterministic setup already applied or already present."""
+    setup_by_key: dict[tuple[Any, Any], dict[str, str]] = {}
+    for entry in preflight.get("deterministic_setup") or []:
+        if isinstance(entry, dict):
+            setup_by_key[(entry.get("kind"), entry.get("coordinate") or entry.get("slug"))] = entry
+
+    descriptions: list[str] = []
+    for item in preflight.get("applied_setup") or []:
+        if not isinstance(item, dict) or item.get("result") not in {"applied", "already_present"}:
+            continue
+        key = (item.get("kind"), item.get("coordinate") or item.get("slug"))
+        entry = setup_by_key.get(key, item)
+        state = "already present" if item.get("result") == "already_present" else "applied"
+        descriptions.append(f"{_describe_setup_entry(entry)} ({state})")
+    return descriptions
+
+
 def _pending_setup_descriptions(preflight: dict[str, Any]) -> list[str]:
     """Describe deterministic entries the driver did not apply, for agent fallback."""
     results: dict[tuple[Any, Any], Any] = {}
@@ -767,12 +733,7 @@ def _pending_setup_descriptions(preflight: dict[str, Any]) -> list[str]:
 
 
 def format_library_preparation_preflight_context(preflight: dict[str, Any] | None) -> str:
-    """Render the advisory portion of a preflight record for workflow prompt context.
-
-    Deterministic setup the driver already applied is intentionally omitted so an
-    iterating workflow does not re-attempt a completed edit; only advisory guidance
-    and unapplied-setup fallback reach the prompt (§ORCH-forge-orchestration-spec.1.1).
-    """
+    """Render preflight summary, applied setup, and guidance for workflow prompts."""
     if not isinstance(preflight, dict):
         return NO_LIBRARY_PREPARATION_PREFLIGHT_CONTEXT
 
@@ -787,12 +748,15 @@ def format_library_preparation_preflight_context(preflight: dict[str, Any] | Non
         return NO_LIBRARY_PREPARATION_PREFLIGHT_CONTEXT
 
     guidance = str(preflight.get("agent_guidance") or "").strip()
+    applied_setup = _format_bullets(_applied_setup_descriptions(preflight))
     pending_setup = _format_bullets(_pending_setup_descriptions(preflight))
     risks = _format_bullets(preflight.get("risks") or [])
 
-    sections = ["Library preparation preflight produced advisory guidance."]
+    sections = ["Library preparation preflight produced setup context."]
     if summary:
         sections.extend(["", f"Summary: {summary}"])
+    if applied_setup:
+        sections.extend(["", "Already applied by Forge:", applied_setup])
     if guidance:
         sections.extend(["", "Agent guidance:", guidance])
     if pending_setup:
