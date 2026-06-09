@@ -1,0 +1,2505 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ead07-c290-75b0-bb5a-d7d2a87b78f9
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.scoverage:scalac-scoverage-plugin:1.1.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "1.1.1" when "$version$" is replaced with "1.1.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "org.scoverage:scalac-scoverage-plugin:1.1.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.1.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact coordinates against Maven metadata and upstream sources, then write the JSON directly with version-templated URLs. After that I’ll sanity-check the file is valid JSON.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json && sed -n '1,160p' build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+-rw-rw-r-- 1 vjovanov vjovanov 68 Jun  9 17:37 build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json
+{
+  "coordinates" : "org.scoverage:scalac-scoverage-plugin:1.1.1"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"scalac-scoverage-plugin|org\\.scoverage\" build/discovered-artifact-metadata metadata tests docs -g '*.json' -g '*.md'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json:2:  "coordinates" : "org.scoverage:scalac-scoverage-plugin:1.1.1"
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:6:    "repository-url" : "https://github.com/scoverage/scalac-scoverage-plugin",
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json:7:    "test-code-url" : "https://github.com/scoverage/scalac-scoverage-plugin/tree/v$version$/scalac-scoverage-runtime",
+
+web search: 
+web search: Maven org.scoverage scalac-scoverage-plugin 1.1.1 pom scm url
+codex
+I found this artifact family is the Scoverage Scala compiler plugin, with an existing runtime entry in the repo pointing at `scoverage/scalac-scoverage-plugin`. I’m checking Maven Central now because the requested artifact id is unsuffixed, while Scala artifacts often publish Scala-version-suffixed variants.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/scoverage/scalac-scoverage-plugin/1.1.1/scalac-scoverage-plugin-1.1.1.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ exited 22 in 0ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/scoverage/scalac-scoverage-plugin/1.1.1/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo1.maven.org/maven2/org/scoverage/scalac-scoverage-plugin/1.1.1/scalac-scoverage-plugin-1.1.1-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ exited 22 in 225ms:
+curl: (22) The requested URL returned error: 404
+
+ exited 22 in 238ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Tue, 09 Jun 2026 15:37:23 GMT
+content-type: text/html
+cf-ray: a091379dcd58b571-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/scoverage/scalac-scoverage-plugin/1.1.1/scalac-scoverage-plugin-1.1.1-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/scoverage/scalac-scoverage-plugin_2.10/1.1.1/scalac-scoverage-plugin_2.10-1.1.1.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.scoverage</groupId>
+    <artifactId>scalac-scoverage-plugin_2.10</artifactId>
+    <packaging>jar</packaging>
+    <description>scalac-scoverage-plugin</description>
+    <version>1.1.1</version>
+    <name>scalac-scoverage-plugin</name>
+    <organization>
+        <name>org.scoverage</name>
+    </organization>
+    <url>https://github.com/scoverage/scalac-scoverage-plugin</url>
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>git@github.com:scoverage/scalac-scoverage-plugin.git</url>
+        <connection>scm:git@github.com:scoverage/scalac-scoverage-plugin.git</connection>
+    </scm>
+    <developers>
+        <developer>
+            <id>sksamuel</id>
+            <name>Stephen Samuel</name>
+            <url>http://github.com/sksamuel</url>
+        </developer>
+    </developers>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-compiler</artifactId>
+            <version>2.10.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.10.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scoverage</groupId>
+            <artifactId>scalac-scoverage-runtime_2.10</artifactId>
+            <version>1.1.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.9.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_2.10</artifactId>
+            <version>2.2.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-reflect</artifactId>
+            <version>2.10.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.joda</groupId>
+            <artifactId>joda-convert</artifactId>
+            <version>1.6</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.scala-logging</groupId>
+            <artifactId>scala-logging-slf4j_2.10</artifactId>
+            <version>2.1.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+codex
+Maven Central does not have an unsuffixed `scalac-scoverage-plugin` artifact at `1.1.1`, but it does have Scala-binary artifacts such as `scalac-scoverage-plugin_2.10:1.1.1`. I’m going to inspect the published jars and upstream tag to decide whether the requested coordinate should be marked as not applicable or just documented as Scala-specific.
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22org.scoverage%22%20AND%20a:%22scalac-scoverage-plugin%22%20AND%20v:%221.1.1%22&rows=20&wt=json'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/ref/tags/v1.1.1' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22org.scoverage%22%20AND%20v:%221.1.1%22&rows=100&wt=json'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22org.scoverage%22%20AND%20scalac-scoverage-plugin%20AND%20v:%221.1.1%22&rows=50&wt=json'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ exited 22 in 0ms:
+curl: (22) The requested URL returned error: 400
+
+ succeeded in 100ms:
+ succeeded in 103ms:
+{"responseHeader":{"status":0,"QTime":5,"params":{"q":"g:\"org.scoverage\" AND v:\"1.1.1\"","core":"","indent":"off","fl":"id,g,a,v,p,ec,timestamp,tags","start":"","sort":"score desc,timestamp desc,g asc,a asc,v desc","rows":"100","wt":"json","version":"2.2"}},"response":{"numFound":5,"start":0,"docs":[{"id":"org.scoverage:scoverage-maven-plugin:1.1.1","g":"org.scoverage","a":"scoverage-maven-plugin","v":"1.1.1","p":"maven-plugin","timestamp":1438592858000,"ec":["-sources.jar","-javadoc.jar",".jar",".pom"],"tags":["maven","scoverage","plugin"]},{"id":"org.scoverage:scalac-scoverage-plugin_2.11:1.1.1","g":"org.scoverage","a":"scalac-scoverage-plugin_2.11","v":"1.1.1","p":"jar","timestamp":1437562436000,"ec":["-sources.jar","-javadoc.jar",".jar",".pom"],"tags":["scalac","scoverage","plugin"]},{"id":"org.scoverage:scalac-scoverage-runtime_2.11:1.1.1","g":"org.scoverage","a":"scalac-scoverage-runtime_2.11","v":"1.1.1","p":"jar","timestamp":1437562421000,"ec":["-javadoc.jar","-sources.jar",".jar",".pom"],"tags":["scalac","runtime","scoverage"]},{"id":"org.scoverage:scalac-scoverage-plugin_2.10:1.1.1","g":"org.scoverage","a":"scalac-scoverage-plugin_2.10","v":"1.1.1","p":"jar","timestamp":1437562386000,"ec":["-javadoc.jar","-sources.jar",".jar",".pom"],"tags":["scalac","scoverage","plugin"]},{"id":"org.scoverage:scalac-scoverage-runtime_2.10:1.1.1","g":"org.scoverage","a":"scalac-scoverage-runtime_2.10","v":"1.1.1","p":"jar","timestamp":1437562372000,"ec":["-javadoc.jar","-sources.jar",".jar",".pom"],"tags":["scalac","runtime","scoverage"]}]}}
+ exited 22 in 236ms:
+curl: (22) The requested URL returned error: 404
+
+web search: 
+web search: site:github.com/scoverage/scalac-scoverage-plugin 1.1.1 tag
+codex
+The upstream repository still documents this as a Scala 2 compiler plugin and shared coverage/reporting code. For `1.1.1`, Maven Central publishes sources and javadocs for the Scala-suffixed artifacts, so I’ll use those Maven artifacts for source/documentation when they resolve and use the repository tag for tests.
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo1.maven.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/1.1.1/scalac-scoverage-plugin_2.11-1.1.1-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/scoverage/scalac-scoverage-plugin.git | rg '1\\.1\\.1|v1\\.1|refs/tags'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo1.maven.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/1.1.1/scalac-scoverage-plugin_2.11-1.1.1-javadoc.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ succeeded in 194ms:
+HTTP/2 200 
+date: Tue, 09 Jun 2026 15:37:51 GMT
+content-type: application/java-archive
+content-length: 506600
+cf-ray: a091384f098403b1-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "6bc7e510303f35c7daf370fb25ddeb74"
+last-modified: Wed, 22 Jul 2015 10:54:38 GMT
+x-checksum-md5: 6bc7e510303f35c7daf370fb25ddeb74
+x-checksum-sha1: 33b9892a9d24cbd66c7933de96aa2093d680f66f
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 368ms:
+HTTP/2 200 
+date: Tue, 09 Jun 2026 15:37:51 GMT
+content-type: application/java-archive
+content-length: 25641
+cf-ray: a091384f0f44bb16-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "3383eaf8df1f964d62f788a3c8590640"
+last-modified: Wed, 22 Jul 2015 10:53:58 GMT
+x-checksum-md5: 3383eaf8df1f964d62f788a3c8590640
+x-checksum-sha1: 5c8746c8f1b10d8e6f028af6552f60d952e00f1f
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 489ms:
+adc46ec4ae925036b56b3ba394772fe7381ece6e	refs/tags/0.99.10
+b94b9ed72e4168e170a6825ce202827ad79eeef0	refs/tags/0.99.10^{}
+843bc801beb628674f3fffd74cd787b19ea2f45f	refs/tags/0.99.11
+f41e6e497e8dc184f11664951e5d4859b2566ce4	refs/tags/0.99.11^{}
+7cd882af70adb22a51f7fb4a9b614cf653efca27	refs/tags/0.99.4
+55f424279c4fe90e2d27bc96547f4217979fc8a0	refs/tags/0.99.4^{}
+69b7ff39fb23d7c109590ab85cbdfc74cea8b018	refs/tags/0.99.5
+a769a6fdcd76fa1657c4afaeb649247df9d4e419	refs/tags/0.99.5^{}
+92d110ab9861ccd9e356ff8ec692d87d9fe820f1	refs/tags/0.99.7
+03af2b1a195da8066bb85c4bfe392bda6bb26162	refs/tags/0.99.7^{}
+f01d7e191038f62f557d72e38e59dd040ac91db4	refs/tags/1.0.0
+ec8011d9bff54a080d70e014a2315214b680e670	refs/tags/1.0.0^{}
+bc441816e583b7a9c6e500873b821f116792a921	refs/tags/1.0.1
+7e6e67ee0e972182ca32f1801443c63f22cc4334	refs/tags/1.0.1^{}
+75633aec199cae84e9a9726b4698b236eb4ea018	refs/tags/1.0.2
+3c721ed2073fd2ef33a3db01a583507abd830e7a	refs/tags/1.0.2^{}
+019a97a6421e61bccb835b63462ffb241b630644	refs/tags/1.0.4
+ab83148aa593ee4180d37ee9d4938b4fc24cb1d0	refs/tags/1.0.4^{}
+f41fbd8b27d413937d9ea338857cd630abae3e83	refs/tags/1.1.0
+1872dbb6f07a7ff7eaa02271048d87dd41367c20	refs/tags/1.1.0^{}
+141c0f5dd66c570ae6cad15678436fa0d76a31a3	refs/tags/1.1.1
+4a3dd32f1cd855c3985723e86e3696f2cc286575	refs/tags/1.1.1^{}
+6c2c08d46e8c2fe7b6fc73854e357ffa08bc2e0a	refs/tags/v1.2.0
+9c5c8e0836e55e1ad96653cf5bf4011831062c24	refs/tags/v1.2.0^{}
+0cb8c2b61c789f97a55a79fda13758a393bccae3	refs/tags/v1.3.0
+b6908143ddca98be4f3f2cce73d1fea40d03e4e0	refs/tags/v1.3.0^{}
+0cd46cf87d1f0cddd268e68c151bb35998abe615	refs/tags/v1.3.0-RC1
+f85d4ff7550c0f878c6748c9e368f2bcacec9457	refs/tags/v1.3.0-RC1^{}
+f4ad67be3df8e282f2326a4910eecd9a327bd3a9	refs/tags/v1.3.0-RC2
+2bdb988315702d4eed5014d7f73f76a258513e8e	refs/tags/v1.3.0-RC2^{}
+8d5988d2155ea69dd5c8800213cbc98d5652330d	refs/tags/v1.3.1
+52438f89693a51dc9d6b30181a0f070ab30341aa	refs/tags/v1.4.0
+41d202f3d22de3bcc16b9ff4de34273bf09d4d5f	refs/tags/v1.4.0^{}
+4332fc5c3b3e034eb445196810ae3e19e59e9b56	refs/tags/v1.4.0-M1
+ce1856cd39dfb788e4efacad910815ddb6d28f7d	refs/tags/v1.4.0-M1^{}
+235b352b6e52ad0f155f709ea0db5c11b26c915e	refs/tags/v1.4.0-M2
+f58e9481cdce309e0c90e2c801b455e08fd9f999	refs/tags/v1.4.0-M2^{}
+1ca0299e90739cdac3da109777c5e9107014f638	refs/tags/v1.4.0-M3
+7f5bc4b82c2e87b9e735952b127ecccdc4cec193	refs/tags/v1.4.0-M3^{}
+1058fcace09ded5e027ffd15f006feffa879db28	refs/tags/v1.4.0-M4
+702eda229885b084496babe44afc11735bc92999	refs/tags/v1.4.0-M4^{}
+59c0df3ebd39bc55a1c60544f74c2ce8437dd5e9	refs/tags/v1.4.0-M5
+a7dfc24c7cb8251a6fa3092f603ff06a25b62ba6	refs/tags/v1.4.0-M5^{}
+f184a820da2aa41cb1585b63197d604e3271e71f	refs/tags/v1.4.0-RC1
+b37abc76ecf241aa6670fe8b0694303237f5d77c	refs/tags/v1.4.0-RC1^{}
+1765deeb337aa865a1d38f5c99d4e13a53d55dae	refs/tags/v1.4.0-RC2
+a3729fa647e701bbda1673d528459a8684b9f084	refs/tags/v1.4.0-RC2^{}
+b6b37f02189af975fe3b972c57b4d44f7b0a8b93	refs/tags/v1.4.0-RC3
+9062219f14d4298ea7463a4780be9b181d2bcfc6	refs/tags/v1.4.0-RC3^{}
+6c29fb19b3ff042983de8d87a6ecb21557a7c854	refs/tags/v1.4.1
+c5fcc6c43346673d2d2b623e1210a82eaf2c595c	refs/tags/v1.4.10
+4ce6cc14461f0f53b8810d9b3e9d2abd4976c3f5	refs/tags/v1.4.10^{}
+1347508c785dac64888a7665aec243ae19abdfb4	refs/tags/v1.4.11
+727bb234752badb2f8064185968a305516f73d82	refs/tags/v1.4.11^{}
+bf0dedac8509c384c4d8f662bff60d64e9a57477	refs/tags/v1.4.2
+be018a918c52cc8136a689b4242ae900393e7599	refs/tags/v1.4.2^{}
+fe48f668aaa79867b001aa38fd77982cd1a3b13c	refs/tags/v1.4.3
+6876649fe4beedc449df516c372190d8dfbb5479	refs/tags/v1.4.3^{}
+72057bca5b6a9191fb3b5bd497430e904095a334	refs/tags/v1.4.4
+d8fd4d743e66a9bb8715de14de6bbb228c89ce36	refs/tags/v1.4.4^{}
+22fcbfedc78f73f83d256d867f061015e3aed23d	refs/tags/v1.4.5
+6c43b1d8169ddd8ddc3b9a8b74ea473984719667	refs/tags/v1.4.5^{}
+83ebd956adbc2d65f4f64bca2c9daa0a5cb75dd6	refs/tags/v1.4.6
+bcfc2cdf6aabd9bcf0367a1b5e1a53e1910651a5	refs/tags/v1.4.6^{}
+6d9d590ea8eec8e14491ab95f7b6cacf281db617	refs/tags/v1.4.7
+bc22e911f5fae3d58fd74178a2dc62a5b99726fc	refs/tags/v1.4.7^{}
+78d520380597f30b07f2c1ec58a8053e3fc29e98	refs/tags/v1.4.8
+ac1fe76e138658db146c6750e7a14a8220ce1cf8	refs/tags/v1.4.8^{}
+b12af764546b3ba664050e12110b1967605e0556	refs/tags/v1.4.9
+56464f22bc39e69dd47a154cdd8d81e1de5518fc	refs/tags/v1.4.9^{}
+83ba3fd082341cd2be414b72a43cc4049d440e82	refs/tags/v2.0.0
+3e6040421163aa1584c8c2367392d058769c012c	refs/tags/v2.0.0^{}
+0c84f4ce67a93f02b9c6b34578d5cc86217ffff6	refs/tags/v2.0.0-M1
+fe669faad06cdf10af28475a712e9cab97577002	refs/tags/v2.0.0-M1^{}
+fe8db292773612815d07ba4291a2c733978c4396	refs/tags/v2.0.0-M2
+df1149b5b888d44bae05f2e5bdac58251252beb2	refs/tags/v2.0.0-M2^{}
+fd61a88793619d01b182ff7dbd32ca1cd93edc2f	refs/tags/v2.0.0-M3
+a619b3c4531228b94078ef6b9ca272cd65d2c75b	refs/tags/v2.0.0-M3^{}
+a17e91fee844ea6782d0484e612716de39b24ad9	refs/tags/v2.0.0-M4
+bc2c382d7f0d7e504f38d3b34122052d3423a5c0	refs/tags/v2.0.0-M4^{}
+6cf8e296940396c3639c9fbad780d7b139ce5081	refs/tags/v2.0.0-M5
+971d01fb21e8e8b06b330026f6d0fb0678387e98	refs/tags/v2.0.0-M5^{}
+53c57c77d7cdd8027e99f082cfda39ccbe171609	refs/tags/v2.0.0-M6
+1d404ca3f12d00c75820da2783158f9eee82e97c	refs/tags/v2.0.0-M6^{}
+36ae9814051e72d23e1f1bc901c6e57f8820492d	refs/tags/v2.0.0-M7
+a557126898f9ada995b04e3c879324a41add1d4e	refs/tags/v2.0.0-M7^{}
+db8797cb282fe4c956c9e82ac7feafc49a25625d	refs/tags/v2.0.0-RC1
+965a035c6cc3d6d5424bbb0951aab29864b53c01	refs/tags/v2.0.0-RC1^{}
+8d5390bfd89381090444bb30116ae38e7df8ab8d	refs/tags/v2.0.0-RC2
+68ca900eb09b1b3d6d536d4be42563fa0ee1b018	refs/tags/v2.0.0-RC2^{}
+4ad4dba0e9a9941f5ad614adbc1951172bbd1a00	refs/tags/v2.0.1
+a6eb37448f6a89acfbcaae057b96d56836e38e63	refs/tags/v2.0.1^{}
+d363c2800eb5fb0c5be3edac60428238d5320e51	refs/tags/v2.0.10
+23e621fc313f609e538324f2d6b70e4b7b4fb8af	refs/tags/v2.0.10^{}
+f37350ee2f6289d7c02b9eea26fd1487aadfc0ae	refs/tags/v2.0.11
+ad82ec3db93cc0b87bb15ea5ca1114dc4a4734ea	refs/tags/v2.0.11^{}
+fcba9a68caa7cc3d7393ad2c0f0a6cfd082c7666	refs/tags/v2.0.2
+a6dc5c0a3c0c2ad6dd96784c8bc603ee0bee9a9c	refs/tags/v2.0.2^{}
+510b775e940dc951d266ab4c4744d1900bb9c021	refs/tags/v2.0.3
+748843764f42fa8d39f66dc45ce6796a7b5e40a5	refs/tags/v2.0.3^{}
+b6def745c88f54f534798aaeb9c79231a1d2c5a7	refs/tags/v2.0.4
+748843764f42fa8d39f66dc45ce6796a7b5e40a5	refs/tags/v2.0.4^{}
+44822cd122c668d1efa286d22660d924298b273e	refs/tags/v2.0.5
+29e79a55526120f109e514969c6dee25a1bfc2a6	refs/tags/v2.0.5^{}
+57071b2c5a5880717ebecd88737308ffcd2fe727	refs/tags/v2.0.6
+655ab7d3aa14da4e3729c94a25400f0556918dc3	refs/tags/v2.0.6^{}
+522147d7e116c58b58538484bb506edbb012bca0	refs/tags/v2.0.7
+3816790f7e51cc95007eb2ffb590ad472ff24029	refs/tags/v2.0.7^{}
+4e36153cacbfe2daaba6128fb5d9faf539d861e9	refs/tags/v2.0.8
+068e41d96e521e1891e24de5258300a0b0ecd3a2	refs/tags/v2.0.8^{}
+acd44dfd254664cf87c28531a27966add9772a2b	refs/tags/v2.0.9
+8612d701a0834b127862a6a54801f0c45cbea79a	refs/tags/v2.0.9^{}
+cdd43620bb7c5b30b8df727d38a1bf9ec7c4e559	refs/tags/v2.1.0
+fd6a7c79699805c0bba74c1b855cd392a24ff98c	refs/tags/v2.1.0^{}
+8772401e232b7c5698b94ba59add34501d5f55bb	refs/tags/v2.1.1
+e0a2c266b000d8e3abde50588c10b570551cdfbd	refs/tags/v2.1.1^{}
+a5d4a3f3628d9d90ef03e2b85dd833125e6f342a	refs/tags/v2.2.0
+337e731c981d6ad6d7d409420f0a249ae23e724a	refs/tags/v2.2.0^{}
+c8eb4685fc699a2af891047d404bb3cf56970491	refs/tags/v2.2.1
+2b860cb6f96a3c592cf2d4b8778da43fc3779ef4	refs/tags/v2.2.1^{}
+1ee2e0fcaf50d19f454e5ae1920c10d8d3bb4f43	refs/tags/v2.3.0
+b16cc8f2011d7d203a15751b59854fd328160232	refs/tags/v2.3.0^{}
+a7343f7b03181f65c03c472db4397eaec2968b78	refs/tags/v2.4.0
+1ff5508c3e07fc756bb44ab8e4100f86432e23d9	refs/tags/v2.4.1
+b97601855b01c8003d572bbd77c3cefc9be02c31	refs/tags/v2.4.2
+b465cba26a1e903a6218a1a66f65a272a75bfdf3	refs/tags/v2.5.0
+8c1f28e48ceebf15027a6907fa6a83f3404c125a	refs/tags/v2.5.1
+fd2477af45a9d475ccb07124f90d0b9600950afb	refs/tags/v2.5.2
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/1.1.1/scalac-scoverage-plugin_2.11-1.1.1.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.scoverage</groupId>
+    <artifactId>scalac-scoverage-plugin_2.11</artifactId>
+    <packaging>jar</packaging>
+    <description>scalac-scoverage-plugin</description>
+    <version>1.1.1</version>
+    <name>scalac-scoverage-plugin</name>
+    <organization>
+        <name>org.scoverage</name>
+    </organization>
+    <url>https://github.com/scoverage/scalac-scoverage-plugin</url>
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>git@github.com:scoverage/scalac-scoverage-plugin.git</url>
+        <connection>scm:git@github.com:scoverage/scalac-scoverage-plugin.git</connection>
+    </scm>
+    <developers>
+        <developer>
+            <id>sksamuel</id>
+            <name>Stephen Samuel</name>
+            <url>http://github.com/sksamuel</url>
+        </developer>
+    </developers>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-compiler</artifactId>
+            <version>2.11.7</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.11.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scoverage</groupId>
+            <artifactId>scalac-scoverage-runtime_2.11</artifactId>
+            <version>1.1.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.9.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_2.11</artifactId>
+            <version>2.2.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-reflect</artifactId>
+            <version>2.11.7</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.joda</groupId>
+            <artifactId>joda-convert</artifactId>
+            <version>1.6</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.scala-logging</groupId>
+            <artifactId>scala-logging-slf4j_2.11</artifactId>
+            <version>2.1.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang.modules</groupId>
+            <artifactId>scala-xml_2.11</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/1.1.1/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/scoverage/scalac-scoverage-plugin_2.11/1.1.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/scoverage/scalac-scoverage-plugin_2.11/1.1.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="scalac-scoverage-plugin_2.11-1.1.1-javadoc.jar" title="scalac-scoverage-plugin_2.11-1.1.1-javadoc.jar">scalac-scoverage-plugin_2.11-1.1.1-javadoc.ja...</a>  2015-07-22 10:53    506600      
+<a href="scalac-scoverage-plugin_2.11-1.1.1-javadoc.jar.asc" title="scalac-scoverage-plugin_2.11-1.1.1-javadoc.jar.asc">scalac-scoverage-plugin_2.11-1.1.1-javadoc.ja...</a>  2015-07-22 10:53       475      
+<a href="scalac-scoverage-plugin_2.11-1.1.1-javadoc.jar.asc.md5" title="scalac-scoverage-plugin_2.11-1.1.1-javadoc.jar.asc.md5">scalac-scoverage-plugin_2.11-1.1.1-javadoc.ja...</a>  2015-07-22 10:53        32      
+<a href="scalac-scoverage-plugin_2.11-1.1.1-javadoc.jar.asc.sha1" title="scalac-scoverage-plugin_2.11-1.1.1-javadoc.jar.asc.sha1">scalac-scoverage-plugin_2.11-1.1.1-javadoc.ja...</a>  2015-07-22 10:53        40      
+<a href="scalac-scoverage-plugin_2.11-1.1.1-javadoc.jar.md5" title="scalac-scoverage-plugin_2.11-1.1.1-javadoc.jar.md5">scalac-scoverage-plugin_2.11-1.1.1-javadoc.ja...</a>  2015-07-22 10:53        32      
+<a href="scalac-scoverage-plugin_2.11-1.1.1-javadoc.jar.sha1" title="scalac-scoverage-plugin_2.11-1.1.1-javadoc.jar.sha1">scalac-scoverage-plugin_2.11-1.1.1-javadoc.ja...</a>  2015-07-22 10:53        40      
+<a href="scalac-scoverage-plugin_2.11-1.1.1-sources.jar" title="scalac-scoverage-plugin_2.11-1.1.1-sources.jar">scalac-scoverage-plugin_2.11-1.1.1-sources.ja...</a>  2015-07-22 10:53     25641      
+<a href="scalac-scoverage-plugin_2.11-1.1.1-sources.jar.asc" title="scalac-scoverage-plugin_2.11-1.1.1-sources.jar.asc">scalac-scoverage-plugin_2.11-1.1.1-sources.ja...</a>  2015-07-22 10:53       475      
+<a href="scalac-scoverage-plugin_2.11-1.1.1-sources.jar.asc.md5" title="scalac-scoverage-plugin_2.11-1.1.1-sources.jar.asc.md5">scalac-scoverage-plugin_2.11-1.1.1-sources.ja...</a>  2015-07-22 10:53        32      
+<a href="scalac-scoverage-plugin_2.11-1.1.1-sources.jar.asc.sha1" title="scalac-scoverage-plugin_2.11-1.1.1-sources.jar.asc.sha1">scalac-scoverage-plugin_2.11-1.1.1-sources.ja...</a>  2015-07-22 10:53        40      
+<a href="scalac-scoverage-plugin_2.11-1.1.1-sources.jar.md5" title="scalac-scoverage-plugin_2.11-1.1.1-sources.jar.md5">scalac-scoverage-plugin_2.11-1.1.1-sources.ja...</a>  2015-07-22 10:53        32      
+<a href="scalac-scoverage-plugin_2.11-1.1.1-sources.jar.sha1" title="scalac-scoverage-plugin_2.11-1.1.1-sources.jar.sha1">scalac-scoverage-plugin_2.11-1.1.1-sources.ja...</a>  2015-07-22 10:53        40      
+<a href="scalac-scoverage-plugin_2.11-1.1.1.jar" title="scalac-scoverage-plugin_2.11-1.1.1.jar">scalac-scoverage-plugin_2.11-1.1.1.jar</a>            2015-07-22 10:53    251271      
+<a href="scalac-scoverage-plugin_2.11-1.1.1.jar.asc" title="scalac-scoverage-plugin_2.11-1.1.1.jar.asc">scalac-scoverage-plugin_2.11-1.1.1.jar.asc</a>        2015-07-22 10:53       475      
+<a href="scalac-scoverage-plugin_2.11-1.1.1.jar.asc.md5" title="scalac-scoverage-plugin_2.11-1.1.1.jar.asc.md5">scalac-scoverage-plugin_2.11-1.1.1.jar.asc.md...</a>  2015-07-22 10:53        32      
+<a href="scalac-scoverage-plugin_2.11-1.1.1.jar.asc.sha1" title="scalac-scoverage-plugin_2.11-1.1.1.jar.asc.sha1">scalac-scoverage-plugin_2.11-1.1.1.jar.asc.sh...</a>  2015-07-22 10:53        40      
+<a href="scalac-scoverage-plugin_2.11-1.1.1.jar.md5" title="scalac-scoverage-plugin_2.11-1.1.1.jar.md5">scalac-scoverage-plugin_2.11-1.1.1.jar.md5</a>        2015-07-22 10:53        32      
+<a href="scalac-scoverage-plugin_2.11-1.1.1.jar.sha1" title="scalac-scoverage-plugin_2.11-1.1.1.jar.sha1">scalac-scoverage-plugin_2.11-1.1.1.jar.sha1</a>       2015-07-22 10:53        40      
+<a href="scalac-scoverage-plugin_2.11-1.1.1.pom" title="scalac-scoverage-plugin_2.11-1.1.1.pom">scalac-scoverage-plugin_2.11-1.1.1.pom</a>            2015-07-22 10:53      3378      
+<a href="scalac-scoverage-plugin_2.11-1.1.1.pom.asc" title="scalac-scoverage-plugin_2.11-1.1.1.pom.asc">scalac-scoverage-plugin_2.11-1.1.1.pom.asc</a>        2015-07-22 10:53       475      
+<a href="scalac-scoverage-plugin_2.11-1.1.1.pom.asc.md5" title="scalac-scoverage-plugin_2.11-1.1.1.pom.asc.md5">scalac-scoverage-plugin_2.11-1.1.1.pom.asc.md...</a>  2015-07-22 10:53        32      
+<a href="scalac-scoverage-plugin_2.11-1.1.1.pom.asc.sha1" title="scalac-scoverage-plugin_2.11-1.1.1.pom.asc.sha1">scalac-scoverage-plugin_2.11-1.1.1.pom.asc.sh...</a>  2015-07-22 10:53        40      
+<a href="scalac-scoverage-plugin_2.11-1.1.1.pom.md5" title="scalac-scoverage-plugin_2.11-1.1.1.pom.md5">scalac-scoverage-plugin_2.11-1.1.1.pom.md5</a>        2015-07-22 10:53        32      
+<a href="scalac-scoverage-plugin_2.11-1.1.1.pom.sha1" title="scalac-scoverage-plugin_2.11-1.1.1.pom.sha1">scalac-scoverage-plugin_2.11-1.1.1.pom.sha1</a>       2015-07-22 10:53        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/README.md | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ succeeded in 0ms:
+scalac-scoverage-plugin
+==========
+
+scoverage is a free Apache licensed code coverage tool for scala that offers statement and branch coverage.
+scoverage is available for sbt, maven, and gradle.
+
+[![Build Status](https://travis-ci.org/scoverage/scalac-scoverage-plugin.svg?branch=master)](https://travis-ci.org/scoverage/scalac-scoverage-plugin)
+[![License](http://img.shields.io/:license-Apache%202-red.svg)](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+[![Join the chat at https://gitter.im/scoverage/scoverage](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/scoverage/scoverage?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+Join the [scoverage](http://groups.google.com/group/scala-code-coverage-tool)
+google group for help, bug reports, feature requests, and general
+discussion on scoverage.
+
+To see scoverage in action check out the [samples](https://github.com/scoverage/scoverage-samples) project which shows you covered and non-covered statements, along with upload to coveralls.
+
+![Screenshot of scoverage report html](misc/screenshot2.png)
+
+### Release History
+
+##### 26th April 2015 1.1.0
+
+* Bug fixes
+
+##### 23rd January 2015 1.0.4
+
+* Improved results in match/cases
+* Improved results in partial functions
+* Fixed bug in code grid which would render whole sections green
+* Improved serializer to handle large projects (no more GC errors)
+* Improved handling of guards in for loops
+
+##### 1.0.2
+
+* Fix issue with line spacing in Code Grid report on Windows,
+
+##### 28th November 2014 1.0.1
+
+* Fixed issue with coverageAggregate
+* Fixed issue with multi project builds referencing parent code
+
+##### 20th November 2014 1.0.0
+
+* Long awaited multi project support (aggregation)
+* Bug fixes for classes with a directory structure different to package name
+* Fixed coverage on `new` keyword
+* Removed deps on commons-io
+* Fixes for empty package names (<empty>)
+* Fixed location issue in anon classes
+* Enhanced support for constructors
+* Changed code grid to use pre instead of table
+* Fixed errors with Javascript in Play projects.
+* Re-wrote the SBT plugin completely, no longer uses custom config
+
+##### 3rd November 2014 0.99.10
+
+* Fixed command line options due to changes in Scala 2.11.3+
+
+##### 10th Sept 2014 0.99.9
+
+* Added exclude by filename
+
+##### 20th July 2014 0.99.7
+* Fixes for final val constants
+* Fixed cobertura output for ratio values
+
+##### 21 May 2014 0.99.5
+
+* Major performance enhancements
+* Avoids issue with timeouts on tests
+
+##### 19 May 2014 0.99.3
+
+* Fixed issue with min coverage
+* Added highlighting option to avoid issues with overlapping trees
+
+##### 15th May 2014 - 0.99.2
+* 2.11 support
+* [2.10 support dropped](2.10.md)
+* Fixes for macro expansion
+* Fixes for @unchecked
+* Fixes for for-comprehensions
+* Min coverage setting
+* Performance enhancements (thanks to Richard Bradley)
+
+##### 18th April 2014 - 0.98.2
+* Macros are now skipped instead of crashing
+* Final vals are corrected measured
+* Fixed parallel tests
+* Test runner added for compiler
+* Pre-compile phase added to run after typer and before namer
+* Default parameters are now handled
+* Improved handling of multiple measurement data
+
+##### 1st April 2014 - 0.98.0
+* Moved to org.scoverage groupId
+* Measurement files now thread safe
+* Add statement ID to report, to aid debugging (Richard Bradley)
+* Add support for coverage exclusion comments (Richard Bradley)
+
+##### 8 March 2014 - 0.95.9
+* SBT plugin import issue fixed
+* Fixed windows line ending issues
+* Use relative href for source view
+* Add support for exclude by file name
+
+##### 12th Jan 2014 - 0.95.7
+* Fixed bug with return value in pattern match
+* Improved support for classname excludes
+* Fixed spurious trailing green line breaks
+
+##### 5th Jan 2014 - 0.95.3
+* Fixed support for for comprehensions. 
+* Optimzed support for nested method calls.
+* Fixed exclude package bug
+* Now supports nested packages
+
+##### 9th Dec 2013 - 0.95.0
+* First stable release.
+* Statement level coverage.
+* Branch coverage for if, pattern match, partial function.
+* HTML Generator.
+* Cobertura report generator.
+
+### Statement Coverage
+
+In traditional code coverage tools, line coverage has been the main metric. 
+This is fine for languages such as Java which are very verbose and very rarely have more than one
+statement per line, and more usually have one statement spread across multiple lines.
+
+In powerful, expressive languages like Scala, quite often multiple statements, or even branches
+are included on a single line, eg a very simple example:
+
+```
+val status = if (age < 18) "No beer" else "Beer for you"
+```
+
+If you had a unit test that ran through the value 18 you would get 100% line coverage
+yet you only have 50% statement coverage.
+
+Let's expand this example out to be multifacted, albeit somewhat contrived:
+
+```
+val status = if (religion == "Pentecostalist") "Beer forbidden" else if (age < 18) "Underage" else "Beer for you"
+```
+
+Now we would get 100% code coverage for passing in the values ("Buddist", 34).
+
+That's why in scoverage we focus on statement coverage, and don't even include line coverage as a metric.
+This is a paradigm shift that we hope will take hold.
+
+### Branch Coverage
+
+Branch coverage is very useful to ensure all code paths are covered. Scoverage produces branch coverage metrics
+as a percentage of the total branches. Symbols that are deemed as branch statements are:
+
+* If / else statements
+* Match statements
+* Partial function cases
+* Try / catch / finally clauses
+
+In this screenshot you can see the coverage HTML report that shows one branch of the if statement was not
+executed during the test run. In addition two of the cases in the partial function were not executed.
+![Screenshot of scoverage report html](misc/screenshot1.png)
+
+### How to use
+
+This project is the base library for instrumenting code via a scalac compiler plugin. To use scoverage in your
+project you will need to use one of the build plugins:
+
+* [scoverage-maven-plugin](https://github.com/scoverage/scoverage-maven-plugin)
+* [sbt-scoverage](https://github.com/scoverage/sbt-scoverage)
+* [gradle-scoverage](https://github.com/scoverage/gradle-scoverage)
+* [sbt-coveralls](https://github.com/scoverage/sbt-coveralls)
+
+Scoverage support is available for the following tools:
+
+* [Sonar](https://github.com/RadoBuransky/sonar-scoverage-plugin)
+* [Jenkins](https://github.com/jenkinsci/scoverage-plugin)
+
+If you want to write a tool that uses this code coverage library then it is available on maven central.
+Search for scalac-scoverage-plugin.
+
+#### Excluding code from coverage stats
+
+You can exclude whole classes or packages by name. Pass a semicolon separated
+list of regexes to the 'excludedPackages' option.
+
+For example:
+  -P:scoverage:excludedPackages:.*\.utils\..*;.*\.SomeClass;org\.apache\..*
+
+The regular expressions are matched against the fully qualified class name, and must match the entire string to take effect.
+
+Any matched classes will not be instrumented or included in the coverage report.
+
+You can also mark sections of code with comments like:
+
+    // $COVERAGE-OFF$
+    ...
+    // $COVERAGE-ON$
+
+Any code between two such comments will not be instrumented or included in the coverage report.
+
+Further details are given in the plugin readme's.
+
+## License
+```
+This software is licensed under the Apache 2 license, quoted below.
+
+Copyright 2013-2015 Stephen Samuel
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License. You may obtain a copy of
+the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo1.maven.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/1.1.1/scalac-scoverage-plugin_2.11-1.1.1-test-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ exited 22 in 230ms:
+HTTP/2 404 
+date: Tue, 09 Jun 2026 15:38:03 GMT
+content-type: text/html
+cf-ray: a091389caf0a9a60-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/scoverage/scalac-scoverage-plugin_2.11/1.1.1/scalac-scoverage-plugin_2.11-1.1.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents?ref=1.1.1' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ succeeded in 270ms:
+[
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "02fd5276694268a80ce5add8602f927ace9acbde",
+    "size": 253,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/.gitignore?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/.gitignore",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/02fd5276694268a80ce5add8602f927ace9acbde",
+    "download_url": "https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/.gitignore?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/02fd5276694268a80ce5add8602f927ace9acbde",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/.gitignore"
+    }
+  },
+  {
+    "name": ".travis.yml",
+    "path": ".travis.yml",
+    "sha": "8e7befbe537035c268de94e705f1d241444436a4",
+    "size": 83,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/.travis.yml?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/.travis.yml",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/8e7befbe537035c268de94e705f1d241444436a4",
+    "download_url": "https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/.travis.yml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/.travis.yml?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/8e7befbe537035c268de94e705f1d241444436a4",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/.travis.yml"
+    }
+  },
+  {
+    "name": "2.10.md",
+    "path": "2.10.md",
+    "sha": "253a20416cd0d2388733c1853d7ab8e9b4d67e87",
+    "size": 2453,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/2.10.md?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/2.10.md",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/253a20416cd0d2388733c1853d7ab8e9b4d67e87",
+    "download_url": "https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/2.10.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/2.10.md?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/253a20416cd0d2388733c1853d7ab8e9b4d67e87",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/2.10.md"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "37ec93a14fdcd0d6e525d97c0cfa6b314eaa98d8",
+    "size": 10273,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/LICENSE?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/LICENSE",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/37ec93a14fdcd0d6e525d97c0cfa6b314eaa98d8",
+    "download_url": "https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/LICENSE?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/37ec93a14fdcd0d6e525d97c0cfa6b314eaa98d8",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/LICENSE"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "ae5d2b0e5bd5f84b0fc3d985ace2d8dc556205f6",
+    "size": 7939,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/README.md?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/README.md",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/ae5d2b0e5bd5f84b0fc3d985ace2d8dc556205f6",
+    "download_url": "https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/README.md?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/ae5d2b0e5bd5f84b0fc3d985ace2d8dc556205f6",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/README.md"
+    }
+  },
+  {
+    "name": "misc",
+    "path": "misc",
+    "sha": "7963db39cf359b31eec2c68dc4a10309a7a655c3",
+    "size": 0,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/misc?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/tree/1.1.1/misc",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/trees/7963db39cf359b31eec2c68dc4a10309a7a655c3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/misc?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/trees/7963db39cf359b31eec2c68dc4a10309a7a655c3",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/tree/1.1.1/misc"
+    }
+  },
+  {
+    "name": "project",
+    "path": "project",
+    "sha": "ea11eddad641c000dc8afe2d4fbc8530d571a915",
+    "size": 0,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/project?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/tree/1.1.1/project",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/trees/ea11eddad641c000dc8afe2d4fbc8530d571a915",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/project?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/trees/ea11eddad641c000dc8afe2d4fbc8530d571a915",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/tree/1.1.1/project"
+    }
+  },
+  {
+    "name": "scalac-scoverage-plugin",
+    "path": "scalac-scoverage-plugin",
+    "sha": "259646b56ac324615d7e676a739f263580a9172d",
+    "size": 0,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/tree/1.1.1/scalac-scoverage-plugin",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/trees/259646b56ac324615d7e676a739f263580a9172d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/trees/259646b56ac324615d7e676a739f263580a9172d",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/tree/1.1.1/scalac-scoverage-plugin"
+    }
+  },
+  {
+    "name": "scalac-scoverage-runtime",
+    "path": "scalac-scoverage-runtime",
+    "sha": "0c586f95623c61505231515730b44c05a5e58c47",
+    "size": 0,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-runtime?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/tree/1.1.1/scalac-scoverage-runtime",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/trees/0c586f95623c61505231515730b44c05a5e58c47",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-runtime?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/trees/0c586f95623c61505231515730b44c05a5e58c47",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/tree/1.1.1/scalac-scoverage-runtime"
+    }
+  },
+  {
+    "name": "version.sbt",
+    "path": "version.sbt",
+    "sha": "a1b7d1870b2aee0b55741124c34001eaee6f1403",
+    "size": 31,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/version.sbt?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/version.sbt",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/a1b7d1870b2aee0b55741124c34001eaee6f1403",
+    "download_url": "https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/version.sbt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/version.sbt?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/a1b7d1870b2aee0b55741124c34001eaee6f1403",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/version.sbt"
+    }
+  }
+]
+
+codex
+The exact unsuffixed coordinate is not listed by Maven Central’s search API, so I’m avoiding URLs that would falsely claim an unsuffixed source jar exists. The version tag itself is real (`1.1.1`), and the repository has module directories for the compiler plugin and runtime at that tag.
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.4.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-runtime_2.13/$version$/scalac-scoverage-runtime_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/scoverage/scalac-scoverage-plugin",
+    "test-code-url" : "https://github.com/scoverage/scalac-scoverage-plugin/tree/v$version$/scalac-scoverage-runtime",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-runtime_2.13/$version$/scalac-scoverage-runtime_2.13-$version$-javadoc.jar",
+    "description" : "scalac-scoverage-runtime provides the runtime support used by the scoverage Scala compiler plugin to record coverage measurements from instrumented Scala code. It writes and reads invoked statement identifiers so scoverage can calculate statement and branch coverage after tests run.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "1.4.1",
+      "1.4.2",
+      "1.4.6",
+      "1.4.7",
+      "1.4.8",
+      "1.4.9",
+      "1.4.10",
+      "1.4.11",
+      "2.0.0",
+      "2.0.1",
+      "2.0.2",
+      "2.0.3",
+      "2.0.5",
+      "2.0.7",
+      "2.0.8",
+      "2.0.10",
+      "2.0.11",
+      "2.1.0",
+      "2.1.1",
+      "2.2.0",
+      "2.2.1",
+      "2.3.0",
+      "2.4.0",
+      "2.4.1",
+      "2.4.2",
+      "2.5.0",
+      "2.5.1",
+      "2.5.2"
+    ],
+    "allowed-packages" : [
+      "scoverage"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"\\s*:' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ succeeded in 0ms:
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/org.scalacheck/scalacheck_2.13/index.json:10:    "language" : {
+metadata/org.scalacheck/scalacheck_2.13/index.json:28:    "language" : {
+metadata/org.json4s/json4s-native-core_3/index.json:10:    "language" : {
+metadata/org.typelevel/cats-core_3/index.json:10:    "language" : {
+metadata/org.typelevel/twiddles-core_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-jackson_2.13/index.json:10:    "language" : {
+metadata/org.json4s/json4s-jackson_2.13/index.json:33:    "language" : {
+metadata/org.typelevel/cats-effect_3/index.json:10:    "language" : {
+metadata/org.typelevel/cats-effect_3/index.json:121:    "language" : {
+metadata/org.json4s/json4s-ast_3/index.json:10:    "language" : {
+metadata/org.typelevel/munit-cats-effect_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-ast_2.13/index.json:10:    "language" : {
+metadata/org.typelevel/alleycats-core_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-core_3/index.json:10:    "language" : {
+metadata/org.typelevel/scalac-compat-annotation_3/index.json:10:    "language" : {
+metadata/org.typelevel/cats-effect-kernel_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-scalap_3/index.json:10:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:10:    "language" : {
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/org.typelevel/scalac-compat-annotation_2.13/index.json:10:    "language" : {
+metadata/org.json4s/json4s-scalap_2.13/index.json:10:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:10:    "language" : {
+metadata/org.typelevel/log4cats-slf4j_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-jackson_3/index.json:10:    "language" : {
+metadata/com.github.pureconfig/pureconfig-generic-base_3/index.json:10:    "language" : {
+metadata/org.typelevel/cats-effect-std_3/index.json:10:    "language" : {
+metadata/com.github.pureconfig/pureconfig-core_3/index.json:10:    "language" : {
+metadata/org.typelevel/cats-kernel_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native_3/index.json:10:    "language" : {
+metadata/org.typelevel/log4cats-core_3/index.json:10:    "language" : {
+metadata/com.squareup.moshi/moshi-adapters/index.json:10:    "language" : {
+metadata/com.github.pureconfig/pureconfig-generic-scala3_3/index.json:10:    "language" : {
+metadata/org.typelevel/cats-parse_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-core_2.13/index.json:10:    "language" : {
+metadata/org.json4s/json4s-core_2.13/index.json:48:    "language" : {
+metadata/com.squareup.moshi/moshi-kotlin/index.json:10:    "language" : {
+metadata/org.typelevel/paiges-core_2.13/index.json:10:    "language" : {
+metadata/org.playframework/play-configuration_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-jackson-core_3/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-parsing_3/index.json:10:    "language" : {
+metadata/org.typelevel/vault_3/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-parsing_2.13/index.json:10:    "language" : {
+metadata/org.playframework/play-server_3/index.json:10:    "language" : {
+metadata/com.github.fd4s/fs2-kafka_3/index.json:10:    "language" : {
+metadata/org.typelevel/otel4s-core-common_3/index.json:10:    "language" : {
+metadata/org.typelevel/otel4s-core-common_3/index.json:30:    "language" : {
+metadata/org.typelevel/otel4s-core-common_3/index.json:58:    "language" : {
+metadata/org.playframework/play-json_3/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json:10:    "language" : {
+metadata/org.typelevel/case-insensitive_3/index.json:10:    "language" : {
+metadata/org.playframework/play-functional_3/index.json:10:    "language" : {
+metadata/org.typelevel/otel4s-core-trace_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.model/core_3/index.json:10:    "language" : {
+metadata/org.typelevel/jawn-parser_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/zio_3/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:29:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:47:    "language" : {
+metadata/org.typelevel/cats-mtl_3/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_2.13/index.json:10:    "language" : {
+metadata/org.typelevel/keypool_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/core_3/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+metadata/io.getquill/quill-engine_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/fs2_3/index.json:10:    "language" : {
+metadata/io.getquill/quill-engine_2.13/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/ws_3/index.json:10:    "language" : {
+metadata/io.getquill/quill-util_3/index.json:10:    "language" : {
+metadata/com.comcast/ip4s-core_3/index.json:10:    "language" : {
+metadata/org.log4s/log4s_3/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:10:    "language" : {
+metadata/com.charleskorn.kaml/kaml-jvm/index.json:10:    "language" : {
+metadata/org.playframework.twirl/twirl-api_3/index.json:10:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:9:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:28:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:46:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:64:    "language" : {
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"\\s*:\\s*\"https://repo1\\.maven\\.org|\"test-code-url\"\\s*:\\s*\"https://repo1\\.maven\\.org|\"documentation-url\"\\s*:\\s*\"https://repo1\\.maven\\.org' metadata build/discovered-artifact-metadata -g '*.json' | head -50" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ succeeded in 0ms:
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:24:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:26:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:27:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:43:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:45:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:46:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:21:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:24:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/org.yaml/snakeyaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-javadoc.jar",
+metadata/org.yaml/snakeyaml/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-sources.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/$version$/stax-ex-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+metadata/org.codehaus.janino/commons-compiler/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler/$version$/commons-compiler-$version$-sources.jar",
+metadata/org.codehaus.janino/commons-compiler/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler/$version$/commons-compiler-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:28:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:31:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:42:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:45:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg -n '\"not-for-native-image\"|\"reason\"|\"replacement\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ succeeded in 0ms:
+metadata/com.github.ajalt.mordant/mordant-jvm/index.json:3:    "not-for-native-image": true,
+metadata/com.github.ajalt.mordant/mordant-jvm/index.json:4:    "reason": "The published mordant-jvm JAR contains only META-INF/MANIFEST.MF and a Kotlin module file and no JVM class files; implementation classes are provided by its JVM dependencies.",
+metadata/com.github.ajalt.mordant/mordant-jvm/index.json:5:    "replacement": "com.github.ajalt.mordant:mordant-core-jvm:3.0.2 plus com.github.ajalt.mordant:mordant-jvm-jna-jvm:3.0.2, com.github.ajalt.mordant:mordant-jvm-ffm-jvm:3.0.2, and com.github.ajalt.mordant:mordant-jvm-graal-ffi-jvm:3.0.2"
+metadata/org.springframework.cloud/spring-cloud-starter-circuitbreaker-resilience4j/index.json:3:    "not-for-native-image": true,
+metadata/org.springframework.cloud/spring-cloud-starter-circuitbreaker-resilience4j/index.json:4:    "reason": "The published JAR contains only Maven metadata and META-INF/spring.provides and has no JVM class files, so there is no class-bearing artifact for Native Image reachability metadata.",
+metadata/org.springframework.cloud/spring-cloud-starter-circuitbreaker-resilience4j/index.json:5:    "replacement": "org.springframework.cloud:spring-cloud-circuitbreaker-resilience4j:5.0.1"
+metadata/org.springframework.cloud/spring-cloud-starter/index.json:3:    "not-for-native-image": true,
+metadata/org.springframework.cloud/spring-cloud-starter/index.json:4:    "reason": "The published JAR for 5.0.1 contains only Maven metadata and no JVM .class files, so there is no class-bearing artifact for Native Image reachability metadata.",
+metadata/org.springframework.cloud/spring-cloud-starter/index.json:5:    "replacement": "org.springframework.cloud:spring-cloud-context:5.0.1 and org.springframework.cloud:spring-cloud-commons:5.0.1"
+metadata/com.github.ghostdogpr/caliban-macros_3/index.json:3:    "not-for-native-image": true,
+metadata/com.github.ghostdogpr/caliban-macros_3/index.json:4:    "reason": "The published caliban-macros_3 2.10.0 JAR and sources JAR contain only META-INF/MANIFEST.MF and no JVM class files or sources.",
+metadata/com.github.ghostdogpr/caliban-macros_3/index.json:5:    "replacement": "com.github.ghostdogpr:caliban_3:2.10.0"
+metadata/com.squareup.wire/wire-runtime/index.json:3:    "not-for-native-image": true,
+metadata/com.squareup.wire/wire-runtime/index.json:4:    "reason": "The published root JAR contains Kotlin Multiplatform metadata/linkdata and no JVM class files; Gradle module metadata redirects JVM variants to com.squareup.wire:wire-runtime-jvm:5.3.3.",
+metadata/com.squareup.wire/wire-runtime/index.json:5:    "replacement": "com.squareup.wire:wire-runtime-jvm:5.3.3"
+metadata/org.apache.hadoop/hadoop-client/index.json:3:    "not-for-native-image": true,
+metadata/org.apache.hadoop/hadoop-client/index.json:4:    "reason": "The hadoop-client 2.7.3 Maven JAR contains only META-INF license, notice, and Maven metadata files and no JVM .class files.",
+metadata/org.apache.hadoop/hadoop-client/index.json:5:    "replacement": "Use the class-bearing Hadoop module artifacts declared by this client aggregate, such as org.apache.hadoop:hadoop-common:2.7.3, org.apache.hadoop:hadoop-hdfs:2.7.3, org.apache.hadoop:hadoop-mapreduce-client-core:2.7.3, org.apache.hadoop:hadoop-mapreduce-client-jobclient:2.7.3, and org.apache.hadoop:hadoop-yarn-api:2.7.3."
+metadata/co.touchlab/stately-concurrency/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-concurrency/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects JVM variants to co.touchlab:stately-concurrency-jvm:2.1.0.",
+metadata/co.touchlab/stately-concurrency/index.json:5:    "replacement": "co.touchlab:stately-concurrency-jvm:2.1.0"
+metadata/co.touchlab/stately-strict/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-strict/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects JVM variants to co.touchlab:stately-strict-jvm:2.1.0.",
+metadata/co.touchlab/stately-strict/index.json:5:    "replacement": "co.touchlab:stately-strict-jvm:2.1.0"
+metadata/co.touchlab/stately-concurrent-collections/index.json:3:    "not-for-native-image": true,
+metadata/co.touchlab/stately-concurrent-collections/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects JVM variants to co.touchlab:stately-concurrent-collections-jvm:2.1.0.",
+metadata/co.touchlab/stately-concurrent-collections/index.json:5:    "replacement": "co.touchlab:stately-concurrent-collections-jvm:2.1.0"
+metadata/org.jetbrains.compose.ui/ui/index.json:3:    "not-for-native-image": true,
+metadata/org.jetbrains.compose.ui/ui/index.json:4:    "reason": "The published root JAR contains Kotlin metadata/linkdata and no JVM class files; Gradle module metadata redirects standard JVM variants to org.jetbrains.compose.ui:ui-desktop:1.8.2.",
+metadata/org.jetbrains.compose.ui/ui/index.json:5:    "replacement": "org.jetbrains.compose.ui:ui-desktop:1.8.2"
+metadata/org.junit.jupiter/junit-jupiter/index.json:3:    "not-for-native-image": true,
+metadata/org.junit.jupiter/junit-jupiter/index.json:4:    "reason": "Artifact JAR contains no application/library JVM class files beyond module-info.class, so there is no library code for native-image metadata."
+metadata/org.eclipse.platform/org.eclipse.swt/index.json:3:    "not-for-native-image": true,
+metadata/org.eclipse.platform/org.eclipse.swt/index.json:4:    "reason": "The published org.eclipse.swt 3.133.0 JAR contains only bundle metadata, p2.inf, legal resources, and no JVM .class files; runtime SWT classes are provided by platform-specific dependencies selected by the POM.",
+metadata/org.eclipse.platform/org.eclipse.swt/index.json:5:    "replacement": "Use the platform-specific SWT artifact selected by the POM, such as org.eclipse.platform:org.eclipse.swt.gtk.linux.x86_64:3.133.0, org.eclipse.platform:org.eclipse.swt.cocoa.macosx.aarch64:3.133.0, or org.eclipse.platform:org.eclipse.swt.win32.win32.x86_64:3.133.0."
+metadata/org.springframework.boot/spring-boot-starter-json/index.json:3:    "not-for-native-image": true,
+metadata/org.springframework.boot/spring-boot-starter-json/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-json:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-json/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework:spring-web:5.3.31, com.fasterxml.jackson.core:jackson-databind:2.13.5, com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.13.5, com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.5, and com.fasterxml.jackson.module:jackson-module-parameter-names:2.13.5."
+metadata/org.scalatest/scalatest_2.13/index.json:3:    "not-for-native-image": true,
+metadata/org.scalatest/scalatest_2.13/index.json:4:    "reason": "The published scalatest_2.13-3.2.19 JAR contains only META-INF/MANIFEST.MF and no JVM class files; the implementation classes are supplied by its class-bearing module dependencies.",
+metadata/org.scalatest/scalatest_2.13/index.json:5:    "replacement": "Use the class-bearing ScalaTest module artifacts such as org.scalatest:scalatest-core_2.13:3.2.19, org.scalatest:scalatest-funsuite_2.13:3.2.19, and org.scalatest:scalatest-matchers-core_2.13:3.2.19 as needed."
+metadata/org.springframework.boot/spring-boot-starter/index.json:3:    "not-for-native-image": true,
+metadata/org.springframework.boot/spring-boot-starter/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter:2.6.3 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter/index.json:5:    "replacement": "Use the class-bearing dependencies such as org.springframework.boot:spring-boot:2.6.3 and org.springframework.boot:spring-boot-autoconfigure:2.6.3."
+metadata/org.springframework.boot/spring-boot-starter-data-jdbc/index.json:3:    "not-for-native-image": true,
+metadata/org.springframework.boot/spring-boot-starter-data-jdbc/index.json:4:    "reason": "The published spring-boot-starter-data-jdbc-4.0.6 JAR contains only META-INF/MANIFEST.MF, LICENSE.txt, and NOTICE.txt and no JVM class files; it is a dependency starter whose runtime classes are supplied by dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-data-jdbc/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework.boot:spring-boot-data-jdbc:4.0.6 and org.springframework.boot:spring-boot-jdbc:4.0.6 for reachability metadata."
+metadata/org.springframework.boot/spring-boot-starter-actuator/index.json:3:    "not-for-native-image": true,
+metadata/org.springframework.boot/spring-boot-starter-actuator/index.json:4:    "reason": "The published 2.6.3 JAR contains only META-INF manifest, license, and notice files and no JVM .class files, so the starter itself has no library classes for Native Image reachability metadata.",
+metadata/org.springframework.boot/spring-boot-starter-actuator/index.json:5:    "replacement": "org.springframework.boot:spring-boot-actuator-autoconfigure:2.6.3 and org.springframework.boot:spring-boot-actuator:2.6.3"
+metadata/org.springframework.boot/spring-boot-starter-data-jpa/index.json:3:    "not-for-native-image": true,
+metadata/org.springframework.boot/spring-boot-starter-data-jpa/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-data-jpa:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-data-jpa/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework.data:spring-data-jpa:2.7.18, org.hibernate:hibernate-core:5.6.15.Final, and org.springframework.boot:spring-boot-autoconfigure:2.7.18."
+metadata/org.springframework.boot/spring-boot-starter-aop/index.json:3:    "not-for-native-image": true,
+metadata/org.springframework.boot/spring-boot-starter-aop/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-aop:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-aop/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework:spring-aop:5.3.31, org.aspectj:aspectjweaver:1.9.7, and org.springframework.boot:spring-boot-autoconfigure:2.7.18."
+metadata/org.springframework.boot/spring-boot-starter-flyway/index.json:3:    "not-for-native-image": true,
+metadata/org.springframework.boot/spring-boot-starter-flyway/index.json:4:    "reason": "The published spring-boot-starter-flyway-4.0.6 JAR contains only META-INF/MANIFEST.MF, LICENSE.txt, and NOTICE.txt and no JVM class files; it is a dependency starter whose runtime classes are supplied by dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-flyway/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework.boot:spring-boot-flyway:4.0.6, org.flywaydb:flyway-core:11.14.1, and org.springframework.boot:spring-boot-jdbc:4.0.6 for reachability metadata."
+metadata/org.springframework.boot/spring-boot-starter-webmvc/index.json:3:    "not-for-native-image": true,
+metadata/org.springframework.boot/spring-boot-starter-webmvc/index.json:4:    "reason": "The published spring-boot-starter-webmvc-4.0.6 JAR contains only META-INF/MANIFEST.MF, LICENSE.txt, and NOTICE.txt and no JVM class files; it is a dependency starter whose runtime classes are supplied by dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-webmvc/index.json:5:    "replacement": "Use the class-bearing dependency org.springframework.boot:spring-boot-webmvc:4.0.6 for Spring Boot Web MVC reachability metadata."
+metadata/org.springframework.boot/spring-boot-starter-test/index.json:3:    "not-for-native-image": true,
+metadata/org.springframework.boot/spring-boot-starter-test/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-test:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose test classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-test/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework.boot:spring-boot-test:2.7.18, org.springframework.boot:spring-boot-test-autoconfigure:2.7.18, org.junit.jupiter:junit-jupiter:5.8.2, org.mockito:mockito-core:4.5.1, and org.hamcrest:hamcrest:2.2."
+metadata/org.springframework.boot/spring-boot-starter-aspectj/index.json:3:    "not-for-native-image": true,
+metadata/org.springframework.boot/spring-boot-starter-aspectj/index.json:4:    "reason": "The published spring-boot-starter-aspectj-4.0.6 JAR contains only META-INF/MANIFEST.MF, LICENSE.txt, and NOTICE.txt and no JVM class files; it is a dependency starter whose runtime classes are supplied by dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-aspectj/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework:spring-aop:7.0.7 and org.aspectj:aspectjweaver:1.9.25.1 for reachability metadata."
+metadata/org.springframework.boot/spring-boot-starter-web/index.json:3:    "not-for-native-image": true,
+metadata/org.springframework.boot/spring-boot-starter-web/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-web:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-web/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework:spring-web:5.3.31, org.springframework:spring-webmvc:5.3.31, org.springframework.boot:spring-boot:2.7.18, org.springframework.boot:spring-boot-autoconfigure:2.7.18, and org.apache.tomcat.embed:tomcat-embed-core:9.0.83."
+metadata/org.springframework.boot/spring-boot-starter-validation/index.json:3:    "not-for-native-image": true,
+metadata/org.springframework.boot/spring-boot-starter-validation/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-validation:3.4.3 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-validation/index.json:5:    "replacement": "Use class-bearing dependencies such as org.hibernate.validator:hibernate-validator:8.0.2.Final, org.apache.tomcat.embed:tomcat-embed-el:10.1.36, org.springframework.boot:spring-boot:3.4.3, and org.springframework.boot:spring-boot-autoconfigure:3.4.3."
+metadata/org.springframework.boot/spring-boot-starter-tomcat/index.json:3:    "not-for-native-image": true,
+metadata/org.springframework.boot/spring-boot-starter-tomcat/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-tomcat:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-tomcat/index.json:5:    "replacement": "Use class-bearing dependencies such as org.apache.tomcat.embed:tomcat-embed-core:9.0.83, org.apache.tomcat.embed:tomcat-embed-el:9.0.83, and org.apache.tomcat.embed:tomcat-embed-websocket:9.0.83."
+metadata/org.springframework.boot/spring-boot-starter-amqp/index.json:3:    "not-for-native-image": true,
+metadata/org.springframework.boot/spring-boot-starter-amqp/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-amqp:4.0.2 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-amqp/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework.boot:spring-boot-amqp:4.0.2, org.springframework.amqp:spring-rabbit:4.0.2, and org.springframework.boot:spring-boot-autoconfigure:4.0.2."
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin?ref=1.1.1' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/main?ref=1.1.1' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/test?ref=1.1.1' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src?ref=1.1.1' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ succeeded in 208ms:
+[
+  {
+    "name": "src",
+    "path": "scalac-scoverage-plugin/src",
+    "sha": "63686c481cb8e3cf1d7dd70cb6f91833e64dbbe0",
+    "size": 0,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/tree/1.1.1/scalac-scoverage-plugin/src",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/trees/63686c481cb8e3cf1d7dd70cb6f91833e64dbbe0",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/trees/63686c481cb8e3cf1d7dd70cb6f91833e64dbbe0",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/tree/1.1.1/scalac-scoverage-plugin/src"
+    }
+  }
+]
+
+ succeeded in 223ms:
+[
+  {
+    "name": "resources",
+    "path": "scalac-scoverage-plugin/src/main/resources",
+    "sha": "d30529f9b4a51217a6dea3e7a8240ebe243daee7",
+    "size": 0,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/main/resources?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/tree/1.1.1/scalac-scoverage-plugin/src/main/resources",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/trees/d30529f9b4a51217a6dea3e7a8240ebe243daee7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/main/resources?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/trees/d30529f9b4a51217a6dea3e7a8240ebe243daee7",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/tree/1.1.1/scalac-scoverage-plugin/src/main/resources"
+    }
+  },
+  {
+    "name": "scala",
+    "path": "scalac-scoverage-plugin/src/main/scala",
+    "sha": "cda0fbc729993a03a5881f5985def40cbdc6bc2f",
+    "size": 0,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/main/scala?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/tree/1.1.1/scalac-scoverage-plugin/src/main/scala",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/trees/cda0fbc729993a03a5881f5985def40cbdc6bc2f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/main/scala?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/trees/cda0fbc729993a03a5881f5985def40cbdc6bc2f",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/tree/1.1.1/scalac-scoverage-plugin/src/main/scala"
+    }
+  }
+]
+
+ succeeded in 221ms:
+[
+  {
+    "name": "resources",
+    "path": "scalac-scoverage-plugin/src/test/resources",
+    "sha": "52addffbfb5ea1a286e028d6a383ece79a88616d",
+    "size": 0,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/test/resources?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/tree/1.1.1/scalac-scoverage-plugin/src/test/resources",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/trees/52addffbfb5ea1a286e028d6a383ece79a88616d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/test/resources?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/trees/52addffbfb5ea1a286e028d6a383ece79a88616d",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/tree/1.1.1/scalac-scoverage-plugin/src/test/resources"
+    }
+  },
+  {
+    "name": "scala",
+    "path": "scalac-scoverage-plugin/src/test/scala",
+    "sha": "1d3a4924465422b104ef12091af12406d4ee36e2",
+    "size": 0,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/test/scala?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/tree/1.1.1/scalac-scoverage-plugin/src/test/scala",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/trees/1d3a4924465422b104ef12091af12406d4ee36e2",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/test/scala?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/trees/1d3a4924465422b104ef12091af12406d4ee36e2",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/tree/1.1.1/scalac-scoverage-plugin/src/test/scala"
+    }
+  }
+]
+
+ succeeded in 250ms:
+[
+  {
+    "name": "main",
+    "path": "scalac-scoverage-plugin/src/main",
+    "sha": "55f1bd9d871042684bb2f81be17b5cb4af7fb287",
+    "size": 0,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/main?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/tree/1.1.1/scalac-scoverage-plugin/src/main",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/trees/55f1bd9d871042684bb2f81be17b5cb4af7fb287",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/main?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/trees/55f1bd9d871042684bb2f81be17b5cb4af7fb287",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/tree/1.1.1/scalac-scoverage-plugin/src/main"
+    }
+  },
+  {
+    "name": "test",
+    "path": "scalac-scoverage-plugin/src/test",
+    "sha": "2ae46b7a8c17ef52f4c03aa82592e64bdf66b956",
+    "size": 0,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/test?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/tree/1.1.1/scalac-scoverage-plugin/src/test",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/trees/2ae46b7a8c17ef52f4c03aa82592e64bdf66b956",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/test?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/trees/2ae46b7a8c17ef52f4c03aa82592e64bdf66b956",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/tree/1.1.1/scalac-scoverage-plugin/src/test"
+    }
+  }
+]
+
+codex
+The project has actual test sources under `scalac-scoverage-plugin/src/test` at tag `1.1.1`. Maven Central has no test-sources artifact for the plugin, so the test suite URL should point to that tagged GitHub test directory.
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/plugin.jar" https://repo1.maven.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/1.1.1/scalac-scoverage-plugin_2.11-1.1.1.jar; jar tf "$tmp/plugin.jar" | sed -n '"'1,120p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/scalac-scoverage-plugin/src/main/resources/scalac-plugin.xml' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/scalac-scoverage-plugin/src/main/scala/scoverage/ScoveragePlugin.scala | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/version.sbt && curl -fsSL https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/project/Build.scala | sed -n '1,180p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ succeeded in 109ms:
+META-INF/MANIFEST.MF
+scoverage/
+scoverage/report/
+scoverage/report/Invoked.class
+scoverage/Location$$anonfun$apply$1.class
+scoverage/MethodBuilders$class.class
+scoverage/report/CoberturaXmlWriter.class
+scoverage/report/ScoverageHtmlWriter$$anonfun$classRow$2.class
+scoverage/Serializer$$anonfun$serialize$1.class
+scoverage/report/StatementStatus.class
+scoverage/ClassType$Trait$.class
+scoverage/report/ScoverageHtmlWriter$$anonfun$classRow$1.class
+scoverage/report/ScoverageXmlWriter$$anonfun$scoverage$report$ScoverageXmlWriter$$klass$1.class
+scoverage/Serializer$.class
+scoverage/report/CodeGrid$$anonfun$4$$anonfun$apply$3.class
+scoverage/report/CoverageAggregator.class
+scoverage/CoverageMetrics$$anonfun$invokedStatements$1.class
+scoverage/IOUtils$$anonfun$3.class
+scoverage/report/CoberturaXmlWriter$$anonfun$xml$1.class
+scoverage/report/CodeGrid$$anonfun$1.class
+scalac-plugin.xml
+scoverage/ClassType$Object$.class
+scoverage/ClassBuilders$$anonfun$classes$1.class
+scoverage/IOUtils$$anonfun$2.class
+scoverage/ClassBuilders$class.class
+scoverage/report/ScoverageXmlReader$.class
+scoverage/MeasuredFile$.class
+scoverage/PackageBuilders$$anonfun$packages$1.class
+scoverage/report/ScoverageXmlWriter.class
+scoverage/CoverageMetrics$class.class
+scoverage/Serializer$$anonfun$deserialize$1.class
+scoverage/Coverage$$anonfun$risks$2.class
+scoverage/PackageBuilders$$anonfun$packages$3.class
+scoverage/MeasuredMethod$.class
+scoverage/report/ScoverageHtmlWriter$$anonfun$scoverage$report$ScoverageHtmlWriter$$writePackage$1.class
+scoverage/RegexCoverageFilter$$anonfun$3.class
+scoverage/report/BaseReportWriter$$anonfun$1.class
+scoverage/ClassRef.class
+scoverage/ScoveragePlugin$$anonfun$processOptions$1.class
+scoverage/Serializer$$anonfun$escape$2.class
+scoverage/report/ScoverageHtmlWriter$$anonfun$packageList$1.class
+scoverage/Constants.class
+scoverage/CoverageFilter.class
+scoverage/report/CoberturaXmlWriter$$anonfun$method$1.class
+scoverage/Location$$anonfun$apply$1$$anonfun$scoverage$Location$$anonfun$$enclosingMethod$1$1.class
+scoverage/ScoverageInstrumentationComponent.class
+scoverage/report/CoberturaXmlWriter$$anonfun$klass$1.class
+scoverage/report/CoberturaXmlWriter$$anonfun$xml$2.class
+scoverage/index.html
+scoverage/ScoverageInstrumentationComponent$Transformer$$anonfun$safeEnd$2.class
+scoverage/Constants$.class
+scoverage/CoverageMetrics.class
+scoverage/report/Invoked$.class
+scoverage/report/CoverageAggregator$$anonfun$aggregatedCoverage$1.class
+scoverage/Coverage$$anonfun$risks$1.class
+scoverage/MeasuredPackage$.class
+scoverage/Coverage$$anonfun$apply$1.class
+scoverage/report/CoverageAggregator$.class
+scoverage/IOUtils$.class
+scoverage/report/ScoverageHtmlWriter$$anonfun$risks$1.class
+scoverage/ScoverageInstrumentationComponent$Transformer$$anonfun$allConstArgs$1.class
+scoverage/report/ScoverageHtmlWriter$$anonfun$1.class
+scoverage/RegexCoverageFilter$$anonfun$1.class
+scoverage/report/BaseReportWriter.class
+scoverage/FileBuilders$class.class
+scoverage/report/ScoverageXmlMerger.class
+scoverage/ClassRef$.class
+scoverage/report/ScoverageHtmlWriter$$anonfun$classesTable$1.class
+scoverage/Serializer$$anonfun$escape$1.class
+scoverage/CoverageMetrics$$anonfun$branches$1.class
+scoverage/report/ScoverageXmlMerger$.class
+scoverage/IOUtils$$anonfun$invoked$1.class
+scoverage/MeasuredClass.class
+scoverage/PackageBuilders$$anonfun$packages$2.class
+scoverage/PackageBuilders$class.class
+scoverage/report/StatementWriter$$anonfun$output$2.class
+scoverage/MethodBuilders.class
+scoverage/ScoverageInstrumentationComponent$Transformer$$anonfun$safeStart$2.class
+scoverage/RegexCoverageFilter$$anonfun$isFileMatch$1$1.class
+scoverage/ClassCoverage$class.class
+scoverage/report/CodeGrid.class
+scoverage/IOUtils$$anonfun$scoverage$IOUtils$$search$1$1.class
+scoverage/report/ScoverageHtmlWriter.class
+scoverage/IOUtils$$anonfun$invoked$1$$anonfun$apply$1.class
+scoverage/report/StatementWriter$$anonfun$output$1.class
+scoverage/report/CoberturaXmlWriter$$anonfun$xml$3.class
+scoverage/MeasuredPackage.class
+scoverage/report/ScoverageXmlReader$$anonfun$read$1.class
+scoverage/ClassCoverage$$anonfun$invokedClasses$1$$anonfun$apply$2.class
+scoverage/report/ScoverageHtmlWriter$$anonfun$write$1.class
+scoverage/Location$$anonfun$apply$1$$anonfun$scoverage$Location$$anonfun$$sourcePath$1$2.class
+scoverage/ScoverageInstrumentationComponent$Transformer$$anonfun$transformPartial$1.class
+scoverage/ScoverageInstrumentationComponent$Transformer$$anonfun$transformStatements$1.class
+scoverage/Coverage$$anonfun$loc$1.class
+scoverage/Coverage$$anonfun$invoked$1.class
+scoverage/report/CoberturaXmlWriter$$anonfun$klass$2.class
+scoverage/report/CodeGrid$$anonfun$2.class
+scoverage/report/CoverageAggregator$$anonfun$aggregatedCoverage$1$$anonfun$apply$1.class
+scoverage/PackageBuilders.class
+scoverage/ScoveragePlugin$$anonfun$processOptions$1$$anonfun$apply$3.class
+scoverage/report/ScoverageXmlWriter$$anonfun$scoverage$report$ScoverageXmlWriter$$method$1.class
+scoverage/ScoveragePlugin$$anonfun$processOptions$1$$anonfun$apply$4.class
+scoverage/FileBuilders$$anonfun$files$1.class
+scoverage/AllCoverageFilter$.class
+scoverage/MeasuredClass$.class
+scoverage/MeasuredClass$$anonfun$loc$2.class
+scoverage/ClassType.class
+scoverage/Location$$anonfun$apply$1$$anonfun$scoverage$Location$$anonfun$$sourcePath$1$1.class
+scoverage/FileBuilders.class
+scoverage/ScoverageInstrumentationComponent$Transformer$$anonfun$1.class
+scoverage/IOUtils$$anonfun$1.class
+scoverage/RegexCoverageFilter$$anonfun$2.class
+scoverage/AllCoverageFilter.class
+scoverage/Coverage$.class
+scoverage/ScoverageInstrumentationComponent$Transformer$$anonfun$safeEnd$1.class
+scoverage/report/NotInvoked.class
+scoverage/Location.class
+scoverage/Location$$anonfun$apply$1$$anonfun$apply$2.class
+scoverage/FileBuilders$$anonfun$files$2.class
+scoverage/report/CoverageAggregator$$anonfun$aggregate$1.class
+
+ succeeded in 147ms:
+<plugin>
+    <name>scoverage</name>
+    <classname>scoverage.ScoveragePlugin</classname>
+</plugin>
+ succeeded in 153ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 331ms:
+version in ThisBuild := "1.1.1"curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/main/scala/scoverage?ref=1.1.1' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/build.sbt | sed -n '1,240p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/project?ref=1.1.1' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ succeeded in 131ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 217ms:
+[
+  {
+    "name": "EnvSupport.scala",
+    "path": "project/EnvSupport.scala",
+    "sha": "a0c27d54d5345e1277e215f566878baf49e3afd4",
+    "size": 2087,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/project/EnvSupport.scala?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/project/EnvSupport.scala",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/a0c27d54d5345e1277e215f566878baf49e3afd4",
+    "download_url": "https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/project/EnvSupport.scala",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/project/EnvSupport.scala?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/a0c27d54d5345e1277e215f566878baf49e3afd4",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/project/EnvSupport.scala"
+    }
+  },
+  {
+    "name": "Scoverage.scala",
+    "path": "project/Scoverage.scala",
+    "sha": "2f088affc3e7ab47653c5b07524f5319a20b029a",
+    "size": 3655,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/project/Scoverage.scala?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/project/Scoverage.scala",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/2f088affc3e7ab47653c5b07524f5319a20b029a",
+    "download_url": "https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/project/Scoverage.scala",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/project/Scoverage.scala?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/2f088affc3e7ab47653c5b07524f5319a20b029a",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/project/Scoverage.scala"
+    }
+  },
+  {
+    "name": "build.properties",
+    "path": "project/build.properties",
+    "sha": "913ae823b1596efd95a5eaa28d713c574d2d1eb4",
+    "size": 848,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/project/build.properties?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/project/build.properties",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/913ae823b1596efd95a5eaa28d713c574d2d1eb4",
+    "download_url": "https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/project/build.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/project/build.properties?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/913ae823b1596efd95a5eaa28d713c574d2d1eb4",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/project/build.properties"
+    }
+  },
+  {
+    "name": "plugins.sbt",
+    "path": "project/plugins.sbt",
+    "sha": "33096ea76c58eaf5696cff074e48b8ac83457f20",
+    "size": 228,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/project/plugins.sbt?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/project/plugins.sbt",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/33096ea76c58eaf5696cff074e48b8ac83457f20",
+    "download_url": "https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/project/plugins.sbt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/project/plugins.sbt?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/33096ea76c58eaf5696cff074e48b8ac83457f20",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/project/plugins.sbt"
+    }
+  },
+  {
+    "name": "scales-build.iml",
+    "path": "project/scales-build.iml",
+    "sha": "d49584d08055845d02dcff3bbb95d0f1523036b6",
+    "size": 5900,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/project/scales-build.iml?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/project/scales-build.iml",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/d49584d08055845d02dcff3bbb95d0f1523036b6",
+    "download_url": "https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/project/scales-build.iml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/project/scales-build.iml?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/d49584d08055845d02dcff3bbb95d0f1523036b6",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/project/scales-build.iml"
+    }
+  }
+]
+
+ succeeded in 252ms:
+[
+  {
+    "name": "Constants.scala",
+    "path": "scalac-scoverage-plugin/src/main/scala/scoverage/Constants.scala",
+    "sha": "3259e3b26de36affa89d1026307216a288394e96",
+    "size": 471,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/main/scala/scoverage/Constants.scala?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/scalac-scoverage-plugin/src/main/scala/scoverage/Constants.scala",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/3259e3b26de36affa89d1026307216a288394e96",
+    "download_url": "https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/scalac-scoverage-plugin/src/main/scala/scoverage/Constants.scala",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/main/scala/scoverage/Constants.scala?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/3259e3b26de36affa89d1026307216a288394e96",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/scalac-scoverage-plugin/src/main/scala/scoverage/Constants.scala"
+    }
+  },
+  {
+    "name": "CoverageFilter.scala",
+    "path": "scalac-scoverage-plugin/src/main/scala/scoverage/CoverageFilter.scala",
+    "sha": "99c77430f685633f84454f6af928518a37edfd11",
+    "size": 3662,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/main/scala/scoverage/CoverageFilter.scala?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/scalac-scoverage-plugin/src/main/scala/scoverage/CoverageFilter.scala",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/99c77430f685633f84454f6af928518a37edfd11",
+    "download_url": "https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/scalac-scoverage-plugin/src/main/scala/scoverage/CoverageFilter.scala",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/main/scala/scoverage/CoverageFilter.scala?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/99c77430f685633f84454f6af928518a37edfd11",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/scalac-scoverage-plugin/src/main/scala/scoverage/CoverageFilter.scala"
+    }
+  },
+  {
+    "name": "IOUtils.scala",
+    "path": "scalac-scoverage-plugin/src/main/scala/scoverage/IOUtils.scala",
+    "sha": "409eb81c1e7192c5bfe96fdf6862c408e575f2ee",
+    "size": 2878,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/main/scala/scoverage/IOUtils.scala?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/scalac-scoverage-plugin/src/main/scala/scoverage/IOUtils.scala",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/409eb81c1e7192c5bfe96fdf6862c408e575f2ee",
+    "download_url": "https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/scalac-scoverage-plugin/src/main/scala/scoverage/IOUtils.scala",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/main/scala/scoverage/IOUtils.scala?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/409eb81c1e7192c5bfe96fdf6862c408e575f2ee",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/scalac-scoverage-plugin/src/main/scala/scoverage/IOUtils.scala"
+    }
+  },
+  {
+    "name": "Location.scala",
+    "path": "scalac-scoverage-plugin/src/main/scala/scoverage/Location.scala",
+    "sha": "343b6fbe4318fe830d3618ae1ddc0e9a780a60ab",
+    "size": 1847,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/main/scala/scoverage/Location.scala?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/scalac-scoverage-plugin/src/main/scala/scoverage/Location.scala",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/343b6fbe4318fe830d3618ae1ddc0e9a780a60ab",
+    "download_url": "https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/scalac-scoverage-plugin/src/main/scala/scoverage/Location.scala",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/main/scala/scoverage/Location.scala?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/343b6fbe4318fe830d3618ae1ddc0e9a780a60ab",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/scalac-scoverage-plugin/src/main/scala/scoverage/Location.scala"
+    }
+  },
+  {
+    "name": "Serializer.scala",
+    "path": "scalac-scoverage-plugin/src/main/scala/scoverage/Serializer.scala",
+    "sha": "846b7c593cba8a844381b6fcc9bcf28c75e53b8b",
+    "size": 4968,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/main/scala/scoverage/Serializer.scala?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/scalac-scoverage-plugin/src/main/scala/scoverage/Serializer.scala",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/846b7c593cba8a844381b6fcc9bcf28c75e53b8b",
+    "download_url": "https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/scalac-scoverage-plugin/src/main/scala/scoverage/Serializer.scala",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/main/scala/scoverage/Serializer.scala?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/846b7c593cba8a844381b6fcc9bcf28c75e53b8b",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/scalac-scoverage-plugin/src/main/scala/scoverage/Serializer.scala"
+    }
+  },
+  {
+    "name": "coverage.scala",
+    "path": "scalac-scoverage-plugin/src/main/scala/scoverage/coverage.scala",
+    "sha": "242d99d806dd288658f2269c0918fef952b6d839",
+    "size": 6321,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/main/scala/scoverage/coverage.scala?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/scalac-scoverage-plugin/src/main/scala/scoverage/coverage.scala",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/242d99d806dd288658f2269c0918fef952b6d839",
+    "download_url": "https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/scalac-scoverage-plugin/src/main/scala/scoverage/coverage.scala",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/main/scala/scoverage/coverage.scala?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/242d99d806dd288658f2269c0918fef952b6d839",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/scalac-scoverage-plugin/src/main/scala/scoverage/coverage.scala"
+    }
+  },
+  {
+    "name": "plugin.scala",
+    "path": "scalac-scoverage-plugin/src/main/scala/scoverage/plugin.scala",
+    "sha": "34641003e20c10fec41f2c2c05d29a1426d6fdbf",
+    "size": 24217,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/main/scala/scoverage/plugin.scala?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/scalac-scoverage-plugin/src/main/scala/scoverage/plugin.scala",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/34641003e20c10fec41f2c2c05d29a1426d6fdbf",
+    "download_url": "https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/scalac-scoverage-plugin/src/main/scala/scoverage/plugin.scala",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/main/scala/scoverage/plugin.scala?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/blobs/34641003e20c10fec41f2c2c05d29a1426d6fdbf",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/scalac-scoverage-plugin/src/main/scala/scoverage/plugin.scala"
+    }
+  },
+  {
+    "name": "report",
+    "path": "scalac-scoverage-plugin/src/main/scala/scoverage/report",
+    "sha": "35e6d3e1cb04fb974f4cf264bf86703da856210f",
+    "size": 0,
+    "url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/main/scala/scoverage/report?ref=1.1.1",
+    "html_url": "https://github.com/scoverage/scalac-scoverage-plugin/tree/1.1.1/scalac-scoverage-plugin/src/main/scala/scoverage/report",
+    "git_url": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/trees/35e6d3e1cb04fb974f4cf264bf86703da856210f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/contents/scalac-scoverage-plugin/src/main/scala/scoverage/report?ref=1.1.1",
+      "git": "https://api.github.com/repos/scoverage/scalac-scoverage-plugin/git/trees/35e6d3e1cb04fb974f4cf264bf86703da856210f",
+      "html": "https://github.com/scoverage/scalac-scoverage-plugin/tree/1.1.1/scalac-scoverage-plugin/src/main/scala/scoverage/report"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/scalac-scoverage-plugin/src/main/scala/scoverage/plugin.scala | sed -n '1,180p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/scalac-scoverage-plugin/src/main/scala/scoverage/report/ScoverageHtmlWriter.scala | sed -n '1,100p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/project/Scoverage.scala | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ succeeded in 164ms:
+package scoverage
+
+import java.io.File
+import java.util.concurrent.atomic.AtomicInteger
+
+import scala.reflect.internal.ModifierFlags
+import scala.reflect.internal.util.SourceFile
+import scala.tools.nsc.Global
+import scala.tools.nsc.plugins.{PluginComponent, Plugin}
+import scala.tools.nsc.transform.{Transform, TypingTransformers}
+
+/** @author Stephen Samuel */
+class ScoveragePlugin(val global: Global) extends Plugin {
+
+  override val name: String = "scoverage"
+  override val description: String = "scoverage code coverage compiler plugin"
+  val instrumentationComponent = new ScoverageInstrumentationComponent(global)
+  override val components: List[PluginComponent] = List(instrumentationComponent)
+
+  override def processOptions(opts: List[String], error: String => Unit) {
+    val options = new ScoverageOptions
+    for ( opt <- opts ) {
+      if (opt.startsWith("excludedPackages:")) {
+        options.excludedPackages = opt.substring("excludedPackages:".length).split(";").map(_.trim).filterNot(_.isEmpty)
+      } else if (opt.startsWith("excludedFiles:")) {
+        options.excludedFiles = opt.substring("excludedFiles:".length).split(";").map(_.trim).filterNot(_.isEmpty)
+      } else if (opt.startsWith("dataDir:")) {
+        options.dataDir = opt.substring("dataDir:".length)
+      } else {
+        error("Unknown option: " + opt)
+      }
+    }
+    if (!opts.exists(_.startsWith("dataDir:")))
+      throw new RuntimeException("Cannot invoke plugin without specifying <dataDir>")
+    instrumentationComponent.setOptions(options)
+  }
+
+  override val optionsHelp: Option[String] = Some(Seq(
+    "-P:scoverage:dataDir:<pathtodatadir>                  where the coverage files should be written\n",
+    "-P:scoverage:excludedPackages:<regex>;<regex>         semicolon separated list of regexs for packages to exclude",
+    "-P:scoverage:excludedFiles:<regex>;<regex>            semicolon separated list of regexs for paths to exclude",
+    "                                                      Any classes whose fully qualified name matches the regex will",
+    "                                                      be excluded from coverage."
+  ).mkString("\n"))
+}
+
+class ScoverageOptions {
+  var excludedPackages: Seq[String] = Nil
+  var excludedFiles: Seq[String] = Nil
+  var dataDir: String = IOUtils.getTempPath
+}
+
+class ScoverageInstrumentationComponent(val global: Global)
+  extends PluginComponent
+  with TypingTransformers
+  with Transform {
+
+  import global._
+
+  val statementIds = new AtomicInteger(0)
+  val coverage = new Coverage
+
+  override val phaseName: String = "scoverage-instrumentation"
+  override val runsAfter: List[String] = List("typer")
+  override val runsBefore = List[String]("patmat")
+
+  /**
+   * Our options are not provided at construction time, but shortly after,
+   * so they start as None.
+   * You must call "setOptions" before running any commands that rely on
+   * the options.
+   */
+  private var options: ScoverageOptions = new ScoverageOptions()
+  private var coverageFilter: CoverageFilter = AllCoverageFilter
+
+  def setOptions(options: ScoverageOptions): Unit = {
+    this.options = options
+    coverageFilter = new RegexCoverageFilter(options.excludedPackages, options.excludedFiles)
+    new File(options.dataDir).mkdirs() // ensure data directory is created
+  }
+
+  override def newPhase(prev: scala.tools.nsc.Phase): Phase = new Phase(prev) {
+
+    override def run(): Unit = {
+      reporter.echo(s"[info] Cleaning datadir [${options.dataDir}]")
+      // we clean the data directory, because if the code has changed, then the number / order of
+      // statements has changed by definition. So the old data would reference statements incorrectly
+      // and thus skew the results.
+      IOUtils.clean(options.dataDir)
+
+      reporter.echo("[info] Beginning coverage instrumentation")
+      super.run()
+      reporter.echo(s"[info] Instrumentation completed [${coverage.statements.size} statements]")
+
+      Serializer.serialize(coverage, Serializer.coverageFile(options.dataDir))
+      reporter.echo(s"[info] Wrote instrumentation file [${Serializer.coverageFile(options.dataDir)}]")
+      reporter.echo(s"[info] Will write measurement data to [${options.dataDir}]")
+    }
+  }
+
+  protected def newTransformer(unit: CompilationUnit): Transformer = new Transformer(unit)
+
+  class Transformer(unit: global.CompilationUnit) extends TypingTransformer(unit) {
+
+    import global._
+
+    // contains the location of the last node
+    var location: Location = null
+
+    /**
+     * The 'start' of the position, if it is available, else -1
+     * We cannot use 'isDefined' to test whether pos.start will work, as some
+     * classes (e.g. scala.reflect.internal.util.OffsetPosition have
+     * isDefined true, but throw on `start`
+     */
+    def safeStart(tree: Tree): Int = scala.util.Try(tree.pos.start).getOrElse(-1)
+    def safeEnd(tree: Tree): Int = scala.util.Try(tree.pos.end).getOrElse(-1)
+    def safeLine(tree: Tree): Int = if (tree.pos.isDefined) tree.pos.line else -1
+    def safeSource(tree: Tree): Option[SourceFile] = if (tree.pos.isDefined) Some(tree.pos.source) else None
+
+    def invokeCall(id: Int): Tree = {
+      Apply(
+        Select(
+          Select(
+            Ident("scoverage"),
+            newTermName("Invoker")
+          ),
+          newTermName("invoked")
+        ),
+        List(
+          Literal(
+            Constant(id)
+          ),
+          Literal(
+            Constant(options.dataDir)
+          )
+        )
+      )
+    }
+
+    override def transform(tree: Tree) = process(tree)
+
+    def transformStatements(trees: List[Tree]): List[Tree] = trees.map(process)
+
+    def transformForCases(cases: List[CaseDef]): List[CaseDef] = {
+      // we don't instrument the synthetic case _ => false clause
+      cases.dropRight(1).map(c => {
+        treeCopy.CaseDef(
+          // in a for-loop we don't care about instrumenting the guards, as they are synthetically generated
+          c, c.pat, process(c.guard), process(c.body)
+        )
+      }) ++ cases.takeRight(1)
+    }
+
+    def transformCases(cases: List[CaseDef]): List[CaseDef] = {
+      cases.map(c => {
+        treeCopy.CaseDef(
+          c, c.pat, process(c.guard), process(c.body)
+        )
+      })
+    }
+
+    def instrument(tree: Tree, original: Tree, branch: Boolean = false): Tree = {
+      safeSource(tree) match {
+        case None =>
+          reporter.echo(s"[warn] Could not instrument [${tree.getClass.getSimpleName}/${tree.symbol}]. No pos.")
+          tree
+        case Some(source) =>
+          val id = statementIds.incrementAndGet
+          val statement = Statement(
+            source.path,
+            location,
+            id,
+            safeStart(tree),
+            safeEnd(tree),
+            safeLine(tree),
+            original.toString,
+            Option(original.symbol).fold("<nosymbol>")(_.fullNameString),
+            tree.getClass.getSimpleName,
+            branch
+
+ succeeded in 185ms:
+package scoverage.report
+
+import java.io.File
+import java.util.Date
+
+import scoverage._
+
+import scala.xml.Node
+
+/** @author Stephen Samuel */
+class ScoverageHtmlWriter(sourceDirectories: Seq[File], outputDir: File) extends BaseReportWriter(sourceDirectories, outputDir) {
+
+  def this (sourceDirectory: File, outputDir: File) {
+    this(Seq(sourceDirectory), outputDir);
+  }
+  
+  def write(coverage: Coverage): Unit = {
+    val indexFile = new File(outputDir.getAbsolutePath + "/index.html")
+    val packageFile = new File(outputDir.getAbsolutePath + "/packages.html")
+    val overviewFile = new File(outputDir.getAbsolutePath + "/overview.html")
+
+    val index = IOUtils.readStreamAsString(getClass.getResourceAsStream("/scoverage/index.html"))
+    IOUtils.writeToFile(indexFile, index)
+    IOUtils.writeToFile(packageFile, packageList(coverage).toString())
+    IOUtils.writeToFile(overviewFile, overview(coverage).toString())
+
+    coverage.packages.foreach(writePackage)
+  }
+
+  private def writePackage(pkg: MeasuredPackage): Unit = {
+    // package overview files are written out using a filename that respects the package name
+    // that means package com.example declared in a class at src/main/scala/mystuff/MyClass.scala will be written
+    // to com.example.html
+    val file = new File(outputDir, packageOverviewRelativePath(pkg))
+    file.getParentFile.mkdirs()
+    IOUtils.writeToFile(file, packageOverview(pkg).toString())
+    pkg.files.foreach(writeFile)
+  }
+
+  private def writeFile(mfile: MeasuredFile): Unit = {
+    // each highlighted file is written out using the same structure as the original file.
+    val file = new File(outputDir, relativeSource(mfile.source) + ".html")
+    file.getParentFile.mkdirs()
+    IOUtils.writeToFile(file, filePage(mfile).toString())
+  }
+
+  private def packageOverviewRelativePath(pkg: MeasuredPackage) = pkg.name.replace("<empty>", "(empty)") + ".html"
+
+  private def filePage(mfile: MeasuredFile): Node = {
+    val filename = relativeSource(mfile.source) + ".html"
+    val css =
+      "table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }" +
+        "table.statementlist { width: auto!important; font-size: 13px; } " +
+        "table.codegrid td { padding: 0!important; border: 0!important } " +
+        "table td.linenumber { width: 40px!important; } "
+    <html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id='title'>
+          {filename}
+        </title>
+        {plugins}
+        <style>
+          {css}
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            {xml.Unparsed(new CodeGrid(mfile).highlighted)}
+          </div>
+          <div class="tab-pane" id="statementlist">
+            {new StatementWriter(mfile).output}
+          </div>
+        </div>
+      </body>
+    </html>
+
+  }
+
+  def header = {
+    val css = """.meter {
+                |        height: 14px;
+                |        position: relative;
+                |        background: #BB2020;
+                |}
+                |
+                |.meter span {
+                |	display: block;
+                |	height: 100%;
+                |	background-color: rgb(43,194,83);
+                |	background-image: -webkit-gradient(
+
+ succeeded in 191ms:
+import sbt.Keys._
+import sbt._
+import sbtrelease.ReleasePlugin
+import sbtrelease.ReleasePlugin.ReleaseKeys
+import com.typesafe.sbt.pgp.PgpKeys
+
+object Scoverage extends Build {
+
+  val Org = "org.scoverage"
+  val Scala = "2.11.4"
+  val MockitoVersion = "1.9.5"
+  val ScalatestVersion = "2.2.2"
+
+  lazy val LocalTest = config("local") extend Test
+
+  val appSettings = Seq(
+    organization := Org,
+    scalaVersion := Scala,
+    crossScalaVersions := Seq("2.10.4", "2.11.7"),
+    fork in Test := false,
+    publishMavenStyle := true,
+    publishArtifact in Test := false,
+    parallelExecution in Test := false,
+    scalacOptions := Seq("-unchecked", "-deprecation", "-feature", "-encoding", "utf8"),
+    resolvers := ("releases" at "https://oss.sonatype.org/service/local/staging/deploy/maven2") +: resolvers.value,
+    concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
+    javacOptions := Seq("-source", "1.6", "-target", "1.6"),
+    libraryDependencies ++= Seq(
+      "org.mockito" % "mockito-all" % MockitoVersion % "test",
+      "org.scalatest" %% "scalatest" % ScalatestVersion % "test"
+    ),
+    publishTo <<= version {
+      (v: String) =>
+        val nexus = "https://oss.sonatype.org/"
+        if (v.trim.endsWith("SNAPSHOT"))
+          Some(Resolver.sonatypeRepo("snapshots"))
+        else
+          Some("releases" at nexus + "service/local/staging/deploy/maven2")
+    },
+    pomExtra := {
+      <url>https://github.com/scoverage/scalac-scoverage-plugin</url>
+        <licenses>
+          <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+          </license>
+        </licenses>
+        <scm>
+          <url>git@github.com:scoverage/scalac-scoverage-plugin.git</url>
+          <connection>scm:git@github.com:scoverage/scalac-scoverage-plugin.git</connection>
+        </scm>
+        <developers>
+          <developer>
+            <id>sksamuel</id>
+            <name>Stephen Samuel</name>
+            <url>http://github.com/sksamuel</url>
+          </developer>
+        </developers>
+    },
+    pomIncludeRepository := {
+      _ => false
+    }
+  ) ++ ReleasePlugin.releaseSettings ++ Seq(
+    ReleaseKeys.crossBuild := true,
+    ReleaseKeys.publishArtifactsAction := PgpKeys.publishSigned.value
+  )
+
+  lazy val root = Project("scalac-scoverage", file("."))
+    .settings(name := "scalac-scoverage")
+    .settings(appSettings: _*)
+    .settings(publishArtifact := false)
+    .aggregate(plugin, runtime)
+
+  lazy val runtime = Project("scalac-scoverage-runtime", file("scalac-scoverage-runtime"))
+    .settings(name := "scalac-scoverage-runtime")
+    .settings(appSettings: _*)
+
+  lazy val plugin = Project("scalac-scoverage-plugin", file("scalac-scoverage-plugin"))
+    .dependsOn(runtime % "test")
+    .settings(name := "scalac-scoverage-plugin")
+    .settings(appSettings: _*)
+    .settings(libraryDependencies ++= Seq(
+    "org.scala-lang" % "scala-reflect" % scalaVersion.value % "provided",
+    "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
+    "org.joda" % "joda-convert" % "1.6" % "test",
+    "joda-time" % "joda-time" % "2.3" % "test",
+    "com.typesafe.scala-logging" %% "scala-logging-slf4j" % "2.1.2" % "test"
+  )).settings(libraryDependencies ++= {
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, scalaMajor)) if scalaMajor == 11 =>
+        EnvSupport.setEnv("CrossBuildScalaVersion", "2.11.4")
+        Seq("org.scala-lang.modules" %% "scala-xml" % "1.0.1")
+      case _ =>
+        EnvSupport.setEnv("CrossBuildScalaVersion", "2.10.4")
+        Nil
+    }
+  })
+}
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/1.1.1/scalac-scoverage-plugin_2.11-1.1.1-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://github.com/scoverage/scalac-scoverage-plugin/tree/1.1.1/scalac-scoverage-plugin/src/test' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/1.1.1/scalac-scoverage-plugin_2.11-1.1.1-javadoc.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://github.com/scoverage/scalac-scoverage-plugin/blob/1.1.1/README.md' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ succeeded in 284ms:
+HTTP/2 200 
+date: Tue, 09 Jun 2026 15:38:59 GMT
+content-type: application/java-archive
+content-length: 25641
+cf-ray: a09139f619a1a285-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "3383eaf8df1f964d62f788a3c8590640"
+last-modified: Wed, 22 Jul 2015 10:53:58 GMT
+x-checksum-md5: 3383eaf8df1f964d62f788a3c8590640
+x-checksum-sha1: 5c8746c8f1b10d8e6f028af6552f60d952e00f1f
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 414ms:
+HTTP/2 200 
+date: Tue, 09 Jun 2026 15:38:59 GMT
+content-type: application/java-archive
+content-length: 506600
+cf-ray: a09139f6298ebc48-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "6bc7e510303f35c7daf370fb25ddeb74"
+last-modified: Wed, 22 Jul 2015 10:54:38 GMT
+x-checksum-md5: 6bc7e510303f35c7daf370fb25ddeb74
+x-checksum-sha1: 33b9892a9d24cbd66c7933de96aa2093d680f66f
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 867ms:
+HTTP/2 200 
+date: Tue, 09 Jun 2026 15:38:59 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+x-repository-download: git clone https://github.com/scoverage/scalac-scoverage-plugin.git
+x-raw-download: https://raw.githubusercontent.com/scoverage/scalac-scoverage-plugin/1.1.1/README.md
+etag: W/"6cba2219169ab4edf2d7d9ef2f68302a"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=7CgUvN1zUnMdDEsyN7uqfDoXuLs03UppFvAsxrcpoxNxsWJ9fNncYC%2BtxF48x7IF36EM4e%2BViFKOFTs6bw2mbBK65Kj9g0GrvpXw4FMg0DYFMXzU7gzV9g%2B6ncqAV70dGVSvxXhqtuAqFVkr5u7GI4XiVmb%2FNAKIjsCCDxv2RJQnJ0Ezvpf%2FdzgwPEymbqaGh8Hk4qrheI3KJ7kKFP0jdhTuGGRQP1yCK0%2F99%2B1iaz%2FvZFtmQcMbpnI6X2XWtpILeS6XeleoYGkd77ITAcI5gA%3D%3D--yhtsDBxzKNztyfRU--Q%2BASzFj%2ByhJYVtQiDQX9ag%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1989587468.1781019538; expires=Wed, 09 Jun 2027 15:38:58 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 09 Jun 2027 15:38:58 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 622F:302F8:2AE7BFF:2319134:6A283392
+
+
+ succeeded in 1368ms:
+HTTP/2 200 
+date: Tue, 09 Jun 2026 15:39:00 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"f551e8b745a562cf2698275c73728fd5"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=MeP0dKJc1fro9VyXxGI%2FVMidOxQdkuS1zY16UQabsvFTJ%2ByJXDg8GrDAB%2FdlJR8oeljOnY7MSmCXclcv6TEeQRCPu1DLzaV4QQficQ94Qfl96ITPTOhZWZsLzK8eBk1X%2BJZ22W25REaZMa1tdJeNL%2BtSragWaWSW26cexDTc0vr4KoKS9M2HE8LGd3qVvTeIJb0o%2F6QKfRByFCcq2H%2BEsZ9EpbRUfJCWV1TTwYO%2BBNMSmP2bh8Uuvnl9clzE05IDZZhW%2BCc%2BJVe%2BoXgJWB8kKA%3D%3D--gKMUPZpgnhzm3m8a--owUmjtIkQPLPFqg%2B%2BhLwfA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.243350169.1781019538; expires=Wed, 09 Jun 2027 15:38:58 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 09 Jun 2027 15:38:58 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 622E:228E96:2D0D108:24DA15C:6A283392
+
+
+web search: 
+web search: https://github.com/scoverage/scalac-scoverage-plugin/tree/1.1.1/scalac-scoverage-plugin/src/test
+web search: 
+web search: repo.maven.apache.org org.scoverage scalac-scoverage-plugin_2.11 1.1.1 sources javadoc pom
+web search: 
+web search: "scalac-scoverage-plugin_2.11-1.1.1-sources.jar"
+codex
+I’m going to write the metadata with the real repository root, Maven Central source/javadoc jars for the published Scala 2.11 plugin artifact at `1.1.1`, the tagged upstream test directory, and no `not-for-native-image` flag because the published plugin jar contains JVM `.class` files.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json
+diff --git a/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json b/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json
+index 55d8ad71542311646f960ead259b5ce4a8df0df5..2739ad68ec628c00492cf73096e71be450365264
+--- a/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json
++++ b/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scoverage:scalac-scoverage-plugin:1.1.1"
++  "coordinates" : "org.scoverage:scalac-scoverage-plugin:1.1.1",
++  "repository-url" : "https://github.com/scoverage/scalac-scoverage-plugin",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/$version$/scalac-scoverage-plugin_2.11-$version$-sources.jar",
++  "test-code-url" : "https://github.com/scoverage/scalac-scoverage-plugin/tree/$version$/scalac-scoverage-plugin/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/$version$/scalac-scoverage-plugin_2.11-$version$-javadoc.jar",
++  "description" : "scalac-scoverage-plugin is the Scoverage Scala 2 compiler plugin that instruments Scala code during compilation so test runs can record statement and branch coverage. It also includes reporting and coverage model support for turning the recorded measurement data into Scoverage XML, Cobertura XML, and HTML reports.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json b/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json
+index 55d8ad71542311646f960ead259b5ce4a8df0df5..2739ad68ec628c00492cf73096e71be450365264
+--- a/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json
++++ b/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scoverage:scalac-scoverage-plugin:1.1.1"
++  "coordinates" : "org.scoverage:scalac-scoverage-plugin:1.1.1",
++  "repository-url" : "https://github.com/scoverage/scalac-scoverage-plugin",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/$version$/scalac-scoverage-plugin_2.11-$version$-sources.jar",
++  "test-code-url" : "https://github.com/scoverage/scalac-scoverage-plugin/tree/$version$/scalac-scoverage-plugin/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/$version$/scalac-scoverage-plugin_2.11-$version$-javadoc.jar",
++  "description" : "scalac-scoverage-plugin is the Scoverage Scala 2 compiler plugin that instruments Scala code during compilation so test runs can record statement and branch coverage. It also includes reporting and coverage model support for turning the recorded measurement data into Scoverage XML, Cobertura XML, and HTML reports.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ succeeded in 0ms:
+{
+  "coordinates": "org.scoverage:scalac-scoverage-plugin:1.1.1",
+  "repository-url": "https://github.com/scoverage/scalac-scoverage-plugin",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/$version$/scalac-scoverage-plugin_2.11-$version$-sources.jar",
+  "test-code-url": "https://github.com/scoverage/scalac-scoverage-plugin/tree/$version$/scalac-scoverage-plugin/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/$version$/scalac-scoverage-plugin_2.11-$version$-javadoc.jar",
+  "description": "scalac-scoverage-plugin is the Scoverage Scala 2 compiler plugin that instruments Scala code during compilation so test runs can record statement and branch coverage. It also includes reporting and coverage model support for turning the recorded measurement data into Scoverage XML, Cobertura XML, and HTML reports.",
+  "language": {
+    "name": "scala",
+    "version": "2"
+  }
+}
+
+exec
+/usr/bin/bash -lc "jq -r '[keys_unsorted[]] | join(\"\\n\")' build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ succeeded in 0ms:
+coordinates
+repository-url
+source-code-url
+test-code-url
+documentation-url
+description
+language
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'for url in $(jq -r '"'.\"source-code-url\", .\"test-code-url\", .\"documentation-url\"' build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json | sed 's/\\"'$version'"\\"'$/1.1.1/g'"'); do printf '%s\\n' \""'$url"; curl -fsSL -o /dev/null -w '"'%{http_code}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+diff --git a/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json b/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json
+index 55d8ad71542311646f960ead259b5ce4a8df0df5..2739ad68ec628c00492cf73096e71be450365264
+--- a/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json
++++ b/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scoverage:scalac-scoverage-plugin:1.1.1"
++  "coordinates" : "org.scoverage:scalac-scoverage-plugin:1.1.1",
++  "repository-url" : "https://github.com/scoverage/scalac-scoverage-plugin",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/$version$/scalac-scoverage-plugin_2.11-$version$-sources.jar",
++  "test-code-url" : "https://github.com/scoverage/scalac-scoverage-plugin/tree/$version$/scalac-scoverage-plugin/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/$version$/scalac-scoverage-plugin_2.11-$version$-javadoc.jar",
++  "description" : "scalac-scoverage-plugin is the Scoverage Scala 2 compiler plugin that instruments Scala code during compilation so test runs can record statement and branch coverage. It also includes reporting and coverage model support for turning the recorded measurement data into Scoverage XML, Cobertura XML, and HTML reports.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+ succeeded in 494ms:
+200
+https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/1.1.1/scalac-scoverage-plugin_2.11-1.1.1-javadoc.jar
+200
+
+codex
+The JSON parses cleanly and the three templated URLs resolve to HTTP 200 after replacing `$version$` with `1.1.1`. I’m doing one final status check so I can report exactly what changed.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ succeeded in 0ms:
+{
+  "coordinates" : "org.scoverage:scalac-scoverage-plugin:1.1.1",
+  "repository-url" : "https://github.com/scoverage/scalac-scoverage-plugin",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/$version$/scalac-scoverage-plugin_2.11-$version$-sources.jar",
+  "test-code-url" : "https://github.com/scoverage/scalac-scoverage-plugin/tree/$version$/scalac-scoverage-plugin/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/$version$/scalac-scoverage-plugin_2.11-$version$-javadoc.jar",
+  "description" : "scalac-scoverage-plugin is the Scoverage Scala 2 compiler plugin that instruments Scala code during compilation so test runs can record statement and branch coverage. It also includes reporting and coverage model support for turning the recorded measurement data into Scoverage XML, Cobertura XML, and HTML reports.",
+  "language" : {
+    "name" : "scala",
+    "version" : "2"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git ls-files --error-unmatch build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json >/dev/null 2>&1; echo $?' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ succeeded in 0ms:
+1
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json b/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json
+index 55d8ad71542311646f960ead259b5ce4a8df0df5..2739ad68ec628c00492cf73096e71be450365264
+--- a/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json
++++ b/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scoverage:scalac-scoverage-plugin:1.1.1"
++  "coordinates" : "org.scoverage:scalac-scoverage-plugin:1.1.1",
++  "repository-url" : "https://github.com/scoverage/scalac-scoverage-plugin",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/$version$/scalac-scoverage-plugin_2.11-$version$-sources.jar",
++  "test-code-url" : "https://github.com/scoverage/scalac-scoverage-plugin/tree/$version$/scalac-scoverage-plugin/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/$version$/scalac-scoverage-plugin_2.11-$version$-javadoc.jar",
++  "description" : "scalac-scoverage-plugin is the Scoverage Scala 2 compiler plugin that instruments Scala code during compilation so test runs can record statement and branch coverage. It also includes reporting and coverage model support for turning the recorded measurement data into Scoverage XML, Cobertura XML, and HTML reports.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+web search: 
+web search: "scalac-scoverage-plugin_2.11-1.1.1-javadoc.jar" "repo.maven"
+exec
+/usr/bin/bash -lc "find metadata/org.scoverage -maxdepth 2 -type f -name index.json -print -exec sed -n '1,90p' {} \\;" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ succeeded in 0ms:
+metadata/org.scoverage/scalac-scoverage-runtime_2.13/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.4.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-runtime_2.13/$version$/scalac-scoverage-runtime_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/scoverage/scalac-scoverage-plugin",
+    "test-code-url" : "https://github.com/scoverage/scalac-scoverage-plugin/tree/v$version$/scalac-scoverage-runtime",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-runtime_2.13/$version$/scalac-scoverage-runtime_2.13-$version$-javadoc.jar",
+    "description" : "scalac-scoverage-runtime provides the runtime support used by the scoverage Scala compiler plugin to record coverage measurements from instrumented Scala code. It writes and reads invoked statement identifiers so scoverage can calculate statement and branch coverage after tests run.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "1.4.1",
+      "1.4.2",
+      "1.4.6",
+      "1.4.7",
+      "1.4.8",
+      "1.4.9",
+      "1.4.10",
+      "1.4.11",
+      "2.0.0",
+      "2.0.1",
+      "2.0.2",
+      "2.0.3",
+      "2.0.5",
+      "2.0.7",
+      "2.0.8",
+      "2.0.10",
+      "2.0.11",
+      "2.1.0",
+      "2.1.1",
+      "2.2.0",
+      "2.2.1",
+      "2.3.0",
+      "2.4.0",
+      "2.4.1",
+      "2.4.2",
+      "2.5.0",
+      "2.5.1",
+      "2.5.2"
+    ],
+    "allowed-packages" : [
+      "scoverage"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n 'not published|not found|does not exist|No .* artifact is published|not released|Maven Central' metadata build/discovered-artifact-metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ succeeded in 0ms:
+metadata/io.awspring.cloud/spring-cloud-aws-dependencies/index.json:4:    "reason": "The published artifact is packaging pom only and Maven Central has no JAR, sources JAR, or tests JAR for 4.0.2, so it has no JVM class files for native-image reachability metadata."
+
+diff --git a/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json b/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json
+index 55d8ad71542311646f960ead259b5ce4a8df0df5..2739ad68ec628c00492cf73096e71be450365264
+--- a/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json
++++ b/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scoverage:scalac-scoverage-plugin:1.1.1"
++  "coordinates" : "org.scoverage:scalac-scoverage-plugin:1.1.1",
++  "repository-url" : "https://github.com/scoverage/scalac-scoverage-plugin",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/$version$/scalac-scoverage-plugin_2.11-$version$-sources.jar",
++  "test-code-url" : "https://github.com/scoverage/scalac-scoverage-plugin/tree/$version$/scalac-scoverage-plugin/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/$version$/scalac-scoverage-plugin_2.11-$version$-javadoc.jar",
++  "description" : "scalac-scoverage-plugin is the Scoverage Scala 2 compiler plugin that instruments Scala code during compilation so test runs can record statement and branch coverage. It also includes reporting and coverage model support for turning the recorded measurement data into Scoverage XML, Cobertura XML, and HTML reports.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,70p' metadata/io.awspring.cloud/spring-cloud-aws-dependencies/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9
+ succeeded in 0ms:
+[
+  {
+    "not-for-native-image": true,
+    "reason": "The published artifact is packaging pom only and Maven Central has no JAR, sources JAR, or tests JAR for 4.0.2, so it has no JVM class files for native-image reachability metadata."
+  }
+]
+
+diff --git a/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json b/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json
+index 55d8ad71542311646f960ead259b5ce4a8df0df5..2739ad68ec628c00492cf73096e71be450365264
+--- a/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json
++++ b/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scoverage:scalac-scoverage-plugin:1.1.1"
++  "coordinates" : "org.scoverage:scalac-scoverage-plugin:1.1.1",
++  "repository-url" : "https://github.com/scoverage/scalac-scoverage-plugin",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/$version$/scalac-scoverage-plugin_2.11-$version$-sources.jar",
++  "test-code-url" : "https://github.com/scoverage/scalac-scoverage-plugin/tree/$version$/scalac-scoverage-plugin/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/$version$/scalac-scoverage-plugin_2.11-$version$-javadoc.jar",
++  "description" : "scalac-scoverage-plugin is the Scoverage Scala 2 compiler plugin that instruments Scala code during compilation so test runs can record statement and branch coverage. It also includes reporting and coverage model support for turning the recorded measurement data into Scoverage XML, Cobertura XML, and HTML reports.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+codex
+Updated [org.scoverage-scalac-scoverage-plugin-1.1.1.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json).
+
+I set it as a Scala 2 library and left `not-for-native-image` absent because the published plugin variant has JVM class files. Verified the JSON parses with `jq`, and the source, test, and documentation URLs all return HTTP 200 after replacing `$version$` with `1.1.1`.
+diff --git a/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json b/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json
+index 55d8ad71542311646f960ead259b5ce4a8df0df5..2739ad68ec628c00492cf73096e71be450365264
+--- a/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json
++++ b/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scoverage:scalac-scoverage-plugin:1.1.1"
++  "coordinates" : "org.scoverage:scalac-scoverage-plugin:1.1.1",
++  "repository-url" : "https://github.com/scoverage/scalac-scoverage-plugin",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/$version$/scalac-scoverage-plugin_2.11-$version$-sources.jar",
++  "test-code-url" : "https://github.com/scoverage/scalac-scoverage-plugin/tree/$version$/scalac-scoverage-plugin/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scoverage/scalac-scoverage-plugin_2.11/$version$/scalac-scoverage-plugin_2.11-$version$-javadoc.jar",
++  "description" : "scalac-scoverage-plugin is the Scoverage Scala 2 compiler plugin that instruments Scala code during compilation so test runs can record statement and branch coverage. It also includes reporting and coverage model support for turning the recorded measurement data into Scoverage XML, Cobertura XML, and HTML reports.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+tokens used
+106,218
+Updated [org.scoverage-scalac-scoverage-plugin-1.1.1.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9/build/discovered-artifact-metadata/org.scoverage-scalac-scoverage-plugin-1.1.1.json).
+
+I set it as a Scala 2 library and left `not-for-native-image` absent because the published plugin variant has JVM class files. Verified the JSON parses with `jq`, and the source, test, and documentation URLs all return HTTP 200 after replacing `$version$` with `1.1.1`.
+Ran agent for org.scoverage:scalac-scoverage-plugin:1.1.1 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9/build/agent-artifact-discovery-logs/org.scoverage-scalac-scoverage-plugin-1.1.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3600-47417be9/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 28s
+9 actionable tasks: 1 executed, 8 up-to-date
