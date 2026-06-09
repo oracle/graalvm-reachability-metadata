@@ -8,6 +8,9 @@ package org_apache_parquet.parquet_jackson;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.Type;
+
 import org.junit.jupiter.api.Test;
 
 import shaded.parquet.com.fasterxml.jackson.databind.type.TypeFactory;
@@ -37,6 +40,20 @@ public class TypeFactoryTest {
             assertThat(targetClass).isEqualTo(TypeFactoryTestTarget.class);
         } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
+        }
+    }
+
+    @Test
+    void resolvesRawClassForGenericArrayType() {
+        final Class<?> rawClass = TypeFactory.rawClass(new StringGenericArrayType());
+
+        assertThat(rawClass).isEqualTo(String[].class);
+    }
+
+    private static final class StringGenericArrayType implements GenericArrayType {
+        @Override
+        public Type getGenericComponentType() {
+            return String.class;
         }
     }
 
