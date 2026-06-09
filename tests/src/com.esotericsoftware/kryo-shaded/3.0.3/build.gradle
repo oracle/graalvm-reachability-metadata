@@ -16,7 +16,8 @@ dependencies {
 }
 
 tasks.withType(Test).configureEach {
-    jvmArgs '--add-opens=java.base/java.lang.invoke=ALL-UNNAMED'
+    jvmArgs '--add-opens=java.base/java.lang=ALL-UNNAMED',
+            '--add-opens=java.base/java.lang.invoke=ALL-UNNAMED'
 }
 
 graalvmNative {
@@ -30,6 +31,7 @@ graalvmNative {
     }
     binaries {
         all {
+            buildArgs.add('--add-opens=java.base/java.lang=ALL-UNNAMED')
             buildArgs.add('--add-opens=java.base/java.lang.invoke=ALL-UNNAMED')
         }
     }
