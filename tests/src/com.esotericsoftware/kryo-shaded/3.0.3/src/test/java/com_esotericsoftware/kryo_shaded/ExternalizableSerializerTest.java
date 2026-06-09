@@ -69,6 +69,15 @@ public class ExternalizableSerializerTest {
         }
     }
 
+    /**
+     * Occupies the constructor accessor class name that ReflectASM derives from
+     * {@link ExternalizableMessage}, so Kryo falls back to reflective construction.
+     */
+    public static class ExternalizableMessageConstructorAccess {
+        public ExternalizableMessageConstructorAccess() {
+        }
+    }
+
     public static class ReplacementAwareExternalizableMessage extends AbstractExternalizableMessage {
         public ReplacementAwareExternalizableMessage() {
         }

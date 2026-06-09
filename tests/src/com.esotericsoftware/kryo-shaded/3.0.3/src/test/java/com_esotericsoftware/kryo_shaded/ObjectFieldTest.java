@@ -64,4 +64,13 @@ public class ObjectFieldTest {
             return value;
         }
     }
+
+    /**
+     * Occupies the constructor accessor class name that ReflectASM derives from
+     * {@link ObjectFieldBean}, so Kryo falls back to reflective construction.
+     */
+    public static class ObjectFieldBeanConstructorAccess {
+        public ObjectFieldBeanConstructorAccess() {
+        }
+    }
 }

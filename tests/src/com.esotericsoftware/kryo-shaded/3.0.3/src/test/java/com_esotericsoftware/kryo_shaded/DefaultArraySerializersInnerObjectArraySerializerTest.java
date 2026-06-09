@@ -57,4 +57,13 @@ public class DefaultArraySerializersInnerObjectArraySerializerTest {
             return value;
         }
     }
+
+    /**
+     * Occupies the constructor accessor class name that ReflectASM derives from
+     * {@link ArrayElement}, so Kryo falls back to reflective construction.
+     */
+    public static class ArrayElementConstructorAccess {
+        public ArrayElementConstructorAccess() {
+        }
+    }
 }
