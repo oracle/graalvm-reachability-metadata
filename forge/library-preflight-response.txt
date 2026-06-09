@@ -1,0 +1,9 @@
+{
+  "action": "no_action",
+  "summary": "No deterministic setup is needed. The artifact is a Maven SCM Git executable provider with normal Maven transitive dependencies; it does not require optional test dependencies or a Docker-backed service. The reported failure is an API signature change in GitTagCommand.createCommandLine, not missing setup.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": [
+    "If the generated test chooses to execute real Git commands instead of testing command-line builders/consumers, it must create and initialize a temporary Git repository in test code and configure local user.name/user.email before commits or tags. This is test logic, not driver setup."
+  ]
+}
