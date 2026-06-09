@@ -32,8 +32,7 @@ public class TestBeanOverrideHandlerTest {
             assertThat(testInstance.service).isNotNull();
             assertThat(testInstance.service.message()).isEqualTo("override");
             assertThat(testInstance.autowiredService).isSameAs(testInstance.service);
-        }
-        finally {
+        } finally {
             manager.getTestContext().markApplicationContextDirty(HierarchyMode.EXHAUSTIVE);
         }
     }
