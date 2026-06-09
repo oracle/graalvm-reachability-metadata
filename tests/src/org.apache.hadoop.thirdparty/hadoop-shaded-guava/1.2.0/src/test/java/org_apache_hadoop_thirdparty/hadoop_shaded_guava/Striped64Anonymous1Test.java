@@ -8,26 +8,24 @@ package org_apache_hadoop_thirdparty.hadoop_shaded_guava;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.apache.hadoop.thirdparty.com.google.common.cache.Cache;
-import org.apache.hadoop.thirdparty.com.google.common.cache.CacheBuilder;
-import org.apache.hadoop.thirdparty.com.google.common.cache.CacheStats;
+import java.nio.charset.StandardCharsets;
+
+import org.apache.hadoop.thirdparty.com.google.common.hash.BloomFilter;
+import org.apache.hadoop.thirdparty.com.google.common.hash.Funnels;
 import org.junit.jupiter.api.Test;
 
 public class Striped64Anonymous1Test {
     @Test
-    void cacheStatsUseCachePackageLongAdder() {
-        Cache<String, String> cache = CacheBuilder.newBuilder()
-                .recordStats()
-                .build();
+    void bloomFilterTracksInsertedElementsWithHashPackageLongAdder() {
+        BloomFilter<CharSequence> filter = BloomFilter.create(
+                Funnels.stringFunnel(StandardCharsets.UTF_8),
+                100,
+                0.01);
 
-        cache.put("alpha", "one");
-
-        assertThat(cache.getIfPresent("alpha")).isEqualTo("one");
-        assertThat(cache.getIfPresent("missing")).isNull();
-
-        CacheStats stats = cache.stats();
-        assertThat(stats.requestCount()).isEqualTo(2);
-        assertThat(stats.hitCount()).isEqualTo(1);
-        assertThat(stats.missCount()).isEqualTo(1);
+        assertThat(filter.put("alpha")).isTrue();
+        assertThat(filter.put("alpha")).isFalse();
+        assertThat(filter.mightContain("alpha")).isTrue();
+        assertThat(filter.mightContain("not-inserted")).isFalse();
+        assertThat(filter.expectedFpp()).isBetween(0.0, 0.01);
     }
 }
