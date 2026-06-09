@@ -13,6 +13,7 @@ import java.lang.annotation.Annotation;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -32,7 +33,10 @@ import org.apache.maven.plugin.testing.SilentLog;
 import org.apache.maven.plugin.testing.WithoutMojo;
 import org.apache.maven.plugin.testing.resources.TestResources;
 import org.apache.maven.plugin.testing.stubs.ArtifactStub;
+import org.apache.maven.plugin.testing.stubs.DefaultArtifactHandlerStub;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
+import org.apache.maven.plugin.testing.stubs.StubArtifactRepository;
+import org.apache.maven.plugin.testing.stubs.StubArtifactResolver;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.configurator.ComponentConfigurator;
 import org.codehaus.plexus.logging.Logger;
@@ -138,6 +142,53 @@ public class Maven_plugin_testing_harnessTest {
         assertThat(projectArtifact.hasClassifier()).isFalse();
         assertThat(projectArtifact.getDependencyConflictId()).isEqualTo("com.example:sample-plugin:maven-plugin:null");
         assertThat(projectArtifact.toString()).isEqualTo("com.example:sample-plugin:maven-plugin:1.0-SNAPSHOT:test");
+    }
+
+    @Test
+    void artifactTestDoublesResolveArtifactsAndExposeHandlerMetadata() throws Exception {
+        DefaultArtifactHandlerStub handler = new DefaultArtifactHandlerStub("test-jar", "tests");
+
+        assertThat(handler.getType()).isEqualTo("test-jar");
+        assertThat(handler.getClassifier()).isEqualTo("tests");
+        assertThat(handler.getExtension()).isEqualTo("jar");
+        assertThat(handler.getPackaging()).isEqualTo("test-jar");
+        assertThat(handler.getDirectory()).isEqualTo("test-jars");
+        assertThat(handler.getLanguage()).isEqualTo("none");
+        assertThat(handler.isIncludesDependencies()).isFalse();
+        assertThat(handler.isAddedToClasspath()).isFalse();
+
+        handler.setExtension("zip");
+        handler.setPackaging("distribution");
+        handler.setDirectory("distributions");
+        handler.setLanguage("java");
+        handler.setIncludesDependencies(true);
+        handler.setAddedToClasspath(true);
+
+        assertThat(handler.getExtension()).isEqualTo("zip");
+        assertThat(handler.getPackaging()).isEqualTo("distribution");
+        assertThat(handler.getDirectory()).isEqualTo("distributions");
+        assertThat(handler.getLanguage()).isEqualTo("java");
+        assertThat(handler.isIncludesDependencies()).isTrue();
+        assertThat(handler.isAddedToClasspath()).isTrue();
+
+        File repositoryRoot = tempDir.resolve("resolver-repository").toFile();
+        ArtifactStubFactory factory = new ArtifactStubFactory(repositoryRoot, false);
+        Artifact artifact = factory.createArtifact(
+                "com.example", "resolver-target", "1.0", Artifact.SCOPE_COMPILE, "jar", "");
+        StubArtifactRepository repository = new StubArtifactRepository(repositoryRoot.getAbsolutePath());
+        StubArtifactResolver resolver = new StubArtifactResolver(factory, false, false);
+
+        assertThat(artifact.getFile()).isNull();
+        assertThat(repository.getBasedir()).isEqualTo(repositoryRoot.getAbsolutePath());
+        assertThat(repository.pathOf(artifact)).isEqualTo(artifact.getId());
+        assertThat(repository.findVersions(artifact)).isEmpty();
+        assertThat(repository.getMirroredRepositories()).isEmpty();
+
+        resolver.resolve(artifact, Collections.emptyList(), repository);
+
+        assertThat(artifact.getFile()).isFile();
+        assertThat(artifact.getFile().getParentFile()).isEqualTo(factory.getWorkingDir());
+        assertThat(artifact.getFile().getName()).isEqualTo("resolver-target-1.0.jar");
     }
 
     @Test
