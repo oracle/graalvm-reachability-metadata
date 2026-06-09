@@ -27,12 +27,14 @@ import org.junit.jupiter.api.io.TempDir;
 import com.diffplug.spotless.FormatterStep;
 import com.diffplug.spotless.LineEnding;
 import com.diffplug.spotless.Provisioner;
+import com.diffplug.spotless.generic.PipeStepPair;
 import com.diffplug.spotless.maven.FormatterConfig;
 import com.diffplug.spotless.maven.FormatterStepConfig;
 import com.diffplug.spotless.maven.FormatterStepFactory;
 import com.diffplug.spotless.maven.generic.EndWithNewline;
 import com.diffplug.spotless.maven.generic.Format;
 import com.diffplug.spotless.maven.generic.TrimTrailingWhitespace;
+import com.diffplug.spotless.maven.generic.ToggleOffOn;
 import com.diffplug.spotless.maven.java.FormatAnnotations;
 import com.diffplug.spotless.maven.java.Java;
 
@@ -70,6 +72,36 @@ public class Spotless_maven_pluginTest {
 
         assertThat(endWithNewline.format(Files.readString(sourceFile), sourceFile.toFile()))
                 .isEqualTo("already complete\n");
+    }
+
+    @Test
+    void toggleOffOnWithCustomMarkersPreservesDisabledRegions() throws Exception {
+        final Path sourceFile = tempDir.resolve("src/main/resources/toggled.txt");
+        Files.createDirectories(sourceFile.getParent());
+        final String input = "outside   \n"
+                + "format:off\n"
+                + "protected trailing spaces   \n"
+                + "format:on\n"
+                + "last   ";
+        Files.writeString(sourceFile, input, StandardCharsets.UTF_8);
+
+        final ToggleOffOn toggle = new ToggleOffOn();
+        toggle.off = "format:off";
+        toggle.on = "format:on";
+        final PipeStepPair pair = toggle.createPair();
+        final FormatterStep trimTrailingWhitespace = new TrimTrailingWhitespace().newFormatterStep(stepConfig());
+
+        final String toggledInput = pair.in().format(Files.readString(sourceFile), sourceFile.toFile());
+        final String trimmed = trimTrailingWhitespace.format(toggledInput, sourceFile.toFile());
+        final String formatted = pair.out().format(trimmed, sourceFile.toFile());
+
+        assertThat(pair.in().getName()).containsIgnoringCase("toggle");
+        assertThat(pair.out().getName()).containsIgnoringCase("toggle");
+        assertThat(formatted).isEqualTo("outside\n"
+                + "format:off\n"
+                + "protected trailing spaces   \n"
+                + "format:on\n"
+                + "last");
     }
 
     @Test
