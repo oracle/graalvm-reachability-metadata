@@ -58,7 +58,9 @@ tests (§E2E-infrastructure-tests).
 Triggers on PRs touching `metadata/`. Runs `generateAffectedSpringTestMatrix` to
 compute impacted Spring AOT projects, then runs triaged native tests via
 `run-spring-aot-triaged-test.sh` (§CI-shared-scripts). Only runs when metadata
-changes actually affect a Spring AOT project (§FS-repository-functional-spec.5.3).
+changes actually affect a Spring AOT project; this is the concrete Spring gate
+for framework-aware compatibility (§FS-repository-functional-spec.5.2.1,
+§FS-repository-functional-spec.5.3).
 
 ### CI-index-file-validation: Validate index.json files
 
@@ -205,7 +207,8 @@ Helpers under `.github/workflows/scripts/` used by the workflows above (these ar
   version and stopping the chain. Drives §CI-verify-new-library-version-compatibility.
 - **Spring AOT triage** — `run-spring-aot-triaged-test.sh` runs the triaged
   native Spring AOT smoke tests for the projects computed by
-  §CI-test-affected-spring-aot.
+  §CI-test-affected-spring-aot, enforcing framework-aware compatibility when
+  changed metadata can affect Spring AOT (§FS-repository-functional-spec.5.2.1).
 - **Dependency issue linking** — `open-dependency-issues-and-link-blockers.js`
   opens/reuses issues for unsupported transitive dependencies and links them as
   blockers, used by §CI-triage-new-issues.

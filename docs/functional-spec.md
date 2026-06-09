@@ -1,7 +1,8 @@
 # FS-repository-functional-spec: Repository functional specification
 
 This document describes what the **GraalVM Reachability Metadata Repository** does for its users, who those users are, and the requirements that the repository, its build infrastructure, and its automation (Forge) must meet. For the structural and implementation overview that organizes these behaviors into components, see §AR-repository-architecture.
-§GOAL-tested-metadata §GOAL-broad-version-coverage §GOAL-fresh-metadata §GOAL-protect-shipped-metadata
+§GOAL-tested-metadata §GOAL-framework-owned §GOAL-broad-version-coverage
+§GOAL-fresh-metadata §GOAL-protect-shipped-metadata
 
 It is intended for agents, contributors, and downstream tooling owners who need a single, behavior-focused description of the system. The repository's moving parts are documented as modules that this spec cites at the point each behavior is stated: the test harness (§TCK-test-harness), the CI workflows (§CI-repository-ci), and the metadata and tests suites (§METADATA-suite, §TESTS-suite). Forge automation has its own functional spec in its namespace (§forge/FS-forge-functional-spec) and owns the derived metrics under `stats/` (§forge/FS-forge-run-metrics). For the task-oriented "what do I run, and when" view rather than the requirements, see [§8 How this repository is used](#8-how-this-repository-is-used).
 
@@ -34,6 +35,7 @@ Two properties make this achievable: the reachability-metadata schema is itself 
 - **No library patching.** No substitutions, bytecode rewrites, or shaded forks of upstream libraries. Patching ships a different version than the one the user resolved through Maven Central, is invisible at the dependency-resolution layer, and is unstable across upstream releases.
 - **No `Feature` classes.** Metadata bundles must not ship `org.graalvm.nativeimage.hosted.Feature` implementations or any other artifact that runs arbitrary Java inside the image builder. `Feature`s are a security concern (full filesystem / network / reflective access at build time) and break additivity because their effect is whatever code the author wrote.
 - **No untested metadata.** Metadata that has not passed the test gates defined in [§5.2 Tests](#52-tests) and [§5.3 CI gates](#53-ci-gates) is not published from this repository, regardless of provenance (human or Forge).
+- **No framework-inferred metadata.** Metadata whose correctness depends on a framework dynamically analyzing a user's application, annotations, configuration, generated code, or classpath is not publishable from this repository. It must be generated, maintained, and tested by the framework that performs that inference (§GOAL-framework-owned).
 
 These constraints apply uniformly to human-authored PRs and to Forge output, and are enforced by `checkMetadataFiles` plus the reviewer skills.
 
@@ -217,6 +219,7 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 - **Conditional registration.** Every metadata entry must use [Conditional Configuration](https://www.graalvm.org/latest/reference-manual/native-image/metadata/#specifying-reflection-metadata-in-json): a `condition` whose only key is `typeReached`, so registration is gated on actual reachability. `typeReached` is the sole condition form the vendored schema accepts; the older `typeReachable` is not valid and is rejected by `checkMetadataFiles`.
 - **Allowed-package conditions.** Every metadata entry's `typeReached` condition must reference a class inside the artifact's `allowed-packages`.
 - **No test-only shipped entries.** No metadata entry may target a class or resource that exists only for testing.
+- **Framework-owned dynamic inference.** Metadata whose required registrations are discovered from a framework's analysis of application code, configuration, generated sources, or classpath composition must not ship from this repository. Coordinate tests cannot prove such metadata correct for arbitrary user applications; it belongs in the framework itself. This repository may ship only entries that a coordinate-level public API test can justify, while testing compatibility with framework metadata mechanisms separately (§GOAL-framework-owned).
 - **Index coverage.** Each `metadata/<group>/<artifact>/` directory must include a valid `index.json` enumerating its metadata versions and tested library versions.
 - **Single latest entry.** Exactly one entry in a non-empty `index.json` must carry `latest: true`. If a library version is not in `tested-versions`, the harness selects an entry by matching the optional `default-for` regex.
 - **Dependency and test-only split.** Metadata can declare dependencies on other artifacts via `requires`. Metadata needed only by the tests — entries whose type or `typeReached` names a test package, or whose resource is a test resource — must not ship to consumers; `splitTestOnlyMetadata` moves them out of the library's `reachability-metadata.json` into the test project's `src/test/resources/META-INF/native-image/reachability-metadata.json`, keeping the shipped metadata free of test-only types (§METADATA-suite).
@@ -231,12 +234,23 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 - **Recorded passing versions.** Newly added `tested-versions` entries are recorded in `index.json` only after they pass on **every** required environment (enforced by `verify-new-library-version-compatibility`).
 - **Coverage non-regression.** Dynamic-access coverage between consecutive tested versions of a library must not regress (enforced by reviewer skills `review-fixes-javac-fail`, `review-fixes-native-image-run-fail`, `review-fixes-java-run-fail`).
 
+#### 5.2.1 Framework-aware compatibility
+
+When repository metadata changes can affect a framework integration, the
+repository must test the affected framework behavior when an automatable suite
+exists. A gate may run an upstream smoke suite, such as Spring AOT smoke tests,
+or a repo-local equivalent that exercises the framework as a consumer would.
+This coverage demonstrates that shipped library metadata does not break
+framework metadata generation or native-image integration; it does not authorize
+shipping metadata that only the framework can dynamically infer
+(§FS-repository-functional-spec.5.1, §GOAL-framework-owned).
+
 ### 5.3 CI gates
 
 - **PR gates.** Every PR is gated on the relevant subset of: `checkstyle`, `spotlessCheck`, `validateIndexFiles`, `checkMetadataFiles`, `validateLibraryStats`, `library-and-framework-list-validation`, and the appropriate `test-*` workflow.
 - **Docker isolation.** Docker images used in tests are pre-pulled from `allowed-docker-images`, after which the runner disables Docker networking for deterministic, isolated test runs.
 - **Release style gate.** The release workflow runs `spotlessCheck` before packaging.
-- **Spring AOT scope.** The Spring AOT smoke matrix runs only when `metadata/` changes affect a Spring AOT project.
+- **Spring AOT scope.** The Spring AOT smoke matrix runs only when `metadata/` changes affect a Spring AOT project, as a framework-aware compatibility gate (§FS-repository-functional-spec.5.2.1).
 - **Compatibility budget.** `verify-new-library-version-compatibility` caps each scheduled run at a fixed library budget and at most 30 newer versions per library, expanding across the configured GraalVM JDK/OS combinations, and creates one aggregated GitHub issue per failed `(library, version)` pair.
 - **Docker tag sync.** Dependabot updates to `allowed-docker-images` trigger `sync-docker-tags.yml`, which back-commits the synchronized tags into the Dependabot PR.
 - **Full sweep.** `test-all-metadata` runs only on schedule or manual dispatch in the main repository, uses 85 batches, creates one aggregated GitHub issue per failed `(library, version)` pair across configured GraalVM JDK/OS combinations and native-image modes, and is release-blocking when failures are found.

@@ -77,3 +77,10 @@ coverage between consecutive versions must not regress
 (§FS-repository-functional-spec.5.2, §GOAL-protect-shipped-metadata). New test
 projects are created from the scaffold templates by the authoring tasks
 (§TCK-test-harness.5), by a human or by Forge (§forge/FS-forge-functional-spec).
+
+Framework-aware compatibility is separate from per-coordinate metadata
+justification. When a metadata change affects an automatable framework smoke
+suite, CI runs that affected suite, or a repo-local equivalent, to prove the
+change does not break framework metadata generation or native-image integration
+(§FS-repository-functional-spec.5.2.1). Such tests do not justify shipping
+framework-inferred metadata from this repository (§GOAL-framework-owned).

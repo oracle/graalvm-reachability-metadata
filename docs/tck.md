@@ -102,7 +102,7 @@ These emit the GitHub Actions matrices the workflows consume, all driven by
 | `generateMatrixMatchingCoordinates`, `generateMatrixBatchedCoordinates` | Full and batched matrices (the latter powers §CI-test-all-metadata). |
 | `generateChangedCoordinatesMatrix`, `generateChangedMetadataTestMatrix`, `generateChangedCoordinatesOnlyMatrix`, `generateChangedIndexFileCoordinatesList` | PR-scoped matrices for changed metadata and index files. |
 | `generateInfrastructureChangedCoordinatesMatrix` | Matrix for build-logic changes; also selects the coordinate for §E2E-infrastructure-tests. |
-| `generateAffectedSpringTestMatrix` | Impacted Spring AOT projects. |
+| `generateAffectedSpringTestMatrix` | Impacted Spring AOT projects (§FS-repository-functional-spec.5.2.1). |
 | `fetchExistingLibrariesWithNewerVersions`, `generateNewLibraryVersionCompatibilityMatrix` | Discover newer upstream versions and build the compatibility matrix (§GOAL-broad-version-coverage). |
 
 ## 8. Reporting, stats, coverage, and packaging
