@@ -1,0 +1,33 @@
+{
+  "status": "completed",
+  "action": "advisory_preparation",
+  "issue_number": 7659,
+  "issue_label": "fails-native-image-run",
+  "library": "org.xerial:sqlite-jdbc:3.40.0.0",
+  "summary": "sqlite-jdbc is a self-contained embedded JDBC driver: its published artifact has no runtime Maven dependencies, bundles native SQLite libraries and Java service registration, and does not need Docker or an external database service. Meaningful coverage should explicitly exercise driver/native-library loading and real SQLite operations.",
+  "deterministic_setup": [],
+  "agent_guidance": "Use the driver against an embedded SQLite database, preferably `jdbc:sqlite::memory:` or a temporary file/resource database. Exercise `DriverManager` or `SQLiteDataSource`, execute real DDL/DML/query operations, and include a path that triggers `SQLiteJDBCLoader.initialize()`; if testing extraction directly, set `org.sqlite.tmpdir` to a temporary directory and restore any changed system properties.",
+  "risks": [
+    "Native-image verification may still expose platform linker/runtime issues in the bundled JNI library; local Gradle and Native Image runs remain authoritative.",
+    "Avoid tests that only instantiate classes without opening a JDBC connection, because they may not reach native library extraction/loading paths."
+  ],
+  "applied_setup": [],
+  "input_evidence": [
+    {
+      "name": "issue",
+      "summary": "#7659 [Automation] native-image run fails for org.xerial:sqlite-jdbc:3.40.0.0; label=fails-native-image-run; body_chars=8015"
+    },
+    {
+      "name": "existing_tests",
+      "summary": "24 existing test file path(s) included"
+    }
+  ],
+  "current_library": "org.xerial:sqlite-jdbc:3.36.0.3",
+  "new_version": "3.40.0.0",
+  "model": "oca/gpt-5.5",
+  "input_tokens_used": 26932,
+  "output_tokens_used": 2416,
+  "prompt_path": "library-preflight-prompt.txt",
+  "raw_response_path": "library-preflight-response.txt",
+  "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.xerial:sqlite-jdbc:3.40.0.0/library-preparation-preflight/pi-generation-2026-06-09T13-21-17-545870Z.log"
+}

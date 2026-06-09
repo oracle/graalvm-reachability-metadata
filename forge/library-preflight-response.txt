@@ -1,0 +1,10 @@
+{
+  "action": "advisory_preparation",
+  "summary": "sqlite-jdbc is a self-contained embedded JDBC driver: its published artifact has no runtime Maven dependencies, bundles native SQLite libraries and Java service registration, and does not need Docker or an external database service. Meaningful coverage should explicitly exercise driver/native-library loading and real SQLite operations.",
+  "deterministic_setup": [],
+  "agent_guidance": "Use the driver against an embedded SQLite database, preferably `jdbc:sqlite::memory:` or a temporary file/resource database. Exercise `DriverManager` or `SQLiteDataSource`, execute real DDL/DML/query operations, and include a path that triggers `SQLiteJDBCLoader.initialize()`; if testing extraction directly, set `org.sqlite.tmpdir` to a temporary directory and restore any changed system properties.",
+  "risks": [
+    "Native-image verification may still expose platform linker/runtime issues in the bundled JNI library; local Gradle and Native Image runs remain authoritative.",
+    "Avoid tests that only instantiate classes without opening a JDBC connection, because they may not reach native library extraction/loading paths."
+  ]
+}
