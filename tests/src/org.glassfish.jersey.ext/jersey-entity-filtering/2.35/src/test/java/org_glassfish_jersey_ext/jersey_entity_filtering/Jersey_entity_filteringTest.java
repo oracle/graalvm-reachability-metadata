@@ -35,6 +35,7 @@ import javax.ws.rs.core.SecurityContext;
 import org.glassfish.jersey.internal.MapPropertiesDelegate;
 import org.glassfish.jersey.message.filtering.EntityFiltering;
 import org.glassfish.jersey.message.filtering.EntityFilteringFeature;
+import org.glassfish.jersey.message.filtering.SecurityAnnotations;
 import org.glassfish.jersey.message.filtering.SecurityEntityFilteringFeature;
 import org.glassfish.jersey.message.filtering.SelectableEntityFilteringFeature;
 import org.glassfish.jersey.message.filtering.spi.ObjectGraph;
@@ -95,6 +96,16 @@ public class Jersey_entity_filteringTest {
                 .isEqualTo("SecureDocument(fields=[adminSecret, publicInfo],subgraphs={})");
         assertThat(get(config, "secure", RoleSecurityContext.anonymous()))
                 .isEqualTo("SecureDocument(fields=[publicInfo],subgraphs={})");
+    }
+
+    @Test
+    void entityFilteringScopePropertyProvidesProgrammaticFilteringScope() throws Exception {
+        ResourceConfig config = new ResourceConfig(SecurityResource.class)
+                .property(EntityFilteringFeature.ENTITY_FILTERING_SCOPE, SecurityAnnotations.rolesAllowed("user"))
+                .register(SecurityEntityFilteringFeature.class);
+
+        assertThat(get(config, "secure", RoleSecurityContext.anonymous()))
+                .isEqualTo("SecureDocument(fields=[publicInfo, userSecret],subgraphs={})");
     }
 
     @Test
