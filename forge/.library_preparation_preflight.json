@@ -1,0 +1,50 @@
+{
+  "status": "completed",
+  "action": "advisory_preparation",
+  "issue_number": 3634,
+  "issue_label": "library-new-request",
+  "library": "org.apache.maven.plugin-testing:maven-plugin-testing-harness:3.3.0",
+  "summary": "The harness is a Maven plugin test framework whose main APIs are JUnit 4/Plexus/Maven-core based, but several Maven and JUnit dependencies are declared/provided in its parent metadata and are not available from the normal scaffold alone.",
+  "deterministic_setup": [
+    {
+      "kind": "dependency",
+      "coordinate": "org.apache.maven:maven-core:3.2.5",
+      "scope": "testImplementation",
+      "reason": "Public harness APIs such as MojoRule, AbstractMojoTestCase, MavenProjectStub, and ArtifactStubFactory expose Maven core/model/plugin/artifact types that are provided by the harness build rather than reliably pulled by the scaffold."
+    },
+    {
+      "kind": "dependency",
+      "coordinate": "org.apache.maven:maven-compat:3.2.5",
+      "scope": "testImplementation",
+      "reason": "Several harness stubs and resolver helpers reference legacy Maven compatibility/artifact resolver classes."
+    },
+    {
+      "kind": "dependency",
+      "coordinate": "junit:junit:4.11",
+      "scope": "testImplementation",
+      "reason": "MojoRule and TestResources are JUnit 4 rules/watchers, and the harness documentation for this version demonstrates JUnit 4 usage."
+    }
+  ],
+  "agent_guidance": "Exercise the harness as a Maven-plugin testing library: create minimal in-test Mojo/project fixtures and cover MojoRule or AbstractMojoTestCase setup, MavenProjectStub/ArtifactStubFactory, MojoParameters, TestResources, and SilentLog. The test should initialize the harness container/rule or use the stub APIs directly rather than only instantiating classes.",
+  "risks": [
+    "The library is designed to test Maven plugins, so meaningful coverage may require small synthetic plugin descriptors or temporary POM/resources in the test.",
+    "JUnit 4 APIs are distinct from the scaffold's JUnit Jupiter test runner; use them as library objects/rules where useful, while keeping the generated test executable under the repository harness."
+  ],
+  "applied_setup": [],
+  "input_evidence": [
+    {
+      "name": "issue",
+      "summary": "#3634 Support for org.apache.maven.plugin-testing:maven-plugin-testing-harness:3.3.0; label=library-new-request; body_chars=452"
+    },
+    {
+      "name": "existing_tests",
+      "summary": "0 existing test file path(s) included"
+    }
+  ],
+  "model": "oca/gpt-5.5",
+  "input_tokens_used": 71711,
+  "output_tokens_used": 8141,
+  "prompt_path": "library-preflight-prompt.txt",
+  "raw_response_path": "library-preflight-response.txt",
+  "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.apache.maven.plugin-testing:maven-plugin-testing-harness:3.3.0/library-preparation-preflight/pi-generation-2026-06-09T17-26-26-390627Z.log"
+}

@@ -229,6 +229,29 @@ public class Maven_plugin_testing_harnessTest {
             rule.setupContainer();
             container = rule.getContainer();
 
+            System.out.println("plexus components.xml resources="
+                    + Collections.list(getClass().getClassLoader().getResources("META-INF/plexus/components.xml")));
+            System.out.println("sisu javax.inject.Named resources="
+                    + Collections.list(getClass().getClassLoader().getResources("META-INF/sisu/javax.inject.Named")));
+            System.out.println("has ComponentConfigurator=" + container.hasComponent(ComponentConfigurator.class));
+            System.out.println("has basic ComponentConfigurator="
+                    + container.hasComponent(ComponentConfigurator.class, "basic"));
+            System.out.println("ComponentConfigurator keys=" + container.lookupMap(ComponentConfigurator.class).keySet());
+            try {
+                System.out.println("basic configurator class="
+                        + container.getContainerRealm().loadClass(
+                                "org.codehaus.plexus.component.configurator.BasicComponentConfigurator"));
+            } catch (Throwable throwable) {
+                System.out.println("basic configurator load failed=" + throwable);
+            }
+            try {
+                System.out.println("map-oriented configurator class="
+                        + container.getContainerRealm().loadClass(
+                                "org.codehaus.plexus.component.configurator.MapOrientedComponentConfigurator"));
+            } catch (Throwable throwable) {
+                System.out.println("map-oriented configurator load failed=" + throwable);
+            }
+
             assertThat(container).isNotNull();
             assertThat(rule.lookup(ComponentConfigurator.class)).isNotNull();
         } catch (Error error) {

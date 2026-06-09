@@ -1,0 +1,34 @@
+You are preparing a Forge workflow for a library issue. Decide whether this library needs additional setup beyond the normal generated test scaffold, such as optional Maven dependencies, a Docker-backed service and its allowed image, or library initialization the test must perform before meaningful coverage is reachable.
+
+Research the library yourself to make this decision. Investigate the resolved artifact and its dependencies, how the library is normally used, and its documentation. The JSON context below is only a starting point, not the limit of what you may consider. Do not modify the repository or apply any setup yourself — return only the decision. The driver applies deterministic setup, and local Gradle and Native Image verification remain authoritative.
+
+Split any needed setup into two kinds. `deterministic_setup` is a typed list of one-time, idempotent edits the driver applies for you; supported kinds:
+  - {"kind": "dependency", "coordinate": "group:artifact:version", "scope": "testImplementation", "reason": "..."}
+  - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}
+`agent_guidance` is concise reasoning the workflow agent must apply inside the generated test code (for example, exercise a driver against a stood-up service, or set a system property before a factory lookup). Do not restate deterministic edits as guidance.
+
+Return a single JSON object with this shape:
+{
+  "action": "no_action" | "advisory_preparation",
+  "summary": "short reason",
+  "deterministic_setup": [ ... typed entries as above, if any ... ],
+  "agent_guidance": "concise guidance for the workflow agent, if any",
+  "risks": ["risk notes, if any"]
+}
+
+Choose no_action unless your research finds concrete evidence that extra setup is needed.
+
+Context (starting point):
+{
+  "issue": {
+    "number": 3634,
+    "title": "Support for org.apache.maven.plugin-testing:maven-plugin-testing-harness:3.3.0",
+    "label": "library-new-request",
+    "body": "### Full Maven coordinates\n\norg.apache.maven.plugin-testing:maven-plugin-testing-harness:3.3.0\n\n### Reason for requesting the library\n\nPopular Maven library rank 289 from `/home/jovan/mvnrepository-popular-scraper/popular-maven-libraries.json`.\nMirrored from fork issue https://github.com/jormundur00/graalvm-reachability-metadata/issues/3515 after strict `groupId:artifactId` metadata and open-issue filtering.\n\n_This issue was created by automation._",
+    "body_error": ""
+  },
+  "library": "org.apache.maven.plugin-testing:maven-plugin-testing-harness:3.3.0",
+  "current_library": null,
+  "new_version": null,
+  "existing_tests": {}
+}
