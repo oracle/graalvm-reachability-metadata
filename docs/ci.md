@@ -151,20 +151,21 @@ Every Monday (`0 3 * * 1`) and on manual dispatch. Packages metadata only if it
 changed and the latest completed test-all-metadata workflow passed
 (§CI-test-all-metadata); runs `spotlessCheck` before packaging
 (§FS-repository-functional-spec.5.3). Manual dispatches bypass the test-all gate.
-The workflow ignores the floating `latest` tag when choosing the previous
-numbered release tag, then creates the next `<major>.<minor>.<patch>` release.
-The packaged ZIP is the numbered artifact native-build-tools consumes
-(§FS-repository-functional-spec.4, §GOAL-fresh-metadata).
+The workflow considers only semantic version tags when choosing the previous
+numbered release tag, so floating snapshot tags such as `latest` are ignored.
+It then creates the next `<major>.<minor>.<patch>` release. The packaged ZIP is
+the numbered artifact native-build-tools consumes (§FS-repository-functional-spec.4,
+§GOAL-fresh-metadata).
 
-### CI-create-latest-release: Create latest release
+### CI-create-snapshot-release: Create snapshot release
 
-On pushes to `master` and on manual dispatch. Publishes a floating `latest`
-GitHub Release when metadata changed since the previous `latest` tag; if that
-tag does not exist yet, it bootstraps the diff from the latest numbered release
-tag. The workflow packages metadata with repository version `latest`, deletes
-the previous `latest` release/tag when present, and force-pushes a fresh
-`latest` tag for consumers that need a continuously updated snapshot-style
-bundle (§FS-repository-functional-spec.4.4, §GOAL-fresh-metadata).
+On pushes to `master` and on manual dispatch. Publishes a floating `SNAPSHOT`
+GitHub Release on the `latest` tag when metadata changed since the previous
+`latest` tag; if that tag does not exist yet, it bootstraps the diff from the
+latest numbered release tag. The workflow packages metadata with repository
+version `latest`, deletes the previous snapshot release/tag when present,
+force-pushes a fresh `latest` tag, and marks the release as not GitHub's
+Latest release (§FS-repository-functional-spec.4.4, §GOAL-fresh-metadata).
 
 ## Event-triggered automation
 

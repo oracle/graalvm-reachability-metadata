@@ -66,15 +66,15 @@ The harness uses a single coordinates filter `-Pcoordinates=` accepting `all`, `
 GitHub Actions, configured by [`ci.json`](../ci.json) as the single source of truth for OS/JDK matrix, run the workflows enumerated in [ci.md](ci.md):
 - PR-scoped: changed-metadata, changed-infrastructure, new-library-version, Spring AOT smoke, library-stats validation, library-and-framework-list validation, checkstyle.
 - Schedule-driven: full metadata sweep every three days to prevent incomplete or breaking metadata from shipping in releases, new-library-version compatibility (every six hours), Docker image vulnerability scans, scheduled release every Monday, scheduled coverage publication.
-- Event-driven release publication: every push to `master` may refresh the floating `latest` release when metadata changed since the previous `latest` tag.
+- Event-driven snapshot publication: every push to `master` may refresh the floating `SNAPSHOT` release when metadata changed since the previous `latest` tag.
 
 CI must pass before any merge, and is the authoritative gate — local runs are best-effort.
 
 ### 4.4 Releases
 
-Every Monday the `create-scheduled-release` workflow packages metadata into the next numbered release if it has changed and the latest completed test-all metadata workflow passed (§CI-create-scheduled-release). Manual release dispatches bypass this test-all gate. Numbered releases ignore the floating `latest` tag when computing the previous version tag, so the permanent release cadence advances only from semantic-version tags.
+Every Monday the `create-scheduled-release` workflow packages metadata into the next numbered release if it has changed and the latest completed test-all metadata workflow passed (§CI-create-scheduled-release). Manual release dispatches bypass this test-all gate. Numbered releases consider only semantic version tags when computing the previous version tag, so floating snapshot tags such as `latest` cannot affect the permanent release cadence.
 
-The `create-latest-release` workflow refreshes a floating `latest` GitHub Release on `master` pushes when metadata changed since the previous `latest` tag, or since the latest numbered release when bootstrapping (§CI-create-latest-release). It packages the repository with version `latest`, replaces the previous `latest` release/tag, and provides a continuously updated snapshot-style metadata bundle between numbered releases. The packaged artifacts are what the GraalVM Gradle/Maven plugins consume.
+The `create-snapshot-release` workflow refreshes a floating `SNAPSHOT` GitHub Release on the `latest` tag after `master` pushes when metadata changed since the previous `latest` tag, or since the latest numbered release when bootstrapping (§CI-create-snapshot-release). It packages the repository with version `latest`, replaces the previous snapshot release/tag, and provides a continuously updated snapshot-style metadata bundle between numbered releases without taking GitHub's Latest marker from the newest numbered release. The packaged artifacts are what the GraalVM Gradle/Maven plugins consume.
 
 ### 4.5 Coverage and metrics dashboard
 
@@ -143,7 +143,7 @@ sequenceDiagram
     participant App as Application build
     participant NI as native-image
 
-    Note over Repo: Push-triggered latest release<br/>Weekly create-scheduled-release
+    Note over Repo: Push-triggered snapshot release<br/>Weekly create-scheduled-release
     Repo->>Artifact: package metadata/** + index.json files
 
     Note over App: nativeCompile / native:compile
@@ -159,7 +159,7 @@ sequenceDiagram
 
 native-build-tools consumes this repository through exactly four observable elements. Changes to any of them are breaking changes for plugin users.
 
-**1. Distribution artifact.** The `package` Gradle task produces `graalvm-reachability-metadata-<repo-version>.zip`, which the scheduled release workflow attaches as a GitHub Release asset on a `<repo-version>` tag every Monday, and which the latest-release workflow attaches on the floating `latest` tag after metadata-changing pushes to `master`. The ZIP is a verbatim copy of the repository's `metadata/` directory — there is no separate top-level manifest. Its contents at the ZIP root are exactly:
+**1. Distribution artifact.** The `package` Gradle task produces `graalvm-reachability-metadata-<repo-version>.zip`, which the scheduled release workflow attaches as a GitHub Release asset on a `<repo-version>` tag every Monday, and which the snapshot-release workflow attaches as `SNAPSHOT` on the floating `latest` tag after metadata-changing pushes to `master`. The ZIP is a verbatim copy of the repository's `metadata/` directory — there is no separate top-level manifest. Its contents at the ZIP root are exactly:
 
 ```text
 library-and-framework-list.json                          # the master list of supported libraries (schema-validated)
@@ -210,7 +210,7 @@ flowchart TD
 
 Auxiliary contracts: `requires` triggers the plugin to also load metadata for the listed `group:artifact` pair; `override: true` instructs the plugin to suppress any built-in metadata that ships inside `native-image` itself for the matched versions.
 
-All four elements are versioned through the schema `$id` URLs and the GitHub Release tag. Newer plugins keep reading older repository releases, and older plugins keep reading newer **minor and patch** schema versions, which only add optional fields or non-plugin formats. A **major** schema bump (e.g. `reachability-metadata` 1.2.0 → 2.0.0, or `metadata-library-index` 2.x → 3.0.0) represents a change native-build-tools must adopt and is released together with a coordinated plugin update — it is not something older plugins absorb. Schema fidelity (§6), the weekly numbered release cadence, and the floating `latest` release (§4.4) keep this contract live.
+All four elements are versioned through the schema `$id` URLs and the GitHub Release tag. Newer plugins keep reading older repository releases, and older plugins keep reading newer **minor and patch** schema versions, which only add optional fields or non-plugin formats. A **major** schema bump (e.g. `reachability-metadata` 1.2.0 → 2.0.0, or `metadata-library-index` 2.x → 3.0.0) represents a change native-build-tools must adopt and is released together with a coordinated plugin update — it is not something older plugins absorb. Schema fidelity (§6), the weekly numbered release cadence, and the floating `SNAPSHOT` release (§4.4) keep this contract live.
 
 ## 5. Repository Requirements
 
@@ -279,7 +279,7 @@ Forge's requirements are specified in [forge/docs/functional-spec.md](../forge/d
 
 - Validated metadata + tests + index.json under `metadata/` and `tests/src/`.
 - Mirrored stats under `stats/`, a generated root `COVERAGE.md`, and aggregated coverage artifacts on `stats/coverage`.
-- Weekly numbered release artifacts and floating `latest` release artifacts consumed by the GraalVM Gradle/Maven plugins.
+- Weekly numbered release artifacts and floating `SNAPSHOT` release artifacts consumed by the GraalVM Gradle/Maven plugins.
 - Forge run metrics committed under `stats/<group>/<artifact>/<version>/execution-metrics.json`.
 - GitHub PRs (only when initiated through Forge `git_scripts/`).
 - GitHub issues for new-version compatibility failures, one per `(library, version)`.

@@ -49,9 +49,10 @@ leaves as released metadata:
 4. **Recording coverage.** Newly passing versions are recorded into `index.json`
    and mirrored into `stats/`; the coverage dashboard is regenerated and
    published (§forge/FS-forge-run-metrics, §CI-repository-ci).
-5. **Release.** On `master` pushes and on a weekly cadence the metadata
-   directory is packaged and attached as a GitHub Release, which
-   native-build-tools resolves at build time
+5. **Release.** On a weekly cadence the metadata directory is packaged and
+   attached as a numbered GitHub Release; metadata-changing `master` pushes can
+   also refresh the floating `SNAPSHOT` release, which native-build-tools
+   resolves at build time
    (§FS-repository-functional-spec.4, §GOAL-fresh-metadata).
 
 Two scheduled loops keep this self-sustaining: the full metadata sweep guards

@@ -1,6 +1,6 @@
-# Latest release: packages metadata after master updates and publishes it on the
-# floating latest tag. §CI-create-latest-release; §FS-repository-functional-spec.4.4.
-name: "Create latest release"
+# Snapshot release: packages metadata after master updates and publishes it on the
+# floating latest tag. §CI-create-snapshot-release; §FS-repository-functional-spec.4.4.
+name: "Create snapshot release"
 
 on:
   push:
@@ -20,7 +20,7 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
       none-found: ${{ steps.set-matrix.outputs.none-found }}
-      latest-release-exists: ${{ steps.get-base-ref.outputs.latest-release-exists }}
+      snapshot-release-exists: ${{ steps.get-base-ref.outputs.snapshot-release-exists }}
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -39,19 +39,19 @@ jobs:
           if git rev-parse --verify latest >/dev/null 2>&1; then
             echo "Using existing latest tag as base"
             echo "BASE_COMMIT=$(git rev-parse latest)" >> ${GITHUB_ENV}
-            echo "latest-release-exists=true" >> ${GITHUB_OUTPUT}
+            echo "snapshot-release-exists=true" >> ${GITHUB_OUTPUT}
             exit 0
           fi
 
-          LATEST_VERSION_TAG=$(git tag --list | grep -v '^latest$' | sort -V | tail -1)
+          LATEST_VERSION_TAG=$(git tag --list | grep -E '^[0-9]+[.][0-9]+[.][0-9]+$' | sort -V | tail -1)
           if [[ -z "${LATEST_VERSION_TAG}" ]]; then
-            echo "No existing version tag found to bootstrap the latest release"
+            echo "No existing numbered version tag found to bootstrap the snapshot release"
             exit 1
           fi
 
-          echo "Bootstrapping latest release from ${LATEST_VERSION_TAG}"
+          echo "Bootstrapping snapshot release from ${LATEST_VERSION_TAG}"
           echo "BASE_COMMIT=$(git rev-parse ${LATEST_VERSION_TAG})" >> ${GITHUB_ENV}
-          echo "latest-release-exists=false" >> ${GITHUB_OUTPUT}
+          echo "snapshot-release-exists=false" >> ${GITHUB_OUTPUT}
 
       - name: "🕸️ Get changed metadata matrix"
         id: set-matrix
@@ -61,7 +61,7 @@ jobs:
   release:
     needs: get-changed-metadata
     if: needs.get-changed-metadata.result == 'success' && needs.get-changed-metadata.outputs.none-found != 'true'
-    name: "🚀 Create latest release"
+    name: "🚀 Create snapshot release"
     runs-on: "ubuntu-22.04"
     env:
       GH_TOKEN: ${{ github.token }}
@@ -89,8 +89,8 @@ jobs:
         run: |
           ./gradlew package
 
-      - name: "🧹 Delete previous latest release and tag"
-        if: needs.get-changed-metadata.outputs.latest-release-exists == 'true'
+      - name: "🧹 Delete previous snapshot release and tag"
+        if: needs.get-changed-metadata.outputs.snapshot-release-exists == 'true'
         run: |
           gh release delete latest --cleanup-tag -y
 
@@ -99,7 +99,7 @@ jobs:
           git config --local user.email "actions@github.com"
           git config --local user.name "Github Actions"
           git add .
-          git commit -m "Update latest release"
+          git commit -m "Update snapshot release"
           git tag -f latest
           git push origin refs/tags/latest --force
 
