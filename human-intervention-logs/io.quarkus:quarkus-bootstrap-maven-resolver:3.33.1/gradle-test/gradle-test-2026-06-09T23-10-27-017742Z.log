@@ -1,0 +1,132 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: io.quarkus:quarkus-bootstrap-maven-resolver:3.33.1
+Command: `/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 2 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :jar
+> Task :compileTestJava
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+
+> Task :test
+
+Quarkus_bootstrap_maven_resolverTest > installsAndResolvesArtifactsFromIsolatedLocalRepository() FAILED
+    java.lang.AssertionError: 
+    Expecting actual not to be null
+        at io_quarkus.quarkus_bootstrap_maven_resolver.Quarkus_bootstrap_maven_resolverTest.installsAndResolvesArtifactsFromIsolatedLocalRepository(Quarkus_bootstrap_maven_resolverTest.java:216)
+
+Quarkus_bootstrap_maven_resolverTest > readsPersistsAndLoadsLocalProjectModels() FAILED
+    java.nio.file.NoSuchFileException: /tmp/junit2371440132432770042/single-module/target/persisted-pom.xml
+        at java.base/sun.nio.fs.UnixException.translateToIOException(UnixException.java:92)
+        at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:106)
+        at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:111)
+        at java.base/sun.nio.fs.UnixFileSystemProvider.newFileChannel(UnixFileSystemProvider.java:213)
+        at java.base/sun.nio.fs.UnixFileSystemProvider.newByteChannel(UnixFileSystemProvider.java:244)
+        at java.base/java.nio.file.spi.FileSystemProvider.newOutputStream(FileSystemProvider.java:426)
+        at java.base/java.nio.file.Files.newOutputStream(Files.java:215)
+        at java.base/java.nio.file.Files.newBufferedWriter(Files.java:2725)
+        at java.base/java.nio.file.Files.newBufferedWriter(Files.java:2766)
+        at io.quarkus.bootstrap.resolver.maven.workspace.ModelUtils.persistModel(ModelUtils.java:250)
+        at io_quarkus.quarkus_bootstrap_maven_resolver.Quarkus_bootstrap_maven_resolverTest.readsPersistsAndLoadsLocalProjectModels(Quarkus_bootstrap_maven_resolverTest.java:109)
+
+Quarkus_bootstrap_maven_resolverTest > configuresResolverFacadeLoggingAndMavenContext() FAILED
+    org.opentest4j.AssertionFailedError: 
+    expected: /tmp/junit16465819295017752776/context-project
+     but was: null
+        at java.base@25.0.3/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+        at java.base@25.0.3/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+        at app//io_quarkus.quarkus_bootstrap_maven_resolver.Quarkus_bootstrap_maven_resolverTest.configuresResolverFacadeLoggingAndMavenContext(Quarkus_bootstrap_maven_resolverTest.java:281)
+
+Quarkus_bootstrap_maven_resolverTest > createsCollectRequestsAndConvertsDependencyCoordinates() FAILED
+    org.opentest4j.AssertionFailedError: 
+    expected: org.acme:resolver-fixture
+     but was: org.acme:resolver-fixture::jar
+        at java.base@25.0.3/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+        at java.base@25.0.3/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+        at app//io_quarkus.quarkus_bootstrap_maven_resolver.Quarkus_bootstrap_maven_resolverTest.createsCollectRequestsAndConvertsDependencyCoordinates(Quarkus_bootstrap_maven_resolverTest.java:234)
+
+
+7 tests completed, 5 failed
+Quarkus_bootstrap_maven_resolverTest > discoversMultiModuleWorkspaceAndResolvesWorkspaceArtifacts() FAILED
+    java.lang.NullPointerException: Cannot invoke "org.apache.maven.model.Model.getArtifactId()" because the return value of "io.quarkus.bootstrap.resolver.maven.workspace.LocalWorkspace.resolveEffectiveModel(String, String, String)" is null
+        at io_quarkus.quarkus_bootstrap_maven_resolver.Quarkus_bootstrap_maven_resolverTest.discoversMultiModuleWorkspaceAndResolvesWorkspaceArtifacts(Quarkus_bootstrap_maven_resolverTest.java:182)
+
+
+FAILURE: Build failed with an exception.
+> Task :test FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8/tests/src/io.quarkus/quarkus-bootstrap-maven-resolver/3.33.1/build/reports/problems/problems-report.html
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8/tests/src/io.quarkus/quarkus-bootstrap-maven-resolver/3.33.1/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan
+ to generate a Build Scan (Powered by Develocity).
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+BUILD FAILED in 8s
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+14 actionable tasks: 4 executed, 10 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for io.quarkus:quarkus-bootstrap-maven-resolver:3.33.1 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 9s
+9 actionable tasks: 1 executed, 8 up-to-date

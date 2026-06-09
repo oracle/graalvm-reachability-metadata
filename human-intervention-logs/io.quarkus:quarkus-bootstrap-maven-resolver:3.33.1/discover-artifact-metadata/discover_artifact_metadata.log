@@ -1,0 +1,1381 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019eae9c-bdb6-7bb2-8eb0-e1fb247cb9d6
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.quarkus:quarkus-bootstrap-maven-resolver:3.33.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "3.33.1" when "$version$" is replaced with "3.33.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "io.quarkus:quarkus-bootstrap-maven-resolver:3.33.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.33.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact against Maven metadata and the upstream Quarkus repository, then update the JSON in place with version-templated URLs.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json && sed -n '1,200p' build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8
+-rw-rw-r-- 1 vjovanov vjovanov 75 Jun 10 00:59 build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json
+{
+  "coordinates" : "io.quarkus:quarkus-bootstrap-maven-resolver:3.33.1"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "quarkus-bootstrap-maven-resolver|quarkus-bootstrap" metadata tests build/discovered-artifact-metadata docs || true' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8
+ succeeded in 0ms:
+build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json:2:  "coordinates" : "io.quarkus:quarkus-bootstrap-maven-resolver:3.33.1"
+metadata/io.quarkus/quarkus-bootstrap-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-json/$version$/quarkus-bootstrap-json-$version$-sources.jar",
+metadata/io.quarkus/quarkus-bootstrap-json/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-json/$version$/quarkus-bootstrap-json-$version$-javadoc.jar",
+metadata/io.quarkus/quarkus-bootstrap-runner/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-runner/$version$/quarkus-bootstrap-runner-$version$-sources.jar",
+metadata/io.quarkus/quarkus-bootstrap-runner/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-runner/$version$/quarkus-bootstrap-runner-$version$-javadoc.jar",
+metadata/io.quarkus/quarkus-bootstrap-maven4-resolver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-maven4-resolver/$version$/quarkus-bootstrap-maven4-resolver-$version$-sources.jar",
+metadata/io.quarkus/quarkus-bootstrap-maven4-resolver/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-maven4-resolver/$version$/quarkus-bootstrap-maven4-resolver-$version$-javadoc.jar",
+metadata/io.quarkus/quarkus-bootstrap-app-model/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-app-model/$version$/quarkus-bootstrap-app-model-$version$-sources.jar",
+metadata/io.quarkus/quarkus-bootstrap-app-model/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-app-model/$version$/quarkus-bootstrap-app-model-$version$-javadoc.jar",
+metadata/io.quarkus/quarkus-bootstrap-app-model/index.json:32:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-app-model/$version$/quarkus-bootstrap-app-model-$version$-sources.jar",
+metadata/io.quarkus/quarkus-bootstrap-app-model/index.json:35:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-app-model/$version$/quarkus-bootstrap-app-model-$version$-javadoc.jar",
+tests/src/io.quarkus/quarkus-bootstrap-json/3.33.1/build.gradle:14:    testImplementation "io.quarkus:quarkus-bootstrap-json:$libraryVersion"
+tests/src/io.quarkus/quarkus-bootstrap-json/3.33.1/settings.gradle:20:rootProject.name = 'io.quarkus.quarkus-bootstrap-json_tests'
+tests/src/io.quarkus/quarkus-bootstrap-json/3.33.1/src/test/java/io_quarkus/quarkus_bootstrap_json/Quarkus_bootstrap_jsonTest.java:97:                .put("name", "quarkus-bootstrap-json")
+tests/src/io.quarkus/quarkus-bootstrap-json/3.33.1/src/test/java/io_quarkus/quarkus_bootstrap_json/Quarkus_bootstrap_jsonTest.java:105:        assertThat(((JsonString) parsed.get("name")).value()).isEqualTo("quarkus-bootstrap-json");
+tests/src/io.quarkus/quarkus-bootstrap-json/3.33.1/gradle.properties:4:library.coordinates = io.quarkus:quarkus-bootstrap-json:3.33.1
+tests/src/io.quarkus/quarkus-bootstrap-json/3.33.1/gradle.properties:6:metadata.dir = io.quarkus/quarkus-bootstrap-json/3.33.1/
+tests/src/io.quarkus/quarkus-bootstrap-maven4-resolver/3.33.1/build.gradle:14:    testImplementation "io.quarkus:quarkus-bootstrap-maven4-resolver:$libraryVersion"
+tests/src/io.quarkus/quarkus-bootstrap-maven4-resolver/3.33.1/settings.gradle:20:rootProject.name = 'io.quarkus.quarkus-bootstrap-maven4-resolver_tests'
+tests/src/io.quarkus/quarkus-bootstrap-maven4-resolver/3.33.1/gradle.properties:4:library.coordinates = io.quarkus:quarkus-bootstrap-maven4-resolver:3.33.1
+tests/src/io.quarkus/quarkus-bootstrap-maven4-resolver/3.33.1/gradle.properties:6:metadata.dir = io.quarkus/quarkus-bootstrap-maven4-resolver/3.33.1/
+tests/src/io.quarkus/quarkus-bootstrap-app-model/3.34.0/build.gradle:14:    testImplementation "io.quarkus:quarkus-bootstrap-app-model:$libraryVersion"
+tests/src/io.quarkus/quarkus-bootstrap-app-model/3.34.0/settings.gradle:20:rootProject.name = 'io.quarkus.quarkus-bootstrap-app-model_tests'
+tests/src/io.quarkus/quarkus-bootstrap-app-model/3.34.0/gradle.properties:4:library.coordinates = io.quarkus:quarkus-bootstrap-app-model:3.34.0
+tests/src/io.quarkus/quarkus-bootstrap-app-model/3.34.0/gradle.properties:6:metadata.dir = io.quarkus/quarkus-bootstrap-app-model/3.34.0/
+tests/src/io.quarkus/quarkus-bootstrap-app-model/3.33.1/build.gradle:14:    testImplementation "io.quarkus:quarkus-bootstrap-app-model:$libraryVersion"
+tests/src/io.quarkus/quarkus-bootstrap-app-model/3.33.1/settings.gradle:20:rootProject.name = 'io.quarkus.quarkus-bootstrap-app-model_tests'
+tests/src/io.quarkus/quarkus-bootstrap-app-model/3.33.1/gradle.properties:4:library.coordinates = io.quarkus:quarkus-bootstrap-app-model:3.33.1
+tests/src/io.quarkus/quarkus-bootstrap-app-model/3.33.1/gradle.properties:6:metadata.dir = io.quarkus/quarkus-bootstrap-app-model/3.33.1/
+tests/src/io.quarkus/quarkus-bootstrap-runner/3.33.1/build.gradle:14:    testImplementation("io.quarkus:quarkus-bootstrap-runner:$libraryVersion") {
+tests/src/io.quarkus/quarkus-bootstrap-runner/3.33.1/settings.gradle:20:rootProject.name = 'io.quarkus.quarkus-bootstrap-runner_tests'
+tests/src/io.quarkus/quarkus-bootstrap-runner/3.33.1/src/test/java/io_quarkus/quarkus_bootstrap_runner/BootstrapRunnerCoverageTest.java:118:        Path runnerJar = applicationRoot.resolve("lib/main/quarkus-bootstrap-runner.jar");
+tests/src/io.quarkus/quarkus-bootstrap-runner/3.33.1/gradle.properties:4:library.coordinates = io.quarkus:quarkus-bootstrap-runner:3.33.1
+tests/src/io.quarkus/quarkus-bootstrap-runner/3.33.1/gradle.properties:6:metadata.dir = io.quarkus/quarkus-bootstrap-runner/3.33.1/
+
+web search: 
+web search: io.quarkus quarkus-bootstrap-maven-resolver 3.33.1 maven sources jar javadoc jar
+codex
+The repo already has nearby Quarkus bootstrap metadata using Maven Central sources and javadocs, so I’m checking whether this specific artifact also publishes source, javadoc, and test artifacts before falling back to GitHub paths.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-maven-resolver/3.33.1/quarkus-bootstrap-maven-resolver-3.33.1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>quarkus-bootstrap-parent</artifactId>
+        <groupId>io.quarkus</groupId>
+        <version>3.33.1</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>quarkus-bootstrap-maven-resolver</artifactId>
+    <name>Quarkus - Bootstrap - Maven Resolver</name>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-bootstrap-bom</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-bootstrap-bom-test</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-classloader-commons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.smallrye.beanbag</groupId>
+            <artifactId>smallrye-beanbag-maven</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-io</groupId>
+                    <artifactId>commons-io</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jsoup</groupId>
+                    <artifactId>jsoup</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-bootstrap-app-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-fs-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.logmanager</groupId>
+            <artifactId>jboss-logmanager</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.slf4j</groupId>
+            <artifactId>slf4j-jboss-logmanager</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-bootstrap-maven4-resolver</artifactId>
+            <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-embedder</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.sisu</groupId>
+            <artifactId>org.eclipse.sisu.plexus</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-settings-builder</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-resolver-provider</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.resolver</groupId>
+            <artifactId>maven-resolver-connector-basic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.resolver</groupId>
+            <artifactId>maven-resolver-transport-wagon</artifactId>
+            <exclusions>
+                <exclusion><!-- let's prefer the wagon-provider-api pulled by wagon-http and wagon-file -->
+                    <groupId>org.apache.maven.wagon</groupId>
+                    <artifactId>wagon-provider-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-http</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-file</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-bootstrap-bom</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-bootstrap-bom-test</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <environmentVariables>
+                        <!-- to verify that MAVEN_OPTS filtering works in BootstrapMavenOptions -->
+                        <MAVEN_OPTS>--add-opens java.base/java.util=ALL-UNNAMED</MAVEN_OPTS>
+                    </environmentVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-maven-resolver/3.33.1/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/quarkus/quarkus-bootstrap-maven-resolver/3.33.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/quarkus/quarkus-bootstrap-maven-resolver/3.33.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="quarkus-bootstrap-maven-resolver-3.33.1-javadoc.jar" title="quarkus-bootstrap-maven-resolver-3.33.1-javadoc.jar">quarkus-bootstrap-maven-resolver-3.33.1-javad...</a>  2026-03-25 09:37    335214      
+<a href="quarkus-bootstrap-maven-resolver-3.33.1-javadoc.jar.asc" title="quarkus-bootstrap-maven-resolver-3.33.1-javadoc.jar.asc">quarkus-bootstrap-maven-resolver-3.33.1-javad...</a>  2026-03-25 09:37       853      
+<a href="quarkus-bootstrap-maven-resolver-3.33.1-javadoc.jar.md5" title="quarkus-bootstrap-maven-resolver-3.33.1-javadoc.jar.md5">quarkus-bootstrap-maven-resolver-3.33.1-javad...</a>  2026-03-25 09:37        32      
+<a href="quarkus-bootstrap-maven-resolver-3.33.1-javadoc.jar.sha1" title="quarkus-bootstrap-maven-resolver-3.33.1-javadoc.jar.sha1">quarkus-bootstrap-maven-resolver-3.33.1-javad...</a>  2026-03-25 09:37        40      
+<a href="quarkus-bootstrap-maven-resolver-3.33.1-javadoc.jar.sha256" title="quarkus-bootstrap-maven-resolver-3.33.1-javadoc.jar.sha256">quarkus-bootstrap-maven-resolver-3.33.1-javad...</a>  2026-03-25 09:37        64      
+<a href="quarkus-bootstrap-maven-resolver-3.33.1-javadoc.jar.sha512" title="quarkus-bootstrap-maven-resolver-3.33.1-javadoc.jar.sha512">quarkus-bootstrap-maven-resolver-3.33.1-javad...</a>  2026-03-25 09:37       128      
+<a href="quarkus-bootstrap-maven-resolver-3.33.1-sources.jar" title="quarkus-bootstrap-maven-resolver-3.33.1-sources.jar">quarkus-bootstrap-maven-resolver-3.33.1-sourc...</a>  2026-03-25 09:37    101967      
+<a href="quarkus-bootstrap-maven-resolver-3.33.1-sources.jar.asc" title="quarkus-bootstrap-maven-resolver-3.33.1-sources.jar.asc">quarkus-bootstrap-maven-resolver-3.33.1-sourc...</a>  2026-03-25 09:37       853      
+<a href="quarkus-bootstrap-maven-resolver-3.33.1-sources.jar.md5" title="quarkus-bootstrap-maven-resolver-3.33.1-sources.jar.md5">quarkus-bootstrap-maven-resolver-3.33.1-sourc...</a>  2026-03-25 09:37        32      
+<a href="quarkus-bootstrap-maven-resolver-3.33.1-sources.jar.sha1" title="quarkus-bootstrap-maven-resolver-3.33.1-sources.jar.sha1">quarkus-bootstrap-maven-resolver-3.33.1-sourc...</a>  2026-03-25 09:37        40      
+<a href="quarkus-bootstrap-maven-resolver-3.33.1-sources.jar.sha256" title="quarkus-bootstrap-maven-resolver-3.33.1-sources.jar.sha256">quarkus-bootstrap-maven-resolver-3.33.1-sourc...</a>  2026-03-25 09:37        64      
+<a href="quarkus-bootstrap-maven-resolver-3.33.1-sources.jar.sha512" title="quarkus-bootstrap-maven-resolver-3.33.1-sources.jar.sha512">quarkus-bootstrap-maven-resolver-3.33.1-sourc...</a>  2026-03-25 09:37       128      
+<a href="quarkus-bootstrap-maven-resolver-3.33.1.jar" title="quarkus-bootstrap-maven-resolver-3.33.1.jar">quarkus-bootstrap-maven-resolver-3.33.1.jar</a>       2026-03-25 09:37    215762      
+<a href="quarkus-bootstrap-maven-resolver-3.33.1.jar.asc" title="quarkus-bootstrap-maven-resolver-3.33.1.jar.asc">quarkus-bootstrap-maven-resolver-3.33.1.jar.a...</a>  2026-03-25 09:37       853      
+<a href="quarkus-bootstrap-maven-resolver-3.33.1.jar.md5" title="quarkus-bootstrap-maven-resolver-3.33.1.jar.md5">quarkus-bootstrap-maven-resolver-3.33.1.jar.m...</a>  2026-03-25 09:37        32      
+<a href="quarkus-bootstrap-maven-resolver-3.33.1.jar.sha1" title="quarkus-bootstrap-maven-resolver-3.33.1.jar.sha1">quarkus-bootstrap-maven-resolver-3.33.1.jar.s...</a>  2026-03-25 09:37        40      
+<a href="quarkus-bootstrap-maven-resolver-3.33.1.jar.sha256" title="quarkus-bootstrap-maven-resolver-3.33.1.jar.sha256">quarkus-bootstrap-maven-resolver-3.33.1.jar.s...</a>  2026-03-25 09:37        64      
+<a href="quarkus-bootstrap-maven-resolver-3.33.1.jar.sha512" title="quarkus-bootstrap-maven-resolver-3.33.1.jar.sha512">quarkus-bootstrap-maven-resolver-3.33.1.jar.s...</a>  2026-03-25 09:37       128      
+<a href="quarkus-bootstrap-maven-resolver-3.33.1.pom" title="quarkus-bootstrap-maven-resolver-3.33.1.pom">quarkus-bootstrap-maven-resolver-3.33.1.pom</a>       2026-03-25 09:37      7440      
+<a href="quarkus-bootstrap-maven-resolver-3.33.1.pom.asc" title="quarkus-bootstrap-maven-resolver-3.33.1.pom.asc">quarkus-bootstrap-maven-resolver-3.33.1.pom.a...</a>  2026-03-25 09:37       853      
+<a href="quarkus-bootstrap-maven-resolver-3.33.1.pom.md5" title="quarkus-bootstrap-maven-resolver-3.33.1.pom.md5">quarkus-bootstrap-maven-resolver-3.33.1.pom.m...</a>  2026-03-25 09:37        32      
+<a href="quarkus-bootstrap-maven-resolver-3.33.1.pom.sha1" title="quarkus-bootstrap-maven-resolver-3.33.1.pom.sha1">quarkus-bootstrap-maven-resolver-3.33.1.pom.s...</a>  2026-03-25 09:37        40      
+<a href="quarkus-bootstrap-maven-resolver-3.33.1.pom.sha256" title="quarkus-bootstrap-maven-resolver-3.33.1.pom.sha256">quarkus-bootstrap-maven-resolver-3.33.1.pom.s...</a>  2026-03-25 09:37        64      
+<a href="quarkus-bootstrap-maven-resolver-3.33.1.pom.sha512" title="quarkus-bootstrap-maven-resolver-3.33.1.pom.sha512">quarkus-bootstrap-maven-resolver-3.33.1.pom.s...</a>  2026-03-25 09:37       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-maven-resolver/3.33.1/quarkus-bootstrap-maven-resolver-3.33.1-tests.jar; curl -fsI https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-maven-resolver/3.33.1/quarkus-bootstrap-maven-resolver-3.33.1-test-sources.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8
+ exited 22 in 548ms:
+HTTP/2 404 
+date: Tue, 09 Jun 2026 22:59:42 GMT
+content-type: text/html
+cf-ray: a093bf8e2c61039c-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/io/quarkus/quarkus-bootstrap-maven-resolver/3.33.1/quarkus-bootstrap-maven-resolver-3.33.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Tue, 09 Jun 2026 22:59:42 GMT
+content-type: text/html
+cf-ray: a093bf8ff9e5a032-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/io/quarkus/quarkus-bootstrap-maven-resolver/3.33.1/quarkus-bootstrap-maven-resolver-3.33.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-maven-resolver/3.33.1/
+web search: 
+web search: site:mvnrepository.com/artifact/io.quarkus/quarkus-bootstrap-maven-resolver/3.33.1
+codex
+Maven Central publishes the main JAR, sources JAR, and javadoc JAR for this coordinate, but no `tests.jar` or `test-sources.jar`. I’m using Maven Central for sources/docs and the tagged Quarkus GitHub tree for the test suite.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-parent/3.33.1/quarkus-bootstrap-parent-3.33.1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
+    child.project.url.inherit.append.path="false">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-parent</artifactId>
+        <version>3.33.1</version>
+        <relativePath>../parent/pom.xml</relativePath>
+    </parent>
+    <artifactId>quarkus-bootstrap-parent</artifactId>
+    <name>Quarkus - Bootstrap - Parent</name>
+    <url>https://github.com/quarkusio/quarkus</url>
+    <packaging>pom</packaging>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <distribution>repo</distribution>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+    </licenses>
+    <scm child.scm.connection.inherit.append.path="false"
+         child.scm.developerConnection.inherit.append.path="false"
+         child.scm.url.inherit.append.path="false">
+        <url>https://github.com/quarkusio/quarkus</url>
+        <connection>scm:git:git@github.com:quarkusio/quarkus.git</connection>
+        <developerConnection>scm:git:git@github.com:quarkusio/quarkus.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+    <properties>
+        <angus-activation.version>1.0.0</angus-activation.version>
+        <javax.annotation-api.version>1.3.2</javax.annotation-api.version>
+        <javax.inject.version>1</javax.inject.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jandex.version>3.5.3</jandex.version>
+        <jmh.version>1.37</jmh.version>
+
+        <!-- Dependency versions -->
+        <assertj.version>3.27.7</assertj.version>
+        <eclipse-minimal-json.version>0.9.5</eclipse-minimal-json.version>
+        <jboss-logging.version>3.6.2.Final</jboss-logging.version>
+        <junit.version>6.0.3</junit.version>
+        <maven-core.version>3.9.12</maven-core.version><!-- Keep in sync with sisu.version -->
+        <sisu.version>0.9.0.M4</sisu.version><!-- Keep in sync with maven-core.version -->
+        <maven-plugin-annotations.version>3.15.1</maven-plugin-annotations.version>
+        <maven-resolver.version>1.9.25</maven-resolver.version>
+        <maven-shared-utils.version>3.4.2</maven-shared-utils.version> <!-- Keep in sync with maven-core.version (force this version on maven-invoker) -->
+        <maven-wagon.version>3.5.3</maven-wagon.version>
+        <httpcore.version>4.4.16</httpcore.version><!-- Keep in sync with maven-wagon.version (wagon-http 3.5.3 brings in httpclient 4.5.14 which brings httpcore 4.4.16) -->
+        <httpclient.version>4.5.14</httpclient.version>
+        <commons-logging-jboss-logging.version>2.0.0.Final</commons-logging-jboss-logging.version>
+        <jakarta.annotation-api.version>3.0.0</jakarta.annotation-api.version>
+        <jakarta.enterprise.cdi-api.version>4.1.0</jakarta.enterprise.cdi-api.version>
+        <jakarta.inject-api.version>2.0.1</jakarta.inject-api.version>
+        <commons-codec.version>1.21.0</commons-codec.version>
+        <commons-io.version>2.21.0</commons-io.version>
+        <commons-lang.version>3.20.0</commons-lang.version>
+        <guava.version>33.5.0-jre</guava.version>
+        <guava.failureaccess.version>1.0.1</guava.failureaccess.version><!-- keep in sync with guava.version -->
+        <j2objc.annotations.version>2.8</j2objc.annotations.version><!-- keep in sync with guava.version -->
+        <jspecify.version>1.0.0</jspecify.version><!-- keep in sync with guava.version -->
+        <shrinkwrap-depchain.version>1.2.6</shrinkwrap-depchain.version>
+        <jboss-logmanager.version>3.2.1.Final</jboss-logmanager.version>
+        <slf4j-jboss-logmanager.version>1.1.0.Final</slf4j-jboss-logmanager.version>
+        <slf4j-api.version>2.0.17</slf4j-api.version>
+        <graal-sdk.version>23.1.0</graal-sdk.version>
+        <plexus-classworlds.version>2.6.0</plexus-classworlds.version> <!-- not actually used but ClassRealm class is referenced from the API used in BootstrapWagonConfigurator -->
+        <plexus-cipher.version>2.0</plexus-cipher.version>
+        <plexus-interpolation.version>1.26</plexus-interpolation.version>
+        <plexus-sec-dispatcher.version>2.0</plexus-sec-dispatcher.version>
+        <plexus-utils.version>3.5.1</plexus-utils.version>
+        <smallrye-common.version>2.16.0</smallrye-common.version>
+        <smallrye-beanbag.version>1.6.1</smallrye-beanbag.version>
+        <gradle-tooling.version>9.3.1</gradle-tooling.version>
+        <quarkus-fs-util.version>1.3.0</quarkus-fs-util.version>
+        <crac.version>1.5.0</crac.version>
+    </properties>
+    <modules>
+        <module>bom</module>
+        <module>bom-test</module>
+        <module>app-model</module>
+        <module>maven4-resolver</module>
+        <module>maven-resolver</module>
+        <module>value-registry</module>
+        <module>json</module>
+        <module>core</module>
+        <module>runner</module>
+        <module>gradle-resolver</module>
+        <module>classloader-commons</module>
+        <module>benchmarks</module>
+    </modules>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                </plugin>
+                <plugin>
+                    <groupId>io.smallrye</groupId>
+                    <artifactId>jandex-maven-plugin</artifactId>
+                    <version>${jandex.version}</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <configuration>
+                        <quiet>true</quiet>
+                        <doclint>none</doclint>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <dependencies>
+                        <dependency>
+                            <groupId>io.quarkus</groupId>
+                            <artifactId>quarkus-enforcer-rules</artifactId>
+                            <version>${project.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <executions>
+                        <execution>
+                            <id>enforce</id>
+                            <phase>${maven-enforcer-plugin.phase}</phase>
+                            <configuration>
+                                <rules>
+                                    <dependencyConvergence/>
+                                    <externalRules>
+                                        <location>classpath:enforcer-rules/quarkus-require-java-version.xml</location>
+                                    </externalRules>
+                                    <externalRules>
+                                        <location>classpath:enforcer-rules/quarkus-require-maven-version.xml</location>
+                                    </externalRules>
+                                    <externalRules>
+                                        <location>classpath:enforcer-rules/quarkus-banned-dependencies.xml</location>
+                                    </externalRules>
+                                    <bannedDependencies>
+                                        <excludes>
+                                            <!-- findbugs is not required at runtime -->
+                                            <exclude>com.google.code.findbugs:jsr305</exclude>
+                                            <!-- com.google.guava:listenablefuture is empty and the ListenableFuture class is available in Guava -->
+                                            <exclude>com.google.guava:listenablefuture</exclude>
+                                        </excludes>
+                                    </bannedDependencies>
+                                </rules>
+                            </configuration>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <configuration>
+                        <!-- combine.self suppresses warnings about java.io.tmpdir being defined twice -->
+                        <systemPropertyVariables combine.self="override"/>
+                        <!-- set tmpdir as early as possible because failsafe sets it too late for JDK16 -->
+                        <argLine>-Djava.io.tmpdir="${project.build.directory}"</argLine>
+                        <excludedEnvironmentVariables>MAVEN_OPTS</excludedEnvironmentVariables>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-plugin-plugin</artifactId>
+                    <configuration>
+                        <goalPrefix>quarkus-bootstrap</goalPrefix>
+                        <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>help-goal</id>
+                            <goals>
+                                <goal>helpmojo</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>default-descriptor</id>
+                            <phase>process-classes</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>quick-build</id>
+            <activation>
+                <property>
+                    <name>quickly</name>
+                </property>
+            </activation>
+            <properties>
+                <skipTests>true</skipTests>
+                <skipITs>true</skipITs>
+                <enforcer.skip>true</enforcer.skip>
+            </properties>
+            <build>
+                <defaultGoal>clean install</defaultGoal>
+            </build>
+        </profile>
+        <profile>
+            <id>quick-build-docs</id>
+            <activation>
+                <property>
+                    <name>quicklyDocs</name>
+                </property>
+            </activation>
+            <properties>
+                <skipTests>true</skipTests>
+                <skipITs>true</skipITs>
+                <enforcer.skip>true</enforcer.skip>
+            </properties>
+            <build>
+                <defaultGoal>clean install</defaultGoal>
+            </build>
+        </profile>
+        <profile>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/quarkus/quarkus-parent/3.33.1/quarkus-parent-3.33.1.pom | sed -n '1,180p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         child.project.url.inherit.append.path="false">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>io.quarkus</groupId>
+    <artifactId>quarkus-parent</artifactId>
+    <version>3.33.1</version>
+
+    <name>Quarkus - Parent POM</name>
+    <description>Quarkus Parent POM</description>
+    <url>https://quarkus.io</url>
+
+    <inceptionYear>2020</inceptionYear>
+
+    <packaging>pom</packaging>
+
+    <properties>
+        <!-- Plugin versions (please keep in alphabetical order) -->
+        <version.archetype.plugin>3.4.1</version.archetype.plugin>
+        <version.buildhelper.plugin>3.6.1</version.buildhelper.plugin>
+        <version.buildnumber.plugin>3.3.0</version.buildnumber.plugin>
+        <version.clean.plugin>3.5.0</version.clean.plugin>
+        <version.compiler.plugin>3.15.0</version.compiler.plugin>
+        <version.dependency.plugin>3.8.1</version.dependency.plugin>
+        <version.deploy.plugin>3.1.4</version.deploy.plugin>
+        <version.enforcer.plugin>3.6.2</version.enforcer.plugin>
+        <version.exec.plugin>3.6.3</version.exec.plugin>
+        <version.formatter.plugin>2.27.0</version.formatter.plugin>
+        <version.gpg.plugin>3.2.8</version.gpg.plugin>
+        <version.impsort.plugin>1.13.0</version.impsort.plugin>
+        <version.install.plugin>3.1.4</version.install.plugin>
+        <version.javadoc.plugin>3.12.0</version.javadoc.plugin>
+        <version.jar.plugin>3.5.0</version.jar.plugin>
+        <version.plugin.plugin>3.15.2</version.plugin.plugin>
+        <version.release.plugin>3.3.1</version.release.plugin>
+        <version.resources.plugin>3.4.0</version.resources.plugin>
+        <version.shade.plugin>3.6.1</version.shade.plugin>
+        <version.source.plugin>3.4.0</version.source.plugin>
+        <version.surefire.plugin>3.5.4</version.surefire.plugin>
+        <version.failsafe.plugin>${version.surefire.plugin}</version.failsafe.plugin>
+        <version.versions.plugin>2.21.0</version.versions.plugin>
+        <version.yaml-properties.plugin>1.1.3</version.yaml-properties.plugin>
+        <!-- Forbidden API checks -->
+        <version.forbiddenapis-maven-plugin>3.4</version.forbiddenapis-maven-plugin>
+        <forbiddenapis-maven-plugin.phase>verify</forbiddenapis-maven-plugin.phase>
+
+        <!-- Code format -->
+        <format.skip>false</format.skip>
+
+        <!-- Default properties -->
+        <maven.compiler.parameters>true</maven.compiler.parameters>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.release>17</maven.compiler.release>
+        <maven.compiler.source>${maven.compiler.release}</maven.compiler.source>
+        <maven.compiler.target>${maven.compiler.release}</maven.compiler.target>
+        <maven.compiler.testTarget>${maven.compiler.target}</maven.compiler.testTarget>
+        <maven.compiler.testSource>${maven.compiler.source}</maven.compiler.testSource>
+        <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
+
+        <!-- Cross plugins settings -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- Make the builds reproducible - see https://maven.apache.org/guides/mini/guide-reproducible-builds.html -->
+        <project.build.outputTimestamp>2026-03-25T08:16:04Z</project.build.outputTimestamp>
+
+        <!--
+            Options to override the compiler arguments directly on the compiler argument line to separate between what
+            the IDE understands as the source level and what the Maven compiler actually use.
+        -->
+        <maven.compiler.argument.target>${maven.compiler.target}</maven.compiler.argument.target>
+        <maven.compiler.argument.source>${maven.compiler.source}</maven.compiler.argument.source>
+        <maven.compiler.argument.testTarget>${maven.compiler.testTarget}</maven.compiler.argument.testTarget>
+        <maven.compiler.argument.testSource>${maven.compiler.testSource}</maven.compiler.argument.testSource>
+
+        <!-- maven-enforcer-plugin -->
+        <maven.min.version>3.9.6</maven.min.version>
+        <jdk.min.version>${maven.compiler.argument.source}</jdk.min.version>
+        <insecure.repositories>ERROR</insecure.repositories>
+
+        <!-- maven-release-plugin -->
+        <useReleaseProfile>false</useReleaseProfile>
+    </properties>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/quarkusio/quarkus/issues</url>
+    </issueManagement>
+
+    <developers>
+        <developer>
+            <id>quarkus</id>
+            <name>Quarkus Community</name>
+        </developer>
+    </developers>
+
+    <scm child.scm.connection.inherit.append.path="false"
+         child.scm.developerConnection.inherit.append.path="false"
+         child.scm.url.inherit.append.path="false">
+        <connection>scm:git:git@github.com:quarkusio/quarkus.git</connection>
+        <developerConnection>scm:git:git@github.com:quarkusio/quarkus.git</developerConnection>
+        <url>https://github.com/quarkusio/quarkus</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>quarkus-publish</id>
+            <name>Quarkus Releases</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+        <snapshotRepository>
+            <id>quarkus-publish</id>
+            <name>Quarkus Snapshots</name>
+            <url>https://central.sonatype.com/repository/maven-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <build>
+        <plugins>
+            <!-- Check for the minimum version of Java and Maven.  Runs during the validate phase. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce</id>
+                        <phase>${maven-enforcer-plugin.phase}</phase>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <bannedRepositories>
+                                    <message>To build this project, don't use maven repositories over HTTP. Please use
+                                        HTTPS in your settings.xml or run the build with property
+                                        insecure.repositories=WARN
+                                    </message>
+                                    <level>${insecure.repositories}</level>
+                                    <bannedRepositories>
+                                        <bannedRepository>http://*</bannedRepository>
+                                    </bannedRepositories>
+                                    <bannedPluginRepositories>
+                                        <bannedPluginRepository>http://*</bannedPluginRepository>
+                                    </bannedPluginRepositories>
+                                </bannedRepositories>
+                                <requireJavaVersion>
+                                    <message>To build this project JDK ${jdk.min.version} (or greater) is required.
+                                        Please install it.
+                                    </message>
+                                    <version>${jdk.min.version}</version>
+                                </requireJavaVersion>
+                                <requireMavenVersion>
+                                    <message>To build this project Maven ${maven.min.version} (or greater) is required.
+                                        Please install it.
+                                    </message>
+                                    <version>${maven.min.version}</version>
+                                </requireMavenVersion>
+                                <banDynamicVersions>
+                                    <!-- while we don't allow snapshots in the tree, it's handy to be able to use a snapshot for testing -->
+                                    <allowSnapshots>true</allowSnapshots>
+                                </banDynamicVersions>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Set properties containing the scm revision -->
+            <plugin>
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/quarkusio/quarkus/tree/3.33.1/independent-projects/bootstrap/maven-resolver/src/test/java; curl -fsI https://github.com/quarkusio/quarkus/tree/3.33.1/independent-projects/bootstrap/maven-resolver/src/main/java' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/quarkusio/quarkus/3.33.1/independent-projects/bootstrap/maven-resolver/pom.xml | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8
+ succeeded in 164ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>quarkus-bootstrap-parent</artifactId>
+        <groupId>io.quarkus</groupId>
+        <version>3.33.1</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>quarkus-bootstrap-maven-resolver</artifactId>
+    <name>Quarkus - Bootstrap - Maven Resolver</name>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-bootstrap-bom</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-bootstrap-bom-test</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-classloader-commons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.smallrye.beanbag</groupId>
+            <artifactId>smallrye-beanbag-maven</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-io</groupId>
+                    <artifactId>commons-io</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jsoup</groupId>
+                    <artifactId>jsoup</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-bootstrap-app-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-fs-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.logmanager</groupId>
+            <artifactId>jboss-logmanager</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.slf4j</groupId>
+            <artifactId>slf4j-jboss-logmanager</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-bootstrap-maven4-resolver</artifactId>
+            <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-embedder</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.sisu</groupId>
+            <artifactId>org.eclipse.sisu.plexus</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-settings-builder</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-resolver-provider</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.resolver</groupId>
+            <artifactId>maven-resolver-connector-basic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.resolver</groupId>
+            <artifactId>maven-resolver-transport-wagon</artifactId>
+            <exclusions>
+                <exclusion><!-- let's prefer the wagon-provider-api pulled by wagon-http and wagon-file -->
+                    <groupId>org.apache.maven.wagon</groupId>
+                    <artifactId>wagon-provider-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-http</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-file</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-bootstrap-bom</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-bootstrap-bom-test</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <environmentVariables>
+                        <!-- to verify that MAVEN_OPTS filtering works in BootstrapMavenOptions -->
+                        <MAVEN_OPTS>--add-opens java.base/java.util=ALL-UNNAMED</MAVEN_OPTS>
+                    </environmentVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+ succeeded in 1473ms:
+HTTP/2 200 
+date: Tue, 09 Jun 2026 22:59:55 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"c78f12f0ab25c48cd8c241cf376956cf"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=75UbcrXX8McBIEu1ykS2CAH6iAYKtXK21SPdzBhzsPy1aB%2Fawt9ec2nHnCQs9SC1PK5TQkFR3KargghYjqcgeB0e0CTkXNFOMOZ0buFIOTlFXjw8LyghDLrbXmIgvkWLkwGlP8k80Sagva7651PvOXNPdYPg8gj2KLY2JeWxsHcGOZVWxKIlgTtsyWg1LuI%2Fu97FTa2p0I1Ciaa79oQZkWzZk4E%2BuKus03J%2BJm4JVcDs2XE7vM4iO1QwTzGHVPUQww6s%2FBAMtw9RpsRBpD4qvg%3D%3D--brJ2Aj3G7%2F0AxI2q--pcKP%2Bpv5AHmLrJ4G62si9g%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.137750377.1781045995; expires=Wed, 09 Jun 2027 22:59:55 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 09 Jun 2027 22:59:55 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 623D:1C5432:714C818:5A96AFA:6A289AEB
+
+HTTP/2 200 
+date: Tue, 09 Jun 2026 22:59:56 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"296fa92a5cdb1227a88f921577abdb14"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=tEJUTVTIGFzM%2FangtqNDVVP9LlUEa6jSnyHfPbisdjiSHpjui2D6OWpEzkOq4ipZ8VgE3rSHnAvESyexMaBwZwvLxVspXwS6THZaHNTCoJ6f3l2hkLSlehaPgyTmozxSKBE7DKY4WKkMtbadd7CSeogAyP%2F9l8O7%2B8SlXOrNWbwqpsD%2B9Vr9opBbowJzhJWmiZtgHYWJWYRp4baEYVPsjzeFfm%2BlTcoblGehUlTsQODYC0jFeItEXc2U%2BK7l0zUqNUZaAxPlS2Q09XR3QS8Eew%3D%3D--g2vjZeE2tjBnV3bd--s%2BtThnykBn5L1wydA7E8sQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1713229230.1781045995; expires=Wed, 09 Jun 2027 22:59:55 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 09 Jun 2027 22:59:55 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6241:1FD38D:722F44F:5B3D630:6A289AEB
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-maven-resolver/3.33.1/quarkus-bootstrap-maven-resolver-3.33.1-sources.jar -o /tmp/quarkus-bootstrap-maven-resolver-3.33.1-sources.jar && jar tf /tmp/quarkus-bootstrap-maven-resolver-3.33.1-sources.jar | sed -n '1,160p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+io/
+io/quarkus/
+io/quarkus/bootstrap/
+io/quarkus/bootstrap/resolver/
+io/quarkus/bootstrap/resolver/maven/
+io/quarkus/bootstrap/resolver/maven/options/
+io/quarkus/bootstrap/resolver/maven/workspace/
+io/quarkus/bootstrap/util/
+META-INF/maven/
+META-INF/maven/io.quarkus/
+META-INF/maven/io.quarkus/quarkus-bootstrap-maven-resolver/
+io/quarkus/bootstrap/BootstrapDependencyProcessingException.java
+io/quarkus/bootstrap/resolver/BootstrapAppModelResolver.java
+io/quarkus/bootstrap/resolver/maven/ApplicationDependencyMap.java
+io/quarkus/bootstrap/resolver/maven/ApplicationDependencyResolver.java
+io/quarkus/bootstrap/resolver/maven/ApplicationDependencyTreeResolver.java
+io/quarkus/bootstrap/resolver/maven/ArtifactDependencyMap.java
+io/quarkus/bootstrap/resolver/maven/BlockingModelResolutionTaskRunner.java
+io/quarkus/bootstrap/resolver/maven/BootstrapArtifactVersion.java
+io/quarkus/bootstrap/resolver/maven/BootstrapArtifactVersionConstraint.java
+io/quarkus/bootstrap/resolver/maven/BootstrapMavenContext.java
+io/quarkus/bootstrap/resolver/maven/BootstrapMavenContextConfig.java
+io/quarkus/bootstrap/resolver/maven/BootstrapMavenException.java
+io/quarkus/bootstrap/resolver/maven/BootstrapModelBuilderFactory.java
+io/quarkus/bootstrap/resolver/maven/BootstrapModelResolver.java
+io/quarkus/bootstrap/resolver/maven/BuildDependencyGraphVisitor.java
+io/quarkus/bootstrap/resolver/maven/DefaultEffectiveModelResolver.java
+io/quarkus/bootstrap/resolver/maven/DependencyLoggingConfig.java
+io/quarkus/bootstrap/resolver/maven/DependencyTreeConflictResolver.java
+io/quarkus/bootstrap/resolver/maven/DeploymentDependencySelector.java
+io/quarkus/bootstrap/resolver/maven/DeploymentInjectionException.java
+io/quarkus/bootstrap/resolver/maven/DirectDependencyCollector.java
+io/quarkus/bootstrap/resolver/maven/DirectDependencyCollectorFactory.java
+io/quarkus/bootstrap/resolver/maven/EffectiveModelResolver.java
+io/quarkus/bootstrap/resolver/maven/ExtensionInfo.java
+io/quarkus/bootstrap/resolver/maven/FailAtCompletionErrorHandler.java
+io/quarkus/bootstrap/resolver/maven/LocalPomResolver.java
+io/quarkus/bootstrap/resolver/maven/LocalRepoModelResolver.java
+io/quarkus/bootstrap/resolver/maven/LocalRepositoryEffectiveModelResolver.java
+io/quarkus/bootstrap/resolver/maven/MavenArtifactResolver.java
+io/quarkus/bootstrap/resolver/maven/MavenLocalPomResolver.java
+io/quarkus/bootstrap/resolver/maven/MavenLocalRepositoryManager.java
+io/quarkus/bootstrap/resolver/maven/MavenModelBuilder.java
+io/quarkus/bootstrap/resolver/maven/ModelResolutionTask.java
+io/quarkus/bootstrap/resolver/maven/ModelResolutionTaskErrorHandler.java
+io/quarkus/bootstrap/resolver/maven/ModelResolutionTaskRunner.java
+io/quarkus/bootstrap/resolver/maven/NonBlockingModelResolutionTaskRunner.java
+io/quarkus/bootstrap/resolver/maven/OrderedDependencyVisitor.java
+io/quarkus/bootstrap/resolver/maven/RetryLockAcquisitionErrorHandler.java
+io/quarkus/bootstrap/resolver/maven/SimpleDependencyGraphTransformationContext.java
+io/quarkus/bootstrap/resolver/maven/options/BootstrapMavenOptions.java
+io/quarkus/bootstrap/resolver/maven/options/BootstrapMavenOptionsParser.java
+io/quarkus/bootstrap/resolver/maven/workspace/BootstrapModelCache.java
+io/quarkus/bootstrap/resolver/maven/workspace/LocalProject.java
+io/quarkus/bootstrap/resolver/maven/workspace/LocalWorkspace.java
+io/quarkus/bootstrap/resolver/maven/workspace/ModelUtils.java
+io/quarkus/bootstrap/resolver/maven/workspace/ProjectModuleResolver.java
+io/quarkus/bootstrap/resolver/maven/workspace/UnresolvedVersionException.java
+io/quarkus/bootstrap/resolver/maven/workspace/WorkspaceLoader.java
+io/quarkus/bootstrap/resolver/maven/workspace/WorkspaceModulePom.java
+io/quarkus/bootstrap/util/DependencyUtils.java
+META-INF/maven/io.quarkus/quarkus-bootstrap-maven-resolver/pom.xml
+META-INF/maven/io.quarkus/quarkus-bootstrap-maven-resolver/pom.properties
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/quarkusio/quarkus/tree/3.33.1/independent-projects/bootstrap/maven-resolver/src/test' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-maven-resolver/3.33.1/quarkus-bootstrap-maven-resolver-3.33.1.jar -o /tmp/quarkus-bootstrap-maven-resolver-3.33.1.jar && jar tf /tmp/quarkus-bootstrap-maven-resolver-3.33.1.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+io/
+io/quarkus/
+io/quarkus/bootstrap/
+io/quarkus/bootstrap/resolver/
+io/quarkus/bootstrap/resolver/maven/
+io/quarkus/bootstrap/resolver/maven/options/
+io/quarkus/bootstrap/resolver/maven/workspace/
+io/quarkus/bootstrap/util/
+META-INF/maven/
+META-INF/maven/io.quarkus/
+META-INF/maven/io.quarkus/quarkus-bootstrap-maven-resolver/
+META-INF/LICENSE
+io/quarkus/bootstrap/BootstrapDependencyProcessingException.class
+io/quarkus/bootstrap/resolver/BootstrapAppModelResolver$1.class
+io/quarkus/bootstrap/resolver/BootstrapAppModelResolver.class
+io/quarkus/bootstrap/resolver/maven/ApplicationDependencyMap.class
+io/quarkus/bootstrap/resolver/maven/ApplicationDependencyResolver$AppDep.class
+io/quarkus/bootstrap/resolver/maven/ApplicationDependencyResolver$AppDepLogger.class
+io/quarkus/bootstrap/resolver/maven/ApplicationDependencyResolver$ConditionalDependency.class
+io/quarkus/bootstrap/resolver/maven/ApplicationDependencyResolver$ExtensionDependency.class
+io/quarkus/bootstrap/resolver/maven/ApplicationDependencyResolver.class
+io/quarkus/bootstrap/resolver/maven/ApplicationDependencyTreeResolver$1.class
+io/quarkus/bootstrap/resolver/maven/ApplicationDependencyTreeResolver$ConditionalDependency.class
+io/quarkus/bootstrap/resolver/maven/ApplicationDependencyTreeResolver$ExtensionDependency.class
+io/quarkus/bootstrap/resolver/maven/ApplicationDependencyTreeResolver.class
+io/quarkus/bootstrap/resolver/maven/ArtifactDependencyMap.class
+io/quarkus/bootstrap/resolver/maven/BlockingModelResolutionTaskRunner.class
+io/quarkus/bootstrap/resolver/maven/BootstrapArtifactVersion$Item.class
+io/quarkus/bootstrap/resolver/maven/BootstrapArtifactVersion$Tokenizer.class
+io/quarkus/bootstrap/resolver/maven/BootstrapArtifactVersion.class
+io/quarkus/bootstrap/resolver/maven/BootstrapArtifactVersionConstraint.class
+io/quarkus/bootstrap/resolver/maven/BootstrapMavenContext$1.class
+io/quarkus/bootstrap/resolver/maven/BootstrapMavenContext$2.class
+io/quarkus/bootstrap/resolver/maven/BootstrapMavenContext.class
+io/quarkus/bootstrap/resolver/maven/BootstrapMavenContextConfig.class
+io/quarkus/bootstrap/resolver/maven/BootstrapMavenException.class
+io/quarkus/bootstrap/resolver/maven/BootstrapModelBuilderFactory$1.class
+io/quarkus/bootstrap/resolver/maven/BootstrapModelBuilderFactory.class
+io/quarkus/bootstrap/resolver/maven/BootstrapModelResolver$1.class
+io/quarkus/bootstrap/resolver/maven/BootstrapModelResolver.class
+io/quarkus/bootstrap/resolver/maven/BuildDependencyGraphVisitor.class
+io/quarkus/bootstrap/resolver/maven/DefaultEffectiveModelResolver$BootstrapModelCache$Key.class
+io/quarkus/bootstrap/resolver/maven/DefaultEffectiveModelResolver$BootstrapModelCache.class
+io/quarkus/bootstrap/resolver/maven/DefaultEffectiveModelResolver.class
+io/quarkus/bootstrap/resolver/maven/DependencyLoggingConfig$Builder.class
+io/quarkus/bootstrap/resolver/maven/DependencyLoggingConfig.class
+io/quarkus/bootstrap/resolver/maven/DependencyTreeConflictResolver$VisitedDependency.class
+io/quarkus/bootstrap/resolver/maven/DependencyTreeConflictResolver.class
+io/quarkus/bootstrap/resolver/maven/DeploymentDependencySelector.class
+io/quarkus/bootstrap/resolver/maven/DeploymentInjectionException.class
+io/quarkus/bootstrap/resolver/maven/DirectDependencyCollector.class
+io/quarkus/bootstrap/resolver/maven/DirectDependencyCollectorFactory.class
+io/quarkus/bootstrap/resolver/maven/EffectiveModelResolver.class
+io/quarkus/bootstrap/resolver/maven/ExtensionInfo.class
+io/quarkus/bootstrap/resolver/maven/FailAtCompletionErrorHandler.class
+io/quarkus/bootstrap/resolver/maven/LocalPomResolver.class
+io/quarkus/bootstrap/resolver/maven/LocalRepoModelResolver$1.class
+io/quarkus/bootstrap/resolver/maven/LocalRepoModelResolver.class
+io/quarkus/bootstrap/resolver/maven/LocalRepositoryEffectiveModelResolver.class
+io/quarkus/bootstrap/resolver/maven/MavenArtifactResolver$Builder.class
+io/quarkus/bootstrap/resolver/maven/MavenArtifactResolver.class
+io/quarkus/bootstrap/resolver/maven/MavenLocalPomResolver.class
+io/quarkus/bootstrap/resolver/maven/MavenLocalRepositoryManager.class
+io/quarkus/bootstrap/resolver/maven/MavenModelBuilder.class
+io/quarkus/bootstrap/resolver/maven/ModelResolutionTask.class
+io/quarkus/bootstrap/resolver/maven/ModelResolutionTaskErrorHandler.class
+io/quarkus/bootstrap/resolver/maven/ModelResolutionTaskRunner.class
+io/quarkus/bootstrap/resolver/maven/NonBlockingModelResolutionTaskRunner.class
+io/quarkus/bootstrap/resolver/maven/OrderedDependencyVisitor$DependencyList.class
+io/quarkus/bootstrap/resolver/maven/OrderedDependencyVisitor.class
+io/quarkus/bootstrap/resolver/maven/RetryLockAcquisitionErrorHandler.class
+io/quarkus/bootstrap/resolver/maven/SimpleDependencyGraphTransformationContext.class
+io/quarkus/bootstrap/resolver/maven/options/BootstrapMavenOptions.class
+io/quarkus/bootstrap/resolver/maven/options/BootstrapMavenOptionsParser.class
+io/quarkus/bootstrap/resolver/maven/workspace/BootstrapModelCache$Key.class
+io/quarkus/bootstrap/resolver/maven/workspace/BootstrapModelCache.class
+io/quarkus/bootstrap/resolver/maven/workspace/LocalProject.class
+io/quarkus/bootstrap/resolver/maven/workspace/LocalWorkspace.class
+io/quarkus/bootstrap/resolver/maven/workspace/ModelUtils.class
+io/quarkus/bootstrap/resolver/maven/workspace/ProjectModuleResolver.class
+io/quarkus/bootstrap/resolver/maven/workspace/UnresolvedVersionException.class
+io/quarkus/bootstrap/resolver/maven/workspace/WorkspaceLoader.class
+io/quarkus/bootstrap/resolver/maven/workspace/WorkspaceModulePom.class
+io/quarkus/bootstrap/util/DependencyUtils.class
+META-INF/maven/io.quarkus/quarkus-bootstrap-maven-resolver/pom.xml
+META-INF/maven/io.quarkus/quarkus-bootstrap-maven-resolver/pom.properties
+
+ succeeded in 554ms:
+HTTP/2 200 
+date: Tue, 09 Jun 2026 23:00:04 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"c1310618956843415c08dd9f0eb2a7b6"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=qi97w1WPkWxfS0Nx%2BFpTLU5J5jjID8Daj%2BgdXYWauklLunFZFIYJG%2FyCXPc%2B%2BZ%2Fdtnfx6zOemt%2BL2fLi47jdglRy8We2ZFDbiuqf2NFk00UBlyU%2FJEmlYAhAXXp%2F69OHxP8nr3Xmo13uIfUuRnfp693lUjIW9KlabBJL9drOtZwb9QkWl%2Fnds5gWewv%2FL1sQTKkA25tm4N%2FcK%2Fr2Yf0ES1laWYEXCHIwf1z1JmSjZkMC0w%2Fb3iiOKU%2BLZA8oxC9Z4LJpc1lvmSxJMP29dnLmAQ%3D%3D--5eALpyu1lObmu2LX--ylD3IYgANv2%2BheP4vbZyTA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1172731199.1781046004; expires=Wed, 09 Jun 2027 23:00:04 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 09 Jun 2027 23:00:04 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6241:1FD38D:723422C:5B419F3:6A289AF4
+
+
+web search: 
+web search: Quarkus Bootstrap Maven Resolver 3.33.1
+web search: 
+web search: https://github.com/quarkusio/quarkus/tree/3.33.1/independent-projects/bootstrap/maven-resolver/src/test
+web search: 
+web search: repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-maven-resolver/3.33.1/quarkus-bootstrap-maven-resolver-3.33.1.pom
+web search: 
+web search: central sonatype io.quarkus quarkus-bootstrap-maven-resolver 3.33.1
+web search: 
+web search: mvnrepository io.quarkus quarkus-bootstrap-maven-resolver 3.33.1
+codex
+I’ve got enough evidence now: this is a regular JVM JAR with `.class` files, not a Kotlin/Groovy/Scala-specific artifact, and not one of the non-JVM artifact cases. I’m updating only the requested JSON keys.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json
+diff --git a/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json b/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json
+index f0efdca8d85b067cdb2be652eb79e182e3e32647..60fd81af37358e05ba224970c7c0fbce14a81f5a
+--- a/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json
++++ b/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.quarkus:quarkus-bootstrap-maven-resolver:3.33.1"
++  "coordinates" : "io.quarkus:quarkus-bootstrap-maven-resolver:3.33.1",
++  "repository-url" : "https://github.com/quarkusio/quarkus",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-maven-resolver/$version$/quarkus-bootstrap-maven-resolver-$version$-sources.jar",
++  "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/independent-projects/bootstrap/maven-resolver/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-maven-resolver/$version$/quarkus-bootstrap-maven-resolver-$version$-javadoc.jar",
++  "description" : "Quarkus Bootstrap Maven Resolver provides Quarkus bootstrap code for resolving Maven artifacts, dependency graphs, project models, and local workspace modules. It is used by Quarkus build and tooling flows to turn Maven project metadata into the application model needed during bootstrap."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json b/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json
+index f0efdca8d85b067cdb2be652eb79e182e3e32647..60fd81af37358e05ba224970c7c0fbce14a81f5a
+--- a/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json
++++ b/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.quarkus:quarkus-bootstrap-maven-resolver:3.33.1"
++  "coordinates" : "io.quarkus:quarkus-bootstrap-maven-resolver:3.33.1",
++  "repository-url" : "https://github.com/quarkusio/quarkus",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-maven-resolver/$version$/quarkus-bootstrap-maven-resolver-$version$-sources.jar",
++  "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/independent-projects/bootstrap/maven-resolver/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-maven-resolver/$version$/quarkus-bootstrap-maven-resolver-$version$-javadoc.jar",
++  "description" : "Quarkus Bootstrap Maven Resolver provides Quarkus bootstrap code for resolving Maven artifacts, dependency graphs, project models, and local workspace modules. It is used by Quarkus build and tooling flows to turn Maven project metadata into the application model needed during bootstrap."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8
+ succeeded in 0ms:
+{
+  "coordinates": "io.quarkus:quarkus-bootstrap-maven-resolver:3.33.1",
+  "repository-url": "https://github.com/quarkusio/quarkus",
+  "source-code-url": "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-maven-resolver/$version$/quarkus-bootstrap-maven-resolver-$version$-sources.jar",
+  "test-code-url": "https://github.com/quarkusio/quarkus/tree/$version$/independent-projects/bootstrap/maven-resolver/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-maven-resolver/$version$/quarkus-bootstrap-maven-resolver-$version$-javadoc.jar",
+  "description": "Quarkus Bootstrap Maven Resolver provides Quarkus bootstrap code for resolving Maven artifacts, dependency graphs, project models, and local workspace modules. It is used by Quarkus build and tooling flows to turn Maven project metadata into the application model needed during bootstrap."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsI https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-maven-resolver/3.33.1/quarkus-bootstrap-maven-resolver-3.33.1-sources.jar >/tmp/source_headers.txt && curl -fsI https://github.com/quarkusio/quarkus/tree/3.33.1/independent-projects/bootstrap/maven-resolver/src/test >/tmp/test_headers.txt && curl -fsI https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-maven-resolver/3.33.1/quarkus-bootstrap-maven-resolver-3.33.1-javadoc.jar >/tmp/doc_headers.txt && printf 'source OK\\ntest OK\\ndoc OK\\n'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8
+diff --git a/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json b/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json
+index f0efdca8d85b067cdb2be652eb79e182e3e32647..60fd81af37358e05ba224970c7c0fbce14a81f5a
+--- a/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json
++++ b/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.quarkus:quarkus-bootstrap-maven-resolver:3.33.1"
++  "coordinates" : "io.quarkus:quarkus-bootstrap-maven-resolver:3.33.1",
++  "repository-url" : "https://github.com/quarkusio/quarkus",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-maven-resolver/$version$/quarkus-bootstrap-maven-resolver-$version$-sources.jar",
++  "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/independent-projects/bootstrap/maven-resolver/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-maven-resolver/$version$/quarkus-bootstrap-maven-resolver-$version$-javadoc.jar",
++  "description" : "Quarkus Bootstrap Maven Resolver provides Quarkus bootstrap code for resolving Maven artifacts, dependency graphs, project models, and local workspace modules. It is used by Quarkus build and tooling flows to turn Maven project metadata into the application model needed during bootstrap."
+ }
+
+ succeeded in 202ms:
+source OK
+test OK
+doc OK
+
+codex
+Updated [io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json:1).
+
+I used Maven Central source/javadoc artifacts, the tagged Quarkus GitHub test directory, and left `language`, `not-for-native-image`, `reason`, and `replacement` absent because the artifact is a normal JVM JAR with class files. Verified JSON with `jq` and checked that the templated source, test, and documentation URLs resolve for `3.33.1`.
+diff --git a/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json b/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json
+index f0efdca8d85b067cdb2be652eb79e182e3e32647..60fd81af37358e05ba224970c7c0fbce14a81f5a
+--- a/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json
++++ b/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.quarkus:quarkus-bootstrap-maven-resolver:3.33.1"
++  "coordinates" : "io.quarkus:quarkus-bootstrap-maven-resolver:3.33.1",
++  "repository-url" : "https://github.com/quarkusio/quarkus",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-maven-resolver/$version$/quarkus-bootstrap-maven-resolver-$version$-sources.jar",
++  "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/independent-projects/bootstrap/maven-resolver/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-maven-resolver/$version$/quarkus-bootstrap-maven-resolver-$version$-javadoc.jar",
++  "description" : "Quarkus Bootstrap Maven Resolver provides Quarkus bootstrap code for resolving Maven artifacts, dependency graphs, project models, and local workspace modules. It is used by Quarkus build and tooling flows to turn Maven project metadata into the application model needed during bootstrap."
+ }
+
+tokens used
+72,387
+Updated [io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.json:1).
+
+I used Maven Central source/javadoc artifacts, the tagged Quarkus GitHub test directory, and left `language`, `not-for-native-image`, `reason`, and `replacement` absent because the artifact is a normal JVM JAR with class files. Verified JSON with `jq` and checked that the templated source, test, and documentation URLs resolve for `3.33.1`.
+Ran agent for io.quarkus:quarkus-bootstrap-maven-resolver:3.33.1 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8/build/agent-artifact-discovery-logs/io.quarkus-quarkus-bootstrap-maven-resolver-3.33.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3835-e84b58a8/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 34s
+9 actionable tasks: 9 executed
