@@ -8,6 +8,10 @@ package javassist.javassist;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+
 import javassist.CannotCompileException;
 import javassist.ClassClassPath;
 import javassist.ClassPool;
@@ -40,9 +44,24 @@ public class ClassPoolTest {
         }
     }
 
+    @Test
+    void callsCompilerGeneratedClassLookupHelper() throws Throwable {
+        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(
+                ClassPool.class, MethodHandles.lookup());
+        MethodHandle classLookup = lookup.findStatic(
+                ClassPool.class,
+                "class$",
+                MethodType.methodType(Class.class, String.class));
+
+        Object result = classLookup.invoke(ClassPool.class.getName());
+
+        assertThat(result).isSameAs(ClassPool.class);
+    }
+
     private static ClassPool newInitializedClassPool() {
         ClassPool classPool = new ClassPool(true);
         classPool.insertClassPath(new ClassClassPath(ClassPoolTest.class));
+        classPool.insertClassPath(new ClassClassPath(ClassPool.class));
         return classPool;
     }
 
