@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Model;
 import org.apache.maven.plugin.AbstractMojo;
@@ -26,6 +27,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.testing.ArtifactStubFactory;
 import org.apache.maven.plugin.testing.MojoParameters;
 import org.apache.maven.plugin.testing.MojoRule;
+import org.apache.maven.plugin.testing.ResolverExpressionEvaluatorStub;
 import org.apache.maven.plugin.testing.SilentLog;
 import org.apache.maven.plugin.testing.WithoutMojo;
 import org.apache.maven.plugin.testing.resources.TestResources;
@@ -187,6 +189,36 @@ public class Maven_plugin_testing_harnessTest {
                 container.dispose();
             }
         }
+    }
+
+    @Test
+    void resolverExpressionEvaluatorInterpolatesHarnessExpressions() throws Exception {
+        ResolverExpressionEvaluatorStub evaluator = new ResolverExpressionEvaluatorStub();
+
+        Object basedirExpression = evaluator.evaluate("${basedir}");
+        assertThat(basedirExpression).isInstanceOf(String.class);
+        String basedir = (String) basedirExpression;
+
+        assertThat(basedir).isNotEmpty();
+        assertThat(evaluator.evaluate("project=${basedir}/src"))
+                .isEqualTo("project=" + basedir + "/src");
+        assertThat(evaluator.evaluate("$${basedir}"))
+                .isEqualTo("${basedir}");
+        assertThat(evaluator.evaluate("cost $$1"))
+                .isEqualTo("cost $1");
+
+        Object localRepositoryExpression = evaluator.evaluate("${localRepository}");
+        assertThat(localRepositoryExpression).isInstanceOf(ArtifactRepository.class);
+        ArtifactRepository localRepository = (ArtifactRepository) localRepositoryExpression;
+        assertThat(localRepository.getId()).isEqualTo("localRepository");
+        assertThat(localRepository.getUrl()).startsWith("file://");
+        assertThat(localRepository.getBasedir()).endsWith("target" + File.separator + "local-repo");
+
+        File relativePath = new File("target/generated-fixtures");
+        assertThat(evaluator.alignToBaseDirectory(relativePath).getAbsolutePath())
+                .isEqualTo(new File(basedir, relativePath.getPath()).getAbsolutePath());
+        File absolutePath = tempDir.resolve("absolute-fixture").toFile();
+        assertThat(evaluator.alignToBaseDirectory(absolutePath)).isSameAs(absolutePath);
     }
 
     @Test
