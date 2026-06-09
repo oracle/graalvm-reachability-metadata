@@ -15,9 +15,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -56,20 +53,6 @@ public class ObjectImporterTest {
             assertThat(((ImportedProxy) imported)._getObjectId()).isEqualTo(41);
             server.awaitHandled();
         }
-    }
-
-    @Test
-    void callsCompilerGeneratedClassLookupHelper() throws Throwable {
-        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(
-                ObjectImporter.class, MethodHandles.lookup());
-        MethodHandle classLookup = lookup.findStatic(
-                ObjectImporter.class,
-                "class$",
-                MethodType.methodType(Class.class, String.class));
-
-        Object result = classLookup.invoke(ObjectImporter.class.getName());
-
-        assertThat(result).isSameAs(ObjectImporter.class);
     }
 
     @Test

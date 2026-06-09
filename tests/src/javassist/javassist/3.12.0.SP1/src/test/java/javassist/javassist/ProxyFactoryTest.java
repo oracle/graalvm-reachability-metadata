@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 
 import javassist.util.proxy.MethodHandler;
+import javassist.util.proxy.Proxy;
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
 import javassist.util.proxy.ProxyObjectOutputStream;
@@ -29,13 +30,15 @@ public class ProxyFactoryTest {
             factory.setSuperclass(GreetingService.class);
             factory.setFilter(method -> method.getName().equals("message"));
 
+            MethodHandler handler = (self, method, proceed, arguments) -> "handled:" + proceed.invoke(self, arguments);
             GreetingService proxy = (GreetingService) factory.create(
                     new Class[] {String.class },
                     new Object[] {"original" },
-                    (self, method, proceed, arguments) -> "handled:" + proceed.invoke(self, arguments));
+                    handler);
 
             assertThat(ProxyFactory.isProxyClass(proxy.getClass())).isTrue();
             assertThat(proxy.message()).isEqualTo("handled:original");
+            assertThat(ProxyFactory.getHandler((Proxy) proxy)).isSameAs(handler);
         } catch (RuntimeException exception) {
             if (!hasUnsupportedFeatureError(exception)) {
                 throw exception;
