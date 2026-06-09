@@ -1,0 +1,839 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019eae71-70e4-7002-a615-96c4b848ced5
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.diffplug.spotless:spotless-maven-plugin:2.43.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "2.43.0" when "$version$" is replaced with "2.43.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-maven-plugin-2.43.0.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "com.diffplug.spotless:spotless-maven-plugin:2.43.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.43.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream sources, then patch the discovered JSON directly. I’m going to prefer Maven-hosted source/test artifacts if they exist, and only fall back to repository tag URLs where needed.
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'com\\.diffplug\\.spotless-spotless-maven-plugin-2\\.43\\.0\\.json"'$'"'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c
+build/discovered-artifact-metadata/com.diffplug.spotless-spotless-maven-plugin-2.43.0.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.diffplug.spotless-spotless-maven-plugin-2.43.0.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c
+ succeeded in 0ms:
+{
+  "coordinates" : "com.diffplug.spotless:spotless-maven-plugin:2.43.0"
+}
+
+web search: 
+web search: Maven Central com.diffplug.spotless spotless-maven-plugin 2.43.0 pom scm url sources
+web search: 
+web search: https://repo1.maven.org/maven2/com/diffplug/spotless/spotless-maven-plugin/2.43.0/
+codex
+The Maven directory confirms published `-sources.jar` and `-javadoc.jar`, so those should be used for source and docs. There does not appear to be a published test artifact in that Maven version directory, so I’m checking the upstream tag shape for the test-suite URL.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/diffplug/spotless/spotless-maven-plugin/2.43.0/spotless-maven-plugin-2.43.0.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.diffplug.spotless</groupId>
+  <artifactId>spotless-maven-plugin</artifactId>
+  <version>2.43.0</version>
+  <dependencies>
+    <dependency>
+      <groupId>com.diffplug.spotless</groupId>
+      <artifactId>spotless-lib</artifactId>
+      <version>2.45.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.diffplug.spotless</groupId>
+      <artifactId>spotless-lib-extra</artifactId>
+      <version>2.45.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.diffplug.durian</groupId>
+      <artifactId>durian-core</artifactId>
+      <version>1.2.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.diffplug.durian</groupId>
+      <artifactId>durian-io</artifactId>
+      <version>1.2.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.diffplug.durian</groupId>
+      <artifactId>durian-collect</artifactId>
+      <version>1.2.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-resources</artifactId>
+      <version>1.2.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jgit</groupId>
+      <artifactId>org.eclipse.jgit</artifactId>
+      <version>6.7.0.202309050840-r</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.plexus</groupId>
+      <artifactId>plexus-build-api</artifactId>
+      <version>0.0.7</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+  <name>spotless-maven-plugin</name>
+  <description>Spotless - keep your code spotless with Gradle</description>
+  <url>https://github.com/diffplug/spotless</url>
+  <scm>
+    <url>https://github.com/diffplug/spotless</url>
+    <connection>scm:git:https://github.com/diffplug/spotless.git</connection>
+    <developerConnection>scm:git:ssh:git@github.com/diffplug/spotless.git</developerConnection>
+  </scm>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <prerequisites>
+    <maven>3.1.0</maven>
+  </prerequisites>
+  <developers>
+    <developer>
+      <id>lutovich</id>
+      <name>Konstantin Lutovich</name>
+      <email>konstantin.lutovich@neotechnology.com</email>
+    </developer>
+    <developer>
+      <id>nedtwigg</id>
+      <name>Ned Twigg</name>
+      <email>ned.twigg@diffplug.com</email>
+    </developer>
+  </developers>
+</project>
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/diffplug/spotless.git 'refs/tags/*2.43.0*'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/diffplug/spotless.git 'refs/tags/maven/*' | tail -n 20" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c
+ succeeded in 406ms:
+94ca3575b7acd83cebd0f682b1abd2bd01827814	refs/tags/maven/2.8.1
+3c12c76bfcdbb9854092e04efd579d3e11f9a965	refs/tags/maven/2.9.0
+fc1b30d603485963bcbbcdb42da7198680e65315	refs/tags/maven/3.0.0
+a0d5b58977a345ced650bd37b300c1d304c9bb6d	refs/tags/maven/3.0.0^{}
+f186a36c2fcebd4ccbb227cb423494747a1ab382	refs/tags/maven/3.1.0
+ad04d48bc6961639b6c38bacb7d574c74f4e0802	refs/tags/maven/3.1.0^{}
+c4eb773aa384d137455b05623407aef856113895	refs/tags/maven/3.2.0
+2aa1361ce9b8af30d36cbe04354a55c3edca2b0e	refs/tags/maven/3.2.0^{}
+41a3357090b39c86134918466e74ab6aa11fb048	refs/tags/maven/3.2.1
+d0f4c3d940025c7cb850fb01cb3f2968a79491c7	refs/tags/maven/3.2.1^{}
+e146c498b89f5f2a77d35abf4a599407019daebe	refs/tags/maven/3.3.0
+57f0a48bbb0123408402b0d28aa5ca814c77a9ae	refs/tags/maven/3.3.0^{}
+6d16673e8d3ebdb5785898a0d7da3c27bf71986e	refs/tags/maven/3.4.0
+708a1b0e6383ad2dd34cf3def185bb085a786789	refs/tags/maven/3.4.0^{}
+2c0d766a75e6ad427a9836b7c883a75c442fb472	refs/tags/maven/3.5.0
+b87eb75efe54e94a7248ff5e2d07231bcc3a1b55	refs/tags/maven/3.5.0^{}
+7536d2826d446c09091848ce11a5f77b9521b3b7	refs/tags/maven/3.5.1
+0c48edf9597ec16e82e1a0b6da76a6a6dcc0d5de	refs/tags/maven/3.5.1^{}
+4751e2e8a831b5a2f37a03794c05a69925a5f6ae	refs/tags/maven/3.6.0
+71a433c5cd5e8a4983c6600a10032ce3415700ba	refs/tags/maven/3.6.0^{}
+
+ succeeded in 425ms:
+c14037cf91aa6edd564ef583b48d25562b529dd9	refs/tags/lib/2.43.0
+23972d3fa9c9950bc34eb653f0e598cc968b2620	refs/tags/lib/2.43.0^{}
+15d87415ba43684adfbbc77baf3fb828670b916c	refs/tags/maven/2.43.0
+965b8260c028bdd103f69f199cd60c643dcfe377	refs/tags/maven/2.43.0^{}
+
+web search: 
+web search: https://repo1.maven.org/maven2/com/diffplug/spotless/spotless-maven-plugin/2.43.0/
+codex
+The upstream tag is `maven/2.43.0`, and the repository view shows the Maven plugin module at `plugin-maven`. I’m checking its tree now so the test URL lands on an existing test path rather than a guessed directory.
+exec
+/usr/bin/bash -lc "git ls-tree -r --name-only refs/tags/maven/2.43.0 | rg '"'^plugin-maven/src/test'"' | head -n 30" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c
+ succeeded in 0ms:
+fatal: Not a valid object name refs/tags/maven/2.43.0
+
+exec
+/usr/bin/bash -lc "git ls-remote https://github.com/diffplug/spotless.git 'refs/tags/maven/2.43.0' 'refs/tags/maven/2.43.0"'^{}'"'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c
+ succeeded in 500ms:
+15d87415ba43684adfbbc77baf3fb828670b916c	refs/tags/maven/2.43.0
+965b8260c028bdd103f69f199cd60c643dcfe377	refs/tags/maven/2.43.0^{}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/diffplug/spotless/spotless-maven-plugin/2.43.0/ | rg 'test|sources|javadoc|\\.jar<'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c
+ succeeded in 0ms:
+<a href="spotless-maven-plugin-2.43.0-javadoc.jar" title="spotless-maven-plugin-2.43.0-javadoc.jar">spotless-maven-plugin-2.43.0-javadoc.jar</a>          2024-01-23 07:06    659785      
+<a href="spotless-maven-plugin-2.43.0-javadoc.jar.asc" title="spotless-maven-plugin-2.43.0-javadoc.jar.asc">spotless-maven-plugin-2.43.0-javadoc.jar.asc</a>      2024-01-23 07:06       650      
+<a href="spotless-maven-plugin-2.43.0-javadoc.jar.asc.md5" title="spotless-maven-plugin-2.43.0-javadoc.jar.asc.md5">spotless-maven-plugin-2.43.0-javadoc.jar.asc....</a>  2024-01-23 07:06        32      
+<a href="spotless-maven-plugin-2.43.0-javadoc.jar.asc.sha1" title="spotless-maven-plugin-2.43.0-javadoc.jar.asc.sha1">spotless-maven-plugin-2.43.0-javadoc.jar.asc....</a>  2024-01-23 07:06        40      
+<a href="spotless-maven-plugin-2.43.0-javadoc.jar.asc.sha256" title="spotless-maven-plugin-2.43.0-javadoc.jar.asc.sha256">spotless-maven-plugin-2.43.0-javadoc.jar.asc....</a>  2024-01-23 07:06        64      
+<a href="spotless-maven-plugin-2.43.0-javadoc.jar.asc.sha512" title="spotless-maven-plugin-2.43.0-javadoc.jar.asc.sha512">spotless-maven-plugin-2.43.0-javadoc.jar.asc....</a>  2024-01-23 07:06       128      
+<a href="spotless-maven-plugin-2.43.0-javadoc.jar.md5" title="spotless-maven-plugin-2.43.0-javadoc.jar.md5">spotless-maven-plugin-2.43.0-javadoc.jar.md5</a>      2024-01-23 07:06        32      
+<a href="spotless-maven-plugin-2.43.0-javadoc.jar.sha1" title="spotless-maven-plugin-2.43.0-javadoc.jar.sha1">spotless-maven-plugin-2.43.0-javadoc.jar.sha1</a>     2024-01-23 07:06        40      
+<a href="spotless-maven-plugin-2.43.0-javadoc.jar.sha256" title="spotless-maven-plugin-2.43.0-javadoc.jar.sha256">spotless-maven-plugin-2.43.0-javadoc.jar.sha2...</a>  2024-01-23 07:06        64      
+<a href="spotless-maven-plugin-2.43.0-javadoc.jar.sha512" title="spotless-maven-plugin-2.43.0-javadoc.jar.sha512">spotless-maven-plugin-2.43.0-javadoc.jar.sha5...</a>  2024-01-23 07:06       128      
+<a href="spotless-maven-plugin-2.43.0-sources.jar" title="spotless-maven-plugin-2.43.0-sources.jar">spotless-maven-plugin-2.43.0-sources.jar</a>          2024-01-23 07:06    104631      
+<a href="spotless-maven-plugin-2.43.0-sources.jar.asc" title="spotless-maven-plugin-2.43.0-sources.jar.asc">spotless-maven-plugin-2.43.0-sources.jar.asc</a>      2024-01-23 07:06       650      
+<a href="spotless-maven-plugin-2.43.0-sources.jar.asc.md5" title="spotless-maven-plugin-2.43.0-sources.jar.asc.md5">spotless-maven-plugin-2.43.0-sources.jar.asc....</a>  2024-01-23 07:06        32      
+<a href="spotless-maven-plugin-2.43.0-sources.jar.asc.sha1" title="spotless-maven-plugin-2.43.0-sources.jar.asc.sha1">spotless-maven-plugin-2.43.0-sources.jar.asc....</a>  2024-01-23 07:06        40      
+<a href="spotless-maven-plugin-2.43.0-sources.jar.asc.sha256" title="spotless-maven-plugin-2.43.0-sources.jar.asc.sha256">spotless-maven-plugin-2.43.0-sources.jar.asc....</a>  2024-01-23 07:06        64      
+<a href="spotless-maven-plugin-2.43.0-sources.jar.asc.sha512" title="spotless-maven-plugin-2.43.0-sources.jar.asc.sha512">spotless-maven-plugin-2.43.0-sources.jar.asc....</a>  2024-01-23 07:06       128      
+<a href="spotless-maven-plugin-2.43.0-sources.jar.md5" title="spotless-maven-plugin-2.43.0-sources.jar.md5">spotless-maven-plugin-2.43.0-sources.jar.md5</a>      2024-01-23 07:06        32      
+<a href="spotless-maven-plugin-2.43.0-sources.jar.sha1" title="spotless-maven-plugin-2.43.0-sources.jar.sha1">spotless-maven-plugin-2.43.0-sources.jar.sha1</a>     2024-01-23 07:06        40      
+<a href="spotless-maven-plugin-2.43.0-sources.jar.sha256" title="spotless-maven-plugin-2.43.0-sources.jar.sha256">spotless-maven-plugin-2.43.0-sources.jar.sha2...</a>  2024-01-23 07:06        64      
+<a href="spotless-maven-plugin-2.43.0-sources.jar.sha512" title="spotless-maven-plugin-2.43.0-sources.jar.sha512">spotless-maven-plugin-2.43.0-sources.jar.sha5...</a>  2024-01-23 07:06       128      
+<a href="spotless-maven-plugin-2.43.0.jar" title="spotless-maven-plugin-2.43.0.jar">spotless-maven-plugin-2.43.0.jar</a>                  2024-01-23 07:06    128063      
+
+codex
+The local checkout here is this metadata repository, not the Spotless repository, so local `git ls-tree` cannot inspect the upstream tag. I’m using GitHub’s tag/tree endpoints for the exact `maven/2.43.0` commit instead.
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/diffplug/spotless/git/trees/965b8260c028bdd103f69f199cd60c643dcfe377?recursive=1' | jq -r '.tree[].path' | rg '"'^(plugin-maven/README|plugin-maven/src/main|README|docs/|_pages/)'"' | head -n 80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/diffplug/spotless/git/trees/965b8260c028bdd103f69f199cd60c643dcfe377?recursive=1' | jq -r '.tree[].path' | rg '"'^plugin-maven/src/test'"' | head -n 50" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c
+ succeeded in 592ms:
+plugin-maven/src/test
+plugin-maven/src/test/java
+plugin-maven/src/test/java/com
+plugin-maven/src/test/java/com/diffplug
+plugin-maven/src/test/java/com/diffplug/spotless
+plugin-maven/src/test/java/com/diffplug/spotless/maven
+plugin-maven/src/test/java/com/diffplug/spotless/maven/FileLocatorTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/GitRatchetMavenTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/IdeHookTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/IncludesExcludesTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/MavenIntegrationHarness.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/MavenProvisionerTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/MavenRunner.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/MultiModuleProjectTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/MultipleFormatsTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/SpecificFilesTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/SpotlessCheckMojoTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/antlr4
+plugin-maven/src/test/java/com/diffplug/spotless/maven/antlr4/Antlr4FormatterTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/biome
+plugin-maven/src/test/java/com/diffplug/spotless/maven/biome/BiomeMavenTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/generic
+plugin-maven/src/test/java/com/diffplug/spotless/maven/generic/EclipseWtpTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/generic/EndWithNewlineTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/generic/IndentTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/generic/Jsr223Test.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/generic/LicenseHeaderRatchetTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/generic/LicenseHeaderTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/generic/LineEndingsTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/generic/NativeCmdTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/generic/ReplaceRegexTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/generic/ReplaceTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/generic/ToggleOffOnTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/generic/TrimTrailingWhitespaceTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/gherkin
+plugin-maven/src/test/java/com/diffplug/spotless/maven/gherkin/GherkinTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/go
+plugin-maven/src/test/java/com/diffplug/spotless/maven/go/GofmtTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/groovy
+plugin-maven/src/test/java/com/diffplug/spotless/maven/groovy/GrEclipseTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/groovy/ImportOrderTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/groovy/RemoveSemicolonsTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/incremental
+plugin-maven/src/test/java/com/diffplug/spotless/maven/incremental/FileIndexConfigTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/incremental/FileIndexHarness.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/incremental/FileIndexTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/incremental/IndexBasedCheckerTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/incremental/NoopCheckerTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/incremental/PluginFingerprintTest.java
+plugin-maven/src/test/java/com/diffplug/spotless/maven/incremental/UpToDateCheckingTest.java
+
+ succeeded in 704ms:
+README.md
+plugin-maven/README.md
+plugin-maven/src/main
+plugin-maven/src/main/java
+plugin-maven/src/main/java/com
+plugin-maven/src/main/java/com/diffplug
+plugin-maven/src/main/java/com/diffplug/spotless
+plugin-maven/src/main/java/com/diffplug/spotless/maven
+plugin-maven/src/main/java/com/diffplug/spotless/maven/AbstractSpotlessMojo.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/ArtifactResolutionException.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/ArtifactResolver.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/FileLocator.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/FormatterConfig.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/FormatterFactory.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/FormatterStepConfig.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/FormatterStepFactory.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/FormattersHolder.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/GitRatchetMaven.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/IdeHook.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/ImpactedFilesTracker.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/MavenProvisioner.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/PluginException.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/SpotlessApplyMojo.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/SpotlessCheckMojo.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/antlr4
+plugin-maven/src/main/java/com/diffplug/spotless/maven/antlr4/Antlr4.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/antlr4/Antlr4Formatter.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/cpp
+plugin-maven/src/main/java/com/diffplug/spotless/maven/cpp/Cpp.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/cpp/EclipseCdt.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/generic
+plugin-maven/src/main/java/com/diffplug/spotless/maven/generic/Biome.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/generic/EclipseWtp.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/generic/EndWithNewline.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/generic/Format.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/generic/Indent.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/generic/Jsr223.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/generic/LicenseHeader.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/generic/NativeCmd.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/generic/Prettier.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/generic/Replace.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/generic/ReplaceRegex.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/generic/Rome.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/generic/ToggleOffOn.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/generic/TrimTrailingWhitespace.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/gherkin
+plugin-maven/src/main/java/com/diffplug/spotless/maven/gherkin/Gherkin.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/gherkin/GherkinUtils.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/go
+plugin-maven/src/main/java/com/diffplug/spotless/maven/go/Go.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/go/Gofmt.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/groovy
+plugin-maven/src/main/java/com/diffplug/spotless/maven/groovy/GrEclipse.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/groovy/Groovy.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/groovy/ImportOrder.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/groovy/RemoveSemicolons.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/incremental
+plugin-maven/src/main/java/com/diffplug/spotless/maven/incremental/FileIndex.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/incremental/FileIndexConfig.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/incremental/IndexBasedChecker.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/incremental/NoopChecker.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/incremental/ObjectDigestOutputStream.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/incremental/PluginFingerprint.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/incremental/UpToDateChecker.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/incremental/UpToDateChecking.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/java/CleanthatJava.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/java/Eclipse.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/java/FormatAnnotations.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/java/GoogleJavaFormat.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/java/ImportOrder.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/java/Java.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/java/PalantirJavaFormat.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/java/RemoveUnusedImports.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/javascript
+plugin-maven/src/main/java/com/diffplug/spotless/maven/javascript/AbstractEslint.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/javascript/BiomeJs.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/javascript/EslintJs.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/javascript/Javascript.java
+plugin-maven/src/main/java/com/diffplug/spotless/maven/javascript/RomeJs.java
+
+codex
+Because Maven has a Javadoc jar for this exact artifact and version, I’ll use that as the documentation URL. The test URL will point at `plugin-maven/src/test` under the `maven/$version$` upstream tag, since no Maven test jar is published.
+exec
+/usr/bin/bash -lc "rg 'spotless-maven-plugin|source-code-url|documentation-url|test-code-url' -n build/discovered-artifact-metadata metadata | head -n 80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.diffplug.spotless-spotless-maven-plugin-2.43.0.json:2:  "coordinates" : "com.diffplug.spotless:spotless-maven-plugin:2.43.0"
+metadata/net.postgis/postgis-geometry/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-sources.jar",
+metadata/net.postgis/postgis-geometry/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/postgis-geometry/src/test",
+metadata/net.postgis/postgis-geometry/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-geometry/$version$/postgis-geometry-$version$-javadoc.jar",
+metadata/net.postgis/postgis-jdbc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-sources.jar",
+metadata/net.postgis/postgis-jdbc/index.json:7:    "test-code-url" : "https://github.com/postgis/postgis-java/tree/postgis-java-aggregator-$version$/jdbc/src/test",
+metadata/net.postgis/postgis-jdbc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/postgis/postgis-jdbc/$version$/postgis-jdbc-$version$-javadoc.jar",
+metadata/com.comcast/ip4s-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-sources.jar",
+metadata/com.comcast/ip4s-core_3/index.json:7:    "test-code-url" : "https://github.com/Comcast/ip4s/tree/v$version$/test-kit/shared/src/test",
+metadata/com.comcast/ip4s-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-sources.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-tests.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-binary/tree/jackson-dataformats-binary-$version$/cbor/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/toml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/yaml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v$version$/src/test",
+metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:7:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.springframework/spring-web/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-web/$version$/spring-web-$version$-sources.jar",
+metadata/org.springframework/spring-web/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-web/src/test",
+metadata/org.springframework/spring-web/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-web/$version$/spring-web-$version$-javadoc.jar",
+metadata/org.springframework/spring-context-support/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context-support/$version$/spring-context-support-$version$-sources.jar",
+metadata/org.springframework/spring-context-support/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-context-support/src/test",
+metadata/org.springframework/spring-context-support/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context-support/$version$/spring-context-support-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-tx/src/test",
+metadata/org.springframework/spring-tx/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:91:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:93:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-tx/src/test",
+metadata/org.springframework/spring-tx/index.json:94:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:126:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:128:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-tx/src/test",
+metadata/org.springframework/spring-tx/index.json:129:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:140:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:142:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-tx/src/test",
+metadata/org.springframework/spring-tx/index.json:143:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:6:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:92:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:94:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:95:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:109:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:111:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:112:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:126:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:128:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:129:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:143:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:145:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:146:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/javadoc-api/org/springframework/expression/package-summary.html",
+metadata/org.springframework/spring-expression/index.json:160:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:162:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:163:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/javadoc-api/org/springframework/expression/package-summary.html",
+metadata/org.springframework/spring-expression/index.json:177:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:179:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:180:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:194:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:196:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:197:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:211:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:213:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-expression/src/test",
+metadata/org.springframework/spring-expression/index.json:214:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-test/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
+metadata/org.springframework/spring-test/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-test/src/test/java",
+metadata/org.springframework/spring-test/index.json:8:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/reference/html/testing.html",
+metadata/org.springframework/spring-test/index.json:84:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
+metadata/org.springframework/spring-test/index.json:86:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/org.springframework.test/src/test/java",
+metadata/org.springframework/spring-test/index.json:87:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/javadoc-api/org/springframework/test/package-summary.html",
+metadata/org.ehcache/ehcache/index.json:11:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/diffplug/spotless/spotless-maven-plugin/2.43.0/spotless-maven-plugin-2.43.0.module | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c
+ succeeded in 0ms:
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.diffplug.spotless",
+    "module": "spotless-maven-plugin",
+    "version": "2.43.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.5"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "spotless-maven-plugin-2.43.0.jar",
+          "url": "spotless-maven-plugin-2.43.0.jar",
+          "size": 128063,
+          "sha512": "03ea4d26b08ac9d300ced6d7270f680c2ff0c70a3bb7c221f1c8e2fe40c7299ed846a537b04ed4a8d257c852f9e9d616ca0a760d3c294be3df59c6e39a2d1a21",
+          "sha256": "166adb65bbecfbb413e87631fa6bd4d48d4f572ba810404819b45bf7f239821d",
+          "sha1": "3ee1744f794aff4172f4ed97501a2feac2218f9c",
+          "md5": "f8437de5ec3f777da1942b484b12b828"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "com.diffplug.spotless",
+          "module": "spotless-lib",
+          "version": {
+            "requires": "2.45.0"
+          }
+        },
+        {
+          "group": "com.diffplug.spotless",
+          "module": "spotless-lib-extra",
+          "version": {
+            "requires": "2.45.0"
+          }
+        },
+        {
+          "group": "com.diffplug.durian",
+          "module": "durian-core",
+          "version": {
+            "requires": "1.2.0"
+          }
+        },
+        {
+          "group": "com.diffplug.durian",
+          "module": "durian-io",
+          "version": {
+            "requires": "1.2.0"
+          }
+        },
+        {
+          "group": "com.diffplug.durian",
+          "module": "durian-collect",
+          "version": {
+            "requires": "1.2.0"
+          }
+        },
+        {
+          "group": "org.codehaus.plexus",
+          "module": "plexus-resources",
+          "version": {
+            "requires": "1.2.0"
+          }
+        },
+        {
+          "group": "org.eclipse.jgit",
+          "module": "org.eclipse.jgit",
+          "version": {
+            "requires": "6.7.0.202309050840-r"
+          }
+        },
+        {
+          "group": "org.sonatype.plexus",
+          "module": "plexus-build-api",
+          "version": {
+            "requires": "0.0.7"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "spotless-maven-plugin-2.43.0.jar",
+          "url": "spotless-maven-plugin-2.43.0.jar",
+          "size": 128063,
+          "sha512": "03ea4d26b08ac9d300ced6d7270f680c2ff0c70a3bb7c221f1c8e2fe40c7299ed846a537b04ed4a8d257c852f9e9d616ca0a760d3c294be3df59c6e39a2d1a21",
+          "sha256": "166adb65bbecfbb413e87631fa6bd4d48d4f572ba810404819b45bf7f239821d",
+          "sha1": "3ee1744f794aff4172f4ed97501a2feac2218f9c",
+          "md5": "f8437de5ec3f777da1942b484b12b828"
+        }
+      ]
+    },
+    {
+      "name": "javadocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "spotless-maven-plugin-2.43.0-javadoc.jar",
+          "url": "spotless-maven-plugin-2.43.0-javadoc.jar",
+          "size": 659785,
+          "sha512": "b0de2da3fde23eee0f2958ca34eee765bffde33091cb1c1eb52427e781edc47c5f9151abc7e39c8a567d8a7210fbc0fc78edb02de126ea9c9ad69d7a4fe99b8e",
+          "sha256": "e0b00dc46b921fbde052f18e4ec3b11935a171f6079d657bf38deaadb91c7fdf",
+          "sha1": "a8d106d51221175c8a99225229249f784d448518",
+          "md5": "5b65cdaefaf7ee88cf5fb4390180d12b"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "spotless-maven-plugin-2.43.0-sources.jar",
+          "url": "spotless-maven-plugin-2.43.0-sources.jar",
+          "size": 104631,
+          "sha512": "793bd9c363389ade3ce3c1c25d6cbad0cbb5066bfa6bccee0ecc1f2833aefabdf78184972ebc92e1ccb50ed07612c556a3c4796e10051f5ed6c3f28df8b575a7",
+          "sha256": "fc8093d4918fd23ac8fcfca91fa3d0ac9710cfdfcbb51d9066309d750c063d46",
+          "sha1": "c8a1d62da0ffa8563c21296dbaf908cdc261989e",
+          "md5": "7cbf0954f21737b3c59c3b8650f73183"
+        }
+      ]
+    }
+  ]
+}
+
+codex
+I found the relevant published module metadata too: this is a JVM jar targeting Java 11, with sources and Javadoc variants, so it is still a Native Image metadata target under your criteria. I won’t set `language` or `not-for-native-image`.
+exec
+/usr/bin/bash -lc "curl -fsSI 'https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-maven-plugin/2.43.0/spotless-maven-plugin-2.43.0-sources.jar' | sed -n '1,12p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 09 Jun 2026 22:13:12 GMT
+content-type: application/java-archive
+content-length: 104631
+cf-ray: a0937b71df1ba625-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 122813
+etag: "7cbf0954f21737b3c59c3b8650f73183"
+last-modified: Tue, 23 Jan 2024 07:06:24 GMT
+x-checksum-md5: 7cbf0954f21737b3c59c3b8650f73183
+x-checksum-sha1: c8a1d62da0ffa8563c21296dbaf908cdc261989e
+
+exec
+/usr/bin/bash -lc "curl -fsSI 'https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-maven-plugin/2.43.0/spotless-maven-plugin-2.43.0-javadoc.jar' | sed -n '1,12p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 09 Jun 2026 22:13:12 GMT
+content-type: application/java-archive
+content-length: 659785
+cf-ray: a0937b71dd91b86b-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 12643
+etag: "5b65cdaefaf7ee88cf5fb4390180d12b"
+last-modified: Tue, 23 Jan 2024 07:06:24 GMT
+x-checksum-md5: 5b65cdaefaf7ee88cf5fb4390180d12b
+x-checksum-sha1: a8d106d51221175c8a99225229249f784d448518
+
+exec
+/usr/bin/bash -lc "curl -fsSI 'https://github.com/diffplug/spotless/tree/maven/2.43.0/plugin-maven/src/test' | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c
+ succeeded in 569ms:
+HTTP/2 200 
+date: Tue, 09 Jun 2026 22:13:13 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"b793a9cc15087610523bb90025368d91"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=qh3VjfAI06T8%2F7sHH%2B1MSAxqMwFffgqbmBeX9zC1%2Bc3st7xIgoquEsQv33t9f2PqWYfM7ifqkmyBPpZ7HdNce7JjBPYxcZO0lVRQ6urC5X5vkScXFvYS%2BmND%2F1OZDebo5mt%2BVktFFat2W31sUu%2Fs843fg0R2S2LEeePQz76IL91nAOkVLIPWDouD%2BNL2%2BkL4euhyRCsF5iHJSz8BHUgUjOsmdLIeDEDL8Aa%2BYDAc6ZH0gfVhDQSL4YdOoIiUNEuaFZcjOmdD4oXAk2keHjRozQ%3D%3D--aHl5W5Ks4dEN%2BnMA--iCaRFSpd%2BKvdMdqoD099yA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1337759395.1781043192; expires=Wed, 09 Jun 2027 22:13:12 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 09 Jun 2027 22:13:12 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6208:24000:6A9FE6D:550F831:6A288FF8
+
+
+web search: 
+web search: repo.maven.apache.org com.diffplug.spotless spotless-maven-plugin 2.43.0 sources javadoc
+web search: 
+web search: https://github.com/diffplug/spotless/tree/maven/2.43.0/plugin-maven/src/test
+web search: 
+web search: https://repo1.maven.org/maven2/com/diffplug/spotless/spotless-maven-plugin/2.43.0/
+web search: 
+web search: https://repo1.maven.org/maven2/com/diffplug/spotless/spotless-maven-plugin/2.43.0/
+codex
+I’m going to patch the JSON now with only the allowed keys. The URL placeholders will resolve exactly to the checked `2.43.0` Maven artifacts and the `maven/2.43.0` Spotless test tree.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-maven-plugin-2.43.0.json
+diff --git a/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-maven-plugin-2.43.0.json b/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-maven-plugin-2.43.0.json
+index 20286cba62f90845f500b9af35b17ddad9585bc7..81985a36a015708ba9a73c0352e9e682a0a6d91a
+--- a/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-maven-plugin-2.43.0.json
++++ b/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-maven-plugin-2.43.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.diffplug.spotless:spotless-maven-plugin:2.43.0"
++  "coordinates" : "com.diffplug.spotless:spotless-maven-plugin:2.43.0",
++  "repository-url" : "https://github.com/diffplug/spotless",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-maven-plugin/$version$/spotless-maven-plugin-$version$-sources.jar",
++  "test-code-url" : "https://github.com/diffplug/spotless/tree/maven/$version$/plugin-maven/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-maven-plugin/$version$/spotless-maven-plugin-$version$-javadoc.jar",
++  "description" : "Spotless Maven Plugin integrates the Spotless formatter and checker into Maven projects. It applies configured code-formatting steps or verifies files are formatted, supporting multiple languages and formatter engines."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-maven-plugin-2.43.0.json b/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-maven-plugin-2.43.0.json
+index 20286cba62f90845f500b9af35b17ddad9585bc7..81985a36a015708ba9a73c0352e9e682a0a6d91a
+--- a/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-maven-plugin-2.43.0.json
++++ b/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-maven-plugin-2.43.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.diffplug.spotless:spotless-maven-plugin:2.43.0"
++  "coordinates" : "com.diffplug.spotless:spotless-maven-plugin:2.43.0",
++  "repository-url" : "https://github.com/diffplug/spotless",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-maven-plugin/$version$/spotless-maven-plugin-$version$-sources.jar",
++  "test-code-url" : "https://github.com/diffplug/spotless/tree/maven/$version$/plugin-maven/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-maven-plugin/$version$/spotless-maven-plugin-$version$-javadoc.jar",
++  "description" : "Spotless Maven Plugin integrates the Spotless formatter and checker into Maven projects. It applies configured code-formatting steps or verifies files are formatted, supporting multiple languages and formatter engines."
+ }
+
+codex
+The file is updated. I’m doing a quick JSON/key validation and re-checking the placeholder-expanded URLs so the final state is mechanically sound.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.diffplug.spotless-spotless-maven-plugin-2.43.0.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c
+ succeeded in 0ms:
+{
+  "coordinates": "com.diffplug.spotless:spotless-maven-plugin:2.43.0",
+  "repository-url": "https://github.com/diffplug/spotless",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-maven-plugin/$version$/spotless-maven-plugin-$version$-sources.jar",
+  "test-code-url": "https://github.com/diffplug/spotless/tree/maven/$version$/plugin-maven/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-maven-plugin/$version$/spotless-maven-plugin-$version$-javadoc.jar",
+  "description": "Spotless Maven Plugin integrates the Spotless formatter and checker into Maven projects. It applies configured code-formatting steps or verifies files are formatted, supporting multiple languages and formatter engines."
+}
+
+exec
+/usr/bin/bash -lc "python3 -m json.tool build/discovered-artifact-metadata/com.diffplug.spotless-spotless-maven-plugin-2.43.0.json >/dev/null && printf 'json ok\\n'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c
+ succeeded in 0ms:
+json ok
+
+exec
+/usr/bin/bash -lc "for url in 'https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-maven-plugin/2.43.0/spotless-maven-plugin-2.43.0-sources.jar' 'https://github.com/diffplug/spotless/tree/maven/2.43.0/plugin-maven/src/test' 'https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-maven-plugin/2.43.0/spotless-maven-plugin-2.43.0-javadoc.jar'; do printf '%s -> ' \""'$url"; curl -fsSI "$url" | awk '"'NR==1 {print "'$2}'"'; done" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c
+diff --git a/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-maven-plugin-2.43.0.json b/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-maven-plugin-2.43.0.json
+index 20286cba62f90845f500b9af35b17ddad9585bc7..81985a36a015708ba9a73c0352e9e682a0a6d91a
+--- a/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-maven-plugin-2.43.0.json
++++ b/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-maven-plugin-2.43.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.diffplug.spotless:spotless-maven-plugin:2.43.0"
++  "coordinates" : "com.diffplug.spotless:spotless-maven-plugin:2.43.0",
++  "repository-url" : "https://github.com/diffplug/spotless",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-maven-plugin/$version$/spotless-maven-plugin-$version$-sources.jar",
++  "test-code-url" : "https://github.com/diffplug/spotless/tree/maven/$version$/plugin-maven/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-maven-plugin/$version$/spotless-maven-plugin-$version$-javadoc.jar",
++  "description" : "Spotless Maven Plugin integrates the Spotless formatter and checker into Maven projects. It applies configured code-formatting steps or verifies files are formatted, supporting multiple languages and formatter engines."
+ }
+
+ succeeded in 181ms:
+200
+https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-maven-plugin/2.43.0/spotless-maven-plugin-2.43.0-javadoc.jar -> 200
+
+web search: 
+web search: site:mvnrepository.com com.diffplug.spotless spotless-maven-plugin 2.43.0
+web search: 
+web search: "spotless-maven-plugin-2.43.0-sources.jar"
+web search: 
+web search: "plugin-maven/src/test/java/com/diffplug/spotless/maven" "2.43.0"
+codex
+Updated [com.diffplug.spotless-spotless-maven-plugin-2.43.0.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-maven-plugin-2.43.0.json).
+
+I used the Maven POM/SCM metadata for the repository root, Maven-hosted sources and Javadoc jars, and the upstream `maven/$version$` tag for `plugin-maven/src/test`. Maven Central shows the published jar, sources jar, and Javadoc jar for `2.43.0`, and the Spotless Maven README describes it as a general-purpose Maven formatting plugin. ([central.sonatype.com](https://central.sonatype.com/artifact/com.diffplug.spotless/spotless-maven-plugin/2.43.0?utm_source=openai))
+
+I left `language` absent because it is not Kotlin/Groovy/Scala-specific, and left `not-for-native-image` absent because this is a published JVM jar rather than an Android-only/non-JVM artifact. Validation passed with `jq`, `python3 -m json.tool`, and HTTP 200 checks for all three placeholder-expanded URLs.
+diff --git a/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-maven-plugin-2.43.0.json b/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-maven-plugin-2.43.0.json
+index 20286cba62f90845f500b9af35b17ddad9585bc7..81985a36a015708ba9a73c0352e9e682a0a6d91a
+--- a/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-maven-plugin-2.43.0.json
++++ b/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-maven-plugin-2.43.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.diffplug.spotless:spotless-maven-plugin:2.43.0"
++  "coordinates" : "com.diffplug.spotless:spotless-maven-plugin:2.43.0",
++  "repository-url" : "https://github.com/diffplug/spotless",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-maven-plugin/$version$/spotless-maven-plugin-$version$-sources.jar",
++  "test-code-url" : "https://github.com/diffplug/spotless/tree/maven/$version$/plugin-maven/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/diffplug/spotless/spotless-maven-plugin/$version$/spotless-maven-plugin-$version$-javadoc.jar",
++  "description" : "Spotless Maven Plugin integrates the Spotless formatter and checker into Maven projects. It applies configured code-formatting steps or verifies files are formatted, supporting multiple languages and formatter engines."
+ }
+
+tokens used
+83,952
+Updated [com.diffplug.spotless-spotless-maven-plugin-2.43.0.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c/build/discovered-artifact-metadata/com.diffplug.spotless-spotless-maven-plugin-2.43.0.json).
+
+I used the Maven POM/SCM metadata for the repository root, Maven-hosted sources and Javadoc jars, and the upstream `maven/$version$` tag for `plugin-maven/src/test`. Maven Central shows the published jar, sources jar, and Javadoc jar for `2.43.0`, and the Spotless Maven README describes it as a general-purpose Maven formatting plugin. ([central.sonatype.com](https://central.sonatype.com/artifact/com.diffplug.spotless/spotless-maven-plugin/2.43.0?utm_source=openai))
+
+I left `language` absent because it is not Kotlin/Groovy/Scala-specific, and left `not-for-native-image` absent because this is a published JVM jar rather than an Android-only/non-JVM artifact. Validation passed with `jq`, `python3 -m json.tool`, and HTTP 200 checks for all three placeholder-expanded URLs.
+Ran agent for com.diffplug.spotless:spotless-maven-plugin:2.43.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c/build/agent-artifact-discovery-logs/com.diffplug.spotless-spotless-maven-plugin-2.43.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-8e06fc2c/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 22s
+9 actionable tasks: 9 executed
