@@ -1,0 +1,143 @@
+{
+  "fix_java_run_fail:2026-06-09": {
+    "timestamp": "2026-06-09T15:52:08.327490Z",
+    "library": "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.2.0",
+    "starting_commit": "64a2c218d480a82b09b033c3fb2ff0e8fa30deaf",
+    "ending_commit": "00e40449af9a85521153a137e6383c422ac831cd",
+    "previous_library": "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "1.2.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.965517,
+            "coveredCalls": 112,
+            "totalCalls": 116
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.966667,
+        "coveredCalls": 116,
+        "totalCalls": 120
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 20507,
+          "missed": 163542,
+          "ratio": 0.111421,
+          "total": 184049
+        },
+        "line": {
+          "covered": 4664,
+          "missed": 34663,
+          "ratio": 0.118595,
+          "total": 39327
+        },
+        "method": {
+          "covered": 1658,
+          "missed": 11353,
+          "ratio": 0.127431,
+          "total": 13011
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "1.1.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.965812,
+            "coveredCalls": 113,
+            "totalCalls": 117
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.966942,
+        "coveredCalls": 117,
+        "totalCalls": 121
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 20460,
+          "missed": 165152,
+          "ratio": 0.11023,
+          "total": 185612
+        },
+        "line": {
+          "covered": 4639,
+          "missed": 34235,
+          "ratio": 0.119334,
+          "total": 38874
+        },
+        "method": {
+          "covered": 1649,
+          "missed": 11393,
+          "ratio": 0.126438,
+          "total": 13042
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8253,
+      "issue_label": "fails-java-run",
+      "library": "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.2.0",
+      "summary": "No extra setup is needed: hadoop-shaded-guava is a self-contained relocated Guava jar with no transitive Maven dependencies, no service process, and normal usage is direct in-process API calls.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "Existing tests that hand-code Java serialization descriptors are version-fragile; CompactHashMap/CompactHashSet serialVersionUID changes between versions can cause java-run failures, but this is a test repair issue rather than setup."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8253 [Automation] java run fails for org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.2.0; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "40 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.1.1",
+      "new_version": "1.2.0",
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 22641,
+      "output_tokens_used": 2663,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/jovan/Work/graalvm-reachability-metadata/forge/logs/org.apache.hadoop.thirdparty:hadoop-shaded-guava:1.2.0/library-preparation-preflight/pi-generation-2026-06-09T15-08-57-604820Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 266803,
+      "cached_input_tokens_used": 1960960,
+      "output_tokens_used": 17931,
+      "iterations": 5,
+      "cost_usd": 1.5184,
+      "tested_library_loc": 4664,
+      "metadata_entries": 146,
+      "test_only_metadata_entries": 179,
+      "previous_library_metadata_entries": 256,
+      "previous_library_test_only_metadata_entries": 23,
+      "code_coverage_percent": 11.86,
+      "previous_library_coverage_percent": 11.93
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.apache.hadoop.thirdparty/hadoop-shaded-guava/1.2.0/src/test/java/org_apache_hadoop_thirdparty/hadoop_shaded_guava/EnumMultisetTest.java",
+      "metadata_file": "metadata/org.apache.hadoop.thirdparty/hadoop-shaded-guava/1.2.0/reachability-metadata.json"
+    }
+  }
+}
