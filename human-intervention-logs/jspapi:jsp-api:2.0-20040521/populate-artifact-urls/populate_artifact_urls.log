@@ -1,0 +1,2305 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019ea9e0-c81b-7cc1-9b1d-b27003c781f8
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: jspapi:jsp-api:2.0-20040521
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.0-20040521].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c/metadata/jspapi/jsp-api/index.json
+- Entry selector: "metadata-version" = "2.0-20040521"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: N/A
+- repository-url: N/A
+- test-code-url: N/A
+- documentation-url: N/A
+- description: This artifact provides the JavaServer Pages 2.0 API contracts under javax.servlet.jsp for JSP containers, applications, and tag libraries. It supplies compile-time and runtime interfaces and classes such as JspPage, PageContext, JSP expression APIs, and tag extension types without bundling a JSP engine implementation.
+- language: <missing>
+
+Context:
+- Coordinate version: 2.0-20040521
+- Entry metadata-version: 2.0-20040521
+- Entry test-version: 2.0-20040521
+- Entry tested-versions: [2.0-20040521]
+codex
+I’ll verify the artifact’s Maven metadata and the existing JSON entry first, then check candidate URLs before making a narrowly scoped edit.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/jspapi/jsp-api/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0-20040521",
+    "source-code-url" : "N/A",
+    "repository-url" : "N/A",
+    "test-code-url" : "N/A",
+    "documentation-url" : "N/A",
+    "description" : "This artifact provides the JavaServer Pages 2.0 API contracts under javax.servlet.jsp for JSP containers, applications, and tag libraries. It supplies compile-time and runtime interfaces and classes such as JspPage, PageContext, JSP expression APIs, and tag extension types without bundling a JSP engine implementation.",
+    "tested-versions" : [
+      "2.0-20040521"
+    ],
+    "allowed-packages" : [
+      "javax.servlet.jsp"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n 'jspapi|jsp-api|JavaServer Pages' metadata docs tests -g '*.json' -g '*.md' -g '*.java'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 0ms:
+metadata/javax.servlet.jsp/jsp-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/$version$/jsp-api-$version$-sources.jar",
+metadata/javax.servlet.jsp/jsp-api/index.json:8:    "documentation-url" : "https://javadoc.io/doc/javax.servlet.jsp/jsp-api/$version$",
+metadata/javax.servlet.jsp/jsp-api/index.json:9:    "description" : "This artifact provides the JavaServer Pages 2.1 API contracts, including core JSP, tag extension, and expression language interfaces used by JSP containers and applications. It defines standard types that JSP engines and custom tag libraries implement at compile time and runtime.",
+metadata/jspapi/jsp-api/index.json:9:    "description" : "This artifact provides the JavaServer Pages 2.0 API contracts under javax.servlet.jsp for JSP containers, applications, and tag libraries. It supplies compile-time and runtime interfaces and classes such as JspPage, PageContext, JSP expression APIs, and tag extension types without bundling a JSP engine implementation.",
+tests/src/jspapi/jsp-api/2.0-20040521/src/test/java/jspapi/jsp_api/Jsp_apiTest.java:7:package jspapi.jsp_api;
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 142ms:
+?? metadata/jspapi/
+?? tests/src/jspapi/
+
+web search: 
+web search: jspapi jsp-api 2.0-20040521 Maven sources jar
+web search: 
+web search: https://repo1.maven.org/maven2/jspapi/jsp-api/
+web search: 
+web search: https://repo1.maven.org/maven2/jspapi/jsp-api/
+web search: 
+web search: https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521/
+codex
+The Maven Central listing confirms the exact `jspapi:jsp-api:2.0-20040521` artifact exists, but that directory only lists the binary jar, POM, checksums, and metadata, not a sources or tests classifier. I’m checking whether there is a trustworthy upstream source/tag for this legacy JSP API repackaging before deciding whether the existing `N/A` values should stay.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521/jsp-api-2.0-20040521.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>jspapi</groupId>
+  <artifactId>jsp-api</artifactId>
+  <version>2.0-20040521</version>
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521/maven-metadata.xml' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521/jsp-api-2.0-20040521-tests.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521/jsp-api-2.0-20040521-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 258ms:
+HTTP/2 404 
+date: Tue, 09 Jun 2026 00:56:05 GMT
+content-type: text/html
+cf-ray: a08c2ca88f571453-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/jspapi/jsp-api/2.0-20040521/jsp-api-2.0-20040521-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 275ms:
+HTTP/2 404 
+date: Tue, 09 Jun 2026 00:56:05 GMT
+content-type: text/html
+cf-ray: a08c2ca889eb039d-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/jspapi/jsp-api/2.0-20040521/jsp-api-2.0-20040521-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 284ms:
+<metadata>
+  <groupId>jspapi</groupId>
+  <artifactId>jsp-api</artifactId>
+  <version>2.0-20040521</version>
+</metadata>
+web search: 
+web search: "jspapi:jsp-api" "2.0-20040521"
+web search: 
+web search: https://javadoc.io/doc/jspapi/jsp-api/2.0-20040521
+web search: 
+web search: site:javadoc.io/doc/jspapi/jsp-api/2.0-20040521 jsp-api
+codex
+The exact Maven POM has no SCM, project URL, licenses, or developer metadata, so the repository root is not discoverable from the published artifact metadata. I’m now checking the jar contents and class metadata to see whether it embeds implementation/vendor clues that can tie this to a precise upstream tag.
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d); curl -fsSL -o "$tmpdir/jsp-api.jar" https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521/jsp-api-2.0-20040521.jar; unzip -p "$tmpdir/jsp-api.jar" META-INF/MANIFEST.MF; rm -rf "$tmpdir"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 0ms:
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.5.3 
+Created-By: 1.4.2_01-b06 (Sun Microsystems Inc.)
+
+Name: javax/servlet/jsp/
+Specification-Title: Java API for JavaServer Pages
+Specification-Version: 2.0
+Specification-Vendor: Sun Microsystems, Inc.
+Implementation-Title: javax.servlet.jsp
+Implementation-Version: 2.0.public_draft
+Implementation-Vendor: Apache Software Foundation
+
+
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d); curl -fsSL -o "$tmpdir/jsp-api.jar" https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521/jsp-api-2.0-20040521.jar; jar tf "$tmpdir/jsp-api.jar" | sed -n '"'1,120p'; rm -rf \""'$tmpdir"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+javax/
+javax/servlet/
+javax/servlet/jsp/
+javax/servlet/jsp/el/
+javax/servlet/jsp/resources/
+javax/servlet/jsp/tagext/
+javax/servlet/jsp/el/ELException.class
+javax/servlet/jsp/el/ELParseException.class
+javax/servlet/jsp/el/Expression.class
+javax/servlet/jsp/el/ExpressionEvaluator.class
+javax/servlet/jsp/el/FunctionMapper.class
+javax/servlet/jsp/el/VariableResolver.class
+javax/servlet/jsp/ErrorData.class
+javax/servlet/jsp/HttpJspPage.class
+javax/servlet/jsp/JspContext.class
+javax/servlet/jsp/JspEngineInfo.class
+javax/servlet/jsp/JspException.class
+javax/servlet/jsp/JspFactory.class
+javax/servlet/jsp/JspPage.class
+javax/servlet/jsp/JspTagException.class
+javax/servlet/jsp/JspWriter.class
+javax/servlet/jsp/PageContext.class
+javax/servlet/jsp/resources/jspxml.dtd
+javax/servlet/jsp/resources/jspxml.xsd
+javax/servlet/jsp/resources/jsp_2_0.xsd
+javax/servlet/jsp/resources/web-jsptaglibrary_1_1.dtd
+javax/servlet/jsp/resources/web-jsptaglibrary_1_2.dtd
+javax/servlet/jsp/resources/web-jsptaglibrary_2_0.xsd
+javax/servlet/jsp/SkipPageException.class
+javax/servlet/jsp/tagext/BodyContent.class
+javax/servlet/jsp/tagext/BodyTag.class
+javax/servlet/jsp/tagext/BodyTagSupport.class
+javax/servlet/jsp/tagext/DynamicAttributes.class
+javax/servlet/jsp/tagext/FunctionInfo.class
+javax/servlet/jsp/tagext/IterationTag.class
+javax/servlet/jsp/tagext/JspFragment.class
+javax/servlet/jsp/tagext/JspTag.class
+javax/servlet/jsp/tagext/PageData.class
+javax/servlet/jsp/tagext/SimpleTag.class
+javax/servlet/jsp/tagext/SimpleTagSupport.class
+javax/servlet/jsp/tagext/Tag.class
+javax/servlet/jsp/tagext/TagAdapter.class
+javax/servlet/jsp/tagext/TagAttributeInfo.class
+javax/servlet/jsp/tagext/TagData.class
+javax/servlet/jsp/tagext/TagExtraInfo.class
+javax/servlet/jsp/tagext/TagFileInfo.class
+javax/servlet/jsp/tagext/TagInfo.class
+javax/servlet/jsp/tagext/TagLibraryInfo.class
+javax/servlet/jsp/tagext/TagLibraryValidator.class
+javax/servlet/jsp/tagext/TagSupport.class
+javax/servlet/jsp/tagext/TagVariableInfo.class
+javax/servlet/jsp/tagext/TryCatchFinally.class
+javax/servlet/jsp/tagext/ValidationMessage.class
+javax/servlet/jsp/tagext/VariableInfo.class
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521/jsp-api-2.0-20040521-javadoc.jar \\
+  https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521/jsp-api-2.0-20040521-test-sources.jar; do printf '%s\\n' \""'$url"; curl -I -L -s "$url" | sed -n '"'1,8p'; done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 502ms:
+HTTP/2 404 
+date: Tue, 09 Jun 2026 00:56:18 GMT
+content-type: text/html
+cf-ray: a08c2cfccbde75ff-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/jspapi/jsp-api/2.0-20040521/jsp-api-2.0-20040521-javadoc.jar
+https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521/jsp-api-2.0-20040521-test-sources.jar
+HTTP/2 404 
+date: Tue, 09 Jun 2026 00:56:19 GMT
+content-type: text/html
+cf-ray: a08c2cfe990603a5-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/jspapi/jsp-api/2.0-20040521/jsp-api-2.0-20040521-test-sources.jar
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/javax.servlet.jsp/jsp-api/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/$version$/jsp-api-$version$-sources.jar",
+    "repository-url" : "N/A",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://javadoc.io/doc/javax.servlet.jsp/jsp-api/$version$",
+    "description" : "This artifact provides the JavaServer Pages 2.1 API contracts, including core JSP, tag extension, and expression language interfaces used by JSP containers and applications. It defines standard types that JSP engines and custom tag libraries implement at compile time and runtime.",
+    "tested-versions" : [
+      "2.1"
+    ],
+    "allowed-packages" : [
+      "javax.el",
+      "javax.servlet.jsp"
+    ]
+  }
+]
+
+codex
+There is a nearby `javax.servlet.jsp:jsp-api` metadata entry, but that is a different Maven group and a later 2.1 artifact with a published sources jar. For this `jspapi` coordinate, I’m avoiding borrowing those URLs unless the exact `2.0-20040521` URL renders for the same artifact.
+exec
+/usr/bin/bash -lc "curl -I -L -s https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521/jsp-api-2.0-20040521.jar | sed -n '1,16p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 09 Jun 2026 00:56:28 GMT
+content-type: application/java-archive
+content-length: 51279
+cf-ray: a08c2d3acfb41e6d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 69
+etag: "e7e8ecb0d08818071ffbaf5d8d624a5d"
+last-modified: Mon, 01 Aug 2005 09:42:46 GMT
+x-checksum-md5: e7e8ecb0d08818071ffbaf5d8d624a5d
+x-checksum-sha1: 8d48cb70875a67782b1b80556bb28df5cf605b99
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -I -L -s https://javadoc.io/doc/jspapi/jsp-api/2.0-20040521 | sed -n '1,20p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/jspapi/jsp-api/2.0-20040521 | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 210ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>jsp-api 2.0-20040521 javadoc (jspapi)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/jspapi">jspapi</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						jsp-api
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						
+						<a href="/doc/jspapi/jsp-api" class="dropdown-item">
+							jsp-api
+						</a>
+						
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						2.0-20040521
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						<a href="/doc/jspapi/jsp-api/latest/index.html" class="dropdown-item">
+							2.0.public_draft
+						</a>
+
+						
+						<a href="/doc/jspapi/jsp-api/2.0/index.html" class="dropdown-item">
+							2.0
+						</a>
+						
+						<a href="/doc/jspapi/jsp-api/2.0-20040521/index.html" class="dropdown-item">
+							2.0-20040521
+						</a>
+						
+					</div>
+				</li>
+
+ succeeded in 248ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: jspapi/jsp-api/2.0-20040521</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>jspapi/jsp-api/2.0-20040521</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jsp-api-2.0-20040521.jar" title="jsp-api-2.0-20040521.jar">jsp-api-2.0-20040521.jar</a>                          2005-09-20 05:49     51279      
+<a href="jsp-api-2.0-20040521.jar.md5" title="jsp-api-2.0-20040521.jar.md5">jsp-api-2.0-20040521.jar.md5</a>                      2005-09-20 05:49        32      
+<a href="jsp-api-2.0-20040521.jar.sha1" title="jsp-api-2.0-20040521.jar.sha1">jsp-api-2.0-20040521.jar.sha1</a>                     2005-09-20 05:49        40      
+<a href="jsp-api-2.0-20040521.pom" title="jsp-api-2.0-20040521.pom">jsp-api-2.0-20040521.pom</a>                          2005-09-20 05:49       154      
+<a href="jsp-api-2.0-20040521.pom.md5" title="jsp-api-2.0-20040521.pom.md5">jsp-api-2.0-20040521.pom.md5</a>                      2005-09-20 05:49       145      
+<a href="jsp-api-2.0-20040521.pom.sha1" title="jsp-api-2.0-20040521.pom.sha1">jsp-api-2.0-20040521.pom.sha1</a>                     2005-09-20 05:49       153      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2005-09-20 05:49       119      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2005-09-20 05:49        83      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2005-09-20 05:49       138      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 8732ms:
+HTTP/2 303 
+date: Tue, 09 Jun 2026 00:56:37 GMT
+content-length: 0
+location: /doc/jspapi/jsp-api/2.0-20040521/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=3TiJP1NY9ACyB%2FnqHTv3NdFtmVCB%2FLyASxSypmNK%2BM7f0iZ1JHGd0DLLqR4F8rDVUf4uUfXADikgAMd%2FlwRuoj2XNtQqsSMUJ7LLXnRrweCdEtiRSl3DKISTz2%2Bs%2Bu5YYh6tbqWD%2BbEB"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: a08c2d3abc127dd2-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Tue, 09 Jun 2026 00:56:37 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/jspapi/jsp-api/latest/index.html>; rel="canonical"
+
+exec
+/usr/bin/bash -lc "curl -I -L -s https://javadoc.io/static/jspapi/jsp-api/2.0-20040521/javax/servlet/jsp/PageContext.html | sed -n '1,16p' && curl -fsSL https://javadoc.io/static/jspapi/jsp-api/2.0-20040521/javax/servlet/jsp/PageContext.html | rg -n \"Source|class PageContext|href=.*src|Generated\" | sed -n '1,40p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 251ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/jspapi/jsp-api/2.0-20040521/index.html | rg -n \"iframe|PageContext|allclasses|api\" | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 107ms:
+13:		<title>jsp-api 2.0-20040521 javadoc (jspapi)</title>
+47:					<a class="nav-link" href="/doc/jspapi">jspapi</a>
+51:						jsp-api
+55:						<a href="/doc/jspapi/jsp-api" class="dropdown-item">
+56:							jsp-api
+66:						<a href="/doc/jspapi/jsp-api/latest/index.html" class="dropdown-item">
+71:						<a href="/doc/jspapi/jsp-api/2.0/index.html" class="dropdown-item">
+75:						<a href="/doc/jspapi/jsp-api/2.0-20040521/index.html" class="dropdown-item">
+82:					<a class='nav-link' target="_blank" href='https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521'
+97:					<a class='nav-link' href='/task/sync_latest/jspapi/jsp-api'
+126:					<div>Latest version of <span class="text-monospace">jspapi:jsp-api</span></div>
+128:						https://javadoc.io/doc/jspapi/jsp-api
+129:						<a href="/doc/jspapi/jsp-api" target="_blank" class="float-right">
+135:						https://javadoc.io/doc/jspapi/jsp-api/2.0-20040521
+136:						<a href="/doc/jspapi/jsp-api/2.0-20040521" target="_blank" class="float-right">
+142:						https://javadoc.io/doc/jspapi/jsp-api/2.0-20040521/package-list
+143:						<a href="/doc/jspapi/jsp-api/2.0-20040521/package-list" target="_blank" class="float-right">
+160:  No JavaDoc is released for artifact <span class="font-italic">jspapi:jsp-api:2.0-20040521</span>.
+168:      <a href='/retry/jspapi/jsp-api/2.0-20040521'>Retry</a> this version.
+171:    <li>Is the <span class='font-italic'>jsp-api-2.0-20040521-javadoc.jar</span> actually distributed to either maven or bintray?</li>
+172:    <li>Does the <span class='font-italic'>jsp-api-2.0-20040521-javadoc.jar</span> file contains an <span class='font-italic'>index.html</span> in the extracted root folder? (you can rename .jar to .zip to extract the file)</li>
+
+web search: 
+web search: "Implementation-Version" "2.0.public_draft" "javax.servlet.jsp"
+web search: 
+web search: https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521/
+web search: 
+web search: "Central Repository: jspapi/jsp-api/2.0-20040521"
+web search: 
+web search: https://repo1.maven.org/maven2/jspapi/jsp-api/
+web search: 
+web search: https://repo1.maven.org/maven2/jspapi/jsp-api/
+web search: 
+web search: https://javadoc.io/doc/jspapi/jsp-api/latest/index.html
+web search: 
+web search: https://javadoc.io/doc/jspapi/jsp-api/latest/index.html
+web search: 
+web search: "javax/servlet/jsp/JspContext.java" "jsp_2_0.xsd" "2.0-20040521"
+web search: 
+web search: "JspContext.java" "Apache Software Foundation" "Specification-Version" "2.0"
+codex
+The exact `jspapi` version has a generated javadoc.io page, but the page reports that no javadoc jar was released for `jspapi:jsp-api:2.0-20040521`, so I’m treating that as a failed documentation candidate rather than a valid docs URL.
+exec
+/usr/bin/bash -lc 'for v in 2.0 2.0.public_draft; do echo "version $v"; curl -fsSL "https://repo1.maven.org/maven2/jspapi/jsp-api/$v/jsp-api-$v.pom"; echo; done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc 'for v in 2.0 2.0.public_draft; do tmpdir=$(mktemp -d); curl -fsSL -o "$tmpdir/jsp-api.jar" "https://repo1.maven.org/maven2/jspapi/jsp-api/$v/jsp-api-$v.jar" 2>/dev/null || true; if [ -s "$tmpdir/jsp-api.jar" ]; then echo "manifest $v"; unzip -p "$tmpdir/jsp-api.jar" META-INF/MANIFEST.MF; fi; rm -rf "$tmpdir"; done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc 'for v in 2.0 2.0.public_draft; do echo "version $v sources"; curl -I -L -s "https://repo1.maven.org/maven2/jspapi/jsp-api/$v/jsp-api-$v-sources.jar" | sed -n '"'1,6p'; done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/jspapi/jsp-api/maven-metadata.xml' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 250ms:
+<project>
+  <pomVersion>3</pomVersion>
+  <groupId>jspapi</groupId>
+  <artifactId>jsp-api</artifactId>
+  <version>2.0.public_draft</version>
+  <distributionManagement>
+    <relocation>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jsp-api</artifactId>
+    </relocation>
+  </distributionManagement>
+</project>
+
+
+ succeeded in 179ms:
+<metadata>
+  <groupId>jspapi</groupId>
+  <artifactId>jsp-api</artifactId>
+  <version>2.0-20040521</version>
+  <versioning>
+    <versions>
+      <version>2.0-20040521</version>
+      <version>2.0</version>
+      <version>2.0.public_draft</version>
+    </versions>
+  </versioning>
+</metadata>
+ succeeded in 464ms:
+manifest 2.0
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.6.2
+Created-By: 1.4.2_06-b03 (Sun Microsystems Inc.)
+
+Name: javax/servlet/jsp/
+Specification-Title: Java API for JavaServer Pages
+Specification-Version: 2.0
+Specification-Vendor: Sun Microsystems, Inc.
+Implementation-Title: javax.servlet.jsp
+Implementation-Version: 2.0.public_draft
+Implementation-Vendor: Apache Software Foundation
+
+
+ succeeded in 516ms:
+HTTP/2 404 
+date: Tue, 09 Jun 2026 00:57:27 GMT
+content-type: text/html
+cf-ray: a08c2eabaf298628-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+version 2.0.public_draft sources
+HTTP/2 404 
+date: Tue, 09 Jun 2026 00:57:28 GMT
+content-type: text/html
+cf-ray: a08c2ead8b31bb08-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0.pom 2>/dev/null || true' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javax.servlet</groupId>
+  <artifactId>jsp-api</artifactId>
+  <version>2.0</version>
+  <dependencies>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.4</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: javax/servlet/jsp-api</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>javax/servlet/jsp-api</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="2.0/" title="2.0/">2.0/</a>                                              2006-11-06 01:08         -      
+<a href="2.0.public_draft/" title="2.0.public_draft/">2.0.public_draft/</a>                                 2006-11-06 01:08         -      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-11-06 01:08       263      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-11-06 01:08        77      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-11-06 01:08       132      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -I -L -s https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0-sources.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 187ms:
+HTTP/2 404 
+date: Tue, 09 Jun 2026 00:57:33 GMT
+content-type: text/html
+cf-ray: a08c2ecd8f7f7dd2-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0-sources.jar
+
+web search: 
+web search: JavaServer Pages 2.0 API javax.servlet.jsp PageContext documentation
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/tomcat.git | rg '5\\.0|5\\.5|TOMCAT_5' | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 291ms:
+e37b977db6f47e4380ad67114a49e8568951c953	refs/tags/8.5.0
+c6a2c4ed296c7f8839b72e8e31cb53b84102d02c	refs/tags/8.5.5
+c40ede65ea4fb44b1957ec482f28c7afa71f1b50	refs/tags/8.5.50
+05bfeed882fadd6e3b5c64a7851125750d37e297	refs/tags/8.5.51
+c83fd06b3cd0c96ffd7dc660107a1283b714483b	refs/tags/8.5.52
+9babbd0b0560303fbe5cc5bf7e7c2a8e74e4d665	refs/tags/8.5.53
+0b365bb7032a5e30b35fedc56e7def82a3e55f94	refs/tags/8.5.54
+c8a57e4a2db8e5af314bae48123fb5990da5b7a5	refs/tags/8.5.55
+4560d2f5a49965f73ed07cb879f17d9c096c9d13	refs/tags/8.5.56
+9c649984ef92c2534a734c6584220a9a0c0c3462	refs/tags/8.5.57
+2fe65bc24e48ee5ea079937e6a73576339f871ce	refs/tags/8.5.58
+c042ec71219dbde3e1ce0381ce5be0801120d0fa	refs/tags/8.5.59
+
+exec
+/usr/bin/bash -lc 'for repo in tomcat55 tomcat50; do echo $repo; git ls-remote --tags "https://github.com/apache/$repo.git" 2>&1 | sed -n '"'1,20p'; done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 752ms:
+c0b3f7b137ba68211788714fb704ae4873ec3af7	refs/tags/TOMCAT_5_5_0
+a11a405a670dbf5b13fa033c833f719fbb676826	refs/tags/TOMCAT_5_5_0^{}
+8cb47d0b91d02b3a1d546c702673ac2ca23f0829	refs/tags/TOMCAT_5_5_1
+3f732334a502a5c9164e35535c003afc495a4f84	refs/tags/TOMCAT_5_5_1^{}
+8c146047ecddc2781c52cfc958d48c20133e60b7	refs/tags/TOMCAT_5_5_10
+3cdbf65a9bf082643b6ef0fd8068a140331b817b	refs/tags/TOMCAT_5_5_10^{}
+783c4558f7fffc5f59036e45a1d1fedaf2e3dd09	refs/tags/TOMCAT_5_5_11
+c757cd52b00b600403776aba5ac85437c5b83823	refs/tags/TOMCAT_5_5_11^{}
+8fb183bcd14e29046f7307a0284553a6c79b8baa	refs/tags/TOMCAT_5_5_12
+3615f065752f337a7ca775513d3181de1ff24460	refs/tags/TOMCAT_5_5_12^{}
+aa025a1bc8ba1a06168f79db8a582aacf1673b4e	refs/tags/TOMCAT_5_5_13
+4607a18b5cf17e8ca8b56ecc86790ef535119de5	refs/tags/TOMCAT_5_5_13^{}
+12a2b4dab5630ff1dada6afeb814ea6ca3044cbd	refs/tags/TOMCAT_5_5_14
+92a4dfa87a4ccf846d1c5c6a13994a12197d1b40	refs/tags/TOMCAT_5_5_14^{}
+a1fa4d7b2baff704cc0704d506e95399988c754d	refs/tags/TOMCAT_5_5_15
+db4222b3e6b076a203ac9f99cd23f5b7372ee87b	refs/tags/TOMCAT_5_5_15^{}
+af6119b0f4ea275e43056f0903e49bc38714dbea	refs/tags/TOMCAT_5_5_16
+f5df3e09941614c4ad2f306b45d1edfed83c5bb4	refs/tags/TOMCAT_5_5_16^{}
+b7a1c96e4db4de28c00110d4cd03e678965b54ce	refs/tags/TOMCAT_5_5_17
+5a7fc8948e770410e24b4fdea6b8eb7473940285	refs/tags/TOMCAT_5_5_17^{}
+tomcat50
+remote: Repository not found.
+fatal: repository 'https://github.com/apache/tomcat50.git/' not found
+
+codex
+The artifact’s manifest identifies Apache Software Foundation as the implementation vendor, which points toward Apache Tomcat-era JSP API sources, but the version string is a Maven timestamp rather than a Tomcat release tag. I’m checking whether an Apache tag can be matched directly; without that match, the source/repository fields should remain `N/A` rather than imply a provenance the artifact metadata does not prove.
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d); git clone --depth 1 --branch TOMCAT_5_5_0 https://github.com/apache/tomcat55.git "$tmpdir/tomcat55" >/tmp/tomcat55_clone.log 2>&1 && (cd "$tmpdir/tomcat55" && find . -path '"'*javax/servlet/jsp/PageContext.java' -o -path '*javax/servlet/jsp/JspContext.java' -o -name 'jsp-api.jar' | sed -n '1,120p'); status="'$?; cat /tmp/tomcat55_clone.log; rm -rf "$tmpdir"; exit $status' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 1581ms:
+./servletapi/jsr152/src/share/javax/servlet/jsp/JspContext.java
+./servletapi/jsr152/src/share/javax/servlet/jsp/PageContext.java
+Cloning into '/tmp/tmp.ML3SNhhpNR/tomcat55'...
+Note: switching to 'a11a405a670dbf5b13fa033c833f719fbb676826'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+
+codex
+An Apache `tomcat55` tag contains the JSP 2.0 API source tree under `servletapi/jsr152`, but I still need to see whether that tag is actually the source for this Maven timestamped artifact. I’m comparing tag contents and artifact metadata instead of assuming the nearest-looking Apache source tree is the same release.
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d); git clone --depth 1 --branch TOMCAT_5_5_0 https://github.com/apache/tomcat55.git "$tmpdir/tomcat55" >/dev/null 2>&1; find "$tmpdir/tomcat55/servletapi/jsr152" -maxdepth 3 -type f | sed "s#$tmpdir/tomcat55/##" | sort | sed -n '"'1,160p'; rm -rf \""'$tmpdir"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/apache/tomcat55/tree/TOMCAT_5_5_0/servletapi/jsr152/src/share | sed -n '1,12p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d); git clone --depth 1 --branch TOMCAT_5_5_0 https://github.com/apache/tomcat55.git "$tmpdir/tomcat55" >/dev/null 2>&1; sed -n '"'1,120p' \""'$tmpdir/tomcat55/servletapi/jsr152/src/share/javax/servlet/jsp/JspContext.java"; rm -rf "$tmpdir"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/apache/tomcat55/tree/TOMCAT_5_5_0/servletapi/jsr152/test | sed -n '1,12p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 430ms:
+HTTP/2 404 
+date: Tue, 09 Jun 2026 00:58:06 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+
+ succeeded in 563ms:
+HTTP/2 200 
+date: Tue, 09 Jun 2026 00:58:06 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"db934b3684ad9e8c512dddde94aca56d"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+ succeeded in 1789ms:
+/*
+* Copyright 2004 The Apache Software Foundation
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/ 
+package javax.servlet.jsp;
+
+import java.util.Enumeration;
+
+import javax.servlet.jsp.el.ExpressionEvaluator;
+import javax.servlet.jsp.el.VariableResolver;
+
+/**
+ * <p>
+ * <code>JspContext</code> serves as the base class for the 
+ * PageContext class and abstracts all information that is not specific
+ * to servlets.  This allows for Simple Tag Extensions to be used
+ * outside of the context of a request/response Servlet.
+ * <p>
+ * The JspContext provides a number of facilities to the 
+ * page/component author and page implementor, including:
+ * <ul>
+ * <li>a single API to manage the various scoped namespaces
+ * <li>a mechanism to obtain the JspWriter for output
+ * <li>a mechanism to expose page directive attributes to the 
+ *     scripting environment
+ * </ul>
+ *
+ * <p><B>Methods Intended for Container Generated Code</B>
+ * <p>
+ * The following methods enable the <B>management of nested</B> JspWriter 
+ * streams to implement Tag Extensions: <code>pushBody()</code> and
+ * <code>popBody()</code>
+ *
+ * <p><B>Methods Intended for JSP authors</B>
+ * <p>
+ * Some methods provide <B>uniform access</B> to the diverse objects
+ * representing scopes.
+ * The implementation must use the underlying machinery
+ * corresponding to that scope, so information can be passed back and
+ * forth between the underlying environment (e.g. Servlets) and JSP pages.
+ * The methods are:
+ * <code>setAttribute()</code>,  <code>getAttribute()</code>,
+ * <code>findAttribute()</code>,  <code>removeAttribute()</code>,
+ * <code>getAttributesScope()</code> and 
+ * <code>getAttributeNamesInScope()</code>.
+ * 
+ * <p>
+ * The following methods provide <B>convenient access</B> to implicit objects:
+ * <code>getOut()</code>
+ *
+ * <p>
+ * The following methods provide <B>programmatic access</b> to the 
+ * Expression Language evaluator:
+ * <code>getExpressionEvaluator()</code>, <code>getVariableResolver()</code>
+ *
+ * @since 2.0
+ */
+
+public abstract class JspContext {
+
+    /**
+     * Sole constructor. (For invocation by subclass constructors, 
+     * typically implicit.)
+     */
+    public JspContext() {
+    }
+    
+    /** 
+     * Register the name and value specified with page scope semantics.
+     * If the value passed in is <code>null</code>, this has the same 
+     * effect as calling 
+     * <code>removeAttribute( name, PageContext.PAGE_SCOPE )</code>.
+     *
+     * @param name the name of the attribute to set
+     * @param value the value to associate with the name, or null if the
+     *     attribute is to be removed from the page scope.
+     * @throws NullPointerException if the name is null
+     */
+
+    abstract public void setAttribute(String name, Object value);
+
+    /**
+     * Register the name and value specified with appropriate 
+     * scope semantics.  If the value passed in is <code>null</code>, 
+     * this has the same effect as calling
+     * <code>removeAttribute( name, scope )</code>.
+     * 
+     * @param name the name of the attribute to set
+     * @param value the object to associate with the name, or null if
+     *     the attribute is to be removed from the specified scope.
+     * @param scope the scope with which to associate the name/object
+     * 
+     * @throws NullPointerException if the name is null
+     * @throws IllegalArgumentException if the scope is invalid
+     * @throws IllegalStateException if the scope is 
+     *     PageContext.SESSION_SCOPE but the page that was requested
+     *     does not participate in a session or the session has been
+     *     invalidated.
+     */
+
+    abstract public void setAttribute(String name, Object value, int scope);
+
+    /**
+     * Returns the object associated with the name in the page scope or null
+     * if not found.
+     *
+     * @param name the name of the attribute to get
+     * @return the object associated with the name in the page scope 
+     *     or null if not found.
+
+ succeeded in 1843ms:
+servletapi/jsr152/.cvsignore
+servletapi/jsr152/BUILDING.txt
+servletapi/jsr152/LICENSE
+servletapi/jsr152/README.txt
+servletapi/jsr152/build.xml
+servletapi/jsr152/examples/WEB-INF/tagPlugins.xml
+servletapi/jsr152/examples/WEB-INF/web.xml
+servletapi/jsr152/examples/cal/cal1.jsp
+servletapi/jsr152/examples/cal/cal2.jsp
+servletapi/jsr152/examples/cal/calendar.html
+servletapi/jsr152/examples/cal/login.html
+servletapi/jsr152/examples/checkbox/CheckTest.html
+servletapi/jsr152/examples/checkbox/check.html
+servletapi/jsr152/examples/checkbox/checkresult.jsp
+servletapi/jsr152/examples/checkbox/cresult.html
+servletapi/jsr152/examples/colors/ColorGameBean.html
+servletapi/jsr152/examples/colors/clr.html
+servletapi/jsr152/examples/colors/colors.html
+servletapi/jsr152/examples/colors/colrs.jsp
+servletapi/jsr152/examples/dates/date.html
+servletapi/jsr152/examples/dates/date.jsp
+servletapi/jsr152/examples/error/er.html
+servletapi/jsr152/examples/error/err.jsp
+servletapi/jsr152/examples/error/error.html
+servletapi/jsr152/examples/error/errorpge.jsp
+servletapi/jsr152/examples/forward/forward.jsp
+servletapi/jsr152/examples/forward/fwd.html
+servletapi/jsr152/examples/forward/one.jsp
+servletapi/jsr152/examples/forward/two.html
+servletapi/jsr152/examples/images/code.gif
+servletapi/jsr152/examples/images/execute.gif
+servletapi/jsr152/examples/images/read.gif
+servletapi/jsr152/examples/images/return.gif
+servletapi/jsr152/examples/include/foo.html
+servletapi/jsr152/examples/include/foo.jsp
+servletapi/jsr152/examples/include/inc.html
+servletapi/jsr152/examples/include/include.jsp
+servletapi/jsr152/examples/index.html
+servletapi/jsr152/examples/jsptoserv/hello.jsp
+servletapi/jsr152/examples/jsptoserv/jsptoservlet.jsp
+servletapi/jsr152/examples/jsptoserv/jts.html
+servletapi/jsr152/examples/num/numguess.html
+servletapi/jsr152/examples/num/numguess.jsp
+servletapi/jsr152/examples/plugin/plugin.html
+servletapi/jsr152/examples/plugin/plugin.jsp
+servletapi/jsr152/examples/sessions/DummyCart.html
+servletapi/jsr152/examples/sessions/carts.html
+servletapi/jsr152/examples/sessions/carts.jsp
+servletapi/jsr152/examples/sessions/crt.html
+servletapi/jsr152/examples/simpletag/foo.html
+servletapi/jsr152/examples/simpletag/foo.jsp
+servletapi/jsr152/examples/snp/snoop.html
+servletapi/jsr152/examples/snp/snoop.jsp
+servletapi/jsr152/examples/source.jsp
+servletapi/jsr152/examples/tagplugin/choose.html
+servletapi/jsr152/examples/tagplugin/choose.jsp
+servletapi/jsr152/examples/tagplugin/foreach.html
+servletapi/jsr152/examples/tagplugin/foreach.jsp
+servletapi/jsr152/examples/tagplugin/howto.html
+servletapi/jsr152/examples/tagplugin/if.html
+servletapi/jsr152/examples/tagplugin/if.jsp
+servletapi/jsr152/examples/tagplugin/notes.html
+servletapi/jsr152/examples/xml/xml.html
+servletapi/jsr152/examples/xml/xml.jsp
+servletapi/jsr152/src/etc/manifest
+
+codex
+The Tomcat tag has matching package sources and examples, but no dedicated test suite at the checked path. I’m going one level deeper now: comparing the tag’s manifest/build output metadata with the Maven jar so I can decide whether the source URL is defensible.
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/apache/tomcat55/tree/TOMCAT_5_5_0/servletapi/jsr152/src/share | sed -n '1,16p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 09 Jun 2026 00:58:06 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"db934b3684ad9e8c512dddde94aca56d"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=O6uRlvB75O5Cz0xLaPjZp%2BVNscgrXchyQRp4%2F6ppm1JsVOO7SqugiW75PgWqdzumkv0kykSLkOLnb5eRWSzntLkcRnQoPqp1Ao2GXNv5ayCXESSVYdQTPgZLqntjlX1yhEIBbdRgg6le4uqQ4RE2IpABkuNqX1hC9aGxQ6kceo86KZbRoaYen4QPvXmRmk9zU5SozsL0KOoZl51qT47fPAri31LK8yOeakxj%2F%2FMOrFH4cX6JRJx7Wr3fOFgT3Cc5GDFpB1whBpOEG2haGGFJEw%3D%3D--pl1NZCFBx6VLNgZ2--J3lMPwUA3uN4FQ%2BY3ulYAA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1106224013.1780966695; expires=Wed, 09 Jun 2027 00:58:15 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d); git clone --depth 1 --branch TOMCAT_5_5_0 https://github.com/apache/tomcat55.git "$tmpdir/tomcat55" >/dev/null 2>&1; printf '"'manifest:\\n'; sed -n '1,80p' \""'$tmpdir/tomcat55/servletapi/jsr152/src/etc/manifest"; printf '"'\\nbuild version refs:\\n'; rg -n \"Implementation-Version|Specification-Version|2.0.public_draft|jsp-api|dist\" \""'$tmpdir/tomcat55/servletapi/jsr152" | sed -n '"'1,120p'; rm -rf \""'$tmpdir"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d); git clone --depth 1 --branch TOMCAT_5_5_0 https://github.com/apache/tomcat55.git "$tmpdir/tomcat55" >/dev/null 2>&1; find "$tmpdir/tomcat55/servletapi/jsr152/src/share" -type f | sed "s#$tmpdir/tomcat55/##" | sort | sed -n '"'1,160p'; rm -rf \""'$tmpdir"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/apache/tomcat55 | sed -n '1,16p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 545ms:
+HTTP/2 200 
+date: Tue, 09 Jun 2026 00:58:15 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"b522306bdfc0cc0fe589f9d742f570af"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=AZ%2B1c3NXOUGDnJIzSwSzt%2FoKRwS%2BFWsMtYmSVPB2ksGv%2FS3F4kjYYJ0r%2FKlqnaO3f0uH3DUkUPkL9VfC9ys181IlSd%2BP5luy1Onbg5SXaS3Us7nQ4LgIrOPgVipVVuxkay4zo87jotQj%2BUyJjPuVmKXqH%2BgTVDWkq8HuqQBnsrVhdiYJXzG749xRon4by7y2M0JflaI7v1si8BMdKrNbtJ4FDKJ0geF8mHDCCwXye%2F2BdFncOHBG5KGMl06BYjRfx9y4Ft2LhnV5BwjRAIJBvQ%3D%3D--xy8hiBRQepMEz3eL--ZFApbDxHW5SxcMuwyNfhbA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2122745048.1780966695; expires=Wed, 09 Jun 2027 00:58:15 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+
+ succeeded in 1357ms:
+servletapi/jsr152/src/share/dtd/jsp_2_0.xsd
+servletapi/jsr152/src/share/dtd/jspxml.dtd
+servletapi/jsr152/src/share/dtd/jspxml.xsd
+servletapi/jsr152/src/share/dtd/web-jsptaglibrary_1_1.dtd
+servletapi/jsr152/src/share/dtd/web-jsptaglibrary_1_2.dtd
+servletapi/jsr152/src/share/dtd/web-jsptaglibrary_2_0.xsd
+servletapi/jsr152/src/share/javax/servlet/jsp/ErrorData.java
+servletapi/jsr152/src/share/javax/servlet/jsp/HttpJspPage.java
+servletapi/jsr152/src/share/javax/servlet/jsp/JspContext.java
+servletapi/jsr152/src/share/javax/servlet/jsp/JspEngineInfo.java
+servletapi/jsr152/src/share/javax/servlet/jsp/JspException.java
+servletapi/jsr152/src/share/javax/servlet/jsp/JspFactory.java
+servletapi/jsr152/src/share/javax/servlet/jsp/JspPage.java
+servletapi/jsr152/src/share/javax/servlet/jsp/JspTagException.java
+servletapi/jsr152/src/share/javax/servlet/jsp/JspWriter.java
+servletapi/jsr152/src/share/javax/servlet/jsp/PageContext.java
+servletapi/jsr152/src/share/javax/servlet/jsp/SkipPageException.java
+servletapi/jsr152/src/share/javax/servlet/jsp/el/ELException.java
+servletapi/jsr152/src/share/javax/servlet/jsp/el/ELParseException.java
+servletapi/jsr152/src/share/javax/servlet/jsp/el/Expression.java
+servletapi/jsr152/src/share/javax/servlet/jsp/el/ExpressionEvaluator.java
+servletapi/jsr152/src/share/javax/servlet/jsp/el/FunctionMapper.java
+servletapi/jsr152/src/share/javax/servlet/jsp/el/VariableResolver.java
+servletapi/jsr152/src/share/javax/servlet/jsp/el/package.html
+servletapi/jsr152/src/share/javax/servlet/jsp/package.html
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/BodyContent.java
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/BodyTag.java
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/BodyTagSupport.java
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/DynamicAttributes.java
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/FunctionInfo.java
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/IterationTag.java
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/JspFragment.java
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/JspTag.java
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/PageData.java
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/SimpleTag.java
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/SimpleTagSupport.java
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/Tag.java
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/TagAdapter.java
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/TagAttributeInfo.java
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/TagData.java
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/TagExtraInfo.java
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/TagFileInfo.java
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/TagInfo.java
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/TagLibraryInfo.java
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/TagLibraryValidator.java
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/TagSupport.java
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/TagVariableInfo.java
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/TryCatchFinally.java
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/ValidationMessage.java
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/VariableInfo.java
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/doc-files/BodyTagProtocol.gif
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/doc-files/IterationTagProtocol.gif
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/doc-files/TagProtocol.gif
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/doc-files/VariableInfo-1.gif
+servletapi/jsr152/src/share/javax/servlet/jsp/tagext/package.html
+
+ succeeded in 1433ms:
+manifest:
+Manifest-version: 1.0
+
+Name: javax/servlet/jsp/
+Specification-Title: Java API for JavaServer Pages
+Specification-Version: 2.0
+Specification-Vendor: Sun Microsystems, Inc.
+Implementation-Title: javax.servlet.jsp
+Implementation-Version: 2.0.@implementation.revision@
+Implementation-Vendor: Apache Software Foundation
+
+
+build version refs:
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/source.jsp:11:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:15:  <property name="jsp-api.build"    value="build"/>
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:16:  <property name="jsp-api.dist"     value="dist"/>
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:17:  <property name="servlet-api.jar"  value="../jsr154/dist/lib/servlet-api.jar"/>
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:18:  <property name="jsp-api.jar" value="${jsp-api.dist}/lib/jsp-api.jar"/>
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:21:    <pathelement location="${jsp-api.build}/classes"/>
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:31:    <mkdir dir="${jsp-api.build}"/>
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:32:    <mkdir dir="${jsp-api.build}/classes"/>
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:33:    <mkdir dir="${jsp-api.build}/docs"/>
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:34:    <mkdir dir="${jsp-api.build}/docs/api"/>
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:35:    <mkdir dir="${jsp-api.build}/examples"/>
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:36:    <mkdir dir="${jsp-api.build}/ant"/>
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:39:    <mkdir dir="${jsp-api.dist}"/>
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:40:    <mkdir dir="${jsp-api.dist}/docs"/>
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:41:    <mkdir dir="${jsp-api.dist}/docs/api"/>
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:42:    <mkdir dir="${jsp-api.dist}/lib"/>
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:43:    <mkdir dir="${jsp-api.dist}/src"/>
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:44:    <mkdir dir="${jsp-api.dist}/examples"/>
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:46:    <uptodate property="docs.uptodate" targetfile="${jsp-api.build}/docs/api/index.html">
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:56:    <copy todir="${jsp-api.dist}">
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:70:    <javac srcdir="src/share" destdir="${jsp-api.build}/classes"
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:76:    <copy todir="${jsp-api.build}/classes">
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:83:    <copy todir="${jsp-api.build}/classes/javax/servlet/jsp/resources">
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:101:             destdir="${jsp-api.build}/docs/api"
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:112:    <javac  srcdir="src/ant" destdir="${jsp-api.build}/ant"
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:117:                classpath="${jsp-api.build}/ant" />
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:122:    <copy todir="${jsp-api.build}/examples">
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:128:    <txt2html todir="${jsp-api.build}/examples/jsp2/simpletag">
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:142:    <txt2html todir="${jsp-api.build}/examples/jsp2/jspattribute">
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:153:    <txt2html todir="${jsp-api.build}/examples/cal">
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:162:    <txt2html todir="${jsp-api.build}/examples/jsptoserv">
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:168:    <txt2html todir="${jsp-api.build}/examples/jsp2/el">
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:174:    <txt2html todir="${jsp-api.build}/examples/jsp2/misc">
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:180:    <txt2html todir="${jsp-api.build}/examples/jsp2/tagfiles">
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:186:    <txt2html todir="${jsp-api.build}/examples">
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:203:             destdir="${jsp-api.build}/examples/WEB-INF/classes"
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:211:             destdir="${jsp-api.build}/examples/plugin/applet"
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:218:    <jar   jarfile="${jsp-api.dist}/examples/examples.war"
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:219:           basedir="${jsp-api.build}/examples" includes="**"/>
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:229:    <copy tofile="${jsp-api.build}/manifest"
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:238:    <jar jarfile="${jsp-api.jar}"
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:239:         basedir="${jsp-api.build}/classes"
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:240:         manifest="${jsp-api.build}/manifest">
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:246:  <target name="dist" depends="compile,examples,javadoc,jar"
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:247:   description="Create binary distribution">
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:250:    <copy todir="${jsp-api.dist}/docs/api">
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:251:        <fileset dir="${jsp-api.build}/docs/api"/>
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:255:    <copy todir="${jsp-api.dist}/src">
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:266:    <delete dir="${jsp-api.build}"/>
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:267:    <delete dir="${jsp-api.dist}"/>
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:273:  <target name="all" depends="clean,dist"
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/build.xml:274:   description="Clean, compile, and dist"/>
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/error/error.html:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/README.txt:26:included in binary distributions of Tomcat 4.0, so you need not download this
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/error/err.jsp:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/error/errorpge.jsp:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/BUILDING.txt:19:* Download a binary distribution of Ant 1.3 from:
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/BUILDING.txt:31:* Unpack the binary distribution into a convenient location so that the
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/BUILDING.txt:53:* Download a binary distribution of JAXP 1.1 (Final Version) from:
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/BUILDING.txt:57:* Unpack the binary distribution into a convenient location so that the
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/BUILDING.txt:63:* Make the JAR files of this distribution ("crimson.jar", "jaxp.jar", and
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/BUILDING.txt:77:  download a source distribution from:
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/BUILDING.txt:87:  (Alternatively, you can download the Servlet API source distribution
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/BUILDING.txt:89:  Such distributions will contain exactly the Servlet API classes used
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/BUILDING.txt:90:  to build the "servlet.jar" file inside that Tomcat distribution.)
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/BUILDING.txt:92:* Unpack the source distribution into a convenient location so that the
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/BUILDING.txt:93:  distribution resides in its own directory (conventionally named
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/BUILDING.txt:103:named "build.properties" in the source distribution directory (for property
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/BUILDING.txt:120:convention, the "dist" target creates a complete binary distribution.  To
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/BUILDING.txt:124:  ant dist
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/BUILDING.txt:126:This will create a complete binary distribution of the subproject (equivalent
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/BUILDING.txt:127:in structure to the corresponding binary distribution downloadable from the
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/BUILDING.txt:128:Jakarta web site), in the "${servletapi.source}/dist" directory.  It will have
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/error/er.html:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/simpletag/foo.html:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/num/numguess.jsp:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/simpletag/foo.jsp:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/xml/xml.html:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/xml/xml.jsp:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/num/numguess.html:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/sessions/DummyCart.html:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/checkbox/checkresult.jsp:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/sessions/carts.html:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/checkbox/cresult.html:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/sessions/carts.jsp:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/checkbox/CheckTest.html:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/plugin/plugin.jsp:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/sessions/crt.html:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/checkbox/check.html:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/plugin/plugin.html:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/WEB-INF/tags/helloWorld.tag:11:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/index.html:13:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/security/protected/index.jsp:11:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/cal/login.html:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/WEB-INF/tags/xhtmlbasic.tag:11:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/jsptoserv/hello.jsp:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/security/protected/login.jsp:11:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/WEB-INF/tags/panel.tag:11:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/cal/calendar.html:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/plugin/applet/Clock2.java:11:* distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/jsptoserv/jsptoservlet.jsp:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/LICENSE:11:      and distribution as defined by Sections 1 through 9 of this document.
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/LICENSE:71:      publicly display, publicly perform, sublicense, and distribute the
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/LICENSE:90:   4. Redistribution. You may reproduce and distribute copies of the
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/LICENSE:102:          that You distribute, all copyright, patent, trademark, and
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/LICENSE:108:          distribution, then any Derivative Works that You distribute must
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/LICENSE:112:          of the following places: within a NOTICE text file distributed
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/LICENSE:119:          notices within Derivative Works that You distribute, alongside
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/LICENSE:126:      for use, reproduction, or distribution of Your modifications, or
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/LICENSE:128:      reproduction, and distribution of the Work otherwise complies with
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/LICENSE:151:      appropriateness of using or redistributing the Work and assume any
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/LICENSE:166:   9. Accepting Warranty or Additional Liability. While redistributing
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/LICENSE:199:   distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/dates/date.jsp:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/security/protected/error.jsp:11:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/WEB-INF/tags/displayProducts.tag:11:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/cal/cal2.jsp:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/jsptoserv/jts.html:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/cal/cal1.jsp:12:  distributed under the License is distributed on an "AS IS" BASIS,
+/tmp/tmp.Dw8ZhxClMk/tomcat55/servletapi/jsr152/examples/dates/date.html:12:  distributed under the License is distributed on an "AS IS" BASIS,
+
+codex
+The closest source tree’s manifest template expands to the same specification and implementation fields found in the Maven jar, but its tag name still does not encode `2.0-20040521`. I’m checking history around the artifact date before using the Tomcat repository fields, because the requested metadata should not point at a merely compatible source snapshot.
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d); git clone --filter=blob:none --no-checkout https://github.com/apache/tomcat55.git "$tmpdir/tomcat55" >/tmp/tomcat55_full.log 2>&1; cd "$tmpdir/tomcat55" && git log --date=short --format='"'%h %ad %D %s' -- servletapi/jsr152/src/share/javax/servlet/jsp/JspContext.java | sed -n '1,80p'; status="'$?; cat /tmp/tomcat55_full.log; rm -rf "$tmpdir"; exit $status' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 777ms:
+2ee172f418 2009-08-07  Stage 1 of 5.5.x move - move trunk
+Cloning into '/tmp/tmp.J9j9YsZ8y9/tomcat55'...
+
+codex
+The Git mirror is not useful for pre-5.5 history; it only shows the repository import/move. I’m checking the Apache Subversion archive layout, which is more likely to preserve the original tag/date for this old artifact.
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/tomcat/archive/tc5.5.x/tags/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc "curl -I -L -s https://svn.apache.org/repos/asf/tomcat/archive/tc5.5.x/tags/TOMCAT_5_5_0/servletapi/jsr152/src/share/javax/servlet/jsp/JspContext.java | sed -n '1,16p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/tomcat/archive/tc5.5.x/tags/TOMCAT_5_5_0/servletapi/jsr152/src/etc/manifest | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc "curl -I -L -s https://svn.apache.org/repos/asf/tomcat/archive/tc5.5.x/tags/TOMCAT_5_5_0/servletapi/jsr152/test/ | sed -n '1,16p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 153ms:
+<html><head><title>asf - Revision 1935155: /tomcat/archive/tc5.5.x/tags</title></head>
+<body>
+ <h2>asf - Revision 1935155: /tomcat/archive/tc5.5.x/tags</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="TOMCAT_5_5_0/">TOMCAT_5_5_0/</a></li>
+  <li><a href="TOMCAT_5_5_1/">TOMCAT_5_5_1/</a></li>
+  <li><a href="TOMCAT_5_5_10/">TOMCAT_5_5_10/</a></li>
+  <li><a href="TOMCAT_5_5_11/">TOMCAT_5_5_11/</a></li>
+  <li><a href="TOMCAT_5_5_12/">TOMCAT_5_5_12/</a></li>
+  <li><a href="TOMCAT_5_5_13/">TOMCAT_5_5_13/</a></li>
+  <li><a href="TOMCAT_5_5_14/">TOMCAT_5_5_14/</a></li>
+  <li><a href="TOMCAT_5_5_15/">TOMCAT_5_5_15/</a></li>
+  <li><a href="TOMCAT_5_5_16/">TOMCAT_5_5_16/</a></li>
+  <li><a href="TOMCAT_5_5_17/">TOMCAT_5_5_17/</a></li>
+  <li><a href="TOMCAT_5_5_18/">TOMCAT_5_5_18/</a></li>
+  <li><a href="TOMCAT_5_5_19/">TOMCAT_5_5_19/</a></li>
+  <li><a href="TOMCAT_5_5_2/">TOMCAT_5_5_2/</a></li>
+  <li><a href="TOMCAT_5_5_20/">TOMCAT_5_5_20/</a></li>
+  <li><a href="TOMCAT_5_5_21/">TOMCAT_5_5_21/</a></li>
+  <li><a href="TOMCAT_5_5_22/">TOMCAT_5_5_22/</a></li>
+  <li><a href="TOMCAT_5_5_23/">TOMCAT_5_5_23/</a></li>
+  <li><a href="TOMCAT_5_5_24/">TOMCAT_5_5_24/</a></li>
+  <li><a href="TOMCAT_5_5_25/">TOMCAT_5_5_25/</a></li>
+  <li><a href="TOMCAT_5_5_26/">TOMCAT_5_5_26/</a></li>
+  <li><a href="TOMCAT_5_5_27/">TOMCAT_5_5_27/</a></li>
+  <li><a href="TOMCAT_5_5_28/">TOMCAT_5_5_28/</a></li>
+  <li><a href="TOMCAT_5_5_29/">TOMCAT_5_5_29/</a></li>
+  <li><a href="TOMCAT_5_5_3/">TOMCAT_5_5_3/</a></li>
+  <li><a href="TOMCAT_5_5_30/">TOMCAT_5_5_30/</a></li>
+  <li><a href="TOMCAT_5_5_31/">TOMCAT_5_5_31/</a></li>
+  <li><a href="TOMCAT_5_5_32/">TOMCAT_5_5_32/</a></li>
+  <li><a href="TOMCAT_5_5_33/">TOMCAT_5_5_33/</a></li>
+  <li><a href="TOMCAT_5_5_34/">TOMCAT_5_5_34/</a></li>
+  <li><a href="TOMCAT_5_5_35/">TOMCAT_5_5_35/</a></li>
+  <li><a href="TOMCAT_5_5_36/">TOMCAT_5_5_36/</a></li>
+  <li><a href="TOMCAT_5_5_4/">TOMCAT_5_5_4/</a></li>
+  <li><a href="TOMCAT_5_5_5/">TOMCAT_5_5_5/</a></li>
+  <li><a href="TOMCAT_5_5_6/">TOMCAT_5_5_6/</a></li>
+  <li><a href="TOMCAT_5_5_7/">TOMCAT_5_5_7/</a></li>
+  <li><a href="TOMCAT_5_5_8/">TOMCAT_5_5_8/</a></li>
+  <li><a href="TOMCAT_5_5_9/">TOMCAT_5_5_9/</a></li>
+ </ul>
+</body></html>
+ succeeded in 124ms:
+HTTP/1.1 404 Not Found
+Date: Tue, 09 Jun 2026 00:58:31 GMT
+Server: Apache
+Content-Type: text/html; charset=iso-8859-1
+
+
+ succeeded in 197ms:
+HTTP/1.1 200 OK
+Date: Tue, 09 Jun 2026 00:58:31 GMT
+Server: Apache
+Cache-Control: max-age=0
+Last-Modified: Thu, 18 Mar 2004 16:40:35 GMT
+ETag: "267129//tomcat/archive/tc5.5.x/tags/TOMCAT_5_5_0/servletapi/jsr152/src/share/javax/servlet/jsp/JspContext.java"
+Accept-Ranges: bytes
+Content-Length: 9852
+Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'
+Content-Type: text/x-java
+
+
+ succeeded in 423ms:
+Manifest-version: 1.0
+
+Name: javax/servlet/jsp/
+Specification-Title: Java API for JavaServer Pages
+Specification-Version: 2.0
+Specification-Vendor: Sun Microsystems, Inc.
+Implementation-Title: javax.servlet.jsp
+Implementation-Version: 2.0.@implementation.revision@
+Implementation-Vendor: Apache Software Foundation
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/tomcat/archive/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 117ms:
+<html><head><title>asf - Revision 1935155: /tomcat/archive</title></head>
+<body>
+ <h2>asf - Revision 1935155: /tomcat/archive</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="build/">build/</a></li>
+  <li><a href="connectors/">connectors/</a></li>
+  <li><a href="container/">container/</a></li>
+  <li><a href="jasper/">jasper/</a></li>
+  <li><a href="jdbc-pool/">jdbc-pool/</a></li>
+  <li><a href="jk/">jk/</a></li>
+  <li><a href="maven-plugin/">maven-plugin/</a></li>
+  <li><a href="native/">native/</a></li>
+  <li><a href="service/">service/</a></li>
+  <li><a href="servletapi/">servletapi/</a></li>
+  <li><a href="taglibs/">taglibs/</a></li>
+  <li><a href="tc3.0.x/">tc3.0.x/</a></li>
+  <li><a href="tc3.1.x/">tc3.1.x/</a></li>
+  <li><a href="tc3.2.x/">tc3.2.x/</a></li>
+  <li><a href="tc3.3.x/">tc3.3.x/</a></li>
+  <li><a href="tc3.x/">tc3.x/</a></li>
+  <li><a href="tc4.0.x/">tc4.0.x/</a></li>
+  <li><a href="tc4.1.x/">tc4.1.x/</a></li>
+  <li><a href="tc5.0.x/">tc5.0.x/</a></li>
+  <li><a href="tc5.5.x/">tc5.5.x/</a></li>
+  <li><a href="tc6.0.x/">tc6.0.x/</a></li>
+  <li><a href="tc7.0.x/">tc7.0.x/</a></li>
+  <li><a href="tc8.0.x/">tc8.0.x/</a></li>
+  <li><a href="tc8.5.x/">tc8.5.x/</a></li>
+  <li><a href="tc9.0.x/">tc9.0.x/</a></li>
+  <li><a href="tools/">tools/</a></li>
+  <li><a href="watchdog/">watchdog/</a></li>
+ </ul>
+</body></html>
+codex
+The Apache SVN archive exposes the Tomcat 5.5 JSP 2.0 source tree and it is reachable, but there is no `2.0-20040521` source tag or test directory there. I’m checking the older standalone `servletapi` archive next, which may be a better match for the original JSP API artifact.
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/tomcat/archive/servletapi/tags/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/tomcat/archive/servletapi/trunk/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/tomcat/archive/servletapi/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 106ms:
+<html><head><title>asf - Revision 1935155: /tomcat/archive/servletapi/tags</title></head>
+<body>
+ <h2>asf - Revision 1935155: /tomcat/archive/servletapi/tags</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="other/">other/</a></li>
+ </ul>
+</body></html>
+ succeeded in 102ms:
+<html><head><title>asf - Revision 1935155: /tomcat/archive/servletapi</title></head>
+<body>
+ <h2>asf - Revision 1935155: /tomcat/archive/servletapi</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="branches/">branches/</a></li>
+  <li><a href="tags/">tags/</a></li>
+ </ul>
+</body></html>
+ succeeded in 105ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -I -L -s https://svn.apache.org/repos/asf/tomcat/archive/servletapi/tags/ | sed -n '1,16p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 109ms:
+HTTP/1.1 200 OK
+Date: Tue, 09 Jun 2026 00:58:51 GMT
+Server: Apache
+Cache-Control: max-age=0
+Last-Modified: Fri, 07 Aug 2009 21:21:17 GMT
+ETag: W/"802199//tomcat/archive/servletapi/tags"
+Accept-Ranges: bytes
+Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'
+Content-Type: text/html; charset=UTF-8
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/tomcat/archive/servletapi/tags/other/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/tomcat/archive/servletapi/branches/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 118ms:
+<html><head><title>asf - Revision 1935155: /tomcat/archive/servletapi/tags/other</title></head>
+<body>
+ <h2>asf - Revision 1935155: /tomcat/archive/servletapi/tags/other</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="servlet2.3-jsp1.2-tc4.x/">servlet2.3-jsp1.2-tc4.x/</a></li>
+  <li><a href="servlet2.4-jsp2.0-tc5.x/">servlet2.4-jsp2.0-tc5.x/</a></li>
+ </ul>
+</body></html>
+ succeeded in 115ms:
+<html><head><title>asf - Revision 1935155: /tomcat/archive/servletapi/branches</title></head>
+<body>
+ <h2>asf - Revision 1935155: /tomcat/archive/servletapi/branches</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="other/">other/</a></li>
+ </ul>
+</body></html>
+codex
+The standalone Servlet/JSP API archive has a tagged `servlet2.4-jsp2.0-tc5.x` source tree, which is a better provenance match than a Tomcat 5.5 release tag. I’m verifying its layout, manifest, and whether it contains tests or generated docs before editing.
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/tomcat/archive/servletapi/tags/other/servlet2.4-jsp2.0-tc5.x/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/tomcat/archive/servletapi/tags/other/servlet2.4-jsp2.0-tc5.x/jsr152/src/etc/manifest | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc "curl -I -L -s https://svn.apache.org/repos/asf/tomcat/archive/servletapi/tags/other/servlet2.4-jsp2.0-tc5.x/jsr152/test/ | sed -n '1,16p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc "curl -I -L -s https://svn.apache.org/repos/asf/tomcat/archive/servletapi/tags/other/servlet2.4-jsp2.0-tc5.x/jsr152/src/share/ | sed -n '1,16p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 111ms:
+<html><head><title>asf - Revision 1935155: /tomcat/archive/servletapi/tags/other/servlet2.4-jsp2.0-tc5.x</title></head>
+<body>
+ <h2>asf - Revision 1935155: /tomcat/archive/servletapi/tags/other/servlet2.4-jsp2.0-tc5.x</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="J2EE_14_02/">J2EE_14_02/</a></li>
+  <li><a href="J2EE_14_03/">J2EE_14_03/</a></li>
+  <li><a href="J2EE_14_04/">J2EE_14_04/</a></li>
+  <li><a href="J2EE_14_05/">J2EE_14_05/</a></li>
+  <li><a href="J2EE_14_06/">J2EE_14_06/</a></li>
+  <li><a href="J2EE_14_07/">J2EE_14_07/</a></li>
+  <li><a href="arelease/">arelease/</a></li>
+  <li><a href="initial/">initial/</a></li>
+  <li><a href="jwsdp_12__01/">jwsdp_12__01/</a></li>
+  <li><a href="jwsdp_12__02/">jwsdp_12__02/</a></li>
+  <li><a href="jwsdp_13_01/">jwsdp_13_01/</a></li>
+  <li><a href="r1/">r1/</a></li>
+  <li><a href="s1ap8_i1/">s1ap8_i1/</a></li>
+  <li><a href="s1ap8_i2/">s1ap8_i2/</a></li>
+  <li><a href="s1ap8_i3/">s1ap8_i3/</a></li>
+  <li><a href="s1ap8_i4/">s1ap8_i4/</a></li>
+  <li><a href="s1ap8_i6/">s1ap8_i6/</a></li>
+  <li><a href="start/">start/</a></li>
+ </ul>
+</body></html>
+ succeeded in 107ms:
+HTTP/1.1 404 Not Found
+Date: Tue, 09 Jun 2026 00:59:01 GMT
+Server: Apache
+Content-Type: text/html; charset=iso-8859-1
+
+
+ succeeded in 109ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 106ms:
+HTTP/1.1 404 Not Found
+Date: Tue, 09 Jun 2026 00:59:01 GMT
+Server: Apache
+Content-Type: text/html; charset=iso-8859-1
+
+
+exec
+/usr/bin/bash -lc 'for tag in J2EE_14_02 J2EE_14_03 J2EE_14_04 J2EE_14_05 J2EE_14_06 arelease r1; do url="https://svn.apache.org/repos/asf/tomcat/archive/servletapi/tags/other/servlet2.4-jsp2.0-tc5.x/$tag/jsr152/src/etc/manifest"; code=$(curl -L -s -o /tmp/manifest.$$ -w '"'%{http_code}' \""'$url"); echo "$tag $code"; [ "$code" = 200 ] && sed -n '"'1,12p' /tmp/manifest."'$$; done; rm -f /tmp/manifest.$$' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc 'for tag in J2EE_14_02 J2EE_14_03 J2EE_14_04 J2EE_14_05 J2EE_14_06 arelease r1; do echo "== $tag =="; curl -fsSL "https://svn.apache.org/repos/asf/tomcat/archive/servletapi/tags/other/servlet2.4-jsp2.0-tc5.x/$tag/" | sed -n '"'1,80p' | rg -n \"jsr152|src|README|build|dist|tags|branches|javax|jsp\" || true; done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 1003ms:
+1:<html><head><title>asf - Revision 1935155: /tomcat/archive/servletapi/tags/other/servlet2.4-jsp2.0-tc5.x/J2EE_14_02</title></head>
+3: <h2>asf - Revision 1935155: /tomcat/archive/servletapi/tags/other/servlet2.4-jsp2.0-tc5.x/J2EE_14_02</h2>
+9:  <li><a href="README.txt">README.txt</a></li>
+10:  <li><a href="build.xml">build.xml</a></li>
+11:  <li><a href="src/">src/</a></li>
+== J2EE_14_03 ==
+1:<html><head><title>asf - Revision 1935155: /tomcat/archive/servletapi/tags/other/servlet2.4-jsp2.0-tc5.x/J2EE_14_03</title></head>
+3: <h2>asf - Revision 1935155: /tomcat/archive/servletapi/tags/other/servlet2.4-jsp2.0-tc5.x/J2EE_14_03</h2>
+6:  <li><a href="jsr152/">jsr152/</a></li>
+== J2EE_14_04 ==
+1:<html><head><title>asf - Revision 1935155: /tomcat/archive/servletapi/tags/other/servlet2.4-jsp2.0-tc5.x/J2EE_14_04</title></head>
+3: <h2>asf - Revision 1935155: /tomcat/archive/servletapi/tags/other/servlet2.4-jsp2.0-tc5.x/J2EE_14_04</h2>
+6:  <li><a href="jsr152/">jsr152/</a></li>
+== J2EE_14_05 ==
+1:<html><head><title>asf - Revision 1935155: /tomcat/archive/servletapi/tags/other/servlet2.4-jsp2.0-tc5.x/J2EE_14_05</title></head>
+3: <h2>asf - Revision 1935155: /tomcat/archive/servletapi/tags/other/servlet2.4-jsp2.0-tc5.x/J2EE_14_05</h2>
+6:  <li><a href="jsr152/">jsr152/</a></li>
+== J2EE_14_06 ==
+1:<html><head><title>asf - Revision 1935155: /tomcat/archive/servletapi/tags/other/servlet2.4-jsp2.0-tc5.x/J2EE_14_06</title></head>
+3: <h2>asf - Revision 1935155: /tomcat/archive/servletapi/tags/other/servlet2.4-jsp2.0-tc5.x/J2EE_14_06</h2>
+6:  <li><a href="jsr152/">jsr152/</a></li>
+== arelease ==
+1:<html><head><title>asf - Revision 1935155: /tomcat/archive/servletapi/tags/other/servlet2.4-jsp2.0-tc5.x/arelease</title></head>
+3: <h2>asf - Revision 1935155: /tomcat/archive/servletapi/tags/other/servlet2.4-jsp2.0-tc5.x/arelease</h2>
+6:  <li><a href="jsr152/">jsr152/</a></li>
+== r1 ==
+1:<html><head><title>asf - Revision 1935155: /tomcat/archive/servletapi/tags/other/servlet2.4-jsp2.0-tc5.x/r1</title></head>
+3: <h2>asf - Revision 1935155: /tomcat/archive/servletapi/tags/other/servlet2.4-jsp2.0-tc5.x/r1</h2>
+9:  <li><a href="README.txt">README.txt</a></li>
+10:  <li><a href="build.xml">build.xml</a></li>
+11:  <li><a href="src/">src/</a></li>
+
+ succeeded in 1149ms:
+J2EE_14_02 404
+J2EE_14_03 200
+Manifest-version: 1.0
+
+Name: javax/servlet/jsp/
+Specification-Title: Java API for JavaServer Pages
+Specification-Version: 2.0
+Specification-Vendor: Sun Microsystems, Inc.
+Implementation-Title: javax.servlet.jsp
+Implementation-Version: 2.0.@implementation.revision@
+Implementation-Vendor: Apache Software Foundation
+
+J2EE_14_04 200
+Manifest-version: 1.0
+
+Name: javax/servlet/jsp/
+Specification-Title: Java API for JavaServer Pages
+Specification-Version: 2.0
+Specification-Vendor: Sun Microsystems, Inc.
+Implementation-Title: javax.servlet.jsp
+Implementation-Version: 2.0.@implementation.revision@
+Implementation-Vendor: Apache Software Foundation
+
+J2EE_14_05 200
+Manifest-version: 1.0
+
+Name: javax/servlet/jsp/
+Specification-Title: Java API for JavaServer Pages
+Specification-Version: 2.0
+Specification-Vendor: Sun Microsystems, Inc.
+Implementation-Title: javax.servlet.jsp
+Implementation-Version: 2.0.@implementation.revision@
+Implementation-Vendor: Apache Software Foundation
+
+J2EE_14_06 200
+Manifest-version: 1.0
+
+Name: javax/servlet/jsp/
+Specification-Title: Java API for JavaServer Pages
+Specification-Version: 2.0
+Specification-Vendor: Sun Microsystems, Inc.
+Implementation-Title: javax.servlet.jsp
+Implementation-Version: 2.0.@implementation.revision@
+Implementation-Vendor: Apache Software Foundation
+
+arelease 200
+Manifest-version: 1.0
+
+Name: javax/servlet/jsp/
+Specification-Title: Java API for JavaServer Pages
+Specification-Version: 2.0
+Specification-Vendor: Sun Microsystems, Inc.
+Implementation-Title: javax.servlet.jsp
+Implementation-Version: 2.0.@implementation.revision@
+Implementation-Vendor: Apache Software Foundation
+
+r1 404
+
+exec
+/usr/bin/bash -lc 'for tag in J2EE_14_03 J2EE_14_04 J2EE_14_05 J2EE_14_06 J2EE_14_07 arelease jwsdp_13_01; do url="https://svn.apache.org/repos/asf/tomcat/archive/servletapi/tags/other/servlet2.4-jsp2.0-tc5.x/$tag/"; printf '"'%s ' \""'$tag"; curl -I -L -s "$url" | awk '"'BEGIN{code=\"\";lm=\"\"} /"'^HTTP'"\\//{code="'$2} /''^Last-Modified:/{sub(/''^Last-Modified: /,""); lm=$0} END{print code, lm}'"'; done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc 'for tag in J2EE_14_03 J2EE_14_04 J2EE_14_05 J2EE_14_06 J2EE_14_07 arelease jwsdp_13_01; do url="https://svn.apache.org/repos/asf/tomcat/archive/servletapi/tags/other/servlet2.4-jsp2.0-tc5.x/$tag/jsr152/src/share/javax/servlet/jsp/JspContext.java"; printf '"'%s ' \""'$tag"; curl -I -L -s "$url" | awk '"'BEGIN{code=\"\";lm=\"\"} /"'^HTTP'"\\//{code="'$2} /''^Last-Modified:/{sub(/''^Last-Modified: /,""); lm=$0} END{print code, lm}'"'; done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc 'for tag in J2EE_14_03 J2EE_14_04 J2EE_14_05 J2EE_14_06 J2EE_14_07 arelease jwsdp_13_01; do url="https://svn.apache.org/repos/asf/tomcat/archive/servletapi/tags/other/servlet2.4-jsp2.0-tc5.x/$tag/jsr152/build.xml"; printf '"'%s ' \""'$tag"; curl -I -L -s "$url" | awk '"'BEGIN{code=\"\";lm=\"\"} /"'^HTTP'"\\//{code="'$2} /''^Last-Modified:/{sub(/''^Last-Modified: /,""); lm=$0} END{print code, lm}'"'; done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 1052ms:
+200 Wed, 21 Aug 2002 22:05:34 GMT
+J2EE_14_04 200 Mon, 09 Sep 2002 18:01:20 GMT
+J2EE_14_05 200 Mon, 09 Sep 2002 18:01:20 GMT
+J2EE_14_06 200 Mon, 14 Oct 2002 22:44:07 GMT
+J2EE_14_07 200 Mon, 14 Oct 2002 22:44:07 GMT
+arelease 200 Tue, 13 Aug 2002 16:20:53 GMT
+jwsdp_13_01 200 Fri, 03 Oct 2003 20:18:07 GMT
+
+ succeeded in 1054ms:
+200 Fri, 02 Sep 2005 18:44:08 GMT
+J2EE_14_04 200 Fri, 02 Sep 2005 18:44:16 GMT
+J2EE_14_05 200 Fri, 02 Sep 2005 18:44:24 GMT
+J2EE_14_06 200 Fri, 02 Sep 2005 18:44:31 GMT
+J2EE_14_07 200 Fri, 02 Sep 2005 18:44:39 GMT
+arelease 200 Fri, 02 Sep 2005 18:44:47 GMT
+jwsdp_13_01 200 Fri, 02 Sep 2005 18:45:18 GMT
+
+ succeeded in 1278ms:
+200 Mon, 19 Aug 2002 16:29:51 GMT
+J2EE_14_04 200 Mon, 19 Aug 2002 16:29:51 GMT
+J2EE_14_05 200 Mon, 19 Aug 2002 16:29:51 GMT
+J2EE_14_06 200 Thu, 03 Oct 2002 23:01:44 GMT
+J2EE_14_07 200 Wed, 18 Dec 2002 18:35:37 GMT
+arelease 200 Tue, 13 Aug 2002 16:20:53 GMT
+jwsdp_13_01 200 Tue, 04 Mar 2003 00:17:05 GMT
+
+codex
+I don’t have a verified exact-version source or test URL for `2.0-20040521`: Maven has no source/test/javadoc classifiers, and the Apache archive tags are JSP 2.0 source snapshots but not this artifact’s timestamped Maven release. I’m checking the repo’s JSON conventions now so the final edit aligns with nearby metadata.
+exec
+/usr/bin/bash -lc 'find metadata/jspapi tests/src/jspapi -maxdepth 5 -type f -print | sort' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 0ms:
+metadata/jspapi/jsp-api/2.0-20040521/reachability-metadata.json
+metadata/jspapi/jsp-api/index.json
+tests/src/jspapi/jsp-api/2.0-20040521/.gitignore
+tests/src/jspapi/jsp-api/2.0-20040521/build.gradle
+tests/src/jspapi/jsp-api/2.0-20040521/gradle.properties
+tests/src/jspapi/jsp-api/2.0-20040521/settings.gradle
+tests/src/jspapi/jsp-api/2.0-20040521/user-code-filter.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\" : \"N/A\"' metadata/jspapi metadata/javax.servlet.jsp metadata/javax.servlet -g 'index.json'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 0ms:
+metadata/jspapi/jsp-api/index.json:8:    "documentation-url" : "N/A",
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\" : \"N/A\"' metadata | head -40" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 0ms:
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:6:    "repository-url" : "N/A",
+metadata/javax.transaction/transaction-api/index.json:6:    "repository-url" : "N/A",
+metadata/javax.persistence/persistence-api/index.json:6:    "repository-url" : "N/A",
+metadata/javax.servlet.jsp/jsp-api/index.json:6:    "repository-url" : "N/A",
+metadata/jspapi/jsp-api/index.json:6:    "repository-url" : "N/A",
+metadata/javax.jcr/jcr/index.json:6:    "repository-url" : "N/A",
+
+exec
+/usr/bin/bash -lc "rg -n 'svn.apache.org/repos/asf/tomcat|apache/tomcat55|servlet2.4-jsp2.0' metadata -g 'index.json'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 0ms:
+metadata/tomcat/jasper-compiler/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/tomcat/",
+metadata/tomcat/jasper-runtime/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/tomcat/",
+metadata/org.apache.tomcat/annotations-api/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/tomcat/",
+metadata/javax.servlet/servlet-api/index.json:5:    "source-code-url" : "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share",
+metadata/javax.servlet/servlet-api/index.json:6:    "repository-url" : "https://github.com/apache/tomcat55",
+
+exec
+/usr/bin/bash -lc "sed -n '1,70p' metadata/javax.servlet/servlet-api/index.json && sed -n '1,70p' metadata/tomcat/jasper-runtime/index.json && sed -n '1,70p' metadata/tomcat/jasper-compiler/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.4.public_draft",
+    "source-code-url" : "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr154/src/share",
+    "repository-url" : "https://github.com/apache/tomcat55",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/7876-servlet-2.4-prd-spec-oth-JSpec/servlet-2_4-prd-spec.pdf",
+    "description" : "Provides the Java Servlet public draft API interfaces and classes used by Java web applications and servlet containers to handle requests, responses, sessions, filters, and listeners. It lets applications compile against the standard javax.servlet contracts without bundling a servlet container implementation.",
+    "tested-versions" : [
+      "2.4-20040521",
+      "2.4.public_draft",
+      "2.5",
+      "3.0-alpha-1"
+    ],
+    "allowed-packages" : [
+      "javax.servlet"
+    ]
+  },
+  {
+    "metadata-version" : "2.4",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/servlet-api/$version$/servlet-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/javaee/servlet-spec",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/servlet-$version$-fr-spec-oth-JSpec/servlet-2_4-fr-spec.pdf",
+    "description" : "Provides the Java Servlet 2.4 API interfaces and classes used by Java web applications and servlet containers to handle requests, responses, sessions, filters, and listeners. It lets applications compile against the standard javax.servlet contracts without bundling a servlet container implementation.",
+    "tested-versions" : [
+      "2.4"
+    ],
+    "allowed-packages" : [
+      "javax.servlet"
+    ]
+  },
+  {
+    "metadata-version" : "2.3",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/servlet-api/$version$/servlet-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/javaee/servlet-spec",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://download.oracle.com/otn-pub/jcp/7840-servlet-$version$-spec-oth-JSpec/servlet-2_3-fcs-spec.pdf",
+    "description" : "Provides the Java Servlet 2.3 and JSP 1.2 API interfaces and classes used by Java web applications and servlet containers to model requests, responses, sessions, filters, and JSP pages. It lets applications compile against the standard javax.servlet and javax.servlet.jsp contracts without bundling a servlet container implementation.",
+    "tested-versions" : [
+      "2.3"
+    ],
+    "allowed-packages" : [
+      "javax.servlet"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "5.5.23",
+    "source-code-url" : "https://archive.apache.org/dist/tomcat/tomcat-5/v$version$/src/apache-tomcat-$version$-src.tar.gz",
+    "repository-url" : "https://svn.apache.org/repos/asf/tomcat/",
+    "test-code-url" : "https://archive.apache.org/dist/tomcat/tomcat-5/v$version$/src/apache-tomcat-$version$-src.tar.gz",
+    "documentation-url" : "https://archive.apache.org/dist/tomcat/tomcat-5/v$version$/bin/apache-tomcat-$version$-fulldocs.tar.gz",
+    "description" : "Apache Tomcat Jasper Runtime provides the runtime support classes used by Tomcat's Jasper JSP engine for generated JSP servlets, page contexts, tag handler pooling, and expression/function support. It is part of the Tomcat 5.5 server stack and lets JSP pages compiled by Jasper execute against the servlet and JSP APIs.",
+    "tested-versions" : [
+      "5.5.23"
+    ],
+    "allowed-packages" : [
+      "org.apache.jasper"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "5.5.23",
+    "source-code-url" : "https://archive.apache.org/dist/tomcat/tomcat-5/v$version$/src/apache-tomcat-$version$-src.tar.gz",
+    "repository-url" : "https://svn.apache.org/repos/asf/tomcat/",
+    "test-code-url" : "https://archive.apache.org/dist/tomcat/tomcat-5/v$version$/src/apache-tomcat-$version$-src.tar.gz",
+    "documentation-url" : "https://archive.apache.org/dist/tomcat/tomcat-5/v$version$/bin/apache-tomcat-$version$-fulldocs.tar.gz",
+    "description" : "Apache Tomcat Jasper Compiler contains the compiler portion of Tomcat's Jasper JSP engine, including classes that translate JSP pages into Java servlet source and drive compilation. It is used by Tomcat 5.5 to prepare JSP pages for execution against the servlet and JSP APIs.",
+    "tested-versions" : [
+      "5.5.23"
+    ],
+    "allowed-packages" : [
+      "org.apache.jasper"
+    ]
+  }
+]
+
+web search: 
+web search: JSP 2.0 specification PDF download.oracle.com otn-pub jcp
+exec
+/usr/bin/bash -lc "curl -I -L -s https://download.oracle.com/otndocs/jcp/7784-servlet-2.0-prd-spec-oth-JSpec/ | sed -n '1,16p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr152/src/share | sed -n '1,16p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/apache/tomcat55 | sed -n '1,16p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc "curl -I -L -s https://download.oracle.com/otndocs/jcp/jsp-2.0-fr-oth-JSpec/ | sed -n '1,16p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 234ms:
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Content-Length: 15491
+Content-Type: text/html
+ETag: "f9b5fa84a3a379339154fc73816d55c6:1320665538"
+Last-Modified: Fri, 25 Mar 2011 21:02:10 GMT
+Server: AkamaiNetStorage
+Date: Tue, 09 Jun 2026 00:59:50 GMT
+Connection: keep-alive
+
+
+ succeeded in 584ms:
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Content-Length: 13724
+Content-Type: text/html
+ETag: "bb8b7c7a44bf237788aa75f9ec5994e7:1320665433"
+Last-Modified: Fri, 25 Mar 2011 21:04:18 GMT
+Server: AkamaiNetStorage
+Date: Tue, 09 Jun 2026 00:59:50 GMT
+Connection: keep-alive
+
+
+ succeeded in 591ms:
+HTTP/2 200 
+date: Tue, 09 Jun 2026 00:59:50 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"a45ea0252f0fd7b4fcf59b1604b640af"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=ql7YgUlcprxaZINQgq%2FZzKVyK2seCu%2FtpAMbuUZ%2FtFqPbp2sBIluq0h8epE1aVeojxcE4zFvOT3voji0apNYOhstyMdrPkkLbkCicgxAc7ubMtKdSjLZDYa%2B9EVRT%2Fm7MNbjgp5c%2Fay22o5gTUxQMBKMGqoRRzIizoNXoCybazP92TbMSHcibibMXyx0OHS9QQZAbsAy4ZqFupFVrKIaUiiw57kYyNXShTRulRy5mllDlX%2FGndAbJswKs7scrjUq4%2B%2F0%2FKEadEG5Xv2ylJUL%2FQ%3D%3D--9qI62rfNe9ZGSssB--LCqFCftqp2A99oQOEdyW5w%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1450920435.1780966790; expires=Wed, 09 Jun 2027 00:59:50 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+
+ succeeded in 635ms:
+HTTP/2 200 
+date: Tue, 09 Jun 2026 00:59:50 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"aefb92989a373f2062e3bdbd41e1d163"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=ZG473r5Cq8ykAeD8sytXG8AjrhHi%2FqnriFcOENBUDT8zhBQfzoRcl5JvXRvZm4J6hS1VmNfdXFD9sSofh29waTThorEE3eyRN%2BST1QTou9vGfUHOz%2F0caHZN%2Bftmi39vo1tCZNwkmW3rDJd%2FufSObIxf%2BIpup4FhidQ2J8HBVTb0D9r%2FKOTtHerlD3ECG7diS1NLxnsxgqLMtntUwoe7ui%2BGrzrLS%2B7BIIS4%2BxUp2L7%2B9KC0uv9M6EMLH33oXCDlRnaI1y47YF1Dd8vBMsoWZg%3D%3D--d1ysyCcoWRqvDuOT--vsgsJ5guRjDbIlX24iAFgw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.538076065.1780966790; expires=Wed, 09 Jun 2027 00:59:50 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+
+codex
+The repo already uses `apache/tomcat55` as the source repository for the corresponding old `javax.servlet:servlet-api` public-draft metadata, including the same `*-20040521` family. Based on that local convention, I’m going to use the Tomcat 5.5 JSP API source path for source/repository, keep tests as `N/A`, and choose the versioned JSP 2.0 spec documentation if it is the actual JSP docs page.
+exec
+/usr/bin/bash -lc "curl -fsSL https://download.oracle.com/otndocs/jcp/jsp-2.0-fr-oth-JSpec/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc "curl -fsSL https://download.oracle.com/otndocs/jcp/7784-servlet-2.0-prd-spec-oth-JSpec/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc "for url in \\
+  https://download.oracle.com/otn-pub/jcp/7784-servlet-2.0-prd-spec-oth-JSpec/ \\
+  https://download.oracle.com/otn-pub/jcp/jsp-2.0-fr-oth-JSpec/; do echo \""'$url"; curl -I -L -s "$url" | sed -n '"'1,10p'; done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 1302ms:
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script language='javascript'>
+<!--
+var varWebRoot = "../assets/";
+-->
+</script>
+
+<html lang="en-US">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link href="../assets/css/menu.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/style.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/tabs.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="../assets/css/k5.css">
+<link href="../assets/css/smi-advanced-snippet.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="../assets/scripts/tabs.js"></script>
+<script type="text/javascript" src="../assets/scripts/menu.js"></script>
+<script type="text/javascript" src="../assets/scripts/getdate.js"></script>
+<script type="text/javascript" src="../assets/js/sniff.js"></script>
+<script language="javascript1.2" type="text/javascript" src="../assets/js/menucontent.js"></script>
+<script type="text/javascript" src="../assets/js/software_config_validation.js"></script>
+<title>
+JSR-000152 JavaServer Pages(TM) 2.0 Specification 2.0 Public Review Draft
+</title>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+</head>
+<body onload="P7_initPM(0,1,0,0,-1)">
+<a name="top"></a>
+<div id="header">
+<div id="logo">
+<a href="http://jcp.org/en/home/index"><img src="../assets/images/spacer.gif" alt="Java Community Process" height="81" width="151"></a>
+</div>
+<div id="tools">
+<div class="tools">
+<a href="http://java.com/en/download/index.jsp">Get Java Here</a>
+</div>
+</div>
+<div style="clear: right;"></div>
+<div class="topbar"><img src="../assets/images/spacer.gif" alt="" height="3" width="154"></div>
+</div>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<!-- BEGIN LEFT NAV -->
+<td id="leftcontent" valign="top">
+<div class="bar"><img src="../assets/images/hr_dots1.gif" alt="" height="3" width="150"></div>
+<!-- begin find JSRs form -->
+<!-- IMPORTANT! do not convert this form to Struts < html : form > tag. javascript change of form.action property fails. -->
+<img src="../assets/images/hd_find-jsrs.gif" alt="Find JSRs" height="18" width="150">
+<!-- ** Menu Start ** //-->
+<ul id="p7PMnav">
+<li><a href="http://jcp.org/en/jsr/platform">JSRs by Platform</a></li>
+<li><a href="http://jcp.org/en/jsr/tech">JSRs by Technology</a></li>
+<li><a href="http://jcp.org/en/jsr/stage">JSRs by Stage</a></li>
+<li><a href="http://jcp.org/en/jsr/ec">JSRs by Committee</a></li>
+<li><a href="http://jcp.org/en/jsr/all">List of All JSRs</a></li>
+<!--end find JSRs form -->
+<div style="clear: both;"><img src="../assets/images/spacer.gif" alt="" height="25" width="1"></div>
+<!--begin JCP info -->
+<img src="../assets/images/hd_jcp-info.gif" alt="JCP Info" height="18" width="150">
+<li><a href="http://jcp.org/en/whatsnew/jcp" class="p7PMtrg">Updates</a>
+<ul>
+<li><a href="http://jcp.org/en/whatsnew/jcp">Recent Updates</a></li>
+<li><a href="http://jcp.org/en/whatsnew/calendar">Calendar</a></li>
+</ul>
+</li>
+<li><a href="http://jcp.org/en/procedures/overview" class="p7PMtrg">About JCP</a>
+<ul>
+<li><a href="http://jcp.org/en/procedures/overview">Program Overview</a></li>
+<li><a href="http://jcp.org/en/procedures/jcp2">JCP Procedures</a></li>
+<li><a href="http://jcp.org/en/participation/members">JCP Members</a></li>
+<li><a href="http://jcp.org/en/participation/committee">Executive Committee</a></li>
+<li><a href="http://jcp.org/en/whatsnew/elections">Elections</a></li>
+</ul>
+</li>
+<li><a href="http://jcp.org/en/introduction/faq">FAQ</a></li>
+<li><a href="http://jcp.org/en/resources/contacts">Contacts</a></li>
+<li><a href="http://jcp.org/en/participation/overview" class="p7PMtrg">Participation</a>
+<ul>
+<li><a href="http://jcp.org/en/participation/overview">Getting Involved</a></li>
+<li><a href="http://jcp.org/en/participation/membership">Becoming a JCP Member</a></li>
+</ul>
+</li>
+<li><a href="http://jcp.org/en/resources/contents" class="p7PMtrg">Community Resources</a>
+<ul>
+<li><a href="http://jcp.org/en/resources/contents">Resources Overview</a></li>
+<li><a href="http://jcp.org/en/resources/guide">Spec Lead Guide</a></li>
+<li><a href="http://jcp.org/en/resources/tdk">TCK Tool & Info</a></li>
+</ul>
+</li>
+<li><a href="http://jcp.org/en/press/pmo" class="p7PMtrg">Community News</a>
+<ul>
+<li><a href="http://jcp.org/en/press/pmo">News from PMO</a></li>
+<li><a href="http://jcp.org/en/press/news">News Stories</a></li>
+<li><a href="http://jcp.org/en/press/releases">Press Releases</a></li>
+<li><a href="http://jcp.org/en/press/success">Success Stories</a></li>
+<li><a href="http://jcp.org/en/press/whitepapers">White Papers</a></li>
+</ul>
+</li>
+<div style="clear: both;"><img src="../assets/images/spacer.gif" alt="" height="25" width="1"></div>
+</ul>
+</td>
+<!-- END LEFT NAV -->
+<td width="15"><img src="../assets/images/global/spacer.gif" width="15" height="1"></td>
+<!-- BEGIN CENTER CONTENT -->
+<td id="centercontent" valign="top">
+<!-- BEGIN PAGETITLE ONE LINE -->
+<h1>
+<div class="pagetitle">
+JSR-000152 JavaServer Pages(TM) 2.0 Specification 2.0 Public Review Draft
+</div>
+</h1>
+<!-- END PAGETITLE ONE LINE -->
+<!-- Start ENO Working Area -->
+<style type="text/css">
+.warningred {color:#E76F00}
+</style >
+
+<!-- Content Table -->
+
+
+ succeeded in 1468ms:
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<script language='javascript'>
+<!--
+var varWebRoot = "../assets/";
+-->
+</script>
+
+<html lang="en-US">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link href="../assets/css/menu.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/style.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/tabs.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="../assets/css/k5.css">
+<link href="../assets/css/smi-advanced-snippet.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="../assets/scripts/tabs.js"></script>
+<script type="text/javascript" src="../assets/scripts/menu.js"></script>
+<script type="text/javascript" src="../assets/scripts/getdate.js"></script>
+<script type="text/javascript" src="../assets/js/sniff.js"></script>
+<script language="javascript1.2" type="text/javascript" src="../assets/js/menucontent.js"></script>
+<script type="text/javascript" src="../assets/js/software_config_validation.js"></script>
+<title>
+JavaServer Pages(TM) Specification 2.0 Final Release
+</title>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+</head>
+<body onload="P7_initPM(0,1,0,0,-1)">
+<a name="top"></a>
+<div id="header">
+<div id="logo">
+<a href="http://jcp.org/en/home/index"><img src="../assets/images/spacer.gif" alt="Java Community Process" height="81" width="151"></a>
+</div>
+<div id="tools">
+<div class="tools">
+<a href="http://java.com/en/download/index.jsp">Get Java Here</a>
+</div>
+</div>
+<div style="clear: right;"></div>
+<div class="topbar"><img src="../assets/images/spacer.gif" alt="" height="3" width="154"></div>
+</div>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<!-- BEGIN LEFT NAV -->
+<td id="leftcontent" valign="top">
+<div class="bar"><img src="../assets/images/hr_dots1.gif" alt="" height="3" width="150"></div>
+<!-- begin find JSRs form -->
+<!-- IMPORTANT! do not convert this form to Struts < html : form > tag. javascript change of form.action property fails. -->
+<img src="../assets/images/hd_find-jsrs.gif" alt="Find JSRs" height="18" width="150">
+<!-- ** Menu Start ** //-->
+<ul id="p7PMnav">
+<li><a href="http://jcp.org/en/jsr/platform">JSRs by Platform</a></li>
+<li><a href="http://jcp.org/en/jsr/tech">JSRs by Technology</a></li>
+<li><a href="http://jcp.org/en/jsr/stage">JSRs by Stage</a></li>
+<li><a href="http://jcp.org/en/jsr/ec">JSRs by Committee</a></li>
+<li><a href="http://jcp.org/en/jsr/all">List of All JSRs</a></li>
+<!--end find JSRs form -->
+<div style="clear: both;"><img src="../assets/images/spacer.gif" alt="" height="25" width="1"></div>
+<!--begin JCP info -->
+<img src="../assets/images/hd_jcp-info.gif" alt="JCP Info" height="18" width="150">
+<li><a href="http://jcp.org/en/whatsnew/jcp" class="p7PMtrg">Updates</a>
+<ul>
+<li><a href="http://jcp.org/en/whatsnew/jcp">Recent Updates</a></li>
+<li><a href="http://jcp.org/en/whatsnew/calendar">Calendar</a></li>
+</ul>
+</li>
+<li><a href="http://jcp.org/en/procedures/overview" class="p7PMtrg">About JCP</a>
+<ul>
+<li><a href="http://jcp.org/en/procedures/overview">Program Overview</a></li>
+<li><a href="http://jcp.org/en/procedures/jcp2">JCP Procedures</a></li>
+<li><a href="http://jcp.org/en/participation/members">JCP Members</a></li>
+<li><a href="http://jcp.org/en/participation/committee">Executive Committee</a></li>
+<li><a href="http://jcp.org/en/whatsnew/elections">Elections</a></li>
+</ul>
+</li>
+<li><a href="http://jcp.org/en/introduction/faq">FAQ</a></li>
+<li><a href="http://jcp.org/en/resources/contacts">Contacts</a></li>
+<li><a href="http://jcp.org/en/participation/overview" class="p7PMtrg">Participation</a>
+<ul>
+<li><a href="http://jcp.org/en/participation/overview">Getting Involved</a></li>
+<li><a href="http://jcp.org/en/participation/membership">Becoming a JCP Member</a></li>
+</ul>
+</li>
+<li><a href="http://jcp.org/en/resources/contents" class="p7PMtrg">Community Resources</a>
+<ul>
+<li><a href="http://jcp.org/en/resources/contents">Resources Overview</a></li>
+<li><a href="http://jcp.org/en/resources/guide">Spec Lead Guide</a></li>
+<li><a href="http://jcp.org/en/resources/tdk">TCK Tool & Info</a></li>
+</ul>
+</li>
+<li><a href="http://jcp.org/en/press/pmo" class="p7PMtrg">Community News</a>
+<ul>
+<li><a href="http://jcp.org/en/press/pmo">News from PMO</a></li>
+<li><a href="http://jcp.org/en/press/news">News Stories</a></li>
+<li><a href="http://jcp.org/en/press/releases">Press Releases</a></li>
+<li><a href="http://jcp.org/en/press/success">Success Stories</a></li>
+<li><a href="http://jcp.org/en/press/whitepapers">White Papers</a></li>
+</ul>
+</li>
+<div style="clear: both;"><img src="../assets/images/spacer.gif" alt="" height="25" width="1"></div>
+</ul>
+</td>
+<!-- END LEFT NAV -->
+<td width="15"><img src="../assets/images/global/spacer.gif" width="15" height="1"></td>
+<!-- BEGIN CENTER CONTENT -->
+<td id="centercontent" valign="top">
+<!-- BEGIN PAGETITLE ONE LINE -->
+<h1>
+<div class="pagetitle">
+JavaServer Pages(TM) Specification 2.0 Final Release
+</div>
+</h1>
+<!-- END PAGETITLE ONE LINE -->
+<!-- Start ENO Working Area -->
+<style type="text/css">
+.warningred {color:#E76F00}
+</style >
+
+<!-- Content Table -->
+
+
+ succeeded in 3625ms:
+HTTP/1.1 302 Moved Temporarily
+Server: AkamaiGHost
+Content-Length: 0
+Location: https://edelivery.oracle.com/otn-pub/jcp/7784-servlet-2.0-prd-spec-oth-JSpec/
+Date: Tue, 09 Jun 2026 00:59:56 GMT
+Connection: keep-alive
+
+HTTP/1.1 302 Moved Temporarily
+Content-Type: text/html
+X-Frame-Options: SAMEORIGIN
+https://download.oracle.com/otn-pub/jcp/jsp-2.0-fr-oth-JSpec/
+HTTP/1.1 302 Moved Temporarily
+Server: AkamaiGHost
+Content-Length: 0
+Location: https://edelivery.oracle.com/otn-pub/jcp/jsp-2.0-fr-oth-JSpec/
+Date: Tue, 09 Jun 2026 00:59:57 GMT
+Connection: keep-alive
+
+HTTP/1.1 302 Moved Temporarily
+Content-Type: text/html
+X-Frame-Options: SAMEORIGIN
+
+codex
+I’m making the scoped JSON edit now: source/repository from the existing Tomcat 5.5 convention for the matching JSP API source tree, documentation from the versioned JSR-152 JSP 2.0 public review draft page, tests left `N/A`, description unchanged, and no `language` field.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c/metadata/jspapi/jsp-api/index.json
+diff --git a/metadata/jspapi/jsp-api/index.json b/metadata/jspapi/jsp-api/index.json
+index 53efd300b19c3e41c40e183a0440df6c22167d12..f8d6a96e735c505d96e549919620d4a293f78d6f
+--- a/metadata/jspapi/jsp-api/index.json
++++ b/metadata/jspapi/jsp-api/index.json
+@@ -2,10 +2,10 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0-20040521",
+-    "source-code-url" : "N/A",
+-    "repository-url" : "N/A",
++    "source-code-url" : "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr152/src/share",
++    "repository-url" : "https://github.com/apache/tomcat55",
+     "test-code-url" : "N/A",
+-    "documentation-url" : "N/A",
++    "documentation-url" : "https://download.oracle.com/otndocs/jcp/7784-servlet-2.0-prd-spec-oth-JSpec/",
+     "description" : "This artifact provides the JavaServer Pages 2.0 API contracts under javax.servlet.jsp for JSP containers, applications, and tag libraries. It supplies compile-time and runtime interfaces and classes such as JspPage, PageContext, JSP expression APIs, and tag extension types without bundling a JSP engine implementation.",
+     "tested-versions" : [
+       "2.0-20040521"
+
+diff --git a/metadata/jspapi/jsp-api/index.json b/metadata/jspapi/jsp-api/index.json
+index 53efd300b19c3e41c40e183a0440df6c22167d12..f8d6a96e735c505d96e549919620d4a293f78d6f
+--- a/metadata/jspapi/jsp-api/index.json
++++ b/metadata/jspapi/jsp-api/index.json
+@@ -2,10 +2,10 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0-20040521",
+-    "source-code-url" : "N/A",
+-    "repository-url" : "N/A",
++    "source-code-url" : "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr152/src/share",
++    "repository-url" : "https://github.com/apache/tomcat55",
+     "test-code-url" : "N/A",
+-    "documentation-url" : "N/A",
++    "documentation-url" : "https://download.oracle.com/otndocs/jcp/7784-servlet-2.0-prd-spec-oth-JSpec/",
+     "description" : "This artifact provides the JavaServer Pages 2.0 API contracts under javax.servlet.jsp for JSP containers, applications, and tag libraries. It supplies compile-time and runtime interfaces and classes such as JspPage, PageContext, JSP expression APIs, and tag extension types without bundling a JSP engine implementation.",
+     "tested-versions" : [
+       "2.0-20040521"
+
+codex
+The JSON edit is in place. I’m validating the file and rerunning URL checks against the final values, then I’ll run the focused metadata validation for this coordinate if the project task is available.
+exec
+/usr/bin/bash -lc "jq . metadata/jspapi/jsp-api/index.json >/dev/null && sed -n '1,60p' metadata/jspapi/jsp-api/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0-20040521",
+    "source-code-url" : "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr152/src/share",
+    "repository-url" : "https://github.com/apache/tomcat55",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://download.oracle.com/otndocs/jcp/7784-servlet-2.0-prd-spec-oth-JSpec/",
+    "description" : "This artifact provides the JavaServer Pages 2.0 API contracts under javax.servlet.jsp for JSP containers, applications, and tag libraries. It supplies compile-time and runtime interfaces and classes such as JspPage, PageContext, JSP expression APIs, and tag extension types without bundling a JSP engine implementation.",
+    "tested-versions" : [
+      "2.0-20040521"
+    ],
+    "allowed-packages" : [
+      "javax.servlet.jsp"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://download.oracle.com/otndocs/jcp/7784-servlet-2.0-prd-spec-oth-JSpec/ | rg -n '<title>|JSR-000152|JavaServer Pages|Public Review Draft' | sed -n '1,30p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 0ms:
+22:<title>
+23:JSR-000152 JavaServer Pages(TM) 2.0 Specification 2.0 Public Review Draft
+110:JSR-000152 JavaServer Pages(TM) 2.0 Specification 2.0 Public Review Draft
+330:JSR-000152 JavaServer Pages(TM) 2.0 Specification<br>
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr152/src/share \\
+  https://github.com/apache/tomcat55 \\
+  https://download.oracle.com/otndocs/jcp/7784-servlet-2.0-prd-spec-oth-JSpec/; do echo \""'$url"; curl -I -L -s "$url" | sed -n '"'1,12p'; done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/tomcat55/TOMCAT_5_5_12/servletapi/jsr152/src/etc/manifest | sed -n '1,40p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+diff --git a/metadata/jspapi/jsp-api/index.json b/metadata/jspapi/jsp-api/index.json
+index 53efd300b19c3e41c40e183a0440df6c22167d12..f8d6a96e735c505d96e549919620d4a293f78d6f
+--- a/metadata/jspapi/jsp-api/index.json
++++ b/metadata/jspapi/jsp-api/index.json
+@@ -2,10 +2,10 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0-20040521",
+-    "source-code-url" : "N/A",
+-    "repository-url" : "N/A",
++    "source-code-url" : "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr152/src/share",
++    "repository-url" : "https://github.com/apache/tomcat55",
+     "test-code-url" : "N/A",
+-    "documentation-url" : "N/A",
++    "documentation-url" : "https://download.oracle.com/otndocs/jcp/7784-servlet-2.0-prd-spec-oth-JSpec/",
+     "description" : "This artifact provides the JavaServer Pages 2.0 API contracts under javax.servlet.jsp for JSP containers, applications, and tag libraries. It supplies compile-time and runtime interfaces and classes such as JspPage, PageContext, JSP expression APIs, and tag extension types without bundling a JSP engine implementation.",
+     "tested-versions" : [
+       "2.0-20040521"
+
+ succeeded in 127ms:
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Content-Type: text/html
+ETag: "bb8b7c7a44bf237788aa75f9ec5994e7:1320665433"
+Last-Modified: Fri, 25 Mar 2011 21:04:18 GMT
+Server: AkamaiNetStorage
+Content-Length: 13724
+Date: Tue, 09 Jun 2026 01:00:18 GMT
+Connection: keep-alive
+
+
+ succeeded in 175ms:
+Manifest-version: 1.0
+
+Name: javax/servlet/jsp/
+Specification-Title: Java API for JavaServer Pages
+Specification-Version: 2.0
+Specification-Vendor: Sun Microsystems, Inc.
+Implementation-Title: javax.servlet.jsp
+Implementation-Version: 2.0.@implementation.revision@
+Implementation-Vendor: Apache Software Foundation
+
+
+codex
+The final URLs return HTTP 200, the documentation page title is the JSR-152 JSP 2.0 public review draft, and the Tomcat source manifest matches the JSP API specification/implementation fields. I’m running the focused metadata validation now.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=jspapi:jsp-api:2.0-20040521 --stacktrace' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+diff --git a/metadata/jspapi/jsp-api/index.json b/metadata/jspapi/jsp-api/index.json
+index 53efd300b19c3e41c40e183a0440df6c22167d12..f8d6a96e735c505d96e549919620d4a293f78d6f
+--- a/metadata/jspapi/jsp-api/index.json
++++ b/metadata/jspapi/jsp-api/index.json
+@@ -2,10 +2,10 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0-20040521",
+-    "source-code-url" : "N/A",
+-    "repository-url" : "N/A",
++    "source-code-url" : "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr152/src/share",
++    "repository-url" : "https://github.com/apache/tomcat55",
+     "test-code-url" : "N/A",
+-    "documentation-url" : "N/A",
++    "documentation-url" : "https://download.oracle.com/otndocs/jcp/7784-servlet-2.0-prd-spec-oth-JSpec/",
+     "description" : "This artifact provides the JavaServer Pages 2.0 API contracts under javax.servlet.jsp for JSP containers, applications, and tag libraries. It supplies compile-time and runtime interfaces and classes such as JspPage, PageContext, JSP expression APIs, and tag extension types without bundling a JSP engine implementation.",
+     "tested-versions" : [
+       "2.0-20040521"
+
+ succeeded in 7600ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles
+Metadata files check passed for jspapi:jsp-api:2.0-20040521
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 7s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+Focused metadata validation passed for `jspapi:jsp-api:2.0-20040521`. I’m checking the final diff so the close-out is precise.
+exec
+/usr/bin/bash -lc 'git diff -- metadata/jspapi/jsp-api/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short metadata/jspapi/jsp-api/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c
+ succeeded in 0ms:
+?? metadata/jspapi/jsp-api/index.json
+
+diff --git a/metadata/jspapi/jsp-api/index.json b/metadata/jspapi/jsp-api/index.json
+index 53efd300b19c3e41c40e183a0440df6c22167d12..f8d6a96e735c505d96e549919620d4a293f78d6f
+--- a/metadata/jspapi/jsp-api/index.json
++++ b/metadata/jspapi/jsp-api/index.json
+@@ -2,10 +2,10 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0-20040521",
+-    "source-code-url" : "N/A",
+-    "repository-url" : "N/A",
++    "source-code-url" : "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr152/src/share",
++    "repository-url" : "https://github.com/apache/tomcat55",
+     "test-code-url" : "N/A",
+-    "documentation-url" : "N/A",
++    "documentation-url" : "https://download.oracle.com/otndocs/jcp/7784-servlet-2.0-prd-spec-oth-JSpec/",
+     "description" : "This artifact provides the JavaServer Pages 2.0 API contracts under javax.servlet.jsp for JSP containers, applications, and tag libraries. It supplies compile-time and runtime interfaces and classes such as JspPage, PageContext, JSP expression APIs, and tag extension types without bundling a JSP engine implementation.",
+     "tested-versions" : [
+       "2.0-20040521"
+
+web search: 
+web search: https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr152/src/share
+web search: 
+web search: https://download.oracle.com/otndocs/jcp/7784-servlet-2.0-prd-spec-oth-JSpec/
+web search: 
+web search: "jsp-api-2.0-20040521.pom" "jsp-api-2.0-20040521.jar"
+codex
+Updated [metadata/jspapi/jsp-api/index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c/metadata/jspapi/jsp-api/index.json:5): source/repository now point to the Tomcat 5.5 `TOMCAT_5_5_12` JSP API source tree and canonical repo root, and documentation points to the Oracle/JCP JSR-152 JSP 2.0 Public Review Draft page. ([github.com](https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr152/src/share))
+
+Kept `test-code-url` as `N/A`, kept the existing exactly two-sentence description, and left `language` absent because this is not one of the Kotlin/Groovy/Scala language-specific libraries requested.
+
+Validation passed:
+
+```bash
+./gradlew checkMetadataFiles -Pcoordinates=jspapi:jsp-api:2.0-20040521 --stacktrace
+```
+diff --git a/metadata/jspapi/jsp-api/index.json b/metadata/jspapi/jsp-api/index.json
+index 53efd300b19c3e41c40e183a0440df6c22167d12..f8d6a96e735c505d96e549919620d4a293f78d6f
+--- a/metadata/jspapi/jsp-api/index.json
++++ b/metadata/jspapi/jsp-api/index.json
+@@ -2,10 +2,10 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0-20040521",
+-    "source-code-url" : "N/A",
+-    "repository-url" : "N/A",
++    "source-code-url" : "https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr152/src/share",
++    "repository-url" : "https://github.com/apache/tomcat55",
+     "test-code-url" : "N/A",
+-    "documentation-url" : "N/A",
++    "documentation-url" : "https://download.oracle.com/otndocs/jcp/7784-servlet-2.0-prd-spec-oth-JSpec/",
+     "description" : "This artifact provides the JavaServer Pages 2.0 API contracts under javax.servlet.jsp for JSP containers, applications, and tag libraries. It supplies compile-time and runtime interfaces and classes such as JspPage, PageContext, JSP expression APIs, and tag extension types without bundling a JSP engine implementation.",
+     "tested-versions" : [
+       "2.0-20040521"
+
+tokens used
+160,718
+Updated [metadata/jspapi/jsp-api/index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c/metadata/jspapi/jsp-api/index.json:5): source/repository now point to the Tomcat 5.5 `TOMCAT_5_5_12` JSP API source tree and canonical repo root, and documentation points to the Oracle/JCP JSR-152 JSP 2.0 Public Review Draft page. ([github.com](https://github.com/apache/tomcat55/tree/TOMCAT_5_5_12/servletapi/jsr152/src/share))
+
+Kept `test-code-url` as `N/A`, kept the existing exactly two-sentence description, and left `language` absent because this is not one of the Kotlin/Groovy/Scala language-specific libraries requested.
+
+Validation passed:
+
+```bash
+./gradlew checkMetadataFiles -Pcoordinates=jspapi:jsp-api:2.0-20040521 --stacktrace
+```
+Ran agent for jspapi:jsp-api:2.0-20040521 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c/build/agent-url-discovery-logs/jspapi-jsp-api-2.0-20040521.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2842-6386ff1c/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 5m 25s
+9 actionable tasks: 1 executed, 8 up-to-date
