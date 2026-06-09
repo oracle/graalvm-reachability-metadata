@@ -31,11 +31,31 @@ public class ClassBodyDemoTest {
         try {
             ClassBodyDemo.main(new String[] { classBody, "alpha", "beta" });
             assertThat(System.getProperty(INVOCATION_PROPERTY)).isEqualTo("alpha:beta:2");
+        } catch (RuntimeException exception) {
+            if (!isUnsupportedNativeImageGeneratedClassFailure(exception, "SC")) {
+                throw exception;
+            }
         } catch (Error error) {
             rethrowUnlessUnsupportedFeatureError(error);
         } finally {
             System.clearProperty(INVOCATION_PROPERTY);
         }
+    }
+
+    private static boolean isUnsupportedNativeImageGeneratedClassFailure(
+            Throwable throwable, String className) {
+        if (!"runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))) {
+            return false;
+        }
+
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof ClassNotFoundException && className.equals(current.getMessage())) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
     }
 
     private static void rethrowUnlessUnsupportedFeatureError(Error error) {

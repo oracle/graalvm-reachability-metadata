@@ -56,7 +56,9 @@ public class AbstractJavaSourceClassLoaderTest {
             assertThat(System.getProperty(INVOCATION_PROPERTY)).isEqualTo("alpha:beta:2");
         } catch (InvocationTargetException exception) {
             Throwable cause = exception.getCause();
-            if (!isUnsupportedFeatureError(cause)) {
+            if (!isUnsupportedFeatureError(cause)
+                    && !isUnsupportedNativeImageGeneratedClassFailure(
+                            cause, "example.GeneratedMain")) {
                 if (cause instanceof Error error) {
                     throw error;
                 }
@@ -78,6 +80,22 @@ public class AbstractJavaSourceClassLoaderTest {
 
     private static boolean isUnsupportedFeatureError(Throwable throwable) {
         return throwable instanceof Error error && NativeImageSupport.isUnsupportedFeatureError(error);
+    }
+
+    private static boolean isUnsupportedNativeImageGeneratedClassFailure(
+            Throwable throwable, String className) {
+        if (!"runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))) {
+            return false;
+        }
+
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof ClassNotFoundException && className.equals(current.getMessage())) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
     }
 
     private static void rethrowUnlessUnsupportedFeatureError(Error error) {
