@@ -1,0 +1,23 @@
+{
+  "action": "advisory_preparation",
+  "summary": "Sisu Inject is an in-process JSR-330/Guice integration library, so it does not need Docker or an external service. Its resolved POM marks Guice as provided, and lifecycle-oriented coverage on JDK 25 needs the Java EE annotation API explicitly.",
+  "deterministic_setup": [
+    {
+      "kind": "dependency",
+      "coordinate": "com.google.inject:guice:5.1.0",
+      "scope": "testImplementation",
+      "reason": "org.eclipse.sisu.inject compiles against Guice but declares it as provided; generated tests that exercise the public Sisu API need Guice classes on the test classpath."
+    },
+    {
+      "kind": "dependency",
+      "coordinate": "javax.annotation:javax.annotation-api:1.3.2",
+      "scope": "testImplementation",
+      "reason": "Sisu lifecycle support uses javax.annotation types such as PostConstruct and PreDestroy, which are not supplied by modern JDKs."
+    }
+  ],
+  "agent_guidance": "No external service is needed. Exercise Sisu with real Guice injectors/modules and update tests for the 0.9 API: MutableBeanLocator.add now accepts a BindingPublisher, so wrap an Injector with InjectorBindings rather than calling the removed add(Injector, int) overload.",
+  "risks": [
+    "The artifact manifest lists optional OSGi, servlet, SLF4J, and test-framework packages; do not add those dependencies unless the generated tests intentionally cover those optional integrations.",
+    "Existing 0.3.5 tests may contain calls to Sisu APIs removed or narrowed in 0.9.0.M1, so javac failures are more likely API drift than missing infrastructure."
+  ]
+}
