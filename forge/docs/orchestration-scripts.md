@@ -81,14 +81,14 @@ workflow driver routes each kind to a different consumer:
   the sole authority for rejecting work CI would not accept.
 
 - **Advisory guidance** is the residual reasoning the agent must apply inside the
-  generated test code (for example, exercise a driver against a stood-up
-  service, or set a system property before a factory lookup). Only this guidance
-  is passed to the workflow as prompt context, and it is evidence, not trusted
-  instructions. Deterministic setup the driver already applied is omitted from
-  the prompt so an iterating workflow does not re-attempt a completed edit; any
-  deterministic item the driver could not apply yet (for example, a `dependency`
-  edit for a new library whose scaffold does not exist until generation) falls
-  back into the advisory guidance so the agent still performs it.
+  generated test code or repo-local test configuration, especially environment
+  variables, system properties, or test initialization. The workflow prompt
+  receives the decision summary, the deterministic setup Forge already applied
+  or found present, and this advisory guidance as evidence, not trusted
+  instructions. Any deterministic item the driver could not apply yet (for
+  example, a `dependency` edit for a new library whose scaffold does not exist
+  until generation) falls back into the advisory guidance so the agent still
+  performs it.
 
 This split is what keeps deterministic, idempotent edits out of the iteration
 loop and confines the prompt to reasoning. The driver — not orchestration and
