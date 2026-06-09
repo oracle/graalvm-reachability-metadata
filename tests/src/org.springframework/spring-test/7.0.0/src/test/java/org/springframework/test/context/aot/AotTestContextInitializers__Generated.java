@@ -9,6 +9,8 @@ package org.springframework.test.context.aot;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import org_springframework.spring_test.TestBeanOverrideHandlerTest;
+
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 
@@ -17,10 +19,13 @@ public final class AotTestContextInitializers__Generated {
     }
 
     public static Map<String, Supplier<ApplicationContextInitializer<ConfigurableApplicationContext>>> getContextInitializers() {
-        return Map.of();
+        return Map.of(TestBeanOverrideHandlerTest.class.getName(),
+                TestBeanOverrideHandlerTest.NoOpContextInitializer::new);
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public static Map<String, Class<ApplicationContextInitializer<?>>> getContextInitializerClasses() {
-        return Map.of();
+        return Map.of(TestBeanOverrideHandlerTest.class.getName(),
+                (Class) TestBeanOverrideHandlerTest.NoOpContextInitializer.class);
     }
 }
