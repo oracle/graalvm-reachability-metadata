@@ -19,7 +19,16 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Djava.class.path=${sourceSets.test.runtimeClasspath.asPath}")
+}
+
 graalvmNative {
+    binaries {
+        test {
+            runtimeArgs("-Djava.class.path=${sourceSets.test.runtimeClasspath.asPath}")
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
