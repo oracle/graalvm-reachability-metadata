@@ -1,0 +1,655 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019eaa01-0158-72f1-a839-860d25763fe9
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.quarkus:quarkus-junit:3.33.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "3.33.1" when "$version$" is replaced with "3.33.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "io.quarkus:quarkus-junit:3.33.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.33.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven Central and the upstream Quarkus repository, then update the JSON in place with version-tokenized URLs.
+web search: 
+web search: Maven Central io.quarkus quarkus-junit 3.33.1 pom
+web search: 
+web search: https://central.sonatype.com/artifact/io.quarkus/quarkus-junit
+codex
+The Maven Central page confirms the artifact coordinates and names it “Quarkus - Test Framework - JUnit”; I’m checking the local metadata style now so the URL choices match this repository’s conventions.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc
+ succeeded in 0ms:
+{
+  "coordinates" : "io.quarkus:quarkus-junit:3.33.1"
+}
+
+exec
+/usr/bin/bash -lc 'rg --files build/discovered-artifact-metadata | head -40' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc
+ succeeded in 0ms:
+build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
+
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\".*repo.maven|\"test-code-url\".*repo.maven' build/discovered-artifact-metadata metadata -g '*.json' | head -40" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc
+ succeeded in 0ms:
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-yaml-provider/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-yaml-provider/$version$/jackson-jakarta-rs-yaml-provider-$version$-sources.jar",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-yaml-provider/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-yaml-provider/$version$/jackson-jakarta-rs-yaml-provider-$version$-sources.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/soap/jakarta.xml.soap-api/$version$/jakarta.xml.soap-api-$version$-sources.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-mustmatchers_3/$version$/scalatest-mustmatchers_3-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+metadata/io.getquill/quill-engine_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_3/$version$/quill-engine_3-$version$-sources.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/$version$/zipkin-$version$-sources.jar",
+metadata/io.getquill/quill-engine_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_2.13/$version$/quill-engine_2.13-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/org.eclipse.sisu/org.eclipse.sisu.inject/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.inject/$version$/org.eclipse.sisu.inject-$version$-sources.jar",
+metadata/org.eclipse.sisu/org.eclipse.sisu.inject/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.inject/$version$/org.eclipse.sisu.inject-$version$-sources.jar",
+metadata/org.eclipse.sisu/org.eclipse.sisu.inject/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.inject/$version$/org.eclipse.sisu.inject-$version$-sources.jar",
+metadata/org.eclipse.sisu/org.eclipse.sisu.inject/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.inject/$version$/org.eclipse.sisu.inject-$version$-sources.jar",
+metadata/org.eclipse.sisu/org.eclipse.sisu.inject/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.inject/$version$/org.eclipse.sisu.inject-$version$-sources.jar",
+metadata/org.eclipse.sisu/org.eclipse.sisu.inject/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.inject/$version$/org.eclipse.sisu.inject-$version$-sources.jar",
+metadata/org.eclipse.sisu/org.eclipse.sisu.inject/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/sisu/org.eclipse.sisu.inject/$version$/org.eclipse.sisu.inject-$version$-sources.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+metadata/io.getquill/quill-util_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-util_3/$version$/quill-util_3-$version$-sources.jar",
+metadata/com.github.jknack/handlebars-helpers/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/jknack/handlebars-helpers/4.4.0/handlebars-helpers-4.4.0-sources.jar",
+metadata/com.github.jknack/handlebars-helpers/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/jknack/handlebars-helpers/$version$/handlebars-helpers-$version$-sources.jar",
+metadata/org.junit.vintage/junit-vintage-engine/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/junit/vintage/junit-vintage-engine/$version$/junit-vintage-engine-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-tck-tests/$version$/jakarta.json-tck-tests-$version$-sources.jar",
+metadata/org.springframework.integration/spring-integration-kafka/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/integration/spring-integration-kafka/$version$/spring-integration-kafka-$version$-sources.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_3/$version$/scalatest-shouldmatchers_3-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg 'io.quarkus:quarkus-junit|quarkus-junit' -n . -g '*.json' -g '*.md' | head -40" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc
+ succeeded in 0ms:
+./COVERAGE.md:602:| `io.quarkus:quarkus-junit-common` | [3.33.1<br>- 3.36.1](metadata/io.quarkus/quarkus-junit-common/index.json) | <details><summary>Show</summary> Quarkus JUnit Common provides shared testing support classes used by Quarkus JUnit test framework modules. It contains common JUnit integration utilities and execution conditions that are reused by the internal and public Quarkus JUnit artifacts.</details> | [100.0% (2/2 calls)](stats/io.quarkus/quarkus-junit-common/) |
+./metadata/io.quarkus/quarkus-junit-common/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit-common/$version$/quarkus-junit-common-$version$-sources.jar",
+./metadata/io.quarkus/quarkus-junit-common/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit-common/$version$/quarkus-junit-common-$version$-javadoc.jar",
+./stats/io.quarkus/quarkus-junit-common/3.33.1/execution-metrics.json:4:    "library": "io.quarkus:quarkus-junit-common:3.33.1",
+./stats/io.quarkus/quarkus-junit-common/3.33.1/execution-metrics.json:58:      "test_file": "tests/src/io.quarkus/quarkus-junit-common/3.33.1/src/test/java/io_quarkus/quarkus_junit_common/ClearCacheTest.java",
+./stats/io.quarkus/quarkus-junit-common/3.33.1/execution-metrics.json:59:      "metadata_file": "metadata/io.quarkus/quarkus-junit-common/3.33.1/reachability-metadata.json"
+
+exec
+/usr/bin/bash -lc 'find ~/.m2/repository/io/quarkus/quarkus-junit/3.33.1 -maxdepth 1 -type f -print 2>/dev/null | sort' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/io.quarkus/quarkus-junit-common/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.33.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit-common/$version$/quarkus-junit-common-$version$-sources.jar",
+    "repository-url" : "https://github.com/quarkusio/quarkus",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit-common/$version$/quarkus-junit-common-$version$-javadoc.jar",
+    "description" : "Quarkus JUnit Common provides shared testing support classes used by Quarkus JUnit test framework modules. It contains common JUnit integration utilities and execution conditions that are reused by the internal and public Quarkus JUnit artifacts.",
+    "tested-versions" : [
+      "3.33.1",
+      "3.34.0",
+      "3.34.1",
+      "3.34.2",
+      "3.34.3",
+      "3.34.4",
+      "3.34.5",
+      "3.34.6",
+      "3.34.7",
+      "3.35.0",
+      "3.35.1",
+      "3.35.2",
+      "3.35.3",
+      "3.36.0",
+      "3.36.1"
+    ],
+    "allowed-packages" : [
+      "io.quarkus.test.junit.common",
+      "org.junit.platform.commons.util"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "find metadata/io.quarkus -maxdepth 2 -name index.json -print | sort | xargs -r rg -n 'quarkus-junit|Quarkus'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc
+ succeeded in 0ms:
+metadata/io.quarkus/quarkus-bootstrap-app-model/index.json:9:    "description" : "Quarkus Bootstrap App Model provides Java classes for representing the dependency graph, workspace modules, platform imports, capabilities, JVM options, and other metadata used while Quarkus bootstraps and builds an application. It is part of Quarkus' bootstrap infrastructure and is used by resolvers, build tools, and extension tooling to exchange a structured model of an application and its artifacts.",
+metadata/io.quarkus/quarkus-bootstrap-app-model/index.json:36:    "description" : "Quarkus Bootstrap App Model provides Java classes for representing the dependency graph, workspace modules, platform imports, capabilities, JVM options, and other metadata used while Quarkus bootstraps and builds an application. It is part of Quarkus' bootstrap infrastructure and is used by resolvers, build tools, and extension tooling to exchange a structured model of an application and its artifacts.",
+metadata/io.quarkus/quarkus-value-registry/index.json:9:    "description" : "Quarkus Value Registry provides a low-level API for registering and retrieving immutable runtime values generated by Quarkus or its extensions, such as application state that is only known at startup. It keeps those values outside the configuration system and lets unrelated services share runtime information through typed keys without introducing dependency cycles or exposing internal APIs.",
+metadata/io.quarkus/quarkus-ide-launcher/index.json:9:    "description" : "Quarkus IDE Launcher provides the self-contained launcher entry points used to start Quarkus applications from IDEs and JBang dev mode. It packages the bootstrap resolver components needed for those launches while keeping deployment-time code out of the application runtime.",
+metadata/io.quarkus/quarkus-hibernate-validator-spi/index.json:9:    "description" : "Quarkus Hibernate Validator SPI provides build items used by Quarkus extensions to exchange Hibernate Validator and Bean Validation metadata during build processing. It exposes APIs for additional constrained classes, discovered validation annotations, and replacement traversable resolver logic without depending on the full extension deployment implementation.",
+metadata/io.quarkus/quarkus-junit-common/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit-common/$version$/quarkus-junit-common-$version$-sources.jar",
+metadata/io.quarkus/quarkus-junit-common/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit-common/$version$/quarkus-junit-common-$version$-javadoc.jar",
+metadata/io.quarkus/quarkus-junit-common/index.json:9:    "description" : "Quarkus JUnit Common provides shared testing support classes used by Quarkus JUnit test framework modules. It contains common JUnit integration utilities and execution conditions that are reused by the internal and public Quarkus JUnit artifacts.",
+metadata/io.quarkus/quarkus-development-mode-spi/index.json:9:    "description" : "Quarkus Development Mode SPI provides the shared Java APIs used by Quarkus development mode for console interaction, hot replacement, application state notifications, and continuous testing state. It lets Quarkus core and extensions coordinate live reload and development-time diagnostics without tying those integrations to the full deployment implementation.",
+metadata/io.quarkus/quarkus-class-change-agent/index.json:9:    "description" : "Quarkus Class Change Agent is a Java agent that exposes the JVM instrumentation API for Quarkus development mode. It enables faster hot reload when class bytecode changes do not alter class structure, acting as an optional optimization rather than a required runtime component.",
+metadata/io.quarkus/quarkus-classloader-commons/index.json:9:    "description" : "Quarkus Classloader Commons provides small shared utilities for Quarkus bootstrap class loading. It converts between Java class names and .class resource names and identifies JDK-internal package names used by class loader logic.",
+metadata/io.quarkus/quarkus-builder/index.json:9:    "description" : "Quarkus Builder provides the build chain and build step execution APIs used by Quarkus to coordinate extension build-time processing. It models build items, producers, consumers, diagnostics, and execution results so build steps can be ordered and run consistently.",
+metadata/io.quarkus/quarkus-bootstrap-runner/index.json:9:    "description" : "Quarkus Bootstrap Runner provides production runtime bootstrap classes, entry points, class loaders, resource access, and logging setup for Quarkus applications packaged with the runner architecture. It is used by generated Quarkus applications to load application classes and resources at runtime while keeping the bootstrap layer minimal and parent-first dependency behavior controlled.",
+metadata/io.quarkus/quarkus-fs-util/index.json:9:    "description" : "Quarkus FS Util provides helper classes for low-level filesystem operations in Java. It wraps and adapts Java NIO file system APIs to support efficient path, provider, and ZIP filesystem handling used by Quarkus tooling.",
+metadata/io.quarkus/quarkus-bootstrap-maven4-resolver/index.json:9:    "description" : "Quarkus Bootstrap Maven 4 Resolver provides the Quarkus bootstrap integration classes needed to participate in Maven 4 artifact resolution through Maven Resolver and Sisu injection. The artifact contributes a bootstrap artifact transformer service used by Quarkus tooling when resolving and transforming application dependencies with the Maven 4 resolver stack.",
+metadata/io.quarkus/quarkus-bootstrap-json/index.json:9:    "description" : "Quarkus Bootstrap JSON is a small utility module that provides builders and value classes for generating JSON arrays, objects, and primitive values used by Quarkus bootstrap code. It also includes a lightweight JSON reader and transformation hook for parsing JSON text into its own value model and filtering or rewriting values while building output.",
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/3.33.1/
+web search: 
+web search: repo.maven.apache.org maven2 io quarkus quarkus-junit 3.33.1 quarkus-junit-3.33.1-sources.jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/quarkus/
+web search: 
+web search: 'quarkus-junit/' in https://repo.maven.apache.org/maven2/io/quarkus/
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/quarkus/
+codex
+One oddity: the web snapshot of the Maven directory is stale for `quarkus-junit`, so I’m using direct Maven artifact checks for existence and the POM while keeping the final URLs in the repository’s normal Maven Central form.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/3.33.1/quarkus-junit-3.33.1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-test-framework</artifactId>
+        <version>3.33.1</version>
+    </parent>
+
+    <artifactId>quarkus-junit</artifactId>
+    <name>Quarkus - Test Framework - JUnit</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-bootstrap-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.eclipse.sisu</groupId>
+                    <artifactId>org.eclipse.sisu.inject</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.sisu</groupId>
+            <artifactId>org.eclipse.sisu.inject</artifactId>
+            <!-- We don't want the annotation processor to run
+             as it leaves junk files in the project-->
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-test-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-junit-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-junit-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+		<dependency>
+		    <groupId>org.assertj</groupId>
+		    <artifactId>assertj-core</artifactId>
+		    <scope>test</scope>
+		</dependency>
+    </dependencies>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/3.33.1/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc
+exec
+/usr/bin/bash -lc 'for suffix in .jar -sources.jar -javadoc.jar -tests.jar -test-sources.jar; do url="https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/3.33.1/quarkus-junit-3.33.1${suffix}"; code=$(curl -fsSI -o /dev/null -w '"'%{http_code}' \""'$url" || true); printf '"'%s %s\\n' \""'$code" "$url"; done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc
+ succeeded in 308ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/quarkus/quarkus-junit/3.33.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/quarkus/quarkus-junit/3.33.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="quarkus-junit-3.33.1-javadoc.jar" title="quarkus-junit-3.33.1-javadoc.jar">quarkus-junit-3.33.1-javadoc.jar</a>                  2026-03-25 09:37    501012      
+<a href="quarkus-junit-3.33.1-javadoc.jar.asc" title="quarkus-junit-3.33.1-javadoc.jar.asc">quarkus-junit-3.33.1-javadoc.jar.asc</a>              2026-03-25 09:37       853      
+<a href="quarkus-junit-3.33.1-javadoc.jar.md5" title="quarkus-junit-3.33.1-javadoc.jar.md5">quarkus-junit-3.33.1-javadoc.jar.md5</a>              2026-03-25 09:37        32      
+<a href="quarkus-junit-3.33.1-javadoc.jar.sha1" title="quarkus-junit-3.33.1-javadoc.jar.sha1">quarkus-junit-3.33.1-javadoc.jar.sha1</a>             2026-03-25 09:37        40      
+<a href="quarkus-junit-3.33.1-javadoc.jar.sha256" title="quarkus-junit-3.33.1-javadoc.jar.sha256">quarkus-junit-3.33.1-javadoc.jar.sha256</a>           2026-03-25 09:37        64      
+<a href="quarkus-junit-3.33.1-javadoc.jar.sha512" title="quarkus-junit-3.33.1-javadoc.jar.sha512">quarkus-junit-3.33.1-javadoc.jar.sha512</a>           2026-03-25 09:37       128      
+<a href="quarkus-junit-3.33.1-sources.jar" title="quarkus-junit-3.33.1-sources.jar">quarkus-junit-3.33.1-sources.jar</a>                  2026-03-25 09:37    105852      
+<a href="quarkus-junit-3.33.1-sources.jar.asc" title="quarkus-junit-3.33.1-sources.jar.asc">quarkus-junit-3.33.1-sources.jar.asc</a>              2026-03-25 09:37       853      
+<a href="quarkus-junit-3.33.1-sources.jar.md5" title="quarkus-junit-3.33.1-sources.jar.md5">quarkus-junit-3.33.1-sources.jar.md5</a>              2026-03-25 09:37        32      
+<a href="quarkus-junit-3.33.1-sources.jar.sha1" title="quarkus-junit-3.33.1-sources.jar.sha1">quarkus-junit-3.33.1-sources.jar.sha1</a>             2026-03-25 09:37        40      
+<a href="quarkus-junit-3.33.1-sources.jar.sha256" title="quarkus-junit-3.33.1-sources.jar.sha256">quarkus-junit-3.33.1-sources.jar.sha256</a>           2026-03-25 09:37        64      
+<a href="quarkus-junit-3.33.1-sources.jar.sha512" title="quarkus-junit-3.33.1-sources.jar.sha512">quarkus-junit-3.33.1-sources.jar.sha512</a>           2026-03-25 09:37       128      
+<a href="quarkus-junit-3.33.1.jar" title="quarkus-junit-3.33.1.jar">quarkus-junit-3.33.1.jar</a>                          2026-03-25 09:37    203251      
+<a href="quarkus-junit-3.33.1.jar.asc" title="quarkus-junit-3.33.1.jar.asc">quarkus-junit-3.33.1.jar.asc</a>                      2026-03-25 09:37       853      
+<a href="quarkus-junit-3.33.1.jar.md5" title="quarkus-junit-3.33.1.jar.md5">quarkus-junit-3.33.1.jar.md5</a>                      2026-03-25 09:37        32      
+<a href="quarkus-junit-3.33.1.jar.sha1" title="quarkus-junit-3.33.1.jar.sha1">quarkus-junit-3.33.1.jar.sha1</a>                     2026-03-25 09:37        40      
+<a href="quarkus-junit-3.33.1.jar.sha256" title="quarkus-junit-3.33.1.jar.sha256">quarkus-junit-3.33.1.jar.sha256</a>                   2026-03-25 09:37        64      
+<a href="quarkus-junit-3.33.1.jar.sha512" title="quarkus-junit-3.33.1.jar.sha512">quarkus-junit-3.33.1.jar.sha512</a>                   2026-03-25 09:37       128      
+<a href="quarkus-junit-3.33.1.pom" title="quarkus-junit-3.33.1.pom">quarkus-junit-3.33.1.pom</a>                          2026-03-25 09:37      2344      
+<a href="quarkus-junit-3.33.1.pom.asc" title="quarkus-junit-3.33.1.pom.asc">quarkus-junit-3.33.1.pom.asc</a>                      2026-03-25 09:37       853      
+<a href="quarkus-junit-3.33.1.pom.md5" title="quarkus-junit-3.33.1.pom.md5">quarkus-junit-3.33.1.pom.md5</a>                      2026-03-25 09:37        32      
+<a href="quarkus-junit-3.33.1.pom.sha1" title="quarkus-junit-3.33.1.pom.sha1">quarkus-junit-3.33.1.pom.sha1</a>                     2026-03-25 09:37        40      
+<a href="quarkus-junit-3.33.1.pom.sha256" title="quarkus-junit-3.33.1.pom.sha256">quarkus-junit-3.33.1.pom.sha256</a>                   2026-03-25 09:37        64      
+<a href="quarkus-junit-3.33.1.pom.sha512" title="quarkus-junit-3.33.1.pom.sha512">quarkus-junit-3.33.1.pom.sha512</a>                   2026-03-25 09:37       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 693ms:
+200 https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/3.33.1/quarkus-junit-3.33.1-javadoc.jar
+curl: (22) The requested URL returned error: 404
+404 https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/3.33.1/quarkus-junit-3.33.1-tests.jar
+curl: (22) The requested URL returned error: 404
+404 https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/3.33.1/quarkus-junit-3.33.1-test-sources.jar
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/3.33.1/quarkus-junit-3.33.1.pom
+web search: 
+web search: "quarkus-junit-3.33.1.pom"
+web search: 
+web search: site:central.sonatype.com/artifact/io.quarkus/quarkus-junit 3.33.1
+codex
+For this artifact, Maven Central has the binary, sources, and javadocs but no `tests` or `test-sources` classifier. I’m now verifying the Quarkus tag path for the module’s upstream tests so the test URL still points at the exact release.
+exec
+/usr/bin/bash -lc "for url in \\
+  https://raw.githubusercontent.com/quarkusio/quarkus/3.33.1/test-framework/junit/pom.xml \\
+  https://raw.githubusercontent.com/quarkusio/quarkus/3.33.1/test-framework/junit/src/test/java/io/quarkus/test/junit/QuarkusTestExtensionTest.java \\
+  https://raw.githubusercontent.com/quarkusio/quarkus/3.33.1/test-framework/junit/src/main/java/io/quarkus/test/junit/QuarkusTest.java \\
+  https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit/src/test/java; do code="'$(curl -fsSI -o /dev/null -w '"'%{http_code}' \""'$url" || true); printf '"'%s %s\\n' \""'$code" "$url"; done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit?ref=3.33.1 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit/src/test/java?ref=3.33.1 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/quarkusio/quarkus/git/ref/tags/3.33.1 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc
+ succeeded in 138ms:
+[
+  {
+    "name": "io",
+    "path": "test-framework/junit/src/test/java/io",
+    "sha": "b2d83f72dc7b223bc80c311a3bc3cb65a823d46c",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit/src/test/java/io?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit/src/test/java/io",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/b2d83f72dc7b223bc80c311a3bc3cb65a823d46c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit/src/test/java/io?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/b2d83f72dc7b223bc80c311a3bc3cb65a823d46c",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit/src/test/java/io"
+    }
+  }
+]
+
+ succeeded in 147ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "test-framework/junit/pom.xml",
+    "sha": "2e17e06e82c332782e83774ddbf5940b1b2a1be7",
+    "size": 2344,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit/pom.xml?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/test-framework/junit/pom.xml",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/blobs/2e17e06e82c332782e83774ddbf5940b1b2a1be7",
+    "download_url": "https://raw.githubusercontent.com/quarkusio/quarkus/3.33.1/test-framework/junit/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit/pom.xml?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/blobs/2e17e06e82c332782e83774ddbf5940b1b2a1be7",
+      "html": "https://github.com/quarkusio/quarkus/blob/3.33.1/test-framework/junit/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "test-framework/junit/src",
+    "sha": "5fe3246826ab9d59ca5a4a0388f6f3db3a4f1308",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit/src?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit/src",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/5fe3246826ab9d59ca5a4a0388f6f3db3a4f1308",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/test-framework/junit/src?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/5fe3246826ab9d59ca5a4a0388f6f3db3a4f1308",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit/src"
+    }
+  }
+]
+
+ succeeded in 166ms:
+{
+  "ref": "refs/tags/3.33.1",
+  "node_id": "MDM6UmVmMTM5OTE0OTMyOnJlZnMvdGFncy8zLjMzLjE=",
+  "url": "https://api.github.com/repos/quarkusio/quarkus/git/refs/tags/3.33.1",
+  "object": {
+    "sha": "e90677489babe9cb36ac9e5ae70da037745cd7f8",
+    "type": "commit",
+    "url": "https://api.github.com/repos/quarkusio/quarkus/git/commits/e90677489babe9cb36ac9e5ae70da037745cd7f8"
+  }
+}
+
+ succeeded in 1075ms:
+200 https://raw.githubusercontent.com/quarkusio/quarkus/3.33.1/test-framework/junit/pom.xml
+curl: (22) The requested URL returned error: 404
+404 https://raw.githubusercontent.com/quarkusio/quarkus/3.33.1/test-framework/junit/src/test/java/io/quarkus/test/junit/QuarkusTestExtensionTest.java
+200 https://raw.githubusercontent.com/quarkusio/quarkus/3.33.1/test-framework/junit/src/main/java/io/quarkus/test/junit/QuarkusTest.java
+200 https://github.com/quarkusio/quarkus/tree/3.33.1/test-framework/junit/src/test/java
+
+web search: 
+web search: https://api.github.com/repos/quarkusio/quarkus/git/ref/tags/3.33.1
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/3.33.1/
+web search: 
+web search: https://mvnrepository.com/artifact/io.quarkus/quarkus-junit
+web search: 
+web search: https://github.com/quarkusio/quarkus
+web search: 
+web search: https://mvnrepository.com/artifact/io.quarkus/quarkus-junit
+web search: 
+web search: https://mvnrepository.com/artifact/io.quarkus/quarkus-junit/3.33.1
+web search: 
+web search: javadoc.io io.quarkus quarkus-junit 3.33.1 "Quarkus Test Framework JUnit"
+codex
+I have enough evidence now: this is a normal JVM test artifact, not a Kotlin/Groovy/Scala-specific artifact, and it should not be marked `not-for-native-image`. I’ll write the JSON using Maven Central for sources and javadocs, plus the tagged Quarkus test-framework path for tests.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
+diff --git a/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json b/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
+index 492f1a1b434bc66b40ef21730eb0e20e5745f8bc..ca1ed4fd2dd5af728e8253e676b638969373d933
+--- a/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
++++ b/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.quarkus:quarkus-junit:3.33.1"
++  "coordinates" : "io.quarkus:quarkus-junit:3.33.1",
++  "repository-url" : "https://github.com/quarkusio/quarkus",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/$version$/quarkus-junit-$version$-sources.jar",
++  "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/test-framework/junit/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/$version$/quarkus-junit-$version$-javadoc.jar",
++  "description" : "Quarkus JUnit provides the JUnit integration used to run Quarkus application tests, including the @QuarkusTest annotation and extension support that controls the test lifecycle. It starts and manages the Quarkus test runtime around JUnit tests so application code can be exercised with Quarkus configuration, dependency injection, and test resources."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json b/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
+index 492f1a1b434bc66b40ef21730eb0e20e5745f8bc..ca1ed4fd2dd5af728e8253e676b638969373d933
+--- a/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
++++ b/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.quarkus:quarkus-junit:3.33.1"
++  "coordinates" : "io.quarkus:quarkus-junit:3.33.1",
++  "repository-url" : "https://github.com/quarkusio/quarkus",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/$version$/quarkus-junit-$version$-sources.jar",
++  "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/test-framework/junit/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/$version$/quarkus-junit-$version$-javadoc.jar",
++  "description" : "Quarkus JUnit provides the JUnit integration used to run Quarkus application tests, including the @QuarkusTest annotation and extension support that controls the test lifecycle. It starts and manages the Quarkus test runtime around JUnit tests so application code can be exercised with Quarkus configuration, dependency injection, and test resources."
+ }
+
+codex
+The file is updated. I’m doing a quick validation pass now: JSON syntax, allowed keys, and that each tokenized URL resolves when `$version$` is replaced with `3.33.1`.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc
+ succeeded in 0ms:
+{
+  "coordinates": "io.quarkus:quarkus-junit:3.33.1",
+  "repository-url": "https://github.com/quarkusio/quarkus",
+  "source-code-url": "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/$version$/quarkus-junit-$version$-sources.jar",
+  "test-code-url": "https://github.com/quarkusio/quarkus/tree/$version$/test-framework/junit/src/test/java",
+  "documentation-url": "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/$version$/quarkus-junit-$version$-javadoc.jar",
+  "description": "Quarkus JUnit provides the JUnit integration used to run Quarkus application tests, including the @QuarkusTest annotation and extension support that controls the test lifecycle. It starts and manages the Quarkus test runtime around JUnit tests so application code can be exercised with Quarkus configuration, dependency injection, and test resources."
+}
+
+exec
+/usr/bin/bash -lc "jq -r 'keys_unsorted[]' build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc
+ succeeded in 0ms:
+coordinates
+repository-url
+source-code-url
+test-code-url
+documentation-url
+description
+
+exec
+/usr/bin/bash -lc 'for field in source-code-url test-code-url documentation-url; do url=$(jq -r --arg f "$field" '"'.["'$f]'"' build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json | sed 's/\\"'$version'"\\"'$/3.33.1/g'"'); code="'$(curl -fsSI -o /dev/null -w '"'%{http_code}' \""'$url" || true); printf '"'%s %s %s\\n' \""'$field" "$code" "$url"; done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/3.33.1/quarkus-junit-3.33.1-sources.jar -o /tmp/quarkus-junit-3.33.1-sources.jar && jar tf /tmp/quarkus-junit-3.33.1-sources.jar | sed -n '1,40p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+io/
+io/quarkus/
+io/quarkus/test/
+io/quarkus/test/junit/
+io/quarkus/test/junit/buildchain/
+io/quarkus/test/junit/callback/
+io/quarkus/test/junit/classloading/
+io/quarkus/test/junit/internal/
+io/quarkus/test/junit/launcher/
+io/quarkus/test/junit/main/
+io/quarkus/test/junit/nativeimage/
+io/quarkus/test/junit/util/
+META-INF/services/
+META-INF/maven/
+META-INF/maven/io.quarkus/
+META-INF/maven/io.quarkus/quarkus-junit/
+io/quarkus/test/junit/AbstractJvmQuarkusTestExtension.java
+io/quarkus/test/junit/AbstractQuarkusTestWithContextExtension.java
+io/quarkus/test/junit/AbstractTestWithCallbacksExtension.java
+io/quarkus/test/junit/AppMakerHelper.java
+io/quarkus/test/junit/ArtifactTypeUtil.java
+io/quarkus/test/junit/ClassCoercingTestProfile.java
+io/quarkus/test/junit/DisableIfBuiltWithGraalVMNewerThan.java
+io/quarkus/test/junit/DisableIfBuiltWithGraalVMNewerThanCondition.java
+io/quarkus/test/junit/DisableIfBuiltWithGraalVMOlderThan.java
+io/quarkus/test/junit/DisableIfBuiltWithGraalVMOlderThanCondition.java
+io/quarkus/test/junit/DisabledOnIntegrationTest.java
+io/quarkus/test/junit/DisabledOnIntegrationTestCondition.java
+io/quarkus/test/junit/DotNames.java
+io/quarkus/test/junit/GraalVMVersion.java
+io/quarkus/test/junit/IntegrationTestExtensionState.java
+io/quarkus/test/junit/IntegrationTestUtil.java
+io/quarkus/test/junit/MockSupport.java
+io/quarkus/test/junit/NativeDevServicesHandler.java
+io/quarkus/test/junit/PrepareResult.java
+io/quarkus/test/junit/QuarkusIntegrationTest.java
+io/quarkus/test/junit/QuarkusIntegrationTestExtension.java
+io/quarkus/test/junit/QuarkusMainIntegrationTestExtension.java
+
+diff --git a/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json b/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
+index 492f1a1b434bc66b40ef21730eb0e20e5745f8bc..ca1ed4fd2dd5af728e8253e676b638969373d933
+--- a/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
++++ b/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.quarkus:quarkus-junit:3.33.1"
++  "coordinates" : "io.quarkus:quarkus-junit:3.33.1",
++  "repository-url" : "https://github.com/quarkusio/quarkus",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/$version$/quarkus-junit-$version$-sources.jar",
++  "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/test-framework/junit/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/$version$/quarkus-junit-$version$-javadoc.jar",
++  "description" : "Quarkus JUnit provides the JUnit integration used to run Quarkus application tests, including the @QuarkusTest annotation and extension support that controls the test lifecycle. It starts and manages the Quarkus test runtime around JUnit tests so application code can be exercised with Quarkus configuration, dependency injection, and test resources."
+ }
+
+ succeeded in 122ms:
+documentation-url 200 https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/3.33.1/quarkus-junit-3.33.1-javadoc.jar
+
+web search: 
+web search: Maven Central "io.quarkus" "quarkus-junit" "3.33.1"
+codex
+Validation passed: the JSON parses cleanly, only the requested top-level keys are present, and the three tokenized URLs resolve with `3.33.1`.
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc
+diff --git a/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json b/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
+index 492f1a1b434bc66b40ef21730eb0e20e5745f8bc..ca1ed4fd2dd5af728e8253e676b638969373d933
+--- a/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
++++ b/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.quarkus:quarkus-junit:3.33.1"
++  "coordinates" : "io.quarkus:quarkus-junit:3.33.1",
++  "repository-url" : "https://github.com/quarkusio/quarkus",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/$version$/quarkus-junit-$version$-sources.jar",
++  "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/test-framework/junit/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/$version$/quarkus-junit-$version$-javadoc.jar",
++  "description" : "Quarkus JUnit provides the JUnit integration used to run Quarkus application tests, including the @QuarkusTest annotation and extension support that controls the test lifecycle. It starts and manages the Quarkus test runtime around JUnit tests so application code can be exercised with Quarkus configuration, dependency injection, and test resources."
+ }
+
+ succeeded in 201ms:
+web search: 
+web search: MavenRepository io.quarkus quarkus-junit 3.33.1
+codex
+Updated [io.quarkus-quarkus-junit-3.33.1.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json).
+
+I set the repository to the Quarkus GitHub root, used Maven Central source and javadoc jars, and used the tagged Quarkus `test-framework/junit` test path. `quarkus-junit` is the Quarkus JUnit test framework artifact, and Quarkus documents it as providing `@QuarkusTest` for testing, so I left `language` and `not-for-native-image` absent. ([mvnrepository.com](https://mvnrepository.com/artifact/io.quarkus/quarkus-junit?utm_source=openai))
+
+Validation done: JSON parses with `jq`, only requested keys are present, and the three `$version$` URLs resolve to HTTP 200 with `3.33.1`.
+diff --git a/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json b/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
+index 492f1a1b434bc66b40ef21730eb0e20e5745f8bc..ca1ed4fd2dd5af728e8253e676b638969373d933
+--- a/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
++++ b/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.quarkus:quarkus-junit:3.33.1"
++  "coordinates" : "io.quarkus:quarkus-junit:3.33.1",
++  "repository-url" : "https://github.com/quarkusio/quarkus",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/$version$/quarkus-junit-$version$-sources.jar",
++  "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/test-framework/junit/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-junit/$version$/quarkus-junit-$version$-javadoc.jar",
++  "description" : "Quarkus JUnit provides the JUnit integration used to run Quarkus application tests, including the @QuarkusTest annotation and extension support that controls the test lifecycle. It starts and manages the Quarkus test runtime around JUnit tests so application code can be exercised with Quarkus configuration, dependency injection, and test resources."
+ }
+
+tokens used
+105,009
+Updated [io.quarkus-quarkus-junit-3.33.1.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc/build/discovered-artifact-metadata/io.quarkus-quarkus-junit-3.33.1.json).
+
+I set the repository to the Quarkus GitHub root, used Maven Central source and javadoc jars, and used the tagged Quarkus `test-framework/junit` test path. `quarkus-junit` is the Quarkus JUnit test framework artifact, and Quarkus documents it as providing `@QuarkusTest` for testing, so I left `language` and `not-for-native-image` absent. ([mvnrepository.com](https://mvnrepository.com/artifact/io.quarkus/quarkus-junit?utm_source=openai))
+
+Validation done: JSON parses with `jq`, only requested keys are present, and the three `$version$` URLs resolve to HTTP 200 with `3.33.1`.
+Ran agent for io.quarkus:quarkus-junit:3.33.1 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc/build/agent-artifact-discovery-logs/io.quarkus-quarkus-junit-3.33.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3611-2dea1afc/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 18s
+9 actionable tasks: 9 executed
