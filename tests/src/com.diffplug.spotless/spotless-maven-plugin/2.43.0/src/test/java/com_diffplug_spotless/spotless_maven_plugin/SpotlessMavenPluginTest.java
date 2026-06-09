@@ -23,6 +23,7 @@ import com.diffplug.spotless.Formatter;
 import com.diffplug.spotless.FormatterStep;
 import com.diffplug.spotless.LineEnding;
 import com.diffplug.spotless.Provisioner;
+import com.diffplug.spotless.generic.PipeStepPair;
 import com.diffplug.spotless.maven.FormatterConfig;
 import com.diffplug.spotless.maven.FormatterStepConfig;
 import com.diffplug.spotless.maven.FormatterStepFactory;
@@ -32,6 +33,7 @@ import com.diffplug.spotless.maven.generic.Indent;
 import com.diffplug.spotless.maven.generic.LicenseHeader;
 import com.diffplug.spotless.maven.generic.Replace;
 import com.diffplug.spotless.maven.generic.ReplaceRegex;
+import com.diffplug.spotless.maven.generic.ToggleOffOn;
 import com.diffplug.spotless.maven.generic.TrimTrailingWhitespace;
 import com.diffplug.spotless.maven.java.Java;
 import com.diffplug.spotless.maven.json.Json;
@@ -70,6 +72,38 @@ public class SpotlessMavenPluginTest {
 
             assertThat(Files.readString(source, StandardCharsets.UTF_8)).isEqualTo("alpha\nbeta\n");
             assertThat(formatter.isClean(source.toFile())).isTrue();
+        }
+    }
+
+    @Test
+    void toggleOffOnProtectsDisabledRegionsFromGenericFormatterSteps() throws Exception {
+        Path source = tempDir.resolve("toggle.txt");
+        String original = "alpha   \n"
+                + "fmt:off\n"
+                + "beta   \n"
+                + "fmt:on\n"
+                + "gamma   \n";
+        Files.writeString(source, original, StandardCharsets.UTF_8);
+
+        ToggleOffOn toggleOffOn = new ToggleOffOn();
+        toggleOffOn.off = "fmt:off";
+        toggleOffOn.on = "fmt:on";
+        PipeStepPair toggleSteps = toggleOffOn.createPair();
+        FormatterStep trimWhitespace = new TrimTrailingWhitespace().newFormatterStep(formatterStepConfig());
+
+        try (Formatter formatter = Formatter.builder()
+                .name("spotless-maven-toggle")
+                .encoding(StandardCharsets.UTF_8)
+                .lineEndingsPolicy(LineEnding.UNIX.createPolicy())
+                .steps(List.of(toggleSteps.in(), trimWhitespace, toggleSteps.out()))
+                .rootDir(tempDir)
+                .build()) {
+            assertThat(formatter.compute(original, source.toFile()))
+                    .isEqualTo("alpha\n"
+                            + "fmt:off\n"
+                            + "beta   \n"
+                            + "fmt:on\n"
+                            + "gamma\n");
         }
     }
 
