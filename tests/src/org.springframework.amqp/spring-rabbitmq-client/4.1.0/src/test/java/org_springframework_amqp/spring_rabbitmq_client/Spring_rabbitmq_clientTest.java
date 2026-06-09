@@ -27,17 +27,17 @@ import java.util.function.Supplier;
 
 import com.rabbitmq.client.amqp.ByteCapacity;
 import com.rabbitmq.client.amqp.Connection;
+import com.rabbitmq.client.amqp.Connection.ConnectionInfo;
 import com.rabbitmq.client.amqp.Consumer;
 import com.rabbitmq.client.amqp.ConsumerBuilder;
 import com.rabbitmq.client.amqp.Management;
 import com.rabbitmq.client.amqp.Management.BindingSpecification;
 import com.rabbitmq.client.amqp.Management.ClassicQueueSpecification;
 import com.rabbitmq.client.amqp.Management.ClassicQueueVersion;
-import com.rabbitmq.client.amqp.Management.ExchangeDeletion;
+import com.rabbitmq.client.amqp.Management.DelayedRetryType;
 import com.rabbitmq.client.amqp.Management.ExchangeSpecification;
 import com.rabbitmq.client.amqp.Management.OverflowStrategy;
 import com.rabbitmq.client.amqp.Management.PurgeStatus;
-import com.rabbitmq.client.amqp.Management.QueueDeletion;
 import com.rabbitmq.client.amqp.Management.QueueInfo;
 import com.rabbitmq.client.amqp.Management.QueueLeaderLocator;
 import com.rabbitmq.client.amqp.Management.QueueSpecification;
@@ -459,8 +459,46 @@ public class Spring_rabbitmq_clientTest {
         }
 
         @Override
+        public ConnectionInfo connectionInfo() {
+            return new FakeConnectionInfo();
+        }
+
+        @Override
         public void close() {
             this.closed = true;
+        }
+    }
+
+    private static final class FakeConnectionInfo implements ConnectionInfo {
+
+        @Override
+        public String brokerVersion() {
+            return "test-broker-version";
+        }
+
+        @Override
+        public String brokerProductName() {
+            return "RabbitMQ";
+        }
+
+        @Override
+        public String brokerNode() {
+            return "rabbit@test";
+        }
+
+        @Override
+        public String host() {
+            return "localhost";
+        }
+
+        @Override
+        public int port() {
+            return 5672;
+        }
+
+        @Override
+        public String name() {
+            return "test-connection";
         }
     }
 
@@ -491,11 +529,6 @@ public class Spring_rabbitmq_clientTest {
         }
 
         @Override
-        public QueueDeletion queueDeletion() {
-            return this::queueDelete;
-        }
-
-        @Override
         public void queueDelete(String name) {
             this.deletedQueues.add(name);
         }
@@ -515,11 +548,6 @@ public class Spring_rabbitmq_clientTest {
         public ExchangeSpecification exchange(String name) {
             this.exchangeSpecification.name = name;
             return this.exchangeSpecification;
-        }
-
-        @Override
-        public ExchangeDeletion exchangeDeletion() {
-            return this::exchangeDelete;
         }
 
         @Override
@@ -707,14 +735,26 @@ public class Spring_rabbitmq_clientTest {
         }
 
         @Override
-        public QuorumQueueSpecification quorumInitialGroupSize(int size) {
-            this.arguments.put("x-quorum-initial-group-size", size);
+        public FakeQueueSpecification initialMemberCount(int count) {
+            this.arguments.put("x-initial-member-count", count);
             return this;
         }
 
         @Override
-        public FakeQueueSpecification initialMemberCount(int count) {
-            this.arguments.put("x-initial-member-count", count);
+        public QuorumQueueSpecification delayedRetryType(DelayedRetryType type) {
+            this.arguments.put("x-delayed-retry-type", type.type());
+            return this;
+        }
+
+        @Override
+        public QuorumQueueSpecification delayedRetryMin(Duration min) {
+            this.arguments.put("x-delayed-retry-min", min);
+            return this;
+        }
+
+        @Override
+        public QuorumQueueSpecification delayedRetryMax(Duration max) {
+            this.arguments.put("x-delayed-retry-max", max);
             return this;
         }
 
@@ -727,12 +767,6 @@ public class Spring_rabbitmq_clientTest {
         @Override
         public StreamSpecification maxSegmentSizeBytes(ByteCapacity maxSegmentSize) {
             this.arguments.put("x-max-segment-size-bytes", maxSegmentSize);
-            return this;
-        }
-
-        @Override
-        public StreamSpecification initialClusterSize(int size) {
-            this.arguments.put("x-initial-cluster-size", size);
             return this;
         }
     }
@@ -783,11 +817,6 @@ public class Spring_rabbitmq_clientTest {
         @Override
         public String leader() {
             return "node-1";
-        }
-
-        @Override
-        public List<String> replicas() {
-            return List.of();
         }
 
         @Override
@@ -1051,6 +1080,11 @@ public class Spring_rabbitmq_clientTest {
         @Override
         public ConsumerBuilder initialCredits(int initialCredits) {
             this.initialCredits = initialCredits;
+            return this;
+        }
+
+        @Override
+        public ConsumerBuilder preSettled() {
             return this;
         }
 
@@ -1670,6 +1704,18 @@ public class Spring_rabbitmq_clientTest {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
+        public <I, O> O body(Message.Converter<I, O> converter) {
+            return converter.convert((I) this.body);
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public <I, O> O body(Message.SectionsConverter<I, O> converter) {
+            return converter.convert(List.of((I) this.body));
+        }
+
+        @Override
         public FakeMessage durable(boolean durable) {
             this.durable = durable;
             return this;
@@ -1678,6 +1724,11 @@ public class Spring_rabbitmq_clientTest {
         @Override
         public boolean durable() {
             return this.durable;
+        }
+
+        @Override
+        public long deliveryCount() {
+            return 0;
         }
 
         @Override
