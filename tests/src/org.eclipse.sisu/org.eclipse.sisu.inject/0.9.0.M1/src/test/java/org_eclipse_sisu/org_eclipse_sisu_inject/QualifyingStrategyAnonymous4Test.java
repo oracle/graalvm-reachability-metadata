@@ -17,6 +17,7 @@ import javax.inject.Qualifier;
 
 import org.eclipse.sisu.BeanEntry;
 import org.eclipse.sisu.inject.DefaultBeanLocator;
+import org.eclipse.sisu.inject.InjectorBindings;
 import org.eclipse.sisu.inject.MutableBeanLocator;
 import org.junit.jupiter.api.Test;
 
@@ -38,7 +39,7 @@ public class QualifyingStrategyAnonymous4Test {
         });
         MutableBeanLocator locator = new DefaultBeanLocator();
 
-        locator.add(injector, 0);
+        locator.add(new InjectorBindings(injector));
 
         Iterable<? extends BeanEntry<Annotation, MarkerBoundService>> entries = locator.locate(
             Key.get(MarkerBoundService.class, Marker.class));
