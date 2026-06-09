@@ -45,7 +45,7 @@ At a glance:
 ```mermaid
 flowchart TD
     Claim[forge_metadata.py claims<br/>fails-native-image-run issue] --> Entry[fix_ni_run.py]
-    Entry --> Branch[Create branch + checkpoint commit]
+    Entry --> Branch[Create/reset fix-native-image-run branch]
     Branch --> GradleFix[gradlew fixTestNativeImageRun]
     GradleFix --> FixOK{task passed?}
     FixOK -- no --> Metadata{metadata file generated?}
@@ -56,23 +56,26 @@ flowchart TD
     CodexOK -- yes --> Test[gradlew test -Pcoordinates=new version]
     Test --> TestOK{test passed?}
     TestOK -- no --> Fail
-    TestOK -- yes --> Report
-    FixOK -- yes --> Report[generateDynamicAccessCoverageReport<br/>for new coordinate]
+    TestOK -- yes --> Populate[populateArtifactURLs]
+    FixOK -- yes --> Populate
+    Populate --> Checkpoint[Commit seed checkpoint]
+    Checkpoint --> Report[generateDynamicAccessCoverageReport<br/>for new coordinate]
     Report --> Uncovered{uncovered<br/>dynamic-access calls?}
     Uncovered -- yes --> Prep[Prepare version-specific test-suite<br/>split shared index entry]
-    Prep --> Explore[dynamic-access explore phase<br/>merge discovered metadata]
-    Explore --> Finalize
-    Uncovered -- no --> Finalize[_finalize_successful_iteration:<br/>3 native-test lanes + dual-coordinate finalization]
-    Finalize --> FinalOK{finalization passed?}
+    Prep --> Explore{explore?}
+    Uncovered -- no --> Explore
+    Explore -- yes --> DynamicAccess[dynamic-access explore phase<br/>merge discovered metadata]
+    DynamicAccess --> Finalize
+    Explore -- no --> Finalize
+    Finalize[_finalize_successful_iteration:<br/>3 native-test lanes + dual-coordinate finalization] --> FinalOK{finalization passed?}
     FinalOK -- yes --> Metrics[Write run metrics + return success]
     FinalOK -- no --> Fail
 ```
 
 Required behavior:
 
-1. Create a workflow branch named from the group, artifact, and target version,
-   then commit an empty checkpoint as the pre-generation base so finalization and
-   metrics have a clean reference.
+1. Create or reset a workflow branch named from the group, artifact, and target
+   version before changing generated artifacts.
 2. Run `./gradlew fixTestNativeImageRun
    -PtestLibraryCoordinates=<old-coordinate> -PnewLibraryVersion=<new-version>`
    in the complete reachability repo worktree to produce the **seed**.
@@ -85,24 +88,28 @@ Required behavior:
    failed Gradle run (§FS-durable-generation-logs), then rerun
    `./gradlew test -Pcoordinates=<group>:<artifact>:<newVersion>`. If it still
    fails, fail the workflow instead of publishing a partial repair.
-5. **Coverage gate.** Generate the dynamic-access coverage report for the new
+5. Populate artifact URLs for the new coordinate before any source-context
+   preparation, then commit the seed checkpoint. This runs even when exploration
+   will be skipped, because the seeded PR still needs source, test,
+   documentation, and repository URL fields.
+6. **Coverage gate.** Generate the dynamic-access coverage report for the new
    coordinate (`generateDynamicAccessCoverageReport`). Exploration runs only when
    the report has dynamic access with uncovered call sites; an empty or
    fully-covered report skips exploration (and its suite preparation) entirely
    and proceeds straight to finalization, preserving the metadata-first behavior.
-6. **Conditional exploration.** When uncovered calls exist, prepare a
+7. **Conditional exploration.** When uncovered calls exist, prepare a
    version-specific test-suite the same way the explore-then-finalize drivers do
    — the seed leaves the new version sharing the old version's test directory, so
    the shared index entry is split into a version-specific entry that creates
    `tests/src/<group>/<artifact>/<newVersion>/` while preserving the seed
-   metadata (§WF-improve-library-coverage). Then run the dynamic-access explore
-   phase (§WF-dynamic-access-iterative-strategy) against the new version,
-   *merging* any newly discovered metadata into the existing
+   metadata and populated URL fields (§WF-improve-library-coverage). Then run the
+   dynamic-access explore phase (§WF-dynamic-access-iterative-strategy) against
+   the new version, *merging* any newly discovered metadata into the existing
    `metadata/<group>/<artifact>/<newVersion>/reachability-metadata.json`.
    Exploration is best-effort: a partial or failed explore does not abort the
-   workflow, because the seed is already valid and finalization is the gate.
-7. **Mandatory finalization.** Populate artifact URLs for the new coordinate and
-   run the shared `_finalize_successful_iteration` path
+   workflow, because a reset returns to the valid seed checkpoint and
+   finalization is the gate.
+8. **Mandatory finalization.** Run the shared `_finalize_successful_iteration` path
    (§WF-dynamic-access-iterative-strategy): `generateMetadata
    --agentAllowedPackages=fromJar` (the merge step that preserves seed/agent
    metadata), the three native-test lanes (current-defaults latest GraalVM,
@@ -110,7 +117,7 @@ Required behavior:
    §FS-local-ci-equivalent-verification.1) for both the requested and resolved
    metadata coordinates, then `run_library_finalization` per coordinate. Its
    status decides PR eligibility (§GIT-forge-publication).
-8. Write run metrics (previous-vs-new shape) to
+9. Write run metrics (previous-vs-new shape) to
    `stats/<group>/<artifact>/<metadataVersion>/execution-metrics.json` and the
    pending-metrics sidecar consumed by the PR step.
 

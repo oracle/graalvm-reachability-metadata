@@ -165,11 +165,12 @@ def create_or_switch_branch(reachability_metadata_path: str, branch: str) -> Non
 
 
 def commit_checkpoint(reachability_metadata_path: str, library: str) -> str:
-    """Commit the pre-generation state as a checkpoint and return its commit hash.
+    """Commit the seeded state as a checkpoint and return its commit hash.
 
-    The checkpoint captures any preflight setup so finalization and metrics can
-    treat seed and exploration output as the generated work
-    (§WF-forge-workflow-drivers).
+    The checkpoint captures the valid seed after artifact URL population and
+    before any exploratory test-suite split. If best-effort exploration resets to
+    this checkpoint, finalization can still publish the seeded fix
+    (§WF-native-image-run-fix-workflow.3).
     """
     subprocess.run(["git", "add", "-A"], cwd=reachability_metadata_path, check=False)
     subprocess.run(
@@ -399,7 +400,6 @@ def main(argv=None) -> int:
     )
     print(f"[pipeline] Creating branch: {branch}")
     create_or_switch_branch(reachability_metadata_path, branch)
-    checkpoint = commit_checkpoint(reachability_metadata_path, library)
 
     print(f"[pipeline] Running fixTestNativeImageRun for: {current_coordinates} -> {new_version}")
     result = run_fix_test_native_image_run(
@@ -444,6 +444,9 @@ def main(argv=None) -> int:
             print("[pipeline] Gradle test failed after Codex metadata fix. Skipping PR creation.", file=sys.stderr)
             return result.returncode
 
+    populate_artifact_urls(reachability_metadata_path, library)
+    checkpoint = commit_checkpoint(reachability_metadata_path, library)
+
     # Coverage gate: explore only when the new version has uncovered calls.
     explore = should_explore_new_version(reachability_metadata_path, group, artifact, new_version)
     if explore:
@@ -469,8 +472,18 @@ def main(argv=None) -> int:
         # Best-effort: a partial or failed explore must not abort. The seed is
         # already valid and the finalization gate decides PR eligibility.
         log_stage("explore", f"Dynamic-access exploration completed with status: {explore_status}")
+        if explore_status != RUN_STATUS_SUCCESS:
+            strategy_obj, _seed_agent, model_name, tests_root = build_strategy_and_agent(
+                strategy_name=args.strategy_name,
+                reachability_metadata_path=reachability_metadata_path,
+                library=library,
+                group=group,
+                artifact=artifact,
+                version=new_version,
+                library_preparation_preflight_context=library_preparation_preflight_context,
+                explore=False,
+            )
 
-    populate_artifact_urls(reachability_metadata_path, library)
     finalize_status, _ = strategy_obj._finalize_successful_iteration(base_commit=checkpoint)
     succeeded = finalize_status in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS}
 
