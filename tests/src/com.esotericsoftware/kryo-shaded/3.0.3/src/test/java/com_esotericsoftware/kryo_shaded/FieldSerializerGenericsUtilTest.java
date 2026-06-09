@@ -56,4 +56,13 @@ public class FieldSerializerGenericsUtilTest {
         public GenericArrayCollectionHolder() {
         }
     }
+
+    /**
+     * Occupies the constructor accessor class name that ReflectASM derives from
+     * {@link GenericArrayCollectionHolder}, so Kryo falls back to reflective construction.
+     */
+    public static class GenericArrayCollectionHolderConstructorAccess {
+        public GenericArrayCollectionHolderConstructorAccess() {
+        }
+    }
 }

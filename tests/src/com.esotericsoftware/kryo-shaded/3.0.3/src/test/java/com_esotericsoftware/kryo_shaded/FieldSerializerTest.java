@@ -94,4 +94,13 @@ public class FieldSerializerTest {
             return transientScore;
         }
     }
+
+    /**
+     * Occupies the constructor accessor class name that ReflectASM derives from
+     * {@link FieldSerializerBean}, so Kryo falls back to reflective construction.
+     */
+    public static class FieldSerializerBeanConstructorAccess {
+        public FieldSerializerBeanConstructorAccess() {
+        }
+    }
 }

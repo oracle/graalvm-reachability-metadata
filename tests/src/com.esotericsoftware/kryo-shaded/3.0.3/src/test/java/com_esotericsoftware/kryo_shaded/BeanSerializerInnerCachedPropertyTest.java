@@ -79,4 +79,13 @@ public class BeanSerializerInnerCachedPropertyTest {
         public ReflectiveBeanMethodAccess() {
         }
     }
+
+    /**
+     * Occupies the constructor accessor class name that ReflectASM derives from {@link ReflectiveBean},
+     * so Kryo falls back to reflective construction when bytecode generation is unavailable.
+     */
+    public static class ReflectiveBeanConstructorAccess {
+        public ReflectiveBeanConstructorAccess() {
+        }
+    }
 }
