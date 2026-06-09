@@ -1,0 +1,135 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: com.diffplug.spotless:spotless-maven-plugin:2.43.0
+Command: `/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-d901df27/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 3 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+
+warning: unknown enum constant LifecyclePhase.VERIFY
+> Task :compileTestJava
+  reason: class file for org.apache.maven.plugins.annotations.LifecyclePhase not found
+
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-d901df27/tests/src/com.diffplug.spotless/spotless-maven-plugin/2.43.0/src/test/java/com_diffplug_spotless/spotless_maven_plugin/SpotlessMavenPluginTest.java uses or overrides a deprecated API.
+> Task :processTestResources NO-SOURCE
+Note: Recompile with -Xlint:deprecation for details.
+> Task :testClasses1 warning
+
+
+> Task :test FAILED
+
+SpotlessMavenPluginTest > checkMojoReportsFormattingViolationsWithoutChangingSources() FAILED
+    java.lang.AssertionError: 
+    Expecting actual throwable to be an instance of:
+      org.apache.maven.plugin.MojoExecutionException
+    but was:
+      java.lang.IllegalArgumentException: Spotless plugin absent from the project: MavenProject: example:spotless-sample:1 @ /tmp/junit9262250118587032608/pom.xml
+    	at com.diffplug.spotless.maven.incremental.PluginFingerprint.findSpotlessPlugin(PluginFingerprint.java:100)
+    	at com.diffplug.spotless.maven.incremental.PluginFingerprint.from(PluginFingerprint.java:47)
+    	at com.diffplug.spotless.maven.incremental.IndexBasedChecker.create(IndexBasedChecker.java:43)
+    	...(18 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceElementsDisplayed)
+        at com_diffplug_spotless.spotless_maven_plugin.SpotlessMavenPluginTest.checkMojoReportsFormattingViolationsWithoutChangingSources(SpotlessMavenPluginTest.java:112)
+
+SpotlessMavenPluginTest > javaFormatterFactoryUsesMavenProjectSourceDirectories() FAILED
+    java.lang.IllegalArgumentException: 'other' is different type of Path
+        at java.base/sun.nio.fs.UnixPath.relativize(UnixPath.java:485)
+        at java.base/sun.nio.fs.UnixPath.relativize(UnixPath.java:52)
+        at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:214)
+        at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:214)
+        at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+        at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:570)
+        at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:560)
+        at java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:921)
+        at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:265)
+        at java.base/java.util.stream.ReferencePipeline.collect(ReferencePipeline.java:723)
+        at com.diffplug.spotless.maven.java.Java.defaultIncludes(Java.java:51)
+        at com_diffplug_spotless.spotless_maven_plugin.SpotlessMavenPluginTest.javaFormatterFactoryUsesMavenProjectSourceDirectories(SpotlessMavenPluginTest.java:124)
+
+SpotlessMavenPluginTest > applyMojoFormatsJavaSourcesUsingBuiltInSteps() FAILED
+    java.lang.IllegalArgumentException: Spotless plugin absent from the project: MavenProject: example:spotless-sample:1 @ /tmp/junit749076850667218854/pom.xml
+        at com.diffplug.spotless.maven.incremental.PluginFingerprint.findSpotlessPlugin(PluginFingerprint.java:100)
+        at com.diffplug.spotless.maven.incremental.PluginFingerprint.from(PluginFingerprint.java:47)
+        at com.diffplug.spotless.maven.incremental.IndexBasedChecker.create(IndexBasedChecker.java:43)
+        at com.diffplug.spotless.maven.incremental.UpToDateChecker.forProject(UpToDateChecker.java:39)
+        at com.diffplug.spotless.maven.AbstractSpotlessMojo.createUpToDateChecker(AbstractSpotlessMojo.java:388)
+        at com.diffplug.spotless.maven.AbstractSpotlessMojo.execute(AbstractSpotlessMojo.java:233)
+
+        at com_diffplug_spotless.spotless_maven_plugin.SpotlessMavenPluginTest.applyMojoFormatsJavaSourcesUsingBuiltInSteps(SpotlessMavenPluginTest.java:100)4 tests completed, 3 failed
+
+
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-d901df27/tests/src/com.diffplug.spotless/spotless-maven-plugin/2.43.0/build/reports/problems/problems-report.html
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-d901df27/tests/src/com.diffplug.spotless/spotless-maven-plugin/2.43.0/build/reports/tests/test/index.html
+
+* Try:
+
+> Run with --scanDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+ to generate a Build Scan (Powered by Develocity).
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+BUILD FAILED in 3s
+14 actionable tasks: 3 executed, 11 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3643-d901df27/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for com.diffplug.spotless:spotless-maven-plugin:2.43.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 4s
+9 actionable tasks: 1 executed, 8 up-to-date

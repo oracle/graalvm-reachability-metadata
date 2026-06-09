@@ -1,0 +1,54 @@
+{
+  "action": "advisory_preparation",
+  "summary": "Spotless Maven Plugin is Maven-injected plugin code, not a standalone service; meaningful tests need Maven/Plexus APIs and manual Mojo initialization, but no Docker service.",
+  "deterministic_setup": [
+    {
+      "kind": "dependency",
+      "coordinate": "org.apache.maven:maven-plugin-api:3.0",
+      "scope": "testImplementation",
+      "reason": "The plugin's Mojo classes extend Maven plugin API types that are compileOnly/provided in the published plugin."
+    },
+    {
+      "kind": "dependency",
+      "coordinate": "org.apache.maven:maven-core:3.0",
+      "scope": "testImplementation",
+      "reason": "Tests that initialize the Mojo need MavenProject and related Maven core model/runtime types normally supplied by Maven."
+    },
+    {
+      "kind": "dependency",
+      "coordinate": "org.eclipse.aether:aether-api:1.1.0",
+      "scope": "testImplementation",
+      "reason": "The plugin has compileOnly references to Eclipse Aether repository session/repository system types."
+    },
+    {
+      "kind": "dependency",
+      "coordinate": "org.codehaus.plexus:plexus-resources:1.2.0",
+      "scope": "testImplementation",
+      "reason": "The Mojo uses Plexus ResourceManager/FileResourceLoader injection for locating configured files."
+    },
+    {
+      "kind": "dependency",
+      "coordinate": "org.sonatype.plexus:plexus-build-api:0.0.7",
+      "scope": "testImplementation",
+      "reason": "The Mojo uses Plexus BuildContext injection for incremental/up-to-date tracking."
+    },
+    {
+      "kind": "dependency",
+      "coordinate": "com.diffplug.spotless:spotless-lib:2.45.0",
+      "scope": "testImplementation",
+      "reason": "The plugin exposes and executes Spotless formatter types from spotless-lib, which are runtime dependencies rather than compile API dependencies."
+    },
+    {
+      "kind": "dependency",
+      "coordinate": "com.diffplug.spotless:spotless-lib-extra:2.45.0",
+      "scope": "testImplementation",
+      "reason": "The Maven plugin delegates many formatter implementations to spotless-lib-extra, published as a runtime dependency."
+    }
+  ],
+  "agent_guidance": "Exercise the Maven plugin as a Mojo against temporary files: configure a simple format or Java/POM formatter with built-in steps such as trimTrailingWhitespace/endWithNewline/licenseHeader, initialize Maven-injected fields like project, baseDir, buildDir, goal, ResourceManager, and BuildContext, then run apply/check and assert file changes or failures. Avoid formatter steps that require external tools, npm/go binaries, or downloading formatter artifacts unless explicitly provisioned.",
+  "risks": [
+    "Private Maven-injected fields may require reflection or a small test helper to initialize correctly.",
+    "Some Spotless formatter steps provision external artifacts or tools; those can make tests network-sensitive and should be avoided for baseline coverage.",
+    "Native Image verification may still require metadata for Maven/Plexus/JGit paths reached by the chosen test."
+  ]
+}
