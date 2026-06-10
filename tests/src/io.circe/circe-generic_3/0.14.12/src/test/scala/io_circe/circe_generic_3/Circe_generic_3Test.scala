@@ -88,6 +88,27 @@ class Circe_generic_3Test:
     assertEquals(Right(commands), json.as[List[CommandModel.Command]])
 
   @Test
+  def semiautomaticSumDerivationDerivesConstructorsWithoutSubtypeInstances(): Unit =
+    import TransitiveSumModel.given
+
+    val shapes: List[TransitiveSumModel.Shape] = List(
+      TransitiveSumModel.Shape.Circle(BigDecimal("2.5")),
+      TransitiveSumModel.Shape.Rectangle(width = 4, height = 7),
+      TransitiveSumModel.Shape.Origin
+    )
+
+    val json: Json = shapes.asJson
+    val firstShape: ACursor = json.hcursor.downArray
+    val secondShape: ACursor = firstShape.right
+    val thirdShape: ACursor = secondShape.right
+
+    assertEquals(Right(BigDecimal("2.5")), firstShape.downField("Circle").downField("radius").as[BigDecimal])
+    assertEquals(Right(4), secondShape.downField("Rectangle").downField("width").as[Int])
+    assertEquals(Right(7), secondShape.downField("Rectangle").downField("height").as[Int])
+    assertEquals(Some(Json.obj()), thirdShape.downField("Origin").focus)
+    assertEquals(Right(shapes), json.as[List[TransitiveSumModel.Shape]])
+
+  @Test
   def derivedCodecAsObjectExposesObjectFieldsAndRoundTripsValues(): Unit =
     import CodecModel.given
 
@@ -212,6 +233,16 @@ class Circe_generic_3Test:
     given Decoder[Command.Delete] = deriveDecoder[Command.Delete]
     given Encoder[Command] = deriveEncoder[Command]
     given Decoder[Command] = deriveDecoder[Command]
+
+  private object TransitiveSumModel:
+    sealed trait Shape
+
+    object Shape:
+      final case class Circle(radius: BigDecimal) extends Shape
+      final case class Rectangle(width: Int, height: Int) extends Shape
+      case object Origin extends Shape
+
+    given Codec.AsObject[Shape] = deriveCodec[Shape]
 
   private object CodecModel:
     final case class Metadata(kind: String, attributes: Map[String, String])
