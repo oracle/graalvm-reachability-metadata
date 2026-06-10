@@ -42,6 +42,13 @@ public class ArrayUtilsTest {
     }
 
     @Test
+    public void addAllCreatesTypedArrayForConcatenatedObjectArrays() {
+        String[] result = ArrayUtils.addAll(new String[]{"alpha", "beta"}, "gamma", "delta");
+
+        assertThat(result).isInstanceOf(String[].class).containsExactly("alpha", "beta", "gamma", "delta");
+    }
+
+    @Test
     public void insertCreatesExpandedArrayForObjectValues() {
         String[] result = ArrayUtils.insert(1, new String[]{"alpha", "delta"}, "beta", "gamma");
 
@@ -89,5 +96,12 @@ public class ArrayUtilsTest {
         String[] result = ArrayUtils.subarray(new String[]{"alpha", "beta", "gamma"}, 1, 3);
 
         assertThat(result).containsExactly("beta", "gamma");
+    }
+
+    @Test
+    public void toStringArrayCreatesTypedStringArrayForMappedValues() {
+        String[] result = ArrayUtils.toStringArray(new Object[]{"alpha", 3, null}, "missing");
+
+        assertThat(result).isInstanceOf(String[].class).containsExactly("alpha", "3", "missing");
     }
 }

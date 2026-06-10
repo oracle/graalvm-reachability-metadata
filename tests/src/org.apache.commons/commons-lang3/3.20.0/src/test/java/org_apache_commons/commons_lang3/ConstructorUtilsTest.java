@@ -19,7 +19,8 @@ public class ConstructorUtilsTest {
     public void getAccessibleConstructorAndInvokeExactConstructorUseExactPublicLookup() throws Exception {
         Constructor<ExactConstructorTarget> constructor = ConstructorUtils.getAccessibleConstructor(
                 ExactConstructorTarget.class, String.class);
-        ExactConstructorTarget target = ConstructorUtils.invokeExactConstructor(ExactConstructorTarget.class, "commons");
+        ExactConstructorTarget target = ConstructorUtils.invokeExactConstructor(
+                ExactConstructorTarget.class, "commons");
 
         assertThat(constructor).isNotNull();
         assertThat(constructor.getDeclaringClass()).isEqualTo(ExactConstructorTarget.class);
@@ -50,6 +51,15 @@ public class ConstructorUtilsTest {
         assertThat(target.describe()).isEqualTo("number:7");
     }
 
+    @Test
+    public void invokeConstructorPacksPrimitiveVarArgsForMatchingConstructor() throws Exception {
+        VarArgsConstructorTarget target = ConstructorUtils.invokeConstructor(VarArgsConstructorTarget.class,
+                new Object[]{"sum", 1, 2, 3},
+                new Class<?>[]{String.class, Integer.class, Integer.class, Integer.class});
+
+        assertThat(target.describe()).isEqualTo("sum:6");
+    }
+
     public static class ExactConstructorTarget {
         private final String value;
 
@@ -71,6 +81,24 @@ public class ConstructorUtilsTest {
 
         public String describe() {
             return "number:" + value;
+        }
+    }
+
+    public static class VarArgsConstructorTarget {
+        private final String label;
+        private final int[] values;
+
+        public VarArgsConstructorTarget(String label, int... values) {
+            this.label = label;
+            this.values = values.clone();
+        }
+
+        public String describe() {
+            int sum = 0;
+            for (int value : values) {
+                sum += value;
+            }
+            return label + ":" + sum;
         }
     }
 }
