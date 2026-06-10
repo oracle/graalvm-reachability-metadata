@@ -30,6 +30,11 @@ import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.Materializer
 import akka.stream.SystemMaterializer
 import akka.stream.scaladsl.Sink
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+import com.typesafe.config.ConfigParseOptions
+import com.typesafe.config.ConfigUtil
+import com.typesafe.config.ConfigValueFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -38,6 +43,7 @@ import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.duration.FiniteDuration
+import scala.jdk.CollectionConverters._
 
 class AkkaHttp3Test {
   private val timeout: FiniteDuration = 10.seconds
@@ -259,7 +265,9 @@ class AkkaHttp3Test {
     await(Unmarshal(response.entity).to[String])
 
   private def withActorSystem(test: ActorSystem => Unit): Unit = {
-    val system: ActorSystem = ActorSystem("akka-http-3-reachability-test")
+    val classLoader: ClassLoader = getClass.getClassLoader
+    val config: Config = loadConfigFromResources(classLoader)
+    val system: ActorSystem = ActorSystem("akka-http-3-reachability-test", config, classLoader)
     try {
       test(system)
     } finally {
@@ -268,4 +276,30 @@ class AkkaHttp3Test {
   }
 
   private def await[A](future: Future[A]): A = Await.result(future, timeout)
+
+  private def loadConfigFromResources(classLoader: ClassLoader): Config = {
+    val parseOptions: ConfigParseOptions = ConfigParseOptions.defaults().setClassLoader(classLoader)
+    val resourceNames: Seq[String] = Seq("version.conf", "akka-http-version.conf", "reference.conf")
+    val referenceConfig: Config = resourceNames
+      .flatMap((resourceName: String) => classLoader.getResources(resourceName).asScala.toSeq)
+      .foldLeft(ConfigFactory.empty()) { (config: Config, resourceUrl) =>
+        ConfigFactory.parseURL(resourceUrl, parseOptions).withFallback(config)
+      }
+      .resolve()
+
+    val adjustedConfig: Config = referenceConfig
+      .withValue("akka.loggers", ConfigValueFactory.fromIterable(List.empty[String].asJava))
+      .withValue("akka.actor.mailbox.requirements", ConfigValueFactory.fromMap(Map.empty[String, Object].asJava))
+      .withValue(
+        ConfigUtil.joinPath("akka", "actor", "deployment", "/IO-DNS/inet-address"),
+        ConfigValueFactory.fromMap(Map.empty[String, Object].asJava))
+      .withValue(
+        ConfigUtil.joinPath("akka", "actor", "deployment", "/IO-DNS/inet-address/*"),
+        ConfigValueFactory.fromMap(Map.empty[String, Object].asJava))
+      .withValue(
+        ConfigUtil.joinPath("akka", "actor", "deployment", "/IO-DNS/async-dns"),
+        ConfigValueFactory.fromMap(Map.empty[String, Object].asJava))
+
+    ConfigFactory.systemProperties().withFallback(adjustedConfig).resolve()
+  }
 }
