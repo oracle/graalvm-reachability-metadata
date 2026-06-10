@@ -107,6 +107,27 @@ class Circe_generic_3Test:
     assertEquals(Right(envelope), codec.decodeJson(json))
 
   @Test
+  def semiautomaticCodecDerivationSupportsScala3EnumsWithSingletonCases(): Unit =
+    import EnumModel.given
+
+    val events: List[EnumModel.WorkflowEvent] = List(
+      EnumModel.WorkflowEvent.Started("metadata-generation", 3),
+      EnumModel.WorkflowEvent.Paused,
+      EnumModel.WorkflowEvent.Finished(success = true)
+    )
+
+    val json: Json = events.asJson
+    val firstEvent: ACursor = json.hcursor.downArray
+    val secondEvent: ACursor = firstEvent.right
+    val thirdEvent: ACursor = secondEvent.right
+
+    assertEquals(Right("metadata-generation"), firstEvent.downField("Started").downField("name").as[String])
+    assertEquals(Right(3), firstEvent.downField("Started").downField("attempt").as[Int])
+    assertEquals(Some(Json.obj()), secondEvent.downField("Paused").focus)
+    assertEquals(Right(true), thirdEvent.downField("Finished").downField("success").as[Boolean])
+    assertEquals(Right(events), json.as[List[EnumModel.WorkflowEvent]])
+
+  @Test
   def derivedDecodersReturnFailuresForInvalidProductFields(): Unit =
     import SemiautomaticModel.given
 
@@ -165,6 +186,14 @@ class Circe_generic_3Test:
     final case class Money(amount: BigDecimal, currency: String)
     final case class LineItem(sku: String, quantity: Int, price: Money)
     final case class Invoice(number: String, customer: Customer, items: Vector[LineItem])
+
+  private object EnumModel:
+    enum WorkflowEvent:
+      case Started(name: String, attempt: Int)
+      case Paused
+      case Finished(success: Boolean)
+
+    given Codec.AsObject[WorkflowEvent] = deriveCodec[WorkflowEvent]
 
   private object CommandModel:
     final case class Payload(values: List[Int])
