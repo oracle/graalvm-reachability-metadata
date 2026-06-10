@@ -23,7 +23,11 @@ import org.apache.camel.component.jackson.JacksonConstants;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.component.jackson.ListJacksonDataFormat;
 import org.apache.camel.component.jackson.converter.JacksonTypeConverters;
+import org.apache.camel.component.jackson.transform.JsonDataTypeTransformer;
+import org.apache.camel.component.jackson.transform.JsonStructDataTypeTransformer;
 import org.apache.camel.impl.DefaultCamelContext;
+import org.apache.camel.spi.DataType;
+import org.apache.camel.spi.MimeType;
 import org.apache.camel.support.DefaultExchange;
 import org.junit.jupiter.api.Test;
 
@@ -164,6 +168,32 @@ public class Camel_jacksonTest {
             assertThat(json).contains("\"component\":\"jackson\"");
             assertThat(parsedFromString).containsEntry("component", "jackson").containsEntry("count", 4);
             assertThat(parsedFromStream).containsEntry("component", "jackson").containsEntry("count", 4);
+        }
+    }
+
+    @Test
+    void transformsJsonPayloadsBetweenTextAndStructuredDataTypes() throws Exception {
+        try (DefaultCamelContext camelContext = new DefaultCamelContext()) {
+            Exchange exchange = new DefaultExchange(camelContext);
+            exchange.getMessage().setBody(bytes("""
+                    {"route":"direct:start","steps":["unmarshal","process"]}
+                    """));
+
+            new JsonStructDataTypeTransformer().transform(exchange.getMessage(), DataType.ANY, DataType.ANY);
+
+            JsonNode structuredBody = exchange.getMessage().getBody(JsonNode.class);
+            assertThat(structuredBody.path("route").asText()).isEqualTo("direct:start");
+            assertThat(structuredBody.path("steps").size()).isEqualTo(2);
+            assertThat(exchange.getMessage().getHeader(Exchange.CONTENT_TYPE)).isEqualTo(MimeType.STRUCT.type());
+
+            new JsonDataTypeTransformer().transform(exchange.getMessage(), DataType.ANY, DataType.ANY);
+
+            byte[] jsonBody = exchange.getMessage().getBody(byte[].class);
+            String rendered = new String(jsonBody, StandardCharsets.UTF_8);
+            assertThat(rendered)
+                    .contains("\"route\":\"direct:start\"")
+                    .contains("\"steps\":[\"unmarshal\",\"process\"]");
+            assertThat(exchange.getMessage().getHeader(Exchange.CONTENT_TYPE)).isEqualTo(MimeType.JSON.type());
         }
     }
 
