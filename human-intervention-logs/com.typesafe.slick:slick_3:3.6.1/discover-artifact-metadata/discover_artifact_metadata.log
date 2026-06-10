@@ -1,0 +1,969 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.130.0
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019eb2d5-3f12-7602-9b48-f14ee0a3e1ce
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.typesafe.slick:slick_3:3.6.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "3.6.1" when "$version$" is replaced with "3.6.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "com.typesafe.slick:slick_3:3.6.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.6.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the upstream Slick repository, then write the JSON directly with the version placeholder preserved.
+exec
+/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+ succeeded in 0ms:
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+-rw-rw-r-- 1 jovan jovan 57 Jun 10 20:39 build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json
+
+exec
+/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+ succeeded in 0ms:
+{
+  "coordinates" : "com.typesafe.slick:slick_3:3.6.1"
+}
+
+codex
+The existing file only contains coordinates. I’m checking both Maven Central and upstream because this repo’s metadata prefers published source/test artifacts when they exist.
+web search: 
+web search: com.typesafe.slick slick_3 3.6.1 Maven Central sources javadoc tests
+web search: 
+web search: https://github.com/slick/slick
+web search: 
+web search: repo1.maven.org/maven2/com/typesafe/slick/slick_3/3.6.1/slick_3-3.6.1-sources.jar
+codex
+Maven Central confirms this is a normal JAR artifact and the upstream repo identifies it as Scala code. I’m now checking the exact published classifier files so the JSON can point to Maven-hosted sources/docs/tests where available.
+exec
+/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/typesafe/slick/slick_3/3.6.1/slick_3-3.6.1.pom' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.typesafe.slick</groupId>
+    <artifactId>slick_3</artifactId>
+    <packaging>jar</packaging>
+    <description>Scala Language-Integrated Connection Kit</description>
+    <url>https://scala-slick.org</url>
+    <version>3.6.1</version>
+    <licenses>
+        <license>
+            <name>Two-clause BSD-style license</name>
+            <url>https://github.com/slick/slick/blob/main/LICENSE.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>Slick</name>
+    <inceptionYear>2008</inceptionYear>
+    <organization>
+        <name>Typesafe</name>
+        <url>https://scala-slick.org</url>
+    </organization>
+    <scm>
+        <url>https://github.com/slick/slick</url>
+        <connection>scm:git:git@github.com:slick/slick.git</connection>
+    </scm>
+    <developers>
+        <developer>
+            <id>szeiger</id>
+            <name>Stefan Zeiger</name>
+            <url>http://szeiger.de</url>
+        </developer>
+        <developer>
+            <id>hvesalai</id>
+            <name>Heikki Vesalainen</name>
+            <url>https://github.com/hvesalai/</url>
+        </developer>
+    </developers>
+    <properties>
+        <info.versionScheme>pvp</info.versionScheme>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.17</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>config</artifactId>
+            <version>1.4.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.reactivestreams</groupId>
+            <artifactId>reactive-streams</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/typesafe/slick/slick_3/3.6.1/' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+ succeeded in 355ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/typesafe/slick/slick_3/3.6.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/typesafe/slick/slick_3/3.6.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="slick_3-3.6.1-javadoc.jar" title="slick_3-3.6.1-javadoc.jar">slick_3-3.6.1-javadoc.jar</a>                         2025-05-16 03:09  17993140      
+<a href="slick_3-3.6.1-javadoc.jar.asc" title="slick_3-3.6.1-javadoc.jar.asc">slick_3-3.6.1-javadoc.jar.asc</a>                     2025-05-16 03:09       659      
+<a href="slick_3-3.6.1-javadoc.jar.asc.md5" title="slick_3-3.6.1-javadoc.jar.asc.md5">slick_3-3.6.1-javadoc.jar.asc.md5</a>                 2025-05-16 03:09        32      
+<a href="slick_3-3.6.1-javadoc.jar.asc.sha1" title="slick_3-3.6.1-javadoc.jar.asc.sha1">slick_3-3.6.1-javadoc.jar.asc.sha1</a>                2025-05-16 03:09        40      
+<a href="slick_3-3.6.1-javadoc.jar.md5" title="slick_3-3.6.1-javadoc.jar.md5">slick_3-3.6.1-javadoc.jar.md5</a>                     2025-05-16 03:09        32      
+<a href="slick_3-3.6.1-javadoc.jar.sha1" title="slick_3-3.6.1-javadoc.jar.sha1">slick_3-3.6.1-javadoc.jar.sha1</a>                    2025-05-16 03:09        40      
+<a href="slick_3-3.6.1-sources.jar" title="slick_3-3.6.1-sources.jar">slick_3-3.6.1-sources.jar</a>                         2025-05-16 03:09    348004      
+<a href="slick_3-3.6.1-sources.jar.asc" title="slick_3-3.6.1-sources.jar.asc">slick_3-3.6.1-sources.jar.asc</a>                     2025-05-16 03:09       659      
+<a href="slick_3-3.6.1-sources.jar.asc.md5" title="slick_3-3.6.1-sources.jar.asc.md5">slick_3-3.6.1-sources.jar.asc.md5</a>                 2025-05-16 03:09        32      
+<a href="slick_3-3.6.1-sources.jar.asc.sha1" title="slick_3-3.6.1-sources.jar.asc.sha1">slick_3-3.6.1-sources.jar.asc.sha1</a>                2025-05-16 03:09        40      
+<a href="slick_3-3.6.1-sources.jar.md5" title="slick_3-3.6.1-sources.jar.md5">slick_3-3.6.1-sources.jar.md5</a>                     2025-05-16 03:09        32      
+<a href="slick_3-3.6.1-sources.jar.sha1" title="slick_3-3.6.1-sources.jar.sha1">slick_3-3.6.1-sources.jar.sha1</a>                    2025-05-16 03:09        40      
+<a href="slick_3-3.6.1.jar" title="slick_3-3.6.1.jar">slick_3-3.6.1.jar</a>                                 2025-05-16 03:09   4703378      
+<a href="slick_3-3.6.1.jar.asc" title="slick_3-3.6.1.jar.asc">slick_3-3.6.1.jar.asc</a>                             2025-05-16 03:09       659      
+<a href="slick_3-3.6.1.jar.asc.md5" title="slick_3-3.6.1.jar.asc.md5">slick_3-3.6.1.jar.asc.md5</a>                         2025-05-16 03:09        32      
+<a href="slick_3-3.6.1.jar.asc.sha1" title="slick_3-3.6.1.jar.asc.sha1">slick_3-3.6.1.jar.asc.sha1</a>                        2025-05-16 03:09        40      
+<a href="slick_3-3.6.1.jar.md5" title="slick_3-3.6.1.jar.md5">slick_3-3.6.1.jar.md5</a>                             2025-05-16 03:09        32      
+<a href="slick_3-3.6.1.jar.sha1" title="slick_3-3.6.1.jar.sha1">slick_3-3.6.1.jar.sha1</a>                            2025-05-16 03:09        40      
+<a href="slick_3-3.6.1.pom" title="slick_3-3.6.1.pom">slick_3-3.6.1.pom</a>                                 2025-05-16 03:09      2285      
+<a href="slick_3-3.6.1.pom.asc" title="slick_3-3.6.1.pom.asc">slick_3-3.6.1.pom.asc</a>                             2025-05-16 03:09       659      
+<a href="slick_3-3.6.1.pom.asc.md5" title="slick_3-3.6.1.pom.asc.md5">slick_3-3.6.1.pom.asc.md5</a>                         2025-05-16 03:09        32      
+<a href="slick_3-3.6.1.pom.asc.sha1" title="slick_3-3.6.1.pom.asc.sha1">slick_3-3.6.1.pom.asc.sha1</a>                        2025-05-16 03:09        40      
+<a href="slick_3-3.6.1.pom.md5" title="slick_3-3.6.1.pom.md5">slick_3-3.6.1.pom.md5</a>                             2025-05-16 03:09        32      
+<a href="slick_3-3.6.1.pom.sha1" title="slick_3-3.6.1.pom.sha1">slick_3-3.6.1.pom.sha1</a>                            2025-05-16 03:09        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/bin/bash -lc "rg '\"language\"|\"not-for-native-image\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata -g '*.json' -m 1" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+ exited 1 in 0ms:
+codex
+For version 3.6.1, Maven publishes the main JAR, sources JAR, and javadoc/scaladoc JAR, but no test-sources or tests classifier appears in the Maven directory. I’ll use the Maven-hosted source and documentation artifacts and fall back to the upstream tag for the test suite.
+exec
+/bin/bash -lc "rg '\"source-code-url\"' -g '*.json' . | head -n 40" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+ succeeded in 0ms:
+./metadata/org.latencyutils/LatencyUtils/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/latencyutils/LatencyUtils/$version$/LatencyUtils-$version$-sources.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/$version$/snakeyaml-engine-$version$-sources.jar",
+./metadata/tools.jackson.jaxrs/jackson-jaxrs-base/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/tools/jackson/jaxrs/jackson-jaxrs-base/$version$/jackson-jaxrs-base-$version$-sources.jar",
+./metadata/tools.jackson.jaxrs/jackson-jaxrs-json-provider/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/tools/jackson/jaxrs/jackson-jaxrs-json-provider/$version$/jackson-jaxrs-json-provider-$version$-sources.jar",
+./metadata/net.thauvin.erik.urlencoder/urlencoder-lib-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/thauvin/erik/urlencoder/urlencoder-lib-jvm/$version$/urlencoder-lib-jvm-$version$-sources.jar",
+./metadata/com.github.jnr/jnr-x86asm/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/jnr/jnr-x86asm/$version$/jnr-x86asm-$version$-sources.jar",
+./metadata/io.netty/netty-codec-memcache/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-memcache/$version$/netty-codec-memcache-$version$-sources.jar",
+./metadata/io.netty/netty-codec-memcache/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-memcache/$version$/netty-codec-memcache-$version$-sources.jar",
+./metadata/io.netty/netty-codec-memcache/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-memcache/$version$/netty-codec-memcache-$version$-sources.jar",
+./metadata/com.github.jnr/jnr-a64asm/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/jnr/jnr-a64asm/$version$/jnr-a64asm-$version$-sources.jar",
+./metadata/io.netty/netty-transport-classes-epoll/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/$version$/netty-transport-classes-epoll-$version$-sources.jar",
+./metadata/org.apache.maven.surefire/surefire-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-api/$version$/surefire-api-$version$-sources.jar",
+./metadata/org.apache.maven.surefire/surefire-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-api/$version$/surefire-api-$version$-sources.jar",
+./metadata/org.apache.maven.surefire/surefire-logger-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-logger-api/$version$/surefire-logger-api-$version$-sources.jar",
+./metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/$version$/jakarta.websocket-client-api-$version$-sources.jar",
+./metadata/jakarta.websocket/jakarta.websocket-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/$version$/jakarta.websocket-api-$version$-sources.jar",
+./metadata/org.jline/jline/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/jline/jline/$version$/jline-$version$-sources.jar",
+./metadata/org.jline/jline-reader/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-sources.jar",
+./metadata/org.jline/jline-reader/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-reader/$version$/jline-reader-$version$-sources.jar",
+./metadata/org.jline/jline-console/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+./metadata/org.jline/jline-console/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-console/$version$/jline-console-$version$-sources.jar",
+./metadata/org.jline/jline-terminal-jna/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/$version$/jline-terminal-jna-$version$-sources.jar",
+./metadata/io.netty/netty-transport-classes-io_uring/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-io_uring/$version$/netty-transport-classes-io_uring-$version$-sources.jar",
+./metadata/org.jline/jline-terminal-jni/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-terminal-jni/$version$/jline-terminal-jni-$version$-sources.jar",
+./metadata/org.jline/jline-terminal-jni/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-terminal-jni/$version$/jline-terminal-jni-$version$-sources.jar",
+./metadata/io.netty/netty-codec-mqtt/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-mqtt/$version$/netty-codec-mqtt-$version$-sources.jar",
+./metadata/io.netty/netty-codec-mqtt/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-mqtt/4.1.74.Final/netty-codec-mqtt-4.1.74.Final-sources.jar",
+./metadata/org.jline/jline-native/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jline/jline-native/$version$/jline-native-$version$-sources.jar",
+./metadata/io.netty/netty-codec-smtp/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-smtp/$version$/netty-codec-smtp-$version$-sources.jar",
+./metadata/io.netty/netty-codec-smtp/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-smtp/$version$/netty-codec-smtp-$version$-sources.jar",
+./metadata/org.parboiled/parboiled_2.13/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/parboiled/parboiled_2.13/$version$/parboiled_2.13-$version$-sources.jar",
+./metadata/io.netty/netty-codec-xml/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-codec-xml/$version$/netty-codec-xml-$version$-sources.jar",
+./metadata/org.parboiled/parboiled_3/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/parboiled/parboiled_3/$version$/parboiled_3-$version$-sources.jar",
+./metadata/io.netty/netty-transport-classes-kqueue/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-kqueue/$version$/netty-transport-classes-kqueue-$version$-sources.jar",
+./metadata/org.apache.maven.resolver/maven-resolver-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/$version$/maven-resolver-api-$version$-sources.jar",
+./metadata/org.apache.maven.resolver/maven-resolver-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-api/$version$/maven-resolver-api-$version$-sources.jar",
+./metadata/io.netty/netty-common/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/$version$/netty-common-$version$-sources.jar",
+./metadata/io.netty/netty-common/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/$version$/netty-common-$version$-sources.jar",
+./metadata/io.netty/netty-common/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/$version$/netty-common-$version$-sources.jar",
+./metadata/org.apache.maven.resolver/maven-resolver-util/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/resolver/maven-resolver-util/$version$/maven-resolver-util-$version$-sources.jar",
+
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/slick/slick/git/matching-refs/tags | jq -r '.[].ref' | rg '3\\.6\\.1|v3\\.6\\.1|3\\.6'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+exec
+/bin/bash -lc 'curl -fsSL -I https://repo1.maven.org/maven2/com/typesafe/slick/slick_3/3.6.1/slick_3-3.6.1-test-sources.jar; curl -fsSL -I https://repo1.maven.org/maven2/com/typesafe/slick/slick_3/3.6.1/slick_3-3.6.1-tests.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+ succeeded in 426ms:
+refs/tags/v3.6.0
+refs/tags/v3.6.1
+
+ exited 22 in 1061ms:
+HTTP/2 404 
+date: Wed, 10 Jun 2026 18:40:20 GMT
+content-type: text/html
+cf-ray: a09a80fc8e94dfc0-BEG
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/typesafe/slick/slick_3/3.6.1/slick_3-3.6.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Wed, 10 Jun 2026 18:40:20 GMT
+content-type: text/html
+cf-ray: a09a81014d15870d-BEG
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/typesafe/slick/slick_3/3.6.1/slick_3-3.6.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/bin/bash -lc "rg '\"test-code-url\"' -g '*.json' metadata build/discovered-artifact-metadata | head -n 80" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+exec
+/bin/bash -lc "rg 'scala|slick|scaladoc|javadoc.jar|github.com/.*/tree' -g '*.json' metadata build/discovered-artifact-metadata | head -n 120" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+ succeeded in 0ms:
+metadata/org.jboss.arquillian.junit/arquillian-junit-core/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-core/$version$/arquillian-junit-core-$version$-test-sources.jar",
+metadata/org.xerial/sqlite-jdbc/index.json:    "test-code-url" : "https://github.com/xerial/sqlite-jdbc/tree/$version$/src/test",
+metadata/org.xerial/sqlite-jdbc/index.json:    "test-code-url" : "https://github.com/xerial/sqlite-jdbc/tree/$version$/src/test",
+metadata/org.xerial/sqlite-jdbc/index.json:    "test-code-url" : "https://github.com/xerial/sqlite-jdbc/tree/3.36.0.3/src/test",
+metadata/org.springframework.security/spring-security-crypto/index.json:    "test-code-url" : "https://github.com/spring-projects/spring-security/tree/$version$/crypto/src/test",
+metadata/org.springframework.security/spring-security-crypto/index.json:    "test-code-url" : "https://github.com/spring-projects/spring-security/tree/$version$/crypto/src/test",
+metadata/org.jboss.arquillian.junit/arquillian-junit-container/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-container/$version$/arquillian-junit-container-$version$-test-sources.jar",
+metadata/org.apache-extras.beanshell/bsh/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache-extras/beanshell/bsh/$version$/bsh-$version$-src.zip",
+metadata/io.opentelemetry.instrumentation/opentelemetry-instrumentation-api/index.json:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/v$version$/instrumentation-api/src/test",
+metadata/org.iq80.snappy/snappy/index.json:    "test-code-url" : "https://github.com/dain/snappy/tree/snappy-$version$/src/test",
+metadata/org.iq80.snappy/snappy/index.json:    "test-code-url" : "https://github.com/dain/snappy/tree/snappy-$version$/src/test",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:    "test-code-url" : "https://github.com/jakartaee/servlet/tree/$version$-RELEASE-tck/tck",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:    "test-code-url" : "N/A",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:    "test-code-url" : "N/A",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model/",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model/",
+metadata/com.google.re2j/re2j/index.json:    "test-code-url" : "https://github.com/google/re2j/tree/re2j-$version$/javatests",
+metadata/com.google.auto.service/auto-service/index.json:    "test-code-url" : "https://github.com/google/auto/tree/auto-service-$version$/service/processor/src/test",
+metadata/org.reactivestreams/reactive-streams/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams-tck/$version$/reactive-streams-tck-$version$-sources.jar",
+metadata/com.ongres.stringprep/stringprep/index.json:    "test-code-url" : "https://github.com/ongres/stringprep/tree/$version$/stringprep/src/test/java",
+metadata/com.google.android/annotations/index.json:    "test-code-url": "N/A",
+metadata/com.google.auto.service/auto-service-annotations/index.json:    "test-code-url" : "https://github.com/google/auto/tree/auto-service-$version$/service/processor/src/test",
+metadata/tools.jackson.core/jackson-databind/index.json:    "test-code-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-$version$/src/test",
+metadata/org.glassfish.web/javax.el/index.json:    "test-code-url" : "N/A",
+metadata/com.ongres.stringprep/saslprep/index.json:    "test-code-url" : "https://github.com/ongres/stringprep/tree/$version$/saslprep/src/test",
+metadata/com.ongres.stringprep/saslprep/index.json:    "test-code-url" : "https://github.com/ongres/stringprep/tree/$version$/saslprep/src/test",
+metadata/tools.jackson.core/jackson-core/index.json:    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-$version$/src/test",
+metadata/org.eclipse.collections/eclipse-collections-api/index.json:    "test-code-url" : "https://github.com/eclipse/eclipse-collections/tree/$version$/unit-tests/src/test/java",
+metadata/org.attoparser/attoparser/index.json:    "test-code-url" : "https://github.com/attoparser/attoparser/tree/attoparser-$version$/src/test",
+metadata/javax.portlet/portlet-api/index.json:    "test-code-url" : "N/A",
+metadata/jakarta.el/jakarta.el-api/index.json:    "test-code-url" : "https://github.com/jakartaee/expression-language/tree/$version$-RI-COMB-RELEASE/src/test",
+metadata/com.googlecode.concurrent-trees/concurrent-trees/index.json:    "test-code-url" : "https://github.com/npgall/concurrent-trees/tree/$version$/code/src/test",
+metadata/org.apache.orc/orc-mapreduce/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-test-sources.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-test-sources.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-test-sources.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-test-sources.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-test-sources.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-test-sources.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-test-sources.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-test-sources.jar",
+metadata/com.sun.xml.bind.external/relaxng-datatype/index.json:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/$version$-RI/jaxb-ri/external/relaxng-datatype/src/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/com.spotify/completable-futures/index.json:    "test-code-url" : "https://github.com/spotify/completable-futures/tree/v$version$/src/test/java",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/$version$/src/test",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/$version$/src/test",
+metadata/javax.interceptor/javax.interceptor-api/index.json:    "test-code-url" : "N/A",
+metadata/com.sun.xml.bind.external/rngom/index.json:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/$version$-RI/jaxb-ri/external/rngom/src/test",
+metadata/xml-apis/xml-apis/index.json:    "test-code-url" : "N/A",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/org.tpolecat/doobie-free_3/index.json:    "test-code-url" : "https://github.com/typelevel/doobie/tree/v$version$/modules/free/src/test",
+metadata/org.tpolecat/doobie-free_3/index.json:    "test-code-url" : "N/A",
+metadata/org.tpolecat/doobie-free_3/index.json:    "test-code-url" : "N/A",
+metadata/mysql/mysql-connector-java/index.json:    "test-code-url": "https://github.com/mysql/mysql-connector-j/tree/$version$/src/test",
+metadata/org.apache.orc/orc-core/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-core/$version$/orc-core-$version$-tests.jar",
+metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json:    "test-code-url" : "https://github.com/neo4j/bolt-connection-java/tree/$version$/neo4j-bolt-connection-netty/src/test",
+metadata/org.tpolecat/skunk-core_3/index.json:    "test-code-url" : "https://github.com/typelevel/skunk/tree/v$version$/modules/tests",
+metadata/findbugs/annotations/index.json:    "test-code-url" : "https://sourceforge.net/projects/findbugs/files/OldFiles/findbugs-$version$-source.zip/download",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "test-code-url" : "https://github.com/oshai/kotlin-logging/tree/$version$/src/jvmTest",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-tests.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-tests.jar",
+metadata/org.glassfish.jersey.bundles.repackaged/jersey-guava/index.json:    "test-code-url" : "N/A",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:    "test-code-url" : "N/A",
+metadata/org.neo4j.bolt/neo4j-bolt-connection/index.json:    "test-code-url" : "https://github.com/neo4j/bolt-connection-java/tree/$version$/neo4j-bolt-connection/src/test",
+metadata/com.akuleshov7/ktoml-core-jvm/index.json:    "test-code-url" : "https://github.com/orchestr7/ktoml/tree/v$version$/ktoml-core/src/commonTest",
+metadata/org.tpolecat/typename_3/index.json:    "test-code-url" : "https://github.com/tpolecat/typename/tree/v$version$/src/test/scala-3",
+metadata/org.objenesis/objenesis/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis-tck/$version$/objenesis-tck-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-spi/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-spi/$version$/arquillian-container-spi-$version$-tests.jar",
+metadata/com.googlecode.juniversalchardet/juniversalchardet/index.json:    "test-code-url" : "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/juniversalchardet/juniversalchardet-$version$.tar.gz",
+metadata/org.neo4j.bolt/neo4j-bolt-connection-routed/index.json:    "test-code-url" : "https://github.com/neo4j/bolt-connection-java/tree/$version$/neo4j-bolt-connection-routed/src/test",
+metadata/org.codehaus.jettison/jettison/index.json:    "test-code-url" : "https://github.com/jettison-json/jettison/tree/jettison-$version$/src/test/java",
+metadata/io.opentelemetry.instrumentation/opentelemetry-instrumentation-api-incubator/index.json:    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/v2.1.0/instrumentation-api-incubator/src/test",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/asn1/ber/src/test/java/org/apache/directory/api/asn1/ber/",
+metadata/org.tpolecat/sourcepos_3/index.json:    "test-code-url" : "https://github.com/typelevel/SourcePos/tree/v$version$/sourcepos/src/test",
+
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json:  "coordinates" : "com.typesafe.slick:slick_3:3.6.1"
+metadata/log4j/log4j/index.json:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-$version$/tests",
+metadata/log4j/log4j/index.json:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/org.glassfish.web/javax.el/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/glassfish/web/javax.el/$version$/javax.el-$version$-javadoc.jar",
+metadata/org.xerial/sqlite-jdbc/index.json:    "test-code-url" : "https://github.com/xerial/sqlite-jdbc/tree/$version$/src/test",
+metadata/org.xerial/sqlite-jdbc/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/xerial/sqlite-jdbc/$version$/sqlite-jdbc-$version$-javadoc.jar",
+metadata/org.xerial/sqlite-jdbc/index.json:    "test-code-url" : "https://github.com/xerial/sqlite-jdbc/tree/$version$/src/test",
+metadata/org.xerial/sqlite-jdbc/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/xerial/sqlite-jdbc/$version$/sqlite-jdbc-$version$-javadoc.jar",
+metadata/org.xerial/sqlite-jdbc/index.json:    "test-code-url" : "https://github.com/xerial/sqlite-jdbc/tree/3.36.0.3/src/test",
+metadata/org.xerial/sqlite-jdbc/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/xerial/sqlite-jdbc/3.36.0.3/sqlite-jdbc-3.36.0.3-javadoc.jar",
+metadata/com.fasterxml.jackson.jaxrs/jackson-jaxrs-base/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/jaxrs/jackson-jaxrs-base/$version$/jackson-jaxrs-base-$version$-javadoc.jar",
+metadata/io.helidon.common/helidon-common-media-type/index.json:    "test-code-url" : "https://github.com/helidon-io/helidon/tree/$version$/common/media-type/src/test",
+metadata/io.helidon.common/helidon-common-media-type/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/helidon/common/helidon-common-media-type/$version$/helidon-common-media-type-$version$-javadoc.jar",
+metadata/org.apache.camel/camel-core-model/index.json:    "test-code-url" : "https://github.com/apache/camel/tree/camel-$version$/core/camel-core-model/src/test",
+metadata/org.apache.camel/camel-core-model/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-core-model/$version$/camel-core-model-$version$-javadoc.jar",
+metadata/org.apache.groovy/groovy-test-junit5/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/groovy/groovy-test-junit5/$version$/groovy-test-junit5-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider/index.json:    "test-code-url" : "https://github.com/FasterXML/jackson-jaxrs-providers/tree/jackson-jaxrs-providers-$version$/json/src/test",
+metadata/com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/jaxrs/jackson-jaxrs-json-provider/$version$/jackson-jaxrs-json-provider-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider/index.json:    "test-code-url" : "https://github.com/FasterXML/jackson-jaxrs-providers/tree/jackson-jaxrs-providers-$version$/json/src/test",
+metadata/com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/jaxrs/jackson-jaxrs-json-provider/$version$/jackson-jaxrs-json-provider-$version$-javadoc.jar",
+metadata/org.apache.camel/camel-management-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-management-api/$version$/camel-management-api-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:    "test-code-url" : "https://github.com/apache/httpcomponents-core/tree/rel/v$version$/httpcore/src/test/java",
+metadata/org.apache.httpcomponents/httpcore/index.json:    "documentation-url" : "https://github.com/apache/httpcomponents-core/tree/rel/v$version$/src/docbkx",
+metadata/org.apache.httpcomponents/httpcore/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/$version$/httpcore-$version$-javadoc.jar",
+metadata/ru.vyarus/generics-resolver/index.json:    "test-code-url" : "https://github.com/xvik/generics-resolver/tree/$version$/src/test",
+metadata/ru.vyarus/generics-resolver/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/ru/vyarus/generics-resolver/$version$/generics-resolver-$version$-javadoc.jar",
+metadata/com.mysql/mysql-connector-j/index.json:    "test-code-url" : "https://github.com/mysql/mysql-connector-j/tree/$version$/src/test",
+metadata/com.mysql/mysql-connector-j/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/$version$/mysql-connector-j-$version$-javadoc.jar",
+metadata/org.apache.camel/camel-core-engine/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-core-engine/$version$/camel-core-engine-$version$-javadoc.jar",
+metadata/jakarta.el/jakarta.el-api/index.json:    "test-code-url" : "https://github.com/jakartaee/expression-language/tree/$version$-RI-COMB-RELEASE/src/test",
+metadata/jakarta.el/jakarta.el-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/el/jakarta.el-api/$version$/jakarta.el-api-$version$-javadoc.jar",
+metadata/io.smallrye.classfile/jdk-classfile-backport/index.json:    "test-code-url" : "https://github.com/smallrye/jdk-classfile-backport/tree/$version$/src/test/java",
+metadata/io.smallrye.classfile/jdk-classfile-backport/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/classfile/jdk-classfile-backport/$version$/jdk-classfile-backport-$version$-javadoc.jar",
+metadata/org.apache.camel/camel-base/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-base/$version$/camel-base-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/$version$/httpclient-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-javadoc.jar",
+metadata/com.github.ajalt.colormath/colormath-jvm/index.json:    "test-code-url" : "https://github.com/ajalt/colormath/tree/$version$/test/src",
+metadata/com.github.ajalt.colormath/colormath-jvm/index.json:    "documentation-url" : "https://github.com/ajalt/colormath/tree/$version$/docs",
+metadata/org.latencyutils/LatencyUtils/index.json:    "test-code-url" : "https://github.com/LatencyUtils/LatencyUtils/tree/LatencyUtils-$version$/src/test",
+metadata/org.latencyutils/LatencyUtils/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/latencyutils/LatencyUtils/$version$/LatencyUtils-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/src/test",
+metadata/org.apache.thrift/libthrift/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:    "description" : "Apache Thrift libthrift provides the Java runtime library for applications that use Apache Thrift generated service and data-type code. It supplies transports, protocols, servers, clients, and support utilities for building scalable cross-language RPC services.",
+metadata/org.apache.thrift/libthrift/index.json:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/test",
+metadata/org.apache.thrift/libthrift/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:    "description" : "Apache Thrift libthrift provides the Java runtime library for applications that use Apache Thrift generated service and data-type code. It supplies transports, protocols, servers, clients, and support utilities for building scalable cross-language RPC services.",
+metadata/org.apache.camel/camel-core-processor/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-core-processor/$version$/camel-core-processor-$version$-javadoc.jar",
+metadata/com.googlecode.juniversalchardet/juniversalchardet/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/googlecode/juniversalchardet/juniversalchardet/$version$/juniversalchardet-$version$-javadoc.jar",
+metadata/io.helidon.common/helidon-common-config/index.json:    "test-code-url" : "https://github.com/helidon-io/helidon/tree/$version$/common/config/src/test",
+metadata/io.helidon.common/helidon-common-config/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/helidon/common/helidon-common-config/$version$/helidon-common-config-$version$-javadoc.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:    "test-code-url" : "https://github.com/jakartaee/servlet/tree/$version$-RELEASE-tck/tck",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-javadoc.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-javadoc.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-javadoc.jar",
+metadata/com.google.api/gax-grpc/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/api/gax-grpc/$version$/gax-grpc-$version$-javadoc.jar",
+metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json:    "test-code-url" : "https://github.com/neo4j/bolt-connection-java/tree/$version$/neo4j-bolt-connection-netty/src/test",
+metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/$version$/neo4j-bolt-connection-netty-$version$-javadoc.jar",
+metadata/io.helidon.common/helidon-common-types/index.json:    "test-code-url" : "https://github.com/helidon-io/helidon/tree/$version$/common/types/src/test/java",
+metadata/io.helidon.common/helidon-common-types/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/helidon/common/helidon-common-types/$version$/helidon-common-types-$version$-javadoc.jar",
+metadata/org.apache.camel/camel-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/camel-api/$version$/camel-api-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "repository-url" : "https://github.com/ben-manes/caffeine/tree/v3.1.2",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "repository-url" : "https://github.com/ben-manes/caffeine/tree/v3.1.8",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.barchart.udt/barchart-udt-bundle/index.json:    "test-code-url" : "https://github.com/barchart/barchart-udt/tree/barchart-udt-$version$/barchart-udt-it/barchart-udt-it-02-bundle-test/src/test",
+metadata/com.barchart.udt/barchart-udt-bundle/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/barchart/udt/barchart-udt-bundle/$version$/barchart-udt-bundle-$version$-javadoc.jar",
+metadata/com.google.api/api-common/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/api/api-common/$version$/api-common-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.hibernate.reactive/hibernate-reactive-core/index.json:    "test-code-url": "https://github.com/hibernate/hibernate-reactive/tree/2.0.0/hibernate-reactive-core/src/test",
+metadata/org.hibernate.reactive/hibernate-reactive-core/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/hibernate/reactive/hibernate-reactive-core/$version$/hibernate-reactive-core-$version$-javadoc.jar",
+metadata/com.github.jnr/jnr-x86asm/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/jnr/jnr-x86asm/$version$/jnr-x86asm-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-spi/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-spi/$version$/arquillian-container-spi-$version$-javadoc.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/$version$/snakeyaml-engine-$version$-javadoc.jar",
+metadata/org.neo4j.bolt/neo4j-bolt-connection/index.json:    "test-code-url" : "https://github.com/neo4j/bolt-connection-java/tree/$version$/neo4j-bolt-connection/src/test",
+metadata/org.neo4j.bolt/neo4j-bolt-connection/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection/$version$/neo4j-bolt-connection-$version$-javadoc.jar",
+metadata/io.helidon.common/helidon-common-mapper/index.json:    "test-code-url" : "https://github.com/helidon-io/helidon/tree/$version$/common/mapper/src/test",
+metadata/io.helidon.common/helidon-common-mapper/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/helidon/common/helidon-common-mapper/$version$/helidon-common-mapper-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-impl-base/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-impl-base/$version$/arquillian-container-test-impl-base-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-impl-base/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-impl-base/$version$/arquillian-container-test-impl-base-$version$-javadoc.jar",
+metadata/com.github.jnr/jnr-a64asm/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/jnr/jnr-a64asm/$version$/jnr-a64asm-$version$-javadoc.jar",
+metadata/org.neo4j.bolt/neo4j-bolt-connection-routed/index.json:    "test-code-url" : "https://github.com/neo4j/bolt-connection-java/tree/$version$/neo4j-bolt-connection-routed/src/test",
+metadata/org.neo4j.bolt/neo4j-bolt-connection-routed/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-routed/$version$/neo4j-bolt-connection-routed-$version$-javadoc.jar",
+metadata/tools.jackson.jaxrs/jackson-jaxrs-base/index.json:    "test-code-url" : "https://github.com/FasterXML/jackson-jaxrs-providers/tree/jackson-jaxrs-providers-$version$/base/src/test",
+metadata/tools.jackson.jaxrs/jackson-jaxrs-base/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/tools/jackson/jaxrs/jackson-jaxrs-base/$version$/jackson-jaxrs-base-$version$-javadoc.jar",
+metadata/io.helidon.common/helidon-common-buffers/index.json:    "test-code-url" : "https://github.com/helidon-io/helidon/tree/$version$/common/buffers/src/test/java/io/helidon/common/buffers",
+metadata/io.helidon.common/helidon-common-buffers/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/helidon/common/helidon-common-buffers/$version$/helidon-common-buffers-$version$-javadoc.jar",
+metadata/io.grpc/grpc-inprocess/index.json:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v$version$/inprocess/src/test",
+metadata/io.grpc/grpc-inprocess/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/grpc/grpc-inprocess/$version$/grpc-inprocess-$version$-javadoc.jar",
+metadata/org.apache.camel/spi-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-javadoc.jar",
+metadata/org.apache.camel/spi-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-javadoc.jar",
+metadata/org.apache.camel/spi-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-javadoc.jar",
+metadata/org.apache.camel/spi-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/camel/spi-annotations/$version$/spi-annotations-$version$-javadoc.jar",
+metadata/tools.jackson.core/jackson-databind/index.json:    "test-code-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-$version$/src/test",
+metadata/tools.jackson.core/jackson-databind/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/tools/jackson/core/jackson-databind/$version$/jackson-databind-$version$-javadoc.jar",
+metadata/org.neo4j.bolt/neo4j-bolt-connection-pooled/index.json:    "test-code-url" : "https://github.com/neo4j/bolt-connection-java/tree/$version$/neo4j-bolt-connection-pooled/src/test",
+metadata/org.neo4j.bolt/neo4j-bolt-connection-pooled/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-pooled/$version$/neo4j-bolt-connection-pooled-$version$-javadoc.jar",
+
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/slick/slick/contents?ref=v3.6.1 | jq -r '.[].name'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+ succeeded in 302ms:
+.github
+.gitignore
+.jvmopts
+.mergify.yml
+.scala-steward.conf
+.vscode
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+LICENSE.txt
+README.md
+build.sbt
+common-test-resources
+doc
+docker-compose.yml
+issue_template.md
+project
+reactive-streams-tests
+renovate.json
+samples
+scaladoc-root.txt
+slick-codegen
+slick-compat-collections
+slick-hikaricp
+slick-testkit
+slick
+test-dbs
+testVersions.sc
+versionPolicy.sbt
+
+codex
+The tag is `v3.6.1`, and the repository layout has a `slick` module plus separate test modules. I’m checking the tagged tree to choose the most precise test path for the `slick_3` artifact rather than linking the whole repository.
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/slick/slick/contents/slick?ref=v3.6.1 | jq -r '.[].name'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/slick/slick/contents/slick-testkit?ref=v3.6.1 | jq -r '.[].name'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/slick/slick/contents/slick/src?ref=v3.6.1 | jq -r '.[].name'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+ succeeded in 251ms:
+src
+
+ succeeded in 252ms:
+main
+
+ succeeded in 288ms:
+src
+
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/slick/slick/contents?ref=v3.6.1 | jq -r '.[].name' | rg 'test|slick'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+ succeeded in 114ms:
+common-test-resources
+reactive-streams-tests
+slick-codegen
+slick-compat-collections
+slick-hikaricp
+slick-testkit
+slick
+test-dbs
+testVersions.sc
+
+codex
+The core `slick` module publishes only main sources in the upstream tree; its executable test coverage lives in the companion testkit/reactive-streams test modules. I’m checking the SBT module definitions to avoid guessing the test URL.
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/slick/slick/contents/slick-testkit/src?ref=v3.6.1 | jq -r '.[].name'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+exec
+/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/slick/slick/v3.6.1/build.sbt | rg -n "slick|testkit|reactive|Test|dependsOn|aggregate"' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/slick/slick/contents/reactive-streams-tests/src?ref=v3.6.1 | jq -r '.[].name'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+ succeeded in 211ms:
+6:val cleanCompileTimeTests =
+9:/* Test Configuration for running tests on doc sources */
+10:val DocTest = config("doctest").extend(Test)
+12:val tagTestGroupOther = Tags.Tag("test-group-other")
+15:    Tags.limit(Tags.ForkedTestGroup, 4),
+16:    Tags.limit(tagTestGroupOther, 1),
+19:    Tags.exclusiveGroup(tagTestGroupOther),
+26:    organization := "com.typesafe.slick",
+28:    homepage := Some(url("https://scala-slick.org")),
+30:    licenses += ("Two-clause BSD-style license", url("https://github.com/slick/slick/blob/main/LICENSE.txt")),
+36:    scmInfo := Some(ScmInfo(url("https://github.com/slick/slick"), "scm:git:git@github.com:slick/slick.git"))
+47:      s"https://github.com/slick/slick/blob/${ref}€{FILE_PATH}.scala"
+57:      // Code in slick.compat is private and is also not going to change so its safe to inline within this project. Remove
+58:      // when Scala 2.12 support is dropped along with slick.compat
+59:      "-opt-inline-from:slick.compat.**",
+65:def slickScalacOptions = Seq(
+90:def slickGeneralSettings =
+92:    Test / publishArtifact := false,
+97:    sonatypeProfileName := "com.typesafe.slick",
+107:  ) ++ slickScalacOptions
+118:  sys.props("slick.build.target") match {
+123:def commonTestResourcesSetting =
+124:  Test / unmanagedResourceDirectories +=
+148:lazy val slickCompatCollections =
+150:    .in(file("slick-compat-collections"))
+152:      slickScalacOptions,
+168:def slickCollectionsCompatSettings = Seq(
+170:  // So that compiled from slickCompatCollections sbt module appear in slick
+171:  (Compile / packageBin / mappings) ++= (slickCompatCollections / Compile / packageBin / mappings).value,
+172:  (Compile / packageSrc / mappings) ++= (slickCompatCollections / Compile / packageSrc / mappings).value,
+173:  projectDependencies := projectDependencies.value.filterNot(_.name.equalsIgnoreCase("slickcompatcollections")),
+177:lazy val slick =
+181:      slickGeneralSettings,
+184:      extTarget("slick"),
+185:      slickCollectionsCompatSettings,
+189:      scaladocSourceUrl("slick"),
+197:    ).dependsOn(slickCompatCollections)
+199:lazy val testkit =
+201:    .in(file("slick-testkit"))
+202:    .configs(DocTest)
+203:    .dependsOn(slick, codegen % s"compile->compile;${TypeProviders.TypeProvidersConfig.name}->test", hikaricp)
+205:      slickGeneralSettings,
+208:      inConfig(DocTest)(Defaults.testSettings),
+210:      extTarget("testkit"),
+211:      name := "Slick-TestKit",
+212:      description := "Test Kit for Slick (Scala Language-Integrated Connection Kit)",
+213:      scaladocSourceUrl("slick-testkit"),
+215:        Tests.Argument(
+216:          Some(TestFrameworks.JUnit),
+219:              Some("--run-listener=com.typesafe.slick.testkit.util.GitHubActionsRunListener")
+226:          (Dependencies.reactiveStreamsTCK % Test) +:
+227:          (Dependencies.logback +: Dependencies.testDBs).map(_ % Test) ++:
+231:      run / javaOptions += "-Dslick.ansiDump=true",
+233:      // Delete classes in "compile" packages after compiling. (Currently only slick.test.compile.NestedShapeTest)
+235:      Test / cleanCompileTimeTests := {
+237:          (Test / classDirectory).value.toGlob / ** / "compile" / *
+242:      (Test / cleanCompileTimeTests) := ((Test / cleanCompileTimeTests) triggeredBy (Test / compile)).value,
+243:      Test / testGrouping := {
+244:        val re = """slick\.test\.profile\.(.+?)(?:\d\d+)?(?:Disk|Mem|Rownum|SQLJDBC)?Test$""".r
+245:        (Test / definedTests).value
+251:            new Tests.Group(name, tests, Tests.SubProcess(ForkOptions()), Seq(Tags.Tag(s"test-group-$name") -> 1))
+260:          mainClass = "com.typesafe.slick.testkit.util.BuildCapabilitiesTable",
+268:      DocTest / unmanagedSourceDirectories += docDir.value / "code",
+269:      DocTest / unmanagedResourceDirectories += docDir.value / "code",
+270:      DocTest / parallelExecution := false
+275:    .in(file("slick-codegen"))
+276:    .dependsOn(slick)
+278:      slickGeneralSettings,
+282:      scaladocSourceUrl("slick-codegen"),
+284:      commonTestResourcesSetting
+289:    .in(file("slick-hikaricp"))
+290:    .dependsOn(slick)
+292:      slickGeneralSettings,
+296:      scaladocSourceUrl("slick-hikaricp"),
+301:lazy val `reactive-streams-tests` =
+303:    .dependsOn(testkit)
+305:      slickGeneralSettings,
+306:      name := "Slick-ReactiveStreamsTests",
+309:        (Dependencies.logback +: Dependencies.testDBs).map(_ % Test),
+310:      libraryDependencies += Dependencies.reactiveStreamsTCK,
+311:      Test / parallelExecution := false,
+312:      commonTestResourcesSetting
+328:        "api" -> (slick / Compile / doc).value,
+331:        "testkit-api" -> (testkit / Compile / doc).value
+336:            .all(ScopeFilter(inProjects(slick, codegen, hikaricp, testkit)))
+358:        val capabilitiesTableFile = (testkit / buildCapabilitiesTable).value
+380:    .aggregate(slick, codegen, hikaricp, testkit, site)
+382:      name := "slick-root",
+383:      slickGeneralSettings,
+396:          testkit / Test / test,
+397:          testkit / DocTest / test,
+398:          `reactive-streams-tests` / Test / test,
+399:          slick / Compile / packageDoc,
+402:          testkit / Compile / packageDoc
+
+ succeeded in 225ms:
+codegen
+doctest
+main
+test
+
+ succeeded in 269ms:
+test
+
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/slick/slick/contents/slick/src/main?ref=v3.6.1 | jq -r '.[].name'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+ succeeded in 242ms:
+mima-filters
+resources
+scala-2
+scala-3
+scala
+
+exec
+/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_3/3.6.1/slick_3-3.6.1-sources.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+exec
+/bin/bash -lc 'curl -fsSL -I https://github.com/slick/slick/tree/v3.6.1/slick-testkit/src/test' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+exec
+/bin/bash -lc 'curl -fsSL -I https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_3/3.6.1/slick_3-3.6.1-javadoc.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+exec
+/bin/bash -lc 'curl -fsSL -I https://github.com/slick/slick/tree/v3.6.1/slick/src/main' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+ succeeded in 395ms:
+HTTP/2 200 
+date: Wed, 10 Jun 2026 18:40:54 GMT
+content-type: application/java-archive
+content-length: 348004
+cf-ray: a09a81d0bbdc1778-BEG
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "3e156e753701de9f2dd67f5c0239e11f"
+last-modified: Fri, 16 May 2025 03:09:26 GMT
+x-checksum-md5: 3e156e753701de9f2dd67f5c0239e11f
+x-checksum-sha1: 8ee5f75139379c56b177132ca3257fc6e6b241cf
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 478ms:
+HTTP/2 200 
+date: Wed, 10 Jun 2026 18:40:54 GMT
+content-type: application/java-archive
+content-length: 17993140
+cf-ray: a09a81d0bfc40db0-BEG
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "d19a08fbeb322e32167bbb4eee52e064"
+last-modified: Fri, 16 May 2025 03:09:26 GMT
+x-checksum-md5: d19a08fbeb322e32167bbb4eee52e064
+x-checksum-sha1: 06e7fdb06bf8ee73f50ab39e22baed45128dbf4c
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 758ms:
+HTTP/2 200 
+date: Wed, 10 Jun 2026 18:40:54 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"1fdcddd32669a841fb527fe5ec409ed7"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=QWEPjflQxbE3f8mvuXMqIsuaURp4zkjLK6UDLT8I46wZv6lxDQ7qXMkGmrN8gJYu3A10cmiAYwrO%2FxIIGLS%2FEm2gVFAt%2FU15On0y%2FXDI3WVju8srKfHlPTolXeqxpFHU5Dts9TYf%2FYMKfVpRY8oFsMfUF9rAhk0zK637uD2gsgMAI%2FqHte4wxWn1%2FAk6lbB40n8uwOndpZMAQGVQddgXmfORWgSj8g33U8hlMHVKmj1PJQZiAJI5VRZ%2FO1nIPWZMTLDuQP75vysORm4BzylykQ%3D%3D--5aeIC%2BR2IpujBUyu--ReewpGuWG6nMs04PiOSzaA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2129500071.1781116853; expires=Thu, 10 Jun 2027 18:40:53 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 10 Jun 2027 18:40:53 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: D70E:1FD38D:14B01F9F:10EE2143:6A29AFB5
+
+
+ succeeded in 776ms:
+HTTP/2 200 
+date: Wed, 10 Jun 2026 18:40:54 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"b9a742865d7e8649eab795e71f87ebdc"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=ZCb4I2JQxqjnXzIey5ZZkXbvsp6b%2BMkOQ8R9tc0WW5rxSVfUaKNSLhbj7T%2BnlnFf91eBdl9Tv58xINL3aWhg8Hl3Dsa6XkhRk9YjG%2BPAjI2R%2FIqlVlJ5q2DDOa5m5BRgjNNzWouXWpslkz8JBIc%2F%2BQYGduDZG%2FoJUMrOrV%2FtfxxiQ2fTUMetOlDxmxLQdzlH%2B4YAyj8YW41%2Fix5r%2FrndRU2WzSOhD6IkFm0vlmnM2Vho6nhR8ZXQiztrzXgTyGRT9aytz%2BkXxzVg8UvasuWLDw%3D%3D--RELtm%2FxPBuyVF%2B%2FJ--ndvuqmTR98OGoLSCMV8ELQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2066788952.1781116853; expires=Thu, 10 Jun 2027 18:40:53 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 10 Jun 2027 18:40:53 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: D710:224D5F:1403E645:1062B5F3:6A29AFB5
+
+
+web search: 
+web search: https://github.com/slick/slick/tree/v3.6.1/slick-testkit/src/test
+web search: 
+web search: https://repo1.maven.org/maven2/com/typesafe/slick/slick_3/3.6.1/slick_3-3.6.1.pom
+codex
+I’m going to replace the stub JSON with the discovered values now: Maven sources, GitHub testkit tests at `v$version$`, Maven javadoc/scaladoc, Scala 3 language marker, and no `not-for-native-image` flag because this is a JVM JAR.
+apply patch
+patch: completed
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json
+diff --git a/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json b/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json
+index 6162f44025ad01ac6151ebac0a7f98a9ba59a01f..7d90ab9f1275966724e66e600cf51780613aeb01
+--- a/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json
++++ b/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.slick:slick_3:3.6.1"
++  "coordinates" : "com.typesafe.slick:slick_3:3.6.1",
++  "repository-url" : "https://github.com/slick/slick",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_3/$version$/slick_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_3/$version$/slick_3-$version$-javadoc.jar",
++  "description" : "Slick is a Scala database access library that provides a functional, type-safe API for building and executing database queries. It maps Scala collections-style query composition to relational database operations and supports asynchronous execution through JDBC-backed profiles.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json b/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json
+index 6162f44025ad01ac6151ebac0a7f98a9ba59a01f..7d90ab9f1275966724e66e600cf51780613aeb01
+--- a/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json
++++ b/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.slick:slick_3:3.6.1"
++  "coordinates" : "com.typesafe.slick:slick_3:3.6.1",
++  "repository-url" : "https://github.com/slick/slick",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_3/$version$/slick_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_3/$version$/slick_3-$version$-javadoc.jar",
++  "description" : "Slick is a Scala database access library that provides a functional, type-safe API for building and executing database queries. It maps Scala collections-style query composition to relational database operations and supports asynchronous execution through JDBC-backed profiles.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+codex
+The JSON is written. I’m doing a quick validation pass now: parse the file and check that the placeholder URLs resolve after substituting `3.6.1`.
+exec
+/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+ succeeded in 0ms:
+{
+  "coordinates": "com.typesafe.slick:slick_3:3.6.1",
+  "repository-url": "https://github.com/slick/slick",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_3/$version$/slick_3-$version$-sources.jar",
+  "test-code-url": "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_3/$version$/slick_3-$version$-javadoc.jar",
+  "description": "Slick is a Scala database access library that provides a functional, type-safe API for building and executing database queries. It maps Scala collections-style query composition to relational database operations and supports asynchronous execution through JDBC-backed profiles.",
+  "language": {
+    "name": "scala",
+    "version": "3"
+  }
+}
+
+exec
+/bin/bash -lc "for url in \\
+  'https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_3/3.6.1/slick_3-3.6.1-sources.jar' \\
+  'https://github.com/slick/slick/tree/v3.6.1/slick-testkit/src/test' \\
+  'https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_3/3.6.1/slick_3-3.6.1-javadoc.jar'; do \\
+  status="'$(curl -fsSL -o /dev/null -w '"'%{http_code}' -I \""'$url"); '"\\
+  printf '%s %s\\n' \""'$status" "$url"; '"\\
+done" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+diff --git a/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json b/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json
+index 6162f44025ad01ac6151ebac0a7f98a9ba59a01f..7d90ab9f1275966724e66e600cf51780613aeb01
+--- a/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json
++++ b/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.slick:slick_3:3.6.1"
++  "coordinates" : "com.typesafe.slick:slick_3:3.6.1",
++  "repository-url" : "https://github.com/slick/slick",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_3/$version$/slick_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_3/$version$/slick_3-$version$-javadoc.jar",
++  "description" : "Slick is a Scala database access library that provides a functional, type-safe API for building and executing database queries. It maps Scala collections-style query composition to relational database operations and supports asynchronous execution through JDBC-backed profiles.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 256ms:
+200 https://github.com/slick/slick/tree/v3.6.1/slick-testkit/src/test
+200 https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_3/3.6.1/slick_3-3.6.1-javadoc.jar
+
+exec
+/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json b/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json
+index 6162f44025ad01ac6151ebac0a7f98a9ba59a01f..7d90ab9f1275966724e66e600cf51780613aeb01
+--- a/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json
++++ b/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.slick:slick_3:3.6.1"
++  "coordinates" : "com.typesafe.slick:slick_3:3.6.1",
++  "repository-url" : "https://github.com/slick/slick",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_3/$version$/slick_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_3/$version$/slick_3-$version$-javadoc.jar",
++  "description" : "Slick is a Scala database access library that provides a functional, type-safe API for building and executing database queries. It maps Scala collections-style query composition to relational database operations and supports asynchronous execution through JDBC-backed profiles.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8
+ succeeded in 183ms:
+diff --git a/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json b/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json
+index 6162f44025ad01ac6151ebac0a7f98a9ba59a01f..7d90ab9f1275966724e66e600cf51780613aeb01
+--- a/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json
++++ b/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.slick:slick_3:3.6.1"
++  "coordinates" : "com.typesafe.slick:slick_3:3.6.1",
++  "repository-url" : "https://github.com/slick/slick",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_3/$version$/slick_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_3/$version$/slick_3-$version$-javadoc.jar",
++  "description" : "Slick is a Scala database access library that provides a functional, type-safe API for building and executing database queries. It maps Scala collections-style query composition to relational database operations and supports asynchronous execution through JDBC-backed profiles.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+web search: 
+web search: Maven Central com.typesafe.slick slick_3 3.6.1
+web search: 
+web search: https://github.com/slick/slick/tree/v3.6.1/slick-testkit/src/test
+codex
+Updated [com.typesafe.slick-slick_3-3.6.1.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json).
+
+Set Scala 3 language metadata, Maven source/javadoc URLs, and the tagged Slick testkit test URL. Slick’s docs identify it as the Scala Language-Integrated Connection Kit, and the tagged test path exists at `v3.6.1`. ([scala-slick.org](https://scala-slick.org/doc/3.6.1/api/index.html?utm_source=openai))
+
+Validation: `jq` parsed the JSON, and the three placeholder-substituted source/test/documentation URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json b/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json
+index 6162f44025ad01ac6151ebac0a7f98a9ba59a01f..7d90ab9f1275966724e66e600cf51780613aeb01
+--- a/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json
++++ b/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.typesafe.slick:slick_3:3.6.1"
++  "coordinates" : "com.typesafe.slick:slick_3:3.6.1",
++  "repository-url" : "https://github.com/slick/slick",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_3/$version$/slick_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_3/$version$/slick_3-$version$-javadoc.jar",
++  "description" : "Slick is a Scala database access library that provides a functional, type-safe API for building and executing database queries. It maps Scala collections-style query composition to relational database operations and supports asynchronous execution through JDBC-backed profiles.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+tokens used
+77,671
+Updated [com.typesafe.slick-slick_3-3.6.1.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8/build/discovered-artifact-metadata/com.typesafe.slick-slick_3-3.6.1.json).
+
+Set Scala 3 language metadata, Maven source/javadoc URLs, and the tagged Slick testkit test URL. Slick’s docs identify it as the Scala Language-Integrated Connection Kit, and the tagged test path exists at `v3.6.1`. ([scala-slick.org](https://scala-slick.org/doc/3.6.1/api/index.html?utm_source=openai))
+
+Validation: `jq` parsed the JSON, and the three placeholder-substituted source/test/documentation URLs returned HTTP 200.
+Ran agent for com.typesafe.slick:slick_3:3.6.1 (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8/build/agent-artifact-discovery-logs/com.typesafe.slick-slick_3-3.6.1.log
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4873-d430ebe8/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 56s
+9 actionable tasks: 9 executed
