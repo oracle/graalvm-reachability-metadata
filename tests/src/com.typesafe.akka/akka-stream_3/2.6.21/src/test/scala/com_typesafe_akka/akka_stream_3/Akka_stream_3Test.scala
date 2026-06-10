@@ -11,9 +11,11 @@ import akka.actor.ActorSystem
 import akka.stream.ActorAttributes
 import akka.stream.FlowShape
 import akka.stream.IOResult
+import akka.stream.KillSwitches
 import akka.stream.Materializer
 import akka.stream.OverflowStrategy
 import akka.stream.QueueOfferResult
+import akka.stream.SharedKillSwitch
 import akka.stream.Supervision
 import akka.stream.SystemMaterializer
 import akka.stream.scaladsl.Broadcast
@@ -181,6 +183,28 @@ class Akka_stream_3Test {
         .runWith(Sink.seq)
 
       assertThat(await(result).asJava).containsExactly(5, 2)
+    }
+  }
+
+  @Test
+  def completesStreamsThroughSharedKillSwitchAfterShutdown(): Unit = {
+    withStreamSystem { (_: ActorSystem, materializer: Materializer) =>
+      implicit val mat: Materializer = materializer
+
+      val killSwitch: SharedKillSwitch = KillSwitches.shared("shared-kill-switch")
+      val beforeShutdown: Future[Seq[Int]] = Source(1 to 3)
+        .via(killSwitch.flow[Int])
+        .runWith(Sink.seq)
+
+      assertThat(await(beforeShutdown).asJava).containsExactly(1, 2, 3)
+
+      killSwitch.shutdown()
+
+      val afterShutdown: Future[Seq[Int]] = Source(4 to 6)
+        .via(killSwitch.flow[Int])
+        .runWith(Sink.seq)
+
+      assertThat(await(afterShutdown).asJava).isEmpty()
     }
   }
 
