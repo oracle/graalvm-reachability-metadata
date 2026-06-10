@@ -150,6 +150,30 @@ class Scodec_core_3Test {
   }
 
   @Test
+  def checksummedCodecsValidateFramedPayloadIntegrity(): Unit = {
+    val xorChecksum: BitVector => BitVector = bits => {
+      val checksumByte: Int = bits.toByteArray.foldLeft(0) { (checksum: Int, byte: Byte) =>
+        checksum ^ (byte & 0xff)
+      }
+      ByteVector(checksumByte).bits
+    }
+    val frameCodec: Codec[(BitVector, BitVector)] =
+      Codec.fromTuple((variableSizeBytes(uint8, bits), bits(8)))
+    val textCodec: Codec[String] = checksummed(utf8, xorChecksum, frameCodec)
+    val encodedText: BitVector = textCodec.encode("ok").require
+
+    assertEquals("026f6b04", encodedText.toHex)
+    assertDecodedCompletely(textCodec, encodedText, "ok")
+
+    val decodedWithRemainder: DecodeResult[String] =
+      textCodec.decode(encodedText ++ ByteVector(0xff).bits).require
+    assertEquals("ok", decodedWithRemainder.value)
+    assertEquals("ff", decodedWithRemainder.remainder.toHex)
+
+    assertTrue(textCodec.decode(BitVector.fromValidHex("026f6b05")).isFailure)
+  }
+
+  @Test
   def attemptsErrorsAndSizeBoundsExposeFailureDetails(): Unit = {
     val failedEncode: Attempt[BitVector] = uint8.withContext("header").encode(300)
     assertTrue(failedEncode.isFailure)
