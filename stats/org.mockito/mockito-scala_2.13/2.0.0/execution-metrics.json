@@ -1,0 +1,58 @@
+{
+  "add_new_library_support:2026-06-10": {
+    "timestamp": "2026-06-10T06:32:43.059658Z",
+    "library": "org.mockito:mockito-scala_2.13:2.0.0",
+    "starting_commit": "e0d50f221daa7d4633040b2f73a4fc4dc81615cf",
+    "ending_commit": "e0d50f221daa7d4633040b2f73a4fc4dc81615cf",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 4976,
+      "issue_label": "library-new-request",
+      "library": "org.mockito:mockito-scala_2.13:2.0.0",
+      "summary": "Mockito Scala pulls its required runtime dependencies transitively, and no Docker service is involved, but meaningful native-image coverage of mocking needs Mockito's proxy mock maker test resource rather than the default inline mock maker.",
+      "deterministic_setup": [],
+      "agent_guidance": "Add a test resource at src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker containing exactly org.mockito.internal.creation.proxy.ProxyMockMaker. Keep coverage interface-based, because ProxyMockMaker uses JDK proxies and supports interfaces only; avoid class/final-class mocking and inline mock-maker assumptions in native-image tests.",
+      "risks": [
+        "The core artifact is Scala-first; Java tests can exercise parts of the API but Scala macro/TypeTag-heavy APIs may be awkward without Scala test source support.",
+        "Using Mockito's default inline mock maker or mocking concrete classes is likely to fail or be unsupported under Native Image."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#4976 Support for org.mockito:mockito-scala_2.13:2.0.0; label=library-new-request; body_chars=105"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 34365,
+      "output_tokens_used": 3660,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/jovan/Work/graalvm-reachability-metadata/forge/logs/org.mockito:mockito-scala_2.13:2.0.0/library-preparation-preflight/pi-generation-2026-06-10T02-58-09-762501Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 373199,
+      "cached_input_tokens_used": 3542016,
+      "output_tokens_used": 36813,
+      "iterations": 7,
+      "cost_usd": 2.8754,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "test_file": "None",
+      "metadata_file": "None"
+    }
+  }
+}
