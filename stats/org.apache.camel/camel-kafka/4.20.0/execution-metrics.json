@@ -1,0 +1,74 @@
+{
+  "add_new_library_support:2026-06-10": {
+    "timestamp": "2026-06-10T07:02:26.544282Z",
+    "library": "org.apache.camel:camel-kafka:4.20.0",
+    "starting_commit": "583eba4fbed710b5871f8e5b0102da4fec3bc39d",
+    "ending_commit": "6d5a669beb9f0aa3bf6885edbdeb8aa9034202bb",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 4510,
+      "issue_label": "library-new-request",
+      "library": "org.apache.camel:camel-kafka:4.20.0",
+      "summary": "camel-kafka is a Camel component for communicating with an Apache Kafka broker; the resolved artifact already brings Camel core and kafka-clients transitively, but meaningful producer/consumer route coverage needs a real Kafka broker.",
+      "deterministic_setup": [
+        {
+          "kind": "docker_image",
+          "image": "apache/kafka:4.2.0",
+          "slug": "apache-kafka",
+          "reason": "The component documentation describes camel-kafka as communicating with an Apache Kafka message broker, and the artifact depends on kafka-clients 4.2.0; route-level coverage should publish to and consume from a broker rather than only instantiate configuration classes."
+        }
+      ],
+      "agent_guidance": "No extra Maven dependency was identified: camel-kafka:4.20.0 transitively includes camel-core-engine via camel-health and kafka-clients:4.2.0. Generated tests should start a single-node plaintext Kafka broker, wait until it accepts connections, use unique topic names, and configure Camel Kafka endpoints with the broker address via the `brokers` endpoint/component option. Keep tests focused on simple producer/consumer flows and cleanly stop the CamelContext and broker process.",
+      "risks": [
+        "Kafka startup is asynchronous; tests that do not wait for broker readiness may be flaky.",
+        "Using a fixed host port such as 9092 can collide with a local broker if one is already running.",
+        "Native Image verification remains authoritative; Kafka client networking and background threads may expose additional metadata needs only during native execution."
+      ],
+      "applied_setup": [
+        {
+          "kind": "docker_image",
+          "image": "apache/kafka:4.2.0",
+          "slug": "apache-kafka",
+          "result": "applied",
+          "target": "tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-apache-kafka"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#4510 Support for org.apache.camel:camel-kafka:4.20.0; label=library-new-request; body_chars=104"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 73976,
+      "output_tokens_used": 3719,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.apache.camel:camel-kafka:4.20.0/library-preparation-preflight/pi-generation-2026-06-10T05-37-26-481891Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 325534,
+      "cached_input_tokens_used": 4176896,
+      "output_tokens_used": 31767,
+      "iterations": 5,
+      "cost_usd": 3.0414,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "test_file": "None",
+      "metadata_file": "None"
+    }
+  }
+}
