@@ -125,6 +125,30 @@ class Tapir_core_3Test {
   }
 
   @Test
+  def sealedTraitSchemaDerivationSelectsConcreteSubtypeSchemas(): Unit = {
+    val apiResultSchema = summon[Schema[ApiResult]]
+
+    apiResultSchema.schemaType match {
+      case coproduct: SchemaType.SCoproduct[ApiResult] =>
+        val subtypeNames: List[String] = coproduct.subtypes.flatMap(_.name.map(_.fullName))
+        assertEquals(2, subtypeNames.size)
+        assertTrue(subtypeNames.exists(_.endsWith("Created")), subtypeNames.toString)
+        assertTrue(subtypeNames.exists(_.endsWith("Queued")), subtypeNames.toString)
+
+        val createdResult = Created("book-1")
+        val createdSubtype = coproduct.subtypeSchema(createdResult)
+        assertTrue(createdSubtype.exists(_.value == createdResult), createdSubtype.toString)
+        assertTrue(createdSubtype.exists(_.schema.name.exists(_.fullName.endsWith("Created"))), createdSubtype.toString)
+
+        val queuedResult = Queued("ticket-1")
+        val queuedSubtype = coproduct.subtypeSchema(queuedResult)
+        assertTrue(queuedSubtype.exists(_.value == queuedResult), queuedSubtype.toString)
+        assertTrue(queuedSubtype.exists(_.schema.name.exists(_.fullName.endsWith("Queued"))), queuedSubtype.toString)
+      case other => fail(s"Expected a coproduct schema for ApiResult, got: $other")
+    }
+  }
+
+  @Test
   def pureServerEndpointLogicCanBeAttachedAndInvoked(): Unit = {
     val serverEndpoint: ServerEndpoint[Any, [X] =>> X] {
       type SECURITY_INPUT = Unit
