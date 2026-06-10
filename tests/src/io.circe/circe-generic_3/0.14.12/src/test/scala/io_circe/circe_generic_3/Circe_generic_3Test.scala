@@ -68,6 +68,18 @@ final case class AutoPoint(x: Int, y: Int)
 
 final case class AutoSegment(name: String, points: List[AutoPoint], closed: Boolean)
 
+enum InventoryEvent {
+  case Restocked(sku: String, quantity: Int)
+  case Backordered(sku: String)
+  case Discontinued
+}
+
+object InventoryEvent {
+  given Encoder[InventoryEvent] = deriveEncoder[InventoryEvent]
+
+  given Decoder[InventoryEvent] = deriveDecoder[InventoryEvent]
+}
+
 class Circe_generic_3Test {
   @Test
   def semiautomaticDerivationEncodesAndDecodesNestedProducts(): Unit = {
@@ -173,6 +185,27 @@ class Circe_generic_3Test {
     assertTrue(compact.contains("Create"), s"Expected encoded coproduct JSON to contain the Create case: $compact")
     assertTrue(compact.contains("Pause"), s"Expected encoded coproduct JSON to contain the Pause case: $compact")
     assertEquals(Right(commands), json.as[List[Command]])
+  }
+
+  @Test
+  def derivesEncodersAndDecodersForScalaEnums(): Unit = {
+    val events: List[InventoryEvent] = List(
+      InventoryEvent.Restocked("ledger-001", 25),
+      InventoryEvent.Backordered("gear-002"),
+      InventoryEvent.Discontinued
+    )
+
+    val json: Json = events.asJson
+    val compact: String = json.noSpaces
+
+    assertTrue(json.isArray)
+    assertTrue(compact.contains("Restocked"), s"Expected encoded enum JSON to contain the Restocked case: $compact")
+    assertTrue(compact.contains("Backordered"), s"Expected encoded enum JSON to contain the Backordered case: $compact")
+    assertTrue(compact.contains("Discontinued"), s"Expected encoded enum JSON to contain the Discontinued case: $compact")
+    assertEquals(Right("ledger-001"), json.hcursor.downArray.downField("Restocked").get[String]("sku"))
+    assertEquals(Right(25), json.hcursor.downArray.downField("Restocked").get[Int]("quantity"))
+    assertEquals(Some(List("Discontinued")), json.hcursor.downN(2).keys.map(_.toList))
+    assertEquals(Right(events), json.as[List[InventoryEvent]])
   }
 
   @Test
