@@ -25,13 +25,15 @@ public class IndexerTest {
     void indexesLoadedClassFromItsClassResource() throws IOException {
         Indexer indexer = new Indexer();
 
-        ClassInfo classInfo = indexer.indexClass(IndexedSample.class);
+        indexer.indexClass(IndexedSample.class);
         Index index = indexer.complete();
+        ClassInfo classInfo = index.getClassByName(IndexedSample.class);
 
+        assertThat(classInfo).isNotNull();
         assertThat(classInfo.name().toString()).isEqualTo(IndexedSample.class.getName());
-        assertThat(classInfo.classAnnotation(DotName.createSimple(SampleAnnotation.class.getName()))).isNotNull();
+        assertThat(classInfo.declaredAnnotation(DotName.createSimple(SampleAnnotation.class.getName()))).isNotNull();
         assertThat(classInfo.firstMethod("value")).isNotNull();
-        assertThat(index.getClassByName(DotName.createSimple(IndexedSample.class.getName()))).isNotNull();
+        assertThat(index.getClassByName(IndexedSample.class)).isSameAs(classInfo);
     }
 
     @SampleAnnotation("sample")
