@@ -18,7 +18,7 @@ from utility_scripts.stage_logger import log_stage
 from utility_scripts.strategy_loader import load_strategy_by_name
 
 
-FALLBACK_STRATEGY_NAME = "basic_iterative_pi_gpt-5.4"
+FALLBACK_STRATEGY_NAME = "basic_iterative_pi_gpt-5.5"
 DEFAULT_MAX_NATIVE_TEST_VERIFICATION_ITERATIONS = 100
 
 

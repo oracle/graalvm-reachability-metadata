@@ -16,6 +16,5 @@ Rules:
 - Use only the library's public API, no direct reflection or serialization.
 - Use only the features from the provided library version and avoid all deprecated APIs. Additional test dependencies are allowed only if they are necessary to exercise the tested library meaningfully and cannot be replaced with standard JDK or already-present dependencies.
 - You may inspect the repository only to learn local test style and structure.
-- The tests must execute under native image. Do not skip, disable, or short-circuit test logic in native image using assumptions, `@DisabledInNativeImage`, `isNativeImageRuntime()`, `ImageInfo.inImageRuntimeCode()`, or equivalent guards.
 - Do NOT compile or run tests yourself. The workflow will do that externally.
 - Reporter issue context identifies what is missing; infer the requested metadata from that context and ensure any added or modified reachability metadata uses appropriate conditions, preferably `typeReached`.

@@ -263,7 +263,7 @@ flowchart TD
     Phase2 --> P2[See section 6.2]
 ```
 
-The fallback strategy is `basic_iterative_pi_gpt-5.4` (constant
+The fallback strategy is `basic_iterative_pi_gpt-5.5` (constant
 `FALLBACK_STRATEGY_NAME` in `dynamic_access_iterative_strategy.py`). The
 fallback runs only when no usable dynamic-access guidance exists at the
 **start** of the run; once Phase 2 begins, a missing report mid-run is a hard

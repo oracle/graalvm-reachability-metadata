@@ -15,6 +15,5 @@ Rules:
 - Modify only the test file and any reachability metadata needed for reporter-requested metadata. Update build.gradle only if absolutely required.
 - Use only the provided library version and avoid all deprecated APIs.
 - Keep tests version-agnostic. Do not hardcode the artifact version in normal test inputs or assertions.
-- The tests must execute under native image. Do not skip, disable, or short-circuit test logic in native image using assumptions, `@DisabledInNativeImage`, `isNativeImageRuntime()`, `ImageInfo.inImageRuntimeCode()`, or equivalent guards.
 - Every individual test must complete in under 60 seconds. Use bounded waits and close all clients, servers, executors, and other background resources.
 - Reporter issue context identifies what is missing; infer the requested metadata from that context and ensure any added or modified reachability metadata uses appropriate conditions, preferably `typeReached`.

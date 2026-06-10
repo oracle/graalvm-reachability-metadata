@@ -152,7 +152,7 @@ def build_parser():
         "--strategy-name",
         dest="strategy_name",
         metavar="NAME",
-        default="basic_iterative_pi_gpt-5.4",
+        default="dynamic_access_main_sources_pi_gpt-5.5",
         help="select strategy by name from strategies/predefined_strategies.json",
     )
     parser.add_argument(
