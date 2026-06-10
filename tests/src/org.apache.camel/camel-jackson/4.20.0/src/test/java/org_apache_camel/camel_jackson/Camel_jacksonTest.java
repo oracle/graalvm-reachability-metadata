@@ -22,8 +22,10 @@ import org.apache.camel.Exchange;
 import org.apache.camel.component.jackson.JacksonConstants;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.component.jackson.ListJacksonDataFormat;
+import org.apache.camel.component.jackson.SchemaHelper;
 import org.apache.camel.component.jackson.converter.JacksonTypeConverters;
 import org.apache.camel.component.jackson.transform.JsonDataTypeTransformer;
+import org.apache.camel.component.jackson.transform.JsonPojoDataTypeTransformer;
 import org.apache.camel.component.jackson.transform.JsonStructDataTypeTransformer;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.spi.DataType;
@@ -172,6 +174,27 @@ public class Camel_jacksonTest {
     }
 
     @Test
+    void transformsJsonPayloadsIntoPojoDataTypes() throws Exception {
+        try (DefaultCamelContext camelContext = new DefaultCamelContext()) {
+            Exchange exchange = new DefaultExchange(camelContext);
+            exchange.setProperty(SchemaHelper.CONTENT_CLASS, RouteEvent.class.getName());
+            exchange.getMessage().setBody(bytes("""
+                    {"route":"direct:orders","attempts":3,"enabled":true}
+                    """));
+            JsonPojoDataTypeTransformer transformer = new JsonPojoDataTypeTransformer();
+            transformer.setCamelContext(camelContext);
+
+            transformer.transform(exchange.getMessage(), DataType.ANY, DataType.ANY);
+
+            RouteEvent event = exchange.getMessage().getBody(RouteEvent.class);
+            assertThat(event.route).isEqualTo("direct:orders");
+            assertThat(event.attempts).isEqualTo(3);
+            assertThat(event.enabled).isTrue();
+            assertThat(exchange.getMessage().getHeader(Exchange.CONTENT_TYPE)).isEqualTo(MimeType.JAVA_OBJECT.type());
+        }
+    }
+
+    @Test
     void transformsJsonPayloadsBetweenTextAndStructuredDataTypes() throws Exception {
         try (DefaultCamelContext camelContext = new DefaultCamelContext()) {
             Exchange exchange = new DefaultExchange(camelContext);
@@ -195,6 +218,12 @@ public class Camel_jacksonTest {
                     .contains("\"steps\":[\"unmarshal\",\"process\"]");
             assertThat(exchange.getMessage().getHeader(Exchange.CONTENT_TYPE)).isEqualTo(MimeType.JSON.type());
         }
+    }
+
+    public static final class RouteEvent {
+        public String route;
+        public int attempts;
+        public boolean enabled;
     }
 
     private static <T extends JacksonDataFormat> T start(T dataFormat, DefaultCamelContext camelContext) {
