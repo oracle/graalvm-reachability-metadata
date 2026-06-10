@@ -60,6 +60,21 @@ object ServiceEndpoint {
   given Decoder[ServiceEndpoint] = deriveDecoder[ServiceEndpoint]
 }
 
+final case class EncodedSecret(value: String)
+
+object EncodedSecret {
+  given Codec[EncodedSecret] = Codec.from(
+    Decoder.decodeString.map(value => EncodedSecret(value.reverse)),
+    Encoder.encodeString.contramap(secret => secret.value.reverse)
+  )
+}
+
+final case class SecureNote(title: String, secret: EncodedSecret)
+
+object SecureNote {
+  given Codec.AsObject[SecureNote] = deriveCodec[SecureNote]
+}
+
 sealed trait AuditEvent
 
 final case class UserCreated(id: String, role: String) extends AuditEvent
@@ -167,6 +182,16 @@ class Circe_generic_3Test {
       "secure" -> Json.True
     ).as[ServiceEndpoint]
     assertThat(invalidPort.isLeft).isTrue
+  }
+
+  @Test
+  def derivedProductCodecsUseCustomMemberCodecs(): Unit = {
+    val note: SecureNote = SecureNote("deployment", EncodedSecret("open-sesame"))
+    val json: Json = note.asJson
+
+    assertThat(json.hcursor.get[String]("title")).isEqualTo(Right("deployment"))
+    assertThat(json.hcursor.get[String]("secret")).isEqualTo(Right("emases-nepo"))
+    assertThat(json.as[SecureNote]).isEqualTo(Right(note))
   }
 
   @Test
