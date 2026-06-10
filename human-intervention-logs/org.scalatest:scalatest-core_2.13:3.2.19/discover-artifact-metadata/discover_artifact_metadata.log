@@ -1,0 +1,979 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019eb067-a9ba-7ba2-89c6-1f67ca6f29f6
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.scalatest:scalatest-core_2.13:3.2.19
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "3.2.19" when "$version$" is replaced with "3.2.19".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2/build/discovered-artifact-metadata/org.scalatest-scalatest-core_2.13-3.2.19.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "org.scalatest:scalatest-core_2.13:3.2.19".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.2.19".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from the existing file and Maven/GitHub sources, then update only the requested JSON fields.
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/org.scalatest-scalatest-core_2.13-3.2.19.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+-rw-rw-r-- 1 vjovanov vjovanov 65 Jun 10 09:20 build/discovered-artifact-metadata/org.scalatest-scalatest-core_2.13-3.2.19.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.scalatest-scalatest-core_2.13-3.2.19.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+ succeeded in 0ms:
+{
+  "coordinates" : "org.scalatest:scalatest-core_2.13:3.2.19"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"scalatest-core_2.13|scalatest-core\" . -g '*.json'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+ succeeded in 0ms:
+./metadata/org.scalatest/scalatest_3/index.json:5:    "replacement": "Use the class-bearing ScalaTest module artifacts such as org.scalatest:scalatest-core_3:3.2.19, org.scalatest:scalatest-funsuite_3:3.2.19, and org.scalatest:scalatest-matchers-core_3:3.2.19 as needed."
+./metadata/org.scalatest/scalatest_2.13/index.json:5:    "replacement": "Use the class-bearing ScalaTest module artifacts such as org.scalatest:scalatest-core_2.13:3.2.19, org.scalatest:scalatest-funsuite_2.13:3.2.19, and org.scalatest:scalatest-matchers-core_2.13:3.2.19 as needed."
+
+codex
+The current file only has coordinates. I found nearby metadata indicating `scalatest_2.13` is an aggregate POM, but `scalatest-core_2.13` is a class-bearing JVM artifact, so I’m checking Maven Central and the upstream tag before deciding the fields.
+web search: 
+web search: Maven Central org.scalatest scalatest-core_2.13 3.2.19 sources test javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/scalatest/scalatest-core_2.13/3.2.19/
+web search: 
+web search: site:github.com/scalatest/scalatest/tree v3.2.19 scalatest-core src test
+codex
+Maven Central has the binary, sources, and Javadoc jars for 3.2.19, and no Maven test jar is listed for this artifact. I’m using the upstream tag for tests because Maven does not publish tests here.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/scalatest/scalatest-core_2.13/3.2.19/scalatest-core_2.13-3.2.19.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.scalatest</groupId>
+    <artifactId>scalatest-core_2.13</artifactId>
+    <packaging>bundle</packaging>
+    <description>scalatest-core</description>
+    <version>3.2.19</version>
+    <name>scalatest-core</name>
+    <organization>
+        <name>org.scalatest</name>
+    </organization>
+    <url>http://www.scalatest.org</url>
+    <licenses>
+        <license>
+            <name>the Apache License, ASL Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>https://github.com/scalatest/scalatest</url>
+        <connection>scm:git:git@github.com:scalatest/scalatest.git</connection>
+        <developerConnection> scm:git:git@github.com:scalatest/scalatest.git </developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>bvenners</id>
+            <name>Bill Venners</name>
+            <email>bill@artima.com</email>
+        </developer>
+        <developer>
+            <id>gcberger</id>
+            <name>George Berger</name>
+            <email>george.berger@gmail.com</email>
+        </developer>
+        <developer>
+            <id>cheeseng</id>
+            <name>Chua Chee Seng</name>
+            <email>cheeseng@amaseng.com</email>
+        </developer>
+    </developers>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-compiler</artifactId>
+            <version>2.13.10</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.13.10</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest-compatible</artifactId>
+            <version>3.2.19</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scalactic</groupId>
+            <artifactId>scalactic_2.13</artifactId>
+            <version>3.2.19</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-reflect</artifactId>
+            <version>2.13.10</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang.modules</groupId>
+            <artifactId>scala-xml_2.13</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-sbt</groupId>
+            <artifactId>test-interface</artifactId>
+            <version>1.0</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>4.0</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.10.12</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-all</artifactId>
+            <version>4.1</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-all</artifactId>
+            <version>0.62.2</version>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/scalatest/scalatest.git '*3.2.19*'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+ succeeded in 378ms:
+745651b1d42af182eabfa07d88c1278fb0029dc8	refs/tags/release-3.2.19
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/scalatest/scalatest-core_2.13/3.2.19/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+ succeeded in 254ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/scalatest/scalatest-core_2.13/3.2.19</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/scalatest/scalatest-core_2.13/3.2.19</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="scalatest-core_2.13-3.2.19-javadoc.jar" title="scalatest-core_2.13-3.2.19-javadoc.jar">scalatest-core_2.13-3.2.19-javadoc.jar</a>            2024-06-21 02:52   5504862      
+<a href="scalatest-core_2.13-3.2.19-javadoc.jar.asc" title="scalatest-core_2.13-3.2.19-javadoc.jar.asc">scalatest-core_2.13-3.2.19-javadoc.jar.asc</a>        2024-06-21 02:52       488      
+<a href="scalatest-core_2.13-3.2.19-javadoc.jar.asc.md5" title="scalatest-core_2.13-3.2.19-javadoc.jar.asc.md5">scalatest-core_2.13-3.2.19-javadoc.jar.asc.md...</a>  2024-06-21 02:52        32      
+<a href="scalatest-core_2.13-3.2.19-javadoc.jar.asc.sha1" title="scalatest-core_2.13-3.2.19-javadoc.jar.asc.sha1">scalatest-core_2.13-3.2.19-javadoc.jar.asc.sh...</a>  2024-06-21 02:52        40      
+<a href="scalatest-core_2.13-3.2.19-javadoc.jar.md5" title="scalatest-core_2.13-3.2.19-javadoc.jar.md5">scalatest-core_2.13-3.2.19-javadoc.jar.md5</a>        2024-06-21 02:52        32      
+<a href="scalatest-core_2.13-3.2.19-javadoc.jar.sha1" title="scalatest-core_2.13-3.2.19-javadoc.jar.sha1">scalatest-core_2.13-3.2.19-javadoc.jar.sha1</a>       2024-06-21 02:52        40      
+<a href="scalatest-core_2.13-3.2.19-sources.jar" title="scalatest-core_2.13-3.2.19-sources.jar">scalatest-core_2.13-3.2.19-sources.jar</a>            2024-06-21 02:52    862140      
+<a href="scalatest-core_2.13-3.2.19-sources.jar.asc" title="scalatest-core_2.13-3.2.19-sources.jar.asc">scalatest-core_2.13-3.2.19-sources.jar.asc</a>        2024-06-21 02:52       488      
+<a href="scalatest-core_2.13-3.2.19-sources.jar.asc.md5" title="scalatest-core_2.13-3.2.19-sources.jar.asc.md5">scalatest-core_2.13-3.2.19-sources.jar.asc.md...</a>  2024-06-21 02:52        32      
+<a href="scalatest-core_2.13-3.2.19-sources.jar.asc.sha1" title="scalatest-core_2.13-3.2.19-sources.jar.asc.sha1">scalatest-core_2.13-3.2.19-sources.jar.asc.sh...</a>  2024-06-21 02:52        40      
+<a href="scalatest-core_2.13-3.2.19-sources.jar.md5" title="scalatest-core_2.13-3.2.19-sources.jar.md5">scalatest-core_2.13-3.2.19-sources.jar.md5</a>        2024-06-21 02:52        32      
+<a href="scalatest-core_2.13-3.2.19-sources.jar.sha1" title="scalatest-core_2.13-3.2.19-sources.jar.sha1">scalatest-core_2.13-3.2.19-sources.jar.sha1</a>       2024-06-21 02:52        40      
+<a href="scalatest-core_2.13-3.2.19.jar" title="scalatest-core_2.13-3.2.19.jar">scalatest-core_2.13-3.2.19.jar</a>                    2024-06-21 02:52   3755368      
+<a href="scalatest-core_2.13-3.2.19.jar.asc" title="scalatest-core_2.13-3.2.19.jar.asc">scalatest-core_2.13-3.2.19.jar.asc</a>                2024-06-21 02:52       488      
+<a href="scalatest-core_2.13-3.2.19.jar.asc.md5" title="scalatest-core_2.13-3.2.19.jar.asc.md5">scalatest-core_2.13-3.2.19.jar.asc.md5</a>            2024-06-21 02:52        32      
+<a href="scalatest-core_2.13-3.2.19.jar.asc.sha1" title="scalatest-core_2.13-3.2.19.jar.asc.sha1">scalatest-core_2.13-3.2.19.jar.asc.sha1</a>           2024-06-21 02:52        40      
+<a href="scalatest-core_2.13-3.2.19.jar.md5" title="scalatest-core_2.13-3.2.19.jar.md5">scalatest-core_2.13-3.2.19.jar.md5</a>                2024-06-21 02:52        32      
+<a href="scalatest-core_2.13-3.2.19.jar.sha1" title="scalatest-core_2.13-3.2.19.jar.sha1">scalatest-core_2.13-3.2.19.jar.sha1</a>               2024-06-21 02:52        40      
+<a href="scalatest-core_2.13-3.2.19.pom" title="scalatest-core_2.13-3.2.19.pom">scalatest-core_2.13-3.2.19.pom</a>                    2024-06-21 02:52      3856      
+<a href="scalatest-core_2.13-3.2.19.pom.asc" title="scalatest-core_2.13-3.2.19.pom.asc">scalatest-core_2.13-3.2.19.pom.asc</a>                2024-06-21 02:52       488      
+<a href="scalatest-core_2.13-3.2.19.pom.asc.md5" title="scalatest-core_2.13-3.2.19.pom.asc.md5">scalatest-core_2.13-3.2.19.pom.asc.md5</a>            2024-06-21 02:52        32      
+<a href="scalatest-core_2.13-3.2.19.pom.asc.sha1" title="scalatest-core_2.13-3.2.19.pom.asc.sha1">scalatest-core_2.13-3.2.19.pom.asc.sha1</a>           2024-06-21 02:52        40      
+<a href="scalatest-core_2.13-3.2.19.pom.md5" title="scalatest-core_2.13-3.2.19.pom.md5">scalatest-core_2.13-3.2.19.pom.md5</a>                2024-06-21 02:52        32      
+<a href="scalatest-core_2.13-3.2.19.pom.sha1" title="scalatest-core_2.13-3.2.19.pom.sha1">scalatest-core_2.13-3.2.19.pom.sha1</a>               2024-06-21 02:52        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: https://repo1.maven.org/maven2/org/scalatest/scalatest-core_2.13/3.2.19/
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/scalatest/scalatest/contents/jvm?ref=release-3.2.19 | rg '\"name\"|\"path\"|\"type\"|\"html_url\"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/scalatest/scalatest/contents?ref=release-3.2.19 | rg '\"name\"|\"path\"|\"type\"|\"html_url\"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+ succeeded in 276ms:
+    "name": ".gitattributes",
+    "path": ".gitattributes",
+    "html_url": "https://github.com/scalatest/scalatest/blob/release-3.2.19/.gitattributes",
+    "type": "file",
+    "name": ".github",
+    "path": ".github",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/.github",
+    "type": "dir",
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "html_url": "https://github.com/scalatest/scalatest/blob/release-3.2.19/.gitignore",
+    "type": "file",
+    "name": ".jvmopts",
+    "path": ".jvmopts",
+    "html_url": "https://github.com/scalatest/scalatest/blob/release-3.2.19/.jvmopts",
+    "type": "file",
+    "name": ".sbtrepos",
+    "path": ".sbtrepos",
+    "html_url": "https://github.com/scalatest/scalatest/blob/release-3.2.19/.sbtrepos",
+    "type": "file",
+    "name": ".travis.yml",
+    "path": ".travis.yml",
+    "html_url": "https://github.com/scalatest/scalatest/blob/release-3.2.19/.travis.yml",
+    "type": "file",
+    "name": "2.9_excludes",
+    "path": "2.9_excludes",
+    "html_url": "https://github.com/scalatest/scalatest/blob/release-3.2.19/2.9_excludes",
+    "type": "file",
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "html_url": "https://github.com/scalatest/scalatest/blob/release-3.2.19/LICENSE",
+    "type": "file",
+    "name": "NOTICE",
+    "path": "NOTICE",
+    "html_url": "https://github.com/scalatest/scalatest/blob/release-3.2.19/NOTICE",
+    "type": "file",
+    "name": "README.md",
+    "path": "README.md",
+    "html_url": "https://github.com/scalatest/scalatest/blob/release-3.2.19/README.md",
+    "type": "file",
+    "name": "addmem.sh",
+    "path": "addmem.sh",
+    "html_url": "https://github.com/scalatest/scalatest/blob/release-3.2.19/addmem.sh",
+    "type": "file",
+    "name": "ant-lib",
+    "path": "ant-lib",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/ant-lib",
+    "type": "dir",
+    "name": "build.sbt",
+    "path": "build.sbt",
+    "html_url": "https://github.com/scalatest/scalatest/blob/release-3.2.19/build.sbt",
+    "type": "file",
+    "name": "build.xml",
+    "path": "build.xml",
+    "html_url": "https://github.com/scalatest/scalatest/blob/release-3.2.19/build.xml",
+    "type": "file",
+    "name": "dotty",
+    "path": "dotty",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/dotty",
+    "type": "dir",
+    "name": "examples",
+    "path": "examples",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/examples",
+    "type": "dir",
+    "name": "js",
+    "path": "js",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/js",
+    "type": "dir",
+    "name": "jvm",
+    "path": "jvm",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm",
+    "type": "dir",
+    "name": "lib",
+    "path": "lib",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/lib",
+    "type": "dir",
+    "name": "migration.txt",
+    "path": "migration.txt",
+    "html_url": "https://github.com/scalatest/scalatest/blob/release-3.2.19/migration.txt",
+    "type": "file",
+    "name": "native",
+    "path": "native",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/native",
+    "type": "dir",
+    "name": "nbproject",
+    "path": "nbproject",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/nbproject",
+    "type": "dir",
+    "name": "notes",
+    "path": "notes",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/notes",
+    "type": "dir",
+    "name": "osgi.bnd",
+    "path": "osgi.bnd",
+    "html_url": "https://github.com/scalatest/scalatest/blob/release-3.2.19/osgi.bnd",
+    "type": "file",
+    "name": "pom_template.xml",
+    "path": "pom_template.xml",
+    "html_url": "https://github.com/scalatest/scalatest/blob/release-3.2.19/pom_template.xml",
+    "type": "file",
+    "name": "project",
+    "path": "project",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/project",
+    "type": "dir",
+    "name": "publish.sh",
+    "path": "publish.sh",
+    "html_url": "https://github.com/scalatest/scalatest/blob/release-3.2.19/publish.sh",
+    "type": "file",
+    "name": "scalactic-osgi.bnd",
+    "path": "scalactic-osgi.bnd",
+    "html_url": "https://github.com/scalatest/scalatest/blob/release-3.2.19/scalactic-osgi.bnd",
+    "type": "file",
+    "name": "scalactic-pom_template.xml",
+    "path": "scalactic-pom_template.xml",
+    "html_url": "https://github.com/scalatest/scalatest/blob/release-3.2.19/scalactic-pom_template.xml",
+    "type": "file",
+    "name": "scalatest-doc",
+    "path": "scalatest-doc",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/scalatest-doc",
+    "type": "dir",
+    "name": "support",
+    "path": "support",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/support",
+    "type": "dir",
+    "name": "todo.txt",
+    "path": "todo.txt",
+    "html_url": "https://github.com/scalatest/scalatest/blob/release-3.2.19/todo.txt",
+    "type": "file",
+    "name": "travis_build.sh",
+    "path": "travis_build.sh",
+    "html_url": "https://github.com/scalatest/scalatest/blob/release-3.2.19/travis_build.sh",
+    "type": "file",
+    "name": "updateCopyright.bash",
+    "path": "updateCopyright.bash",
+    "html_url": "https://github.com/scalatest/scalatest/blob/release-3.2.19/updateCopyright.bash",
+    "type": "file",
+    "name": "use-ldquo-and-rdquo.bash",
+    "path": "use-ldquo-and-rdquo.bash",
+    "html_url": "https://github.com/scalatest/scalatest/blob/release-3.2.19/use-ldquo-and-rdquo.bash",
+    "type": "file",
+
+ succeeded in 282ms:
+    "name": "common-test",
+    "path": "jvm/common-test",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/common-test",
+    "type": "dir",
+    "name": "compatible",
+    "path": "jvm/compatible",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/compatible",
+    "type": "dir",
+    "name": "core",
+    "path": "jvm/core",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/core",
+    "type": "dir",
+    "name": "diagrams-test",
+    "path": "jvm/diagrams-test",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/diagrams-test",
+    "type": "dir",
+    "name": "diagrams",
+    "path": "jvm/diagrams",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/diagrams",
+    "type": "dir",
+    "name": "featurespec-test",
+    "path": "jvm/featurespec-test",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/featurespec-test",
+    "type": "dir",
+    "name": "featurespec",
+    "path": "jvm/featurespec",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/featurespec",
+    "type": "dir",
+    "name": "flatspec-test",
+    "path": "jvm/flatspec-test",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/flatspec-test",
+    "type": "dir",
+    "name": "flatspec",
+    "path": "jvm/flatspec",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/flatspec",
+    "type": "dir",
+    "name": "freespec-test",
+    "path": "jvm/freespec-test",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/freespec-test",
+    "type": "dir",
+    "name": "freespec",
+    "path": "jvm/freespec",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/freespec",
+    "type": "dir",
+    "name": "funspec-test",
+    "path": "jvm/funspec-test",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/funspec-test",
+    "type": "dir",
+    "name": "funspec",
+    "path": "jvm/funspec",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/funspec",
+    "type": "dir",
+    "name": "funsuite-test",
+    "path": "jvm/funsuite-test",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/funsuite-test",
+    "type": "dir",
+    "name": "funsuite",
+    "path": "jvm/funsuite",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/funsuite",
+    "type": "dir",
+    "name": "matchers-core",
+    "path": "jvm/matchers-core",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/matchers-core",
+    "type": "dir",
+    "name": "propspec-test",
+    "path": "jvm/propspec-test",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/propspec-test",
+    "type": "dir",
+    "name": "propspec",
+    "path": "jvm/propspec",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/propspec",
+    "type": "dir",
+    "name": "refspec",
+    "path": "jvm/refspec",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/refspec",
+    "type": "dir",
+    "name": "scalactic-macro",
+    "path": "jvm/scalactic-macro",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/scalactic-macro",
+    "type": "dir",
+    "name": "scalactic-test",
+    "path": "jvm/scalactic-test",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/scalactic-test",
+    "type": "dir",
+    "name": "scalactic",
+    "path": "jvm/scalactic",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/scalactic",
+    "type": "dir",
+    "name": "scalatest-test",
+    "path": "jvm/scalatest-test",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/scalatest-test",
+    "type": "dir",
+    "name": "shouldmatchers",
+    "path": "jvm/shouldmatchers",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/shouldmatchers",
+    "type": "dir",
+    "name": "wordspec-test",
+    "path": "jvm/wordspec-test",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/wordspec-test",
+    "type": "dir",
+    "name": "wordspec",
+    "path": "jvm/wordspec",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/wordspec",
+    "type": "dir",
+
+codex
+The upstream repository uses the `release-3.2.19` tag. I’m narrowing the test URL to the actual ScalaTest JVM test module that covers core rather than pointing at the whole repository.
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/scalatest/scalatest/contents/jvm/scalatest-test?ref=release-3.2.19 | rg '\"name\"|\"path\"|\"type\"|\"html_url\"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/scalatest/scalatest/contents/jvm/common-test?ref=release-3.2.19 | rg '\"name\"|\"path\"|\"type\"|\"html_url\"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/scalatest/scalatest/contents/jvm/core?ref=release-3.2.19 | rg '\"name\"|\"path\"|\"type\"|\"html_url\"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+ succeeded in 224ms:
+    "name": "src",
+    "path": "jvm/common-test/src",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/common-test/src",
+    "type": "dir",
+
+ succeeded in 208ms:
+    "name": "src",
+    "path": "jvm/core/src",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/core/src",
+    "type": "dir",
+
+ succeeded in 231ms:
+    "name": "src",
+    "path": "jvm/scalatest-test/src",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/scalatest-test/src",
+    "type": "dir",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/scalatest/scalatest/contents/jvm/core/src?ref=release-3.2.19 | rg '\"name\"|\"path\"|\"type\"|\"html_url\"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/scalatest/scalatest/contents/jvm/scalatest-test/src?ref=release-3.2.19 | rg '\"name\"|\"path\"|\"type\"|\"html_url\"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/scalatest/scalatest/contents/jvm/common-test/src?ref=release-3.2.19 | rg '\"name\"|\"path\"|\"type\"|\"html_url\"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+ succeeded in 208ms:
+    "name": "main",
+    "path": "jvm/core/src/main",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/core/src/main",
+    "type": "dir",
+
+ succeeded in 216ms:
+    "name": "test-osgi",
+    "path": "jvm/scalatest-test/src/test-osgi",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/scalatest-test/src/test-osgi",
+    "type": "dir",
+    "name": "test",
+    "path": "jvm/scalatest-test/src/test",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/scalatest-test/src/test",
+    "type": "dir",
+    "name": "us",
+    "path": "jvm/scalatest-test/src/us",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/scalatest-test/src/us",
+    "type": "dir",
+
+ succeeded in 218ms:
+    "name": "main",
+    "path": "jvm/common-test/src/main",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/common-test/src/main",
+    "type": "dir",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/scalatest/scalatest/contents/jvm/scalatest-test/src/test?ref=release-3.2.19 | rg '\"name\"|\"path\"|\"type\"|\"html_url\"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/scalatest/scalatest/contents/jvm/scalatest-test/src/test/scala?ref=release-3.2.19 | rg '\"name\"|\"path\"|\"type\"|\"html_url\"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/scalatest/scalatest/contents/jvm/core/src/main?ref=release-3.2.19 | rg '\"name\"|\"path\"|\"type\"|\"html_url\"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+ succeeded in 217ms:
+    "name": "java",
+    "path": "jvm/scalatest-test/src/test/java",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/scalatest-test/src/test/java",
+    "type": "dir",
+    "name": "scala",
+    "path": "jvm/scalatest-test/src/test/scala",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/scalatest-test/src/test/scala",
+    "type": "dir",
+
+ succeeded in 228ms:
+    "name": "org",
+    "path": "jvm/scalatest-test/src/test/scala/org",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/scalatest-test/src/test/scala/org",
+    "type": "dir",
+
+ succeeded in 214ms:
+    "name": "java",
+    "path": "jvm/core/src/main/java",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/core/src/main/java",
+    "type": "dir",
+    "name": "resources",
+    "path": "jvm/core/src/main/resources",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/core/src/main/resources",
+    "type": "dir",
+    "name": "scala",
+    "path": "jvm/core/src/main/scala",
+    "html_url": "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/core/src/main/scala",
+    "type": "dir",
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | head -5 | xargs -r -n1 sed -n '1,40p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+ succeeded in 0ms:
+{
+  "coordinates" : "org.scalatest:scalatest-core_2.13:3.2.19"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"' build/discovered-artifact-metadata metadata -g '*.json' | head -20" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+ succeeded in 0ms:
+metadata/com.typesafe.slick/slick_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:34:    "language" : {
+metadata/org.jetbrains.exposed/exposed-jdbc/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-diagrams_3/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-diagrams_3/index.json:34:    "language" : {
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:10:    "language" : {
+metadata/com.squareup.okio/okio-jvm/index.json:10:    "language" : {
+metadata/com.squareup.okio/okio-jvm/index.json:46:    "language" : {
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:34:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:9:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:28:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:46:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:64:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:82:    "language" : {
+metadata/org.jetbrains.exposed/exposed-core/index.json:100:    "language" : {
+
+exec
+/usr/bin/bash -lc "sed -n '1,70p' metadata/org.scalatest/scalatest-wordspec_2.13/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.2.19",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/scalatest/scalatest",
+    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/wordspec-test/src/test/scala/org/scalatest/wordspec",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+    "description" : "ScalaTest WordSpec provides the WordSpec style for writing behavior-driven ScalaTest suites using nested words and sentences to describe a system under test. It includes synchronous, asynchronous, and fixture-based suite classes that integrate with ScalaTest assertions, matchers, tagging, and test lifecycle features.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "3.2.19",
+      "3.2.20",
+      "3.3.0-alpha.1",
+      "3.3.0-alpha.2",
+      "3.3.0-SNAP3",
+      "3.3.0-SNAP4"
+    ],
+    "allowed-packages" : [
+      "org.scalatest.wordspec",
+      "org.scalatest"
+    ]
+  },
+  {
+    "metadata-version" : "3.3.0-SNAP2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/scalatest/scalatest",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+    "description" : "ScalaTest WordSpec provides the WordSpec style for writing behavior-driven ScalaTest suites using nested words and sentences to describe the system under test. It includes synchronous, asynchronous, and fixture-based suite classes that integrate with ScalaTest assertions, matchers, tagging, and lifecycle features.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "3.3.0-SNAP2"
+    ],
+    "allowed-packages" : [
+      "org.scalatest.wordspec",
+      "org.scalatest"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "find metadata/org.scalatest -maxdepth 2 -name index.json | sort | rg 'scalatest-core|scalatest_2.13|scalatest-.*_2.13' | head -20" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+ succeeded in 0ms:
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json
+metadata/org.scalatest/scalatest-freespec_2.13/index.json
+metadata/org.scalatest/scalatest-funspec_2.13/index.json
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json
+metadata/org.scalatest/scalatest-refspec_2.13/index.json
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json
+metadata/org.scalatest/scalatest_2.13/index.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.scalatest/scalatest_2.13/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+ succeeded in 0ms:
+[
+  {
+    "not-for-native-image": true,
+    "reason": "The published scalatest_2.13-3.2.19 JAR contains only META-INF/MANIFEST.MF and no JVM class files; the implementation classes are supplied by its class-bearing module dependencies.",
+    "replacement": "Use the class-bearing ScalaTest module artifacts such as org.scalatest:scalatest-core_2.13:3.2.19, org.scalatest:scalatest-funsuite_2.13:3.2.19, and org.scalatest:scalatest-matchers-core_2.13:3.2.19 as needed."
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,30p' metadata/org.scalatest/scalatest-matchers-core_2.13/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+exec
+/usr/bin/bash -lc "sed -n '1,30p' metadata/org.scalatest/scalatest-funsuite_2.13/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.2.19",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-matchers-core_2.13/$version$/scalatest-matchers-core_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/scalatest/scalatest",
+    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest/matchers",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-matchers-core_2.13/$version$/scalatest-matchers-core_2.13-$version$-javadoc.jar",
+    "description" : "ScalaTest Matchers Core provides the shared matcher result types, matcher abstractions, and DSL words used by ScalaTest's should and must matcher APIs. It lets Scala tests express type-safe assertions about equality, containment, ordering, patterns, properties, and custom matchers on the JVM.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "3.2.19",
+      "3.2.20",
+      "3.3.0-alpha.1",
+      "3.3.0-alpha.2",
+      "3.3.0-SNAP2",
+      "3.3.0-SNAP3",
+      "3.3.0-SNAP4"
+    ],
+    "allowed-packages" : [
+      "org.scalatest.matchers",
+      "org.scalatest"
+    ]
+  }
+]
+
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.2.19",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funsuite_2.13/$version$/scalatest-funsuite_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/scalatest/scalatest",
+    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/funsuite-test/src/test/scala/org/scalatest/funsuite",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funsuite_2.13/$version$/scalatest-funsuite_2.13-$version$-javadoc.jar",
+    "description" : "ScalaTest FunSuite provides the FunSuite testing style for ScalaTest on the JVM, where tests are registered as named functions rather than discovered as methods. It integrates with ScalaTest's assertions, fixtures, tagging, asynchronous suites, and reporting so Scala projects can write function-oriented unit tests.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "3.2.19",
+      "3.2.20",
+      "3.3.0-alpha.1",
+      "3.3.0-alpha.2",
+      "3.3.0-SNAP2",
+      "3.3.0-SNAP3",
+      "3.3.0-SNAP4"
+    ],
+    "allowed-packages" : [
+      "org.scalatest.funsuite",
+      "org.scalatest"
+    ]
+  }
+]
+
+codex
+The repository already uses Maven source/Javadoc jar URLs and GitHub `release-$version$` test paths for neighboring ScalaTest modules. I’ll mirror that convention for `scalatest-core_2.13` and mark it as Scala 2, with no `not-for-native-image` flag because it publishes a JVM jar with class files.
+exec
+/usr/bin/bash -lc "curl -fsI https://repo.maven.apache.org/maven2/org/scalatest/scalatest-core_2.13/3.2.19/scalatest-core_2.13-3.2.19-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+ succeeded in 0ms:
+HTTP/2 200 
+date: Wed, 10 Jun 2026 07:22:26 GMT
+content-type: application/java-archive
+content-length: 862140
+cf-ray: a0969ffe6ab02793-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2505013
+etag: "6bf4843c57d38021dccb70d43d2b76a7"
+last-modified: Fri, 21 Jun 2024 02:52:30 GMT
+x-checksum-md5: 6bf4843c57d38021dccb70d43d2b76a7
+x-checksum-sha1: cb1cd74c14b7b7e358fe9e7cd3665d8e5b1220ef
+
+exec
+/usr/bin/bash -lc "curl -fsI https://repo.maven.apache.org/maven2/org/scalatest/scalatest-core_2.13/3.2.19/scalatest-core_2.13-3.2.19-javadoc.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+ succeeded in 0ms:
+HTTP/2 200 
+date: Wed, 10 Jun 2026 07:22:27 GMT
+content-type: application/java-archive
+content-length: 5504862
+cf-ray: a0969ffea933278b-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 168299
+etag: "38fcd620e64d158d72b2b972bcbf1614"
+last-modified: Fri, 21 Jun 2024 02:52:30 GMT
+x-checksum-md5: 38fcd620e64d158d72b2b972bcbf1614
+x-checksum-sha1: fc61bf64982e7751cd3a7dfe740f61f4eb7f7fe0
+
+exec
+/usr/bin/bash -lc "curl -fsI https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/scalatest-test/src/test/scala/org/scalatest | sed -n '1,12p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/scalatest/scalatest-core_2.13/3.2.19/scalatest-core_2.13-3.2.19.jar -o /tmp/scalatest-core_2.13-3.2.19.jar && jar tf /tmp/scalatest-core_2.13-3.2.19.jar | rg '\\.class"'$'"' | head -5" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+ succeeded in 290ms:
+org/scalatest/Alerter.class
+org/scalatest/Alerting.class
+org/scalatest/AnchorValue$.class
+org/scalatest/AnchorValue.class
+org/scalatest/AppendedClues$.class
+
+ succeeded in 881ms:
+HTTP/2 200 
+date: Wed, 10 Jun 2026 07:22:27 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"0f276c20b4d398e2153cd2d881218263"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+codex
+I’m updating the JSON now with the resolved Maven source/Javadoc URLs, the upstream JVM test tree, a two-sentence description, and the Scala 2 language marker.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2/build/discovered-artifact-metadata/org.scalatest-scalatest-core_2.13-3.2.19.json
+diff --git a/build/discovered-artifact-metadata/org.scalatest-scalatest-core_2.13-3.2.19.json b/build/discovered-artifact-metadata/org.scalatest-scalatest-core_2.13-3.2.19.json
+index 2e62cfb324fde99943ea63f805e91942618f0c30..7c0d754aaf4526a9c60e249a2f9040419f4e3de7
+--- a/build/discovered-artifact-metadata/org.scalatest-scalatest-core_2.13-3.2.19.json
++++ b/build/discovered-artifact-metadata/org.scalatest-scalatest-core_2.13-3.2.19.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scalatest:scalatest-core_2.13:3.2.19"
++  "coordinates" : "org.scalatest:scalatest-core_2.13:3.2.19",
++  "repository-url" : "https://github.com/scalatest/scalatest",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-core_2.13/$version$/scalatest-core_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-core_2.13/$version$/scalatest-core_2.13-$version$-javadoc.jar",
++  "description" : "ScalaTest Core provides the shared runtime, assertions, suite execution model, events, reporting, and tagging APIs used by the ScalaTest testing framework. The _2.13 artifact is the JVM build for Scala 2.13 and supplies the base classes and infrastructure used by ScalaTest style modules such as FunSuite, FlatSpec, and WordSpec.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.scalatest-scalatest-core_2.13-3.2.19.json b/build/discovered-artifact-metadata/org.scalatest-scalatest-core_2.13-3.2.19.json
+index 2e62cfb324fde99943ea63f805e91942618f0c30..7c0d754aaf4526a9c60e249a2f9040419f4e3de7
+--- a/build/discovered-artifact-metadata/org.scalatest-scalatest-core_2.13-3.2.19.json
++++ b/build/discovered-artifact-metadata/org.scalatest-scalatest-core_2.13-3.2.19.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scalatest:scalatest-core_2.13:3.2.19"
++  "coordinates" : "org.scalatest:scalatest-core_2.13:3.2.19",
++  "repository-url" : "https://github.com/scalatest/scalatest",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-core_2.13/$version$/scalatest-core_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-core_2.13/$version$/scalatest-core_2.13-$version$-javadoc.jar",
++  "description" : "ScalaTest Core provides the shared runtime, assertions, suite execution model, events, reporting, and tagging APIs used by the ScalaTest testing framework. The _2.13 artifact is the JVM build for Scala 2.13 and supplies the base classes and infrastructure used by ScalaTest style modules such as FunSuite, FlatSpec, and WordSpec.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+exec
+/usr/bin/bash -lc "jq . build/discovered-artifact-metadata/org.scalatest-scalatest-core_2.13-3.2.19.json >/dev/null && sed -n '1,80p' build/discovered-artifact-metadata/org.scalatest-scalatest-core_2.13-3.2.19.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+ succeeded in 0ms:
+{
+  "coordinates" : "org.scalatest:scalatest-core_2.13:3.2.19",
+  "repository-url" : "https://github.com/scalatest/scalatest",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-core_2.13/$version$/scalatest-core_2.13-$version$-sources.jar",
+  "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-core_2.13/$version$/scalatest-core_2.13-$version$-javadoc.jar",
+  "description" : "ScalaTest Core provides the shared runtime, assertions, suite execution model, events, reporting, and tagging APIs used by the ScalaTest testing framework. The _2.13 artifact is the JVM build for Scala 2.13 and supplies the base classes and infrastructure used by ScalaTest style modules such as FunSuite, FlatSpec, and WordSpec.",
+  "language" : {
+    "name" : "scala",
+    "version" : "2"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.scalatest-scalatest-core_2.13-3.2.19.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.scalatest-scalatest-core_2.13-3.2.19.json b/build/discovered-artifact-metadata/org.scalatest-scalatest-core_2.13-3.2.19.json
+index 2e62cfb324fde99943ea63f805e91942618f0c30..7c0d754aaf4526a9c60e249a2f9040419f4e3de7
+--- a/build/discovered-artifact-metadata/org.scalatest-scalatest-core_2.13-3.2.19.json
++++ b/build/discovered-artifact-metadata/org.scalatest-scalatest-core_2.13-3.2.19.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scalatest:scalatest-core_2.13:3.2.19"
++  "coordinates" : "org.scalatest:scalatest-core_2.13:3.2.19",
++  "repository-url" : "https://github.com/scalatest/scalatest",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-core_2.13/$version$/scalatest-core_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-core_2.13/$version$/scalatest-core_2.13-$version$-javadoc.jar",
++  "description" : "ScalaTest Core provides the shared runtime, assertions, suite execution model, events, reporting, and tagging APIs used by the ScalaTest testing framework. The _2.13 artifact is the JVM build for Scala 2.13 and supplies the base classes and infrastructure used by ScalaTest style modules such as FunSuite, FlatSpec, and WordSpec.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+web search: 
+web search: repo.maven.apache.org scalatest-core_2.13 3.2.19 sources javadoc
+web search: 
+web search: https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/scalatest-test/src/test/scala/org/scalatest
+web search: 
+web search: central.sonatype scalatest-core_2.13 3.2.19 org.scalatest
+codex
+Updated [org.scalatest-scalatest-core_2.13-3.2.19.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2/build/discovered-artifact-metadata/org.scalatest-scalatest-core_2.13-3.2.19.json) with the repository, Maven source/Javadoc URLs, GitHub test URL, two-sentence description, and Scala 2 language field.
+
+I left `not-for-native-image` absent because this artifact publishes JVM `.class` files. Verified the JSON with `jq` and checked the resolved `3.2.19` source, documentation, and test URLs.
+diff --git a/build/discovered-artifact-metadata/org.scalatest-scalatest-core_2.13-3.2.19.json b/build/discovered-artifact-metadata/org.scalatest-scalatest-core_2.13-3.2.19.json
+index 2e62cfb324fde99943ea63f805e91942618f0c30..7c0d754aaf4526a9c60e249a2f9040419f4e3de7
+--- a/build/discovered-artifact-metadata/org.scalatest-scalatest-core_2.13-3.2.19.json
++++ b/build/discovered-artifact-metadata/org.scalatest-scalatest-core_2.13-3.2.19.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scalatest:scalatest-core_2.13:3.2.19"
++  "coordinates" : "org.scalatest:scalatest-core_2.13:3.2.19",
++  "repository-url" : "https://github.com/scalatest/scalatest",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-core_2.13/$version$/scalatest-core_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-core_2.13/$version$/scalatest-core_2.13-$version$-javadoc.jar",
++  "description" : "ScalaTest Core provides the shared runtime, assertions, suite execution model, events, reporting, and tagging APIs used by the ScalaTest testing framework. The _2.13 artifact is the JVM build for Scala 2.13 and supplies the base classes and infrastructure used by ScalaTest style modules such as FunSuite, FlatSpec, and WordSpec.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+tokens used
+80,365
+Updated [org.scalatest-scalatest-core_2.13-3.2.19.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2/build/discovered-artifact-metadata/org.scalatest-scalatest-core_2.13-3.2.19.json) with the repository, Maven source/Javadoc URLs, GitHub test URL, two-sentence description, and Scala 2 language field.
+
+I left `not-for-native-image` absent because this artifact publishes JVM `.class` files. Verified the JSON with `jq` and checked the resolved `3.2.19` source, documentation, and test URLs.
+Ran agent for org.scalatest:scalatest-core_2.13:3.2.19 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2/build/agent-artifact-discovery-logs/org.scalatest-scalatest-core_2.13-3.2.19.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5068-414844a2/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 54s
+9 actionable tasks: 9 executed
