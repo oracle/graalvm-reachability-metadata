@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.Parameter;
@@ -41,6 +42,8 @@ public class TestClassScannerTest {
     @Test
     void scanClasspathRootsExpandsSpringClassTemplatesToNestedTestClasses(
             @TempDir Path outputDirectory) throws Exception {
+        Assumptions.assumeFalse(isNativeImageRuntime(),
+                "TestClassScanner scans JVM classpath roots, which native tests expose as the executable path");
         ScanOnlyTestAotProcessor processor =
                 new ScanOnlyTestAotProcessor(classpathRoots(), settings(outputDirectory));
 
@@ -52,8 +55,7 @@ public class TestClassScannerTest {
                             TestClassScannerTest.NestedSpringTestCase.class,
                             TestClassScannerTest.NestedSpringTestCase
                                     .DeepNestedSpringTestCase.class);
-        }
-        catch (Error error) {
+        } catch (Error error) {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
             }
@@ -84,6 +86,10 @@ public class TestClassScannerTest {
                 .groupId("org.example")
                 .artifactId("test-class-scanner")
                 .build();
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     static class ScanOnlyTestAotProcessor extends TestAotProcessor {
