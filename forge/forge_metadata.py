@@ -155,7 +155,7 @@ from utility_scripts.task_logs import (
     resolve_logs_root,
     sanitize_library_log_segment,
 )
-from utility_scripts.workflow_setup import require_graalvm_home_env
+from utility_scripts.workflow_setup import list_all_files, require_graalvm_home_env
 
 try:
     import fcntl

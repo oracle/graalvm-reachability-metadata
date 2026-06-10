@@ -8,36 +8,30 @@
 import argparse
 import os
 import shutil
-import subprocess
 
 from git_scripts.common_git import (
-    build_ai_branch_name,
-    delete_remote_branch_if_exists,
     ensure_gh_authenticated,
     find_issue_for_coordinates,
     format_forge_revision_section,
-    get_configured_reviewers,
     get_origin_owner,
     gh,
     parse_coordinate_parts,
-    run_git_transport,
     stage_and_commit,
+)
+from git_scripts.pr_publication import (
+    BASE_BRANCH,
+    REPO,
+    REVIEWERS,
+    publish_branch,
 )
 from utility_scripts.metadata_index import get_not_for_native_image_marker
 from utility_scripts.local_ci_verification import (
     HUMAN_INTERVENTION_LABEL,
     LocalCIVerificationResult,
-    fetch_pr_base_ref,
     format_local_ci_verification_pr_section,
     local_ci_requires_human_intervention,
-    run_local_ci_verification,
 )
 from utility_scripts.repo_path_resolver import resolve_repo_roots
-
-
-REPO = "oracle/graalvm-reachability-metadata"
-BASE_BRANCH = "master"
-REVIEWERS = get_configured_reviewers()
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -57,11 +51,6 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def fetch_pr_base(repo_path: str) -> str:
-    """Fetch the upstream PR base and return the ref to rebase onto."""
-    return fetch_pr_base_ref(repo_path, REPO, BASE_BRANCH)
-
-
 def push_marker_branch(
         coordinates: str,
         repo_path: str,
@@ -69,24 +58,17 @@ def push_marker_branch(
 ) -> tuple[str, LocalCIVerificationResult]:
     """Create, commit, rebase, and push the marker branch."""
     group, artifact, _version = parse_coordinate_parts(coordinates)
-    branch = build_ai_branch_name(f"not-for-native-image-{group}-{artifact}", cwd=repo_path)
-    delete_remote_branch_if_exists(branch, cwd=repo_path)
-    subprocess.run(["git", "switch", "-C", branch], check=True, cwd=repo_path)
-    stage_and_commit(
-        [os.path.join("metadata", group, artifact, "index.json")],
-        f"Mark {group}:{artifact} as not for Native Image",
-        cwd=repo_path,
-    )
-    base_ref = fetch_pr_base(repo_path)
-    subprocess.run(["git", "rebase", base_ref], check=True, cwd=repo_path)
-    local_ci_verification = run_local_ci_verification(
+    return publish_branch(
         repo_path=repo_path,
+        branch_suffix=f"not-for-native-image-{group}-{artifact}",
         coordinates=coordinates,
-        base_commit=base_ref,
+        stage=lambda: stage_and_commit(
+            [os.path.join("metadata", group, artifact, "index.json")],
+            f"Mark {group}:{artifact} as not for Native Image",
+            cwd=repo_path,
+        ),
         metrics_repo_path=metrics_repo_path,
     )
-    run_git_transport(["push", "origin", branch], cwd=repo_path)
-    return branch, local_ci_verification
 
 
 def create_pull_request(

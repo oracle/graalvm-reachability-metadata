@@ -10,7 +10,13 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from ai_workflows.core.workflow_strategy import RUN_STATUS_SUCCESS, WorkflowStrategy
+from ai_workflows.core.workflow_strategy import (
+    RUN_STATUS_CHUNK_READY,
+    RUN_STATUS_FAILURE,
+    RUN_STATUS_SUCCESS,
+    SUCCESS_WITH_INTERVENTION_STATUS,
+    WorkflowStrategy,
+)
 
 
 class _TestWorkflowStrategy(WorkflowStrategy):
@@ -151,6 +157,31 @@ class WorkflowStrategyTests(unittest.TestCase):
         self.assertEqual(checkpoint, "checkpoint")
         self.assertEqual(tested_libraries, expected_libraries)
         self.assertEqual(finalized_libraries, expected_libraries)
+
+    def test_finalize_run_merges_finalization_status_for_all_driver_cases(self) -> None:
+        strategy = _TestWorkflowStrategy(
+            {"model": "test-model"},
+            reachability_repo_path="/tmp/reachability",
+            library="org.example:demo:1.0.0",
+        )
+        # (finalization status, incoming workflow status) -> merged run status.
+        cases = [
+            (RUN_STATUS_SUCCESS, RUN_STATUS_SUCCESS, RUN_STATUS_SUCCESS),
+            (SUCCESS_WITH_INTERVENTION_STATUS, RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS),
+            (RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS, RUN_STATUS_FAILURE),
+            (RUN_STATUS_SUCCESS, RUN_STATUS_CHUNK_READY, RUN_STATUS_CHUNK_READY),
+            (SUCCESS_WITH_INTERVENTION_STATUS, RUN_STATUS_CHUNK_READY, RUN_STATUS_CHUNK_READY),
+            (RUN_STATUS_FAILURE, RUN_STATUS_CHUNK_READY, RUN_STATUS_FAILURE),
+        ]
+        for finalize_status, workflow_status, expected_status in cases:
+            with self.subTest(finalize_status=finalize_status, workflow_status=workflow_status), \
+                    patch.object(
+                        strategy,
+                        "_finalize_successful_iteration",
+                        return_value=(finalize_status, "checkpoint"),
+                    ) as finalize:
+                self.assertEqual(strategy.finalize_run("base", workflow_status), expected_status)
+                finalize.assert_called_once_with(base_commit="base")
 
 
 if __name__ == "__main__":

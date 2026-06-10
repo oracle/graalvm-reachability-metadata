@@ -6,7 +6,6 @@
 import argparse
 import json
 import os
-import re
 import shutil
 import subprocess
 import sys
@@ -23,10 +22,14 @@ from git_scripts.common_git import (
     load_library_stats,
     format_stats_before_after,
     format_forge_revision_section,
-    build_ai_branch_name,
-    delete_remote_branch_if_exists,
-    get_configured_reviewers,
-    run_git_transport,
+)
+from git_scripts.pr_publication import (
+    BASE_BRANCH,
+    REPO,
+    REVIEWERS,
+    parse_pr_number,
+    publish_branch,
+    update_large_library_state_after_publish,
 )
 from utility_scripts.library_stats import stats_artifact_dir
 from utility_scripts.metadata_index import resolve_metadata_version, resolve_test_version
@@ -35,19 +38,15 @@ from utility_scripts.metrics_writer import (
     count_test_only_metadata_entries,
     read_pending_metrics,
 )
-from utility_scripts.large_library_progress import LABEL_LARGE_LIBRARY_PART, LargeLibraryProgressState
+from utility_scripts.large_library_progress import LABEL_LARGE_LIBRARY_PART
 from utility_scripts.repo_path_resolver import resolve_repo_roots
 from utility_scripts.local_ci_verification import (
     HUMAN_INTERVENTION_LABEL,
     LOCAL_CI_VERIFICATION_KEY,
     format_local_ci_verification_pr_section,
     local_ci_requires_human_intervention,
-    run_local_ci_verification,
 )
 
-REPO = "oracle/graalvm-reachability-metadata"
-BASE_BRANCH = "master"
-REVIEWERS = get_configured_reviewers()
 BASELINE_STATS_FILENAME = ".baseline-stats.json"
 LIBRARY_UPDATE_TARGET_FILENAME = ".library_update_target.json"
 IGNORED_FINALIZATION_DIRTY_PATHS = {
@@ -310,24 +309,6 @@ def stage_and_commit(
     return candidate_paths
 
 
-def _fetch_pr_base(repo_path: str) -> str:
-    """Fetch the upstream PR base and return the ref to rebase onto."""
-    upstream_url = f"https://github.com/{REPO}.git"
-    upstream_remote_url = subprocess.run(
-        ["git", "remote", "get-url", "upstream"],
-        cwd=repo_path,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.DEVNULL,
-        text=True,
-        check=False,
-    )
-    if upstream_remote_url.returncode == 0 and REPO in upstream_remote_url.stdout.strip():
-        run_git_transport(["fetch", "upstream", BASE_BRANCH], cwd=repo_path)
-        return f"upstream/{BASE_BRANCH}"
-    run_git_transport(["fetch", upstream_url, BASE_BRANCH], cwd=repo_path)
-    return "FETCH_HEAD"
-
-
 def create_pull_request(
         branch: str, coordinates: str, metrics_repo_root: str, repo_path: str,
         group: str, artifact: str, version: str,
@@ -381,7 +362,7 @@ def create_pull_request(
         for r in REVIEWERS:
             cmd.extend(["--reviewer", r])
     result = gh(*cmd[1:])
-    return _parse_pr_number(result.stdout)
+    return parse_pr_number(result.stdout)
 
 
 def build_pull_request_preview(
@@ -503,48 +484,20 @@ def push_current_branch_to_origin(
     branch_suffix = f"improve-coverage-{group}-{artifact}-{library_version}"
     if large_library_part is not None:
         branch_suffix = f"{branch_suffix}-part-{large_library_part:04d}"
-    new_branch = build_ai_branch_name(branch_suffix, cwd=repo_path)
-    delete_remote_branch_if_exists(new_branch, cwd=repo_path)
-    subprocess.run(["git", "switch", "-C", new_branch], check=True, cwd=repo_path)
 
-    expected_paths = stage_and_commit(group, artifact, library_version, coordinates, repo_path)
-    assert_no_out_of_scope_changes(repo_path, expected_paths)
+    def stage() -> None:
+        expected_paths = stage_and_commit(group, artifact, library_version, coordinates, repo_path)
+        assert_no_out_of_scope_changes(repo_path, expected_paths)
 
-    base_ref = _fetch_pr_base(repo_path)
-    subprocess.run(["git", "rebase", base_ref], check=True, cwd=repo_path)
-    run_local_ci_verification(
+    new_branch, _ = publish_branch(
         repo_path=repo_path,
+        branch_suffix=branch_suffix,
         coordinates=coordinates,
-        base_commit=base_ref,
+        stage=stage,
         metrics_repo_path=metrics_repo_path,
     )
-    run_git_transport(["push", "origin", new_branch], cwd=repo_path)
 
     return new_branch
-
-
-def _parse_pr_number(output: str) -> int | None:
-    """Extract a PR number from gh pr create output."""
-    match = re.search(r"/pull/(\d+)", output)
-    return int(match.group(1)) if match else None
-
-
-def update_large_library_state_after_publish(
-        state_path: str | None,
-        branch: str,
-        repo_path: str,
-        pr_number: int | None,
-        final_part: bool,
-) -> None:
-    """Record the published branch/commit in the large-library progress artifact."""
-    if not state_path:
-        return
-    state = LargeLibraryProgressState.load(state_path)
-    commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_path, text=True).strip()
-    state.record_published_pr(branch, commit, pr_number)
-    if not final_part:
-        state.advance_to_next_part()
-    state.save(state_path)
 
 
 def main(argv=None) -> None:

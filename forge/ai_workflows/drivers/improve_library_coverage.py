@@ -26,7 +26,6 @@ import re
 import shutil
 import subprocess
 import sys
-import tempfile
 from typing import Any, Callable
 
 if __package__ in (None, ""):
@@ -36,7 +35,6 @@ import ai_workflows.agents  # noqa: F401 - triggers agent registration
 import ai_workflows.core  # noqa: F401 - triggers strategy registration
 from ai_workflows.agents import Agent
 from ai_workflows.core.workflow_strategy import (
-    RUN_STATUS_FAILURE,
     RUN_STATUS_CHUNK_READY,
     RUN_STATUS_SUCCESS,
     SUCCESS_WITH_INTERVENTION_STATUS,
@@ -61,8 +59,6 @@ from utility_scripts.metadata_index import (
     resolve_library_update_target,
 )
 from utility_scripts.metrics_writer import count_metadata_entries, count_test_only_metadata_entries, create_failure_run_metrics_output
-from utility_scripts.repo_path_resolver import resolve_repo_roots
-from utility_scripts.schema_validator import validate_run_metrics
 from utility_scripts.source_context import (
     normalize_source_context_types,
     populate_artifact_urls,
@@ -71,24 +67,19 @@ from utility_scripts.source_context import (
 )
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.strategy_loader import require_strategy_by_name
-from utility_scripts.workflow_setup import resolve_graalvm_java_home, validate_repo_paths
+from utility_scripts.workflow_setup import (
+    list_all_files,
+    resolve_graalvm_java_home,
+    resolve_workflow_repo_paths,
+    validate_repo_paths,
+)
+from utility_scripts.worktree_reset import reset_worktree_preserving_paths
 
 DEFAULT_MODEL_NAME = "oca/gpt-5.5"
 DEFAULT_STRATEGY_NAME = "library_update_pi_gpt-5.5"
 METRICS_TASK_TYPE = "improve_library_coverage"
 BASELINE_STATS_FILENAME = ".baseline-stats.json"
 LIBRARY_UPDATE_TARGET_FILENAME = ".library_update_target.json"
-
-
-def list_all_files(directory_path: str) -> list[str]:
-    """Recursively list all file paths in the given directory."""
-    files: list[str] = []
-    if not directory_path or not os.path.isdir(directory_path):
-        return files
-    for root_dir, _, file_names in os.walk(directory_path):
-        for file_name in file_names:
-            files.append(os.path.join(root_dir, file_name))
-    return files
 
 
 def format_resolved_edit_scope_context(
@@ -217,43 +208,6 @@ def parse_flags(argv_list: list[str]):
         flags.issue_requested_metadata_context,
         flags.library_preparation_preflight_path,
     )
-
-
-def resolve_repo_paths(
-        explicit_repo_path: str | None,
-        explicit_metrics_repo_path: str | None,
-) -> tuple[str, str, str]:
-    """Resolve repository paths for code and metrics outputs."""
-    resolved_reachability_repo, resolved_metrics_repo = resolve_repo_roots(
-        explicit_repo_path,
-        explicit_metrics_repo_path,
-    )
-    resolved_metrics_dir = os.path.join(resolved_metrics_repo, "script_run_metrics")
-    os.makedirs(resolved_metrics_dir, exist_ok=True)
-    return resolved_reachability_repo, resolved_metrics_dir, resolved_metrics_repo
-
-
-def resolve_metrics_json(run_metrics: dict, metrics_repo_dir: str, metrics_repo_root: str | None) -> str:
-    """Resolve the metrics JSON path for the current execution."""
-    in_repo_root = metrics_writer.in_metadata_repo_metrics_root(metrics_repo_root)
-    if in_repo_root:
-        return metrics_writer.execution_metrics_path(in_repo_root, run_metrics)
-    return os.path.join(metrics_repo_dir, f"{METRICS_TASK_TYPE}.json")
-
-
-def write_metrics(run_metrics: dict, metrics_repo_dir: str, metrics_repo_root: str | None) -> None:
-    """Append metrics to JSON, write pending metrics, and validate schema."""
-    metrics_json = resolve_metrics_json(run_metrics, metrics_repo_dir, metrics_repo_root)
-    in_repo_root = metrics_writer.in_metadata_repo_metrics_root(metrics_repo_root)
-    if in_repo_root:
-        written = metrics_writer.append_execution_metrics(in_repo_root, run_metrics, METRICS_TASK_TYPE)
-        if written != metrics_json:
-            raise ValueError(f"ERROR: Resolved metrics path {metrics_json} does not match written path {written}")
-    else:
-        metrics_writer.append_run_metrics(run_metrics, metrics_json)
-    if metrics_repo_root:
-        metrics_writer.write_pending_metrics(metrics_repo_root, run_metrics)
-    validate_run_metrics(metrics_json)
 
 
 def _version_numbers(version: str) -> tuple[int, ...]:
@@ -712,43 +666,6 @@ def write_library_update_target_sidecar(metrics_repo_root: str | None, target: L
         sidecar_file.write("\n")
 
 
-def _snapshot_existing_paths(paths: list[str]) -> str | None:
-    snapshot_root = tempfile.mkdtemp(prefix="forge-update-failure-")
-    copied = False
-    for index, path in enumerate(paths):
-        if not os.path.exists(path):
-            continue
-        destination = os.path.join(snapshot_root, str(index))
-        if os.path.isdir(path):
-            shutil.copytree(path, destination)
-        else:
-            shutil.copy2(path, destination)
-        copied = True
-    if copied:
-        return snapshot_root
-    shutil.rmtree(snapshot_root, ignore_errors=True)
-    return None
-
-
-def _restore_snapshot_paths(snapshot_root: str | None, paths: list[str]) -> None:
-    if snapshot_root is None:
-        return
-    for index, path in enumerate(paths):
-        source = os.path.join(snapshot_root, str(index))
-        if not os.path.exists(source):
-            continue
-        if os.path.exists(path):
-            if os.path.isdir(path):
-                shutil.rmtree(path)
-            else:
-                os.remove(path)
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        if os.path.isdir(source):
-            shutil.copytree(source, path)
-        else:
-            shutil.copy2(source, path)
-
-
 def reset_failed_library_update_worktree(
         repo_path: str,
         checkpoint_commit: str,
@@ -762,14 +679,7 @@ def reset_failed_library_update_worktree(
         target.metadata_dir,
         stats_artifact_dir(repo_path, group, artifact),
     ]
-    snapshot_root = _snapshot_existing_paths(paths)
-    try:
-        subprocess.run(["git", "reset", "--hard", checkpoint_commit], cwd=repo_path, check=True)
-        _restore_snapshot_paths(snapshot_root, paths)
-    finally:
-        if snapshot_root is not None:
-            shutil.rmtree(snapshot_root, ignore_errors=True)
-    return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_path, text=True).strip()
+    return reset_worktree_preserving_paths(repo_path, checkpoint_commit, paths)
 
 
 def format_issue_requested_metadata_context(context: str) -> str:
@@ -819,7 +729,7 @@ def main(argv=None) -> int:
 
     library = f"{group}:{artifact}:{version}"
     strategy = require_strategy_by_name(strategy_name)
-    reachability_repo_path, metrics_repo_dir, metrics_repo_root = resolve_repo_paths(
+    reachability_repo_path, metrics_repo_dir, metrics_repo_root = resolve_workflow_repo_paths(
         explicit_repo_path,
         explicit_metrics_repo_path,
     )
@@ -1001,11 +911,7 @@ def main(argv=None) -> int:
     workflow_status, iterations = run_result[0], run_result[1]
 
     if workflow_status in {RUN_STATUS_SUCCESS, RUN_STATUS_CHUNK_READY}:
-        finalize_status, _ = strategy_obj._finalize_successful_iteration(base_commit=checkpoint_commit)
-        if finalize_status in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS} and workflow_status == RUN_STATUS_CHUNK_READY:
-            workflow_status = RUN_STATUS_CHUNK_READY
-        else:
-            workflow_status = finalize_status
+        workflow_status = strategy_obj.finalize_run(checkpoint_commit, workflow_status)
 
     ending_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
 
@@ -1051,7 +957,7 @@ def main(argv=None) -> int:
         )
 
     write_library_update_target_sidecar(metrics_repo_root, update_target)
-    write_metrics(run_metrics, metrics_repo_dir, metrics_repo_root)
+    metrics_writer.write_workflow_run_metrics(run_metrics, metrics_repo_dir, metrics_repo_root, METRICS_TASK_TYPE)
     return 0 if workflow_status in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS, RUN_STATUS_CHUNK_READY} else 1
 
 

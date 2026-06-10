@@ -20,12 +20,14 @@ from git_scripts.common_git import (
     format_forge_revision_section,
     get_model_display_name,
     get_agent_name,
-    build_ai_branch_name,
-    delete_remote_branch_if_exists,
-    get_configured_reviewers,
-    run_git_transport,
 )
-from git_scripts.make_pr_javac_fix import generate_diff_text
+from git_scripts.pr_publication import (
+    BASE_BRANCH,
+    REPO,
+    REVIEWERS,
+    generate_diff_text,
+    publish_branch,
+)
 from utility_scripts.metadata_index import resolve_test_version
 from utility_scripts.metrics_writer import (
     count_metadata_entries,
@@ -37,15 +39,10 @@ from utility_scripts.library_stats import stats_artifact_dir
 from utility_scripts.local_ci_verification import (
     HUMAN_INTERVENTION_LABEL,
     LocalCIVerificationResult,
-    fetch_pr_base_ref,
     format_local_ci_verification_pr_section,
-    run_local_ci_verification,
 )
 from utility_scripts.repo_path_resolver import resolve_repo_roots
 
-REPO = "oracle/graalvm-reachability-metadata"
-BASE_BRANCH = 'master'
-REVIEWERS = get_configured_reviewers()
 SEVERE_METADATA_DROP_RATIO = 0.25
 TEST_SOURCE_DIR_NAMES: tuple[str, ...] = ("java", "kotlin", "groovy", "scala")
 
@@ -363,39 +360,28 @@ def push_current_branch_to_origin(
     group, artifact, old_version = parse_coordinate_parts(old_coordinates)
     new_coordinates = f"{group}:{artifact}:{new_version}"
 
-    branch = build_ai_branch_name(
-        f"fix-native-image-run-{group}-{artifact}-{new_version}",
-        cwd=repo_path,
-    )
-    delete_remote_branch_if_exists(branch, cwd=repo_path)
-    subprocess.run(
-        ["git", "switch", "-C", branch],
-        cwd=repo_path,
-        check=True,
-    )
-    # Exploration splits the seed's shared entry into a version-specific one, so
-    # the resolved test version is the new version; otherwise tests stay shared
-    # under the old version (metadata-first seed).
-    resolved_test_version = resolve_test_version(repo_path, group, artifact, new_version)
-    stage_and_commit(
-        group=group,
-        artifact=artifact,
-        test_version=resolved_test_version,
-        metadata_version=new_version,
-        coordinates=new_coordinates,
-        repo_path=repo_path,
-    )
-    assert_no_tracked_worktree_changes(repo_path)
-    base_ref = fetch_pr_base_ref(repo_path, REPO, BASE_BRANCH)
-    subprocess.run(["git", "rebase", base_ref], cwd=repo_path, check=True)
-    local_ci_verification = run_local_ci_verification(
-        repo_path=repo_path,
-        coordinates=new_coordinates,
-        base_commit=base_ref,
-        metrics_repo_path=metrics_repo_path,
-    )
+    def stage() -> None:
+        # Exploration splits the seed's shared entry into a version-specific one, so
+        # the resolved test version is the new version; otherwise tests stay shared
+        # under the old version (metadata-first seed).
+        resolved_test_version = resolve_test_version(repo_path, group, artifact, new_version)
+        stage_and_commit(
+            group=group,
+            artifact=artifact,
+            test_version=resolved_test_version,
+            metadata_version=new_version,
+            coordinates=new_coordinates,
+            repo_path=repo_path,
+        )
 
-    run_git_transport(["push", "origin", branch], cwd=repo_path)
+    branch, local_ci_verification = publish_branch(
+        repo_path=repo_path,
+        branch_suffix=f"fix-native-image-run-{group}-{artifact}-{new_version}",
+        coordinates=new_coordinates,
+        stage=stage,
+        metrics_repo_path=metrics_repo_path,
+        before_rebase=lambda: assert_no_tracked_worktree_changes(repo_path),
+    )
 
     return branch, group, artifact, new_coordinates, local_ci_verification
 

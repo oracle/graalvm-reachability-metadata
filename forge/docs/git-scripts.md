@@ -2,8 +2,9 @@
 
 Git scripts are Forge's publication component for issue resolution
 (§FS-forge-issue-resolution-goal). The `git_scripts/` directory holds
-workflow-specific `make_pr_*.py` publishers plus shared GitHub and git helpers
-in `common_git.py`. Orchestration (§ORCH-forge-orchestration-spec) chooses when
+workflow-specific `make_pr_*.py` publishers, the shared branch-publication
+pipeline in `pr_publication.py` (§GIT-shared-publication-pipeline), and shared
+GitHub and git helpers in `common_git.py`. Orchestration (§ORCH-forge-orchestration-spec) chooses when
 publication is allowed and invokes the matching publisher after a workflow
 returns a PR-eligible status (§GIT-pr-eligibility); git scripts own how the
 verified diff becomes a labeled, linked pull request. A publisher reads the
@@ -25,6 +26,23 @@ classified as PR-eligible: `RUN_STATUS_SUCCESS`,
 turn a failed workflow into a PR, and they must preserve the verification,
 intervention, metrics, and diagnostics context produced by
 §FS-local-ci-equivalent-verification in the commit or PR body.
+
+## GIT-shared-publication-pipeline: Shared branch publication pipeline
+
+Every `make_pr_*.py` publisher must route branch publication through the shared
+pipeline in `git_scripts/pr_publication.py`: feature-branch creation in the AI
+branch namespace, stale remote-branch deletion, workflow-specific staging,
+fork-aware base fetch and rebase, local CI-equivalent verification
+(§FS-local-ci-equivalent-verification), and the final push. Publishers
+contribute only their workflow-specific parts — the staging policy
+(§GIT-expected-paths), optional pre-rebase and post-verification assertions,
+and the PR title/body/label construction (§GIT-pr-body, §GIT-issue-linking) —
+so there is exactly one code path for how a verified diff becomes a pushed
+branch. Publication bookkeeping needed by several publishers (PR-number
+parsing, large-library progress updates after publishing, the old-vs-new test
+diff embedded in PR bodies) lives in the same module instead of per-script
+copies. The target repository, base branch, and configured reviewer list are
+declared once there and shared by every publisher.
 
 ## GIT-expected-paths: Expected path staging
 

@@ -161,7 +161,7 @@ work and is absent for direct CLI invocations.
   `Anonymous<digit>` and `$<name>` with `Inner<name>` to avoid `$` in filenames.
 - Iterative runs produce one git commit per resolved or partially resolved
   class. Bulk runs produce one commit per accepted broad-pass iteration.
-- A final **metadata commit** produced by the standard `_finalize_successful_iteration`
+- A final **metadata commit** produced by the standard `finalize_run` finalization
   / `generateMetadata` step (in benchmark mode, only `generateMetadata` runs).
 - A per-run metrics record persisted to
   `stats/<group>/<artifact>/<version>/execution-metrics.json`; in-flight metrics
@@ -468,14 +468,14 @@ flowchart TD
     Final --> EntryFinalize[add_new_library_support.main]
     EntryFinalize --> Mode{benchmark mode?}
     Mode -- yes --> GenMeta[gradle generateMetadata,<br/>commit library iteration]
-    Mode -- no --> StdFinalize[strategy._finalize_successful_iteration<br/>see 6.6]
+    Mode -- no --> StdFinalize[strategy.finalize_run<br/>see 6.6]
     GenMeta --> Metrics[Write run metrics, validate schema]
     StdFinalize --> Metrics
 ```
 
 ### 6.6 Finalization order
 
-`_finalize_successful_iteration` runs in this order:
+The underlying finalization (driven through `finalize_run`) runs in this order:
 
 ```mermaid
 flowchart LR
@@ -603,8 +603,8 @@ support iff **all** requirements for its selected engine hold at exit:
    returned success before any dynamic-access coverage phase started. If the
    primary failed, the composite result is that primary failure and no
    dynamic-access coverage phase is required.
-5. `_finalize_successful_iteration` (or, in benchmark mode, `generateMetadata`
-   followed by a commit) returns success. In `_finalize_successful_iteration`,
+5. `finalize_run` (or, in benchmark mode, `generateMetadata`
+   followed by a commit) returns success. In the shared finalization,
    a failing post-generation `./gradlew test` is repaired by Codex metadata
    fixup and, if needed, Pi before finalization commits (§6.6).
 6. After each configured batch of per-class iterations that committed a

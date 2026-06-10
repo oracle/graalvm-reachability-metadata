@@ -18,10 +18,11 @@ import ai_workflows.agents  # noqa: F401 - triggers agent registration
 import ai_workflows.core  # noqa: F401 - triggers strategy registration
 from ai_workflows.agents import Agent
 from ai_workflows.core.workflow_strategy import (
+    RUN_STATUS_FAILURE,
     RUN_STATUS_SUCCESS,
     SUCCESS_WITH_INTERVENTION_STATUS,
+    WorkflowStrategy,
 )
-from ai_workflows.core.workflow_strategy import WorkflowStrategy
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists, ensure_gh_authenticated
 from utility_scripts import metrics_writer
 from utility_scripts.gradle_environment import gradle_command_environment
@@ -30,8 +31,7 @@ from utility_scripts.library_preparation_preflight import (
 )
 from utility_scripts.metadata_index import is_newer_than_latest_metadata_version
 from utility_scripts.metrics_writer import create_failure_run_metrics_output
-from utility_scripts.repo_path_resolver import require_complete_reachability_repo, resolve_repo_roots
-from utility_scripts.schema_validator import validate_run_metrics
+from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.source_context import (
     normalize_source_context_types,
     populate_artifact_urls,
@@ -39,7 +39,13 @@ from utility_scripts.source_context import (
     resolve_test_source_layout,
 )
 from utility_scripts.strategy_loader import require_strategy_by_name
-from utility_scripts.workflow_setup import resolve_graalvm_java_home, validate_repo_paths
+from utility_scripts.workflow_setup import (
+    list_all_files,
+    resolve_graalvm_java_home,
+    resolve_workflow_repo_paths,
+    validate_repo_paths,
+)
+from utility_scripts.worktree_reset import reset_worktree_to_commit
 
 DEFAULT_MODEL_NAME = "oca/gpt5"
 ADD_LIBRARY_METADATA_INDEX_TASK = "addLibraryMetadataIndexJson"
@@ -60,13 +66,13 @@ class JavaFailWorkflowConfig:
         default_strategy_name: str,
         task_type: str,
         branch_prefix: str,
-        metrics_filename: str,
+        metrics_task_type: str,
     ):
         self.mode = mode
         self.default_strategy_name = default_strategy_name
         self.task_type = task_type
         self.branch_prefix = branch_prefix
-        self.metrics_filename = metrics_filename
+        self.metrics_task_type = metrics_task_type
 
 
 JAVAC_CONFIG = JavaFailWorkflowConfig(
@@ -74,7 +80,7 @@ JAVAC_CONFIG = JavaFailWorkflowConfig(
     default_strategy_name=DEFAULT_JAVAC_STRATEGY,
     task_type="fix-javac-fail",
     branch_prefix="fix-javac",
-    metrics_filename="fix_javac_fail.json",
+    metrics_task_type="fix_javac_fail",
 )
 
 JAVA_RUN_CONFIG = JavaFailWorkflowConfig(
@@ -82,20 +88,8 @@ JAVA_RUN_CONFIG = JavaFailWorkflowConfig(
     default_strategy_name=DEFAULT_JAVA_RUN_STRATEGY,
     task_type="fix-java-run-fail",
     branch_prefix="fix-java-run",
-    metrics_filename="fix_java_run_fail.json",
+    metrics_task_type="fix_java_run_fail",
 )
-
-
-def list_all_files(directory_path):
-    """Recursively list all files under the provided directory path."""
-    files = []
-    if not directory_path or not os.path.exists(directory_path):
-        return files
-
-    for root_dir, _, file_names in os.walk(directory_path):
-        for file_name in file_names:
-            files.append(os.path.join(root_dir, file_name))
-    return files
 
 
 def build_parser(config: JavaFailWorkflowConfig):
@@ -179,18 +173,6 @@ def parse_flags(config: JavaFailWorkflowConfig, argv_list):
     )
 
 
-def resolve_repo_paths(explicit_repo_path, explicit_metrics_repo_path):
-    """Resolve repository paths for code and metrics outputs."""
-    resolved_reachability_repo, resolved_metrics_repo = resolve_repo_roots(
-        explicit_repo_path,
-        explicit_metrics_repo_path,
-    )
-
-    resolved_metrics_dir = os.path.join(resolved_metrics_repo, "script_run_metrics")
-    os.makedirs(resolved_metrics_dir, exist_ok=True)
-    return resolved_reachability_repo, resolved_metrics_dir, resolved_metrics_repo
-
-
 def resolve_fix_metrics_json(
         config: JavaFailWorkflowConfig,
         run_metrics: dict,
@@ -198,11 +180,12 @@ def resolve_fix_metrics_json(
         metrics_repo_root: str | None = None,
 ) -> str:
     """Resolve the metrics JSON path for the current execution mode."""
-    in_repo_root = metrics_writer.in_metadata_repo_metrics_root(metrics_repo_root)
-    if in_repo_root:
-        return metrics_writer.execution_metrics_path(in_repo_root, run_metrics)
-
-    return os.path.join(metrics_repo_dir, config.metrics_filename)
+    return metrics_writer.resolve_workflow_metrics_json(
+        run_metrics,
+        metrics_repo_dir,
+        metrics_repo_root,
+        config.metrics_task_type,
+    )
 
 
 def _same_filesystem_path(first_path: str, second_path: str) -> bool:
@@ -373,17 +356,13 @@ def reset_failed_java_fix_worktree(
     reset_target = last_passing_candidate_commit or commit_checkpoint
     if last_passing_candidate_commit is not None:
         print(f"[Test fixing failed; preserving last passing candidate at {last_passing_candidate_commit}.]")
-    subprocess.run(["git", "reset", "--hard", reset_target], cwd=reachability_repo_path, check=True)
+    head_commit = reset_worktree_to_commit(reachability_repo_path, reset_target)
     if last_passing_candidate_commit is None:
         if not tests_dir_preexisted:
             shutil.rmtree(tests_dir, ignore_errors=True)
         if not metadata_dir_preexisted:
             shutil.rmtree(metadata_dir, ignore_errors=True)
-    return subprocess.check_output(
-        ["git", "rev-parse", "HEAD"],
-        cwd=reachability_repo_path,
-        text=True,
-    ).strip()
+    return head_commit
 
 
 def init_agent(
@@ -427,25 +406,12 @@ def init_agent(
 
 def write_fix_metrics(config: JavaFailWorkflowConfig, run_metrics, metrics_repo_dir, metrics_repo_root=None):
     """Append fix metrics to JSON, write pending metrics, and validate schema."""
-    metrics_json = resolve_fix_metrics_json(
-        config=config,
-        run_metrics=run_metrics,
-        metrics_repo_dir=metrics_repo_dir,
-        metrics_repo_root=metrics_repo_root,
+    metrics_writer.write_workflow_run_metrics(
+        run_metrics,
+        metrics_repo_dir,
+        metrics_repo_root,
+        config.metrics_task_type,
     )
-    in_repo_root = metrics_writer.in_metadata_repo_metrics_root(metrics_repo_root)
-    if in_repo_root:
-        task_type = os.path.splitext(config.metrics_filename)[0]
-        written_metrics_json = metrics_writer.append_execution_metrics(in_repo_root, run_metrics, task_type)
-        if written_metrics_json != metrics_json:
-            raise ValueError(
-                f"ERROR: Resolved metrics path {metrics_json} does not match written path {written_metrics_json}"
-            )
-    else:
-        metrics_writer.append_run_metrics(run_metrics, metrics_json)
-    if metrics_repo_root:
-        metrics_writer.write_pending_metrics(metrics_repo_root, run_metrics)
-    validate_run_metrics(metrics_json)
 
 
 def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
@@ -469,7 +435,7 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
     ) = parse_flags(config, argv if argv is not None else sys.argv[1:])
 
     strategy = require_strategy_by_name(strategy_name)
-    reachability_repo_path, metrics_repo_dir, metrics_repo_root = resolve_repo_paths(
+    reachability_repo_path, metrics_repo_dir, metrics_repo_root = resolve_workflow_repo_paths(
         explicit_repo_path,
         explicit_metrics_repo_path,
     )
@@ -581,8 +547,7 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
         if last_passing_candidate_commit is None:
             workflow_status = RUN_STATUS_FAILURE
         else:
-            finalize_status, _ = strategy_obj._finalize_successful_iteration(base_commit=commit_checkpoint)
-            workflow_status = finalize_status
+            workflow_status = strategy_obj.finalize_run(commit_checkpoint, workflow_status)
 
     if workflow_status not in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS}:
         print("[Test fixing failed.]")
