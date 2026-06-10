@@ -1,0 +1,1026 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019eb084-7f8c-7a50-babd-c2d18cefc599
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.projectreactor.tools:blockhound:1.0.8.RELEASE
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "1.0.8.RELEASE" when "$version$" is replaced with "1.0.8.RELEASE".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "io.projectreactor.tools:blockhound:1.0.8.RELEASE".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.0.8.RELEASE".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact coordinates against Maven/GitHub first, then update the discovered metadata JSON in place with the repo’s existing formatting conventions.
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -20' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3
+build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+
+exec
+/usr/bin/bash -lc "if [ -f build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json ]; then sed -n '1,160p' build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json; fi" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3
+ succeeded in 0ms:
+{
+  "coordinates" : "io.projectreactor.tools:blockhound:1.0.8.RELEASE"
+}
+
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3
+ succeeded in 0ms:
+metadata/com.google.truth/truth/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-sources.jar",
+metadata/com.google.truth/truth/index.json:    "test-code-url" : "https://github.com/google/truth/tree/release_1_1_3/core/src/test/java?version=$version$",
+metadata/com.google.truth/truth/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-javadoc.jar",
+metadata/org.yaml/snakeyaml/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml/src/snakeyaml-$version$/src/test/",
+metadata/org.yaml/snakeyaml/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-javadoc.jar",
+metadata/org.yaml/snakeyaml/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml/src/snakeyaml-$version$/src/test/",
+metadata/org.yaml/snakeyaml/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-jvm-graal-ffi-jvm/$version$/mordant-jvm-graal-ffi-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.mordant/mordant-jvm-graal-ffi-jvm/index.json:    "documentation-url" : "https://github.com/ajalt/mordant/blob/$version$/mordant-jvm-graal-ffi/README.md",
+metadata/org.apache.xbean/xbean-reflect/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-sources.jar",
+metadata/org.apache.xbean/xbean-reflect/index.json:    "test-code-url" : "https://svn.apache.org/repos/asf/geronimo/xbean/tags/xbean-3.4/xbean-reflect/src/test/",
+metadata/org.apache.xbean/xbean-reflect/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/xbean/xbean-reflect/3.4/xbean-reflect-3.4-javadoc.jar",
+metadata/org.scalacheck/scalacheck_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalacheck/scalacheck_2.13/$version$/scalacheck_2.13-$version$-sources.jar",
+metadata/org.scalacheck/scalacheck_2.13/index.json:    "test-code-url" : "https://github.com/typelevel/scalacheck/tree/v$version$/core/shared/src/test",
+metadata/org.scalacheck/scalacheck_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalacheck/scalacheck_2.13/$version$/scalacheck_2.13-$version$-javadoc.jar",
+metadata/org.scalacheck/scalacheck_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalacheck/scalacheck_2.13/$version$/scalacheck_2.13-$version$-sources.jar",
+metadata/org.scalacheck/scalacheck_2.13/index.json:    "test-code-url" : "https://github.com/typelevel/scalacheck/tree/v$version$/core/shared/src/test",
+metadata/org.scalacheck/scalacheck_2.13/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalacheck/scalacheck_2.13/$version$/scalacheck_2.13-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:    "test-code-url" : "https://github.com/ajalt/mordant/tree/$version$/mordant/src/jvmTest",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/io.helidon.builder/helidon-builder-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/helidon/builder/helidon-builder-api/$version$/helidon-builder-api-$version$-sources.jar",
+metadata/io.helidon.builder/helidon-builder-api/index.json:    "test-code-url" : "https://github.com/helidon-io/helidon/tree/$version$/builder/tests",
+metadata/io.helidon.builder/helidon-builder-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/helidon/builder/helidon-builder-api/$version$/helidon-builder-api-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:    "documentation-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/4.22/xbean-asm9-shaded-4.22-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:    "documentation-url" : "https://javadoc.io/doc/org.apache.xbean/xbean-asm9-shaded/4.22",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm9-shaded/$version$/xbean-asm9-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm9-shaded/index.json:    "documentation-url" : "N/A",
+metadata/org.iq80.leveldb/leveldb-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/iq80/leveldb/leveldb-api/$version$/leveldb-api-$version$-sources.jar",
+metadata/org.iq80.leveldb/leveldb-api/index.json:    "test-code-url" : "https://github.com/dain/leveldb/tree/$version$/leveldb/src/test",
+metadata/org.iq80.leveldb/leveldb-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/iq80/leveldb/leveldb-api/$version$/leveldb-api-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:    "test-code-url" : "N/A",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:    "documentation-url" : "https://github.com/ajalt/mordant/blob/$version$/mordant-jvm-ffm/README.md",
+metadata/io.vertx/vertx-core/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-sources.jar",
+metadata/io.vertx/vertx-core/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-test-sources.jar",
+metadata/io.vertx/vertx-core/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/org.codehaus.jsr166-mirror/jsr166y/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/jsr166-mirror/jsr166y/$version$/jsr166y-$version$-sources.jar",
+metadata/org.codehaus.jsr166-mirror/jsr166y/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/jsr166-mirror/jsr166tck/$version$/jsr166tck-$version$-sources.jar",
+metadata/org.codehaus.jsr166-mirror/jsr166y/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/jsr166-mirror/jsr166y/$version$/jsr166y-$version$-javadoc.jar",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/xbean/xbean-asm7-shaded/$version$/xbean-asm7-shaded-$version$-sources.jar",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:    "test-code-url" : "N/A",
+metadata/org.apache.xbean/xbean-asm7-shaded/index.json:    "documentation-url" : "N/A",
+metadata/commons-io/commons-io/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-sources.jar",
+metadata/commons-io/commons-io/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-test-sources.jar",
+metadata/commons-io/commons-io/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-javadoc.jar",
+metadata/commons-io/commons-io/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-sources.jar",
+metadata/commons-io/commons-io/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-test-sources.jar",
+metadata/commons-io/commons-io/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/$version$/commons-io-$version$-javadoc.jar",
+metadata/org.jboss.logging/jboss-logging-processor/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logging/jboss-logging-processor/$version$/jboss-logging-processor-$version$-sources.jar",
+metadata/org.jboss.logging/jboss-logging-processor/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logging/jboss-logging-tools-parent/$version$/jboss-logging-tools-parent-$version$-source-release.zip",
+metadata/org.jboss.logging/jboss-logging-processor/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/logging/jboss-logging-processor/$version$/jboss-logging-processor-$version$-javadoc.jar",
+metadata/org.jboss.logging/jboss-logging-processor/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/logging/jboss-logging-processor/$version$/jboss-logging-processor-$version$-sources.jar",
+metadata/org.jboss.logging/jboss-logging-processor/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/logging/jboss-logging-tools-parent/$version$/jboss-logging-tools-parent-$version$-source-release.zip",
+
+web search: 
+web search: Maven Central io.projectreactor.tools blockhound 1.0.8.RELEASE sources test-sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/io/projectreactor/tools/blockhound/1.0.8.RELEASE/
+web search: 
+web search: https://github.com/reactor/BlockHound/tree/1.0.8.RELEASE
+web search: 
+web search: https://github.com/reactor/BlockHound/tree/1.0.8.RELEASE/agent
+codex
+Maven Central has the published jar, sources jar, and javadoc jar for `1.0.8.RELEASE`; I’m checking the tagged GitHub tree now because Maven Central does not show a test-sources artifact in that version directory.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/projectreactor/tools/blockhound/1.0.8.RELEASE/blockhound-1.0.8.RELEASE.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.projectreactor.tools</groupId>
+  <artifactId>blockhound</artifactId>
+  <version>1.0.8.RELEASE</version>
+  <name>BlockHound Java Agent</name>
+  <description>Java agent to detect blocking calls from non-blocking threads.</description>
+  <url>https://github.com/reactor/BlockHound</url>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>simonbasle</id>
+      <name>Simon Baslé</name>
+      <email>sbasle@vmware.com</email>
+    </developer>
+    <developer>
+      <id>bsideup</id>
+      <name>Sergei Egorov</name>
+      <email>bsideup@gmail.com</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/reactor/BlockHound.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/reactor/BlockHound.git</developerConnection>
+    <url>https://github.com/reactor/BlockHound/</url>
+  </scm>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/io/projectreactor/tools/blockhound/1.0.8.RELEASE/blockhound-1.0.8.RELEASE-test-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/reactor/BlockHound/git/trees/1.0.8.RELEASE?recursive=1 | rg '\"path\":'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/io/projectreactor/tools/blockhound/1.0.8.RELEASE/blockhound-1.0.8.RELEASE-tests.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3
+ succeeded in 274ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Wed, 10 Jun 2026 07:52:48 GMT
+content-type: text/html
+cf-ray: a096cc755de52795-LYS
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/io/projectreactor/tools/blockhound/1.0.8.RELEASE/blockhound-1.0.8.RELEASE-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 277ms:
+      "path": ".github",
+      "path": ".github/dependabot.yml",
+      "path": ".github/release-drafter.yml",
+      "path": ".github/workflows",
+      "path": ".github/workflows/ci.yml",
+      "path": ".github/workflows/release-drafter.yml",
+      "path": ".github/workflows/release.yml",
+      "path": ".github/workflows/snapshot.yml",
+      "path": ".gitignore",
+      "path": "LICENSE",
+      "path": "README.md",
+      "path": "agent",
+      "path": "agent/build.gradle",
+      "path": "agent/src",
+      "path": "agent/src/jarFileTest",
+      "path": "agent/src/jarFileTest/java",
+      "path": "agent/src/jarFileTest/java/reactor",
+      "path": "agent/src/jarFileTest/java/reactor/blockhoud",
+      "path": "agent/src/jarFileTest/java/reactor/blockhoud/AbstractJarFileTest.java",
+      "path": "agent/src/jarFileTest/java/reactor/blockhoud/JarFileShadingTest.java",
+      "path": "agent/src/main",
+      "path": "agent/src/main/java",
+      "path": "agent/src/main/java/reactor",
+      "path": "agent/src/main/java/reactor/blockhound",
+      "path": "agent/src/main/java/reactor/blockhound/AllowancesByteBuddyTransformer.java",
+      "path": "agent/src/main/java/reactor/blockhound/BlockHound.java",
+      "path": "agent/src/main/java/reactor/blockhound/BlockHoundRuntime.java",
+      "path": "agent/src/main/java/reactor/blockhound/BlockingCallsByteBuddyTransformer.java",
+      "path": "agent/src/main/java/reactor/blockhound/BlockingMethod.java",
+      "path": "agent/src/main/java/reactor/blockhound/BlockingOperationError.java",
+      "path": "agent/src/main/java/reactor/blockhound/InstrumentationUtils.java",
+      "path": "agent/src/main/java/reactor/blockhound/NativeWrappingClassFileTransformer.java",
+      "path": "agent/src/main/java/reactor/blockhound/TestThread.java",
+      "path": "agent/src/main/java/reactor/blockhound/integration",
+      "path": "agent/src/main/java/reactor/blockhound/integration/BlockHoundIntegration.java",
+      "path": "agent/src/main/java/reactor/blockhound/integration/LoggingIntegration.java",
+      "path": "agent/src/main/java/reactor/blockhound/integration/ReactorIntegration.java",
+      "path": "agent/src/main/java/reactor/blockhound/integration/RxJava2Integration.java",
+      "path": "agent/src/main/java/reactor/blockhound/integration/StandardOutputIntegration.java",
+      "path": "benchmarks",
+      "path": "benchmarks/build.gradle",
+      "path": "benchmarks/src",
+      "path": "benchmarks/src/jmh",
+      "path": "benchmarks/src/jmh/java",
+      "path": "benchmarks/src/jmh/java/reactor",
+      "path": "benchmarks/src/jmh/java/reactor/blockhound",
+      "path": "benchmarks/src/jmh/java/reactor/blockhound/BlockHoundBenchmark.java",
+      "path": "build.gradle",
+      "path": "docs",
+      "path": "docs/README.md",
+      "path": "docs/custom_integrations.md",
+      "path": "docs/customization.md",
+      "path": "docs/how_it_works.md",
+      "path": "docs/quick_start.md",
+      "path": "docs/supported_testing_frameworks.md",
+      "path": "docs/tips.md",
+      "path": "example",
+      "path": "example/build.gradle",
+      "path": "example/src",
+      "path": "example/src/test",
+      "path": "example/src/test/java",
+      "path": "example/src/test/java/com",
+      "path": "example/src/test/java/com/example",
+      "path": "example/src/test/java/com/example/BlockingDisallowTest.java",
+      "path": "example/src/test/java/com/example/BuilderTest.java",
+      "path": "example/src/test/java/com/example/CustomBlockingMethodTest.java",
+      "path": "example/src/test/java/com/example/DynamicCurrentThreadTest.java",
+      "path": "example/src/test/java/com/example/DynamicThreadsTest.java",
+      "path": "example/src/test/java/com/example/FalseNegativesTest.java",
+      "path": "example/src/test/java/com/example/IntegrationOrderingTest.java",
+      "path": "example/src/test/java/com/example/JDKTest.java",
+      "path": "example/src/test/java/com/example/ReactorTest.java",
+      "path": "example/src/test/java/com/example/RxJavaTest.java",
+      "path": "example/src/test/java/com/example/StackTraceTest.java",
+      "path": "example/src/test/java/com/example/StandardOutputTest.java",
+      "path": "example/src/test/java/com/example/StaticInitTest.java",
+      "path": "example/src/test/resources",
+      "path": "example/src/test/resources/META-INF",
+      "path": "example/src/test/resources/META-INF/services",
+      "path": "example/src/test/resources/META-INF/services/reactor.blockhound.integration.BlockHoundIntegration",
+      "path": "gradle.properties",
+      "path": "gradle",
+      "path": "gradle/publishing.gradle",
+      "path": "gradle/wrapper",
+      "path": "gradle/wrapper/gradle-wrapper.jar",
+      "path": "gradle/wrapper/gradle-wrapper.properties",
+      "path": "gradlew",
+      "path": "gradlew.bat",
+      "path": "jitpack.yml",
+      "path": "junit-platform",
+      "path": "junit-platform/build.gradle",
+      "path": "junit-platform/src",
+      "path": "junit-platform/src/main",
+      "path": "junit-platform/src/main/java",
+      "path": "junit-platform/src/main/java/reactor",
+      "path": "junit-platform/src/main/java/reactor/blockhound",
+      "path": "junit-platform/src/main/java/reactor/blockhound/junit",
+      "path": "junit-platform/src/main/java/reactor/blockhound/junit/platform",
+      "path": "junit-platform/src/main/java/reactor/blockhound/junit/platform/BlockHoundTestExecutionListener.java",
+      "path": "junit-platform/src/test",
+      "path": "junit-platform/src/test/java",
+      "path": "junit-platform/src/test/java/reactor",
+      "path": "junit-platform/src/test/java/reactor/blockhound",
+      "path": "junit-platform/src/test/java/reactor/blockhound/junit",
+      "path": "junit-platform/src/test/java/reactor/blockhound/junit/platform",
+      "path": "junit-platform/src/test/java/reactor/blockhound/junit/platform/JUnitPlatformDynamicIntegrationTest.java",
+      "path": "junit-platform/src/test/java/reactor/blockhound/junit/platform/JUnitPlatformIntegrationTest.java",
+      "path": "settings.gradle",
+
+ succeeded in 286ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Wed, 10 Jun 2026 07:52:48 GMT
+content-type: text/html
+cf-ray: a096cc757e9c279b-LYS
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/io/projectreactor/tools/blockhound/1.0.8.RELEASE/blockhound-1.0.8.RELEASE-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+The GitHub tag is `1.0.8.RELEASE`, matching the Maven coordinate version exactly, so the `$version$` substitution can point directly at that tag. The artifact is a normal JVM jar with Java sources, so there’s no language-specific field and no `not-for-native-image` marker needed.
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/reactor/BlockHound/1.0.8.RELEASE/build.gradle | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3
+ succeeded in 0ms:
+subprojects {
+    apply from: "$rootDir/gradle/publishing.gradle"
+
+    group = "io.projectreactor.tools"
+
+    repositories {
+        mavenCentral()
+    }
+
+    tasks.withType(Test).all {
+        def javaMajorVersion = System.getProperty("java.version").split("\\.", 2)[0].toInteger()
+        if (javaMajorVersion >= 13) {
+            jvmArgs += [
+                    "-XX:+AllowRedefinitionToAddDeleteMethods"
+            ]
+        }
+    }
+
+
+    plugins.withType(SigningPlugin) {
+        //skipping if not .RELEASE. Note the task graph is still being evaluated here.
+        //This works because the version is only defined by CI scripts, and only the release one should use .RELEASE suffix
+        def shouldSign = version.toString().endsWith(".RELEASE")
+        project.signing {
+            required { shouldSign }
+
+            //skip the configuration entirely if !shouldSign. the task shouldn't even be available
+            if (shouldSign) {
+                def signingKey = System.getenv('GRADLE_SIGNING_KEY')
+                def signingPassword = System.getenv('GRADLE_SIGNING_PASSWORD')
+                useInMemoryPgpKeys(signingKey, signingPassword)
+
+                afterEvaluate {
+                    sign publishing.publications.mavenJava
+                }
+            }
+        }
+    }
+
+    plugins.withType(MavenPublishPlugin) {
+        project.publishing {
+            repositories {
+                maven {
+                    url System.getenv('GRADLE_PUBLISH_REPO_URL')
+                    credentials {
+                        username = System.getenv('GRADLE_PUBLISH_MAVEN_USER')
+                        password = System.getenv('GRADLE_PUBLISH_MAVEN_PASSWORD')
+                    }
+                }
+            }
+        }
+    }
+
+    tasks.withType(GenerateModuleMetadata) {
+        enabled = false
+    }
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/reactor/BlockHound/1.0.8.RELEASE/agent/build.gradle | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3
+ succeeded in 0ms:
+plugins {
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id "java"
+    id "maven-publish"
+    id "signing"
+    id "org.unbroken-dome.test-sets" version "4.0.0"
+    id 'me.champeau.gradle.japicmp' version '0.4.1' apply false
+    id 'de.undercouch.download' version '5.4.0' apply false    
+}
+
+import me.champeau.gradle.japicmp.JapicmpTask
+apply plugin: 'me.champeau.gradle.japicmp'
+apply plugin: 'de.undercouch.download'
+
+description = "BlockHound Java Agent"
+ext.detailedDescription = "Java agent to detect blocking calls from non-blocking threads."
+
+testSets {
+    jarFileTest
+}
+
+sourceCompatibility = targetCompatibility = 8
+
+shadowJar {
+    classifier = null
+
+    manifest {
+        attributes('Can-Retransform-Classes': 'true')
+        attributes('Can-Set-Native-Method-Prefix': 'true')
+        attributes('Can-Redefine-Classes': 'true')
+        attributes('Automatic-Module-Name': 'reactor.blockhound')
+        attributes('Premain-Class': 'reactor.blockhound.BlockHound')
+    }
+
+    exclude 'META-INF/versions/9/module-info.class'
+    exclude 'META-INF/LICENSE'
+    exclude 'META-INF/NOTICE'
+    exclude 'META-INF/licenses/'
+    exclude 'META-INF/maven/**'
+    exclude 'reactor/shaded/META-INF/**'
+
+    // TODO discuss with ByteBuddy folks how to shade it
+    exclude 'win32-x86*/**'
+}
+
+project.tasks.build.dependsOn(shadowJar)
+
+task relocateShadowJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation) {
+    target = tasks.shadowJar
+    prefix = "reactor.blockhound.shaded"
+}
+
+tasks.shadowJar.dependsOn tasks.relocateShadowJar
+
+project.tasks.jarFileTest.configure {
+    systemProperty("jarFile", shadowJar.outputs.files.singleFile)
+    dependsOn(shadowJar)
+}
+tasks.check.dependsOn tasks.jarFileTest
+
+dependencies {
+    compileOnly 'com.google.auto.service:auto-service-annotations:1.0.1'
+    annotationProcessor 'com.google.auto.service:auto-service:1.0'
+
+    implementation 'net.bytebuddy:byte-buddy:1.14.4'    
+    implementation 'net.bytebuddy:byte-buddy-agent:1.14.4'
+
+    compileOnly 'io.projectreactor:reactor-core:3.2.5.RELEASE'
+    compileOnly 'io.reactivex.rxjava2:rxjava:2.2.18'
+
+    jarFileTestImplementation 'org.assertj:assertj-core:3.24.2'
+    jarFileTestImplementation 'junit:junit:4.13.2'
+}
+
+task sourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    from sourceSets.main.allJava
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier.set('javadoc')
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) { publication ->
+            artifacts.removeAll { it.classifier == null }
+            artifact project.tasks.shadowJar
+            artifact sourcesJar
+            artifact javadocJar
+
+            artifactId 'blockhound'
+        }
+    }
+}
+
+task downloadBaseline(type: Download) {
+	onlyIf {
+		if (project.gradle.startParameter.isOffline()) {
+			println "Offline: skipping downloading of baseline and JAPICMP"
+			return false
+		}
+		else if ("$compatibleVersion" == "SKIP") {
+			println "SKIP: Instructed to skip the baseline comparison"
+			return false
+		}
+		else {
+			println "Will download and perform baseline comparison with ${compatibleVersion}"
+			return true
+		}
+	}
+
+	onlyIfNewer true
+	compress true
+	src "${repositories.mavenCentral().url}io/projectreactor/tools/blockhound/$compatibleVersion/blockhound-${compatibleVersion}.jar"
+	dest "${buildDir}/baselineLibs/blockhound-${compatibleVersion}.jar"
+}
+
+def japicmpReport = tasks.register('japicmpReport') {
+	onlyIf {
+		japicmp.state.failure != null
+	}
+	doLast {
+		def reportFile = file("${project.buildDir}/reports/japi.txt")
+		if (reportFile.exists()) {
+			println "\n **********************************"
+			println " * /!\\ API compatibility failures *"
+			println " **********************************"
+			println "Japicmp report was filtered and interpreted to find the following incompatibilities:"
+			reportFile.eachLine {
+				if (it.contains("*") && (!it.contains("***") || it.contains("****")))
+					println "source incompatible change: $it"
+				else if (it.contains("!"))
+					println "binary incompatible change: $it"
+			}
+		}
+		else println "No incompatible change to report"
+	}
+}
+
+task japicmp(type: JapicmpTask) {
+	finalizedBy(japicmpReport)
+	dependsOn(shadowJar)
+	onlyIf { "$compatibleVersion" != "SKIP" }
+
+	oldClasspath.from(files("${buildDir}/baselineLibs/blockhound-${compatibleVersion}.jar"))
+	newClasspath.from(files(jar.archiveFile))
+	// these onlyXxx parameters result in a report that is slightly too noisy, but better than
+	// onlyBinaryIncompatibleModified = true which masks source-incompatible-only changes
+	onlyBinaryIncompatibleModified = false
+	onlyModified = true
+	failOnModification = true
+	failOnSourceIncompatibility = true
+	txtOutputFile = file("${project.buildDir}/reports/japi.txt")
+	ignoreMissingClasses = true
+	includeSynthetic = true
+
+	compatibilityChangeExcludes = [ "METHOD_NEW_DEFAULT" ]
+
+	packageExcludes = [
+			// Always ignore shaded packages
+			'reactor.blockhound.shaded.*'
+	]
+
+	classExcludes = [
+			// Ignores this transformer which is used internally
+			'reactor.blockhound.AllowancesByteBuddyTransformer$AllowedArgument$Factory',
+			// Ignores this transformer which is used internally
+			'reactor.blockhound.BlockingCallsByteBuddyTransformer$ModifiersArgument$Factory'
+	]
+
+	methodExcludes = [
+	]
+}
+
+tasks.japicmp.dependsOn(downloadBaseline)
+
+tasks.check.dependsOn(japicmp)
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/reactor/BlockHound/1.0.8.RELEASE/README.md | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3
+ succeeded in 0ms:
+# BlockHound
+
+[![Travis CI](https://travis-ci.org/reactor/BlockHound.svg?branch=master)](https://travis-ci.org/reactor/BlockHound)
+[![](https://img.shields.io/badge/dynamic/xml.svg?label=Release&color=green&query=%2F%2Fmetadata%2Fversioning%2Flatest&url=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fio%2Fprojectreactor%2Ftools%2Fblockhound%2Fmaven-metadata.xml)](https://repo1.maven.org/maven2/io/projectreactor/tools/blockhound/)
+[![](https://img.shields.io/badge/dynamic/xml.svg?label=Milestone&color=blue&query=%2F%2Fmetadata%2Fversioning%2Flatest&url=https%3A%2F%2Frepo.spring.io%2Fmilestone%2Fio%2Fprojectreactor%2Ftools%2Fblockhound%2Fmaven-metadata.xml)](https://repo.spring.io/milestone/io/projectreactor/tools/blockhound/)
+[![](https://img.shields.io/badge/dynamic/xml.svg?label=Snapshot&color=orange&query=%2F%2Fmetadata%2Fversioning%2Flatest&url=https%3A%2F%2Frepo.spring.io%2Fsnapshot%2Fio%2Fprojectreactor%2Ftools%2Fblockhound%2Fmaven-metadata.xml)](https://repo.spring.io/snapshot/io/projectreactor/tools/blockhound/)
+[![Gitter](https://badges.gitter.im/reactor/BlockHound.svg)](https://gitter.im/reactor/BlockHound)
+
+Java agent to detect blocking calls from non-blocking threads.
+
+## How it works
+BlockHound will transparently instrument the JVM classes and intercept blocking calls (e.g. IO) if they are performed from threads marked as "non-blocking operations only" (ie. threads implementing Reactor's `NonBlocking` marker interface, like those started by `Schedulers.parallel()`). If and when this happens (but remember, this should never happen!:stuck_out_tongue_winking_eye:), an error will be thrown. Here is an example:
+```java
+// Example.java
+BlockHound.install();
+
+Mono.delay(Duration.ofSeconds(1))
+    .doOnNext(it -> {
+        try {
+            Thread.sleep(10);
+        }
+        catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    })
+    .block();
+```
+
+Will result in:
+```
+reactor.blockhound.BlockingOperationError: Blocking call! java.lang.Thread.sleep
+	at java.base/java.lang.Thread.sleep(Native Method)
+	at com.example.Example.lambda$exampleTest$0(Example.java:16)
+```
+Note that it points to the exact place where the blocking call got triggered. In this example it was `Example.java:16`.
+
+## Getting it
+
+Download it from Maven Central repositories (stable releases only) or repo.spring.io:
+
+_Gradle_
+
+```groovy
+repositories {
+  mavenCentral()
+  // maven { url 'https://repo.spring.io/milestone' }
+  // maven { url 'https://repo.spring.io/snapshot' }
+}
+
+dependencies {
+  testImplementation 'io.projectreactor.tools:blockhound:$LATEST_RELEASE'
+  // testImplementation 'io.projectreactor.tools:blockhound:$LATEST_MILESTONE'
+  // testImplementation 'io.projectreactor.tools:blockhound:$LATEST_SNAPSHOT'
+}
+```
+
+_Maven_
+
+```xml
+<dependencies>
+  <dependency>
+    <groupId>io.projectreactor.tools</groupId>
+    <artifactId>blockhound</artifactId>
+    <version>$LATEST_RELEASE</version>
+  </dependency>
+</dependencies>
+```
+
+Where:
+
+|||
+|-|-|
+|`$LATEST_RELEASE`|[![](https://img.shields.io/badge/dynamic/xml.svg?label=&color=green&query=%2F%2Fmetadata%2Fversioning%2Flatest&url=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fio%2Fprojectreactor%2Ftools%2Fblockhound%2Fmaven-metadata.xml)](https://repo1.maven.org/maven2/io/projectreactor/tools/blockhound/)|
+|`$LATEST_MILESTONE`|[![](https://img.shields.io/badge/dynamic/xml.svg?label=&color=blue&query=%2F%2Fmetadata%2Fversioning%2Flatest&url=https%3A%2F%2Frepo.spring.io%2Fmilestone%2Fio%2Fprojectreactor%2Ftools%2Fblockhound%2Fmaven-metadata.xml)](https://repo.spring.io/milestone/io/projectreactor/tools/blockhound/)|
+|`$LATEST_SNAPSHOT`|[![](https://img.shields.io/badge/dynamic/xml.svg?label=&color=orange&query=%2F%2Fmetadata%2Fversioning%2Flatest&url=https%3A%2F%2Frepo.spring.io%2Fsnapshot%2Fio%2Fprojectreactor%2Ftools%2Fblockhound%2Fmaven-metadata.xml)](https://repo.spring.io/snapshot/io/projectreactor/tools/blockhound/)|
+
+## JDK13+ support
+
+for JDK 13+, it is no longer allowed redefining native methods. So for the moment, as a temporary work around, please use the
+`-XX:+AllowRedefinitionToAddDeleteMethods` jvm argument:
+
+_Maven_
+
+```xml
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+                <configuration>
+                    <argLine>-XX:+AllowRedefinitionToAddDeleteMethods</argLine>
+                </configuration>
+    </plugin>
+```
+
+_Gradle_
+
+```groovy
+    tasks.withType(Test).all {
+        if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_13)) {
+            jvmArgs += [
+                "-XX:+AllowRedefinitionToAddDeleteMethods"
+            ]
+        }
+    }
+```
+
+## Built-in integrations
+Although BlockHound supports [the SPI mechanism to integrate with](https://github.com/reactor/BlockHound/blob/master/docs/custom_integrations.md), it comes with a few built-in integrations:
+1. [Project Reactor](https://projectreactor.io)  
+  Version 3.2.x is supported out of the box.  
+  Starting with `reactor-core` version 3.3.0, there is [a built-in integration in Reactor itself](https://github.com/reactor/reactor-core/blob/v3.3.0.RELEASE/reactor-core/src/main/java/reactor/core/scheduler/ReactorBlockHoundIntegration.java) that uses [the SPI](https://github.com/reactor/BlockHound/blob/master/docs/custom_integrations.md).
+2. [RxJava 2](https://github.com/ReactiveX/RxJava/) is supported.  
+    RxJava 3 and further versions of RxJava will require an SPI to be implemented, either by the framework or user. See [this PR to RxJava](https://github.com/ReactiveX/RxJava/pull/6692) with an example of the SPI's implementation.
+
+# Quick Start
+See [the docs](./docs/README.md).
+
+-------------------------------------
+_Licensed under [Apache Software License 2.0](www.apache.org/licenses/LICENSE-2.0)_
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/projectreactor/tools/blockhound/1.0.8.RELEASE/ | rg 'href=\"blockhound-1.0.8.RELEASE'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3
+ succeeded in 268ms:
+<a href="blockhound-1.0.8.RELEASE-javadoc.jar" title="blockhound-1.0.8.RELEASE-javadoc.jar">blockhound-1.0.8.RELEASE-javadoc.jar</a>              2023-04-06 11:52     51581      
+<a href="blockhound-1.0.8.RELEASE-javadoc.jar.asc" title="blockhound-1.0.8.RELEASE-javadoc.jar.asc">blockhound-1.0.8.RELEASE-javadoc.jar.asc</a>          2023-04-06 11:52       821      
+<a href="blockhound-1.0.8.RELEASE-javadoc.jar.asc.md5" title="blockhound-1.0.8.RELEASE-javadoc.jar.asc.md5">blockhound-1.0.8.RELEASE-javadoc.jar.asc.md5</a>      2023-04-06 11:52        32      
+<a href="blockhound-1.0.8.RELEASE-javadoc.jar.asc.sha1" title="blockhound-1.0.8.RELEASE-javadoc.jar.asc.sha1">blockhound-1.0.8.RELEASE-javadoc.jar.asc.sha1</a>     2023-04-06 11:52        40      
+<a href="blockhound-1.0.8.RELEASE-javadoc.jar.asc.sha256" title="blockhound-1.0.8.RELEASE-javadoc.jar.asc.sha256">blockhound-1.0.8.RELEASE-javadoc.jar.asc.sha2...</a>  2023-04-06 11:52        64      
+<a href="blockhound-1.0.8.RELEASE-javadoc.jar.asc.sha512" title="blockhound-1.0.8.RELEASE-javadoc.jar.asc.sha512">blockhound-1.0.8.RELEASE-javadoc.jar.asc.sha5...</a>  2023-04-06 11:52       128      
+<a href="blockhound-1.0.8.RELEASE-javadoc.jar.md5" title="blockhound-1.0.8.RELEASE-javadoc.jar.md5">blockhound-1.0.8.RELEASE-javadoc.jar.md5</a>          2023-04-06 11:52        32      
+<a href="blockhound-1.0.8.RELEASE-javadoc.jar.sha1" title="blockhound-1.0.8.RELEASE-javadoc.jar.sha1">blockhound-1.0.8.RELEASE-javadoc.jar.sha1</a>         2023-04-06 11:52        40      
+<a href="blockhound-1.0.8.RELEASE-javadoc.jar.sha256" title="blockhound-1.0.8.RELEASE-javadoc.jar.sha256">blockhound-1.0.8.RELEASE-javadoc.jar.sha256</a>       2023-04-06 11:52        64      
+<a href="blockhound-1.0.8.RELEASE-javadoc.jar.sha512" title="blockhound-1.0.8.RELEASE-javadoc.jar.sha512">blockhound-1.0.8.RELEASE-javadoc.jar.sha512</a>       2023-04-06 11:52       128      
+<a href="blockhound-1.0.8.RELEASE-sources.jar" title="blockhound-1.0.8.RELEASE-sources.jar">blockhound-1.0.8.RELEASE-sources.jar</a>              2023-04-06 11:52     22072      
+<a href="blockhound-1.0.8.RELEASE-sources.jar.asc" title="blockhound-1.0.8.RELEASE-sources.jar.asc">blockhound-1.0.8.RELEASE-sources.jar.asc</a>          2023-04-06 11:52       821      
+<a href="blockhound-1.0.8.RELEASE-sources.jar.asc.md5" title="blockhound-1.0.8.RELEASE-sources.jar.asc.md5">blockhound-1.0.8.RELEASE-sources.jar.asc.md5</a>      2023-04-06 11:52        32      
+<a href="blockhound-1.0.8.RELEASE-sources.jar.asc.sha1" title="blockhound-1.0.8.RELEASE-sources.jar.asc.sha1">blockhound-1.0.8.RELEASE-sources.jar.asc.sha1</a>     2023-04-06 11:52        40      
+<a href="blockhound-1.0.8.RELEASE-sources.jar.asc.sha256" title="blockhound-1.0.8.RELEASE-sources.jar.asc.sha256">blockhound-1.0.8.RELEASE-sources.jar.asc.sha2...</a>  2023-04-06 11:52        64      
+<a href="blockhound-1.0.8.RELEASE-sources.jar.asc.sha512" title="blockhound-1.0.8.RELEASE-sources.jar.asc.sha512">blockhound-1.0.8.RELEASE-sources.jar.asc.sha5...</a>  2023-04-06 11:52       128      
+<a href="blockhound-1.0.8.RELEASE-sources.jar.md5" title="blockhound-1.0.8.RELEASE-sources.jar.md5">blockhound-1.0.8.RELEASE-sources.jar.md5</a>          2023-04-06 11:52        32      
+<a href="blockhound-1.0.8.RELEASE-sources.jar.sha1" title="blockhound-1.0.8.RELEASE-sources.jar.sha1">blockhound-1.0.8.RELEASE-sources.jar.sha1</a>         2023-04-06 11:52        40      
+<a href="blockhound-1.0.8.RELEASE-sources.jar.sha256" title="blockhound-1.0.8.RELEASE-sources.jar.sha256">blockhound-1.0.8.RELEASE-sources.jar.sha256</a>       2023-04-06 11:52        64      
+<a href="blockhound-1.0.8.RELEASE-sources.jar.sha512" title="blockhound-1.0.8.RELEASE-sources.jar.sha512">blockhound-1.0.8.RELEASE-sources.jar.sha512</a>       2023-04-06 11:52       128      
+<a href="blockhound-1.0.8.RELEASE.jar" title="blockhound-1.0.8.RELEASE.jar">blockhound-1.0.8.RELEASE.jar</a>                      2023-04-06 11:52   4529241      
+<a href="blockhound-1.0.8.RELEASE.jar.asc" title="blockhound-1.0.8.RELEASE.jar.asc">blockhound-1.0.8.RELEASE.jar.asc</a>                  2023-04-06 11:52       821      
+<a href="blockhound-1.0.8.RELEASE.jar.asc.md5" title="blockhound-1.0.8.RELEASE.jar.asc.md5">blockhound-1.0.8.RELEASE.jar.asc.md5</a>              2023-04-06 11:52        32      
+<a href="blockhound-1.0.8.RELEASE.jar.asc.sha1" title="blockhound-1.0.8.RELEASE.jar.asc.sha1">blockhound-1.0.8.RELEASE.jar.asc.sha1</a>             2023-04-06 11:52        40      
+<a href="blockhound-1.0.8.RELEASE.jar.asc.sha256" title="blockhound-1.0.8.RELEASE.jar.asc.sha256">blockhound-1.0.8.RELEASE.jar.asc.sha256</a>           2023-04-06 11:52        64      
+<a href="blockhound-1.0.8.RELEASE.jar.asc.sha512" title="blockhound-1.0.8.RELEASE.jar.asc.sha512">blockhound-1.0.8.RELEASE.jar.asc.sha512</a>           2023-04-06 11:52       128      
+<a href="blockhound-1.0.8.RELEASE.jar.md5" title="blockhound-1.0.8.RELEASE.jar.md5">blockhound-1.0.8.RELEASE.jar.md5</a>                  2023-04-06 11:52        32      
+<a href="blockhound-1.0.8.RELEASE.jar.sha1" title="blockhound-1.0.8.RELEASE.jar.sha1">blockhound-1.0.8.RELEASE.jar.sha1</a>                 2023-04-06 11:52        40      
+<a href="blockhound-1.0.8.RELEASE.jar.sha256" title="blockhound-1.0.8.RELEASE.jar.sha256">blockhound-1.0.8.RELEASE.jar.sha256</a>               2023-04-06 11:52        64      
+<a href="blockhound-1.0.8.RELEASE.jar.sha512" title="blockhound-1.0.8.RELEASE.jar.sha512">blockhound-1.0.8.RELEASE.jar.sha512</a>               2023-04-06 11:52       128      
+<a href="blockhound-1.0.8.RELEASE.pom" title="blockhound-1.0.8.RELEASE.pom">blockhound-1.0.8.RELEASE.pom</a>                      2023-04-06 11:52      1339      
+<a href="blockhound-1.0.8.RELEASE.pom.asc" title="blockhound-1.0.8.RELEASE.pom.asc">blockhound-1.0.8.RELEASE.pom.asc</a>                  2023-04-06 11:52       821      
+<a href="blockhound-1.0.8.RELEASE.pom.asc.md5" title="blockhound-1.0.8.RELEASE.pom.asc.md5">blockhound-1.0.8.RELEASE.pom.asc.md5</a>              2023-04-06 11:52        32      
+<a href="blockhound-1.0.8.RELEASE.pom.asc.sha1" title="blockhound-1.0.8.RELEASE.pom.asc.sha1">blockhound-1.0.8.RELEASE.pom.asc.sha1</a>             2023-04-06 11:52        40      
+<a href="blockhound-1.0.8.RELEASE.pom.asc.sha256" title="blockhound-1.0.8.RELEASE.pom.asc.sha256">blockhound-1.0.8.RELEASE.pom.asc.sha256</a>           2023-04-06 11:52        64      
+<a href="blockhound-1.0.8.RELEASE.pom.asc.sha512" title="blockhound-1.0.8.RELEASE.pom.asc.sha512">blockhound-1.0.8.RELEASE.pom.asc.sha512</a>           2023-04-06 11:52       128      
+<a href="blockhound-1.0.8.RELEASE.pom.md5" title="blockhound-1.0.8.RELEASE.pom.md5">blockhound-1.0.8.RELEASE.pom.md5</a>                  2023-04-06 11:52        32      
+<a href="blockhound-1.0.8.RELEASE.pom.sha1" title="blockhound-1.0.8.RELEASE.pom.sha1">blockhound-1.0.8.RELEASE.pom.sha1</a>                 2023-04-06 11:52        40      
+<a href="blockhound-1.0.8.RELEASE.pom.sha256" title="blockhound-1.0.8.RELEASE.pom.sha256">blockhound-1.0.8.RELEASE.pom.sha256</a>               2023-04-06 11:52        64      
+<a href="blockhound-1.0.8.RELEASE.pom.sha512" title="blockhound-1.0.8.RELEASE.pom.sha512">blockhound-1.0.8.RELEASE.pom.sha512</a>               2023-04-06 11:52       128      
+
+codex
+I’m going to write the JSON using Maven Central for sources and javadocs, and the tagged GitHub test directory for the published `blockhound` module because Central has no test jar for this coordinate.
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/reactor/BlockHound/tree/1.0.8.RELEASE/agent/src/jarFileTest | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/io/projectreactor/tools/blockhound/1.0.8.RELEASE/blockhound-1.0.8.RELEASE-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/reactor/BlockHound/tree/1.0.8.RELEASE/example/src/test | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/reactor/BlockHound/blob/1.0.8.RELEASE/docs/README.md | sed -n '1,20p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3
+ succeeded in 395ms:
+HTTP/2 200 
+date: Wed, 10 Jun 2026 07:53:13 GMT
+content-type: application/java-archive
+content-length: 51581
+cf-ray: a096cd10fb9327bb-LYS
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "1f25251f840e31668e28dd1777c22b13"
+last-modified: Thu, 06 Apr 2023 11:52:10 GMT
+x-checksum-md5: 1f25251f840e31668e28dd1777c22b13
+x-checksum-sha1: e4cd56cd86eaa47a9d48a67375fedd9bf99f906d
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 586ms:
+HTTP/2 200 
+date: Wed, 10 Jun 2026 07:53:13 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"26f0960c0a3d8775c4dafc5fea828f60"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=eerHWCdQ%2F0ywJbsPj6fqGo7rOmgBsaK2VyR%2FLXd40LjzteZsyftGI8ot9xA%2FKXHz5CoetIrIrlyBXpnRZWc8r0u%2F5xGWZiumILG%2FzxGI9KCadzrfb%2FAgZoo2x8j3T49o6vOvKfeeykaC6t8WERB3fZmg%2BBhQ7Xu8RV0Q%2FH%2FKj9XPRV51kyN7r55%2FnhcV1hHAOMpd2XNDKb36n5dwIUA%2FcOapP6zDWRmF50TpDJSd26W%2BODFK9mp5TGECsVBNjmCkqvKhjC7q4e0avXjM3WcWdg%3D%3D--ymZ%2BBNfheWcGwPrI--N02zWxOs0TNKOsDQDrhYcA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.695385769.1781077993; expires=Thu, 10 Jun 2027 07:53:13 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 10 Jun 2027 07:53:13 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6236:190FD:AFED438:8E10245:6A2917E9
+
+
+ succeeded in 633ms:
+HTTP/2 200 
+date: Wed, 10 Jun 2026 07:53:13 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+x-repository-download: git clone https://github.com/reactor/BlockHound.git
+x-raw-download: https://raw.githubusercontent.com/reactor/BlockHound/1.0.8.RELEASE/docs/README.md
+etag: W/"61764998881711699da83899732a0b44"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=etgPfJGnINnRNEBqCZU06y%2BEcSe4K866ddmXy5EN87MB2iL12p1%2F0r0FxkFJ35jLyz8quujlQIlHvmX99Gy4X35eStFKtivnytVn%2BaoqEMPxzKrUZGWgnb5xgk6GTV9m7PNhtaBg%2FooDSImNaz1myFLaTSjz4EQ0DUdSfOK5XGMSCTEw84Y8mQ4cQo5oR3K4JYV7YNmGt2p0NRi7qTXGFmW35%2BBlD1u39QLoy7QWSJ53lzF3JuWoUrXevi3BgKN7AsOBsy5C80e8o51wMjaRcw%3D%3D--rSZYKZnOXoFbM9tu--jeyIlZCAFCBRqMB3wLX5Ag%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1886929395.1781077993; expires=Thu, 10 Jun 2027 07:53:13 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 10 Jun 2027 07:53:13 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6237:1C5432:AF80BF1:8DA5DF5:6A2917E9
+
+ succeeded in 712ms:
+HTTP/2 200 
+date: Wed, 10 Jun 2026 07:53:13 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"740dd48f1a3560f608594d3eeaf59786"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=eDfOXSdURjskq8rYUkuWanurcfbBg%2B6PZAa4BSv8pH4P1oLjlkhCMwAc7wDipuPB5BWZw1H5jnbDp3X0b4ZFfM65zaonU1iMJD45F7n8uxkzzHftAcI%2Bkd0J%2FUdNHKYB8bdB4gHCLrkczBhadTKXDFAI8ctcfUoplCKz1PxzFQpoSoDujNuDp2%2BGZlhwefD4Qt0XDpBXBkHhwOcK1wV50ey4HAU5Jf2TjKF9zOX%2FCDa5gD%2BlC8Rgki2MWdwLd%2Fhxng%2FJL2f0%2FG7meBRl%2BbzoGw%3D%3D--vYUs7E1C%2BvX5ArU9--Unz%2BtisW%2FUUijrD%2BJXUS%2FA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.959424276.1781077993; expires=Thu, 10 Jun 2027 07:53:13 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 10 Jun 2027 07:53:13 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6235:1FD38D:B10907E:8ED2D1F:6A2917E9
+
+
+web search: 
+web search: https://repo1.maven.org/maven2/io/projectreactor/tools/blockhound/1.0.8.RELEASE/
+web search: 
+web search: https://repo1.maven.org/maven2/io/projectreactor/tools/blockhound/1.0.8.RELEASE/
+web search: 
+web search: 'Java agent to detect blocking calls from non-blocking threads.' in https://github.com/reactor/BlockHound/blob/1.0.8.RELEASE/README.md
+codex
+I have enough evidence now. I’m replacing the placeholder JSON with the discovered repository root, Maven-hosted sources/javadocs, the tagged module test directory, and a two-sentence description.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+diff --git a/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json b/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+index 11b5fd15c5b2ec66dc1697004f20aef9cd820490..0bc6dd2845c3cee6b1780b1f2ac9a386b3a02cc9
+--- a/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
++++ b/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.projectreactor.tools:blockhound:1.0.8.RELEASE"
++  "coordinates" : "io.projectreactor.tools:blockhound:1.0.8.RELEASE",
++  "repository-url" : "https://github.com/reactor/BlockHound",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/projectreactor/tools/blockhound/$version$/blockhound-$version$-sources.jar",
++  "test-code-url" : "https://github.com/reactor/BlockHound/tree/$version$/agent/src/jarFileTest",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/projectreactor/tools/blockhound/$version$/blockhound-$version$-javadoc.jar",
++  "description" : "BlockHound is a JVM Java agent that detects blocking calls made from threads intended for non-blocking work. It instruments JVM classes at runtime and raises an error when operations such as blocking I/O are performed on threads marked for non-blocking execution."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json b/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+index 11b5fd15c5b2ec66dc1697004f20aef9cd820490..0bc6dd2845c3cee6b1780b1f2ac9a386b3a02cc9
+--- a/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
++++ b/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.projectreactor.tools:blockhound:1.0.8.RELEASE"
++  "coordinates" : "io.projectreactor.tools:blockhound:1.0.8.RELEASE",
++  "repository-url" : "https://github.com/reactor/BlockHound",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/projectreactor/tools/blockhound/$version$/blockhound-$version$-sources.jar",
++  "test-code-url" : "https://github.com/reactor/BlockHound/tree/$version$/agent/src/jarFileTest",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/projectreactor/tools/blockhound/$version$/blockhound-$version$-javadoc.jar",
++  "description" : "BlockHound is a JVM Java agent that detects blocking calls made from threads intended for non-blocking work. It instruments JVM classes at runtime and raises an error when operations such as blocking I/O are performed on threads marked for non-blocking execution."
+ }
+
+web search: 
+web search: site:repo1.maven.org/maven2/io/projectreactor/tools/blockhound/1.0.8.RELEASE blockhound-1.0.8.RELEASE-sources.jar blockhound-1.0.8.RELEASE-javadoc.jar
+web search: 
+web search: github reactor BlockHound 1.0.8.RELEASE agent/src/jarFileTest
+codex
+The file has been edited. I’m doing a quick structural check and verifying the substituted URLs resolve for this exact version.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3
+ succeeded in 0ms:
+{
+  "coordinates": "io.projectreactor.tools:blockhound:1.0.8.RELEASE",
+  "repository-url": "https://github.com/reactor/BlockHound",
+  "source-code-url": "https://repo1.maven.org/maven2/io/projectreactor/tools/blockhound/$version$/blockhound-$version$-sources.jar",
+  "test-code-url": "https://github.com/reactor/BlockHound/tree/$version$/agent/src/jarFileTest",
+  "documentation-url": "https://repo1.maven.org/maven2/io/projectreactor/tools/blockhound/$version$/blockhound-$version$-javadoc.jar",
+  "description": "BlockHound is a JVM Java agent that detects blocking calls made from threads intended for non-blocking work. It instruments JVM classes at runtime and raises an error when operations such as blocking I/O are performed on threads marked for non-blocking execution."
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/io/projectreactor/tools/blockhound/1.0.8.RELEASE/blockhound-1.0.8.RELEASE-sources.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3
+ succeeded in 0ms:
+HTTP/2 200 
+date: Wed, 10 Jun 2026 07:53:46 GMT
+content-type: application/java-archive
+content-length: 22072
+cf-ray: a096cde08db22db1-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 179594
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/reactor/BlockHound/tree/1.0.8.RELEASE/agent/src/jarFileTest | sed -n '1,8p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3
+ succeeded in 0ms:
+HTTP/2 200 
+date: Wed, 10 Jun 2026 07:53:13 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"26f0960c0a3d8775c4dafc5fea828f60"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/io/projectreactor/tools/blockhound/1.0.8.RELEASE/blockhound-1.0.8.RELEASE-javadoc.jar | sed -n '1,8p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3
+ succeeded in 0ms:
+HTTP/2 200 
+date: Wed, 10 Jun 2026 07:53:47 GMT
+content-type: application/java-archive
+content-length: 51581
+cf-ray: a096cde9a9052789-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 34
+
+diff --git a/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json b/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+index 11b5fd15c5b2ec66dc1697004f20aef9cd820490..0bc6dd2845c3cee6b1780b1f2ac9a386b3a02cc9
+--- a/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
++++ b/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.projectreactor.tools:blockhound:1.0.8.RELEASE"
++  "coordinates" : "io.projectreactor.tools:blockhound:1.0.8.RELEASE",
++  "repository-url" : "https://github.com/reactor/BlockHound",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/projectreactor/tools/blockhound/$version$/blockhound-$version$-sources.jar",
++  "test-code-url" : "https://github.com/reactor/BlockHound/tree/$version$/agent/src/jarFileTest",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/projectreactor/tools/blockhound/$version$/blockhound-$version$-javadoc.jar",
++  "description" : "BlockHound is a JVM Java agent that detects blocking calls made from threads intended for non-blocking work. It instruments JVM classes at runtime and raises an error when operations such as blocking I/O are performed on threads marked for non-blocking execution."
+ }
+
+codex
+Updated [io.projectreactor.tools-blockhound-1.0.8.RELEASE.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json:1).
+
+Validation done:
+- JSON parses with `jq`.
+- Substituted source, test, and documentation URLs all returned HTTP 200.
+- No `language` or `not-for-native-image` fields were added because this is a JVM Java artifact, not a Kotlin/Groovy/Scala-specific or non-JVM artifact.
+diff --git a/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json b/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+index 11b5fd15c5b2ec66dc1697004f20aef9cd820490..0bc6dd2845c3cee6b1780b1f2ac9a386b3a02cc9
+--- a/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
++++ b/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.projectreactor.tools:blockhound:1.0.8.RELEASE"
++  "coordinates" : "io.projectreactor.tools:blockhound:1.0.8.RELEASE",
++  "repository-url" : "https://github.com/reactor/BlockHound",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/projectreactor/tools/blockhound/$version$/blockhound-$version$-sources.jar",
++  "test-code-url" : "https://github.com/reactor/BlockHound/tree/$version$/agent/src/jarFileTest",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/projectreactor/tools/blockhound/$version$/blockhound-$version$-javadoc.jar",
++  "description" : "BlockHound is a JVM Java agent that detects blocking calls made from threads intended for non-blocking work. It instruments JVM classes at runtime and raises an error when operations such as blocking I/O are performed on threads marked for non-blocking execution."
+ }
+
+tokens used
+93,481
+Updated [io.projectreactor.tools-blockhound-1.0.8.RELEASE.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3/build/discovered-artifact-metadata/io.projectreactor.tools-blockhound-1.0.8.RELEASE.json:1).
+
+Validation done:
+- JSON parses with `jq`.
+- Substituted source, test, and documentation URLs all returned HTTP 200.
+- No `language` or `not-for-native-image` fields were added because this is a JVM Java artifact, not a Kotlin/Groovy/Scala-specific or non-JVM artifact.
+Ran agent for io.projectreactor.tools:blockhound:1.0.8.RELEASE (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3/build/agent-artifact-discovery-logs/io.projectreactor.tools-blockhound-1.0.8.RELEASE.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4784-f4e48da3/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 1s
+9 actionable tasks: 9 executed
