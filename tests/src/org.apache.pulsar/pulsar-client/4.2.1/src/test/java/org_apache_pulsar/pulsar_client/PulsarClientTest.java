@@ -18,8 +18,14 @@ import org.apache.pulsar.client.api.ReaderBuilder;
 import org.apache.pulsar.client.api.Schema;
 import org.apache.pulsar.client.api.SubscriptionInitialPosition;
 import org.apache.pulsar.client.api.SubscriptionType;
+import org.apache.pulsar.client.api.schema.Field;
+import org.apache.pulsar.client.api.schema.GenericRecord;
+import org.apache.pulsar.client.api.schema.GenericSchema;
+import org.apache.pulsar.client.api.schema.RecordSchemaBuilder;
+import org.apache.pulsar.client.api.schema.SchemaBuilder;
 import org.apache.pulsar.common.schema.KeyValue;
 import org.apache.pulsar.common.schema.KeyValueEncodingType;
+import org.apache.pulsar.common.schema.SchemaInfo;
 import org.apache.pulsar.common.schema.SchemaType;
 import org.junit.jupiter.api.Test;
 
@@ -111,6 +117,35 @@ public class PulsarClientTest {
         assertThat(decoded.getTemperature()).isEqualTo(reading.getTemperature());
         assertThat(decoded.getSampleCount()).isEqualTo(reading.getSampleCount());
         assertThat(decoded.getEnabled()).isEqualTo(reading.getEnabled());
+    }
+
+    @Test
+    void buildsGenericAvroSchemaAndRoundTripsGenericRecords() {
+        RecordSchemaBuilder schemaBuilder = SchemaBuilder.record("SensorReadingGeneric")
+                .doc("Generic sensor reading");
+        schemaBuilder.field("deviceId").type(SchemaType.STRING).required();
+        schemaBuilder.field("sampleCount").type(SchemaType.INT32).required();
+        schemaBuilder.field("enabled").type(SchemaType.BOOLEAN).required();
+
+        SchemaInfo schemaInfo = schemaBuilder.build(SchemaType.AVRO);
+        GenericSchema<GenericRecord> schema = Schema.generic(schemaInfo);
+        GenericRecord record = schema.newRecordBuilder()
+                .set("deviceId", "sensor-generic")
+                .set("sampleCount", 5)
+                .set("enabled", true)
+                .build();
+
+        byte[] encoded = schema.encode(record);
+        schema.validate(encoded);
+        GenericRecord decoded = schema.decode(encoded);
+
+        assertThat(schemaInfo.getType()).isEqualTo(SchemaType.AVRO);
+        assertThat(schema.getSchemaInfo().getType()).isEqualTo(SchemaType.AVRO);
+        assertThat(decoded.getFields()).extracting(Field::getName)
+                .containsExactly("deviceId", "sampleCount", "enabled");
+        assertThat(decoded.getField("deviceId")).isEqualTo("sensor-generic");
+        assertThat(decoded.getField("sampleCount")).isEqualTo(5);
+        assertThat(decoded.getField("enabled")).isEqualTo(true);
     }
 
     @Test
