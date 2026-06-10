@@ -1,12 +1,11 @@
-# Scheduled release (1st & 15th): runs spotlessCheck and packages metadata when it changed and the
-# latest test-all-metadata passed. §CI-create-scheduled-release; gated on §CI-test-all-metadata,
-# produces the artifact native-build-tools consumes (§FS-repository-functional-spec.4).
+# Scheduled release (weekly Monday): packages changed metadata after spotlessCheck.
+# §CI-create-scheduled-release; gated on §CI-test-all-metadata.
+# Produces the native-build-tools artifact (§FS-repository-functional-spec.4).
 name: "Create scheduled release"
 
 on:
   schedule:
-    - cron: "0 3 1 * *"
-    - cron: "0 3 15 * *"
+    - cron: "0 3 * * 1"
   workflow_dispatch:
 
 permissions:
@@ -84,7 +83,7 @@ jobs:
       - name: "🕸️ Get changed metadata matrix"
         id: set-matrix
         run: |
-          LATEST_TAG=$(git tag --list | sort -V | tail -1)
+          LATEST_TAG=$(git tag --list | grep -E '^[0-9]+[.][0-9]+[.][0-9]+$' | sort -V | tail -1)
           # Keep the expanded matrix out of job outputs; the release job only needs none-found.
           GRADLE_OUTPUT=$(mktemp)
           GITHUB_OUTPUT="$GRADLE_OUTPUT" ./gradlew generateChangedCoordinatesMatrix -PbaseCommit="$(git show-ref -s "$LATEST_TAG")" -PnewCommit="$(git rev-parse HEAD)"
@@ -111,7 +110,7 @@ jobs:
 
       - name: "Get tags"
         run: |
-          PREVIOUS_RELEASE_TAG=$(git tag --list | sort -V | tail -1)
+          PREVIOUS_RELEASE_TAG=$(git tag --list | grep -E '^[0-9]+[.][0-9]+[.][0-9]+$' | sort -V | tail -1)
           if [[ ! "$PREVIOUS_RELEASE_TAG" =~ ^[0-9]+[.][0-9]+[.][0-9]+$ ]]; then
             echo "Unexpected release tag format: $PREVIOUS_RELEASE_TAG" >&2
             exit 1

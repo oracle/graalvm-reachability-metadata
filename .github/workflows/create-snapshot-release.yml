@@ -1,0 +1,126 @@
+# Snapshot release: packages metadata after master updates and publishes it on the
+# floating SNAPSHOT tag. §CI-create-snapshot-release; §FS-repository-functional-spec.4.4.
+name: "Create snapshot release"
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: create-snapshot-release
+  cancel-in-progress: true
+
+jobs:
+  get-changed-metadata:
+    name: "📋 Get a list of changed metadata"
+    if: github.repository == 'oracle/graalvm-reachability-metadata'
+    runs-on: "ubuntu-22.04"
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      none-found: ${{ steps.set-matrix.outputs.none-found }}
+      snapshot-tag-exists: ${{ steps.get-base-ref.outputs.snapshot-tag-exists }}
+      snapshot-release-exists: ${{ steps.get-base-ref.outputs.snapshot-release-exists }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 0
+
+      - name: "🔧 Setup java"
+        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
+        with:
+          distribution: 'graalvm'
+          java-version: '21'
+
+      - name: "🔎 Determine diff base"
+        id: get-base-ref
+        run: |
+          if git rev-parse --verify SNAPSHOT >/dev/null 2>&1; then
+            echo "Using existing SNAPSHOT tag as base"
+            echo "BASE_COMMIT=$(git rev-parse SNAPSHOT)" >> ${GITHUB_ENV}
+            echo "snapshot-tag-exists=true" >> ${GITHUB_OUTPUT}
+          else
+            echo "snapshot-tag-exists=false" >> ${GITHUB_OUTPUT}
+
+            LATEST_VERSION_TAG=$(git tag --list | grep -E '^[0-9]+[.][0-9]+[.][0-9]+$' | sort -V | tail -1)
+            if [[ -z "${LATEST_VERSION_TAG}" ]]; then
+              echo "No existing numbered version tag found to bootstrap the snapshot release"
+              exit 1
+            fi
+
+            echo "Bootstrapping snapshot release from ${LATEST_VERSION_TAG}"
+            echo "BASE_COMMIT=$(git rev-parse ${LATEST_VERSION_TAG})" >> ${GITHUB_ENV}
+          fi
+
+          if gh release view SNAPSHOT >/dev/null 2>&1; then
+            echo "snapshot-release-exists=true" >> ${GITHUB_OUTPUT}
+          else
+            echo "snapshot-release-exists=false" >> ${GITHUB_OUTPUT}
+          fi
+
+      - name: "🕸️ Get changed metadata matrix"
+        id: set-matrix
+        run: |
+          ./gradlew generateChangedCoordinatesMatrix -PbaseCommit=${BASE_COMMIT} -PnewCommit=$(git rev-parse HEAD)
+
+  release:
+    needs: get-changed-metadata
+    if: needs.get-changed-metadata.result == 'success' && (needs.get-changed-metadata.outputs.none-found != 'true' || (needs.get-changed-metadata.outputs.snapshot-tag-exists == 'true' && needs.get-changed-metadata.outputs.snapshot-release-exists != 'true'))
+    name: "🚀 Create snapshot release"
+    runs-on: "ubuntu-22.04"
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 0
+
+      - name: "🔧 Setup java"
+        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
+        with:
+          distribution: 'graalvm'
+          java-version: '21'
+
+      - name: "⬆️ Update version"
+        run: |
+          sed -i "s/project.version(\"1.0.0-SNAPSHOT\")/project.version(\"SNAPSHOT\")/g" build.gradle
+
+      - name: "🔍 Run spotless check"
+        run: |
+          ./gradlew spotlessCheck
+
+      - name: "🏭 Generate release artifacts"
+        run: |
+          ./gradlew package
+
+      - name: "🧹 Delete previous snapshot release and tag"
+        if: needs.get-changed-metadata.outputs.snapshot-release-exists == 'true'
+        run: |
+          gh release delete SNAPSHOT --cleanup-tag -y
+
+      - name: "🧹 Delete orphan snapshot tag"
+        if: needs.get-changed-metadata.outputs.snapshot-tag-exists == 'true' && needs.get-changed-metadata.outputs.snapshot-release-exists != 'true'
+        run: |
+          git push origin :refs/tags/SNAPSHOT
+
+      - name: "📄 Commit changes"
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "Github Actions"
+          git add .
+          git commit -m "Update snapshot release"
+          git tag -f SNAPSHOT
+          git push origin refs/tags/SNAPSHOT --force
+
+      - name: "📝 Publish a release"
+        run: |
+          gh release create SNAPSHOT build/graalvm-reachability-metadata-*.zip --title "SNAPSHOT" --latest=false
