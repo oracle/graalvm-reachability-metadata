@@ -6,6 +6,7 @@
  */
 package org.graalvm.internal.tck.harness.tasks;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,10 +17,13 @@ public abstract class JavaTestInvocationTask extends AllCoordinatesExecTask {
 
     @Override
     public List<String> commandFor(String coordinates) {
-        return List.of(
+        List<String> command = new ArrayList<>(List.of(
                 tckExtension.getRepoRoot().get().getAsFile().toPath().resolve("gradlew").toString(),
                 "test"
-        );
+        ));
+        // §TCK-test-harness.3
+        appendProperty(command, "skipJacoco");
+        return command;
     }
 
     @Override

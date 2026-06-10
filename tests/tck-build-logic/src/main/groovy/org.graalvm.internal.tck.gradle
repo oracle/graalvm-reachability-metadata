@@ -22,6 +22,8 @@ plugins {
     id 'jacoco'
 }
 
+def skipJacoco = providers.gradleProperty("skipJacoco").map { it.toBoolean() }.getOrElse(false)
+
 repositories {
     mavenLocal()
     mavenCentral()
@@ -478,6 +480,10 @@ tasks.register("mergeNativeTraceMetadata", Exec) { Exec task ->
 
 // Ensure detailed exception/stacktrace logging for all Test tasks, including nativeTest
 tasks.withType(Test).configureEach {
+    // §TCK-test-harness.3: downstream pass/fail gates can run without coverage instrumentation.
+    if (skipJacoco) {
+        jacoco.enabled = false
+    }
     systemProperty "junit.jupiter.execution.timeout.default", "${maxJUnitTestTimeoutSeconds} s"
     systemProperty "junit.jupiter.execution.timeout.mode", "enabled"
     systemProperty "junit.jupiter.execution.timeout.thread.mode.default", "separate_thread"
