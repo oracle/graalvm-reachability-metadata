@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.maven.scm.CommandParameter;
 import org.apache.maven.scm.CommandParameters;
@@ -59,7 +60,8 @@ public class GitExeCommandLineConstructionTest {
         assertThat(latestRevisionCommandLine.getArguments())
                 .containsExactly("log", "-n1", "--date-order", "feature/native-tests");
 
-        Commandline remoteInfoCommandLine = GitRemoteInfoCommand.createCommandLine(repository);
+        GitRemoteInfoCommand remoteInfoCommand = new GitRemoteInfoCommand(Map.of());
+        Commandline remoteInfoCommandLine = remoteInfoCommand.createCommandLine(repository);
         assertGitExecutable(remoteInfoCommandLine);
         File temporaryRoot = new File(System.getProperty("java.io.tmpdir"));
         assertThat(remoteInfoCommandLine.getWorkingDirectory()).isEqualTo(temporaryRoot);
