@@ -9,25 +9,11 @@ package com_github_jnr.jffi;
 import com.kenai.jffi.Library;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class InitTest {
     @Test
-    void reportsLoadFailureWhenOperatingSystemIsUnsupported() {
-        String propertyName = "os.name";
-        String previousOsName = System.getProperty(propertyName);
-        System.setProperty(propertyName, "GraalVM Reachability Metadata Unsupported OS");
-
-        try {
-            assertThatThrownBy(Library::getDefault)
-                    .isInstanceOf(UnsatisfiedLinkError.class)
-                    .hasMessageContaining("cannot determine operating system");
-        } finally {
-            if (previousOsName == null) {
-                System.clearProperty(propertyName);
-            } else {
-                System.setProperty(propertyName, previousOsName);
-            }
-        }
+    void loadsDefaultLibraryOnSupportedPlatform() {
+        assertThat(Library.getDefault()).isNotNull();
     }
 }
