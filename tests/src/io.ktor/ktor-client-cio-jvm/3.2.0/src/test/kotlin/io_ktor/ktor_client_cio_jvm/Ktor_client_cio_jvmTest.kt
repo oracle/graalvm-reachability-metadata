@@ -31,8 +31,11 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.Parameters
 import io.ktor.http.URLProtocol
+import io.ktor.http.content.OutgoingContent
 import io.ktor.http.contentType
 import io.ktor.http.withCharset
+import io.ktor.utils.io.ByteWriteChannel
+import io.ktor.utils.io.writeStringUtf8
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
 import java.io.BufferedInputStream
@@ -145,6 +148,55 @@ public class Ktor_client_cio_jvmTest {
                         .contains("contentType=text/plain; charset=UTF-8")
                         .contains("length=${payload.toByteArray(StandardCharsets.UTF_8).size}")
                         .contains("body=$payload")
+                }
+            }
+        }
+    }
+
+    @Test
+    public fun `cio engine streams write channel request content with chunked transfer`(): Unit = runBlocking {
+        withTimeout(TEST_TIMEOUT_MILLIS) {
+            LocalHttpServer().use { server: LocalHttpServer ->
+                server.handle("/stream") { exchange: HttpExchange ->
+                    val requestBody: String = exchange.readRequestBody()
+                    val responseText: String = buildString {
+                        appendLine("method=${exchange.requestMethod}")
+                        appendLine("contentType=${exchange.requestHeaders.getFirst(HttpHeaders.ContentType)}")
+                        val contentLength: String =
+                            exchange.requestHeaders.getFirst(HttpHeaders.ContentLength) ?: "missing"
+                        val transferEncoding: String? = exchange.requestHeaders.getFirst(HttpHeaders.TransferEncoding)
+                        appendLine("contentLength=$contentLength")
+                        appendLine("transferEncoding=$transferEncoding")
+                        append("body=$requestBody")
+                    }
+                    exchange.respond(HttpStatusCode.OK.value, responseText, "text/plain; charset=utf-8")
+                }
+
+                withCioClient { client: HttpClient ->
+                    val chunks: List<String> = listOf("alpha", "-beta", "-gamma")
+                    val response: HttpResponse = client.post(server.url("/stream")) {
+                        setBody(
+                            object : OutgoingContent.WriteChannelContent() {
+                                override val contentType: ContentType =
+                                    ContentType.Text.Plain.withCharset(StandardCharsets.UTF_8)
+
+                                override suspend fun writeTo(channel: ByteWriteChannel): Unit {
+                                    for (chunk: String in chunks) {
+                                        channel.writeStringUtf8(chunk)
+                                        channel.flush()
+                                    }
+                                }
+                            },
+                        )
+                    }
+
+                    assertThat(response.status).isEqualTo(HttpStatusCode.OK)
+                    assertThat(response.bodyAsText())
+                        .contains("method=POST")
+                        .contains("contentType=text/plain; charset=UTF-8")
+                        .contains("contentLength=missing")
+                        .contains("transferEncoding=chunked")
+                        .contains("body=alpha-beta-gamma")
                 }
             }
         }
