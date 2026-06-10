@@ -81,6 +81,16 @@ object AuditEvent {
   given Decoder[AuditEvent] = deriveDecoder[AuditEvent]
 }
 
+sealed trait DeploymentStep
+
+object DeploymentStep {
+  case object AwaitingApproval extends DeploymentStep
+  final case class Executing(task: String, attempt: Int) extends DeploymentStep
+  case object Finished extends DeploymentStep
+
+  given Codec.AsObject[DeploymentStep] = deriveCodec[DeploymentStep]
+}
+
 final case class AutoCoordinates(latitude: BigDecimal, longitude: BigDecimal)
 final case class AutoWarehouse(name: String, coordinates: AutoCoordinates, stockedSkus: Vector[String])
 
@@ -175,6 +185,23 @@ final class Circe_generic_3Test {
 
     assertThat(json.asArray.map(_.size)).isEqualTo(Some(3))
     assertThat(json.as[List[AuditEvent]]).isEqualTo(Right(events))
+  }
+
+  @Test
+  def derivesCodecsForSealedTraitSingletonCases(): Unit = {
+    val steps: List[DeploymentStep] = List(
+      DeploymentStep.AwaitingApproval,
+      DeploymentStep.Executing("native-test", 1),
+      DeploymentStep.Finished
+    )
+
+    val json: Json = steps.asJson
+
+    assertThat(json.hcursor.downArray.downField("AwaitingApproval").focus).isEqualTo(Some(Json.obj()))
+    assertThat(json.hcursor.downN(1).downField("Executing").get[String]("task")).isEqualTo(Right("native-test"))
+    assertThat(json.hcursor.downN(2).downField("Finished").focus).isEqualTo(Some(Json.obj()))
+    assertThat(json.as[List[DeploymentStep]]).isEqualTo(Right(steps))
+    assertThat(Json.obj("Finished" -> Json.obj()).as[DeploymentStep]).isEqualTo(Right(DeploymentStep.Finished))
   }
 
   @Test
