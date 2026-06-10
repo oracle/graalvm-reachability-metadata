@@ -1,0 +1,610 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8301-04539347
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019eb0ea-c536-75b0-a1ef-c5921db86c5e
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.circe:circe-generic_3:0.15.0-M1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [0.15.0-M1].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8301-04539347/metadata/io.circe/circe-generic_3/index.json
+- Entry selector: "metadata-version" = "0.15.0-M1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: {"name": "scala", "version": "3"}
+
+Context:
+- Coordinate version: 0.15.0-M1
+- Entry metadata-version: 0.15.0-M1
+- Entry test-version: 0.15.0-M1
+- Entry tested-versions: [0.15.0-M1]
+codex
+I’ll verify the artifact metadata and versioned source/test/doc locations first, then update only the blank fields in the target `index.json`.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,220p' metadata/io.circe/circe-generic_3/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8301-04539347
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8301-04539347
+[
+  {
+    "latest" : true,
+    "metadata-version" : "0.15.0-M1",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "0.15.0-M1"
+    ],
+    "allowed-packages" : [
+      "io.circe.generic"
+    ]
+  },
+  {
+    "metadata-version" : "0.14.12",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/$version$/circe-generic_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/circe/circe",
+    "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/generic/shared/src/test/scala-0/io/circe/generic",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/$version$/circe-generic_3-$version$-javadoc.jar",
+    "description" : "circe-generic provides automatic and semi-automatic derivation of Circe Encoder and Decoder instances for Scala case classes and sealed traits. It lets Scala 3 applications convert domain types to and from JSON through Circe's type class APIs with minimal boilerplate.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "0.14.12"
+    ],
+    "allowed-packages" : [
+      "io.circe.generic"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n \"circe-generic_3|circe-generic\" metadata/io.circe -g 'index.json'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8301-04539347
+ succeeded in 0ms:
+metadata/io.circe/circe-generic_3/index.json:18:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/$version$/circe-generic_3-$version$-sources.jar",
+metadata/io.circe/circe-generic_3/index.json:21:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/$version$/circe-generic_3-$version$-javadoc.jar",
+metadata/io.circe/circe-generic_3/index.json:22:    "description" : "circe-generic provides automatic and semi-automatic derivation of Circe Encoder and Decoder instances for Scala case classes and sealed traits. It lets Scala 3 applications convert domain types to and from JSON through Circe's type class APIs with minimal boilerplate.",
+
+web search: 
+web search: Maven Central io.circe circe-generic_3 0.15.0-M1 sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/io/circe/circe-generic_3/0.15.0-M1/
+codex
+The Maven Central listing confirms versioned `sources.jar` and `javadoc.jar` are available for `0.15.0-M1`; I’m checking whether there is a Maven-published tests artifact before falling back to the tagged GitHub test tree.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/0.15.0-M1/circe-generic_3-0.15.0-M1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8301-04539347
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>io.circe</groupId>
+    <artifactId>circe-generic_3</artifactId>
+    <packaging>jar</packaging>
+    <description>circe generic</description>
+    <url>https://github.com/circe/circe</url>
+    <version>0.15.0-M1</version>
+    <licenses>
+        <license>
+            <name>Apache 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>Circe generic</name>
+    <organization>
+        <name>io.circe</name>
+        <url>https://github.com/circe/circe</url>
+    </organization>
+    <scm>
+        <url>https://github.com/circe/circe</url>
+        <connection>scm:git:git@github.com:circe/circe.git</connection>
+    </scm>
+    <developers>
+        <developer>
+            <id>travisbrown</id>
+            <name>Travis Brown</name>
+            <url>https://twitter.com/travisbrown</url>
+            <email>travisrobertbrown@gmail.com</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://circe.github.io/circe/api/</info.apiURL>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>io.circe</groupId>
+            <artifactId>circe-core_3</artifactId>
+            <version>0.15.0-M1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/circe/circe.git 'refs/tags/v0.15.0-M1*'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8301-04539347
+ succeeded in 365ms:
+ec332d5176de0aa812da7f6e26d499ae60759090	refs/tags/v0.15.0-M1
+7b91021e4b6b1db08a5f031a751baeb058d7392d	refs/tags/v0.15.0-M1^{}
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/0.15.0-M1/circe-generic_3-0.15.0-M1-sources.jar \\
+  https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/0.15.0-M1/circe-generic_3-0.15.0-M1-javadoc.jar \\
+  https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/0.15.0-M1/circe-generic_3-0.15.0-M1-tests.jar \\
+  https://github.com/circe/circe/tree/v0.15.0-M1/modules/generic/shared/src/test/scala-3/io/circe/generic \\
+  https://github.com/circe/circe/tree/v0.15.0-M1/modules/generic/shared/src/test/scala-0/io/circe/generic \\
+  https://github.com/circe/circe/tree/v0.15.0-M1/modules/generic/shared/src/test/scala/io/circe/generic; do
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$url")
+  printf '"'%s %s\\n' \""'$code" "$url"
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8301-04539347
+ succeeded in 3597ms:
+200 https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/0.15.0-M1/circe-generic_3-0.15.0-M1-sources.jar
+200 https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/0.15.0-M1/circe-generic_3-0.15.0-M1-javadoc.jar
+404 https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/0.15.0-M1/circe-generic_3-0.15.0-M1-tests.jar
+404 https://github.com/circe/circe/tree/v0.15.0-M1/modules/generic/shared/src/test/scala-3/io/circe/generic
+200 https://github.com/circe/circe/tree/v0.15.0-M1/modules/generic/shared/src/test/scala-0/io/circe/generic
+404 https://github.com/circe/circe/tree/v0.15.0-M1/modules/generic/shared/src/test/scala/io/circe/generic
+
+web search: 
+web search: https://github.com/circe/circe/tree/v0.15.0-M1/modules/generic/shared/src/test/scala-0/io/circe/generic
+web search: 
+web search: repo.maven.apache.org maven2 io/circe/circe-generic_3/0.15.0-M1 circe-generic_3-0.15.0-M1-sources.jar
+web search: 
+web search: site:central.sonatype.com/artifact/io.circe/circe-generic_3 0.15.0-M1
+web search: 
+web search: https://mvnrepository.com/artifact/io.circe/circe-generic_3/0.15.0-M1
+web search: 
+web search: https://mvnrepository.com/artifact/io.circe/circe-generic_3/0.15.0-M1
+codex
+There is no `tests.jar` in the Maven artifact directory, so I’ll use the tagged GitHub test directory that returns `200`. The artifact is Scala 3-specific and the existing `language` field is already non-blank, so I’ll leave it unchanged.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8301-04539347/metadata/io.circe/circe-generic_3/index.json
+diff --git a/metadata/io.circe/circe-generic_3/index.json b/metadata/io.circe/circe-generic_3/index.json
+index ba22a91890d27a3a28b0d1241556f853630d74ec..360595bd3d95e72cd588654c64a958521fcb8f9b
+--- a/metadata/io.circe/circe-generic_3/index.json
++++ b/metadata/io.circe/circe-generic_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "0.15.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/$version$/circe-generic_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/circe/circe",
++    "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/generic/shared/src/test/scala-0/io/circe/generic",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/$version$/circe-generic_3-$version$-javadoc.jar",
++    "description" : "circe-generic provides automatic and semi-automatic derivation of Circe Encoder and Decoder instances for Scala case classes and sealed traits. It lets Scala 3 applications convert domain types to and from JSON through Circe's type class APIs with minimal boilerplate.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+diff --git a/metadata/io.circe/circe-generic_3/index.json b/metadata/io.circe/circe-generic_3/index.json
+index ba22a91890d27a3a28b0d1241556f853630d74ec..360595bd3d95e72cd588654c64a958521fcb8f9b
+--- a/metadata/io.circe/circe-generic_3/index.json
++++ b/metadata/io.circe/circe-generic_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "0.15.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/$version$/circe-generic_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/circe/circe",
++    "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/generic/shared/src/test/scala-0/io/circe/generic",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/$version$/circe-generic_3-$version$-javadoc.jar",
++    "description" : "circe-generic provides automatic and semi-automatic derivation of Circe Encoder and Decoder instances for Scala case classes and sealed traits. It lets Scala 3 applications convert domain types to and from JSON through Circe's type class APIs with minimal boilerplate.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+codex
+The file is patched. I’m doing a quick JSON parse plus the targeted metadata validation and re-checking the rendered URL templates for the single tested alias.
+exec
+/usr/bin/bash -lc 'jq . metadata/io.circe/circe-generic_3/index.json >/dev/null' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8301-04539347
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=io.circe:circe-generic_3:0.15.0-M1 --stacktrace' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8301-04539347
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/0.15.0-M1/circe-generic_3-0.15.0-M1-sources.jar \\
+  https://github.com/circe/circe/tree/v0.15.0-M1/modules/generic/shared/src/test/scala-0/io/circe/generic \\
+  https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/0.15.0-M1/circe-generic_3-0.15.0-M1-javadoc.jar; do
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$url")
+  printf '"'%s %s\\n' \""'$code" "$url"
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8301-04539347
+ succeeded in 400ms:
+200 https://github.com/circe/circe/tree/v0.15.0-M1/modules/generic/shared/src/test/scala-0/io/circe/generic
+200 https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/0.15.0-M1/circe-generic_3-0.15.0-M1-javadoc.jar
+
+diff --git a/metadata/io.circe/circe-generic_3/index.json b/metadata/io.circe/circe-generic_3/index.json
+index ba22a91890d27a3a28b0d1241556f853630d74ec..360595bd3d95e72cd588654c64a958521fcb8f9b
+--- a/metadata/io.circe/circe-generic_3/index.json
++++ b/metadata/io.circe/circe-generic_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "0.15.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/$version$/circe-generic_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/circe/circe",
++    "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/generic/shared/src/test/scala-0/io/circe/generic",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/$version$/circe-generic_3-$version$-javadoc.jar",
++    "description" : "circe-generic provides automatic and semi-automatic derivation of Circe Encoder and Decoder instances for Scala case classes and sealed traits. It lets Scala 3 applications convert domain types to and from JSON through Circe's type class APIs with minimal boilerplate.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+ exited 1 in 12634ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+Metadata files check failed for io.circe:circe-generic_3:0.15.0-M1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8301-04539347/metadata/io.circe/circe-generic_3/0.15.0-M1/
+
+> Task :checkMetadataFiles FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - io.circe:circe-generic_3:0.15.0-M1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8301-04539347/metadata/io.circe/circe-generic_3/0.15.0-M1/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8301-04539347/build/reports/problems/problems-report.html
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - io.circe:circe-generic_3:0.15.0-M1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8301-04539347/metadata/io.circe/circe-generic_3/0.15.0-M1/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 12s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+exec
+/usr/bin/bash -lc "nl -ba metadata/io.circe/circe-generic_3/index.json | sed -n '1,36p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8301-04539347
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "0.15.0-M1",
+     5	    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/$version$/circe-generic_3-$version$-sources.jar",
+     6	    "repository-url" : "https://github.com/circe/circe",
+     7	    "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/generic/shared/src/test/scala-0/io/circe/generic",
+     8	    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/$version$/circe-generic_3-$version$-javadoc.jar",
+     9	    "description" : "circe-generic provides automatic and semi-automatic derivation of Circe Encoder and Decoder instances for Scala case classes and sealed traits. It lets Scala 3 applications convert domain types to and from JSON through Circe's type class APIs with minimal boilerplate.",
+    10	    "language" : {
+    11	      "name" : "scala",
+    12	      "version" : "3"
+    13	    },
+    14	    "tested-versions" : [
+    15	      "0.15.0-M1"
+    16	    ],
+    17	    "allowed-packages" : [
+    18	      "io.circe.generic"
+    19	    ]
+    20	  },
+    21	  {
+    22	    "metadata-version" : "0.14.12",
+    23	    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/$version$/circe-generic_3-$version$-sources.jar",
+    24	    "repository-url" : "https://github.com/circe/circe",
+    25	    "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/generic/shared/src/test/scala-0/io/circe/generic",
+    26	    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/$version$/circe-generic_3-$version$-javadoc.jar",
+    27	    "description" : "circe-generic provides automatic and semi-automatic derivation of Circe Encoder and Decoder instances for Scala case classes and sealed traits. It lets Scala 3 applications convert domain types to and from JSON through Circe's type class APIs with minimal boilerplate.",
+    28	    "language" : {
+    29	      "name" : "scala",
+    30	      "version" : "3"
+    31	    },
+    32	    "tested-versions" : [
+    33	      "0.14.12"
+    34	    ],
+    35	    "allowed-packages" : [
+    36	      "io.circe.generic"
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/io.circe/circe-generic_3/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8301-04539347
+ succeeded in 0ms:
+diff --git i/metadata/io.circe/circe-generic_3/index.json w/metadata/io.circe/circe-generic_3/index.json
+index ba22a91890..360595bd3d 100644
+--- i/metadata/io.circe/circe-generic_3/index.json
++++ w/metadata/io.circe/circe-generic_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "0.15.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/$version$/circe-generic_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/circe/circe",
++    "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/generic/shared/src/test/scala-0/io/circe/generic",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/$version$/circe-generic_3-$version$-javadoc.jar",
++    "description" : "circe-generic provides automatic and semi-automatic derivation of Circe Encoder and Decoder instances for Scala case classes and sealed traits. It lets Scala 3 applications convert domain types to and from JSON through Circe's type class APIs with minimal boilerplate.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+diff --git a/metadata/io.circe/circe-generic_3/index.json b/metadata/io.circe/circe-generic_3/index.json
+index ba22a91890d27a3a28b0d1241556f853630d74ec..360595bd3d95e72cd588654c64a958521fcb8f9b
+--- a/metadata/io.circe/circe-generic_3/index.json
++++ b/metadata/io.circe/circe-generic_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "0.15.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/$version$/circe-generic_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/circe/circe",
++    "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/generic/shared/src/test/scala-0/io/circe/generic",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/$version$/circe-generic_3-$version$-javadoc.jar",
++    "description" : "circe-generic provides automatic and semi-automatic derivation of Circe Encoder and Decoder instances for Scala case classes and sealed traits. It lets Scala 3 applications convert domain types to and from JSON through Circe's type class APIs with minimal boilerplate.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+web search: 
+web search: circe generic Scala automatic derivation Encoder Decoder
+web search: 
+web search: site:circe.github.io/circe generic auto semiauto Encoder Decoder
+web search: 
+web search: circe-generic_3 0.15.0-M1 scala3-library_3 3.0.1
+codex
+Updated [metadata/io.circe/circe-generic_3/index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8301-04539347/metadata/io.circe/circe-generic_3/index.json:5) for metadata version `0.15.0-M1`.
+
+```json
+"source-code-url": "https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/$version$/circe-generic_3-$version$-sources.jar"
+"repository-url": "https://github.com/circe/circe"
+"test-code-url": "https://github.com/circe/circe/tree/v$version$/modules/generic/shared/src/test/scala-0/io/circe/generic"
+"documentation-url": "https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/$version$/circe-generic_3-$version$-javadoc.jar"
+"description": "circe-generic provides automatic and semi-automatic derivation of Circe Encoder and Decoder instances for Scala case classes and sealed traits. It lets Scala 3 applications convert domain types to and from JSON through Circe's type class APIs with minimal boilerplate."
+"language": { "name": "scala", "version": "3" }
+```
+
+The Scala 3 language field was already present and correct for the `_3` artifact; the Maven POM also references `scala3-library_3`. ([repo1.maven.org](https://repo1.maven.org/maven2/io/circe/circe-generic_3/0.15.0-M1/circe-generic_3-0.15.0-M1.pom?utm_source=openai)) The description matches Circe’s documented generic derivation behavior for Encoder and Decoder instances. ([circe.github.io](https://circe.github.io/circe/codecs/semiauto-derivation.html?utm_source=openai))
+
+Verification: `jq` passed, and all rendered URL templates for `0.15.0-M1` returned HTTP `200`. `./gradlew checkMetadataFiles -Pcoordinates=io.circe:circe-generic_3:0.15.0-M1 --stacktrace` failed because `metadata/io.circe/circe-generic_3/0.15.0-M1/reachability-metadata.json` is missing, which is outside the requested index-field update.
+diff --git a/metadata/io.circe/circe-generic_3/index.json b/metadata/io.circe/circe-generic_3/index.json
+index ba22a91890d27a3a28b0d1241556f853630d74ec..360595bd3d95e72cd588654c64a958521fcb8f9b
+--- a/metadata/io.circe/circe-generic_3/index.json
++++ b/metadata/io.circe/circe-generic_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "0.15.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/$version$/circe-generic_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/circe/circe",
++    "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/generic/shared/src/test/scala-0/io/circe/generic",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/$version$/circe-generic_3-$version$-javadoc.jar",
++    "description" : "circe-generic provides automatic and semi-automatic derivation of Circe Encoder and Decoder instances for Scala case classes and sealed traits. It lets Scala 3 applications convert domain types to and from JSON through Circe's type class APIs with minimal boilerplate.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+tokens used
+63,255
+Updated [metadata/io.circe/circe-generic_3/index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8301-04539347/metadata/io.circe/circe-generic_3/index.json:5) for metadata version `0.15.0-M1`.
+
+```json
+"source-code-url": "https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/$version$/circe-generic_3-$version$-sources.jar"
+"repository-url": "https://github.com/circe/circe"
+"test-code-url": "https://github.com/circe/circe/tree/v$version$/modules/generic/shared/src/test/scala-0/io/circe/generic"
+"documentation-url": "https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/$version$/circe-generic_3-$version$-javadoc.jar"
+"description": "circe-generic provides automatic and semi-automatic derivation of Circe Encoder and Decoder instances for Scala case classes and sealed traits. It lets Scala 3 applications convert domain types to and from JSON through Circe's type class APIs with minimal boilerplate."
+"language": { "name": "scala", "version": "3" }
+```
+
+The Scala 3 language field was already present and correct for the `_3` artifact; the Maven POM also references `scala3-library_3`. ([repo1.maven.org](https://repo1.maven.org/maven2/io/circe/circe-generic_3/0.15.0-M1/circe-generic_3-0.15.0-M1.pom?utm_source=openai)) The description matches Circe’s documented generic derivation behavior for Encoder and Decoder instances. ([circe.github.io](https://circe.github.io/circe/codecs/semiauto-derivation.html?utm_source=openai))
+
+Verification: `jq` passed, and all rendered URL templates for `0.15.0-M1` returned HTTP `200`. `./gradlew checkMetadataFiles -Pcoordinates=io.circe:circe-generic_3:0.15.0-M1 --stacktrace` failed because `metadata/io.circe/circe-generic_3/0.15.0-M1/reachability-metadata.json` is missing, which is outside the requested index-field update.
+Ran agent for io.circe:circe-generic_3:0.15.0-M1 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8301-04539347/build/agent-url-discovery-logs/io.circe-circe-generic_3-0.15.0-M1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8301-04539347/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 43s
+9 actionable tasks: 1 executed, 8 up-to-date
