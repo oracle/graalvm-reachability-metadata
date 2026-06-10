@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test
 import org.scalatest.Args
 import org.scalatest.BeforeAndAfter
 import org.scalatest.BeforeAndAfterAll
+import org.scalatest.ConfigMap
 import org.scalatest.Filter
 import org.scalatest.FutureOutcome
 import org.scalatest.Outcome
@@ -216,6 +217,19 @@ class Scalatest_flatspec_2_13Test {
     assert(result.succeeded)
     assert(succeededEvents(result.events).size == 2)
     assert(suite.events == Vector("beforeAll", "first", "second", "afterAll"))
+  }
+
+  @Test
+  def passesArgsConfigMapThroughFlatSpecNoArgFixtures(): Unit = {
+    val suite: ConfiguredFlatSpec = new ConfiguredFlatSpec
+    val result: RunResult = runSuite(
+      suite,
+      configMap = ConfigMap("prefix" -> "native", "expectedSize" -> 3)
+    )
+
+    assert(result.succeeded)
+    assert(succeededEvents(result.events).size == 1)
+    assert(suite.observed == Vector("fixture:native:3", "body:native:3"))
   }
 
   private final class CalculatorFlatSpec extends AnyFlatSpec {
@@ -475,14 +489,37 @@ class Scalatest_flatspec_2_13Test {
     }
   }
 
+  private final class ConfiguredFlatSpec extends AnyFlatSpec {
+    var observed: Vector[String] = Vector.empty
+    private var configuredPrefix: String = ""
+    private var configuredSize: Int = 0
+
+    override protected def withFixture(test: NoArgTest): Outcome = {
+      configuredPrefix = test.configMap("prefix").asInstanceOf[String]
+      configuredSize = test.configMap("expectedSize").asInstanceOf[Int]
+      observed = observed :+ s"fixture:$configuredPrefix:$configuredSize"
+      super.withFixture(test)
+    }
+
+    "A configured flat spec" should "make Args config map values available to tests" in {
+      observed = observed :+ s"body:$configuredPrefix:$configuredSize"
+      assert(configuredPrefix == "native")
+      assert(configuredSize == Vector("a", "b", "c").size)
+    }
+  }
+
   private def runSuite(
       suite: Suite,
       filter: Filter = Filter.default,
-      testName: Option[String] = None): RunResult = {
+      testName: Option[String] = None,
+      configMap: ConfigMap = ConfigMap.empty): RunResult = {
     val reporter: RecordingReporter = new RecordingReporter
     val completion: AtomicReference[Try[Boolean]] = new AtomicReference[Try[Boolean]]()
     val completed: CountDownLatch = new CountDownLatch(1)
-    val status = suite.run(testName, Args(reporter = reporter, filter = filter))
+    val status = suite.run(
+      testName,
+      Args(reporter = reporter, filter = filter, configMap = configMap)
+    )
     status.whenCompleted { result: Try[Boolean] =>
       completion.set(result)
       completed.countDown()
