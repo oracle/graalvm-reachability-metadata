@@ -129,6 +129,31 @@ class Circe_generic_3Test {
     assertTrue(result.swap.exists(_.history.nonEmpty))
   }
 
+  @Test
+  def semiautomaticCodecDerivationHandlesScala3EnumCases(): Unit = {
+    given Codec[AuditEvent.Created] = deriveCodec[AuditEvent.Created]
+    given Codec[AuditEvent.CommentAdded] = deriveCodec[AuditEvent.CommentAdded]
+    given Codec[AuditEvent.Closed] = deriveCodec[AuditEvent.Closed]
+    given Codec[AuditEvent] = deriveCodec[AuditEvent]
+
+    val events: List[AuditEvent] = List(
+      AuditEvent.Created(actor = "Ada", atEpochSecond = 1_771_718_400L),
+      AuditEvent.CommentAdded(
+        actor = "Grace",
+        body = "Ready for review",
+        tags = List("review", "native")
+      ),
+      AuditEvent.Closed(reason = Some("approved"))
+    )
+
+    val json: Json = events.asJson
+
+    assertTrue(json.noSpaces.contains("Created"))
+    assertTrue(json.noSpaces.contains("CommentAdded"))
+    assertTrue(json.noSpaces.contains("Closed"))
+    assertEquals(Right(events), json.as[List[AuditEvent]])
+  }
+
   private final case class GeoPoint(
       latitudeMicrodegrees: Int,
       longitudeMicrodegrees: Int
@@ -152,6 +177,12 @@ class Circe_generic_3Test {
   private final case class BankTransfer(iban: String) extends PaymentMethod
 
   private final case class Invoice(reference: String, methods: List[PaymentMethod], paid: Boolean)
+
+  private enum AuditEvent {
+    case Created(actor: String, atEpochSecond: Long)
+    case CommentAdded(actor: String, body: String, tags: List[String])
+    case Closed(reason: Option[String])
+  }
 
   private final case class AutoAuthor(firstName: String, lastName: String)
 
