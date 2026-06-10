@@ -135,6 +135,18 @@ public class KtorSerializationKotlinxCborJvmTest {
     }
 
     @Test
+    public fun defaultCborConfigurationSerializesDefaultProperties(): Unit = runBlocking {
+        withTimeout(TEST_TIMEOUT_MILLIS) {
+            val converter = registeredConverter()
+            val bytes = converter.serializeToByteArray(DefaultedCborMessage())
+
+            val decoded = converter.deserializeFromByteArray<RequiredCborMessage>(bytes)
+
+            assertThat(decoded).isEqualTo(RequiredCborMessage(title = "", count = 0, enabled = false))
+        }
+    }
+
+    @Test
     public fun customSerializersModuleSupportsContextualCborFields(): Unit = runBlocking {
         withTimeout(TEST_TIMEOUT_MILLIS) {
             val module = SerializersModule {
@@ -304,6 +316,13 @@ private data class DefaultedCborMessage(
     val title: String = "",
     val count: Int = 0,
     val enabled: Boolean = false
+)
+
+@Serializable
+private data class RequiredCborMessage(
+    val title: String,
+    val count: Int,
+    val enabled: Boolean
 )
 
 @Serializable
