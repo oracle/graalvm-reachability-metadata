@@ -16,6 +16,7 @@ import akka.http.scaladsl.model.HttpMethods
 import akka.http.scaladsl.model.HttpRequest
 import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.model.MessageEntity
+import akka.http.scaladsl.model.Multipart
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.model.headers.Authorization
@@ -24,9 +25,11 @@ import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.directives.Credentials
+import akka.http.scaladsl.unmarshalling.MultipartUnmarshallers._
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.Materializer
 import akka.stream.SystemMaterializer
+import akka.stream.scaladsl.Sink
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -123,6 +126,48 @@ class AkkaHttp3Test {
     val malformedParameter: HttpResponse = await(handler(HttpRequest(uri = "/sum?a=seven&b=5")))
     assertThat(malformedParameter.status).isEqualTo(StatusCodes.BadRequest)
     assertThat(responseText(malformedParameter)).contains("a")
+  }
+
+  @Test
+  def multipartFormDataRouteParsesFieldsAndFileMetadata(): Unit = withActorSystem { (system: ActorSystem) =>
+    implicit val actorSystem: ActorSystem = system
+    implicit val executionContext: ExecutionContextExecutor = system.dispatcher
+    implicit val materializer: Materializer = SystemMaterializer(system).materializer
+
+    val route: Route = path("upload") {
+      post {
+        entity(as[Multipart.FormData]) { formData =>
+          val strictParts: Future[Seq[Multipart.FormData.BodyPart.Strict]] =
+            formData.parts.mapAsync(1)(_.toStrict(timeout)).runWith(Sink.seq)
+          onSuccess(strictParts) { parts =>
+            val summary: String = parts
+              .sortBy(_.name)
+              .map { part =>
+                val fileName: String = part.filename.getOrElse("field")
+                s"${part.name}:$fileName:${part.entity.data.utf8String}"
+              }
+              .mkString("|")
+            complete(HttpEntity(ContentTypes.`text/plain(UTF-8)`, summary))
+          }
+        }
+      }
+    }
+    val handler: HttpRequest => Future[HttpResponse] = Route.toFunction(route)
+    val multipart: Multipart.FormData.Strict = Multipart.FormData.Strict(Seq(
+      Multipart.FormData.BodyPart.Strict("description", HttpEntity("native multipart upload")),
+      Multipart.FormData.BodyPart.Strict(
+        "file",
+        HttpEntity(ContentTypes.`text/plain(UTF-8)`, "file-contents"),
+        Map("filename" -> "notes.txt"))))
+
+    val response: HttpResponse = await(handler(HttpRequest(
+      method = HttpMethods.POST,
+      uri = "/upload",
+      entity = multipart.toEntity)))
+
+    assertThat(response.status).isEqualTo(StatusCodes.OK)
+    assertThat(responseText(response))
+      .isEqualTo("description:field:native multipart upload|file:notes.txt:file-contents")
   }
 
   @Test
