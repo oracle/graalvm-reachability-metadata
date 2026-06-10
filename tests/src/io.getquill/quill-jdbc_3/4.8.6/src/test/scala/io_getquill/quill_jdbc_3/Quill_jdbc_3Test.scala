@@ -89,6 +89,30 @@ class Quill_jdbc_3Test {
   }
 
   @Test
+  def jdbcContextRunsSqlInfixExpressionsInsideTypedQueries(): Unit = {
+    withDirectContext { ctx =>
+      import ctx.*
+
+      createPersonTable(ctx.dataSource)
+      assertThat(ctx.run(query[JdbcPerson].insertValue(lift(JdbcPerson(1, "Ada", 36, active = true, None)))))
+        .isEqualTo(1L)
+      assertThat(ctx.run(query[JdbcPerson].insertValue(lift(JdbcPerson(2, "Grace", 85, active = true, None)))))
+        .isEqualTo(1L)
+      assertThat(ctx.run(query[JdbcPerson].insertValue(lift(JdbcPerson(3, "Linus", 54, active = false, None)))))
+        .isEqualTo(1L)
+
+      val matchingInitial: String = "A"
+      val lowercaseNames: List[String] = ctx.run(
+        query[JdbcPerson]
+          .filter(person => infix"SUBSTRING(${person.firstName}, 1, 1) = ${lift(matchingInitial)}".as[Boolean])
+          .map(person => infix"LOWER(${person.firstName})".as[String])
+      )
+
+      assertThat(lowercaseNames).isEqualTo(List("ada"))
+    }
+  }
+
+  @Test
   def jdbcContextBatchesRowsAndAggregatesResults(): Unit = {
     withDirectContext { ctx =>
       import ctx.*
