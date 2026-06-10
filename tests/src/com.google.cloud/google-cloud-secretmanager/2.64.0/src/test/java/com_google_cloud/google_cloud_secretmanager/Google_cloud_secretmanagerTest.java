@@ -47,6 +47,7 @@ import com.google.cloud.secretmanager.v1.SecretVersion;
 import com.google.cloud.secretmanager.v1.SecretVersionName;
 import com.google.cloud.secretmanager.v1.Topic;
 import com.google.cloud.secretmanager.v1.UpdateSecretRequest;
+import com.google.cloud.secretmanager.v1.stub.HttpJsonSecretManagerServiceStub;
 import com.google.cloud.secretmanager.v1.stub.SecretManagerServiceStub;
 import com.google.iam.v1.Binding;
 import com.google.iam.v1.GetIamPolicyRequest;
@@ -257,6 +258,24 @@ public class Google_cloud_secretmanagerTest {
         try {
             assertThat(client.getSettings()).isSameAs(grpcSettings);
             assertThat(client.getStub()).isNotNull();
+        } finally {
+            client.shutdownNow();
+            client.awaitTermination(5, TimeUnit.SECONDS);
+        }
+    }
+
+    @Test
+    void httpJsonClientCreatesRestStubWithoutApplicationCredentials() throws IOException, InterruptedException {
+        SecretManagerServiceSettings httpJsonSettings = SecretManagerServiceSettings.newHttpJsonBuilder()
+                .setEndpoint("http://localhost:1")
+                .setCredentialsProvider(NoCredentialsProvider.create())
+                .build();
+
+        SecretManagerServiceClient client = SecretManagerServiceClient.create(httpJsonSettings);
+        try {
+            assertThat(client.getSettings()).isSameAs(httpJsonSettings);
+            assertThat(client.getStub()).isInstanceOf(HttpJsonSecretManagerServiceStub.class);
+            assertThat(httpJsonSettings.getTransportChannelProvider().getTransportName()).contains("httpjson");
         } finally {
             client.shutdownNow();
             client.awaitTermination(5, TimeUnit.SECONDS);
