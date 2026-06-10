@@ -33,8 +33,7 @@ public class TestBeanOverrideHandlerTest {
             assertThat(testInstance.greetingService).isSameAs(override);
             assertThat(override.greeting()).isEqualTo("test override");
             assertThat(TestBeanTestCase.factoryInvocations).isEqualTo(1);
-        }
-        finally {
+        } finally {
             ((ConfigurableApplicationContext) applicationContext).close();
         }
     }
