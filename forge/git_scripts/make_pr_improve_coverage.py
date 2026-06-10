@@ -48,9 +48,12 @@ from utility_scripts.local_ci_verification import (
 )
 
 BASELINE_STATS_FILENAME = ".baseline-stats.json"
+LIBRARY_UPDATE_ROUTE_FILENAME = ".library_update_route.json"
 LIBRARY_UPDATE_TARGET_FILENAME = ".library_update_target.json"
 IGNORED_FINALIZATION_DIRTY_PATHS = {
+    f"forge/{LIBRARY_UPDATE_ROUTE_FILENAME}",
     f"forge/{LIBRARY_UPDATE_TARGET_FILENAME}",
+    "post-gen-interventions",
 }
 
 
@@ -270,7 +273,7 @@ def assert_no_out_of_scope_changes(repo_path: str, expected_paths: list[str]) ->
     unexpected_paths = sorted({
         path
         for path in _status_paths(repo_path)
-        if path not in IGNORED_FINALIZATION_DIRTY_PATHS
+        if not any(_path_is_within(path, ignored_path) for ignored_path in IGNORED_FINALIZATION_DIRTY_PATHS)
         and not any(_path_is_within(path, expected_path) for expected_path in expected_paths)
     })
     if not unexpected_paths:
