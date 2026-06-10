@@ -48,10 +48,8 @@ from utility_scripts.local_ci_verification import (
 )
 
 BASELINE_STATS_FILENAME = ".baseline-stats.json"
-LIBRARY_UPDATE_ROUTE_FILENAME = ".library_update_route.json"
 LIBRARY_UPDATE_TARGET_FILENAME = ".library_update_target.json"
 IGNORED_FINALIZATION_DIRTY_PATHS = {
-    f"forge/{LIBRARY_UPDATE_ROUTE_FILENAME}",
     f"forge/{LIBRARY_UPDATE_TARGET_FILENAME}",
     "post-gen-interventions",
 }
