@@ -247,6 +247,15 @@ class CodexAgent(Agent):
     def clear_context(self) -> None:
         self._thread_id = None
 
+    def replace_persistent_instructions(self, persistent_instructions: str | None) -> None:
+        self._persistent_instructions = persistent_instructions
+        self._control_client = CodexAppServerClient(
+            model_name=self._model_name,
+            working_dir=self._working_dir,
+            timeout=self._timeout,
+            persistent_instructions=self._persistent_instructions,
+        )
+
     def run_test_command(self, test_cmd: str) -> str:
         return run_gradle_test_command(test_cmd, self._working_dir, library=self._library)
 

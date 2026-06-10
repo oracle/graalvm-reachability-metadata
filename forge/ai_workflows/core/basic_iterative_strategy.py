@@ -11,6 +11,9 @@ from utility_scripts.metadata_index import resolve_test_version
 from utility_scripts.stage_logger import log_stage
 
 
+BASIC_ITERATIVE_PERSISTENT_INSTRUCTIONS_PATH = "prompt_templates/persistent/basic_iterative_rules.md"
+
+
 """
     ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
     │                                                    Scaffold                                                             │

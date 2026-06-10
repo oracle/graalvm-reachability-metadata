@@ -131,6 +131,10 @@ class Agent(ABC):
     def clear_context(self) -> None:
         """Clear any agent-side conversation state so the next interaction starts fresh."""
 
+    def replace_persistent_instructions(self, persistent_instructions: str | None) -> None:
+        """Replace persistent instructions used for future prompts."""
+        raise NotImplementedError(f"{type(self).__name__} does not support persistent instruction replacement")
+
     @abstractmethod
     def run_test_command(self, test_cmd: str) -> str:
         """Execute a shell test command and return agent-visible stdout/stderr diagnostics."""

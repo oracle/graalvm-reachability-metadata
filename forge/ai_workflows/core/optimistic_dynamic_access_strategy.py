@@ -214,11 +214,17 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
 
     def _run_basic_iterative_fallback(self, agent, **kwargs):
         """Instantiate a BasicIterativeStrategy and delegate to it."""
-        from ai_workflows.core.basic_iterative_strategy import BasicIterativeStrategy
+        from ai_workflows.core.basic_iterative_strategy import (
+            BASIC_ITERATIVE_PERSISTENT_INSTRUCTIONS_PATH,
+            BasicIterativeStrategy,
+        )
         fallback_obj = load_strategy_by_name(FALLBACK_STRATEGY_NAME)
         if fallback_obj is None:
             raise ValueError(f"Fallback strategy '{FALLBACK_STRATEGY_NAME}' not found in predefined strategies")
+        fallback_obj = dict(fallback_obj)
+        fallback_obj["persistent-instructions"] = BASIC_ITERATIVE_PERSISTENT_INSTRUCTIONS_PATH
         fallback = BasicIterativeStrategy(fallback_obj, **self.context)
+        agent.replace_persistent_instructions(fallback.persistent_instructions)
         return fallback.run(agent, **kwargs)
 
     def _generate_dynamic_access_report(self, indent_level: int = 0):

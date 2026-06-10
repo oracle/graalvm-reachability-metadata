@@ -33,6 +33,8 @@ class PiAgent(Agent):
     ):
         self._model_name = model_name
         self._provider = provider
+        self._pi_command = pi_command
+        self._session_dir = session_dir
         self._working_dir = os.path.abspath(working_dir)
         self._timeout = timeout
         self._persistent_instructions = persistent_instructions
@@ -147,6 +149,18 @@ class PiAgent(Agent):
         self._prev_output = 0
         self._prev_cache = 0
 
+    def replace_persistent_instructions(self, persistent_instructions: str | None) -> None:
+        self._persistent_instructions = persistent_instructions
+        self._rpc_client = PiRpcClient(
+            pi_command=self._pi_command,
+            session_dir=self._session_dir,
+            provider=self._provider,
+            model=self._model_name,
+            working_dir=self._working_dir,
+            timeout=self._timeout,
+            persistent_instructions=self._persistent_instructions,
+        )
+
     def run_test_command(self, test_cmd: str) -> str:
         return run_gradle_test_command(test_cmd, self._working_dir, library=self._library)
 
@@ -189,6 +203,8 @@ class PiAgent(Agent):
             working_dir=self._working_dir,
             timeout=self._timeout,
             provider=self._provider,
+            pi_command=self._pi_command,
+            session_dir=self._session_dir,
             library=self._library,
             task_type=self._task_type,
             persistent_instructions=self._persistent_instructions,
