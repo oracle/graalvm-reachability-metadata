@@ -606,7 +606,7 @@ class MetricsPathTests(unittest.TestCase):
 
             write_add_new_library_support_metrics(
                 run_metrics=run_metrics,
-                metrics_json=metrics_json,
+                metrics_repo_dir=metrics_repo_dir,
                 is_benchmark_mode=False,
                 package="org.example",
                 artifact="demo",

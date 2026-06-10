@@ -30,8 +30,7 @@ from utility_scripts.library_preparation_preflight import (
 )
 from utility_scripts.metadata_index import resolve_metadata_version, resolve_test_version
 from utility_scripts.metrics_writer import create_failure_run_metrics_output
-from utility_scripts.repo_path_resolver import require_complete_reachability_repo, resolve_repo_roots
-from utility_scripts.schema_validator import validate_run_metrics
+from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.source_context import (
     normalize_source_context_types,
     populate_artifact_urls,
@@ -40,7 +39,12 @@ from utility_scripts.source_context import (
 )
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.strategy_loader import require_strategy_by_name
-from utility_scripts.workflow_setup import resolve_graalvm_java_home, validate_repo_paths
+from utility_scripts.workflow_setup import (
+    list_all_files,
+    resolve_graalvm_java_home,
+    resolve_workflow_repo_paths,
+    validate_repo_paths,
+)
 
 DEFAULT_MODEL_NAME = "oca/gpt-5.5"
 DEFAULT_STRATEGY_NAME = "library_update_pi_gpt-5.5"
@@ -96,28 +100,6 @@ def build_parser():
         help="Path to the dispatcher-created library preparation preflight JSON record.",
     )
     return parser
-
-
-def list_all_files(directory_path: str) -> list[str]:
-    """Recursively list all file paths in the given directory."""
-    files: list[str] = []
-    if not directory_path or not os.path.isdir(directory_path):
-        return files
-    for root_dir, _, file_names in os.walk(directory_path):
-        for file_name in file_names:
-            files.append(os.path.join(root_dir, file_name))
-    return files
-
-
-def resolve_repo_paths(explicit_repo_path, explicit_metrics_repo_path):
-    """Resolve repository paths for code and metrics outputs."""
-    resolved_reachability_repo, resolved_metrics_repo = resolve_repo_roots(
-        explicit_repo_path,
-        explicit_metrics_repo_path,
-    )
-    resolved_metrics_dir = os.path.join(resolved_metrics_repo, "script_run_metrics")
-    os.makedirs(resolved_metrics_dir, exist_ok=True)
-    return resolved_reachability_repo, resolved_metrics_dir, resolved_metrics_repo
 
 
 def run_fix_test_native_image_run(
@@ -271,7 +253,7 @@ def build_strategy_and_agent(
     """Construct the dynamic-access strategy object and its agent for the new coordinate.
 
     Source contexts are downloaded only when exploring: the skip-exploration path
-    finalizes the seed through `_finalize_successful_iteration`, which sends no
+    finalizes the seed through `finalize_run`, which sends no
     agent prompts and needs neither downloaded sources nor a live agent session.
     """
     strategy = require_strategy_by_name(strategy_name)
@@ -342,34 +324,18 @@ def build_strategy_and_agent(
     return strategy_obj, agent, model_name, test_source_layout.source_root
 
 
-def write_metrics(run_metrics: dict, metrics_repo_dir: str, metrics_repo_root: str | None) -> None:
-    """Append run metrics to execution-metrics.json (or local fallback) and write pending metrics."""
-    in_repo_root = metrics_writer.in_metadata_repo_metrics_root(metrics_repo_root)
-    if in_repo_root:
-        metrics_json = metrics_writer.execution_metrics_path(in_repo_root, run_metrics)
-        written = metrics_writer.append_execution_metrics(in_repo_root, run_metrics, METRICS_TASK_TYPE)
-        if written != metrics_json:
-            raise ValueError(f"ERROR: Resolved metrics path {metrics_json} does not match written path {written}")
-    else:
-        metrics_json = os.path.join(metrics_repo_dir, f"{METRICS_TASK_TYPE}.json")
-        metrics_writer.append_run_metrics(run_metrics, metrics_json)
-    if metrics_repo_root:
-        metrics_writer.write_pending_metrics(metrics_repo_root, run_metrics)
-    validate_run_metrics(metrics_json)
-
-
 def main(argv=None) -> int:
     """Run the Native Image fix driver.
 
     The single-run driver (§WF-forge-workflow-drivers) for
     §WF-native-image-run-fix-workflow. `fixTestNativeImageRun` produces the seed;
     dynamic-access exploration runs only when the new version has uncovered
-    calls; the shared `_finalize_successful_iteration` path (three native-test
+    calls; the shared `finalize_run` path (three native-test
     lanes + dual-coordinate finalization) always gates PR eligibility.
     """
     args = build_parser().parse_args(sys.argv[1:] if argv is None else argv)
 
-    reachability_metadata_path, metrics_repo_dir, metrics_repo_root = resolve_repo_paths(
+    reachability_metadata_path, metrics_repo_dir, metrics_repo_root = resolve_workflow_repo_paths(
         args.reachability_metadata_path,
         args.metrics_repo_path,
     )
@@ -484,7 +450,7 @@ def main(argv=None) -> int:
                 explore=False,
             )
 
-    finalize_status, _ = strategy_obj._finalize_successful_iteration(base_commit=checkpoint)
+    finalize_status = strategy_obj.finalize_run(checkpoint)
     succeeded = finalize_status in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS}
 
     if succeeded:
@@ -526,7 +492,7 @@ def main(argv=None) -> int:
             library_preparation_preflight=library_preparation_preflight,
         )
 
-    write_metrics(run_metrics, metrics_repo_dir, metrics_repo_root)
+    metrics_writer.write_workflow_run_metrics(run_metrics, metrics_repo_dir, metrics_repo_root, METRICS_TASK_TYPE)
 
     if not succeeded:
         return 1
