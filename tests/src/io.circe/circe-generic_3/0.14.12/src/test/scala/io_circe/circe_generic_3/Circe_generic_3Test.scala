@@ -92,6 +92,14 @@ object ShipmentEvent {
   given Decoder[ShipmentEvent] = deriveDecoder[ShipmentEvent]
 }
 
+sealed trait SupportTicketEvent
+
+object SupportTicketEvent {
+  final case class Opened(ticketId: String, priority: Int) extends SupportTicketEvent
+  final case class CommentAdded(ticketId: String, author: String, body: String) extends SupportTicketEvent
+  final case class Closed(ticketId: String, resolution: Option[String]) extends SupportTicketEvent
+}
+
 final case class Wrapper[A](value: A, history: List[A])
 
 object Wrapper {
@@ -182,6 +190,26 @@ class Circe_generic_3Test {
     assertThat(json.hcursor.downArray.downField("Card").get[String]("last4")).isEqualTo(Right("4242"))
     assertThat(json.hcursor.downN(1).downField("BankAccount").get[String]("country")).isEqualTo(Right("DE"))
     assertThat(json.as[List[PaymentMethod]]).isEqualTo(Right(methods))
+  }
+
+  @Test
+  def automaticDerivationWorksForSealedTraitHierarchiesWithoutCompanionCodecs(): Unit = {
+    import SupportTicketEvent.*
+    import io.circe.generic.auto.*
+
+    val events: List[SupportTicketEvent] = List(
+      Opened("ticket-1", 2),
+      CommentAdded("ticket-1", "Ada", "Reproduced with the sample payload"),
+      Closed("ticket-1", Some("configuration updated"))
+    )
+
+    val json: Json = events.asJson
+
+    assertThat(json.hcursor.downArray.downField("Opened").get[String]("ticketId")).isEqualTo(Right("ticket-1"))
+    assertThat(json.hcursor.downN(1).downField("CommentAdded").get[String]("author")).isEqualTo(Right("Ada"))
+    assertThat(json.hcursor.downN(2).downField("Closed").get[Option[String]]("resolution"))
+      .isEqualTo(Right(Some("configuration updated")))
+    assertThat(json.as[List[SupportTicketEvent]]).isEqualTo(Right(events))
   }
 
   @Test
