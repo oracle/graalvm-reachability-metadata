@@ -28,6 +28,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.swing.Swing
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.yield
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -101,6 +102,26 @@ public class Kotlinx_coroutines_swingTest {
 
         assertThat(initialThreadWasEdt).isFalse()
         assertThat(ranOnEventDispatchThread).isTrue()
+    }
+
+    @Test
+    public fun yieldingInSwingContextLetsQueuedEventDispatchThreadWorkRunFirst(): Unit = runBlockingWithTimeout {
+        val events: CopyOnWriteArrayList<String> = CopyOnWriteArrayList()
+
+        withContext(Dispatchers.Swing) {
+            events.add("before-yield:${SwingUtilities.isEventDispatchThread()}")
+            SwingUtilities.invokeLater {
+                events.add("queued-event:${SwingUtilities.isEventDispatchThread()}")
+            }
+            yield()
+            events.add("after-yield:${SwingUtilities.isEventDispatchThread()}")
+        }
+
+        assertThat(events).containsExactly(
+            "before-yield:true",
+            "queued-event:true",
+            "after-yield:true",
+        )
     }
 
     @Test
