@@ -73,7 +73,7 @@ jobs:
 
   release:
     needs: get-changed-metadata
-    if: needs.get-changed-metadata.result == 'success' && needs.get-changed-metadata.outputs.none-found != 'true'
+    if: needs.get-changed-metadata.result == 'success' && (needs.get-changed-metadata.outputs.none-found != 'true' || (needs.get-changed-metadata.outputs.snapshot-tag-exists == 'true' && needs.get-changed-metadata.outputs.snapshot-release-exists != 'true'))
     name: "🚀 Create snapshot release"
     runs-on: "ubuntu-22.04"
     env:
