@@ -11,6 +11,7 @@ import io.circe.Decoder
 import io.circe.DecodingFailure
 import io.circe.Encoder
 import io.circe.Json
+import io.circe.generic.AutoDerivation
 import io.circe.generic.semiauto.deriveCodec
 import io.circe.generic.semiauto.deriveDecoder
 import io.circe.generic.semiauto.deriveEncoder
@@ -72,6 +73,12 @@ final case class SearchResult[A](query: String, matches: List[A], nextPageToken:
 object SearchResult {
   given [A: Codec]: Codec.AsObject[SearchResult[A]] = deriveCodec[SearchResult[A]]
 }
+
+final case class AutoDerivationDimensions(width: Int, height: Int)
+
+final case class AutoDerivationWidget(id: String, dimensions: AutoDerivationDimensions, labels: Set[String])
+
+object LocalAutoDerivation extends AutoDerivation
 
 class Circe_generic_3Test {
   @Test
@@ -234,6 +241,24 @@ class Circe_generic_3Test {
     assertThat(json.hcursor.downField("lines").downN(0).get[String]("sku")).isEqualTo(Right("keyboard"))
     assertThat(json.hcursor.downField("lines").downN(1).get[Int]("quantity")).isEqualTo(Right(2))
     assertThat(json.as[AutoOrder]).isEqualTo(Right(order))
+  }
+
+  @Test
+  def derivesCodecsFromAutoDerivationTraitMixin(): Unit = {
+    import LocalAutoDerivation.given
+
+    val widget: AutoDerivationWidget = AutoDerivationWidget(
+      id = "widget-1",
+      dimensions = AutoDerivationDimensions(width = 640, height = 480),
+      labels = Set("featured", "hero")
+    )
+
+    val json: Json = widget.asJson
+
+    assertThat(json.hcursor.get[String]("id")).isEqualTo(Right("widget-1"))
+    assertThat(json.hcursor.downField("dimensions").get[Int]("width")).isEqualTo(Right(640))
+    assertThat(json.hcursor.downField("labels").as[Set[String]]).isEqualTo(Right(Set("featured", "hero")))
+    assertThat(json.as[AutoDerivationWidget]).isEqualTo(Right(widget))
   }
 
   @Test
