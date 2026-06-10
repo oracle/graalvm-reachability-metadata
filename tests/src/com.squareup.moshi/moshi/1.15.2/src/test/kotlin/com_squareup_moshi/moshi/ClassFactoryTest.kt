@@ -7,6 +7,7 @@
 package com_squareup_moshi.moshi
 
 import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.JsonEncodingException
 import com.squareup.moshi.Moshi
 import org.assertj.core.api.Assertions.assertThat
@@ -14,6 +15,17 @@ import org.junit.jupiter.api.Test
 
 public class ClassFactoryTest {
     private val moshi: Moshi = Moshi.Builder().build()
+
+    @Test
+    public fun createsAdapterForConcreteJavaTypeWithNoArgConstructor(): Unit {
+        val adapter: JsonAdapter<JsonDataException> = moshi.adapter(JsonDataException::class.java)
+
+        val json: String = adapter.toJson(JsonDataException())
+        val value: JsonDataException? = adapter.fromJson("{}")
+
+        assertThat(json).isEqualTo("{}")
+        assertThat(value).isNotNull()
+    }
 
     @Test
     public fun createsAdapterForConcreteJavaTypeWithoutNoArgConstructor(): Unit {
