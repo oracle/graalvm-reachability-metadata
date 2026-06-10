@@ -13,7 +13,12 @@ String libraryVersion = tck.testedLibraryVersion.get()
 dependencies {
     testImplementation "org.springframework:spring-test:$libraryVersion"
     testImplementation "org.springframework:spring-context:$libraryVersion"
+    testImplementation platform('org.junit:junit-bom:6.0.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testImplementation 'junit:junit:4.13.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine'
     testImplementation 'commons-logging:commons-logging:1.1.1'
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
