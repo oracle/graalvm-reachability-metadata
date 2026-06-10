@@ -16,8 +16,11 @@ import java.util.Map;
 import org.apache.maven.scm.CommandParameter;
 import org.apache.maven.scm.CommandParameters;
 import org.apache.maven.scm.ScmBranch;
+import org.apache.maven.scm.ScmException;
 import org.apache.maven.scm.ScmFileSet;
 import org.apache.maven.scm.ScmTag;
+import org.apache.maven.scm.command.info.InfoItem;
+import org.apache.maven.scm.provider.ScmProviderRepository;
 import org.apache.maven.scm.provider.git.gitexe.command.checkin.GitCheckInCommand;
 import org.apache.maven.scm.provider.git.gitexe.command.checkout.GitCheckOutCommand;
 import org.apache.maven.scm.provider.git.gitexe.command.diff.GitDiffCommand;
@@ -69,10 +72,12 @@ public class GitExeCommandLineConstructionTest {
 
         CommandParameters infoParameters = new CommandParameters();
         infoParameters.setInt(CommandParameter.SCM_SHORT_REVISION_LENGTH, 12);
-        Commandline infoCommandLine = GitInfoCommand.createCommandLine(
-                repository, new ScmFileSet(workingDirectory), infoParameters);
+        Commandline infoCommandLine = new CapturingGitInfoCommand()
+                .createInfoCommandLine(repository, new ScmFileSet(workingDirectory), infoParameters);
+        assertGitExecutable(infoCommandLine);
+        assertThat(infoCommandLine.getWorkingDirectory()).isEqualTo(workingDirectory);
         assertThat(infoCommandLine.getArguments())
-                .containsExactly("rev-parse", "--verify", "--short=12", "HEAD");
+                .containsExactly("log", "-1", "--no-merges", "--format=format:%H %aI %aE %aN");
     }
 
     @Test
@@ -125,5 +130,24 @@ public class GitExeCommandLineConstructionTest {
 
     private static void assertGitExecutable(Commandline commandLine) {
         assertThat(commandLine.getExecutable()).isIn("git", "'git'");
+    }
+
+    private static final class CapturingGitInfoCommand extends GitInfoCommand {
+        private Commandline commandLine;
+
+        Commandline createInfoCommandLine(
+                ScmProviderRepository repository,
+                ScmFileSet fileSet,
+                CommandParameters parameters) throws ScmException {
+            executeCommand(repository, fileSet, parameters);
+            return commandLine;
+        }
+
+        @Override
+        protected InfoItem executeInfoCommand(
+                Commandline cli, CommandParameters parameters, File scmFile) {
+            commandLine = cli;
+            return new InfoItem();
+        }
     }
 }
