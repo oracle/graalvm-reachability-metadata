@@ -1,0 +1,2146 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019eb012-8b6c-7570-a767-95d3c22c6874
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.pulsar:pulsar-client:4.2.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "4.2.1" when "$version$" is replaced with "4.2.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f/build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "org.apache.pulsar:pulsar-client:4.2.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.2.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing discovered metadata format first, then verify the Pulsar artifact from Maven/upstream so the URLs point at the right 4.2.1 sources and docs.
+exec
+/usr/bin/bash -lc "ls -l build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json && sed -n '1,160p' build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+ succeeded in 0ms:
+-rw-rw-r-- 1 vjovanov vjovanov 62 Jun 10 07:47 build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json
+{
+  "coordinates" : "org.apache.pulsar:pulsar-client:4.2.1"
+}
+
+exec
+/usr/bin/bash -lc 'rg --files build/discovered-artifact-metadata | head -50' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json
+
+exec
+/usr/bin/bash -lc "rg 'source-code-url|test-code-url|documentation-url' build/discovered-artifact-metadata -g '*.json' | head -60" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+ succeeded in 0ms:
+web search: 
+web search: Maven Central org.apache.pulsar pulsar-client 4.2.1 sources jar test jar
+codex
+The target file is currently just the coordinate stub. I’m checking Maven Central first because this repo prefers Maven-hosted sources/tests when they exist, then I’ll fall back to the Apache Pulsar tag for anything Maven does not publish.
+exec
+/usr/bin/bash -lc "find metadata -path '*pulsar*' -type f | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+ succeeded in 0ms:
+metadata/org.apache.pulsar/bouncy-castle-bc/index.json
+metadata/org.apache.pulsar/bouncy-castle-bc/4.2.1/reachability-metadata.json
+metadata/org.apache.pulsar/pulsar-client-api/index.json
+metadata/org.apache.pulsar/pulsar-client-api/4.2.1/reachability-metadata.json
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/pulsar/pulsar-client/4.2.1/pulsar-client-4.2.1.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>pulsar</artifactId>
+    <groupId>org.apache.pulsar</groupId>
+    <version>4.2.1</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>pulsar-client</artifactId>
+  <name>Pulsar Client Java</name>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>pulsar-client-original</artifactId>
+                  <version>${project.version}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <includes>**/ProtobufSchema.class</includes>
+                  <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.asynchttpclient</groupId>
+                  <artifactId>async-http-client</artifactId>
+                  <version>${asynchttpclient.version}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <includes>org/asynchttpclient/config/ahc-default.properties</includes>
+                  <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>shade-ahc-properties</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <replace />
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>${shadePluginPhase}</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <createDependencyReducedPom>true</createDependencyReducedPom>
+              <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+              <minimizeJar>false</minimizeJar>
+              <artifactSet>
+                <includes>
+                  <include>com.fasterxml.jackson.*:*</include>
+                  <include>com.google.code.findbugs:*</include>
+                  <include>com.google.code.gson:gson</include>
+                  <include>com.google.errorprone:*</include>
+                  <include>com.google.guava:*</include>
+                  <include>com.google.j2objc:*</include>
+                  <include>com.google.re2j:re2j</include>
+                  <include>com.spotify:completable-futures</include>
+                  <include>com.sun.activation:jakarta.activation</include>
+                  <include>com.thoughtworks.paranamer:paranamer</include>
+                  <include>com.typesafe.netty:netty-reactive-streams</include>
+                  <include>com.yahoo.datasketches:*</include>
+                  <include>com.yahoo.datasketches:sketches-core</include>
+                  <include>commons-*:*</include>
+                  <include>commons-codec:commons-codec</include>
+                  <include>io.airlift:*</include>
+                  <include>io.netty.incubator:*</include>
+                  <include>io.netty:*</include>
+                  <include>io.netty:netty-codec-http</include>
+                  <include>io.netty:netty-transport-native-epoll</include>
+                  <include>io.perfmark:*</include>
+                  <include>io.swagger:*</include>
+                  <include>jakarta.activation:jakarta.activation-api</include>
+                  <include>jakarta.annotation:jakarta.annotation-api</include>
+                  <include>jakarta.ws.rs:jakarta.ws.rs-api</include>
+                  <include>jakarta.xml.bind:jakarta.xml.bind-api</include>
+                  <include>javax.ws.rs:*</include>
+                  <include>com.google.code.findbugs:jsr305</include>
+                  <include>org.apache.avro:*</include>
+                  <include>org.apache.bookkeeper:*</include>
+                  <include>org.apache.commons:commons-compress</include>
+                  <include>org.apache.commons:commons-lang3</include>
+                  <include>org.apache.pulsar:pulsar-client-messagecrypto-bc</include>
+                  <include>org.apache.pulsar:pulsar-client-original</include>
+                  <include>org.apache.pulsar:pulsar-common</include>
+                  <include>org.asynchttpclient:*</include>
+                  <include>org.checkerframework:*</include>
+                  <include>org.eclipse.jetty:*</include>
+                  <include>org.javassist:javassist</include>
+                  <include>org.objenesis:*</include>
+                  <include>org.reactivestreams:reactive-streams</include>
+                  <include>org.tukaani:xz</include>
+                  <include>org.yaml:snakeyaml</include>
+                  <include>org.apache.pulsar:pulsar-client-dependencies-minimized</include>
+                  <include>org.roaringbitmap:RoaringBitmap</include>
+                  <include>io.prometheus:*</include>
+                  <include>com.github.ben-manes.caffeine:*</include>
+                </includes>
+                <excludes>
+                  <exclude>com.fasterxml.jackson.core:jackson-annotations</exclude>
+                </excludes>
+              </artifactSet>
+              <filters>
+                <filter>
+                  <artifact>org.apache.pulsar:pulsar-client-original</artifact>
+                  <includes>
+                    <include>**</include>
+                  </includes>
+                  <excludes>
+                    <exclude>org/bouncycastle/**</exclude>
+                  </excludes>
+                </filter>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>**/module-info.class</exclude>
+                    <exclude>findbugsExclude.xml</exclude>
+                    <exclude>META-INF/*-LICENSE</exclude>
+                    <exclude>META-INF/*-NOTICE</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/DEPENDENCIES*</exclude>
+                    <exclude>META-INF/io.netty.versions.properties</exclude>
+                    <exclude>META-INF/LICENSE*</exclude>
+                    <exclude>META-INF/license/**</exclude>
+                    <exclude>META-INF/MANIFEST.MF</exclude>
+                    <exclude>META-INF/maven/**</exclude>
+                    <exclude>META-INF/native-image/**</exclude>
+                    <exclude>META-INF/NOTICE*</exclude>
+                    <exclude>META-INF/proguard/**</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+              <relocations>
+                <relocation>
+                  <pattern>(META-INF/native/(lib)?)(netty.+\.(so|jnilib|dll))$</pattern>
+                  <shadedPattern>$1org_apache_pulsar_shade_$3</shadedPattern>
+                  <rawString>true</rawString>
+                </relocation>
+                <relocation>
+                  <pattern>com.fasterxml.jackson</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.com.fasterxml.jackson</shadedPattern>
+                  <excludes>
+                    <exclude>com.fasterxml.jackson.annotation.*</exclude>
+                  </excludes>
+                </relocation>
+                <relocation>
+                  <pattern>com.google</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.com.google</shadedPattern>
+                  <excludes>
+                    <exclude>com.google.protobuf.*</exclude>
+                  </excludes>
+                </relocation>
+                <relocation>
+                  <pattern>com.spotify.futures</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.com.spotify.futures</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.sun.activation</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.com.sun.activation</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.thoughtworks.paranamer</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.com.thoughtworks.paranamer</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.typesafe</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.com.typesafe</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.yahoo.datasketches</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.com.yahoo.datasketches</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.yahoo.memory</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.com.yahoo.memory</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.yahoo.sketches</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.com.yahoo.sketches</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>io.airlift</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.io.airlift</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>io.netty</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.io.netty</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>io.swagger</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.io.swagger</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>it.unimi.dsi.fastutil</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.it.unimi.dsi.fastutil</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>javax.activation</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.javax.activation</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>javax.annotation</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.javax.annotation</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>javax.ws</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.javax.ws</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>META-INF/versions/(\d+)/com/fasterxml/jackson/core/</pattern>
+                  <shadedPattern>META-INF/versions/$1/org/apache/pulsar/shade/com/fasterxml/jackson/core/</shadedPattern>
+                  <rawString>true</rawString>
+                </relocation>
+                <relocation>
+                  <pattern>META-INF/versions/(\d+)/org/roaringbitmap/</pattern>
+                  <shadedPattern>META-INF/versions/$1/org/apache/pulsar/shade/org/roaringbitmap/</shadedPattern>
+                  <rawString>true</rawString>
+                </relocation>
+                <relocation>
+                  <pattern>META-INF/versions/(\d+)/org/yaml/</pattern>
+                  <shadedPattern>META-INF/versions/$1/org/apache/pulsar/shade/org/yaml/</shadedPattern>
+                  <rawString>true</rawString>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.avro</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.org.apache.avro</shadedPattern>
+                  <excludes>
+                    <exclude>org.apache.avro.reflect.AvroAlias</exclude>
+                    <exclude>org.apache.avro.reflect.AvroDefault</exclude>
+                    <exclude>org.apache.avro.reflect.AvroEncode</exclude>
+                    <exclude>org.apache.avro.reflect.AvroIgnore</exclude>
+                    <exclude>org.apache.avro.reflect.AvroMeta</exclude>
+                    <exclude>org.apache.avro.reflect.AvroName</exclude>
+                    <exclude>org.apache.avro.reflect.AvroSchema</exclude>
+                    <exclude>org.apache.avro.reflect.Nullable</exclude>
+                    <exclude>org.apache.avro.reflect.Stringable</exclude>
+                    <exclude>org.apache.avro.reflect.Union</exclude>
+                  </excludes>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.bookkeeper</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.org.apache.bookkeeper</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.commons</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.org.apache.commons</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.pulsar.policies</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.org.apache.pulsar.policies</shadedPattern>
+                  <excludes>
+                    <exclude>org.apache.pulsar.policies.data.loadbalancer.LoadManagerReport</exclude>
+                    <exclude>org.apache.pulsar.policies.data.loadbalancer.NamespaceBundleStats</exclude>
+                    <exclude>org.apache.pulsar.policies.data.loadbalancer.ResourceUsage</exclude>
+                    <exclude>org.apache.pulsar.policies.data.loadbalancer.ServiceLookupData</exclude>
+                  </excludes>
+                </relocation>
+                <relocation>
+                  <pattern>org.asynchttpclient</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.org.asynchttpclient</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.checkerframework</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.org.checkerframework</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.codehaus.jackson</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.org.codehaus.jackson</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.eclipse.jetty</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.org.eclipse</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.objenesis</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.org.objenesis</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.reactivestreams</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.org.reactivestreams</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.roaringbitmap</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.org.roaringbitmap</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.tukaani</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.org.tukaani</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.yaml</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.org.yaml</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.github.benmanes</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.com.github.benmanes</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>io.prometheus.client</pattern>
+                  <shadedPattern>org.apache.pulsar.shade.io.prometheus.client</shadedPattern>
+                </relocation>
+              </relocations>
+              <transformers>
+                <transformer />
+                <transformer />
+                <transformer>
+                  <manifestEntries>
+                    <Multi-Release>true</Multi-Release>
+                  </manifestEntries>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>spotbugs</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.pulsar</groupId>
+      <artifactId>pulsar-client-api</artifactId>
+      <version>4.2.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.pulsar</groupId>
+      <artifactId>pulsar-client-admin-api</artifactId>
+      <version>4.2.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.pulsar</groupId>
+      <artifactId>bouncy-castle-bc</artifactId>
+      <version>4.2.1</version>
+      <classifier>pkg</classifier>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpkix-jdk18on</artifactId>
+      <version>1.84</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcutil-jdk18on</artifactId>
+      <version>1.84</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk18on</artifactId>
+      <version>1.84</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-api</artifactId>
+      <version>1.56.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-context</artifactId>
+      <version>1.56.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-common</artifactId>
+      <version>1.56.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-api-incubator</artifactId>
+      <version>1.56.0-alpha</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>2.0.17</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.validation</groupId>
+      <artifactId>validation-api</artifactId>
+      <version>1.1.0.Final</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>2.18.6</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jspecify</groupId>
+      <artifactId>jspecify</artifactId>
+      <version>1.0.0</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/org/apache/pulsar/pulsar-client/4.2.1/pulsar-client-4.2.1-sources.jar && curl -fsSI https://repo1.maven.org/maven2/org/apache/pulsar/pulsar-client/4.2.1/pulsar-client-4.2.1-tests.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+ exited 22 in 473ms:
+HTTP/2 200 
+date: Wed, 10 Jun 2026 05:48:04 GMT
+content-type: application/java-archive
+content-length: 11639
+cf-ray: a09615bd3cc527b5-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "bba99fe7243663ec3170a4345d370217"
+last-modified: Thu, 23 Apr 2026 10:45:29 GMT
+x-checksum-md5: bba99fe7243663ec3170a4345d370217
+x-checksum-sha1: 7e9ede40b373a4b6f48997d9e1205db11b609948
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Wed, 10 Jun 2026 05:48:04 GMT
+content-type: text/html
+cf-ray: a09615bebffebb29-LYS
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/pulsar/pulsar-client/4.2.1/pulsar-client-4.2.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/pulsar/pulsar-client/4.2.1/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/pulsar/pulsar-client/4.2.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/pulsar/pulsar-client/4.2.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="pulsar-client-4.2.1-sources.jar" title="pulsar-client-4.2.1-sources.jar">pulsar-client-4.2.1-sources.jar</a>                   2026-04-23 10:45     11639      
+<a href="pulsar-client-4.2.1-sources.jar.asc" title="pulsar-client-4.2.1-sources.jar.asc">pulsar-client-4.2.1-sources.jar.asc</a>               2026-04-23 10:45       870      
+<a href="pulsar-client-4.2.1-sources.jar.md5" title="pulsar-client-4.2.1-sources.jar.md5">pulsar-client-4.2.1-sources.jar.md5</a>               2026-04-23 10:45        32      
+<a href="pulsar-client-4.2.1-sources.jar.sha1" title="pulsar-client-4.2.1-sources.jar.sha1">pulsar-client-4.2.1-sources.jar.sha1</a>              2026-04-23 10:45        40      
+<a href="pulsar-client-4.2.1.jar" title="pulsar-client-4.2.1.jar">pulsar-client-4.2.1.jar</a>                           2026-04-23 10:45  27327270      
+<a href="pulsar-client-4.2.1.jar.asc" title="pulsar-client-4.2.1.jar.asc">pulsar-client-4.2.1.jar.asc</a>                       2026-04-23 10:45       870      
+<a href="pulsar-client-4.2.1.jar.md5" title="pulsar-client-4.2.1.jar.md5">pulsar-client-4.2.1.jar.md5</a>                       2026-04-23 10:45        32      
+<a href="pulsar-client-4.2.1.jar.sha1" title="pulsar-client-4.2.1.jar.sha1">pulsar-client-4.2.1.jar.sha1</a>                      2026-04-23 10:45        40      
+<a href="pulsar-client-4.2.1.pom" title="pulsar-client-4.2.1.pom">pulsar-client-4.2.1.pom</a>                           2026-04-23 10:45     20615      
+<a href="pulsar-client-4.2.1.pom.asc" title="pulsar-client-4.2.1.pom.asc">pulsar-client-4.2.1.pom.asc</a>                       2026-04-23 10:45       870      
+<a href="pulsar-client-4.2.1.pom.md5" title="pulsar-client-4.2.1.pom.md5">pulsar-client-4.2.1.pom.md5</a>                       2026-04-23 10:45        32      
+<a href="pulsar-client-4.2.1.pom.sha1" title="pulsar-client-4.2.1.pom.sha1">pulsar-client-4.2.1.pom.sha1</a>                      2026-04-23 10:45        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+codex
+Maven Central publishes the main JAR and a `-sources.jar`, but there is no `-tests.jar` for this artifact. I’m now checking the upstream tag layout so the test and documentation links can resolve at the same version placeholder.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/pulsar/pulsar-client/4.2.1/pulsar-client-4.2.1-sources.jar -o /tmp/pulsar-client-4.2.1-sources.jar && jar tf /tmp/pulsar-client-4.2.1-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/maven/
+META-INF/maven/org.apache.pulsar/
+META-INF/maven/org.apache.pulsar/pulsar-client/
+META-INF/DEPENDENCIES
+META-INF/LICENSE
+META-INF/NOTICE
+META-INF/maven/org.apache.pulsar/pulsar-client/pom.xml
+META-INF/maven/org.apache.pulsar/pulsar-client/pom.properties
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/pulsar/pulsar/4.2.1/pulsar-4.2.1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <packaging>pom</packaging>
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>35</version>
+  </parent>
+
+  <groupId>org.apache.pulsar</groupId>
+  <artifactId>pulsar</artifactId>
+
+  <version>4.2.1</version>
+
+  <name>Pulsar</name>
+  <description>Pulsar is a distributed pub-sub messaging platform with a very
+flexible messaging model and an intuitive client API.</description>
+  <url>https://github.com/apache/pulsar</url>
+
+  <organization>
+    <name>Apache Software Foundation</name>
+    <url>https://www.apache.org/</url>
+  </organization>
+  <inceptionYear>2017</inceptionYear>
+
+  <developers>
+    <developer>
+      <organization>Apache Pulsar developers</organization>
+      <organizationUrl>https://pulsar.apache.org/</organizationUrl>
+    </developer>
+  </developers>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <url>https://github.com/apache/pulsar</url>
+    <connection>scm:git:https://github.com/apache/pulsar.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com:apache/pulsar.git</developerConnection>
+  </scm>
+
+  <ciManagement>
+    <system>GitHub Actions</system>
+    <url>https://github.com/apache/pulsar/actions</url>
+  </ciManagement>
+
+  <issueManagement>
+    <system>Github</system>
+    <url>https://github.com/apache/pulsar/issues</url>
+  </issueManagement>
+
+  <properties>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <pulsar.broker.compiler.release>${maven.compiler.target}</pulsar.broker.compiler.release>
+    <pulsar.client.compiler.release>17</pulsar.client.compiler.release>
+
+    <pulsar.client.python.version>3.10.0</pulsar.client.python.version>
+
+    <IMAGE_JDK_MAJOR_VERSION>21</IMAGE_JDK_MAJOR_VERSION>
+
+    <!--config keys to configure test selection -->
+    <include>**/Test*.java,**/*Test.java,**/*Tests.java,**/*TestCase.java</include>
+    <exclude/>
+    <groups/>
+    <excludedGroups>quarantine,flaky</excludedGroups>
+
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <project.build.outputTimestamp>2026-04-23T09:31:08Z</project.build.outputTimestamp>
+    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+
+    <!-- By default build for local Docker platform.
+         To create multi-arch image, pass -Ddocker.platforms=linux/arm64,linux/amd64
+    -->
+    <docker.platforms></docker.platforms>
+    <docker.skip.push>true</docker.skip.push>
+    <docker.skip.tag>false</docker.skip.tag>
+
+    <!-- required for running tests on JDK11+ -->
+    <test.additional.args>
+      --add-opens java.base/jdk.internal.loader=ALL-UNNAMED
+      --add-opens java.base/java.lang=ALL-UNNAMED <!--Mockito-->
+      --add-opens java.base/java.io=ALL-UNNAMED <!--Bookkeeper NativeIO-->
+      --add-opens java.base/java.util=ALL-UNNAMED <!--System Lambda-->
+      --add-opens java.base/sun.net=ALL-UNNAMED <!--netty.DnsResolverUtil-->
+      --add-opens java.management/sun.management=ALL-UNNAMED <!--JvmDefaultGCMetricsLogger & MBeanStatsGenerator-->
+      --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED <!--MBeanStatsGenerator-->
+      --add-opens java.base/jdk.internal.platform=ALL-UNNAMED <!--LinuxInfoUtils-->
+      -XX:+EnableDynamicAgentLoading <!-- byte-buddy-agent and mockito-core agent dynamic loading -->
+      -Xshare:off <!-- suppress sharing warning -->
+      ${test.additional.args.jdk24}
+      ${test.netty.args}
+      ${test.asyncprofiler.args}
+      ${test.jvm.args}
+    </test.additional.args>
+    <!-- arguments to pass to test JVMs -->
+    <test.jvm.args></test.jvm.args>
+    <test.additional.args.jdk24></test.additional.args.jdk24>
+    <!-- Netty related JVM args, including Netty leak detection enabled in tests -->
+    <test.netty.args>
+      <!-- required for triggering GC to trigger leak detection synchronously in tests -->
+      -XX:+UnlockExperimentalVMOptions -XX:ReferencesPerThread=0 -XX:+ParallelRefProcEnabled
+      <!--
+      enable optimized Netty direct memory buffer access
+      https://pulsar.apache.org/docs/4.0.x/client-libraries-java-setup/#enabling-optimized-netty-direct-memory-buffer-access
+      -->
+      --add-opens java.base/java.nio=ALL-UNNAMED
+      --add-opens java.base/jdk.internal.misc=ALL-UNNAMED
+      -Dio.netty.tryReflectionSetAccessible=true
+      -Dorg.apache.pulsar.shade.io.netty.tryReflectionSetAccessible=true
+      -Dpulsar.allocator.pooled=true
+      -Dpulsar.allocator.exit_on_oom=false
+      -Dpulsar.allocator.out_of_memory_policy=FallbackToHeap
+      ${test.netty.leakdetection.args}
+    </test.netty.args>
+    <test.netty.leakdetection.args>
+      <!-- use the custom resource leak detector in buildtools module -->
+      -Dio.netty.customResourceLeakDetector=org.apache.pulsar.tests.ExtendedNettyLeakDetector
+      -Dorg.apache.pulsar.tests.ExtendedNettyLeakDetector.exitJvmOnLeak=${testExitJvmOnLeak}
+      -Dorg.apache.pulsar.tests.ExtendedNettyLeakDetector.exitJvmDelayMillis=${testExitJvmOnLeakDelayMillis}
+      -Dio.netty.leakDetection.level=${testLeakDetectionLevel}
+      <!-- allows using paranoid leak detection with relatively low overhead -->
+      -Dio.netty.leakDetection.targetRecords=16
+      -Dio.netty.leakDetection.acquireAndReleaseOnly=true
+      -Dio.netty.leakDetection.samplingInterval=32
+    </test.netty.leakdetection.args>
+    <test.asyncprofiler.args></test.asyncprofiler.args>
+    <testExitJvmOnLeak>false</testExitJvmOnLeak>
+    <testExitJvmOnLeakDelayMillis>1000</testExitJvmOnLeakDelayMillis>
+    <testLeakDetectionLevel>paranoid</testLeakDetectionLevel>
+    <testMaxHeapSize>1300M</testMaxHeapSize>
+    <testReuseFork>true</testReuseFork>
+    <testForkCount>4</testForkCount>
+    <testRealAWS>false</testRealAWS>
+    <testRetryCount>1</testRetryCount>
+    <testFailFast>true</testFailFast>
+    <testFailFastFile></testFailFastFile>
+    <testJacocoAgentArgument/>
+    <integrationtest.coverage.enabled>false</integrationtest.coverage.enabled>
+    <integrationtest.coverage.dir>${project.build.directory}</integrationtest.coverage.dir>
+    <!-- skip jacoco report by default since it's not a proper aggregate report -->
+    <jacoco.report.skip>true</jacoco.report.skip>
+    <testHeapDumpPath>/tmp</testHeapDumpPath>
+    <surefire.shutdown>kill</surefire.shutdown>
+    <docker.organization>apachepulsar</docker.organization>
+    <docker.image>pulsar</docker.image>
+    <docker.tag>latest</docker.tag>
+    <skipSourceReleaseAssembly>false</skipSourceReleaseAssembly>
+    <skipBuildDistribution>false</skipBuildDistribution>
+    <skipDeployConnector>false</skipDeployConnector>
+    <shadePluginPhase>package</shadePluginPhase>
+    <narPluginPhase>package</narPluginPhase>
+
+    <!-- apache commons -->
+    <commons-compress.version>1.28.0</commons-compress.version>
+
+    <bookkeeper.version>4.17.3</bookkeeper.version>
+    <zookeeper.version>3.9.5</zookeeper.version>
+    <commons-cli.version>1.11.0</commons-cli.version>
+    <commons-text.version>1.14.0</commons-text.version>
+    <snappy.version>1.1.10.8</snappy.version> <!-- ZooKeeper server -->
+    <dropwizardmetrics.version>4.1.12.1</dropwizardmetrics.version> <!-- ZooKeeper server -->
+    <curator.version>5.7.1</curator.version>
+    <netty.version>4.1.132.Final</netty.version>
+    <netty-iouring.version>0.0.26.Final</netty-iouring.version>
+    <jetty.version>12.1.8</jetty.version>
+    <!-- Jetty 9 is used in tiered-storage/file-system tests and pulsar-io/alluxio -->
+    <jetty9.version>9.4.58.v20250814</jetty9.version>
+    <conscrypt.version>2.5.2</conscrypt.version>
+    <jersey.version>2.42</jersey.version>
+    <athenz.version>1.10.62</athenz.version>
+    <prometheus.version>0.16.0</prometheus.version>
+    <vertx.version>4.5.24</vertx.version>
+    <rocksdb.version>7.9.2</rocksdb.version>
+    <slf4j.version>2.0.17</slf4j.version>
+    <commons.collections4.version>4.5.0</commons.collections4.version>
+    <log4j2.version>2.25.4</log4j2.version>
+    <!-- bouncycastle dependencies aren't necessarily aligned -->
+    <bouncycastle.version>1.84</bouncycastle.version>
+    <bouncycastle.bcprov-jdk18on.version>${bouncycastle.version}</bouncycastle.bcprov-jdk18on.version>
+    <bouncycastle.bcpkix-jdk18on.version>${bouncycastle.version}</bouncycastle.bcpkix-jdk18on.version>
+    <bouncycastle.bcutil-jdk18on.version>${bouncycastle.version}</bouncycastle.bcutil-jdk18on.version>
+    <bouncycastle.bcpkix-fips.version>2.0.11</bouncycastle.bcpkix-fips.version>
+    <bouncycastle.bcutil-fips.version>2.0.6</bouncycastle.bcutil-fips.version>
+    <bouncycastle.bc-fips.version>2.0.1</bouncycastle.bc-fips.version>
+    <jackson.version>2.18.6</jackson.version>
+    <fastutil.version>8.5.16</fastutil.version>
+    <jctools.version>4.0.5</jctools.version>
+    <reflections.version>0.10.2</reflections.version>
+    <swagger.version>1.6.2</swagger.version>
+    <puppycrawl.checkstyle.version>10.14.2</puppycrawl.checkstyle.version>
+    <docker-maven.version>0.45.1</docker-maven.version>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/pulsar/git/ref/tags/v4.2.1' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/apache/pulsar/tree/v4.2.1 && curl -fsSI https://github.com/apache/pulsar/tree/pulsar-4.2.1' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+ succeeded in 271ms:
+{
+  "ref": "refs/tags/v4.2.1",
+  "node_id": "MDM6UmVmNjIxMTc4MTI6cmVmcy90YWdzL3Y0LjIuMQ==",
+  "url": "https://api.github.com/repos/apache/pulsar/git/refs/tags/v4.2.1",
+  "object": {
+    "sha": "c025de59bf90263213f590c7726e3c31c878f896",
+    "type": "tag",
+    "url": "https://api.github.com/repos/apache/pulsar/git/tags/c025de59bf90263213f590c7726e3c31c878f896"
+  }
+}
+
+ exited 22 in 1316ms:
+HTTP/2 200 
+date: Wed, 10 Jun 2026 05:48:16 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"b157280ba53797027ef2022fdd760cb8"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=hNoiNbDVczxkXH2vhnmkHKtzvQgVisI7WsDKxvl9vvlzQIpATnHAlQ9rLakCGCyk9K9owR%2Flji2JeZSG974ZTGL6m%2BjEm1HFgjuYHKV2RcvYdKOLgte7X%2BzE4YieatK7SXzgeDIIS3B4pC7tFPfjW93ULII1lr6xh1kIP0aCsWZ5pdadiC5Wh44ndx%2BE9f6z2zzSN6ESaPr1L7wx6qOwPbJ8RSjjO15JYkx3UG5xW8LihdqrKniHTKTfnFWsfS%2B6jmzycEiwereF0JVhjv4%2Brg%3D%3D--2qzejuxmF0KMX0Jm--HeFvEJYRb%2BN7zj%2FJofH5eg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.310562177.1781070496; expires=Thu, 10 Jun 2027 05:48:16 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 10 Jun 2027 05:48:16 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6216:7B44A:9C5ACAF:7E27593:6A28FAA0
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Wed, 10 Jun 2026 05:48:17 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=DkY6zlLcKa7plQ4A5bKNYLfuC4a5Ep9VvOtzMWzcHc8J51wr7fZ8KA13oiTu663B3YTioUuiIX%2BrN%2FZH%2BS%2FImvHhhM1BgrC1p4IsMrr6DbfoW0Vp9dilX3tc9csWJlLV2CL0KYvV1J8AUNS1MV%2Bs1E3i%2FWwxwy2X5HYN%2FmsSwWWKHzQSjJ3jnOsMvEvEaOR%2BSguGB98syp7uDOh4FTsxNKPcCjm3BrR2HMi%2BpuXU7f2aVkBDn5415bD6MrDNFyHfYkd0Ws4G%2BROlWhE33wmgxg%3D%3D--OwZKj6Fjnq0c36Zs--4s7Bha2iYhV5Ofmdoy2E%2FQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1855742913.1781070497; expires=Thu, 10 Jun 2027 05:48:17 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 10 Jun 2027 05:48:17 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 61FE:3C332:9858479:7B0A59C:6A28FAA1
+
+
+codex
+The `-sources.jar` exists, but it only contains Maven metadata and notices rather than Java source files. I’m treating that as still the Maven-published source artifact for the requested field, while using the repository tag for tests and docs where Maven has no test artifact.
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/pulsar/contents/pulsar-client?ref=v4.2.1 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/pulsar/contents/pulsar-client/src?ref=v4.2.1 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/pulsar/contents?ref=v4.2.1 | rg 'site|docs|pulsar-client'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/pulsar/contents/site2/docs?ref=v4.2.1 | rg 'client-libraries-java|java'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+ succeeded in 207ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "pulsar-client/pom.xml",
+    "sha": "d3b7b143367685079fcfa88d050b971511ab09ec",
+    "size": 10663,
+    "url": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client/pom.xml?ref=v4.2.1",
+    "html_url": "https://github.com/apache/pulsar/blob/v4.2.1/pulsar-client/pom.xml",
+    "git_url": "https://api.github.com/repos/apache/pulsar/git/blobs/d3b7b143367685079fcfa88d050b971511ab09ec",
+    "download_url": "https://raw.githubusercontent.com/apache/pulsar/v4.2.1/pulsar-client/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client/pom.xml?ref=v4.2.1",
+      "git": "https://api.github.com/repos/apache/pulsar/git/blobs/d3b7b143367685079fcfa88d050b971511ab09ec",
+      "html": "https://github.com/apache/pulsar/blob/v4.2.1/pulsar-client/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "pulsar-client/src",
+    "sha": "785ee36330ccd64fc0b07e1386b334dd93e2a115",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client/src?ref=v4.2.1",
+    "html_url": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client/src",
+    "git_url": "https://api.github.com/repos/apache/pulsar/git/trees/785ee36330ccd64fc0b07e1386b334dd93e2a115",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client/src?ref=v4.2.1",
+      "git": "https://api.github.com/repos/apache/pulsar/git/trees/785ee36330ccd64fc0b07e1386b334dd93e2a115",
+      "html": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client/src"
+    }
+  }
+]
+
+ exited 1 in 190ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 213ms:
+[
+  {
+    "name": "main",
+    "path": "pulsar-client/src/main",
+    "sha": "e5bc4b0f7c44e5be888219cb11d9941c95bf9b92",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client/src/main?ref=v4.2.1",
+    "html_url": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client/src/main",
+    "git_url": "https://api.github.com/repos/apache/pulsar/git/trees/e5bc4b0f7c44e5be888219cb11d9941c95bf9b92",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client/src/main?ref=v4.2.1",
+      "git": "https://api.github.com/repos/apache/pulsar/git/trees/e5bc4b0f7c44e5be888219cb11d9941c95bf9b92",
+      "html": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client/src/main"
+    }
+  },
+  {
+    "name": "test",
+    "path": "pulsar-client/src/test",
+    "sha": "f226068747915a6b03b4ec6c93f2c8744353c90a",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client/src/test?ref=v4.2.1",
+    "html_url": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client/src/test",
+    "git_url": "https://api.github.com/repos/apache/pulsar/git/trees/f226068747915a6b03b4ec6c93f2c8744353c90a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client/src/test?ref=v4.2.1",
+      "git": "https://api.github.com/repos/apache/pulsar/git/trees/f226068747915a6b03b4ec6c93f2c8744353c90a",
+      "html": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client/src/test"
+    }
+  }
+]
+
+ succeeded in 290ms:
+    "name": "pulsar-client-admin-api",
+    "path": "pulsar-client-admin-api",
+    "url": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-admin-api?ref=v4.2.1",
+    "html_url": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-admin-api",
+      "self": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-admin-api?ref=v4.2.1",
+      "html": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-admin-api"
+    "name": "pulsar-client-admin-shaded",
+    "path": "pulsar-client-admin-shaded",
+    "url": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-admin-shaded?ref=v4.2.1",
+    "html_url": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-admin-shaded",
+      "self": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-admin-shaded?ref=v4.2.1",
+      "html": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-admin-shaded"
+    "name": "pulsar-client-admin",
+    "path": "pulsar-client-admin",
+    "url": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-admin?ref=v4.2.1",
+    "html_url": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-admin",
+      "self": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-admin?ref=v4.2.1",
+      "html": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-admin"
+    "name": "pulsar-client-all",
+    "path": "pulsar-client-all",
+    "url": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-all?ref=v4.2.1",
+    "html_url": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-all",
+      "self": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-all?ref=v4.2.1",
+      "html": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-all"
+    "name": "pulsar-client-api",
+    "path": "pulsar-client-api",
+    "url": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-api?ref=v4.2.1",
+    "html_url": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-api",
+      "self": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-api?ref=v4.2.1",
+      "html": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-api"
+    "name": "pulsar-client-auth-athenz",
+    "path": "pulsar-client-auth-athenz",
+    "url": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-auth-athenz?ref=v4.2.1",
+    "html_url": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-auth-athenz",
+      "self": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-auth-athenz?ref=v4.2.1",
+      "html": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-auth-athenz"
+    "name": "pulsar-client-auth-sasl",
+    "path": "pulsar-client-auth-sasl",
+    "url": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-auth-sasl?ref=v4.2.1",
+    "html_url": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-auth-sasl",
+      "self": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-auth-sasl?ref=v4.2.1",
+      "html": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-auth-sasl"
+    "name": "pulsar-client-cpp",
+    "path": "pulsar-client-cpp",
+    "url": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-cpp?ref=v4.2.1",
+    "html_url": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-cpp",
+      "self": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-cpp?ref=v4.2.1",
+      "html": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-cpp"
+    "name": "pulsar-client-dependencies-minimized",
+    "path": "pulsar-client-dependencies-minimized",
+    "url": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-dependencies-minimized?ref=v4.2.1",
+    "html_url": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-dependencies-minimized",
+      "self": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-dependencies-minimized?ref=v4.2.1",
+      "html": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-dependencies-minimized"
+    "name": "pulsar-client-messagecrypto-bc",
+    "path": "pulsar-client-messagecrypto-bc",
+    "url": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-messagecrypto-bc?ref=v4.2.1",
+    "html_url": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-messagecrypto-bc",
+      "self": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-messagecrypto-bc?ref=v4.2.1",
+      "html": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-messagecrypto-bc"
+    "name": "pulsar-client-shaded",
+    "path": "pulsar-client-shaded",
+    "url": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-shaded?ref=v4.2.1",
+    "html_url": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-shaded",
+      "self": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-shaded?ref=v4.2.1",
+      "html": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-shaded"
+    "name": "pulsar-client-tools-api",
+    "path": "pulsar-client-tools-api",
+    "url": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-tools-api?ref=v4.2.1",
+    "html_url": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-tools-api",
+      "self": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-tools-api?ref=v4.2.1",
+      "html": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-tools-api"
+    "name": "pulsar-client-tools-customcommand-example",
+    "path": "pulsar-client-tools-customcommand-example",
+    "url": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-tools-customcommand-example?ref=v4.2.1",
+    "html_url": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-tools-customcommand-example",
+      "self": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-tools-customcommand-example?ref=v4.2.1",
+      "html": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-tools-customcommand-example"
+    "name": "pulsar-client-tools-test",
+    "path": "pulsar-client-tools-test",
+    "url": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-tools-test?ref=v4.2.1",
+    "html_url": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-tools-test",
+      "self": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-tools-test?ref=v4.2.1",
+      "html": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-tools-test"
+    "name": "pulsar-client-tools",
+    "path": "pulsar-client-tools",
+    "url": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-tools?ref=v4.2.1",
+    "html_url": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-tools",
+      "self": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client-tools?ref=v4.2.1",
+      "html": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client-tools"
+    "name": "pulsar-client",
+    "path": "pulsar-client",
+    "url": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client?ref=v4.2.1",
+    "html_url": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client",
+      "self": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client?ref=v4.2.1",
+      "html": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client"
+    "name": "pulsar-docs-tools",
+    "path": "pulsar-docs-tools",
+    "url": "https://api.github.com/repos/apache/pulsar/contents/pulsar-docs-tools?ref=v4.2.1",
+    "html_url": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-docs-tools",
+      "self": "https://api.github.com/repos/apache/pulsar/contents/pulsar-docs-tools?ref=v4.2.1",
+      "html": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-docs-tools"
+
+codex
+The upstream tag `v4.2.1` is present, and the module contains `pulsar-client/src/test`. The docs path is less obvious in this release tree, so I’m searching the tag contents for the Java client documentation instead of guessing a stale site path.
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/pulsar/git/trees/v4.2.1?recursive=1 | rg 'client-libraries-java|java-client|client.*java|docs.*java' | head -120" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/search/code?q=repo:apache/pulsar+client-libraries-java+ref:v4.2.1'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+exec
+/usr/bin/bash -lc 'curl -fsSI https://pulsar.apache.org/docs/4.2.x/client-libraries-java/ && curl -fsSI https://pulsar.apache.org/docs/4.2.x/client-libraries-java-setup/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/pulsar/contents?ref=v4.2.1 | sed -n '1,260p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+ succeeded in 127ms:
+HTTP/2 301 
+server: Apache
+location: https://pulsar.apache.org/docs/client-libraries/java-setup
+content-type: text/html; charset=iso-8859-1
+via: 1.1 varnish, 1.1 varnish
+accept-ranges: bytes
+age: 0
+date: Wed, 10 Jun 2026 05:48:34 GMT
+x-served-by: cache-hel1410031-HEL, cache-fra-eddf8230102-FRA
+x-cache: MISS, MISS
+x-cache-hits: 0, 0
+x-timer: S1781070515.754410,VS0,VE28
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 266
+
+
+ succeeded in 126ms:
+pos/apache/pulsar/git/trees/82453f7a359b9c19a875f35ccca45d7b4ed33c5a",
+      "html": "https://github.com/apache/pulsar/tree/v4.2.1/buildtools"
+    }
+  },
+  {
+    "name": "codecov.yml",
+    "path": "codecov.yml",
+
+ exited 22 in 153ms:
+curl: (22) The requested URL returned error: 401
+
+ succeeded in 1011ms:
+      "path": "bouncy-castle/bcfips-include-test/src/test/java/org/apache/pulsar/client/TlsProducerConsumerBase.java",
+      "path": "bouncy-castle/bcfips-include-test/src/test/java/org/apache/pulsar/client/TlsProducerConsumerTest.java",
+      "path": "pulsar-broker/src/main/java/org/apache/pulsar/client/api/RawMessage.java",
+      "path": "pulsar-broker/src/main/java/org/apache/pulsar/client/api/RawReader.java",
+      "path": "pulsar-broker/src/main/java/org/apache/pulsar/client/api/package-info.java",
+      "path": "pulsar-broker/src/main/java/org/apache/pulsar/client/impl/CompactionReaderImpl.java",
+      "path": "pulsar-broker/src/main/java/org/apache/pulsar/client/impl/RawBatchConverter.java",
+      "path": "pulsar-broker/src/main/java/org/apache/pulsar/client/impl/RawBatchMessageContainerImpl.java",
+      "path": "pulsar-broker/src/main/java/org/apache/pulsar/client/impl/RawMessageImpl.java",
+      "path": "pulsar-broker/src/main/java/org/apache/pulsar/client/impl/RawReaderImpl.java",
+      "path": "pulsar-broker/src/main/java/org/apache/pulsar/client/impl/package-info.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/AbstractMessageDispatchThrottlingTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/AuthenticatedProducerConsumerTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/AuthenticationTlsHostnameVerificationTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/AuthorizationProducerConsumerTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/BrokerServiceLookupTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/BytesKeyTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/ClientAuthenticationTlsTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/ClientDeduplicationFailureTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/ClientDeduplicationTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/ClientErrorsTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/ConsumerAckListTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/ConsumerBatchReceiveTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/ConsumerCleanupTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/ConsumerCreationTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/ConsumerRedeliveryTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/CustomMessageIdTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/DeadLetterTopicDefaultMultiPartitionsTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/DeadLetterTopicTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/DispatcherBlockConsumerTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/EnableReplicatedSubscriptionsIsDisabledTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/ExposeMessageRedeliveryCountTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/FailoverSubscriptionTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/HybridTypesAcknowledgeTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/InjectedClientCnxClientBuilder.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/InterceptorsTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/KeySharedSubscriptionBrokerCacheTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/KeySharedSubscriptionDisabledBrokerCacheTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/KeySharedSubscriptionTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/LookupPropertiesTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/MaxProducerTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/MemoryLimitTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/MessageDispatchThrottlingTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/MessageListenerExecutorTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/MockBrokerService.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/MockBrokerServiceHooks.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/MultiRolesTokenAuthorizationProviderTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/MultiTopicsConsumerTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/MutualAuthenticationTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/NonDurableSubscriptionTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/NonPartitionedTopicExpectedTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/NonPersistentTopicTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/OrphanPersistentTopicTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/PartitionCreationTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/PartitionedProducerConsumerTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/PatternConsumerBackPressureMultipleConsumersHttpLookupTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/PatternConsumerBackPressureMultipleConsumersTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/PatternConsumerBackPressureTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/PatternConsumerTopicWatcherBackPressureMultipleConsumersTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/PatternMultiTopicsConsumerTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/PersistentTopicTerminateTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/ProducerCleanupTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/ProducerConsumerBase.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/ProducerCreationTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/ProducerQueueSizeTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/ProxyProtocolTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/PulsarMultiListenersWithInternalListenerNameTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/PulsarMultiListenersWithoutInternalListenerNameTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/ReplicateSubscriptionTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/RetryTopicTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/ServiceUrlProviderTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/SimpleProducerConsumerDisallowAutoCreateTopicTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/SimpleProducerConsumerMLInitializeDelayTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/SimpleProducerConsumerStatTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/SimpleProducerConsumerTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/SimpleSchemaTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/SimpleTypedProducerConsumerTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/SubscriptionMessageDispatchThrottlingTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/SubscriptionPauseOnAckStatPersistTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/TenantTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/TlsHostVerificationTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/TlsProducerConsumerBase.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/TlsProducerConsumerTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/TlsSniTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/TokenAuthenticatedProducerConsumerTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/TokenExpirationProduceConsumerTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/TokenOauth2AuthenticatedProducerConsumerTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/TopicReaderTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/api/UnloadSubscriptionTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/AdminApiKeyStoreTlsAuthTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/AutoCloseUselessClientConMultiPartTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/AutoCloseUselessClientConMultiTopicTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/AutoCloseUselessClientConNoPartTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/AutoCloseUselessClientConSupports.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/AutoCloseUselessClientConTXTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/AutoCloseUselessClientConTopicsPatternConsumerTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/AutoScaledReceiverQueueSizeTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/BatchMessageIdImplSerializationTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/BatchMessageIndexAckDisableTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/BatchMessageIndexAckTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/BrokerClientIntegrationTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ClientCnxTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ClientInterruptTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ClientWithSocks5ProxyTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/CompactedOutBatchMessageTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/CompactionReaderImplTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ConnectionHandlerTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ConnectionPoolTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ConsumeBaseExceptionTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ConsumerAckTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ConsumerCloseTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ConsumerConfigurationTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ConsumerDecryptFailListenerTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ConsumerDedupPermitsUpdateTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ConsumerMemoryLimitTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ConsumerUnsubscribeTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/DisabledSystemTopicTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/DispatchAccordingPermitsTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/DynamicReceiverQueueSizeTest.java",
+      "path": "pulsar-broker/src/test/java/org/apache/pulsar/client/impl/HierarchyTopicAutoCreationTest.java",
+curl: (23) Failure writing output to destination
+
+codex
+The versioned website redirects 4.2.x Java client pages to current canonical paths, so it is not a clean `$version$` URL for this metadata file. I’m checking whether the 4.2.1 repository tag has documentation content to link directly; if not, the safest documented field will be `N/A`.
+exec
+/usr/bin/bash -lc 'curl -fsSI https://pulsar.apache.org/docs/4.2.1/client-libraries/java && curl -fsSI https://pulsar.apache.org/docs/$version$/client-libraries/java' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/pulsar/git/trees/v4.2.1?recursive=1 -o /tmp/pulsar-tree.json && jq -r '.truncated, (.tree[]?.path)' /tmp/pulsar-tree.json | rg '("'^true$|''^false$|docs|site|client-libraries|java-client|client.*java)'"' | head -200" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/pulsar/contents/docs?ref=v4.2.1 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/pulsar/contents/pulsar-client/src/main/java?ref=v4.2.1 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+ succeeded in 104ms:
+HTTP/2 301 
+server: Apache
+location: https://pulsar.apache.org/docs/4.2.x/$/client-libraries/java
+content-type: text/html; charset=iso-8859-1
+via: 1.1 varnish, 1.1 varnish
+accept-ranges: bytes
+age: 0
+date: Wed, 10 Jun 2026 05:48:43 GMT
+x-served-by: cache-hel1410023-HEL, cache-fra-eddf8230041-FRA
+x-cache: MISS, MISS
+x-cache-hits: 0, 0
+x-timer: S1781070523.200034,VS0,VE27
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 268
+
+
+ succeeded in 193ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 213ms:
+[
+  {
+    "name": "org",
+    "path": "pulsar-client/src/main/java/org",
+    "sha": "e2cbb55ddcd5783155c8dd52422c095339392822",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client/src/main/java/org?ref=v4.2.1",
+    "html_url": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client/src/main/java/org",
+    "git_url": "https://api.github.com/repos/apache/pulsar/git/trees/e2cbb55ddcd5783155c8dd52422c095339392822",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client/src/main/java/org?ref=v4.2.1",
+      "git": "https://api.github.com/repos/apache/pulsar/git/trees/e2cbb55ddcd5783155c8dd52422c095339392822",
+      "html": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client/src/main/java/org"
+    }
+  }
+]
+
+ succeeded in 732ms:
+false
+bouncy-castle/bcfips-include-test/src/test/java/org/apache/pulsar/client/TlsProducerConsumerBase.java
+bouncy-castle/bcfips-include-test/src/test/java/org/apache/pulsar/client/TlsProducerConsumerTest.java
+conf/filesystem_offload_core_site.xml
+pulsar-broker/src/main/java/org/apache/pulsar/client/api/RawMessage.java
+pulsar-broker/src/main/java/org/apache/pulsar/client/api/RawReader.java
+pulsar-broker/src/main/java/org/apache/pulsar/client/api/package-info.java
+pulsar-broker/src/main/java/org/apache/pulsar/client/impl/CompactionReaderImpl.java
+pulsar-broker/src/main/java/org/apache/pulsar/client/impl/RawBatchConverter.java
+pulsar-broker/src/main/java/org/apache/pulsar/client/impl/RawBatchMessageContainerImpl.java
+pulsar-broker/src/main/java/org/apache/pulsar/client/impl/RawMessageImpl.java
+pulsar-broker/src/main/java/org/apache/pulsar/client/impl/RawReaderImpl.java
+pulsar-broker/src/main/java/org/apache/pulsar/client/impl/package-info.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/AbstractMessageDispatchThrottlingTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/AuthenticatedProducerConsumerTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/AuthenticationTlsHostnameVerificationTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/AuthorizationProducerConsumerTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/BrokerServiceLookupTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/BytesKeyTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/ClientAuthenticationTlsTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/ClientDeduplicationFailureTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/ClientDeduplicationTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/ClientErrorsTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/ConsumerAckListTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/ConsumerBatchReceiveTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/ConsumerCleanupTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/ConsumerCreationTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/ConsumerRedeliveryTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/CustomMessageIdTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/DeadLetterTopicDefaultMultiPartitionsTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/DeadLetterTopicTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/DispatcherBlockConsumerTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/EnableReplicatedSubscriptionsIsDisabledTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/ExposeMessageRedeliveryCountTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/FailoverSubscriptionTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/HybridTypesAcknowledgeTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/InjectedClientCnxClientBuilder.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/InterceptorsTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/KeySharedSubscriptionBrokerCacheTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/KeySharedSubscriptionDisabledBrokerCacheTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/KeySharedSubscriptionTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/LookupPropertiesTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/MaxProducerTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/MemoryLimitTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/MessageDispatchThrottlingTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/MessageListenerExecutorTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/MockBrokerService.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/MockBrokerServiceHooks.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/MultiRolesTokenAuthorizationProviderTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/MultiTopicsConsumerTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/MutualAuthenticationTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/NonDurableSubscriptionTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/NonPartitionedTopicExpectedTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/NonPersistentTopicTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/OrphanPersistentTopicTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/PartitionCreationTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/PartitionedProducerConsumerTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/PatternConsumerBackPressureMultipleConsumersHttpLookupTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/PatternConsumerBackPressureMultipleConsumersTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/PatternConsumerBackPressureTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/PatternConsumerTopicWatcherBackPressureMultipleConsumersTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/PatternMultiTopicsConsumerTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/PersistentTopicTerminateTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/ProducerCleanupTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/ProducerConsumerBase.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/ProducerCreationTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/ProducerQueueSizeTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/ProxyProtocolTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/PulsarMultiListenersWithInternalListenerNameTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/PulsarMultiListenersWithoutInternalListenerNameTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/ReplicateSubscriptionTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/RetryTopicTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/ServiceUrlProviderTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/SimpleProducerConsumerDisallowAutoCreateTopicTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/SimpleProducerConsumerMLInitializeDelayTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/SimpleProducerConsumerStatTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/SimpleProducerConsumerTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/SimpleSchemaTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/SimpleTypedProducerConsumerTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/SubscriptionMessageDispatchThrottlingTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/SubscriptionPauseOnAckStatPersistTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/TenantTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/TlsHostVerificationTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/TlsProducerConsumerBase.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/TlsProducerConsumerTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/TlsSniTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/TokenAuthenticatedProducerConsumerTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/TokenExpirationProduceConsumerTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/TokenOauth2AuthenticatedProducerConsumerTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/TopicReaderTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/api/UnloadSubscriptionTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/AdminApiKeyStoreTlsAuthTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/AutoCloseUselessClientConMultiPartTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/AutoCloseUselessClientConMultiTopicTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/AutoCloseUselessClientConNoPartTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/AutoCloseUselessClientConSupports.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/AutoCloseUselessClientConTXTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/AutoCloseUselessClientConTopicsPatternConsumerTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/AutoScaledReceiverQueueSizeTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/BatchMessageIdImplSerializationTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/BatchMessageIndexAckDisableTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/BatchMessageIndexAckTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/BrokerClientIntegrationTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ClientCnxTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ClientInterruptTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ClientWithSocks5ProxyTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/CompactedOutBatchMessageTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/CompactionReaderImplTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ConnectionHandlerTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ConnectionPoolTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ConsumeBaseExceptionTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ConsumerAckTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ConsumerCloseTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ConsumerConfigurationTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ConsumerDecryptFailListenerTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ConsumerDedupPermitsUpdateTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ConsumerMemoryLimitTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ConsumerUnsubscribeTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/DisabledSystemTopicTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/DispatchAccordingPermitsTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/DynamicReceiverQueueSizeTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/HierarchyTopicAutoCreationTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/KeySharedSubscriptionMaxUnackedMessagesTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/KeyStoreTlsProducerConsumerTestWithAuthTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/KeyStoreTlsProducerConsumerTestWithoutAuthTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/KeyStoreTlsTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/LookupRetryTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/LookupServiceTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/MessageChecksumTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/MessageChunkingDeduplicationTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/MessageChunkingSharedTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/MessageChunkingTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/MessageIdTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/MessageParserTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/MessagePublishThrottlingTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/MessageRedeliveryTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/MockMessageTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/MultiTopicsReaderTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/NegativeAcksTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/PartialPartitionedProducerTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/PatternTopicsConsumerImplAuthTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/PatternTopicsConsumerImplTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/PerMessageUnAcknowledgedRedeliveryTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ProduceWithMessageIdTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ProducerCloseTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ProducerConsumerInternalTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ProducerEmptySchemaCacheTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ProducerMemoryLeakTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ProducerMemoryLimitTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ProducerReconnectionTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ProducerSemaphoreTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ProducerSyncRetryTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/PulsarClientConfigurationOverrideTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/PulsarMultiHostClientTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/PulsarTestClient.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/RawBatchMessageContainerImplTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/RawMessageSerDeserTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/RawReaderTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ReaderTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/RetryUtilTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/SchemaDeleteTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/SequenceIdWithErrorTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ServiceUrlQuarantineTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/SimpleProduceConsumeIoTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/TableViewTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/TopicDoesNotExistsTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/TopicFromMessageTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/TopicPublishThrottlingInitTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/TopicsConsumerImplTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/TransactionClientConnectTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/TransactionEndToEndTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/TransactionEndToEndWithoutBatchIndexAckTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/UnAcknowledgedMessagesTimeoutTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/impl/ZeroQueueSizeTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/metrics/ClientMetricsTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/processor/CustomBatchFormat.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/processor/CustomBatchPayloadProcessor.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/processor/CustomBatchProducer.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/processor/DefaultProcessorWithRefCnt.java
+pulsar-broker/src/test/java/org/apache/pulsar/client/processor/MessagePayloadProcessorTest.java
+pulsar-broker/src/test/java/org/apache/pulsar/stats/client/PulsarBrokerStatsClientTest.java
+pulsar-client-admin-api/src/main/java
+pulsar-client-admin-api/src/main/java/org
+pulsar-client-admin-api/src/main/java/org/apache
+pulsar-client-admin-api/src/main/java/org/apache/pulsar
+pulsar-client-admin-api/src/main/java/org/apache/pulsar/client
+pulsar-client-admin-api/src/main/java/org/apache/pulsar/client/admin
+pulsar-client-admin-api/src/main/java/org/apache/pulsar/client/admin/Bookies.java
+pulsar-client-admin-api/src/main/java/org/apache/pulsar/client/admin/BrokerStats.java
+pulsar-client-admin-api/src/main/java/org/apache/pulsar/client/admin/Brokers.java
+pulsar-client-admin-api/src/main/java/org/apache/pulsar/client/admin/Clusters.java
+pulsar-client-admin-api/src/main/java/org/apache/pulsar/client/admin/Functions.java
+pulsar-client-admin-api/src/main/java/org/apache/pulsar/client/admin/GetStatsOptions.java
+pulsar-client-admin-api/src/main/java/org/apache/pulsar/client/admin/GrantTopicPermissionOptions.java
+pulsar-client-admin-api/src/main/java/org/apache/pulsar/client/admin/ListNamespaceTopicsOptions.java
+pulsar-client-admin-api/src/main/java/org/apache/pulsar/client/admin/ListTopicsOptions.java
+pulsar-client-admin-api/src/main/java/org/apache/pulsar/client/admin/LongRunningProcessStatus.java
+pulsar-client-admin-api/src/main/java/org/apache/pulsar/client/admin/Lookup.java
+pulsar-client-admin-api/src/main/java/org/apache/pulsar/client/admin/MetadataMigration.java
+pulsar-client-admin-api/src/main/java/org/apache/pulsar/client/admin/Mode.java
+
+web search: 
+web search: Apache Pulsar 4.2.1 Java client documentation GitHub site docs
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/org/apache/pulsar/pulsar-client/4.2.1/pulsar-client-4.2.1-javadoc.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client/src/test && curl -fsSI https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client/src/main/java' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+exec
+/usr/bin/bash -lc 'curl -fsSI https://javadoc.io/doc/org.apache.pulsar/pulsar-client/4.2.1/index.html && curl -fsSI https://javadoc.io/doc/org.apache.pulsar/pulsar-client/$version$/index.html' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+exec
+/usr/bin/bash -lc "jq -r '.tree[] | select(.path|test(\"("'^|/)README|docs|site|java-client|client-libraries|documentation|examples";"i")) | .path'"' /tmp/pulsar-tree.json | head -200" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+ succeeded in 143ms:
+sar-io/docs/src/main/java/org/apache/pulsar/io/docs
+pulsar-io/docs/src/main/java/org/apache/pulsar/io/docs/ConnectorDocGenerator.java
+pulsar-io/docs/src/main/java/org/apache/pulsar/io/docs/package-info.java
+pulsar-io/docs/src/main/resources
+pulsar-io/docs/src/main/resources/findbugsExclude.xml
+pulsar-io/elastic-search/src/test/resources/ssl/README.md
+pulsar-io/hbase/src/test/resources/hbase/hbase-site.xml
+pulsar-io/hdfs3/src/test/resources/hadoop/core-site.xml
+pulsar-io/hdfs3/src/test/resources/hadoop/hdfs-site.xml
+pulsar-metadata/src/test/resources/ssl/README.md
+pulsar-proxy/src/main/java/org/apache/pulsar/proxy/util/CmdGenerateDocumentation.java
+pulsar-proxy/src/test/java/org/apache/pulsar/proxy/util/CmdGenerateDocumentationTest.java
+pulsar-testclient/src/main/java/org/apache/pulsar/testclient/CmdGenerateDocumentation.java
+tests/README.md
+tests/certificate-authority/README.md
+tests/compose/README.md
+tests/docker-images/latest-version-image/python-examples
+tests/docker-images/latest-version-image/python-examples/consumer_schema.py
+tests/docker-images/latest-version-image/python-examples/exception_function.py
+tests/docker-images/latest-version-image/python-examples/exclamation.zip
+tests/docker-images/latest-version-image/python-examples/exclamation_lib.py
+tests/docker-images/latest-version-image/python-examples/exclamation_with_extra_deps.py
+tests/docker-images/latest-version-image/python-examples/producer_schema.py
+tiered-storage/file-system/src/test/resources/filesystem_offload_core_site.xml
+wireshark/README.md
+
+ exited 22 in 278ms:
+HTTP/2 404 
+date: Wed, 10 Jun 2026 05:48:55 GMT
+content-type: text/html
+cf-ray: a09616faaad22797-LYS
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/pulsar/pulsar-client/4.2.1/pulsar-client-4.2.1-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 380ms:
+HTTP/2 200 
+date: Wed, 10 Jun 2026 05:48:54 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/org.apache.pulsar/pulsar-client/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=LgYcz8rwtIjx48v1rpGhNRxmAPudtoGOkaK%2Bt0rbOiTaVztu99Y2S3STB1vHV3VupAODbArj%2BjxpnIHmXyNmHooAQ81J5LfdW81eVLQoe8NHlXwtzgkS5mF11IGn0VDtBr71%2F3MzZdJx"}]}
+server: cloudflare
+cf-ray: a09616fadfe03b57-GVA
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 303 
+date: Wed, 10 Jun 2026 05:48:55 GMT
+content-length: 0
+location: /doc/org.apache.pulsar/pulsar-client/4.2.2/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=BEJDPWH07XCK2ozuFRoMnu63h86eI%2Fs%2FpmhbA2f1r3jIbgEedhocxgtjqgnP73ddlSJaYOAq9ak4Ff1WRo7Z8x5%2F0kHgIkFw7Dxt74Xxqh91sem%2B%2FnZZUBf%2FwJtm4yz5RcnnYDiNmxTM"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: a09616fbbfe53b51-GVA
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 1015ms:
+HTTP/2 200 
+date: Wed, 10 Jun 2026 05:48:55 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"1a4c29f380eefe774f897006d1b0f198"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=w8h0rCXu3SQyGF%2B%2BUHeem13tOeMqLeBVcpIPel2c7CYE45Kl%2Fn7mf6nhc4bIvaitCoWc1ALTqnpC7rsqOwKcrBzumvG6jhphXV%2FYgW%2BS4OUAl%2FPMyEHEZcD14JVgfAQ%2BLzHlLxXVHZaz%2F3ySea79vz7ClJJaECHz1qCvVf%2BXKrkw2nEAyEH5HCCES%2Bwi%2FxvmRWSue%2FxLoGWSu2rMaBcN99c0CB0g6jrIB4RIxb6HkLMrqxajDQaOxb0W9HRxF7yJQCcyoD7D2wpHEch8yzbu2g%3D%3D--N6cOnfDAQqrNll8G--Wiox7s6rQ7dmoseu47MNgw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1615316799.1781070534; expires=Thu, 10 Jun 2027 05:48:54 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 10 Jun 2027 05:48:54 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 61FD:190FD:9A4E3B7:7C9AA2B:6A28FAC6
+
+HTTP/2 200 
+date: Wed, 10 Jun 2026 05:48:55 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"691fc2c8e1425ec4e4337a1baa6bfb8f"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=o7gqb7FRJoISSDXjbpKevQ9eixdWRxSS92rSyosWh2fNysVXwFOT44jmruemiMvRdM36ScA0KnSNTQW%2FBR0WevwtRK9jqlY2w3dFWmKLNmic1xgqOxJNiHlOdvtxD9Jwv3vllpJW9L7or3%2BKsYRQ5rI9OmVA7WAdc0c3rM%2FbLOp%2BoWsPJSmdaXjTkkwrDdk7f3NO8XpWQ9jg7ATcLEx1VWlLGnHNwPFvUA%2BeKCtVlB%2BPo5xShdviZ5ItKIdST6quNi0Z6wCFzjxyQK%2B1%2FDYq4A%3D%3D--ScahFjldyIJ6E7c2--oNceMN1LYPdvkYzM1wJD9A%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.133963449.1781070535; expires=Thu, 10 Jun 2027 05:48:55 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 10 Jun 2027 05:48:55 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 61FE:3C332:986CBB2:7B1A701:6A28FAC7
+
+
+codex
+For documentation, `javadoc.io` resolves the artifact-specific 4.2.1 page even though Maven Central does not publish a separate javadoc JAR. I’m going to use that versioned artifact documentation URL rather than a redirected website page.
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"' -g '*.json' . | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+ succeeded in 0ms:
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+./metadata/com.aayushatharva.brotli4j/service/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+./metadata/jakarta.transaction/jakarta.transaction-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-sources.jar",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-cssparser/$version$/htmlunit-cssparser-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-sources.jar",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/$version$/audience-annotations-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+./metadata/io.suzaku/boopickle_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_2.13/$version$/boopickle_2.13-$version$-sources.jar",
+./metadata/io.suzaku/boopickle_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_3/$version$/boopickle_3-$version$-sources.jar",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+./metadata/net.bytebuddy/byte-buddy-agent/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-sources.jar",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/grpc-google-common-protos/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-v1/$version$/grpc-google-cloud-spanner-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-v1/$version$/grpc-google-cloud-spanner-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-secretmanager-v1beta1/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-secretmanager-v1beta1/$version$/proto-google-cloud-secretmanager-v1beta1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-executor-v1/$version$/proto-google-cloud-spanner-executor-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-admin-database-v1/$version$/grpc-google-cloud-spanner-admin-database-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-v1/$version$/proto-google-cloud-spanner-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-monitoring-v3/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-monitoring-v3/$version$/proto-google-cloud-monitoring-v3-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta2/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1beta2/$version$/proto-google-cloud-bigquerystorage-v1beta2-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-common-protos/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-common-protos/$version$/proto-google-common-protos-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta1/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1beta1/$version$/proto-google-cloud-bigquerystorage-v1beta1-$version$-sources.jar",
+./metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-instance-v1/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-admin-instance-v1/$version$/grpc-google-cloud-spanner-admin-instance-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-database-v1/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-database-v1/$version$/proto-google-cloud-spanner-admin-database-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-logging-v2/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-logging-v2/$version$/proto-google-cloud-logging-v2-$version$-sources.jar",
+./metadata/com.google.api.grpc/grpc-google-cloud-spanner-executor-v1/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-executor-v1/$version$/grpc-google-cloud-spanner-executor-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-iam-v1/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-iam-v1/$version$/proto-google-iam-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1alpha/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1alpha/$version$/proto-google-cloud-bigquerystorage-v1alpha-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-secretmanager-v1/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-secretmanager-v1/$version$/proto-google-cloud-secretmanager-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-spanner-admin-instance-v1/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-admin-instance-v1/$version$/proto-google-cloud-spanner-admin-instance-v1-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1beta/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1beta/$version$/proto-google-cloud-bigquerystorage-v1beta-$version$-sources.jar",
+./metadata/com.google.api.grpc/proto-google-cloud-secretmanager-v1beta2/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-secretmanager-v1beta2/$version$/proto-google-cloud-secretmanager-v1beta2-$version$-sources.jar",
+./metadata/ru.vyarus/generics-resolver/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/ru/vyarus/generics-resolver/$version$/generics-resolver-$version$-sources.jar",
+./metadata/dev.zio/zio_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio_3/$version$/zio_3-$version$-sources.jar",
+./metadata/dev.zio/zio-test_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-test_3/$version$/zio-test_3-$version$-sources.jar",
+./metadata/dev.zio/zio-config_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-sources.jar",
+./metadata/dev.zio/zio-stacktracer_3/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-sources.jar",
+./metadata/dev.zio/zio-stacktracer_3/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-sources.jar",
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect-thirdparty-boopickle-shaded_3/$version$/izumi-reflect-thirdparty-boopickle-shaded_3-$version$-sources.jar",
+./metadata/dev.zio/zio-internal-macros_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_2.13/$version$/zio-internal-macros_2.13-$version$-sources.jar",
+./metadata/dev.zio/zio-http_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-http_3/$version$/zio-http_3-$version$-sources.jar",
+./metadata/dev.zio/zio-logging_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-logging_2.13/$version$/zio-logging_2.13-$version$-sources.jar",
+./metadata/dev.zio/zio-internal-macros_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-sources.jar",
+./metadata/dev.zio/zio-internal-macros_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-sources.jar",
+./metadata/dev.zio/zio-query_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-query_3/$version$/zio-query_3-$version$-sources.jar",
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/2.3.8/izumi-reflect-thirdparty-boopickle-shaded_2.13-2.3.8-sources.jar",
+./metadata/dev.zio/zio-schema_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema_3/$version$/zio-schema_3-$version$-sources.jar",
+./metadata/dev.zio/izumi-reflect_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_3/$version$/izumi-reflect_3-$version$-sources.jar",
+./metadata/dev.zio/zio-schema-derivation_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-derivation_3/$version$/zio-schema-derivation_3-$version$-sources.jar",
+./metadata/dev.zio/zio-prelude_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-prelude_3/$version$/zio-prelude_3-$version$-sources.jar",
+./metadata/dev.zio/zio-interop-cats_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/$version$/zio-interop-cats_3-$version$-sources.jar",
+./metadata/dev.zio/zio-schema-macros_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-macros_3/$version$/zio-schema-macros_3-$version$-sources.jar",
+./metadata/dev.zio/zio-managed_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-managed_3/$version$/zio-managed_3-$version$-sources.jar",
+./metadata/dev.zio/zio-json_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-json_3/$version$/zio-json_3-$version$-sources.jar",
+./metadata/dev.zio/zio-prelude-macros_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-prelude-macros_3/$version$/zio-prelude-macros_3-$version$-sources.jar",
+./metadata/dev.zio/zio-config-typesafe_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config-typesafe_3/$version$/zio-config-typesafe_3-$version$-sources.jar",
+./metadata/dev.zio/zio-interop-tracer_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-interop-tracer_3/$version$/zio-interop-tracer_3-$version$-sources.jar",
+./metadata/org.scalatra/scalatra-common_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatra/scalatra-common_3/$version$/scalatra-common_3-$version$-sources.jar",
+./metadata/org.scalatra/scalatra_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatra/scalatra_3/$version$/scalatra_3-$version$-sources.jar",
+./metadata/org.apiguardian/apiguardian-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apiguardian/apiguardian-api/$version$/apiguardian-api-$version$-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-sources.jar",
+./metadata/javax.activation/activation/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/$version$/activation-$version$-sources.jar",
+./metadata/org.apache.arrow/arrow-memory-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/$version$/arrow-memory-core-$version$-sources.jar",
+./metadata/org.apache.arrow/arrow-memory-core/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-core/$version$/arrow-memory-core-$version$-sources.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-sources.jar",
+./metadata/org.apache.arrow/arrow-format/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-format/$version$/arrow-format-$version$-sources.jar",
+./metadata/org.apache.arrow/arrow-memory-netty/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-memory-netty/$version$/arrow-memory-netty-$version$-sources.jar",
+./metadata/org.apache.arrow/arrow-vector/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/arrow/arrow-vector/$version$/arrow-vector-$version$-sources.jar",
+./metadata/com.monovore/decline_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/monovore/decline_3/$version$/decline_3-$version$-sources.jar",
+./metadata/com.monovore/decline-effect_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/monovore/decline-effect_3/$version$/decline-effect_3-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/pulsar/contents/pulsar-client/src/test/java?ref=v4.2.1 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/pulsar/contents/pulsar-client/src/main/java/org/apache/pulsar/client?ref=v4.2.1 | sed -n '1,200p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/org.apache.pulsar/pulsar-client/4.2.1/index.html | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+ succeeded in 0ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>pulsar-client 4.2.1 javadoc (org.apache.pulsar)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/org.apache.pulsar">org.apache.pulsar</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						pulsar-client
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						
+						<a href="/doc/org.apache.pulsar/bouncy-castle-bc" class="dropdown-item">
+							bouncy-castle-bc
+						</a>
+						
+						<a href="/doc/org.apache.pulsar/bouncy-castle-bcfips" class="dropdown-item">
+							bouncy-castle-bcfips
+						</a>
+						
+						<a href="/doc/org.apache.pulsar/pulsar" class="dropdown-item">
+							pulsar
+						</a>
+						
+						<a href="/doc/org.apache.pulsar/pulsar-broker" class="dropdown-item">
+							pulsar-broker
+						</a>
+						
+						<a href="/doc/org.apache.pulsar/pulsar-broker-auth-sasl" class="dropdown-item">
+							pulsar-broker-auth-sasl
+						</a>
+						
+						<a href="/doc/org.apache.pulsar/pulsar-broker-common" class="dropdown-item">
+							pulsar-broker-common
+						</a>
+						
+						<a href="/doc/org.apache.pulsar/pulsar-client" class="dropdown-item">
+							pulsar-client
+
+ succeeded in 220ms:
+[
+  {
+    "name": "org",
+    "path": "pulsar-client/src/test/java/org",
+    "sha": "7eda1720a430ae31177b979ea8546d7eaf765da2",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client/src/test/java/org?ref=v4.2.1",
+    "html_url": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client/src/test/java/org",
+    "git_url": "https://api.github.com/repos/apache/pulsar/git/trees/7eda1720a430ae31177b979ea8546d7eaf765da2",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client/src/test/java/org?ref=v4.2.1",
+      "git": "https://api.github.com/repos/apache/pulsar/git/trees/7eda1720a430ae31177b979ea8546d7eaf765da2",
+      "html": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client/src/test/java/org"
+    }
+  }
+]
+
+ succeeded in 243ms:
+[
+  {
+    "name": "impl",
+    "path": "pulsar-client/src/main/java/org/apache/pulsar/client/impl",
+    "sha": "4914e4893f6737975b675cb8b3b49e2f7abe4ea9",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client/src/main/java/org/apache/pulsar/client/impl?ref=v4.2.1",
+    "html_url": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client/src/main/java/org/apache/pulsar/client/impl",
+    "git_url": "https://api.github.com/repos/apache/pulsar/git/trees/4914e4893f6737975b675cb8b3b49e2f7abe4ea9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client/src/main/java/org/apache/pulsar/client/impl?ref=v4.2.1",
+      "git": "https://api.github.com/repos/apache/pulsar/git/trees/4914e4893f6737975b675cb8b3b49e2f7abe4ea9",
+      "html": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client/src/main/java/org/apache/pulsar/client/impl"
+    }
+  },
+  {
+    "name": "util",
+    "path": "pulsar-client/src/main/java/org/apache/pulsar/client/util",
+    "sha": "5880a2ba4233443e5277075ae897fba66b8fabf3",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client/src/main/java/org/apache/pulsar/client/util?ref=v4.2.1",
+    "html_url": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client/src/main/java/org/apache/pulsar/client/util",
+    "git_url": "https://api.github.com/repos/apache/pulsar/git/trees/5880a2ba4233443e5277075ae897fba66b8fabf3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pulsar/contents/pulsar-client/src/main/java/org/apache/pulsar/client/util?ref=v4.2.1",
+      "git": "https://api.github.com/repos/apache/pulsar/git/trees/5880a2ba4233443e5277075ae897fba66b8fabf3",
+      "html": "https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client/src/main/java/org/apache/pulsar/client/util"
+    }
+  }
+]
+
+codex
+The artifact is a JVM Java client JAR, not a Kotlin/Groovy/Scala cross-built library and not one of the non-native-image artifact cases. I’m going to write only the requested keys, omitting `language` and the `not-for-native-image` fields.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/pulsar/pulsar/4.2.1/pulsar-4.2.1.pom | rg -n '<url>|<scm>|<connection>|<developerConnection>|<description>' -C 2" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+ succeeded in 0ms:
+36-
+37-  <name>Pulsar</name>
+38:  <description>Pulsar is a distributed pub-sub messaging platform with a very
+39-flexible messaging model and an intuitive client API.</description>
+40:  <url>https://github.com/apache/pulsar</url>
+41-
+42-  <organization>
+43-    <name>Apache Software Foundation</name>
+44:    <url>https://www.apache.org/</url>
+45-  </organization>
+46-  <inceptionYear>2017</inceptionYear>
+--
+56-    <license>
+57-      <name>Apache License, Version 2.0</name>
+58:      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+59-      <distribution>repo</distribution>
+60-    </license>
+61-  </licenses>
+62-
+63:  <scm>
+64:    <url>https://github.com/apache/pulsar</url>
+65:    <connection>scm:git:https://github.com/apache/pulsar.git</connection>
+66:    <developerConnection>scm:git:ssh://git@github.com:apache/pulsar.git</developerConnection>
+67-  </scm>
+68-
+69-  <ciManagement>
+70-    <system>GitHub Actions</system>
+71:    <url>https://github.com/apache/pulsar/actions</url>
+72-  </ciManagement>
+73-
+74-  <issueManagement>
+75-    <system>Github</system>
+76:    <url>https://github.com/apache/pulsar/issues</url>
+77-  </issueManagement>
+78-
+--
+3151-      <id>central</id>
+3152-      <layout>default</layout>
+3153:      <url>https://repo1.maven.org/maven2</url>
+3154-      <snapshots>
+3155-        <enabled>false</enabled>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client/src/test/java/org/apache/pulsar/client && curl -fsSI https://javadoc.io/doc/org.apache.pulsar/pulsar-client/4.2.1/index.html' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/pulsar/pulsar-client/4.2.1/pulsar-client-4.2.1.jar -o /tmp/pulsar-client-4.2.1.jar && jar tf /tmp/pulsar-client-4.2.1.jar | rg '\\.class"'$'"' | head -20" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/pulsar/pulsar-client/4.2.1/pulsar-client-4.2.1-sources.jar && curl -fsSI https://repo.maven.apache.org/maven2/org/apache/pulsar/pulsar-client/4.2.1/pulsar-client-4.2.1-tests.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+ exited 22 in 660ms:
+HTTP/2 200 
+date: Wed, 10 Jun 2026 05:49:15 GMT
+content-type: application/java-archive
+content-length: 11639
+cf-ray: a09617783865278f-LYS
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "bba99fe7243663ec3170a4345d370217"
+last-modified: Thu, 23 Apr 2026 10:45:29 GMT
+x-checksum-md5: bba99fe7243663ec3170a4345d370217
+x-checksum-sha1: 7e9ede40b373a4b6f48997d9e1205db11b609948
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Wed, 10 Jun 2026 05:49:15 GMT
+content-type: text/html
+cf-ray: a096177a9c9d278d-LYS
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/pulsar/pulsar-client/4.2.1/pulsar-client-4.2.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 877ms:
+HTTP/2 200 
+date: Wed, 10 Jun 2026 05:49:15 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"7ab7819780a1a5162fcc216964a21605"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=wIa5F9Y9XzgN%2B7eue%2Btrp1nXkf15Qfe0sbdxOyF2bPqMjIys2vjUP0m9EBt96DtelWoGV%2FB3KN52DDbg30JREOTUoUVJlh65eGoJj3I7yHTLAEJH6WXCMYfefzPgNnKtKgIg2pybGmYoqD%2FxZnbmTpGvf7jDB3zO%2FhK3optxLoNQQyWFkHCE9J0NVrEkEJm7nFTZ%2BH7T6ZPe982OY6PGB75GwdWu86nrN98c1oZT55qzSF5GY2ifelfZUa9%2FypE7gQXYA9Jx6WlN4LE4GZlklQ%3D%3D--RD4XI9pFhshqYXPb--mlnHGtYP4YjLILZT5j77nA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1039693168.1781070554; expires=Thu, 10 Jun 2027 05:49:14 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 10 Jun 2027 05:49:14 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6232:46CAA:985894C:7AC55B6:6A28FADA
+
+HTTP/2 200 
+date: Wed, 10 Jun 2026 05:49:15 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/org.apache.pulsar/pulsar-client/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=tiDZFOEBWs%2BcYjVBn0gqVy8Ou9tquc08tR%2BseeyebswKohls%2FzjfmKCAt0swlqVhJIazW%2BDG2XDXJjEQpyQ3UyGjlmh66o2uwWk0JfligKYUVyUIYRTWzlWny1Z2M8GUrQx2ZpSJpg5%2B"}]}
+server: cloudflare
+cf-ray: a096177cddc23b58-GVA
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 1407ms:
+org/apache/pulsar/client/impl/schema/ProtobufSchema.class
+org/apache/pulsar/client/impl/AbstractBatchMessageContainer.class
+org/apache/pulsar/client/impl/AcknowledgmentsGroupingTracker.class
+org/apache/pulsar/client/impl/AuthenticationUtil$1.class
+org/apache/pulsar/client/impl/AuthenticationUtil.class
+org/apache/pulsar/client/impl/AutoClusterFailover$AutoClusterFailoverBuilderImpl.class
+org/apache/pulsar/client/impl/AutoClusterFailover.class
+org/apache/pulsar/client/impl/BatchMessageContainerBase.class
+org/apache/pulsar/client/impl/BatchMessageContainerImpl.class
+org/apache/pulsar/client/impl/BatchMessageIdImpl.class
+org/apache/pulsar/client/impl/BatchMessageKeyBasedContainer.class
+org/apache/pulsar/client/impl/BinaryProtoLookupService$LookupDataResult.class
+org/apache/pulsar/client/impl/BinaryProtoLookupService.class
+org/apache/pulsar/client/impl/ChunkMessageIdImpl.class
+org/apache/pulsar/client/impl/ClientBuilderImpl.class
+org/apache/pulsar/client/impl/ClientCnx$1.class
+org/apache/pulsar/client/impl/ClientCnx$RequestTime.class
+org/apache/pulsar/client/impl/ClientCnx$RequestType.class
+org/apache/pulsar/client/impl/ClientCnx$State.class
+org/apache/pulsar/client/impl/ClientCnx.class
+
+codex
+I have enough evidence now and am updating the JSON with Maven-hosted sources, the tagged upstream test directory, and artifact-versioned javadoc.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f/build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json
+diff --git a/build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json b/build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json
+index afe5215f7fcc0b1ba924660c07c559a0c1c58399..7a9cf32313b2e2160e0ccbf58d5e0d0cfe1a65fa
+--- a/build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json
++++ b/build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.pulsar:pulsar-client:4.2.1"
++  "coordinates" : "org.apache.pulsar:pulsar-client:4.2.1",
++  "repository-url" : "https://github.com/apache/pulsar",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/pulsar-client/$version$/pulsar-client-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pulsar/tree/v$version$/pulsar-client/src/test",
++  "documentation-url" : "https://javadoc.io/doc/org.apache.pulsar/pulsar-client/$version$/index.html",
++  "description" : "Apache Pulsar is a distributed publish-subscribe messaging and streaming platform. The pulsar-client artifact provides the shaded Java client implementation for JVM applications to create producers, consumers, readers, and related authentication, schema, and lookup functionality for Pulsar clusters."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json b/build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json
+index afe5215f7fcc0b1ba924660c07c559a0c1c58399..7a9cf32313b2e2160e0ccbf58d5e0d0cfe1a65fa
+--- a/build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json
++++ b/build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.pulsar:pulsar-client:4.2.1"
++  "coordinates" : "org.apache.pulsar:pulsar-client:4.2.1",
++  "repository-url" : "https://github.com/apache/pulsar",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/pulsar-client/$version$/pulsar-client-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pulsar/tree/v$version$/pulsar-client/src/test",
++  "documentation-url" : "https://javadoc.io/doc/org.apache.pulsar/pulsar-client/$version$/index.html",
++  "description" : "Apache Pulsar is a distributed publish-subscribe messaging and streaming platform. The pulsar-client artifact provides the shaded Java client implementation for JVM applications to create producers, consumers, readers, and related authentication, schema, and lookup functionality for Pulsar clusters."
+ }
+
+codex
+The file is written. I’m doing a quick JSON/key check and verifying the final contents match the requested shape.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.pulsar:pulsar-client:4.2.1",
+  "repository-url": "https://github.com/apache/pulsar",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/pulsar/pulsar-client/$version$/pulsar-client-$version$-sources.jar",
+  "test-code-url": "https://github.com/apache/pulsar/tree/v$version$/pulsar-client/src/test",
+  "documentation-url": "https://javadoc.io/doc/org.apache.pulsar/pulsar-client/$version$/index.html",
+  "description": "Apache Pulsar is a distributed publish-subscribe messaging and streaming platform. The pulsar-client artifact provides the shaded Java client implementation for JVM applications to create producers, consumers, readers, and related authentication, schema, and lookup functionality for Pulsar clusters."
+}
+
+exec
+/usr/bin/bash -lc "jq -r 'keys[]' build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+ succeeded in 0ms:
+coordinates
+description
+documentation-url
+repository-url
+source-code-url
+test-code-url
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json b/build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json
+index afe5215f7fcc0b1ba924660c07c559a0c1c58399..7a9cf32313b2e2160e0ccbf58d5e0d0cfe1a65fa
+--- a/build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json
++++ b/build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.pulsar:pulsar-client:4.2.1"
++  "coordinates" : "org.apache.pulsar:pulsar-client:4.2.1",
++  "repository-url" : "https://github.com/apache/pulsar",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/pulsar-client/$version$/pulsar-client-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pulsar/tree/v$version$/pulsar-client/src/test",
++  "documentation-url" : "https://javadoc.io/doc/org.apache.pulsar/pulsar-client/$version$/index.html",
++  "description" : "Apache Pulsar is a distributed publish-subscribe messaging and streaming platform. The pulsar-client artifact provides the shaded Java client implementation for JVM applications to create producers, consumers, readers, and related authentication, schema, and lookup functionality for Pulsar clusters."
+ }
+
+web search: 
+web search: https://github.com/apache/pulsar/tree/v4.2.1/pulsar-client/src/test
+web search: 
+web search: repo.maven.apache.org org/apache/pulsar/pulsar-client/4.2.1 pulsar-client-4.2.1-sources.jar
+codex
+Updated [org.apache.pulsar-pulsar-client-4.2.1.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f/build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json).
+
+I used Maven-hosted sources, the `v$version$` upstream test directory, and artifact-versioned javadoc. I left `language`, `not-for-native-image`, `reason`, and `replacement` absent because this is a JVM Java client artifact; Pulsar’s Java client docs describe it as creating producers, consumers, and readers in Java. ([pulsar.apache.org](https://pulsar.apache.org/docs/client-libraries/java/?utm_source=openai))
+
+Validation: `jq` parses the JSON successfully.
+diff --git a/build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json b/build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json
+index afe5215f7fcc0b1ba924660c07c559a0c1c58399..7a9cf32313b2e2160e0ccbf58d5e0d0cfe1a65fa
+--- a/build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json
++++ b/build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.pulsar:pulsar-client:4.2.1"
++  "coordinates" : "org.apache.pulsar:pulsar-client:4.2.1",
++  "repository-url" : "https://github.com/apache/pulsar",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/pulsar-client/$version$/pulsar-client-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pulsar/tree/v$version$/pulsar-client/src/test",
++  "documentation-url" : "https://javadoc.io/doc/org.apache.pulsar/pulsar-client/$version$/index.html",
++  "description" : "Apache Pulsar is a distributed publish-subscribe messaging and streaming platform. The pulsar-client artifact provides the shaded Java client implementation for JVM applications to create producers, consumers, readers, and related authentication, schema, and lookup functionality for Pulsar clusters."
+ }
+
+tokens used
+92,442
+Updated [org.apache.pulsar-pulsar-client-4.2.1.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f/build/discovered-artifact-metadata/org.apache.pulsar-pulsar-client-4.2.1.json).
+
+I used Maven-hosted sources, the `v$version$` upstream test directory, and artifact-versioned javadoc. I left `language`, `not-for-native-image`, `reason`, and `replacement` absent because this is a JVM Java client artifact; Pulsar’s Java client docs describe it as creating producers, consumers, and readers in Java. ([pulsar.apache.org](https://pulsar.apache.org/docs/client-libraries/java/?utm_source=openai))
+
+Validation: `jq` parses the JSON successfully.
+Ran agent for org.apache.pulsar:pulsar-client:4.2.1 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f/build/agent-artifact-discovery-logs/org.apache.pulsar-pulsar-client-4.2.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4511-0f66062f/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 25s
+9 actionable tasks: 9 executed
