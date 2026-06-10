@@ -39,8 +39,7 @@ public class TestClassScannerTest {
 
         if (scanResult.unsupportedDynamicClassLoading()) {
             assertThat(scanResult.scannedTestClasses()).isEmpty();
-        }
-        else {
+        } else {
             assertThat(scanResult.scannedTestClasses())
                     .contains(
                             TestClassTemplateSpringTestCase.class,
@@ -58,8 +57,7 @@ public class TestClassScannerTest {
                     .filter(testClass -> testClass.getName().startsWith(TestClassScannerTest.class.getName()))
                     .collect(Collectors.toCollection(LinkedHashSet::new));
             return new ScanResult(scannedTestClasses, false);
-        }
-        catch (Error error) {
+        } catch (Error error) {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
             }
