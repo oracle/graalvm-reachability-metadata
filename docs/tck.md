@@ -51,6 +51,10 @@ The core per-coordinate lifecycle, delegated to the per-coordinate build
 (§AR-build-infrastructure). The lanes run in order — compile, JVM tests, native
 build, native tests.
 
+The JVM and full test lanes accept `-PskipJacoco=true` to run without JaCoCo
+instrumentation when the caller needs only pass/fail execution and not coverage
+data.
+
 | Task | Lane |
 | --- | --- |
 | `compileTestJava` | Compile the coordinate's test sources. |

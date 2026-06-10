@@ -40,6 +40,8 @@ public abstract class TestInvocationTask extends AllCoordinatesExecTask {
             defaultArgs.add("-Porg.gradle.java.installations.paths=" + installPathsProperty.get());
         }
         appendProperty(defaultArgs, "metadataConfigDirs");
+        // §TCK-test-harness.3
+        appendProperty(defaultArgs, "skipJacoco");
         return defaultArgs;
     }
 
