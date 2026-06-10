@@ -9,11 +9,15 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String junitVersion = '6.0.0'
 
 dependencies {
     testImplementation "org.springframework:spring-test:$libraryVersion"
     testImplementation "org.springframework:spring-context:$libraryVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
     testImplementation 'junit:junit:4.13.2'
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junitVersion"
+    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junitVersion"
     testImplementation 'commons-logging:commons-logging:1.1.1'
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
