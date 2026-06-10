@@ -130,6 +130,8 @@ class LargeLibraryProgressState:
     request_label: str
     series_id: str
     strategy_name: str
+    class_threshold: int | None = None
+    current_chunk_class_count: int | None = None
     part: int = 1
     base_branch: str = "master"
     last_published_branch: str | None = None
@@ -178,6 +180,8 @@ class LargeLibraryProgressState:
             request_label=str(payload.get("requestLabel", "")),
             series_id=str(payload.get("seriesId", "")),
             strategy_name=str(payload.get("strategyName", "")),
+            class_threshold=_optional_int(payload.get("classThreshold")),
+            current_chunk_class_count=_optional_int(payload.get("currentChunkClassCount")),
             part=int(payload.get("part", 1)),
             base_branch=str(payload.get("baseBranch", "master")),
             last_published_branch=payload.get("lastPublishedBranch"),
@@ -212,6 +216,8 @@ class LargeLibraryProgressState:
             "requestLabel": self.request_label,
             "seriesId": self.series_id,
             "strategyName": self.strategy_name,
+            "classThreshold": self.class_threshold,
+            "currentChunkClassCount": self.current_chunk_class_count,
             "part": self.part,
             "baseBranch": self.base_branch,
             "lastPublishedBranch": self.last_published_branch,
@@ -267,6 +273,11 @@ class LargeLibraryProgressState:
         """Record aggregate dynamic-access coverage."""
         self.covered_calls = int(covered_calls)
         self.total_calls = int(total_calls)
+
+    def update_chunk_limits(self, class_threshold: int, current_chunk_class_count: int) -> None:
+        """Record the dispatcher-selected threshold and concrete chunk size."""
+        self.class_threshold = int(class_threshold)
+        self.current_chunk_class_count = int(current_chunk_class_count)
 
     def record_published_pr(self, branch: str, commit: str, pr_number: int | None) -> None:
         """Record the branch, commit, and optional PR number for the latest published part.

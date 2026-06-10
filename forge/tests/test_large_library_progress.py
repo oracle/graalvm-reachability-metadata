@@ -43,6 +43,7 @@ class LargeLibraryProgressStateTests(unittest.TestCase):
             state.mark_completed("a.A")
             state.mark_exhausted("b.B")
             state.update_coverage(10, 40)
+            state.update_chunk_limits(5, 2)
             path = state.default_path(tmpdir)
             state.save(path)
 
@@ -55,6 +56,8 @@ class LargeLibraryProgressStateTests(unittest.TestCase):
             self.assertEqual(loaded.exhausted_classes, ["b.B"])
             self.assertEqual(loaded.covered_calls, 10)
             self.assertEqual(loaded.total_calls, 40)
+            self.assertEqual(loaded.class_threshold, 5)
+            self.assertEqual(loaded.current_chunk_class_count, 2)
 
     def test_copy_progress_artifacts_preserves_state_before_scratch_cleanup(self) -> None:
         with tempfile.TemporaryDirectory() as scratch, tempfile.TemporaryDirectory() as canonical:

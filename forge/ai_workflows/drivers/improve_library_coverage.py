@@ -157,7 +157,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--chunk-call-limit",
         type=int,
         default=0,
-        help="Stop a large-library part after this many newly covered calls. 0 disables it.",
+        help="Deprecated; chunked dynamic-access runs are bounded by class count only.",
     )
     parser.add_argument(
         "--resume-artifact",
@@ -202,7 +202,7 @@ def parse_flags(argv_list: list[str]):
         flags.metrics_repo_path,
         flags.large_library_series,
         flags.chunk_class_limit,
-        flags.chunk_call_limit,
+        0,
         flags.resume_artifact,
         flags.issue_number,
         flags.issue_requested_metadata_context,
