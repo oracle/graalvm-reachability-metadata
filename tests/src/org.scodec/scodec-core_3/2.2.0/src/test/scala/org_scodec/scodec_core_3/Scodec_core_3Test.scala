@@ -150,6 +150,32 @@ class Scodec_core_3Test {
   }
 
   @Test
+  def lookaheadCodecsInspectInputWithoutConsumingIt(): Unit = {
+    val input: BitVector = BitVector.fromValidHex("2a03616263ff")
+
+    val peekedHeader: DecodeResult[Int] = peek(uint8).decode(input).require
+    assertEquals(42, peekedHeader.value)
+    assertEquals(input, peekedHeader.remainder)
+
+    val matchedMagic: DecodeResult[Boolean] =
+      lookahead(constant(ByteVector(0x2a))).decode(input).require
+    assertTrue(matchedMagic.value)
+    assertEquals(input, matchedMagic.remainder)
+
+    val missingMagic: DecodeResult[Boolean] =
+      lookahead(constant(ByteVector(0x7f))).decode(input).require
+    assertFalse(missingMagic.value)
+    assertEquals(input, missingMagic.remainder)
+
+    val framedPayloadCodec: Codec[BitVector] = peekVariableSizeBytes(uint8)
+    val framedBits: DecodeResult[BitVector] =
+      framedPayloadCodec.decode(BitVector.fromValidHex("03616263ff")).require
+    assertEquals("03616263", framedBits.value.toHex)
+    assertEquals("ff", framedBits.remainder.toHex)
+    assertEquals("03616263", framedPayloadCodec.encode(framedBits.value).require.toHex)
+  }
+
+  @Test
   def checksummedCodecsValidateFramedPayloadIntegrity(): Unit = {
     val xorChecksum: BitVector => BitVector = bits => {
       val checksumByte: Int = bits.toByteArray.foldLeft(0) { (checksum: Int, byte: Byte) =>
