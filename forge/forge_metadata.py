@@ -5309,10 +5309,7 @@ def _require_publication_value(value: str | None, field_name: str, claimed_issue
 def _load_library_update_publication_route(claimed_issue: ClaimedIssue) -> LibraryUpdateRoute | None:
     if claimed_issue.label != LABEL_LIBRARY_UPDATE:
         return None
-    route = load_library_update_route(library_update_route_artifact_root(claimed_issue))
-    if route is not None:
-        return route
-    return load_library_update_route(claimed_issue.scratch_metrics_repo_path)
+    return load_library_update_route(library_update_route_artifact_root(claimed_issue))
 
 
 def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff:
