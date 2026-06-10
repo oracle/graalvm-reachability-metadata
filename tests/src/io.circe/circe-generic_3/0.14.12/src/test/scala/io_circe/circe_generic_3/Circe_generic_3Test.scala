@@ -63,6 +63,13 @@ final case class AutoMetric(name: String, values: Vector[Double])
 
 final case class AutoReport(metric: AutoMetric, labels: Set[String], active: Boolean)
 
+final case class GenericEnvelope[A](payload: A, metadata: Map[String, String])
+
+object GenericEnvelope {
+  given [A: Encoder]: Encoder.AsObject[GenericEnvelope[A]] = deriveEncoder[GenericEnvelope[A]]
+  given [A: Decoder]: Decoder[GenericEnvelope[A]] = deriveDecoder[GenericEnvelope[A]]
+}
+
 class Circe_generic_3Test {
   @Test
   def derivesSemiAutomaticCodecsForNestedProducts(): Unit = {
@@ -193,6 +200,23 @@ class Circe_generic_3Test {
     assertEquals(Right(Vector(1.25, 2.5, 5.0)), json.hcursor.downField("metric").get[Vector[Double]]("values"))
     assertEquals(Right(Set("native-image", "scala-3")), json.hcursor.get[Set[String]]("labels"))
     assertEquals(Right(report), json.as[AutoReport])
+  }
+
+  @Test
+  def derivesSemiAutomaticCodecsForGenericProducts(): Unit = {
+    val envelope: GenericEnvelope[List[String]] = GenericEnvelope(
+      payload = List("generic", "derivation"),
+      metadata = Map("format" -> "json", "mode" -> "native")
+    )
+
+    val json: Json = envelope.asJson
+
+    assertEquals(Right(List("generic", "derivation")), json.hcursor.get[List[String]]("payload"))
+    assertEquals(
+      Right(Map("format" -> "json", "mode" -> "native")),
+      json.hcursor.get[Map[String, String]]("metadata")
+    )
+    assertEquals(Right(envelope), json.as[GenericEnvelope[List[String]]])
   }
 
   private def sampleUser: GenericUser = {
