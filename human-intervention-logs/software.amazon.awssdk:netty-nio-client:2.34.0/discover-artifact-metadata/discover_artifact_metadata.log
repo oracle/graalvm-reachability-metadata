@@ -1,0 +1,1115 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019eaec3-0325-7532-a5ff-a86008a1a765
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: software.amazon.awssdk:netty-nio-client:2.34.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "2.34.0" when "$version$" is replaced with "2.34.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "software.amazon.awssdk:netty-nio-client:2.34.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.34.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven/repository sources first, then update the JSON directly with the resolved tag-aware URLs and description.
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932
+-rw-rw-r-- 1 vjovanov vjovanov 71 Jun 10 01:41 build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
+
+exec
+/usr/bin/bash -lc "rg -n 'software\\.amazon\\.awssdk:netty-nio-client|netty-nio-client' build/discovered-artifact-metadata metadata tests docs -S" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932
+ succeeded in 0ms:
+build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json:2:  "coordinates" : "software.amazon.awssdk:netty-nio-client:2.34.0"
+
+codex
+The target file currently only has the coordinate. I’m checking local examples now so the new fields match this repository’s expected URL style.
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932
+ succeeded in 0ms:
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:6:    "repository-url" : "https://github.com/junit-team/junit-framework",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r$version$/junit-jupiter-engine/src/test",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:6:    "repository-url" : "https://github.com/junit-team/junit5",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit5/tree/r5.9.2/junit-jupiter-params/src/test/java",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-sources.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:6:    "repository-url" : "https://github.com/slick/slick",
+metadata/com.typesafe.slick/slick_2.13/index.json:7:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala",
+metadata/com.typesafe.slick/slick_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-sources.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:6:    "repository-url" : "https://github.com/slick/slick",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:7:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala/slick/test/jdbc/hikaricp",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:6:    "repository-url" : "https://github.com/awaitility/awaitility",
+metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:22:    "repository-url" : "https://github.com/awaitility/awaitility",
+metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-mustmatchers_3/$version$/scalatest-mustmatchers_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/dotty/scalatest-test/src/test/scala/org/scalatest/matchers/must",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-mustmatchers_3/$version$/scalatest-mustmatchers_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/wordspec-test/src/test/scala/org/scalatest/wordspec",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:30:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:31:    "test-code-url" : "N/A",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/diagrams-test/src/test/scala/org/scalatest/diagrams",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:30:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:31:    "test-code-url" : "N/A",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_3/$version$/scalatest-shouldmatchers_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/dotty/scalatest-test/src/test/scala/org/scalatest/matchers/should",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_3/$version$/scalatest-shouldmatchers_3-$version$-javadoc.jar",
+metadata/com.sun.jersey/jersey-servlet/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-servlet/$version$/jersey-servlet-$version$-sources.jar",
+metadata/com.sun.jersey/jersey-servlet/index.json:6:    "repository-url" : "https://github.com/javaee/jersey-1.x",
+metadata/com.sun.jersey/jersey-servlet/index.json:7:    "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/$version$/tests/functional/jersey-servlet3_0-integration",
+metadata/com.sun.jersey/jersey-servlet/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-servlet/$version$/jersey-servlet-$version$-javadoc.jar",
+metadata/com.sun.jersey/jersey-servlet/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-servlet/$version$/jersey-servlet-$version$-sources.jar",
+metadata/com.sun.jersey/jersey-servlet/index.json:30:    "repository-url" : "https://github.com/javaee/jersey-1.x",
+metadata/com.sun.jersey/jersey-servlet/index.json:31:    "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/$version$/tests/functional/jersey-servlet3_0-integration",
+metadata/com.sun.jersey/jersey-servlet/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/jersey-servlet/$version$/jersey-servlet-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/blob/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest/RefSpecSpec.scala",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:30:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:31:    "test-code-url" : "N/A",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-javadoc.jar",
+metadata/io.helidon.common.features/helidon-common-features-metadata/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/helidon/common/features/helidon-common-features-metadata/$version$/helidon-common-features-metadata-$version$-sources.jar",
+metadata/io.helidon.common.features/helidon-common-features-metadata/index.json:6:    "repository-url" : "https://github.com/helidon-io/helidon",
+metadata/io.helidon.common.features/helidon-common-features-metadata/index.json:7:    "test-code-url" : "N/A",
+metadata/io.helidon.common.features/helidon-common-features-metadata/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/helidon/common/features/helidon-common-features-metadata/$version$/helidon-common-features-metadata-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-sources.jar",
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:6:    "repository-url" : "https://github.com/apache/httpcomponents-core",
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-tests.jar",
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:6:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -name '*.json' | head -20 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932
+ succeeded in 0ms:
+{
+  "coordinates" : "software.amazon.awssdk:netty-nio-client:2.34.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'software\\.amazon\\.awssdk|aws-sdk-java-v2' build/discovered-artifact-metadata metadata -g '*.json'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932
+ succeeded in 0ms:
+build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json:2:  "coordinates" : "software.amazon.awssdk:netty-nio-client:2.34.0"
+metadata/library-and-framework-list.json:2674:    "artifact": "software.amazon.awssdk:*",
+metadata/library-and-framework-list.json:2680:          "https://github.com/search?q=repo%3Aaws%2Faws-sdk-java-v2%20META-INF%2Fnative-image&type=code",
+metadata/library-and-framework-list.json:2684:          "https://github.com/aws/aws-sdk-java-v2/tree/master/test/sdk-native-image-test",
+metadata/library-and-framework-list.json:2685:          "https://github.com/aws/aws-sdk-java-v2/blob/03ee2c63a59958775db3c83ff7494264b765daf8/.github/workflows/codebuild-ci.yml#L89-L101"
+metadata/software.amazon.awssdk/kms/2.34.0/reachability-metadata.json:5:        "typeReached": "software.amazon.awssdk.services.kms.endpoints.internal.DefaultPartitionDataProvider"
+metadata/software.amazon.awssdk/kms/2.34.0/reachability-metadata.json:13:        "typeReached": "software.amazon.awssdk.services.kms.endpoints.internal.DefaultPartitionDataProvider"
+metadata/software.amazon.awssdk/kms/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/kms/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/services/kms/src/it",
+metadata/software.amazon.awssdk/kms/index.json:184:      "software.amazon.awssdk.services.kms"
+metadata/software.amazon.awssdk/http-client-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/http-client-spi/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/http-client-spi/src/test",
+metadata/software.amazon.awssdk/http-client-spi/index.json:184:      "software.amazon.awssdk.http",
+metadata/software.amazon.awssdk/http-client-spi/index.json:185:      "software.amazon.awssdk.internal.http"
+metadata/software.amazon.awssdk/lambda/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/lambda/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/services/lambda/src/test",
+metadata/software.amazon.awssdk/lambda/index.json:184:      "software.amazon.awssdk.services.lambda"
+metadata/software.amazon.awssdk/lambda/2.34.0/reachability-metadata.json:5:        "typeReached": "software.amazon.awssdk.services.lambda.endpoints.internal.DefaultPartitionDataProvider"
+metadata/software.amazon.awssdk/lambda/2.34.0/reachability-metadata.json:13:        "typeReached": "software.amazon.awssdk.services.lambda.endpoints.internal.DefaultPartitionDataProvider"
+metadata/software.amazon.awssdk/profiles/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/profiles/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/profiles/src/test/java",
+metadata/software.amazon.awssdk/profiles/index.json:184:      "software.amazon.awssdk.profiles"
+metadata/software.amazon.awssdk/retries-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/retries-spi/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/retries-spi/src/test/java",
+metadata/software.amazon.awssdk/retries-spi/index.json:184:      "software.amazon.awssdk.retries.api"
+metadata/software.amazon.awssdk/http-auth-aws/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/http-auth-aws/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/http-auth-aws/src/test",
+metadata/software.amazon.awssdk/http-auth-aws/index.json:184:      "software.amazon.awssdk.http.auth.aws"
+metadata/software.amazon.awssdk/aws-json-protocol/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/aws-json-protocol/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/protocols/aws-json-protocol/src/test/java",
+metadata/software.amazon.awssdk/aws-json-protocol/index.json:184:      "software.amazon.awssdk.protocols.json"
+metadata/software.amazon.awssdk/dynamodb/2.34.0/reachability-metadata.json:5:        "typeReached": "software.amazon.awssdk.services.dynamodb.endpoints.internal.DefaultPartitionDataProvider"
+metadata/software.amazon.awssdk/dynamodb/2.34.0/reachability-metadata.json:13:        "typeReached": "software.amazon.awssdk.services.dynamodb.endpoints.internal.DefaultPartitionDataProvider"
+metadata/software.amazon.awssdk/dynamodb/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/dynamodb/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/services/dynamodb/src/test",
+metadata/software.amazon.awssdk/dynamodb/index.json:184:      "software.amazon.awssdk.services.dynamodb"
+metadata/software.amazon.awssdk/metrics-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/metrics-spi/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/metrics-spi/src/test/java",
+metadata/software.amazon.awssdk/metrics-spi/index.json:184:      "software.amazon.awssdk.metrics"
+metadata/software.amazon.awssdk/http-auth/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/http-auth/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/http-auth/src/test",
+metadata/software.amazon.awssdk/http-auth/index.json:184:      "software.amazon.awssdk.http.auth"
+metadata/software.amazon.awssdk/secretsmanager/2.34.0/reachability-metadata.json:5:        "typeReached": "software.amazon.awssdk.services.secretsmanager.endpoints.internal.DefaultPartitionDataProvider"
+metadata/software.amazon.awssdk/secretsmanager/2.34.0/reachability-metadata.json:13:        "typeReached": "software.amazon.awssdk.services.secretsmanager.endpoints.internal.DefaultPartitionDataProvider"
+metadata/software.amazon.awssdk/protocol-core/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/protocol-core/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/protocols/protocol-core/src/test/java",
+metadata/software.amazon.awssdk/protocol-core/index.json:184:      "software.amazon.awssdk.protocols.core"
+metadata/software.amazon.awssdk/json-utils/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/json-utils/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/json-utils/src/test",
+metadata/software.amazon.awssdk/json-utils/index.json:26:      "software.amazon.awssdk.protocols.jsoncore"
+metadata/software.amazon.awssdk/secretsmanager/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/secretsmanager/index.json:184:      "software.amazon.awssdk.services.secretsmanager"
+metadata/software.amazon.awssdk/cognitoidentity/2.44.11/reachability-metadata.json:5:        "typeReached": "software.amazon.awssdk.services.cognitoidentity.endpoints.internal.DefaultPartitionDataProvider"
+metadata/software.amazon.awssdk/apache-client/2.34.0/reachability-metadata.json:5:        "typeReached": "software.amazon.awssdk.http.apache.ApacheHttpClient"
+metadata/software.amazon.awssdk/apache-client/2.34.0/reachability-metadata.json:18:        "typeReached": "software.amazon.awssdk.http.apache.ApacheHttpClient"
+metadata/software.amazon.awssdk/cognitoidentity/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/cognitoidentity/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/services/cognitoidentity/src/test",
+metadata/software.amazon.awssdk/cognitoidentity/index.json:26:      "software.amazon.awssdk.services.cognitoidentity"
+metadata/software.amazon.awssdk/auth/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/auth/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/auth/src/test",
+metadata/software.amazon.awssdk/auth/index.json:184:      "software.amazon.awssdk.auth",
+metadata/software.amazon.awssdk/auth/index.json:185:      "software.amazon.awssdk.core.interceptor",
+metadata/software.amazon.awssdk/auth/index.json:186:      "software.amazon.awssdk.core.internal.http.loader",
+metadata/software.amazon.awssdk/auth/index.json:187:      "software.amazon.awssdk.core.internal.util",
+metadata/software.amazon.awssdk/auth/index.json:188:      "software.amazon.awssdk.http.apache",
+metadata/software.amazon.awssdk/auth/index.json:189:      "software.amazon.awssdk.services.sso.internal",
+metadata/software.amazon.awssdk/auth/index.json:190:      "software.amazon.awssdk.utils"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:5:        "typeReached": "software.amazon.awssdk.core.internal.util.ClassLoaderHelper"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:11:        "typeReached": "software.amazon.awssdk.utils.Logger"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:17:        "typeReached": "software.amazon.awssdk.http.apache.ApacheHttpClient$ApacheConnectionManagerFactory"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:23:        "typeReached": "software.amazon.awssdk.http.apache.ApacheHttpClient$ApacheConnectionManagerFactory"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:29:        "typeReached": "software.amazon.awssdk.http.apache.ApacheHttpClient$ApacheConnectionManagerFactory"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:35:        "typeReached": "software.amazon.awssdk.http.apache.ApacheHttpClient$ApacheConnectionManagerFactory"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:41:        "typeReached": "software.amazon.awssdk.http.apache.ApacheHttpClient$ApacheConnectionManagerFactory"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:47:        "typeReached": "software.amazon.awssdk.auth.signer.SignerLoader"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:49:      "type": "software.amazon.awssdk.authcrt.signer.AwsCrtV4aSigner",
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:59:        "typeReached": "software.amazon.awssdk.core.internal.util.ClassLoaderHelper"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:61:      "type": "software.amazon.awssdk.authcrt.signer.AwsCrtV4aSigner"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:65:        "typeReached": "software.amazon.awssdk.core.internal.http.loader.ClasspathSdkHttpServiceProvider"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:67:      "type": "software.amazon.awssdk.http.apache.ApacheSdkHttpService"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:71:        "typeReached": "software.amazon.awssdk.core.internal.http.loader.ClasspathSdkHttpServiceProvider"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:73:      "type": "software.amazon.awssdk.http.urlconnection.UrlConnectionSdkHttpService"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:77:        "typeReached": "software.amazon.awssdk.auth.credentials.internal.ProfileCredentialsUtils"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:79:      "type": "software.amazon.awssdk.services.sso.auth.SsoProfileCredentialsProviderFactory",
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:89:        "typeReached": "software.amazon.awssdk.core.internal.util.ClassLoaderHelper"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:91:      "type": "software.amazon.awssdk.services.sso.auth.SsoProfileCredentialsProviderFactory"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:95:        "typeReached": "software.amazon.awssdk.auth.token.internal.ProfileTokenProviderLoader"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:97:      "type": "software.amazon.awssdk.services.ssooidc.SsoOidcProfileTokenProviderFactory",
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:107:        "typeReached": "software.amazon.awssdk.core.internal.util.ClassLoaderHelper"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:109:      "type": "software.amazon.awssdk.services.ssooidc.SsoOidcProfileTokenProviderFactory"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:113:        "typeReached": "software.amazon.awssdk.auth.credentials.internal.ProfileCredentialsUtils"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:115:      "type": "software.amazon.awssdk.services.sts.internal.StsProfileCredentialsProviderFactory",
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:125:        "typeReached": "software.amazon.awssdk.core.internal.util.ClassLoaderHelper"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:127:      "type": "software.amazon.awssdk.services.sts.internal.StsProfileCredentialsProviderFactory"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:131:        "typeReached": "software.amazon.awssdk.auth.credentials.internal.WebIdentityCredentialsUtils"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:133:      "type": "software.amazon.awssdk.services.sts.internal.StsWebIdentityCredentialsProviderFactory"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:137:        "typeReached": "software.amazon.awssdk.http.apache.ApacheHttpClient$ApacheConnectionManagerFactory"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:143:        "typeReached": "software.amazon.awssdk.services.sso.internal.SsoTokenFileUtils"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:149:        "typeReached": "software.amazon.awssdk.http.apache.ApacheHttpClient$ApacheConnectionManagerFactory"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:155:        "typeReached": "software.amazon.awssdk.http.apache.ApacheHttpClient$ApacheConnectionManagerFactory"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:163:        "typeReached": "software.amazon.awssdk.http.apache.ApacheHttpClient$ApacheConnectionManagerFactory"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:169:        "typeReached": "software.amazon.awssdk.http.apache.ApacheHttpClient$ApacheConnectionManagerFactory"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:175:        "typeReached": "software.amazon.awssdk.core.interceptor.ClasspathInterceptorChainFactory"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:181:        "typeReached": "software.amazon.awssdk.core.interceptor.ClasspathInterceptorChainFactory"
+metadata/software.amazon.awssdk/auth/2.34.0/reachability-metadata.json:187:        "typeReached": "software.amazon.awssdk.core.interceptor.ClasspathInterceptorChainFactory"
+metadata/software.amazon.awssdk/apache-client/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/apache-client/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/http-clients/apache-client/src/test",
+metadata/software.amazon.awssdk/apache-client/index.json:184:      "software.amazon.awssdk.http.apache"
+metadata/software.amazon.awssdk/regions/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/regions/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/regions/src/test",
+metadata/software.amazon.awssdk/regions/index.json:184:      "software.amazon.awssdk.regions"
+metadata/software.amazon.awssdk/checksums-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/checksums-spi/index.json:184:      "software.amazon.awssdk.checksums.spi"
+metadata/software.amazon.awssdk/ssm/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/ssm/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/services/ssm/src/test",
+metadata/software.amazon.awssdk/ssm/index.json:184:      "software.amazon.awssdk.services.ssm"
+metadata/software.amazon.awssdk/aws-query-protocol/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/aws-query-protocol/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/protocols/aws-query-protocol/src/test/java",
+metadata/software.amazon.awssdk/aws-query-protocol/index.json:184:      "software.amazon.awssdk.protocols.query"
+metadata/software.amazon.awssdk/ssm/2.34.0/reachability-metadata.json:5:        "typeReached": "software.amazon.awssdk.services.ssm.endpoints.internal.DefaultPartitionDataProvider"
+metadata/software.amazon.awssdk/ssm/2.34.0/reachability-metadata.json:13:        "typeReached": "software.amazon.awssdk.services.ssm.endpoints.internal.DefaultPartitionDataProvider"
+metadata/software.amazon.awssdk/annotations/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/annotations/index.json:161:      "software.amazon.awssdk.annotations"
+metadata/software.amazon.awssdk/annotations/index.json:167:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/annotations/index.json:197:      "software.amazon.awssdk.annotations"
+metadata/software.amazon.awssdk/sdk-core/index.json:7:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/sdk-core/index.json:8:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/sdk-core/src/test",
+metadata/software.amazon.awssdk/sdk-core/index.json:83:      "software.amazon.awssdk.core",
+metadata/software.amazon.awssdk/sdk-core/index.json:84:      "software.amazon.awssdk.checksums.internal"
+metadata/software.amazon.awssdk/sdk-core/index.json:90:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/sdk-core/index.json:91:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/sdk-core/src/test",
+metadata/software.amazon.awssdk/sdk-core/index.json:173:      "software.amazon.awssdk.core",
+metadata/software.amazon.awssdk/sdk-core/index.json:174:      "software.amazon.awssdk.checksums.internal"
+metadata/software.amazon.awssdk/sdk-core/index.json:180:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/sdk-core/index.json:181:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/sdk-core/src/test",
+metadata/software.amazon.awssdk/sdk-core/index.json:213:      "software.amazon.awssdk.core"
+metadata/software.amazon.awssdk/sdk-core/2.37.0/reachability-metadata.json:5:        "typeReached" : "software.amazon.awssdk.core.internal.util.ClassLoaderHelper"
+metadata/software.amazon.awssdk/sdk-core/2.37.0/reachability-metadata.json:11:        "typeReached" : "software.amazon.awssdk.core.internal.util.ClassLoaderHelper"
+metadata/software.amazon.awssdk/sdk-core/2.37.0/reachability-metadata.json:17:        "typeReached" : "software.amazon.awssdk.core.internal.util.ClassLoaderHelper"
+metadata/software.amazon.awssdk/sdk-core/2.37.0/reachability-metadata.json:23:        "typeReached" : "software.amazon.awssdk.checksums.internal.ConstructorCache"
+metadata/software.amazon.awssdk/sdk-core/2.37.0/reachability-metadata.json:29:        "typeReached" : "software.amazon.awssdk.core.interceptor.ClasspathInterceptorChainFactory"
+metadata/software.amazon.awssdk/sdk-core/2.37.0/reachability-metadata.json:31:      "type" : "software.amazon.awssdk.core.internal.interceptor.HttpChecksumValidationInterceptor",
+metadata/software.amazon.awssdk/sdk-core/2.37.0/reachability-metadata.json:41:        "typeReached" : "software.amazon.awssdk.core.internal.util.ClassLoaderHelper"
+metadata/software.amazon.awssdk/sdk-core/2.37.0/reachability-metadata.json:43:      "type" : "software.amazon.awssdk.core.internal.interceptor.HttpChecksumValidationInterceptor"
+metadata/software.amazon.awssdk/http-auth-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/http-auth-spi/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/http-auth-spi/src/test/java",
+metadata/software.amazon.awssdk/http-auth-spi/index.json:184:      "software.amazon.awssdk.http.auth.spi"
+metadata/software.amazon.awssdk/arns/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/arns/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/arns/src/test/java",
+metadata/software.amazon.awssdk/arns/index.json:46:      "software.amazon.awssdk.arns"
+metadata/software.amazon.awssdk/sns/2.34.0/reachability-metadata.json:5:        "typeReached": "software.amazon.awssdk.services.sns.endpoints.internal.DefaultPartitionDataProvider"
+metadata/software.amazon.awssdk/sns/2.34.0/reachability-metadata.json:13:        "typeReached": "software.amazon.awssdk.services.sns.endpoints.internal.DefaultPartitionDataProvider"
+metadata/software.amazon.awssdk/sns/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/sns/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/services/sns/src/test",
+metadata/software.amazon.awssdk/sns/index.json:184:      "software.amazon.awssdk.services.sns"
+metadata/software.amazon.awssdk/sdk-core/2.34.0/reachability-metadata.json:5:        "typeReached" : "software.amazon.awssdk.core.internal.util.ClassLoaderHelper"
+metadata/software.amazon.awssdk/sdk-core/2.34.0/reachability-metadata.json:11:        "typeReached" : "software.amazon.awssdk.core.internal.util.ClassLoaderHelper"
+metadata/software.amazon.awssdk/sdk-core/2.34.0/reachability-metadata.json:17:        "typeReached" : "software.amazon.awssdk.core.internal.util.ClassLoaderHelper"
+metadata/software.amazon.awssdk/sdk-core/2.34.0/reachability-metadata.json:23:        "typeReached" : "software.amazon.awssdk.core.interceptor.ClasspathInterceptorChainFactory"
+metadata/software.amazon.awssdk/sdk-core/2.34.0/reachability-metadata.json:25:      "type" : "software.amazon.awssdk.core.internal.interceptor.HttpChecksumValidationInterceptor",
+metadata/software.amazon.awssdk/sdk-core/2.34.0/reachability-metadata.json:35:        "typeReached" : "software.amazon.awssdk.core.internal.util.ClassLoaderHelper"
+metadata/software.amazon.awssdk/sdk-core/2.34.0/reachability-metadata.json:37:      "type" : "software.amazon.awssdk.core.internal.interceptor.HttpChecksumValidationInterceptor"
+metadata/software.amazon.awssdk/http-auth-aws-eventstream/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/http-auth-aws-eventstream/index.json:184:      "software.amazon.awssdk.http.auth.aws.eventstream"
+metadata/software.amazon.awssdk/aws-core/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/aws-core/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/aws-core/src/test",
+metadata/software.amazon.awssdk/aws-core/index.json:184:      "software.amazon.awssdk.awscore"
+metadata/software.amazon.awssdk/endpoints-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/endpoints-spi/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/endpoints-spi/src/test",
+metadata/software.amazon.awssdk/endpoints-spi/index.json:184:      "software.amazon.awssdk.endpoints"
+metadata/software.amazon.awssdk/s3/2.30.0/reachability-metadata.json:5:        "typeReached": "software.amazon.awssdk.services.s3.DefaultS3Client"
+metadata/software.amazon.awssdk/s3/2.30.0/reachability-metadata.json:17:        "typeReached": "software.amazon.awssdk.services.s3.DefaultS3Client"
+metadata/software.amazon.awssdk/s3/2.30.0/reachability-metadata.json:29:        "typeReached": "software.amazon.awssdk.services.s3.DefaultS3Client"
+metadata/software.amazon.awssdk/s3/2.30.0/reachability-metadata.json:43:        "typeReached": "software.amazon.awssdk.services.s3.DefaultS3Client"
+metadata/software.amazon.awssdk/s3/2.30.0/reachability-metadata.json:49:        "typeReached": "software.amazon.awssdk.services.s3.auth.scheme.internal.DefaultS3AuthSchemeProvider"
+metadata/software.amazon.awssdk/s3/2.30.0/reachability-metadata.json:55:        "typeReached": "software.amazon.awssdk.services.s3.DefaultS3Client"
+metadata/software.amazon.awssdk/s3/2.30.0/reachability-metadata.json:61:        "typeReached": "software.amazon.awssdk.services.s3.S3Client"
+metadata/software.amazon.awssdk/s3/2.30.0/reachability-metadata.json:67:        "typeReached": "software.amazon.awssdk.services.s3.DefaultS3ClientBuilder"
+metadata/software.amazon.awssdk/s3/2.30.0/reachability-metadata.json:73:        "typeReached": "software.amazon.awssdk.services.s3.endpoints.internal.DefaultPartitionDataProvider"
+metadata/software.amazon.awssdk/s3/2.30.0/reachability-metadata.json:79:        "typeReached": "software.amazon.awssdk.services.s3.DefaultS3BaseClientBuilder"
+metadata/software.amazon.awssdk/sdk-core/2.42.0/reachability-metadata.json:5:        "typeReached" : "software.amazon.awssdk.core.checksums.Crc32CChecksum"
+metadata/software.amazon.awssdk/sdk-core/2.42.0/reachability-metadata.json:17:        "typeReached" : "software.amazon.awssdk.core.interceptor.ClasspathInterceptorChainFactory"
+metadata/software.amazon.awssdk/sdk-core/2.42.0/reachability-metadata.json:19:      "type" : "software.amazon.awssdk.core.internal.interceptor.HttpChecksumValidationInterceptor",
+metadata/software.amazon.awssdk/sdk-core/2.42.0/reachability-metadata.json:29:        "typeReached" : "software.amazon.awssdk.core.internal.util.ClassLoaderHelper"
+metadata/software.amazon.awssdk/sdk-core/2.42.0/reachability-metadata.json:31:      "type" : "software.amazon.awssdk.core.internal.interceptor.HttpChecksumValidationInterceptor"
+metadata/software.amazon.awssdk/sdk-core/2.42.0/reachability-metadata.json:37:        "typeReached" : "software.amazon.awssdk.core.checksums.Crc32CChecksum"
+metadata/software.amazon.awssdk/sdk-core/2.42.0/reachability-metadata.json:43:        "typeReached" : "software.amazon.awssdk.core.internal.util.Mimetype"
+metadata/software.amazon.awssdk/s3/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/s3/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/services/s3/src/test",
+metadata/software.amazon.awssdk/s3/index.json:350:      "software.amazon.awssdk.services.s3"
+metadata/software.amazon.awssdk/s3/index.json:356:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/s3/index.json:357:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/services/s3/src/test",
+metadata/software.amazon.awssdk/s3/index.json:571:      "software.amazon.awssdk"
+metadata/software.amazon.awssdk/utils/2.34.0/reachability-metadata.json:5:        "typeReached": "software.amazon.awssdk.utils.ReflectionMethodInvoker"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:5:        "typeReached": "software.amazon.awssdk.http.auth.aws.internal.signer.util.SignerUtils"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:17:        "typeReached": "software.amazon.awssdk.protocols.query.unmarshall.XmlDomParser"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:29:        "typeReached": "software.amazon.awssdk.core.util.SdkUserAgent"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:35:        "typeReached": "software.amazon.awssdk.core.util.SdkUserAgent"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:41:        "typeReached": "software.amazon.awssdk.utils.Md5Utils"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:53:        "typeReached": "software.amazon.awssdk.http.auth.aws.internal.signer.util.DigestAlgorithm$DigestThreadLocal"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:65:        "typeReached": "software.amazon.awssdk.http.auth.aws.internal.signer.util.SignerUtils"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:79:        "typeReached": "software.amazon.awssdk.http.auth.aws.internal.signer.util.SigningAlgorithm$MacThreadLocal"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:85:        "typeReached": "software.amazon.awssdk.services.s3.auth.scheme.internal.DefaultS3AuthSchemeProvider"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:91:        "typeReached": "software.amazon.awssdk.protocols.query.unmarshall.XmlDomParser"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:97:        "typeReached": "software.amazon.awssdk.utils.Logger"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:103:        "typeReached": "software.amazon.awssdk.core.interceptor.ClasspathInterceptorChainFactory"
+metadata/software.amazon.awssdk/s3/2.25.3/reachability-metadata.json:109:        "typeReached": "software.amazon.awssdk.core.interceptor.ClasspathInterceptorChainFactory"
+metadata/software.amazon.awssdk/utils/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/utils/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/utils/src/test",
+metadata/software.amazon.awssdk/utils/index.json:184:      "software.amazon.awssdk.utils"
+metadata/software.amazon.awssdk/retries/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/retries/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/retries/src/test/java",
+metadata/software.amazon.awssdk/retries/index.json:184:      "software.amazon.awssdk.retries"
+metadata/software.amazon.awssdk/identity-spi/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/identity-spi/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/identity-spi/src/test/java",
+metadata/software.amazon.awssdk/identity-spi/index.json:184:      "software.amazon.awssdk.identity.spi"
+metadata/software.amazon.awssdk/utils-lite/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/utils-lite/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/utils-lite/src/test",
+metadata/software.amazon.awssdk/utils-lite/index.json:184:      "software.amazon.awssdk.utilslite"
+metadata/software.amazon.awssdk/checksums/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/checksums/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/checksums/src/test",
+metadata/software.amazon.awssdk/checksums/index.json:82:      "software.amazon.awssdk.checksums"
+metadata/software.amazon.awssdk/checksums/index.json:88:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+metadata/software.amazon.awssdk/checksums/index.json:89:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/checksums/src/test",
+metadata/software.amazon.awssdk/checksums/index.json:197:      "software.amazon.awssdk.checksums"
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:5:        "typeReached": "software.amazon.awssdk.checksums.internal.ConstructorCache"
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:11:        "typeReached": "software.amazon.awssdk.checksums.internal.CrcChecksumProvider"
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:23:        "typeReached": "software.amazon.awssdk.checksums.internal.ConstructorCache"
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:25:      "type": "software.amazon.awssdk.crt.checksums.CRC32C"
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:29:        "typeReached": "software.amazon.awssdk.checksums.internal.CrcChecksumProvider"
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:31:      "type": "software.amazon.awssdk.crt.checksums.CRC32C",
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:41:        "typeReached": "software.amazon.awssdk.checksums.internal.ConstructorCache"
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:43:      "type": "software.amazon.awssdk.crt.checksums.CRC64NVME"
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:47:        "typeReached": "software.amazon.awssdk.checksums.internal.CrcChecksumProvider"
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:49:      "type": "software.amazon.awssdk.crt.checksums.CRC64NVME",
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:59:        "typeReached": "software.amazon.awssdk.checksums.internal.CrcCloneOnMarkChecksum"
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:61:      "type": "software.amazon.awssdk.crt.checksums.CRC32C",
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:71:        "typeReached": "software.amazon.awssdk.checksums.internal.CrcCloneOnMarkChecksum"
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:73:      "type": "software.amazon.awssdk.crt.checksums.CRC64NVME",
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:83:        "typeReached": "software.amazon.awssdk.checksums.internal.CrcCloneOnMarkChecksum"
+metadata/software.amazon.awssdk/checksums/2.34.0/reachability-metadata.json:85:      "type": "software.amazon.awssdk.checksums.internal.SdkCrc32CChecksum",
+metadata/software.amazon.awssdk/checksums/2.42.0/reachability-metadata.json:5:        "typeReached" : "software.amazon.awssdk.checksums.internal.ConstructorCache"
+metadata/software.amazon.awssdk/checksums/2.42.0/reachability-metadata.json:11:        "typeReached" : "software.amazon.awssdk.checksums.internal.ChecksumProvider"
+metadata/software.amazon.awssdk/checksums/2.42.0/reachability-metadata.json:23:        "typeReached" : "software.amazon.awssdk.checksums.internal.ConstructorCache"
+metadata/software.amazon.awssdk/checksums/2.42.0/reachability-metadata.json:25:      "type" : "software.amazon.awssdk.crt.checksums.CRC32C"
+metadata/software.amazon.awssdk/checksums/2.42.0/reachability-metadata.json:29:        "typeReached" : "software.amazon.awssdk.checksums.internal.ChecksumProvider"
+metadata/software.amazon.awssdk/checksums/2.42.0/reachability-metadata.json:31:      "type" : "software.amazon.awssdk.crt.checksums.CRC32C",
+metadata/software.amazon.awssdk/checksums/2.42.0/reachability-metadata.json:41:        "typeReached" : "software.amazon.awssdk.checksums.internal.ConstructorCache"
+metadata/software.amazon.awssdk/checksums/2.42.0/reachability-metadata.json:43:      "type" : "software.amazon.awssdk.crt.checksums.CRC64NVME"
+metadata/software.amazon.awssdk/checksums/2.42.0/reachability-metadata.json:47:        "typeReached" : "software.amazon.awssdk.checksums.internal.ChecksumProvider"
+metadata/software.amazon.awssdk/checksums/2.42.0/reachability-metadata.json:49:      "type" : "software.amazon.awssdk.crt.checksums.CRC64NVME",
+metadata/software.amazon.awssdk/checksums/2.42.0/reachability-metadata.json:59:        "typeReached" : "software.amazon.awssdk.checksums.internal.CrcCloneOnMarkChecksum"
+metadata/software.amazon.awssdk/checksums/2.42.0/reachability-metadata.json:61:      "type" : "software.amazon.awssdk.crt.checksums.CRC32C",
+metadata/software.amazon.awssdk/checksums/2.42.0/reachability-metadata.json:71:        "typeReached" : "software.amazon.awssdk.checksums.internal.CrcCloneOnMarkChecksum"
+metadata/software.amazon.awssdk/checksums/2.42.0/reachability-metadata.json:73:      "type" : "software.amazon.awssdk.crt.checksums.CRC64NVME",
+metadata/software.amazon.awssdk/checksums/2.42.0/reachability-metadata.json:83:        "typeReached" : "software.amazon.awssdk.checksums.internal.CrcCloneOnMarkChecksum"
+metadata/software.amazon.awssdk/checksums/2.42.0/reachability-metadata.json:85:      "type" : "software.amazon.awssdk.checksums.internal.SdkCrc32CChecksum",
+
+exec
+/usr/bin/bash -lc "sed -n '1,32p' metadata/software.amazon.awssdk/http-client-spi/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.34.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/http-client-spi/$version$/http-client-spi-$version$-sources.jar",
+    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/http-client-spi/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/http-client-spi/$version$/http-client-spi-$version$-javadoc.jar",
+    "description" : "This module defines the synchronous and asynchronous HTTP client service-provider interfaces used by AWS SDK for Java 2.x clients. It exposes request, response, streaming, TLS, metric, and execution abstractions that concrete HTTP client implementations plug into.",
+    "tested-versions" : [
+      "2.34.0",
+      "2.34.1",
+      "2.34.2",
+      "2.34.3",
+      "2.34.4",
+      "2.34.5",
+      "2.34.6",
+      "2.34.7",
+      "2.34.8",
+      "2.34.9",
+      "2.35.0",
+      "2.35.1",
+      "2.35.2",
+      "2.35.3",
+      "2.35.4",
+      "2.35.5",
+      "2.35.6",
+      "2.35.7",
+      "2.35.8",
+      "2.35.9",
+      "2.35.10",
+      "2.35.11",
+
+exec
+/usr/bin/bash -lc "sed -n '1,32p' metadata/software.amazon.awssdk/apache-client/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.34.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/apache-client/$version$/apache-client-$version$-sources.jar",
+    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/http-clients/apache-client/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/apache-client/$version$/apache-client-$version$-javadoc.jar",
+    "description" : "This module provides the Apache HTTP client implementation for AWS SDK for Java 2.x synchronous clients. It adapts Apache HttpClient to the SDK HTTP client SPI, handling connection pooling, proxy and TLS configuration, and request execution for AWS service clients.",
+    "tested-versions" : [
+      "2.34.0",
+      "2.34.1",
+      "2.34.2",
+      "2.34.3",
+      "2.34.4",
+      "2.34.5",
+      "2.34.6",
+      "2.34.7",
+      "2.34.8",
+      "2.34.9",
+      "2.35.0",
+      "2.35.1",
+      "2.35.2",
+      "2.35.3",
+      "2.35.4",
+      "2.35.5",
+      "2.35.6",
+      "2.35.7",
+      "2.35.8",
+      "2.35.9",
+      "2.35.10",
+      "2.35.11",
+
+exec
+/usr/bin/bash -lc "sed -n '1,40p' metadata/software.amazon.awssdk/sdk-core/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.42.0",
+    "test-version" : "2.37.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/sdk-core/$version$/sdk-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/core/sdk-core/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/sdk-core/$version$/sdk-core-$version$-javadoc.jar",
+    "description" : "AWS SDK for Java v2 SDK Core provides runtime classes and shared infrastructure used by AWS service clients to make requests, configure clients, transform payloads, handle responses, retries, pagination, checksums, and exceptions. It is a foundational JVM module for AWS SDK service artifacts rather than a standalone service client.",
+    "tested-versions" : [
+      "2.42.0",
+      "2.42.1",
+      "2.42.2",
+      "2.42.3",
+      "2.42.4",
+      "2.42.5",
+      "2.42.6",
+      "2.42.7",
+      "2.42.8",
+      "2.42.9",
+      "2.42.10",
+      "2.42.11",
+      "2.42.12",
+      "2.42.13",
+      "2.42.14",
+      "2.42.15",
+      "2.42.16",
+      "2.42.17",
+      "2.42.18",
+      "2.42.19",
+      "2.42.20",
+      "2.42.21",
+      "2.42.22",
+      "2.42.23",
+      "2.42.24",
+      "2.42.25",
+      "2.42.26",
+      "2.42.27",
+      "2.42.28",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/2.34.0/netty-nio-client-2.34.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License").
+  ~ You may not use this file except in compliance with the License.
+  ~ A copy of the License is located at
+  ~
+  ~  http://aws.amazon.com/apache2.0
+  ~
+  ~ or in the "license" file accompanying this file. This file is distributed
+  ~ on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+  ~ express or implied. See the License for the specific language governing
+  ~ permissions and limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>http-clients</artifactId>
+        <groupId>software.amazon.awssdk</groupId>
+        <version>2.34.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>netty-nio-client</artifactId>
+    <name>AWS Java SDK :: HTTP Clients :: Netty Non-Blocking I/O</name>
+
+
+    <dependencies>
+
+        <!--SDK dependencies-->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>annotations</artifactId>
+            <version>${awsjavasdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>http-client-spi</artifactId>
+            <version>${awsjavasdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>utils</artifactId>
+            <version>${awsjavasdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>metrics-spi</artifactId>
+            <version>${awsjavasdk.version}</version>
+        </dependency>
+
+        <!--Netty dependencies-->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-codec-http</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-codec-http2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-codec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-transport</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-buffer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-handler</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-transport-classes-epoll</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-resolver</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-resolver-dns</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!--Reactive Dependencies-->
+        <dependency>
+            <groupId>org.reactivestreams</groupId>
+            <artifactId>reactive-streams</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <!--Test Dependencies-->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>http-client-tests</artifactId>
+            <version>${awsjavasdk.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock-jre8</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.reactivestreams</groupId>
+            <artifactId>reactive-streams-tck</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-tcnative-boringssl-static</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.reactivex.rxjava2</groupId>
+            <artifactId>rxjava</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-servlet</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty.http2</groupId>
+            <artifactId>http2-server</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-alpn-server</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty.http2</groupId>
+            <artifactId>http2-common</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-http</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-util</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/2.34.0/netty-nio-client-2.34.0-sources.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/2.34.0/netty-nio-client-2.34.0-javadoc.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/2.34.0/netty-nio-client-2.34.0-tests.jar' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/2.34.0/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/aws/aws-sdk-java-v2/tree/2.34.0/http-clients/netty-nio-client/src/test && curl -I -fsSL https://github.com/aws/aws-sdk-java-v2/tree/2.34.0/http-clients/netty-nio-client' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932
+ succeeded in 223ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: software/amazon/awssdk/netty-nio-client/2.34.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>software/amazon/awssdk/netty-nio-client/2.34.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="netty-nio-client-2.34.0-javadoc.jar" title="netty-nio-client-2.34.0-javadoc.jar">netty-nio-client-2.34.0-javadoc.jar</a>               2025-09-19 21:45    870038      
+<a href="netty-nio-client-2.34.0-javadoc.jar.asc" title="netty-nio-client-2.34.0-javadoc.jar.asc">netty-nio-client-2.34.0-javadoc.jar.asc</a>           2025-09-19 21:45       833      
+<a href="netty-nio-client-2.34.0-javadoc.jar.md5" title="netty-nio-client-2.34.0-javadoc.jar.md5">netty-nio-client-2.34.0-javadoc.jar.md5</a>           2025-09-19 21:45        32      
+<a href="netty-nio-client-2.34.0-javadoc.jar.sha1" title="netty-nio-client-2.34.0-javadoc.jar.sha1">netty-nio-client-2.34.0-javadoc.jar.sha1</a>          2025-09-19 21:45        40      
+<a href="netty-nio-client-2.34.0-sources.jar" title="netty-nio-client-2.34.0-sources.jar">netty-nio-client-2.34.0-sources.jar</a>               2025-09-19 21:45    173741      
+<a href="netty-nio-client-2.34.0-sources.jar.asc" title="netty-nio-client-2.34.0-sources.jar.asc">netty-nio-client-2.34.0-sources.jar.asc</a>           2025-09-19 21:45       833      
+<a href="netty-nio-client-2.34.0-sources.jar.md5" title="netty-nio-client-2.34.0-sources.jar.md5">netty-nio-client-2.34.0-sources.jar.md5</a>           2025-09-19 21:45        32      
+<a href="netty-nio-client-2.34.0-sources.jar.sha1" title="netty-nio-client-2.34.0-sources.jar.sha1">netty-nio-client-2.34.0-sources.jar.sha1</a>          2025-09-19 21:45        40      
+<a href="netty-nio-client-2.34.0.jar" title="netty-nio-client-2.34.0.jar">netty-nio-client-2.34.0.jar</a>                       2025-09-19 21:45    292686      
+<a href="netty-nio-client-2.34.0.jar.asc" title="netty-nio-client-2.34.0.jar.asc">netty-nio-client-2.34.0.jar.asc</a>                   2025-09-19 21:45       833      
+<a href="netty-nio-client-2.34.0.jar.md5" title="netty-nio-client-2.34.0.jar.md5">netty-nio-client-2.34.0.jar.md5</a>                   2025-09-19 21:45        32      
+<a href="netty-nio-client-2.34.0.jar.sha1" title="netty-nio-client-2.34.0.jar.sha1">netty-nio-client-2.34.0.jar.sha1</a>                  2025-09-19 21:45        40      
+<a href="netty-nio-client-2.34.0.pom" title="netty-nio-client-2.34.0.pom">netty-nio-client-2.34.0.pom</a>                       2025-09-19 21:45     10110      
+<a href="netty-nio-client-2.34.0.pom.asc" title="netty-nio-client-2.34.0.pom.asc">netty-nio-client-2.34.0.pom.asc</a>                   2025-09-19 21:45       833      
+<a href="netty-nio-client-2.34.0.pom.md5" title="netty-nio-client-2.34.0.pom.md5">netty-nio-client-2.34.0.pom.md5</a>                   2025-09-19 21:45        32      
+<a href="netty-nio-client-2.34.0.pom.sha1" title="netty-nio-client-2.34.0.pom.sha1">netty-nio-client-2.34.0.pom.sha1</a>                  2025-09-19 21:45        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ exited 22 in 600ms:
+HTTP/2 200 
+date: Tue, 09 Jun 2026 23:41:42 GMT
+content-type: application/java-archive
+content-length: 870038
+cf-ray: a093fd142ad13d61-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "73227a8d7939a0d75209f586ea5f35b2"
+last-modified: Fri, 19 Sep 2025 21:47:42 GMT
+x-checksum-md5: 73227a8d7939a0d75209f586ea5f35b2
+x-checksum-sha1: d97a76eaec7f86f6f0ae984a57dcb7498ba4ced1
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Tue, 09 Jun 2026 23:41:42 GMT
+content-type: text/html
+cf-ray: a093fd1599902ff1-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/software/amazon/awssdk/netty-nio-client/2.34.0/netty-nio-client-2.34.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 1108ms:
+HTTP/2 200 
+date: Tue, 09 Jun 2026 23:41:42 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"ab11cdfd2e8b673521fcbabff798b082"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=pcSg6rRrANcUG26z163l0e2V3xoRPKgf8irz3VMuPGleJ9mzln4%2BqWgKQ5rLFj7M0bToCI%2Bbrg4Ti%2FM1FYm34N55HqU4sAA8cLCdA%2ByBTKkA34%2BNNIPgquIaYq6LFlSAxrc5T6MKyvXd4E8a%2BGSA50Hesdq2nKaaLJ5XtGMjv3IZxT9%2BDEG8BAQ%2FYSfzvp0%2BmPhe%2ByPEoCmlsWtNCaX2Wa8GpIhlnSW81xzAqzGQFNW8cXpJ9juJuzMQzymiwmUkEtIvcr5KTIfQNxIRuLk7YA%3D%3D--gYr1b88DZwUf%2FHrS--%2F15%2B%2FORMw69veXnFsHcC5w%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2011810393.1781048502; expires=Wed, 09 Jun 2027 23:41:42 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 09 Jun 2027 23:41:42 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 620F:302F8:72C210D:5BFBA6C:6A28A4B6
+
+HTTP/2 200 
+date: Tue, 09 Jun 2026 23:41:43 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"248ff349b2a6bc9a98aaa76f24950a1e"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=JvkNoNZm8yZD2H1f5j%2Frj3h2jiNl3VbhLJTSccDgxZeeSTTQDMT%2BNXRUXV5bryu1BxFLWJ5P3V8Ujc8GKmTDwuKpRd0KurGDdeRLqbZ8Hb0N7dn1LTa1f8yC01fLOHGJrErSOQubQDRkVnpu2bdmg9Et8UXzJLxGi4VY520ny1vr7U9gOQUmj%2BmzD7lrEDIgMcCPpYl3AgxW6hR4tJ55Q3JF58ylTgV4uNXrEzncIjYFtZc09N%2BisfaJLZq0Mw8xMYDaVWTPa14aSUX6g6cvPQ%3D%3D--7YrQczN9fTMpEVjp--gXommXzPYDk2tlRig4JPZw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1732134552.1781048503; expires=Wed, 09 Jun 2027 23:41:43 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 09 Jun 2027 23:41:43 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6217:190FD:75C133F:5E606C9:6A28A4B7
+
+
+codex
+Maven Central has the source and javadoc jars for `2.34.0`, but no `-tests.jar`, so the test URL should point at the version tag in `aws/aws-sdk-java-v2`. The artifact is a normal JVM jar and not one of the non-Native-Image target cases.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
+diff --git a/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json b/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
+index a08ff4dee2780286692dd0c700689b20b390c102..6ec5984fd6c6c59a91a8d15316eb8e36c4c1e6c5
+--- a/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
++++ b/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.awssdk:netty-nio-client:2.34.0"
++  "coordinates" : "software.amazon.awssdk:netty-nio-client:2.34.0",
++  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/$version$/netty-nio-client-$version$-sources.jar",
++  "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/http-clients/netty-nio-client/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/$version$/netty-nio-client-$version$-javadoc.jar",
++  "description" : "This module provides the Netty non-blocking I/O HTTP client implementation for AWS SDK for Java 2.x asynchronous clients. It integrates Netty with the SDK HTTP client SPI to handle asynchronous request execution, connection management, TLS configuration, proxy support, and HTTP/1.1 or HTTP/2 communication for AWS service clients."
+ }
+
+diff --git a/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json b/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
+index a08ff4dee2780286692dd0c700689b20b390c102..6ec5984fd6c6c59a91a8d15316eb8e36c4c1e6c5
+--- a/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
++++ b/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.awssdk:netty-nio-client:2.34.0"
++  "coordinates" : "software.amazon.awssdk:netty-nio-client:2.34.0",
++  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/$version$/netty-nio-client-$version$-sources.jar",
++  "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/http-clients/netty-nio-client/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/$version$/netty-nio-client-$version$-javadoc.jar",
++  "description" : "This module provides the Netty non-blocking I/O HTTP client implementation for AWS SDK for Java 2.x asynchronous clients. It integrates Netty with the SDK HTTP client SPI to handle asynchronous request execution, connection management, TLS configuration, proxy support, and HTTP/1.1 or HTTP/2 communication for AWS service clients."
+ }
+
+codex
+I’m doing one small cleanup to keep the description unambiguously two sentences even for simple validators that count punctuation.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
+diff --git a/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json b/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
+index a08ff4dee2780286692dd0c700689b20b390c102..9f6882d75f107e41955925a00c7a31fed131537e
+--- a/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
++++ b/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.awssdk:netty-nio-client:2.34.0"
++  "coordinates" : "software.amazon.awssdk:netty-nio-client:2.34.0",
++  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/$version$/netty-nio-client-$version$-sources.jar",
++  "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/http-clients/netty-nio-client/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/$version$/netty-nio-client-$version$-javadoc.jar",
++  "description" : "This module provides the Netty non-blocking I/O HTTP client implementation for AWS SDK for Java version 2 asynchronous clients. It integrates Netty with the SDK HTTP client SPI to handle asynchronous request execution, connection management, TLS configuration, proxy support, and HTTP protocol communication for AWS service clients."
+ }
+
+diff --git a/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json b/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
+index a08ff4dee2780286692dd0c700689b20b390c102..9f6882d75f107e41955925a00c7a31fed131537e
+--- a/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
++++ b/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.awssdk:netty-nio-client:2.34.0"
++  "coordinates" : "software.amazon.awssdk:netty-nio-client:2.34.0",
++  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/$version$/netty-nio-client-$version$-sources.jar",
++  "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/http-clients/netty-nio-client/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/$version$/netty-nio-client-$version$-javadoc.jar",
++  "description" : "This module provides the Netty non-blocking I/O HTTP client implementation for AWS SDK for Java version 2 asynchronous clients. It integrates Netty with the SDK HTTP client SPI to handle asynchronous request execution, connection management, TLS configuration, proxy support, and HTTP protocol communication for AWS service clients."
+ }
+
+codex
+The file is updated. I’m validating the JSON and checking that the rendered URLs for `2.34.0` resolve before I wrap up.
+exec
+/usr/bin/bash -lc "jq '.' build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932
+ succeeded in 0ms:
+{
+  "coordinates": "software.amazon.awssdk:netty-nio-client:2.34.0",
+  "repository-url": "https://github.com/aws/aws-sdk-java-v2",
+  "source-code-url": "https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/$version$/netty-nio-client-$version$-sources.jar",
+  "test-code-url": "https://github.com/aws/aws-sdk-java-v2/tree/$version$/http-clients/netty-nio-client/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/$version$/netty-nio-client-$version$-javadoc.jar",
+  "description": "This module provides the Netty non-blocking I/O HTTP client implementation for AWS SDK for Java version 2 asynchronous clients. It integrates Netty with the SDK HTTP client SPI to handle asynchronous request execution, connection management, TLS configuration, proxy support, and HTTP protocol communication for AWS service clients."
+}
+
+exec
+/usr/bin/bash -lc "for url in \\
+  'https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/2.34.0/netty-nio-client-2.34.0-sources.jar' \\
+  'https://github.com/aws/aws-sdk-java-v2/tree/2.34.0/http-clients/netty-nio-client/src/test' \\
+  'https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/2.34.0/netty-nio-client-2.34.0-javadoc.jar' \\
+  'https://github.com/aws/aws-sdk-java-v2'; do curl -I -fsSL \""'$url" | sed -n '"'1p'; done" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/2.34.0/netty-nio-client-2.34.0.jar -o /tmp/netty-nio-client-2.34.0.jar && jar tf /tmp/netty-nio-client-2.34.0.jar | rg '\\.class"'$'"' | head -5" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932
+ succeeded in 0ms:
+software/amazon/awssdk/http/nio/netty/internal/http2/Http2ToHttpInboundAdapter$Http2ResetException.class
+software/amazon/awssdk/http/nio/netty/internal/http2/Http2ToHttpInboundAdapter.class
+software/amazon/awssdk/http/nio/netty/internal/http2/Http2MultiplexedChannelPool$ReleaseOnExceptionHandler.class
+software/amazon/awssdk/http/nio/netty/internal/http2/Http2MultiplexedChannelPool.class
+software/amazon/awssdk/http/nio/netty/internal/http2/PingTracker.class
+
+diff --git a/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json b/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
+index a08ff4dee2780286692dd0c700689b20b390c102..9f6882d75f107e41955925a00c7a31fed131537e
+--- a/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
++++ b/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.awssdk:netty-nio-client:2.34.0"
++  "coordinates" : "software.amazon.awssdk:netty-nio-client:2.34.0",
++  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/$version$/netty-nio-client-$version$-sources.jar",
++  "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/http-clients/netty-nio-client/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/$version$/netty-nio-client-$version$-javadoc.jar",
++  "description" : "This module provides the Netty non-blocking I/O HTTP client implementation for AWS SDK for Java version 2 asynchronous clients. It integrates Netty with the SDK HTTP client SPI to handle asynchronous request execution, connection management, TLS configuration, proxy support, and HTTP protocol communication for AWS service clients."
+ }
+
+ succeeded in 866ms:
+HTTP/2 200 
+HTTP/2 200 
+HTTP/2 200 
+
+codex
+Validation passed: the JSON parses, all rendered URLs returned HTTP 200, and the artifact jar contains JVM class files.
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932
+diff --git a/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json b/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
+index a08ff4dee2780286692dd0c700689b20b390c102..9f6882d75f107e41955925a00c7a31fed131537e
+--- a/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
++++ b/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.awssdk:netty-nio-client:2.34.0"
++  "coordinates" : "software.amazon.awssdk:netty-nio-client:2.34.0",
++  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/$version$/netty-nio-client-$version$-sources.jar",
++  "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/http-clients/netty-nio-client/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/$version$/netty-nio-client-$version$-javadoc.jar",
++  "description" : "This module provides the Netty non-blocking I/O HTTP client implementation for AWS SDK for Java version 2 asynchronous clients. It integrates Netty with the SDK HTTP client SPI to handle asynchronous request execution, connection management, TLS configuration, proxy support, and HTTP protocol communication for AWS service clients."
+ }
+
+ succeeded in 358ms:
+exec
+/usr/bin/bash -lc "sed -n '1,40p' build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932
+ succeeded in 0ms:
+{
+  "coordinates" : "software.amazon.awssdk:netty-nio-client:2.34.0",
+  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/$version$/netty-nio-client-$version$-sources.jar",
+  "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/http-clients/netty-nio-client/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/$version$/netty-nio-client-$version$-javadoc.jar",
+  "description" : "This module provides the Netty non-blocking I/O HTTP client implementation for AWS SDK for Java version 2 asynchronous clients. It integrates Netty with the SDK HTTP client SPI to handle asynchronous request execution, connection management, TLS configuration, proxy support, and HTTP protocol communication for AWS service clients."
+}
+
+diff --git a/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json b/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
+index a08ff4dee2780286692dd0c700689b20b390c102..9f6882d75f107e41955925a00c7a31fed131537e
+--- a/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
++++ b/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.awssdk:netty-nio-client:2.34.0"
++  "coordinates" : "software.amazon.awssdk:netty-nio-client:2.34.0",
++  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/$version$/netty-nio-client-$version$-sources.jar",
++  "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/http-clients/netty-nio-client/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/$version$/netty-nio-client-$version$-javadoc.jar",
++  "description" : "This module provides the Netty non-blocking I/O HTTP client implementation for AWS SDK for Java version 2 asynchronous clients. It integrates Netty with the SDK HTTP client SPI to handle asynchronous request execution, connection management, TLS configuration, proxy support, and HTTP protocol communication for AWS service clients."
+ }
+
+codex
+Updated [software.amazon.awssdk-netty-nio-client-2.34.0.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json:1).
+
+Validation done:
+- JSON parses with `jq`.
+- Rendered repository, source, test, and documentation URLs all return HTTP 200 for `2.34.0`.
+- Artifact jar contains JVM `.class` files, so `not-for-native-image` was left absent.
+- No `language` field was added; this is not a Kotlin, Groovy, or Scala-specific artifact.
+diff --git a/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json b/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
+index a08ff4dee2780286692dd0c700689b20b390c102..9f6882d75f107e41955925a00c7a31fed131537e
+--- a/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
++++ b/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "software.amazon.awssdk:netty-nio-client:2.34.0"
++  "coordinates" : "software.amazon.awssdk:netty-nio-client:2.34.0",
++  "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/$version$/netty-nio-client-$version$-sources.jar",
++  "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/$version$/http-clients/netty-nio-client/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/software/amazon/awssdk/netty-nio-client/$version$/netty-nio-client-$version$-javadoc.jar",
++  "description" : "This module provides the Netty non-blocking I/O HTTP client implementation for AWS SDK for Java version 2 asynchronous clients. It integrates Netty with the SDK HTTP client SPI to handle asynchronous request execution, connection management, TLS configuration, proxy support, and HTTP protocol communication for AWS service clients."
+ }
+
+tokens used
+40,709
+Updated [software.amazon.awssdk-netty-nio-client-2.34.0.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932/build/discovered-artifact-metadata/software.amazon.awssdk-netty-nio-client-2.34.0.json:1).
+
+Validation done:
+- JSON parses with `jq`.
+- Rendered repository, source, test, and documentation URLs all return HTTP 200 for `2.34.0`.
+- Artifact jar contains JVM `.class` files, so `not-for-native-image` was left absent.
+- No `language` field was added; this is not a Kotlin, Groovy, or Scala-specific artifact.
+Ran agent for software.amazon.awssdk:netty-nio-client:2.34.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932/build/agent-artifact-discovery-logs/software.amazon.awssdk-netty-nio-client-2.34.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4472-ccb79932/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 27s
+9 actionable tasks: 9 executed
