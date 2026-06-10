@@ -18,9 +18,12 @@ import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.model.MessageEntity
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.Uri
+import akka.http.scaladsl.model.headers.Authorization
+import akka.http.scaladsl.model.headers.BasicHttpCredentials
 import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
+import akka.http.scaladsl.server.directives.Credentials
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.Materializer
 import akka.stream.SystemMaterializer
@@ -121,6 +124,48 @@ class AkkaHttp3Test {
     assertThat(malformedParameter.status).isEqualTo(StatusCodes.BadRequest)
     assertThat(responseText(malformedParameter)).contains("a")
   }
+
+  @Test
+  def basicAuthenticationDirectiveAcceptsCredentialsAndRejectsUnauthorizedRequests(): Unit =
+    withActorSystem { (system: ActorSystem) =>
+      implicit val actorSystem: ActorSystem = system
+      implicit val executionContext: ExecutionContextExecutor = system.dispatcher
+      implicit val materializer: Materializer = SystemMaterializer(system).materializer
+
+      val authenticator: Credentials => Option[String] = {
+        case provided: Credentials.Provided
+            if provided.identifier == "alice" && provided.verify("wonderland") =>
+          Some(provided.identifier)
+        case _ => None
+      }
+      val route: Route = path("secure") {
+        authenticateBasic("secure-area", authenticator) { (user: String) =>
+          complete(HttpEntity(ContentTypes.`text/plain(UTF-8)`, s"authenticated:$user"))
+        }
+      }
+      val handler: HttpRequest => Future[HttpResponse] = Route.toFunction(route)
+
+      val authenticated: HttpResponse = await(handler(HttpRequest(
+        uri = "/secure",
+        headers = List(Authorization(BasicHttpCredentials("alice", "wonderland"))))))
+      assertThat(authenticated.status).isEqualTo(StatusCodes.OK)
+      assertThat(responseText(authenticated)).isEqualTo("authenticated:alice")
+
+      val missingCredentials: HttpResponse = await(handler(HttpRequest(uri = "/secure")))
+      assertThat(missingCredentials.status).isEqualTo(StatusCodes.Unauthorized)
+      val challenge: String = missingCredentials.headers.find(_.is("www-authenticate")).map(_.value()).get
+      assertThat(challenge).contains("Basic")
+      assertThat(challenge).contains("secure-area")
+      val missingCredentialsBody: String = responseText(missingCredentials)
+      assertThat(missingCredentialsBody).isNotEmpty()
+
+      val rejectedCredentials: HttpResponse = await(handler(HttpRequest(
+        uri = "/secure",
+        headers = List(Authorization(BasicHttpCredentials("alice", "wrong-password"))))))
+      assertThat(rejectedCredentials.status).isEqualTo(StatusCodes.Unauthorized)
+      val rejectedCredentialsBody: String = responseText(rejectedCredentials)
+      assertThat(rejectedCredentialsBody).isNotEmpty()
+    }
 
   @Test
   def boundServerAndClientExchangeStrictHttpResponses(): Unit = withActorSystem { (system: ActorSystem) =>
