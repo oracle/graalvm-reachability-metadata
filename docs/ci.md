@@ -112,14 +112,14 @@ and releases flowing without a human in the loop.
 
 ### CI-test-all-metadata: Test all metadata
 
-Every three days (`0 2 */3 * *`) and on manual dispatch. Uses
+Every Sunday (`0 2 * * 0`) and on manual dispatch. Uses
 `generateMatrixBatchedCoordinates` with 85 batches to build a JDK/OS matrix, runs
 the full `test` lane, pulls only allowed images, then disables Docker networking.
-Failed batches are isolated down to concrete library versions and reported as one
-aggregated GitHub issue per failed `(library, version)` pair across the
-configured GraalVM JDK/OS combinations and native-image modes. It is
-release-blocking when failures are found (§FS-repository-functional-spec.5.3)
-and gates the scheduled release (§CI-create-scheduled-release).
+Failed batches are isolated down to concrete library versions, publish result
+and failure-log artifacts, and fail in the matrix so the Actions UI points at
+the failing batch. The aggregate job remains release-blocking when failures are
+found (§FS-repository-functional-spec.5.3) and gates the scheduled release
+(§CI-create-scheduled-release).
 
 ### CI-verify-new-library-version-compatibility: Verify new library version compatibility
 

@@ -1,11 +1,11 @@
-# Scheduled full metadata sweep (every 3 days): the 85-batch matrix from
-# generateMatrixBatchedCoordinates (§TCK-test-harness.7) runs the full test lane and files one
-# issue per failed (library, version). §CI-test-all-metadata; §FS-repository-functional-spec.5.3.
+# Weekly Sunday metadata sweep: 85 batches from generateMatrixBatchedCoordinates
+# (§TCK-test-harness.7) run tests, upload failure artifacts, and fail affected batches.
+# §CI-test-all-metadata; §FS-repository-functional-spec.5.3.
 name: "Test all metadata (one version per test suite)"
 
 on:
   schedule:
-    - cron: "0 2 */3 * *"
+    - cron: "0 2 * * 0"
   workflow_dispatch:
 
 permissions:
@@ -77,6 +77,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "🧪 Run '${{ matrix.coordinates }}' tests"
+        id: run-tests
         run: |
           set -euo pipefail
 
@@ -200,8 +201,10 @@ jobs:
 
           if [[ -s test-all-results/failures.ndjson ]]; then
             jq -s '{ failures: . }' test-all-results/failures.ndjson > result.json
+            echo "has_failures=true" >> "$GITHUB_OUTPUT"
           else
             jq -n '{ failures: [] }' > result.json
+            echo "has_failures=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: "📝 Compute artifact names"
@@ -210,6 +213,7 @@ jobs:
           SAFE_COORDINATES="$(printf '%s' '${{ matrix.coordinates }}' | tr '/:' '--')"
           SAFE_MODE="$(printf '%s' '${{ matrix.nativeImageMode }}' | tr '/:' '--')"
           echo "artifact_name=test-all-metadata-result-$SAFE_COORDINATES-${{ matrix.version }}-${{ matrix.os }}-$SAFE_MODE" >> "$GITHUB_OUTPUT"
+          echo "failure_logs_artifact_name=test-all-metadata-failure-logs-$SAFE_COORDINATES-${{ matrix.version }}-${{ matrix.os }}-$SAFE_MODE" >> "$GITHUB_OUTPUT"
           echo "result_file=result-$SAFE_COORDINATES-${{ matrix.version }}-${{ matrix.os }}-$SAFE_MODE.json" >> "$GITHUB_OUTPUT"
 
       - name: "📝 Rename result file for merged download"
@@ -222,17 +226,27 @@ jobs:
           path: ${{ steps.artifact-name.outputs.result_file }}
           if-no-files-found: error
 
+      - name: "📦 Upload failure log artifact"
+        if: steps.run-tests.outputs.has_failures == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ${{ steps.artifact-name.outputs.failure_logs_artifact_name }}
+          path: |
+            failure-logs
+            test-all-results
+            ${{ steps.artifact-name.outputs.result_file }}
+          if-no-files-found: error
+
+      - name: "❌ Fail batch when metadata tests failed"
+        if: steps.run-tests.outputs.has_failures == 'true'
+        run: exit 1
+
   process-results:
     name: "🧪 Process results"
     runs-on: "ubuntu-22.04"
     permissions:
       actions: read
       contents: read
-      issues: write
-    env:
-      ISSUE_TITLE_PREFIX: "[Automation] "
-      ISSUE_TITLE_MIDDLE: " fails for "
-      ISSUE_BODY_CHAR_LIMIT: "60000"
     needs:
       - get-all-metadata
       - test-all-metadata
@@ -295,183 +309,13 @@ jobs:
             echo "has-failures=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: "❗ Create aggregated issues for failed metadata tests"
-        if: steps.aggregate.outputs.has-failures == 'true' && github.repository == 'oracle/graalvm-reachability-metadata'
-        env:
-          GH_TOKEN: ${{ secrets.GRAALBOT_PR_TOKEN }}
-        run: |
-          set -euo pipefail
-
-          issue_label_for_failure_type() {
-            case "$1" in
-              "javac compile") printf '%s' "fails-javac-compile" ;;
-              "java run") printf '%s' "fails-java-run" ;;
-              "native-image build") printf '%s' "fails-native-image-build" ;;
-              "native-image run") printf '%s' "fails-native-image-run" ;;
-              "docker image pull") printf '%s' "docker" ;;
-              *) printf '%s' "" ;;
-            esac
-          }
-
-          jq -c '.failures[]' aggregate-results.json | while read -r library; do
-            NAME="$(printf '%s' "$library" | jq -r '.name')"
-            printf '%s' "$library" | jq -c '.failures[]' | while read -r failure; do
-              FAILED_VERSION="$(printf '%s' "$failure" | jq -r '.failedVersion')"
-              GAV_COORDINATES="$NAME:$FAILED_VERSION"
-              TITLE_END="${{ env.ISSUE_TITLE_MIDDLE }}$GAV_COORDINATES"
-              PRIMARY_FAILURE_TYPE="$(printf '%s' "$failure" | jq -r '.failureTypes | sort | .[0]')"
-              TITLE="${{ env.ISSUE_TITLE_PREFIX }}$PRIMARY_FAILURE_TYPE$TITLE_END"
-              FAILURE_LABEL="$(issue_label_for_failure_type "$PRIMARY_FAILURE_TYPE")"
-
-              ISSUE_NUMBER=$(
-                gh issue list \
-                  --repo "${{ github.repository }}" \
-                  --state open \
-                  --search "\"$TITLE_END\" in:title" \
-                  --json number,title \
-                  --jq ".[] | select(.title | (startswith(\"${{ env.ISSUE_TITLE_PREFIX }}\") and endswith(\"$TITLE_END\"))) | .number"
-              )
-              if [[ -n "$ISSUE_NUMBER" ]]; then
-                echo "Issue already exists: $ISSUE_NUMBER. Skipping creation."
-                continue
-              fi
-
-              BODY_FILE="$(mktemp)"
-              BODY_CHAR_LIMIT="${{ env.ISSUE_BODY_CHAR_LIMIT }}"
-              CODE_BLOCK_PREFIX=$'\n```console\n'
-              CODE_BLOCK_SUFFIX=$'\n```\n\n'
-
-              mapfile -t ENVIRONMENTS < <(printf '%s\n' "$failure" | jq -c '.environments[]')
-              ENVIRONMENT_COUNT="${#ENVIRONMENTS[@]}"
-
-              declare -a NORMAL_PREFIXES
-              declare -a TRUNCATED_PREFIXES
-              declare -a LOG_TAILS
-              declare -a LOG_LENGTHS
-              NORMAL_PREFIXES=()
-              TRUNCATED_PREFIXES=()
-              LOG_TAILS=()
-              LOG_LENGTHS=()
-
-              FULL_BODY_LENGTH=0
-              FIXED_TRUNCATED_LENGTH=0
-              TOTAL_LOG_LENGTH=0
-
-              for environment in "${ENVIRONMENTS[@]}"; do
-                OS="$(printf '%s' "$environment" | jq -r '.os')"
-                JDK="$(printf '%s' "$environment" | jq -r '.jdk')"
-                NATIVE_IMAGE_MODE="$(printf '%s' "$environment" | jq -r '.nativeImageMode')"
-                COMMAND="$(printf '%s' "$environment" | jq -r '.failedCommand')"
-                RUNNER_LOG_URL="$(printf '%s' "$environment" | jq -r '.runnerLogUrl')"
-                ENV_FAILURE_TYPE="$(printf '%s' "$environment" | jq -r '.failureType')"
-                ENV_LOG_LINES="$(printf '%s' "$environment" | jq -r '.logLines')"
-                LOG_TAIL="$(printf '%s' "$environment" | jq -r '.logTail')"
-
-                NORMAL_PREFIX="$(
-                  printf '## %s on %s / JDK %s / mode %s\n\n' "$ENV_FAILURE_TYPE" "$OS" "$JDK" "$NATIVE_IMAGE_MODE"
-                  printf 'Failure kind: %s\n' "$ENV_FAILURE_TYPE"
-                  printf 'OS: %s\n' "$OS"
-                  printf 'JDK: %s\n' "$JDK"
-                  printf 'Native-image mode: %s\n' "$NATIVE_IMAGE_MODE"
-                  printf 'Reproducer: `%s`\n' "$COMMAND"
-                  printf 'Runner log: %s\n' "$RUNNER_LOG_URL"
-                  printf 'Last %s lines of the log:\n' "$ENV_LOG_LINES"
-                )"
-                TRUNCATED_PREFIX="$(
-                  printf '## %s on %s / JDK %s / mode %s\n\n' "$ENV_FAILURE_TYPE" "$OS" "$JDK" "$NATIVE_IMAGE_MODE"
-                  printf 'Failure kind: %s\n' "$ENV_FAILURE_TYPE"
-                  printf 'OS: %s\n' "$OS"
-                  printf 'JDK: %s\n' "$JDK"
-                  printf 'Native-image mode: %s\n' "$NATIVE_IMAGE_MODE"
-                  printf 'Reproducer: `%s`\n' "$COMMAND"
-                  printf 'Runner log: %s\n' "$RUNNER_LOG_URL"
-                  printf 'Last %s lines of the log (excerpt truncated to fit the GitHub issue size limit):\n' "$ENV_LOG_LINES"
-                )"
-                LOG_LENGTH="$(printf '%s' "$LOG_TAIL" | wc -c)"
-
-                NORMAL_PREFIXES+=("$NORMAL_PREFIX")
-                TRUNCATED_PREFIXES+=("$TRUNCATED_PREFIX")
-                LOG_TAILS+=("$LOG_TAIL")
-                LOG_LENGTHS+=("$LOG_LENGTH")
-
-                FULL_BODY_LENGTH=$((FULL_BODY_LENGTH + $(printf '%s' "$NORMAL_PREFIX" | wc -c) + $(printf '%s' "$CODE_BLOCK_PREFIX" | wc -c) + LOG_LENGTH + $(printf '%s' "$CODE_BLOCK_SUFFIX" | wc -c)))
-                FIXED_TRUNCATED_LENGTH=$((FIXED_TRUNCATED_LENGTH + $(printf '%s' "$TRUNCATED_PREFIX" | wc -c) + $(printf '%s' "$CODE_BLOCK_PREFIX" | wc -c) + $(printf '%s' "$CODE_BLOCK_SUFFIX" | wc -c)))
-                TOTAL_LOG_LENGTH=$((TOTAL_LOG_LENGTH + LOG_LENGTH))
-              done
-
-              : > "$BODY_FILE"
-
-              if (( FULL_BODY_LENGTH <= BODY_CHAR_LIMIT )); then
-                for i in "${!ENVIRONMENTS[@]}"; do
-                  printf '%s' "${NORMAL_PREFIXES[$i]}" >> "$BODY_FILE"
-                  printf '%s' "$CODE_BLOCK_PREFIX" >> "$BODY_FILE"
-                  printf '%s' "${LOG_TAILS[$i]}" >> "$BODY_FILE"
-                  printf '%s' "$CODE_BLOCK_SUFFIX" >> "$BODY_FILE"
-                done
-              else
-                REMAINING_LOG_BUDGET=$((BODY_CHAR_LIMIT - FIXED_TRUNCATED_LENGTH))
-                if (( REMAINING_LOG_BUDGET < 0 )); then
-                  echo "Issue metadata exceeds the configured issue body size limit."
-                  exit 1
-                fi
-
-                declare -a LOG_BUDGETS
-                LOG_BUDGETS=()
-                ASSIGNED_LOG_BUDGET=0
-                for i in "${!ENVIRONMENTS[@]}"; do
-                  if (( TOTAL_LOG_LENGTH == 0 )); then
-                    LOG_BUDGET=0
-                  else
-                    LOG_BUDGET=$((LOG_LENGTHS[$i] * REMAINING_LOG_BUDGET / TOTAL_LOG_LENGTH))
-                  fi
-                  LOG_BUDGETS+=("$LOG_BUDGET")
-                  ASSIGNED_LOG_BUDGET=$((ASSIGNED_LOG_BUDGET + LOG_BUDGET))
-                done
-
-                EXTRA_BYTES=$((REMAINING_LOG_BUDGET - ASSIGNED_LOG_BUDGET))
-                NEXT_INDEX=0
-                while (( EXTRA_BYTES > 0 && ENVIRONMENT_COUNT > 0 )); do
-                  LOG_BUDGETS[$NEXT_INDEX]=$((LOG_BUDGETS[$NEXT_INDEX] + 1))
-                  EXTRA_BYTES=$((EXTRA_BYTES - 1))
-                  NEXT_INDEX=$(((NEXT_INDEX + 1) % ENVIRONMENT_COUNT))
-                done
-
-                for i in "${!ENVIRONMENTS[@]}"; do
-                  printf '%s' "${TRUNCATED_PREFIXES[$i]}" >> "$BODY_FILE"
-                  printf '%s' "$CODE_BLOCK_PREFIX" >> "$BODY_FILE"
-
-                  if (( LOG_BUDGETS[$i] > 0 )); then
-                    if (( LOG_BUDGETS[$i] >= LOG_LENGTHS[$i] )); then
-                      printf '%s' "${LOG_TAILS[$i]}" >> "$BODY_FILE"
-                    else
-                      printf '%s' "${LOG_TAILS[$i]}" | tail -c "${LOG_BUDGETS[$i]}" >> "$BODY_FILE"
-                    fi
-                  fi
-
-                  printf '%s' "$CODE_BLOCK_SUFFIX" >> "$BODY_FILE"
-                done
-              fi
-
-              LABEL_ARGS=(--label "priority")
-              if [[ -n "$FAILURE_LABEL" ]]; then
-                LABEL_ARGS+=(--label "$FAILURE_LABEL")
-              fi
-
-              ASSIGNEE_ARGS=()
-              if [[ "$FAILURE_LABEL" == "fails-native-image-build" ]]; then
-                ASSIGNEE_ARGS=(--assignee "vjovanov")
-              fi
-
-              gh issue create \
-                --repo "${{ github.repository }}" \
-                --title "$TITLE" \
-                --body-file "$BODY_FILE" \
-                "${LABEL_ARGS[@]}" \
-                "${ASSIGNEE_ARGS[@]}"
-
-              rm "$BODY_FILE"
-            done
-          done
+      - name: "📦 Upload aggregate failure report"
+        if: steps.aggregate.outputs.has-failures == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: test-all-metadata-aggregate-failures
+          path: aggregate-results.json
+          if-no-files-found: error
 
   all-metadata-passed:
     name: "🧪 All metadata tests have passed"
