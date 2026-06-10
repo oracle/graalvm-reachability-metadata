@@ -29,9 +29,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.jboss.logging.Logger;
+import org.jboss.threads.Messages_$logger;
 import org.junit.jupiter.api.Test;
 
 public class Quarkus_builderTest {
+    /*
+     * JBoss Threads resolves its generated message logger with MethodHandles.Lookup.findClass(). Keeping the
+     * implementation reachable preserves the executor path exercised by the build-chain tests.
+     */
+    private static final Messages_$logger JBOSS_THREADS_MESSAGES_LOGGER =
+            new Messages_$logger(Logger.getLogger("org.jboss.threads"));
+
     @Test
     void executesBuildChainWithInitialItemsMultiItemsDiagnosticsAndResourceCleanup() throws Exception {
         List<String> executionOrder = Collections.synchronizedList(new ArrayList<>());
