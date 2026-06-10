@@ -84,6 +84,18 @@ object CirceGenericFixtures {
 
     given Codec.AsObject[DocumentNode] = deriveCodec[DocumentNode]
   }
+
+  final case class ProductSummary(sku: String, name: String, inStock: Boolean)
+
+  object ProductSummary {
+    given Codec.AsObject[ProductSummary] = deriveCodec[ProductSummary]
+  }
+
+  final case class SearchResult[A](items: List[A], total: Long, nextPageToken: Option[String])
+
+  object SearchResult {
+    given [A: Encoder: Decoder]: Codec.AsObject[SearchResult[A]] = deriveCodec[SearchResult[A]]
+  }
 }
 
 class Circe_generic_3Test {
@@ -202,6 +214,26 @@ class Circe_generic_3Test {
     assertThat(json.hcursor.downField("members").downN(0).downField("permissions").downN(0).get[Set[String]]("scopes"))
       .isEqualTo(Right(Set("read", "write")))
     assertThat(json.as[AutoTeam]).isEqualTo(Right(team))
+  }
+
+  @Test
+  def semiautomaticDerivationSupportsParameterizedProducts(): Unit = {
+    val result: SearchResult[ProductSummary] = SearchResult(
+      items = List(
+        ProductSummary("sku-1", "metadata guide", inStock = true),
+        ProductSummary("sku-2", "native image primer", inStock = false)
+      ),
+      total = 2L,
+      nextPageToken = Some("page-2")
+    )
+
+    val json: Json = result.asJson
+
+    assertThat(json.hcursor.downField("items").values.map(_.size)).isEqualTo(Some(2))
+    assertThat(json.hcursor.downField("items").downN(0).get[String]("sku")).isEqualTo(Right("sku-1"))
+    assertThat(json.hcursor.downField("items").downN(1).get[Boolean]("inStock")).isEqualTo(Right(false))
+    assertThat(json.hcursor.get[Option[String]]("nextPageToken")).isEqualTo(Right(Some("page-2")))
+    assertThat(json.as[SearchResult[ProductSummary]]).isEqualTo(Right(result))
   }
 
   @Test
