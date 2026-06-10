@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import org.springframework.aot.generate.Generated;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org_springframework.spring_test.TestBeanOverrideHandlerTest_TestBeanTestCase__TestContext001_ApplicationContextInitializer;
