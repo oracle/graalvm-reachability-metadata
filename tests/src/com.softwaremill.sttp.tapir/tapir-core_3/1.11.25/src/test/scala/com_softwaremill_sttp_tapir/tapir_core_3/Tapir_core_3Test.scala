@@ -9,11 +9,13 @@ package com_softwaremill_sttp_tapir.tapir_core_3
 import org.junit.jupiter.api.Assertions.{assertEquals, assertFalse, assertTrue, fail}
 import org.junit.jupiter.api.Test
 import sttp.model.{Method, StatusCode}
+import sttp.monad.IdentityMonad
 import sttp.tapir.CodecFormat.TextPlain
 import sttp.tapir.DecodeResult
 import sttp.tapir.EndpointIO
 import sttp.tapir.EndpointOutput
 import sttp.tapir.SchemaType
+import sttp.tapir.server.ServerEndpoint
 import sttp.tapir.*
 import sttp.tapir.generic.auto.*
 
@@ -120,6 +122,31 @@ class Tapir_core_3Test {
     assertTrue(validationErrors.exists(_.path.map(_.name).contains("tags")), validationErrors.toString)
     assertTrue(documentedSchema.showValidators.exists(_.contains("id")))
     assertTrue(documentedSchema.showValidators.exists(_.contains("title")))
+  }
+
+  @Test
+  def pureServerEndpointLogicCanBeAttachedAndInvoked(): Unit = {
+    val serverEndpoint: ServerEndpoint[Any, [X] =>> X] {
+      type SECURITY_INPUT = Unit
+      type PRINCIPAL = Unit
+      type INPUT = String
+      type ERROR_OUTPUT = String
+      type OUTPUT = String
+    } = endpoint
+      .get
+      .in("greet")
+      .in(query[String]("name"))
+      .errorOut(stringBody)
+      .out(stringBody)
+      .handle { name =>
+        if (name.trim.nonEmpty) Right(s"Hello, $name") else Left("Name must not be blank")
+      }
+
+    assertEquals(Some(Method.GET), serverEndpoint.method)
+    assertEquals("/greet?name={name}", serverEndpoint.showPathTemplate())
+    assertEquals(Right(()), serverEndpoint.securityLogic(IdentityMonad)(()))
+    assertEquals(Right("Hello, Tapir"), serverEndpoint.logic(IdentityMonad)(())("Tapir"))
+    assertEquals(Left("Name must not be blank"), serverEndpoint.logic(IdentityMonad)(())("   "))
   }
 
   @Test
