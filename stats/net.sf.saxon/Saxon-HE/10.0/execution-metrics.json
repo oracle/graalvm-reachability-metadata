@@ -1,0 +1,145 @@
+{
+  "fix_javac_fail:2026-06-10": {
+    "timestamp": "2026-06-10T17:03:54.852961Z",
+    "library": "net.sf.saxon:Saxon-HE:10.0",
+    "starting_commit": "2e0e006203994caa98c2b22e24686aa9b498c078",
+    "ending_commit": "7efa78128cef06c1cbe801007b0ef08abf9f8ba6",
+    "previous_library": "net.sf.saxon:Saxon-HE:9.9.1-6",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "10.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 27,
+            "totalCalls": 27
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 8,
+            "totalCalls": 8
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 35,
+        "totalCalls": 35
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 45736,
+          "missed": 426383,
+          "ratio": 0.096874,
+          "total": 472119
+        },
+        "line": {
+          "covered": 10711,
+          "missed": 95959,
+          "ratio": 0.100412,
+          "total": 106670
+        },
+        "method": {
+          "covered": 2046,
+          "missed": 17011,
+          "ratio": 0.107362,
+          "total": 19057
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "9.9.1-6",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.692308,
+            "coveredCalls": 18,
+            "totalCalls": 26
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 8,
+            "totalCalls": 8
+          }
+        },
+        "coverageRatio": 0.764706,
+        "coveredCalls": 26,
+        "totalCalls": 34
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 45673,
+          "missed": 412663,
+          "ratio": 0.09965,
+          "total": 458336
+        },
+        "line": {
+          "covered": 10767,
+          "missed": 93209,
+          "ratio": 0.103553,
+          "total": 103976
+        },
+        "method": {
+          "covered": 2066,
+          "missed": 16418,
+          "ratio": 0.111772,
+          "total": 18484
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8305,
+      "issue_label": "fails-javac-compile",
+      "library": "net.sf.saxon:Saxon-HE:10.0",
+      "summary": "Saxon-HE 10.0 is usable with the resolved artifact and its normal transitive dependency; meaningful in-memory XSLT/XPath/XML coverage is reachable without Docker, external services, or additional Maven dependencies. The reported failure is caused by Saxon 10 API changes in existing tests, not missing setup.",
+      "deterministic_setup": [],
+      "agent_guidance": "No new environment variables or system properties are required. Generated or repaired tests should prefer in-memory Saxon HE usage through s9api/JAXP APIs. For the current javac issue, adapt tests to Saxon 10 API changes such as `PullProvider.Event.START_DOCUMENT` / `START_ELEMENT` and non-generic `GroundedValue`.",
+      "risks": [
+        "Saxon documents optional integrations for third-party object models and libraries such as JDOM, JDOM2, XOM, DOM4J, Axiom, ICU, and XML resolver support; only add those if a test intentionally exercises that optional integration.",
+        "Existing tests include Woodstox for a StAX-specific scenario, but Woodstox is not required for baseline meaningful Saxon-HE coverage.",
+        "Avoid PE/EE-only Saxon features when targeting Saxon-HE."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8305 [Automation] javac compile fails for net.sf.saxon:Saxon-HE:10.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "16 existing test file path(s) included"
+        }
+      ],
+      "current_library": "net.sf.saxon:Saxon-HE:9.9.1-6",
+      "new_version": "10.0",
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 35190,
+      "output_tokens_used": 4374,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/net.sf.saxon:Saxon-HE:10.0/library-preparation-preflight/pi-generation-2026-06-10T16-15-05-725631Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 246588,
+      "cached_input_tokens_used": 1550336,
+      "output_tokens_used": 20413,
+      "iterations": 6,
+      "cost_usd": 1.3876,
+      "tested_library_loc": 10711,
+      "metadata_entries": 43,
+      "test_only_metadata_entries": 21,
+      "previous_library_metadata_entries": 248,
+      "previous_library_test_only_metadata_entries": 21,
+      "code_coverage_percent": 10.04,
+      "previous_library_coverage_percent": 10.36
+    },
+    "artifacts": {
+      "test_file": "tests/src/net.sf.saxon/Saxon-HE/10.0/src/test/java/net_sf_saxon/Saxon_HE/StyleNodeFactoryTest.java",
+      "metadata_file": "metadata/net.sf.saxon/Saxon-HE/10.0/reachability-metadata.json"
+    }
+  }
+}
