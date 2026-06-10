@@ -7,7 +7,6 @@ import argparse
 import json
 import os
 import shutil
-import subprocess
 import sys
 
 from git_scripts.common_git import (
@@ -49,10 +48,6 @@ from utility_scripts.local_ci_verification import (
 
 BASELINE_STATS_FILENAME = ".baseline-stats.json"
 LIBRARY_UPDATE_TARGET_FILENAME = ".library_update_target.json"
-IGNORED_FINALIZATION_DIRTY_PATHS = {
-    f"forge/{LIBRARY_UPDATE_TARGET_FILENAME}",
-    "post-gen-interventions",
-}
 
 
 def build_pull_request_body(
@@ -217,12 +212,6 @@ def _normalize_relative_path(path: str) -> str:
     return os.path.normpath(path).replace(os.sep, "/")
 
 
-def _path_is_within(path: str, candidate_root: str) -> bool:
-    normalized_path = _normalize_relative_path(path)
-    normalized_root = _normalize_relative_path(candidate_root)
-    return normalized_path == normalized_root or normalized_path.startswith(f"{normalized_root}/")
-
-
 def expected_update_paths(
         group: str,
         artifact: str,
@@ -243,50 +232,6 @@ def expected_update_paths(
         for path in candidate_paths
         if os.path.exists(os.path.join(repo_path, path))
     ]
-
-
-def _status_paths(repo_path: str) -> list[str]:
-    """Return paths with pending git status entries."""
-    result = subprocess.run(
-        ["git", "status", "--porcelain=v1"],
-        cwd=repo_path,
-        check=True,
-        capture_output=True,
-        text=True,
-    )
-    paths: list[str] = []
-    for line in result.stdout.splitlines():
-        if not line:
-            continue
-        path = line[3:].strip()
-        if " -> " in path:
-            paths.extend(part.strip() for part in path.split(" -> ", 1))
-        else:
-            paths.append(path)
-    return [_normalize_relative_path(path) for path in paths if path]
-
-
-def assert_no_out_of_scope_changes(repo_path: str, expected_paths: list[str]) -> None:
-    """Reject generated changes outside the resolved library-update target paths."""
-    unexpected_paths = sorted({
-        path
-        for path in _status_paths(repo_path)
-        if not any(_path_is_within(path, ignored_path) for ignored_path in IGNORED_FINALIZATION_DIRTY_PATHS)
-        and not any(_path_is_within(path, expected_path) for expected_path in expected_paths)
-    })
-    if not unexpected_paths:
-        return
-
-    expected_lines = "\n".join(f"  - {path}" for path in expected_paths)
-    unexpected_lines = "\n".join(f"  - {path}" for path in unexpected_paths)
-    raise RuntimeError(
-        "Out-of-scope generated changes remain after staging expected PR paths; "
-        "refusing to rebase.\n"
-        "Expected PR paths:\n"
-        f"{expected_lines}\n"
-        "Unexpected dirty paths:\n"
-        f"{unexpected_lines}"
-    )
 
 
 def stage_and_commit(
@@ -486,15 +431,11 @@ def push_current_branch_to_origin(
     if large_library_part is not None:
         branch_suffix = f"{branch_suffix}-part-{large_library_part:04d}"
 
-    def stage() -> None:
-        expected_paths = stage_and_commit(group, artifact, library_version, coordinates, repo_path)
-        assert_no_out_of_scope_changes(repo_path, expected_paths)
-
     new_branch, _ = publish_branch(
         repo_path=repo_path,
         branch_suffix=branch_suffix,
         coordinates=coordinates,
-        stage=stage,
+        stage=lambda: stage_and_commit(group, artifact, library_version, coordinates, repo_path),
         metrics_repo_path=metrics_repo_path,
     )
 
