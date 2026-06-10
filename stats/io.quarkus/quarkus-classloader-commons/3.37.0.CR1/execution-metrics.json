@@ -1,0 +1,60 @@
+{
+  "fix_javac_fail:2026-06-10": {
+    "timestamp": "2026-06-10T20:44:07.638908Z",
+    "library": "io.quarkus:quarkus-classloader-commons:3.37.0.CR1",
+    "starting_commit": "9282b7bf40eed1bb109d96f1320155278b3c8843",
+    "ending_commit": "4ec5f963769487c993e54ad10a709c948ee99d56",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8304,
+      "issue_label": "fails-javac-compile",
+      "library": "io.quarkus:quarkus-classloader-commons:3.37.0.CR1",
+      "summary": "No extra setup is needed: the artifact is a tiny Quarkus bootstrap/classloader utility exposing only ClassLoaderHelper static methods, with no runtime dependencies beyond java.base and no external service or configuration requirement.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The reported failure was dependency resolution for 3.37.0.CR1 rather than a compile error requiring test setup; if it recurs, it is likely repository propagation/cache availability rather than missing scaffold preparation.",
+        "Coverage is naturally limited to pure class-name/resource-name conversion and JDK-package predicate behavior because the artifact contains only the classloader helper API."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8304 [Automation] javac compile fails for io.quarkus:quarkus-classloader-commons:3.37.0.CR1; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "current_library": "io.quarkus:quarkus-classloader-commons:3.33.1",
+      "new_version": "3.37.0.CR1",
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 41226,
+      "output_tokens_used": 2042,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/io.quarkus:quarkus-classloader-commons:3.37.0.CR1/library-preparation-preflight/pi-generation-2026-06-10T20-38-39-164726Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 61552,
+      "cached_input_tokens_used": 180224,
+      "output_tokens_used": 1737,
+      "iterations": 1,
+      "cost_usd": 0.1422,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "test_file": "None",
+      "metadata_file": "None"
+    }
+  }
+}
