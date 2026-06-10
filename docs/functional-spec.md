@@ -65,7 +65,7 @@ The harness uses a single coordinates filter `-Pcoordinates=` accepting `all`, `
 
 GitHub Actions, configured by [`ci.json`](../ci.json) as the single source of truth for OS/JDK matrix, run the workflows enumerated in [ci.md](ci.md):
 - PR-scoped: changed-metadata, changed-infrastructure, new-library-version, Spring AOT smoke, library-stats validation, library-and-framework-list validation, checkstyle.
-- Schedule-driven: full metadata sweep every three days to prevent incomplete or breaking metadata from shipping in releases, new-library-version compatibility (every six hours), Docker image vulnerability scans, scheduled release every two weeks, scheduled coverage publication.
+- Schedule-driven: weekly full metadata sweep to prevent incomplete or breaking metadata from shipping in releases, new-library-version compatibility (every six hours), Docker image vulnerability scans, scheduled release every two weeks, scheduled coverage publication.
 
 CI must pass before any merge, and is the authoritative gate — local runs are best-effort.
 
@@ -239,7 +239,7 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 - **Spring AOT scope.** The Spring AOT smoke matrix runs only when `metadata/` changes affect a Spring AOT project.
 - **Compatibility budget.** `verify-new-library-version-compatibility` caps each scheduled run at a fixed library budget and at most 30 newer versions per library, expanding across the configured GraalVM JDK/OS combinations, and creates one aggregated GitHub issue per failed `(library, version)` pair.
 - **Docker tag sync.** Dependabot updates to `allowed-docker-images` trigger `sync-docker-tags.yml`, which back-commits the synchronized tags into the Dependabot PR.
-- **Full sweep.** `test-all-metadata` runs only on schedule or manual dispatch in the main repository, uses 85 batches, creates one aggregated GitHub issue per failed `(library, version)` pair across configured GraalVM JDK/OS combinations and native-image modes, and is release-blocking when failures are found.
+- **Full sweep.** `test-all-metadata` runs only on a weekly Sunday schedule or manual dispatch in the main repository, uses 85 batches, isolates failed batches down to concrete library versions, publishes result and failure-log artifacts, fails affected matrix batches, and is release-blocking when failures are found.
 
 ### 5.4 Native-image modes
 
