@@ -15,7 +15,7 @@ import java.util.List;
 import org.apache.commons.lang3.SerializationUtils;
 import org.junit.jupiter.api.Test;
 
-public class SerializationUtilsClassLoaderAwareObjectInputStreamTest {
+public class SerializationUtilsInnerClassLoaderAwareObjectInputStreamTest {
 
     @Test
     public void cloneCreatesIndependentCopyOfSerializableObjectGraph() {

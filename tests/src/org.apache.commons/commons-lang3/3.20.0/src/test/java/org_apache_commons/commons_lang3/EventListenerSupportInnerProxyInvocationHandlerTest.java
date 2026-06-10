@@ -14,7 +14,7 @@ import java.util.List;
 import org.apache.commons.lang3.event.EventListenerSupport;
 import org.junit.jupiter.api.Test;
 
-public class EventListenerSupportProxyInvocationHandlerTest {
+public class EventListenerSupportInnerProxyInvocationHandlerTest {
 
     @Test
     public void fireDispatchesListenerCallsToEachRegisteredListener() {
