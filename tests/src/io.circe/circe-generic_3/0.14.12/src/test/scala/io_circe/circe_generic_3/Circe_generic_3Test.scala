@@ -67,6 +67,12 @@ final case class AutoLineItem(sku: String, quantity: Int)
 
 final case class AutoOrder(number: String, lines: Vector[AutoLineItem], coupon: Option[String])
 
+final case class SearchResult[A](query: String, matches: List[A], nextPageToken: Option[String])
+
+object SearchResult {
+  given [A: Codec]: Codec.AsObject[SearchResult[A]] = deriveCodec[SearchResult[A]]
+}
+
 class Circe_generic_3Test {
   @Test
   def derivesSemiautomaticCodecsForNestedProductsAndCollections(): Unit = {
@@ -228,5 +234,27 @@ class Circe_generic_3Test {
     assertThat(json.hcursor.downField("lines").downN(0).get[String]("sku")).isEqualTo(Right("keyboard"))
     assertThat(json.hcursor.downField("lines").downN(1).get[Int]("quantity")).isEqualTo(Right(2))
     assertThat(json.as[AutoOrder]).isEqualTo(Right(order))
+  }
+
+  @Test
+  def derivesSemiautomaticCodecsForParameterizedProducts(): Unit = {
+    val result: SearchResult[GeoPoint] = SearchResult(
+      query = "nearby warehouses",
+      matches = List(
+        GeoPoint(BigDecimal("47.6062"), BigDecimal("-122.3321")),
+        GeoPoint(BigDecimal("45.5152"), BigDecimal("-122.6784"))
+      ),
+      nextPageToken = Some("page-2")
+    )
+
+    val json: Json = result.asJson
+
+    assertThat(json.hcursor.get[String]("query")).isEqualTo(Right("nearby warehouses"))
+    assertThat(json.hcursor.downField("matches").downN(0).get[BigDecimal]("latitude"))
+      .isEqualTo(Right(BigDecimal("47.6062")))
+    assertThat(json.hcursor.downField("matches").downN(1).get[BigDecimal]("longitude"))
+      .isEqualTo(Right(BigDecimal("-122.6784")))
+    assertThat(json.hcursor.get[Option[String]]("nextPageToken")).isEqualTo(Right(Some("page-2")))
+    assertThat(json.as[SearchResult[GeoPoint]]).isEqualTo(Right(result))
   }
 }
