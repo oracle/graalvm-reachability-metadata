@@ -6,21 +6,40 @@
  */
 package org.springframework.test.context.aot;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import org.springframework.aot.generate.Generated;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org_springframework.spring_test.TestBeanOverrideHandlerTest_TestBeanTestCase__TestContext001_ApplicationContextInitializer;
 
 public final class AotTestContextInitializers__Generated {
     private AotTestContextInitializers__Generated() {
     }
 
     public static Map<String, Supplier<ApplicationContextInitializer<ConfigurableApplicationContext>>> getContextInitializers() {
-        return Map.of();
+        Map<String, Supplier<ApplicationContextInitializer<ConfigurableApplicationContext>>> map = new HashMap<>();
+        map.put(
+                "org_springframework.spring_test.TestBeanOverrideHandlerTest$TestBeanTestCase",
+                TestBeanOverrideHandlerTest_TestBeanTestCase__TestContext001_ApplicationContextInitializer::new
+        );
+        return map;
     }
 
     public static Map<String, Class<ApplicationContextInitializer<?>>> getContextInitializerClasses() {
-        return Map.of();
+        Map<String, Class<ApplicationContextInitializer<?>>> map = new HashMap<>();
+        map.put(
+                "org_springframework.spring_test.TestBeanOverrideHandlerTest$TestBeanTestCase",
+                initializerClass()
+        );
+        return map;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Class<ApplicationContextInitializer<?>> initializerClass() {
+        return (Class<ApplicationContextInitializer<?>>) (Class<?>)
+                TestBeanOverrideHandlerTest_TestBeanTestCase__TestContext001_ApplicationContextInitializer.class;
     }
 }
