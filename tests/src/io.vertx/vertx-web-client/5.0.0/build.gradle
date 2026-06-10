@@ -16,8 +16,8 @@ dependencies {
 }
 
 tasks.named("nativeTest") {
-    if (libraryVersion == '5.0.0') {
-        // Vert.x 5.0.0 pulls in Netty 4.2.x, which requires explicit unsafe access on Java 25 native runs.
+    if (libraryVersion.startsWith('5.0.')) {
+        // Vert.x 5.0.x pulls in Netty 4.2.x, which requires explicit unsafe access on Java 25 native runs.
         runtimeArgs.addAll([
                 '-Dsun.misc.unsafe.memory.access=allow',
                 '-Dio.netty.tryReflectionSetAccessible=true'
