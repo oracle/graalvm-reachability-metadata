@@ -94,6 +94,12 @@ object DeploymentStep {
 final case class AutoCoordinates(latitude: BigDecimal, longitude: BigDecimal)
 final case class AutoWarehouse(name: String, coordinates: AutoCoordinates, stockedSkus: Vector[String])
 
+final case class ApiEnvelope[A](status: String, payload: A, warnings: Vector[String])
+
+object ApiEnvelope {
+  given [A: Encoder: Decoder]: Codec.AsObject[ApiEnvelope[A]] = deriveCodec[ApiEnvelope[A]]
+}
+
 final class Circe_generic_3Test {
   @Test
   def derivesProductEncodersAndDecodersForNestedCaseClasses(): Unit = {
@@ -223,6 +229,22 @@ final class Circe_generic_3Test {
       .deepMerge(Json.obj("state" -> Json.fromString("Paused")))
       .as[ProcessingJob]
     assertThat(invalid.isLeft).isTrue
+  }
+
+  @Test
+  def derivesCodecsForParameterizedProducts(): Unit = {
+    val envelope: ApiEnvelope[PostalAddress] = ApiEnvelope(
+      status = "accepted",
+      payload = PostalAddress("Main Street", "Brno", "60200"),
+      warnings = Vector("normalized-postal-code")
+    )
+
+    val json: Json = envelope.asJson
+
+    assertThat(json.hcursor.get[String]("status")).isEqualTo(Right("accepted"))
+    assertThat(json.hcursor.downField("payload").get[String]("city")).isEqualTo(Right("Brno"))
+    assertThat(json.hcursor.get[Vector[String]]("warnings")).isEqualTo(Right(Vector("normalized-postal-code")))
+    assertThat(json.as[ApiEnvelope[PostalAddress]]).isEqualTo(Right(envelope))
   }
 
   @Test
