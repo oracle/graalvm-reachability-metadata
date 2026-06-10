@@ -32,7 +32,7 @@ public class MergedContextConfigurationRuntimeHintsTest {
             "classpath:/org_springframework/spring_test/webapp";
 
     private static final String WEB_RESOURCE_PATTERN =
-            "org_springframework/spring_test/webapp/*";
+            "org_springframework/spring_test/webapp/**";
 
     @Test
     void registersRuntimeHintsForWebMergedContextConfigurationResourceBasePath() {
@@ -77,7 +77,7 @@ public class MergedContextConfigurationRuntimeHintsTest {
 
         @Override
         public ApplicationContext loadContextForAotProcessing(
-                MergedContextConfiguration mergedConfig) {
+                MergedContextConfiguration mergedConfig, RuntimeHints runtimeHints) {
 
             return new GenericApplicationContext();
         }
