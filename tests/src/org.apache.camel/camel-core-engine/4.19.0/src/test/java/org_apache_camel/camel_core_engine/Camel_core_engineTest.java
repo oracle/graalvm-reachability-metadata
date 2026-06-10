@@ -111,6 +111,51 @@ public class Camel_core_engineTest {
     }
 
     @Test
+    void handlesRouteExceptionsWithOnExceptionClause() throws Exception {
+        try (DefaultCamelContext context = new DefaultCamelContext()) {
+            context.addComponent("direct", new DirectComponent());
+            context.addRoutes(new RouteBuilder() {
+                @Override
+                public void configure() {
+                    onException(IllegalArgumentException.class)
+                            .handled(true)
+                            .process(exchange -> {
+                                Throwable caught = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Throwable.class);
+                                exchange.getMessage().setHeader(
+                                        "handledExceptionType", caught.getClass().getSimpleName());
+                            })
+                            .setBody().constant("recovered");
+
+                    from("direct:validate")
+                            .routeId("exception-handler-route")
+                            .process(exchange -> {
+                                String body = exchange.getMessage().getBody(String.class);
+                                if (body.isBlank()) {
+                                    throw new IllegalArgumentException("body must not be blank");
+                                }
+                                exchange.getMessage().setBody("accepted:" + body);
+                            });
+                }
+            });
+            context.start();
+
+            try (ProducerTemplate template = context.createProducerTemplate()) {
+                Exchange accepted = template.request("direct:validate", exchange ->
+                        exchange.getMessage().setBody("camel"));
+                Exchange recovered = template.request("direct:validate", exchange ->
+                        exchange.getMessage().setBody(" "));
+
+                assertThat(accepted.getException()).isNull();
+                assertThat(accepted.getMessage().getBody(String.class)).isEqualTo("accepted:camel");
+                assertThat(recovered.getException()).isNull();
+                assertThat(recovered.getMessage().getBody(String.class)).isEqualTo("recovered");
+                assertThat(recovered.getMessage().getHeader("handledExceptionType", String.class))
+                        .isEqualTo(IllegalArgumentException.class.getSimpleName());
+            }
+        }
+    }
+
+    @Test
     void removesRoutesAndComponentsFromRunningContext() throws Exception {
         try (DefaultCamelContext context = new DefaultCamelContext()) {
             DirectComponent directComponent = new DirectComponent();
