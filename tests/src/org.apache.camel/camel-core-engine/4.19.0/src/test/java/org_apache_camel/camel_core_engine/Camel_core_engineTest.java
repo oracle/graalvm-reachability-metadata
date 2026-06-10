@@ -156,6 +156,57 @@ public class Camel_core_engineTest {
     }
 
     @Test
+    void routesMessagesWithContentBasedRouterChoice() throws Exception {
+        try (DefaultCamelContext context = new DefaultCamelContext()) {
+            context.addComponent("direct", new DirectComponent());
+            context.addRoutes(new RouteBuilder() {
+                @Override
+                public void configure() {
+                    from("direct:classify")
+                            .routeId("content-based-route")
+                            .choice()
+                            .when(exchange -> "gold".equals(
+                                    exchange.getMessage().getHeader("customerTier", String.class)))
+                                .setHeader("routeBranch").constant("priority")
+                                .setBody(exchange -> "priority:"
+                                        + exchange.getMessage().getBody(String.class))
+                            .when(exchange -> exchange.getMessage().getBody(String.class).contains("audit"))
+                                .setHeader("routeBranch").constant("audit")
+                                .setBody(exchange -> "audit:"
+                                        + exchange.getMessage().getBody(String.class))
+                            .otherwise()
+                                .setHeader("routeBranch").constant("standard")
+                                .setBody(exchange -> "standard:"
+                                        + exchange.getMessage().getBody(String.class))
+                            .end();
+                }
+            });
+            context.start();
+
+            try (ProducerTemplate template = context.createProducerTemplate()) {
+                Exchange priority = template.request("direct:classify", exchange -> {
+                    exchange.getMessage().setHeader("customerTier", "gold");
+                    exchange.getMessage().setBody("invoice");
+                });
+                Exchange audit = template.request("direct:classify", exchange ->
+                        exchange.getMessage().setBody("audit-log"));
+                Exchange standard = template.request("direct:classify", exchange ->
+                        exchange.getMessage().setBody("status"));
+
+                assertThat(priority.getException()).isNull();
+                assertThat(priority.getMessage().getBody(String.class)).isEqualTo("priority:invoice");
+                assertThat(priority.getMessage().getHeader("routeBranch", String.class)).isEqualTo("priority");
+                assertThat(audit.getException()).isNull();
+                assertThat(audit.getMessage().getBody(String.class)).isEqualTo("audit:audit-log");
+                assertThat(audit.getMessage().getHeader("routeBranch", String.class)).isEqualTo("audit");
+                assertThat(standard.getException()).isNull();
+                assertThat(standard.getMessage().getBody(String.class)).isEqualTo("standard:status");
+                assertThat(standard.getMessage().getHeader("routeBranch", String.class)).isEqualTo("standard");
+            }
+        }
+    }
+
+    @Test
     void removesRoutesAndComponentsFromRunningContext() throws Exception {
         try (DefaultCamelContext context = new DefaultCamelContext()) {
             DirectComponent directComponent = new DirectComponent();
