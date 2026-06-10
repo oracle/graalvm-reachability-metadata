@@ -8,8 +8,11 @@ package org_apache_maven_plugins.maven_compiler_plugin;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.function.Supplier;
+
+import org.apache.maven.api.plugin.Log;
+import org.apache.maven.api.plugin.testing.MojoExtension;
 import org.apache.maven.plugins.maven_compiler_plugin.HelpMojo;
-import org.apache.maven.plugin.logging.Log;
 import org.junit.jupiter.api.Test;
 
 public class HelpMojoTest {
@@ -17,7 +20,7 @@ public class HelpMojoTest {
     public void executeLoadsBundledPluginHelpResource() throws Exception {
         CapturingLog log = new CapturingLog();
         HelpMojo mojo = new HelpMojo();
-        mojo.setLog(log);
+        MojoExtension.setVariableValueToObject(mojo, "logger", log);
 
         mojo.execute();
 
@@ -48,6 +51,14 @@ public class HelpMojoTest {
         }
 
         @Override
+        public void debug(Supplier<String> content) {
+        }
+
+        @Override
+        public void debug(Supplier<String> content, Throwable error) {
+        }
+
+        @Override
         public boolean isInfoEnabled() {
             return true;
         }
@@ -64,6 +75,16 @@ public class HelpMojoTest {
 
         @Override
         public void info(Throwable error) {
+        }
+
+        @Override
+        public void info(Supplier<String> content) {
+            info.append(content.get());
+        }
+
+        @Override
+        public void info(Supplier<String> content, Throwable error) {
+            info.append(content.get());
         }
 
         @Override
@@ -84,6 +105,14 @@ public class HelpMojoTest {
         }
 
         @Override
+        public void warn(Supplier<String> content) {
+        }
+
+        @Override
+        public void warn(Supplier<String> content, Throwable error) {
+        }
+
+        @Override
         public boolean isErrorEnabled() {
             return true;
         }
@@ -98,6 +127,14 @@ public class HelpMojoTest {
 
         @Override
         public void error(Throwable error) {
+        }
+
+        @Override
+        public void error(Supplier<String> content) {
+        }
+
+        @Override
+        public void error(Supplier<String> content, Throwable error) {
         }
     }
 }
