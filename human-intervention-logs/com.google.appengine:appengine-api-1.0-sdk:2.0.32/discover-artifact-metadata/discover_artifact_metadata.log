@@ -1,0 +1,1507 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019eb030-fe35-7cc3-bfd3-632a88bee4b3
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.google.appengine:appengine-api-1.0-sdk:2.0.32
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "2.0.32" when "$version$" is replaced with "2.0.32".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a/build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "com.google.appengine:appengine-api-1.0-sdk:2.0.32".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.0.32".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify this against Maven metadata first, then fall back to the upstream repo only where Maven does not expose the source/test/doc artifact cleanly. After that I’ll update the JSON in place.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json && sed -n '1,160p' build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+-rw-rw-r-- 1 vjovanov vjovanov 74 Jun 10 08:21 build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json
+{
+  "coordinates" : "com.google.appengine:appengine-api-1.0-sdk:2.0.32"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"appengine-api-1.0-sdk|com.google.appengine\" metadata build/discovered-artifact-metadata docs tests -g '*.json' -g '*.md' -g '*.java'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json:2:  "coordinates" : "com.google.appengine:appengine-api-1.0-sdk:2.0.32"
+metadata/com.google.auth/google-auth-library-oauth2-http/1.10.0/reachability-metadata.json:317:      "type" : "com.google.appengine.api.appidentity.AppIdentityService",
+metadata/com.google.auth/google-auth-library-oauth2-http/1.10.0/reachability-metadata.json:329:      "type" : "com.google.appengine.api.appidentity.AppIdentityService$GetAccessTokenResult"
+metadata/com.google.auth/google-auth-library-oauth2-http/1.10.0/reachability-metadata.json:335:      "type" : "com.google.appengine.api.appidentity.AppIdentityServiceFactory",
+metadata/com.google.auth/google-auth-library-oauth2-http/1.10.0/reachability-metadata.json:347:      "type" : "com.google.appengine.api.appidentity.IAppIdentityServiceFactoryProvider"
+metadata/com.google.auth/google-auth-library-oauth2-http/1.10.0/reachability-metadata.json:353:      "type" : "com.google.appengine.api.backends.IBackendServiceFactoryProvider"
+metadata/com.google.auth/google-auth-library-oauth2-http/1.10.0/reachability-metadata.json:359:      "type" : "com.google.appengine.api.blobstore.IBlobstoreServiceFactoryProvider"
+metadata/com.google.auth/google-auth-library-oauth2-http/1.10.0/reachability-metadata.json:365:      "type" : "com.google.appengine.api.capabilities.ICapabilitiesServiceFactoryProvider"
+metadata/com.google.auth/google-auth-library-oauth2-http/1.10.0/reachability-metadata.json:371:      "type" : "com.google.appengine.api.datastore.IDatastoreServiceFactoryProvider"
+metadata/com.google.auth/google-auth-library-oauth2-http/1.10.0/reachability-metadata.json:377:      "type" : "com.google.appengine.api.images.IImagesServiceFactoryProvider"
+metadata/com.google.auth/google-auth-library-oauth2-http/1.10.0/reachability-metadata.json:383:      "type" : "com.google.appengine.api.log.ILogServiceFactoryProvider"
+metadata/com.google.auth/google-auth-library-oauth2-http/1.10.0/reachability-metadata.json:389:      "type" : "com.google.appengine.api.mail.IMailServiceFactoryProvider"
+metadata/com.google.auth/google-auth-library-oauth2-http/1.10.0/reachability-metadata.json:395:      "type" : "com.google.appengine.api.memcache.IMemcacheServiceFactoryProvider"
+metadata/com.google.auth/google-auth-library-oauth2-http/1.10.0/reachability-metadata.json:401:      "type" : "com.google.appengine.api.modules.IModulesServiceFactoryProvider"
+metadata/com.google.auth/google-auth-library-oauth2-http/1.10.0/reachability-metadata.json:407:      "type" : "com.google.appengine.api.oauth.IOAuthServiceFactoryProvider"
+metadata/com.google.auth/google-auth-library-oauth2-http/1.10.0/reachability-metadata.json:413:      "type" : "com.google.appengine.api.quota.IQuotaServiceFactoryProvider"
+metadata/com.google.auth/google-auth-library-oauth2-http/1.10.0/reachability-metadata.json:419:      "type" : "com.google.appengine.api.search.ISearchServiceFactoryProvider"
+metadata/com.google.auth/google-auth-library-oauth2-http/1.10.0/reachability-metadata.json:425:      "type" : "com.google.appengine.api.taskqueue.IQueueFactoryProvider"
+metadata/com.google.auth/google-auth-library-oauth2-http/1.10.0/reachability-metadata.json:431:      "type" : "com.google.appengine.api.urlfetch.IURLFetchServiceFactoryProvider"
+metadata/com.google.auth/google-auth-library-oauth2-http/1.10.0/reachability-metadata.json:437:      "type" : "com.google.appengine.api.users.IUserServiceFactoryProvider"
+metadata/com.google.auth/google-auth-library-oauth2-http/1.10.0/reachability-metadata.json:443:      "type" : "com.google.appengine.api.utils.SystemProperty",
+metadata/com.google.auth/google-auth-library-oauth2-http/1.10.0/reachability-metadata.json:454:      "type" : "com.google.appengine.api.utils.SystemProperty$Environment",
+metadata/com.google.auth/google-auth-library-oauth2-http/1.10.0/reachability-metadata.json:466:      "type" : "com.google.appengine.repackaged.com.google.protobuf.ExtensionRegistry",
+metadata/com.google.auth/google-auth-library-oauth2-http/1.10.0/reachability-metadata.json:520:          "com.google.appengine.spi.ServiceProvider"
+tests/src/com.google.auth/google-auth-library-oauth2-http/1.10.0/src/test/java/com_google_auth/google_auth_library_oauth2_http/DefaultCredentialsProviderTest.java:21:            "com.google.appengine.runtime.version";
+tests/src/com.google.auth/google-auth-library-oauth2-http/1.10.0/src/test/java/com_google_auth/google_auth_library_oauth2_http/DefaultCredentialsProviderTest.java:23:            "com.google.appengine.runtime.environment";
+
+web search: 
+web search: com.google.appengine appengine-api-1.0-sdk 2.0.32 pom scm source test
+web search: 
+web search: https://central.sonatype.com/artifact/com.google.appengine/appengine-api-1.0-sdk
+codex
+Maven Central shows this is a normal compile-scope JVM jar, with a POM description and homepage pointing at `GoogleCloudPlatform/appengine-java-standard`. I’m checking the exact 2.0.32 artifacts now, including whether Central published sources, javadocs, or tests.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/google/appengine/appengine-api-1.0-sdk/2.0.32/appengine-api-1.0-sdk-2.0.32.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+ succeeded in 0ms:
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>parent</artifactId>
+    <groupId>com.google.appengine</groupId>
+    <version>2.0.32</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>appengine-api-1.0-sdk</artifactId>
+  <name>AppEngine :: appengine-api-1.0-sdk</name>
+  <description>API for Google App Engine standard environment with some of the dependencies shaded (repackaged)</description>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <createSourcesJar>true</createSourcesJar>
+              <relocations>
+                <relocation>
+                  <pattern>com.google.apphosting.datastore.proto2api.DatastoreV3Pb</pattern>
+                  <shadedPattern>com.google.apphosting.api.proto2api.DatastorePb</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.apphosting.datastore.DatastoreV3Pb</pattern>
+                  <shadedPattern>com.google.apphosting.api.DatastorePb</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.api.client.repackaged.org.apache.commons.codec</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.android.org.apache.commons.codec</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.api.client</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.api.client</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.api.server.proto</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.api.server.proto</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.api.services.datastore</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.api.services.datastore</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.datastore.v1</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.datastore.v1</shadedPattern>
+                  <excludes>
+                    <exclude>com.google.datastore.v1beta3.*</exclude>
+                  </excludes>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.datastore.v1beta3</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.datastore.v1beta3</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.type</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.type</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.api.AnnotationsProto</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.api.AnnotationsProto</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.api.HttpProto</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.api.HttpProto</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.appengine.api.search.proto.SearchServicePb</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.appengine.api.search.proto.SearchServicePb</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.borg.borgcron</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.cron</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.common</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.common</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.thirdparty</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.thirdparty</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.gaia.mint.proto2api</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.gaia.mint.proto2api</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.identity</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.identity</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.net.base.CidrAddressBlock</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.net.base.CidrAddressBlock</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.net.util.error</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.net.util.error</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.net.util.proto2api</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.net.util.proto2api</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.protobuf</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.protobuf</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.io.base</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.io.protocol</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.io.protocol</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.io.protocol</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.protos.appengine_proto</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.protos.appengine_proto</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.protos.gdata.proto2api</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.protos.gdata.proto2api</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.protos.proto.proto2api</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.protos.proto.proto2api</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.protos.proto2.bridge</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.protos.proto2.bridge</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.rpc</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.rpc</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.universalnav</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.universalnav</shadedPattern>
+                  <excludes>
+                    <exclude>com.google.universalnav.PropertyType</exclude>
+                  </excludes>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.protos.universalnav</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.protos.universalnav</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>geronimo_javamail/src/main/resources/META-INF</pattern>
+                  <shadedPattern>/META-INF</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.antlr.runtime</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.org.antlr.runtime</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.joda.time</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.org.joda.time</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.json</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.org.json</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.gson</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.gson</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.esotericsoftware.yamlbeans</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.esotericsoftware.yamlbeans</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.commons</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.org.apache.commons</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.http</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.org.apache.http</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.lucene</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.org.apache.lucene</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.storage.blobstore.proto</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.storage.blobstore.proto</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.storage.onestore.v3.proto2api</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.storage.onestore.v3.proto2api</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.codehaus.jackson</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.org.codehaus.jackson</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.fasterxml.jackson</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.fasterxml.jackson</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.googlecode.charts4j</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.googlecode.charts4j</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.eclipse.aether</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.org.eclipse.aether</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.maven</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.org.apache.maven</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.codehaus.plexus.interpolation</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.org.codehaus.plexus.interpolation</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.codehaus.plexus.util</pattern>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/google/appengine/appengine-api-1.0-sdk/2.0.32/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+ succeeded in 365ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/google/appengine/appengine-api-1.0-sdk/2.0.32</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/google/appengine/appengine-api-1.0-sdk/2.0.32</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="appengine-api-1.0-sdk-2.0.32-sources.jar" title="appengine-api-1.0-sdk-2.0.32-sources.jar">appengine-api-1.0-sdk-2.0.32-sources.jar</a>          2025-01-17 16:27  10215737      
+<a href="appengine-api-1.0-sdk-2.0.32-sources.jar.asc" title="appengine-api-1.0-sdk-2.0.32-sources.jar.asc">appengine-api-1.0-sdk-2.0.32-sources.jar.asc</a>      2025-01-17 16:27       488      
+<a href="appengine-api-1.0-sdk-2.0.32-sources.jar.md5" title="appengine-api-1.0-sdk-2.0.32-sources.jar.md5">appengine-api-1.0-sdk-2.0.32-sources.jar.md5</a>      2025-01-17 16:27        32      
+<a href="appengine-api-1.0-sdk-2.0.32-sources.jar.sha1" title="appengine-api-1.0-sdk-2.0.32-sources.jar.sha1">appengine-api-1.0-sdk-2.0.32-sources.jar.sha1</a>     2025-01-17 16:27        40      
+<a href="appengine-api-1.0-sdk-2.0.32.jar" title="appengine-api-1.0-sdk-2.0.32.jar">appengine-api-1.0-sdk-2.0.32.jar</a>                  2025-01-17 16:27  19164996      
+<a href="appengine-api-1.0-sdk-2.0.32.jar.asc" title="appengine-api-1.0-sdk-2.0.32.jar.asc">appengine-api-1.0-sdk-2.0.32.jar.asc</a>              2025-01-17 16:27       488      
+<a href="appengine-api-1.0-sdk-2.0.32.jar.md5" title="appengine-api-1.0-sdk-2.0.32.jar.md5">appengine-api-1.0-sdk-2.0.32.jar.md5</a>              2025-01-17 16:27        32      
+<a href="appengine-api-1.0-sdk-2.0.32.jar.sha1" title="appengine-api-1.0-sdk-2.0.32.jar.sha1">appengine-api-1.0-sdk-2.0.32.jar.sha1</a>             2025-01-17 16:27        40      
+<a href="appengine-api-1.0-sdk-2.0.32.pom" title="appengine-api-1.0-sdk-2.0.32.pom">appengine-api-1.0-sdk-2.0.32.pom</a>                  2025-01-17 16:27     30047      
+<a href="appengine-api-1.0-sdk-2.0.32.pom.asc" title="appengine-api-1.0-sdk-2.0.32.pom.asc">appengine-api-1.0-sdk-2.0.32.pom.asc</a>              2025-01-17 16:27       488      
+<a href="appengine-api-1.0-sdk-2.0.32.pom.md5" title="appengine-api-1.0-sdk-2.0.32.pom.md5">appengine-api-1.0-sdk-2.0.32.pom.md5</a>              2025-01-17 16:27        32      
+<a href="appengine-api-1.0-sdk-2.0.32.pom.sha1" title="appengine-api-1.0-sdk-2.0.32.pom.sha1">appengine-api-1.0-sdk-2.0.32.pom.sha1</a>             2025-01-17 16:27        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/google/appengine/appengine-api-1.0-sdk/2.0.32/appengine-api-1.0-sdk-2.0.32.jar -o /tmp/appengine-api-1.0-sdk-2.0.32.jar && jar tf /tmp/appengine-api-1.0-sdk-2.0.32.jar | sed -n '1,80p' && echo CLASS_COUNT="'$(jar tf /tmp/appengine-api-1.0-sdk-2.0.32.jar | rg -c '"'\\.class"'$'"')" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+ succeeded in 1257ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/services/
+META-INF/services/javax.annotation.processing.Processor
+com/
+com/google/
+com/google/appengine/
+com/google/appengine/setup/
+com/google/appengine/setup/ApiProxyEnvironment.class
+com/google/appengine/setup/RequestThreadFactory.class
+com/google/appengine/setup/RuntimeUtils.class
+com/google/appengine/setup/ApiProxyDelegate$IdleConnectionMonitorThread.class
+com/google/appengine/setup/LazyApiProxyEnvironment.class
+com/google/appengine/setup/ApiProxyDelegate$1.class
+com/google/appengine/setup/RequestThreadFactory$1.class
+com/google/appengine/setup/ApiProxyDelegate$MakeSyncCall.class
+com/google/appengine/setup/timer/
+com/google/appengine/setup/timer/Timer.class
+com/google/appengine/setup/timer/AbstractIntervalTimer.class
+com/google/appengine/setup/ApiProxySetupUtil.class
+com/google/appengine/setup/AppLogsWriter.class
+com/google/appengine/setup/TimerImpl.class
+com/google/appengine/setup/ApiProxyEnvironment$AttributeMapping.class
+com/google/appengine/setup/utils/
+com/google/appengine/setup/utils/http/
+com/google/appengine/setup/utils/http/HttpRequest.class
+com/google/appengine/setup/ApiProxyDelegate.class
+com/google/appengine/tools/
+com/google/appengine/tools/compilation/
+com/google/appengine/tools/compilation/DatastoreCallbacksProcessor.class
+com/google/appengine/tools/compilation/DatastoreCallbacksProcessor$CallbackVerifier.class
+com/google/appengine/tools/compilation/DatastoreCallbacksConfigWriter.class
+com/google/appengine/tools/compilation/DatastoreCallbacksProcessor$SingleParamCallbackVerifier.class
+com/google/appengine/tools/compilation/DatastoreCallbacksProcessor$BaseCallbackVerifier.class
+com/google/appengine/spi/
+com/google/appengine/spi/ServiceFactoryFactory$RuntimeRegistry.class
+com/google/appengine/spi/ServiceFactoryFactory.class
+com/google/appengine/spi/ServiceFactoryFactory$1.class
+com/google/appengine/spi/ServiceProvider.class
+com/google/appengine/spi/package-info.class
+com/google/appengine/spi/FactoryProviderRegistry.class
+com/google/appengine/spi/FactoryProvider.class
+com/google/appengine/spi/ServicesFile.class
+com/google/appengine/api/
+com/google/appengine/api/taskqueue/
+com/google/appengine/api/taskqueue/QueueImpl$1.class
+com/google/appengine/api/taskqueue/QueueStatistics$1.class
+com/google/appengine/api/taskqueue/FutureAdapter.class
+com/google/appengine/api/taskqueue/LeaseOptions.class
+com/google/appengine/api/taskqueue/QueueFactoryImpl.class
+com/google/appengine/api/taskqueue/RetryOptions.class
+com/google/appengine/api/taskqueue/TaskAlreadyExistsException.class
+com/google/appengine/api/taskqueue/IQueueFactoryProvider.class
+com/google/appengine/api/taskqueue/RetryOptions$Builder.class
+com/google/appengine/api/taskqueue/TaskHandle$KeyValuePair.class
+com/google/appengine/api/taskqueue/QueueFactory.class
+com/google/appengine/api/taskqueue/QueueStatistics.class
+com/google/appengine/api/taskqueue/TaskOptions$Param.class
+com/google/appengine/api/taskqueue/InternalFailureException.class
+com/google/appengine/api/taskqueue/TaskOptions.class
+com/google/appengine/api/taskqueue/Queue.class
+com/google/appengine/api/taskqueue/QueueImpl$3.class
+com/google/appengine/api/taskqueue/TaskOptions$Builder.class
+com/google/appengine/api/taskqueue/DeferredTaskContext.class
+com/google/appengine/api/taskqueue/QueueApiHelper.class
+com/google/appengine/api/taskqueue/TaskOptions$StringValueParam.class
+com/google/appengine/api/taskqueue/LeaseOptions$1.class
+com/google/appengine/api/taskqueue/IQueueFactory.class
+com/google/appengine/api/taskqueue/TaskOptions$1.class
+com/google/appengine/api/taskqueue/DeferredTask.class
+com/google/appengine/api/taskqueue/DeferredTaskCreationException.class
+com/google/appengine/api/taskqueue/TaskOptions$ByteArrayValueParam.class
+com/google/appengine/api/taskqueue/TaskNotFoundException.class
+com/google/appengine/api/taskqueue/UnsupportedTranslationException.class
+com/google/appengine/api/taskqueue/TransactionalTaskException.class
+com/google/appengine/api/taskqueue/ee10/
+com/google/appengine/api/taskqueue/ee10/DeferredTaskContext.class
+com/google/appengine/api/taskqueue/TaskOptions$Method.class
+com/google/appengine/api/taskqueue/DatastorePutDeferredTask.class
+com/google/appengine/api/taskqueue/package-info.class
+CLASS_COUNT=9646
+
+codex
+The Central directory publishes a sources jar and the main jar has thousands of `.class` files, so this is not one of the non-JVM cases. There is no test jar in the version directory, so I’m checking upstream tags and release layout for a version-correct test-suite URL.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/google/appengine/appengine-api-1.0-sdk/2.0.32/appengine-api-1.0-sdk-2.0.32.pom -o /tmp/appengine-api-1.0-sdk-2.0.32.pom && rg -n "<url>|<scm>|<connection>|<developerConnection>|<tag>|<description>|github|javadoc|homepage|source" /tmp/appengine-api-1.0-sdk-2.0.32.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+ succeeded in 0ms:
+11:  <description>API for Google App Engine standard environment with some of the dependencies shaded (repackaged)</description>
+152:                  <pattern>geronimo_javamail/src/main/resources/META-INF</pattern>
+294:                    <include>com/google/apphosting/api/NamespaceResources.class</include>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/google/appengine/parent/2.0.32/parent-2.0.32.pom -o /tmp/appengine-parent-2.0.32.pom && rg -n "<url>|<scm>|<connection>|<developerConnection>|<tag>|<description>|github|javadoc|homepage|source" /tmp/appengine-parent-2.0.32.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/google/appengine/appengine-api-1.0-sdk/2.0.32/appengine-api-1.0-sdk-2.0.32-sources.jar -o /tmp/appengine-api-1.0-sdk-2.0.32-sources.jar && jar tf /tmp/appengine-api-1.0-sdk-2.0.32-sources.jar | sed -n '1,80p' && echo JAVA_COUNT="'$(jar tf /tmp/appengine-api-1.0-sdk-2.0.32-sources.jar | rg -c '"'\\.java"'$'"') && echo TEST_COUNT="'$(jar tf /tmp/appengine-api-1.0-sdk-2.0.32-sources.jar | rg -c '"'("'^|/)test/|Test'"\\.java"'$'"')" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+ succeeded in 253ms:
+34:    <module>appengine_resources</module>
+64:    <maven.compiler.source>1.8</maven.compiler.source>
+66:    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+77:  <scm>
+78:    <connection>scm:git:git://github.com/GoogleCloudPlatform/appengine-java-standard.git</connection>
+79:    <url>https://github.com/GoogleCloudPlatform/appengine-java-standard</url>
+80:    <developerConnection>scm:git:ssh://git@github.com/GoogleCloudPlatform/appengine-java-standard.git</developerConnection>
+81:    <tag>parent-2.0.32</tag>
+86:          <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+125:          <url>${distributionManagement.release.url}</url>
+130:          <url>${distributionManagement.snapshot.url}</url>
+140:                      <artifactId>maven-source-plugin</artifactId>
+144:                              <id>attach-sources</id>
+153:                      <artifactId>maven-javadoc-plugin</artifactId>
+156:                              <id>attach-javadocs</id>
+206:          <url>artifactregistry://us-maven.pkg.dev/cloud-aoss-1p/cloud-aoss-1p-java</url>
+246:        <artifactId>appengine-resources</artifactId>
+800:          <artifactId>maven-source-plugin</artifactId>
+815:          <artifactId>maven-javadoc-plugin</artifactId>
+838:           <artifactId>maven-resources-plugin</artifactId>
+847:          <groupId>com.github.os72</groupId>
+852:                 https://github.com/protocolbuffers/protobuf/blob/master/java/pom.xml#L7
+853:                 Read https://github.com/os72/protoc-jar-maven-plugin/issues/107 for context.
+880:            <missingFile>${project.basedir}/licenses/resources/third-party-missing-licenses.properties</missingFile>
+893:            <fileTemplate>${project.basedir}/licenses/resources/third-party-file-template.ftl</fileTemplate>
+
+ succeeded in 1072ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/services/
+META-INF/services/javax.annotation.processing.Processor
+com/
+com/google/
+com/google/appengine/
+com/google/appengine/setup/
+com/google/appengine/setup/LazyApiProxyEnvironment.java
+com/google/appengine/setup/ApiProxyEnvironment.java
+com/google/appengine/setup/ApiProxySetupUtil.java
+com/google/appengine/setup/timer/
+com/google/appengine/setup/timer/AbstractIntervalTimer.java
+com/google/appengine/setup/timer/Timer.java
+com/google/appengine/setup/RuntimeUtils.java
+com/google/appengine/setup/AppLogsWriter.java
+com/google/appengine/setup/ApiProxyDelegate.java
+com/google/appengine/setup/utils/
+com/google/appengine/setup/utils/http/
+com/google/appengine/setup/utils/http/HttpRequest.java
+com/google/appengine/setup/TimerImpl.java
+com/google/appengine/setup/RequestThreadFactory.java
+com/google/appengine/tools/
+com/google/appengine/tools/compilation/
+com/google/appengine/tools/compilation/DatastoreCallbacksConfigWriter.java
+com/google/appengine/tools/compilation/DatastoreCallbacksProcessor.java
+com/google/appengine/spi/
+com/google/appengine/spi/ServiceProvider.java
+com/google/appengine/spi/package-info.java
+com/google/appengine/spi/ServiceFactoryFactory.java
+com/google/appengine/spi/FactoryProviderRegistry.java
+com/google/appengine/spi/ServicesFile.java
+com/google/appengine/spi/FactoryProvider.java
+com/google/appengine/api/
+com/google/appengine/api/taskqueue/
+com/google/appengine/api/taskqueue/QueueImpl.java
+com/google/appengine/api/taskqueue/QueueConstants.java
+com/google/appengine/api/taskqueue/IQueueFactory.java
+com/google/appengine/api/taskqueue/InternalFailureException.java
+com/google/appengine/api/taskqueue/InvalidQueueModeException.java
+com/google/appengine/api/taskqueue/RetryOptions.java
+com/google/appengine/api/taskqueue/DatastoreDeleteDeferredTask.java
+com/google/appengine/api/taskqueue/QueueFactoryImpl.java
+com/google/appengine/api/taskqueue/QueueFailureException.java
+com/google/appengine/api/taskqueue/QueueFactory.java
+com/google/appengine/api/taskqueue/DatastorePutDeferredTask.java
+com/google/appengine/api/taskqueue/DeferredTaskCreationException.java
+com/google/appengine/api/taskqueue/package-info.java
+com/google/appengine/api/taskqueue/Queue.java
+com/google/appengine/api/taskqueue/QueueStatistics.java
+com/google/appengine/api/taskqueue/DeferredTaskContext.java
+com/google/appengine/api/taskqueue/TaskNotFoundException.java
+com/google/appengine/api/taskqueue/TaskAlreadyExistsException.java
+com/google/appengine/api/taskqueue/LeaseOptions.java
+com/google/appengine/api/taskqueue/QueueNameMismatchException.java
+com/google/appengine/api/taskqueue/DeferredTask.java
+com/google/appengine/api/taskqueue/TaskOptions.java
+com/google/appengine/api/taskqueue/ee10/
+com/google/appengine/api/taskqueue/ee10/DeferredTaskContext.java
+com/google/appengine/api/taskqueue/UnsupportedTranslationException.java
+com/google/appengine/api/taskqueue/IQueueFactoryProvider.java
+com/google/appengine/api/taskqueue/QueueApiHelper.java
+com/google/appengine/api/taskqueue/TransactionalTaskException.java
+com/google/appengine/api/taskqueue/FutureAdapter.java
+com/google/appengine/api/taskqueue/TaskHandle.java
+com/google/appengine/api/taskqueue/TransientFailureException.java
+com/google/appengine/api/memcache/
+com/google/appengine/api/memcache/BaseMemcacheService.java
+com/google/appengine/api/memcache/BaseMemcacheServiceImpl.java
+com/google/appengine/api/memcache/MemcacheServiceFactoryImpl.java
+com/google/appengine/api/memcache/ErrorHandler.java
+com/google/appengine/api/memcache/MemcacheServiceApiHelper.java
+com/google/appengine/api/memcache/ConsistentErrorHandler.java
+com/google/appengine/api/memcache/ErrorHandlers.java
+com/google/appengine/api/memcache/StrictErrorHandler.java
+com/google/appengine/api/memcache/AsyncMemcacheServiceImpl.java
+com/google/appengine/api/memcache/IMemcacheServiceFactoryProvider.java
+com/google/appengine/api/memcache/package-info.java
+com/google/appengine/api/memcache/MemcacheServiceException.java
+com/google/appengine/api/memcache/IMemcacheServiceFactory.java
+JAVA_COUNT=3462
+TEST_COUNT=
+
+codex
+The parent POM gives the upstream SCM root and the exact release tag as `parent-2.0.32`. I’m using that tag for repo-hosted test and documentation links so the placeholders resolve to the same version as the metadata entry.
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/GoogleCloudPlatform/appengine-java-standard/contents/api?ref=parent-2.0.32 | sed -n '1,240p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/GoogleCloudPlatform/appengine-java-standard/git/refs/tags/parent-2.0.32 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/GoogleCloudPlatform/appengine-java-standard/contents?ref=parent-2.0.32 | sed -n '1,240p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+ succeeded in 232ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 231ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 247ms:
+curl: (22) The requested URL returned error: 404
+
+web search: 
+web search: GoogleCloudPlatform appengine-java-standard parent-2.0.32 tag
+codex
+The GitHub API is returning 404 for that repository path even though the repository page is indexed, so I’m switching to raw `git ls-remote`/HTML checks. The Maven parent still provides enough SCM evidence for the root URL; I just need a test/doc path that actually exists.
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://central.sonatype.com/api/internal/browse/component/versions?namespace=com.google.appengine&name=appengine-api-1.0-sdk&sortField=normalizedVersion&sortDirection=desc&page=0&size=1' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/GoogleCloudPlatform/appengine-java-standard.git 'refs/tags/*2.0.32*' | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+exec
+/usr/bin/bash -lc "curl -fLsS -A 'Mozilla/5.0' https://github.com/GoogleCloudPlatform/appengine-java-standard/tree/parent-2.0.32 | rg -n \"appengine-api|README|test|blob|tree|parent-2.0.32\" | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+ succeeded in 383ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 391ms:
+f73077945c32ec6550f96d459481a6e4f559637f	refs/tags/v2.0.32
+aecf48dde8ca581b0387a5a4e231980d4961cc04	refs/tags/v2.0.32^{}
+
+ succeeded in 647ms:
+{"components":[{"id":"pkg:maven/net.minestom/minestom-snapshots@982233141e","type":"COMPONENT_VERSION","namespace":"net.minestom","name":"minestom-snapshots","projectName":null,"version":"982233141e","publishedEpochMillis":1717115161000,"licenses":["Apache 2.0"],"description":"1.20.4 Lightweight Minecraft server","categories":null,"latestVersionInfo":{"version":null,"timestampUnixWithMS":null,"licenses":null},"contributors":null,"nsPopularityAppCount":null,"nsPopularityOrgCount":null,"dependentOnCount":34,"dependencyOfCount":0,"childCount":0,"classifiers":["javadoc","sources"],"packaging":"jar","mavenPluginPrefix":null,"ossIndexInfo":{"url":"https://guide.sonatype.com/component/maven/net.minestom:minestom-snapshots/982233141e","vulnerabilityCount":null},"qualityScore":null,"bomDrInfo":{"url":"https://bomdoctor.sonatype.com/#/sbom/pkg:maven/net.minestom/minestom-snapshots@982233141e"},"cherryBomUrl":null}],"page":0,"pageSize":1,"pageCount":10000,"totalResultCount":10000,"totalCount":20393974}
+codex
+`git ls-remote` confirms the public release tag is `v2.0.32`, not the parent POM’s literal `<tag>` value. I’ll inspect that tag directly and use `v$version$` in URLs where the link is repository-hosted.
+exec
+/usr/bin/bash -lc "curl -I -L -s https://javadoc.io/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.32 | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+exec
+/usr/bin/bash -lc "rm -rf /tmp/appengine-java-standard-2.0.32 && git clone --depth 1 --branch v2.0.32 https://github.com/GoogleCloudPlatform/appengine-java-standard.git /tmp/appengine-java-standard-2.0.32 && find /tmp/appengine-java-standard-2.0.32 -maxdepth 3 -type d | sed 's#/tmp/appengine-java-standard-2.0.32/##' | sort | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+exec
+/usr/bin/bash -lc "curl -I -L -s https://repo1.maven.org/maven2/com/google/appengine/appengine-api-1.0-sdk/2.0.32/appengine-api-1.0-sdk-2.0.32-javadoc.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+ succeeded in 298ms:
+HTTP/2 303 
+date: Wed, 10 Jun 2026 06:22:07 GMT
+content-length: 0
+location: /doc/com.google.appengine/appengine-api-1.0-sdk/2.0.32/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=hbFuCtTgjSMGkZLyubr1uAydbyCedSveWs%2FPjHM4DB3%2FsiaRFmBzlFh7dTPU7wy6h8wSBtdQcLs%2FkkZhKUABhBFvxmrBGw8vKzTm5cd6DYXpcdMbgf2WLrg4ZGQXrXyOn5NIHV4dlqzc"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: a096479fba093b57-GVA
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Wed, 10 Jun 2026 06:22:07 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/com.google.appengine/appengine-api-1.0-sdk/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=YbJmss7i2W4EKoQKnJklKPGkE56yuWZiyNduTD%2Bup7VNd6IigPZCkGOG6eP2T2H6L%2BzDYaofkFbaTMWw2A3HQ6TnvbpT%2B8Z88VuSsIm1wibZaOcJOr4Sbqt18Q94uHM9P1V%2BF9K1cVNv"}]}
+server: cloudflare
+cf-ray: a09647a07a653b57-GVA
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 321ms:
+HTTP/2 404 
+date: Wed, 10 Jun 2026 06:22:07 GMT
+content-type: text/html
+cf-ray: a096479fceab27bb-LYS
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/google/appengine/appengine-api-1.0-sdk/2.0.32/appengine-api-1.0-sdk-2.0.32-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 3100ms:
+Note: switching to 'aecf48dde8ca581b0387a5a4e231980d4961cc04'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+.git
+.git/branches
+.git/hooks
+.git/info
+.git/logs
+.git/objects
+.git/objects/info
+.git/objects/pack
+.git/refs
+.git/refs/heads
+.git/refs/tags
+.github
+.github/workflows
+.mvn
+.mvn/wrapper
+/tmp/appengine-java-standard-2.0.32
+api
+api/src
+api/src/main
+api/src/test
+api_dev
+api_dev/src
+api_dev/src/main
+api_dev/src/test
+api_legacy
+api_legacy/src
+api_legacy/src/main
+api_legacy/src/test
+appengine-api-1.0-sdk
+appengine-api-1.0-sdk/src
+appengine-api-1.0-sdk/src/main
+appengine-api-stubs
+appengine_init
+appengine_init/src
+appengine_init/src/main
+appengine_init/src/test
+appengine_jsr107
+appengine_jsr107/src
+appengine_jsr107/src/main
+appengine_jsr107/src/test
+appengine_resources
+appengine_resources/src
+appengine_resources/src/main
+appengine_setup
+appengine_setup/apiserver_local
+appengine_setup/apiserver_local/src
+appengine_setup/test
+appengine_setup/test/src
+appengine_setup/testapps
+appengine_setup/testapps/jetty12_testapp
+appengine_setup/testapps/springboot_testapp
+appengine_setup/testapps/testapps_common
+appengine_testing
+appengine_testing/src
+appengine_testing/src/main
+appengine_testing_tests
+appengine_testing_tests/src
+appengine_testing_tests/src/test
+applications
+applications/proberapp
+applications/proberapp/src
+applications/springboot
+applications/springboot/src
+docs
+e2etests
+e2etests/devappservertests
+e2etests/devappservertests/src
+e2etests/stagingtests
+e2etests/stagingtests/src
+e2etests/testlocalapps
+e2etests/testlocalapps/allinone
+e2etests/testlocalapps/allinone_jakarta
+e2etests/testlocalapps/badcron
+e2etests/testlocalapps/bundle_standard
+e2etests/testlocalapps/bundle_standard_with_container_initializer
+e2etests/testlocalapps/bundle_standard_with_no_jsp
+e2etests/testlocalapps/bundle_standard_with_weblistener_memcache
+e2etests/testlocalapps/cron-bad-job-age-limit
+e2etests/testlocalapps/cron-good-retry-parameters
+e2etests/testlocalapps/cron-negative-max-backoff
+e2etests/testlocalapps/cron-negative-retry-limit
+e2etests/testlocalapps/cron-two-max-doublings
+e2etests/testlocalapps/http-headers
+e2etests/testlocalapps/java8-jar
+e2etests/testlocalapps/java8-no-webxml
+e2etests/testlocalapps/sample-badaeweb
+e2etests/testlocalapps/sample-baddispatch
+e2etests/testlocalapps/sample-baddispatch-yaml
+e2etests/testlocalapps/sample-badentrypoint
+e2etests/testlocalapps/sample-badindexes
+e2etests/testlocalapps/sample-badruntimechannel
+e2etests/testlocalapps/sample-badweb
+e2etests/testlocalapps/sample-default-auto-ids
+e2etests/testlocalapps/sample-error-in-tag-file
+e2etests/testlocalapps/sample-java11
+e2etests/testlocalapps/sample-java17
+e2etests/testlocalapps/sample-jsptaglibrary
+e2etests/testlocalapps/sample-jspx
+e2etests/testlocalapps/sample-legacy-auto-ids
+e2etests/testlocalapps/sample-missingappid
+e2etests/testlocalapps/sample-nojsps
+e2etests/testlocalapps/sample-unspecified-auto-ids
+e2etests/testlocalapps/sample-with-classes
+e2etests/testlocalapps/sampleapp
+e2etests/testlocalapps/sampleapp-automatic-module
+e2etests/testlocalapps/sampleapp-backends
+e2etests/testlocalapps/sampleapp-basic-module
+e2etests/testlocalapps/sampleapp-manual-module
+e2etests/testlocalapps/sampleapp-runtime
+e2etests/testlocalapps/stage-sampleapp
+e2etests/testlocalapps/stage-with-staging-options
+e2etests/testlocalapps/xmlorder
+external
+external/geronimo_javamail
+external/geronimo_javamail/src
+google3
+google3/third_party
+google3/third_party/java_src
+images
+jetty12_assembly
+jetty12_assembly/src
+jetty12_assembly/src/main
+kokoro
+kokoro/gcp_ubuntu
+lib
+lib/tools_api
+lib/tools_api/src
+lib/xml_validator
+lib/xml_validator/src
+lib/xml_validator_test
+lib/xml_validator_test/src
+licenses
+licenses/resources
+local_runtime_shared_jetty12
+local_runtime_shared_jetty12/src
+local_runtime_shared_jetty12/src/main
+local_runtime_shared_jetty9
+local_runtime_shared_jetty9/src
+local_runtime_shared_jetty9/src/main
+protobuf
+protobuf/api
+protobuf/bridge
+quickstartgenerator
+quickstartgenerator/src
+quickstartgenerator/src/main
+quickstartgenerator_jetty12
+quickstartgenerator_jetty12/src
+quickstartgenerator_jetty12/src/main
+quickstartgenerator_jetty12_ee10
+quickstartgenerator_jetty12_ee10/src
+quickstartgenerator_jetty12_ee10/src/main
+remoteapi
+remoteapi/src
+remoteapi/src/main
+runtime
+runtime/annotationscanningwebapp
+runtime/annotationscanningwebapp/src
+runtime/deployment
+runtime/deployment/src
+runtime/failinitfilterwebapp
+runtime/failinitfilterwebapp/src
+runtime/impl
+runtime/impl/src
+runtime/lite
+runtime/lite/src
+runtime/local_jetty12
+runtime/local_jetty12/src
+runtime/local_jetty12_ee10
+runtime/local_jetty12_ee10/src
+runtime/local_jetty9
+runtime/local_jetty9/src
+runtime/main
+runtime/main/src
+runtime/nogaeapiswebapp
+runtime/nogaeapiswebapp/src
+runtime/runtime_impl_jetty12
+runtime/runtime_impl_jetty12/src
+runtime/runtime_impl_jetty9
+runtime/runtime_impl_jetty9/src
+runtime/test
+runtime/test/src
+runtime/testapps
+runtime/testapps/src
+runtime/util
+runtime/util/src
+runtime_shared
+runtime_shared/src
+runtime_shared/src/main
+runtime_shared_jetty12
+runtime_shared_jetty12_ee10
+runtime_shared_jetty9
+sdk_assembly
+sdk_assembly/src
+sdk_assembly/src/main
+sessiondata
+sessiondata/src
+sessiondata/src/main
+shared_sdk
+shared_sdk/src
+shared_sdk/src/main
+shared_sdk_jetty12
+shared_sdk_jetty12/src
+shared_sdk_jetty12/src/main
+shared_sdk_jetty9
+shared_sdk_jetty9/src
+shared_sdk_jetty9/src/main
+utils
+utils/src
+utils/src/main
+utils/src/test
+
+codex
+The release tree has an `api/src/test` suite and no `appengine-api-1.0-sdk/src/test` directory. Since the published artifact is the shaded SDK API jar built from those modules, I’m checking the module POMs before choosing the most defensible test URL.
+exec
+/usr/bin/bash -lc "sed -n '1,260p' /tmp/appengine-java-standard-2.0.32/appengine-api-1.0-sdk/pom.xml" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+ succeeded in 0ms:
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ Copyright 2021 Google LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     https://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>appengine-api-1.0-sdk</artifactId>
+  <parent>
+    <groupId>com.google.appengine</groupId>
+    <artifactId>parent</artifactId>
+    <version>2.0.33-SNAPSHOT</version>
+  </parent>
+  <packaging>jar</packaging>
+  <name>AppEngine :: appengine-api-1.0-sdk</name>
+  <description>API for Google App Engine standard environment with some of the dependencies shaded (repackaged)</description>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-apis</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <createSourcesJar>true</createSourcesJar>
+              <relocations>
+                <relocation>
+                  <pattern>com.google.apphosting.datastore.proto2api.DatastoreV3Pb</pattern>
+                  <shadedPattern>com.google.apphosting.api.proto2api.DatastorePb</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.apphosting.datastore.DatastoreV3Pb</pattern>
+                  <shadedPattern>com.google.apphosting.api.DatastorePb</shadedPattern>
+                </relocation>
+                <relocation>
+                  <!-- Apache commons codec is repackaged via one of the 'android' dependencies                       into com.google.api.client.repackaged. -->
+                  <pattern>com.google.api.client.repackaged.org.apache.commons.codec</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.android.org.apache.commons.codec</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.api.client</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.api.client</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.api.server.proto</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.api.server.proto</shadedPattern>
+                </relocation>
+                <relocation>
+                  <!-- Update the Cloud Datastore JSON filter to use the v1 protos                       (it still depends on the v1beta2 protos) -->
+                  <pattern>com.google.api.services.datastore</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.api.services.datastore</shadedPattern>
+                </relocation>
+                <relocation>
+                  <!-- The servlet uses v1 protos (for local development); the client uses v1beta3                       protos. -->
+                  <pattern>com.google.datastore.v1</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.datastore.v1</shadedPattern>
+                  <excludes>
+                    <exclude>com.google.datastore.v1beta3.*</exclude>
+                  </excludes>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.datastore.v1beta3</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.datastore.v1beta3</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.type</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.type</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.api.AnnotationsProto</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.api.AnnotationsProto</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.api.HttpProto</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.api.HttpProto</shadedPattern>
+                </relocation>
+                <relocation>
+                  <!-- TODO: Change the package to live in apphosting instead. -->
+                  <pattern>com.google.appengine.api.search.proto.SearchServicePb</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.appengine.api.search.proto.SearchServicePb</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.borg.borgcron</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.cron</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.common</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.common</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.thirdparty</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.thirdparty</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.gaia.mint.proto2api</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.gaia.mint.proto2api</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.identity</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.identity</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.net.base.CidrAddressBlock</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.net.base.CidrAddressBlock</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.net.util.error</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.net.util.error</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.net.util.proto2api</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.net.util.proto2api</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.protobuf</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.protobuf</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.io.base</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.io.protocol</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.io.protocol</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.io.protocol</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.protos.appengine_proto</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.protos.appengine_proto</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.protos.gdata.proto2api</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.protos.gdata.proto2api</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.protos.proto.proto2api</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.protos.proto.proto2api</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.protos.proto2.bridge</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.protos.proto2.bridge</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.rpc</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.rpc</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.universalnav</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.universalnav</shadedPattern>
+                  <excludes>
+                    <!-- Don't repackage PropertyType as it is part of the OneGoogle API (a method                           argument) -->
+                    <exclude>com.google.universalnav.PropertyType</exclude>
+                  </excludes>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.protos.universalnav</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.protos.universalnav</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>geronimo_javamail/src/main/resources/META-INF</pattern>
+                  <shadedPattern>/META-INF</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.antlr.runtime</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.org.antlr.runtime</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.joda.time</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.org.joda.time</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.json</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.org.json</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.gson</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.gson</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.esotericsoftware.yamlbeans</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.esotericsoftware.yamlbeans</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.commons</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.org.apache.commons</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.http</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.org.apache.http</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.lucene</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.org.apache.lucene</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.storage.blobstore.proto</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.storage.blobstore.proto</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.storage.onestore.v3.proto2api</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.google.storage.onestore.v3.proto2api</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.codehaus.jackson</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.org.codehaus.jackson</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.fasterxml.jackson</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.fasterxml.jackson</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.googlecode.charts4j</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.com.googlecode.charts4j</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.eclipse.aether</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.org.eclipse.aether</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.maven</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.org.apache.maven</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.codehaus.plexus.interpolation</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.org.codehaus.plexus.interpolation</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.codehaus.plexus.util</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.org.codehaus.plexus.util</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.commons.logging</pattern>
+                  <shadedPattern>com.google.appengine.repackaged.org.apache.commons.logging</shadedPattern>
+                </relocation>
+                <relocation>
+
+exec
+/usr/bin/bash -lc "find /tmp/appengine-java-standard-2.0.32/appengine-api-1.0-sdk -maxdepth 5 -type f | sort | sed -n '1,200p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+ succeeded in 0ms:
+/tmp/appengine-java-standard-2.0.32/appengine-api-1.0-sdk/pom.xml
+
+exec
+/usr/bin/bash -lc "find /tmp/appengine-java-standard-2.0.32/docs -maxdepth 4 -type f | sort | sed -n '1,160p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+ succeeded in 0ms:
+/tmp/appengine-java-standard-2.0.32/docs/dependencies.digraph
+
+exec
+/usr/bin/bash -lc "find /tmp/appengine-java-standard-2.0.32/api/src/test -maxdepth 5 -type f | sort | sed -n '1,80p' && echo COUNT="'$(find /tmp/appengine-java-standard-2.0.32/api/src/test -type f | wc -l)' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+ succeeded in 0ms:
+COUNT=17
+
+codex
+The tag’s `appengine-api-1.0-sdk` module is just a shaded packaging module with no tests of its own; the related API tests live under `api/src/test`. I’m going to use that as the test-suite URL unless the repo exposes a more specific generated test artifact, which Central did not.
+codex
+For documentation, Maven Central does not publish a `-javadoc.jar` for this version, but `javadoc.io` serves a versioned documentation page for the artifact. I’ll use that because it is artifact/version-specific and satisfies the `$version$` requirement.
+exec
+/usr/bin/bash -lc "find /tmp/appengine-java-standard-2.0.32/api/src/test -type f | sort | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+ succeeded in 0ms:
+/tmp/appengine-java-standard-2.0.32/api/src/test/java/com/google/appengine/api/blobstore/BlobKeyTest.java
+/tmp/appengine-java-standard-2.0.32/api/src/test/java/com/google/appengine/api/blobstore/BlobstoreInputStreamTest.java
+/tmp/appengine-java-standard-2.0.32/api/src/test/java/com/google/appengine/api/blobstore/ByteRangeTest.java
+/tmp/appengine-java-standard-2.0.32/api/src/test/java/com/google/appengine/api/blobstore/FileInfoTest.java
+/tmp/appengine-java-standard-2.0.32/api/src/test/java/com/google/appengine/api/blobstore/UploadOptionsTest.java
+/tmp/appengine-java-standard-2.0.32/api/src/test/java/com/google/appengine/api/internal/ImmutableCopyTest.java
+/tmp/appengine-java-standard-2.0.32/api/src/test/java/com/google/appengine/api/mail/stdimpl/GMTransportTest.java
+/tmp/appengine-java-standard-2.0.32/api/src/test/java/com/google/appengine/api/search/checkers/DocumentCheckerTest.java
+/tmp/appengine-java-standard-2.0.32/api/src/test/java/com/google/appengine/api/search/checkers/FacetQueryCheckerTest.java
+/tmp/appengine-java-standard-2.0.32/api/src/test/java/com/google/appengine/api/search/checkers/FieldCheckerTest.java
+/tmp/appengine-java-standard-2.0.32/api/src/test/java/com/google/appengine/api/search/checkers/PreconditionsTest.java
+/tmp/appengine-java-standard-2.0.32/api/src/test/java/com/google/appengine/api/search/query/QueryParserTest.java
+/tmp/appengine-java-standard-2.0.32/api/src/test/java/com/google/appengine/api/search/query/QueryTreeContextTest.java
+/tmp/appengine-java-standard-2.0.32/api/src/test/java/com/google/appengine/tools/compilation/DatastoreCallbacksConfigWriterTest.java
+/tmp/appengine-java-standard-2.0.32/api/src/test/java/com/google/appengine/tools/compilation/DatastoreCallbacksProcessorTest.java
+/tmp/appengine-java-standard-2.0.32/api/src/test/java/com/google/apphosting/api/ApiProxyTest.java
+/tmp/appengine-java-standard-2.0.32/api/src/test/java/com/google/apphosting/api/CloudTraceContextTest.java
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.32/index.html | rg -n \"appengine-api-1.0-sdk|com.google.appengine|TaskQueue|Datastore|Javadoc|API\" | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/GoogleCloudPlatform/appengine-java-standard/tree/v2.0.32/api/src/test | sed -n '1,80p' && curl -I -L -s https://github.com/GoogleCloudPlatform/appengine-java-standard/tree/v2.0.32/docs | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+ succeeded in 112ms:
+13:		<title>appengine-api-1.0-sdk 2.0.32 javadoc (com.google.appengine)</title>
+47:					<a class="nav-link" href="/doc/com.google.appengine">com.google.appengine</a>
+51:						appengine-api-1.0-sdk
+55:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk" class="dropdown-item">
+56:							appengine-api-1.0-sdk
+59:						<a href="/doc/com.google.appengine/appengine-api-labs" class="dropdown-item">
+63:						<a href="/doc/com.google.appengine/appengine-api-legacy" class="dropdown-item">
+67:						<a href="/doc/com.google.appengine/appengine-api-stubs" class="dropdown-item">
+71:						<a href="/doc/com.google.appengine/appengine-apis" class="dropdown-item">
+75:						<a href="/doc/com.google.appengine/appengine-endpoints" class="dropdown-item">
+79:						<a href="/doc/com.google.appengine/appengine-endpoints-deps" class="dropdown-item">
+83:						<a href="/doc/com.google.appengine/appengine-java-sdk" class="dropdown-item">
+87:						<a href="/doc/com.google.appengine/appengine-jsr107cache" class="dropdown-item">
+91:						<a href="/doc/com.google.appengine/appengine-local-endpoints" class="dropdown-item">
+95:						<a href="/doc/com.google.appengine/appengine-remote-api" class="dropdown-item">
+99:						<a href="/doc/com.google.appengine/appengine-testing" class="dropdown-item">
+103:						<a href="/doc/com.google.appengine/appengine-tools-api" class="dropdown-item">
+107:						<a href="/doc/com.google.appengine/appengine-tools-sdk" class="dropdown-item">
+111:						<a href="/doc/com.google.appengine/endpoints-framework" class="dropdown-item">
+115:						<a href="/doc/com.google.appengine/endpoints-framework-parent" class="dropdown-item">
+119:						<a href="/doc/com.google.appengine/runtime-impl" class="dropdown-item">
+123:						<a href="/doc/com.google.appengine/runtime-shared" class="dropdown-item">
+134:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/latest/index.html" class="dropdown-item">
+139:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/5.0.3-beta/index.html" class="dropdown-item">
+143:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/5.0.2/index.html" class="dropdown-item">
+147:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/5.0.1/index.html" class="dropdown-item">
+151:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/5.0.0/index.html" class="dropdown-item">
+155:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/4.0.2/index.html" class="dropdown-item">
+159:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/4.0.1/index.html" class="dropdown-item">
+163:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/4.0.0/index.html" class="dropdown-item">
+167:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/3.0.3/index.html" class="dropdown-item">
+171:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/3.0.2/index.html" class="dropdown-item">
+175:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/3.0.1/index.html" class="dropdown-item">
+179:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/3.0.0-beta/index.html" class="dropdown-item">
+183:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.39/index.html" class="dropdown-item">
+187:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.39-beta/index.html" class="dropdown-item">
+191:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.38/index.html" class="dropdown-item">
+195:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.37/index.html" class="dropdown-item">
+199:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.36/index.html" class="dropdown-item">
+203:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.35/index.html" class="dropdown-item">
+207:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.34/index.html" class="dropdown-item">
+211:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.33/index.html" class="dropdown-item">
+215:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.32/index.html" class="dropdown-item">
+219:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.31/index.html" class="dropdown-item">
+223:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.30/index.html" class="dropdown-item">
+227:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.29/index.html" class="dropdown-item">
+231:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.28/index.html" class="dropdown-item">
+235:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.27/index.html" class="dropdown-item">
+239:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.26/index.html" class="dropdown-item">
+243:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.25/index.html" class="dropdown-item">
+247:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.24/index.html" class="dropdown-item">
+251:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.23/index.html" class="dropdown-item">
+255:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.22/index.html" class="dropdown-item">
+259:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.21/index.html" class="dropdown-item">
+263:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.20/index.html" class="dropdown-item">
+267:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.19/index.html" class="dropdown-item">
+271:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.17/index.html" class="dropdown-item">
+275:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.16/index.html" class="dropdown-item">
+279:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.15/index.html" class="dropdown-item">
+283:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.14/index.html" class="dropdown-item">
+287:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.13/index.html" class="dropdown-item">
+291:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.12/index.html" class="dropdown-item">
+295:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.11/index.html" class="dropdown-item">
+299:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.10/index.html" class="dropdown-item">
+303:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.9/index.html" class="dropdown-item">
+307:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.8/index.html" class="dropdown-item">
+311:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.7/index.html" class="dropdown-item">
+315:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.6/index.html" class="dropdown-item">
+319:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.5/index.html" class="dropdown-item">
+323:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.4/index.html" class="dropdown-item">
+327:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.3/index.html" class="dropdown-item">
+331:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.2/index.html" class="dropdown-item">
+335:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.1/index.html" class="dropdown-item">
+339:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.0/index.html" class="dropdown-item">
+343:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/1.9.98/index.html" class="dropdown-item">
+347:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/1.9.97/index.html" class="dropdown-item">
+351:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/1.9.96/index.html" class="dropdown-item">
+355:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/1.9.95/index.html" class="dropdown-item">
+359:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/1.9.94/index.html" class="dropdown-item">
+363:						<a href="/doc/com.google.appengine/appengine-api-1.0-sdk/1.9.93/index.html" class="dropdown-item">
+
+ succeeded in 1394ms:
+HTTP/2 200 
+date: Wed, 10 Jun 2026 06:22:36 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"5fa0513421f018f718339b15a4afe3f5"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=d7CDeIA8AuLxoJPnICdm5LZAefwqUsKrmWptUbdblAYtZd7G83vjVbhjIMMBL026Dr4ONWW%2BeiK0V%2BluwjjTaK73fgA0%2FfvGssPQFhm9zhkK%2BRBAkBiP%2BsNJs56OuEzLtKEMv9%2F3abHfoeZoc88FTnI0eht9ZEGBcOBwMUIYwlGDBeb9TtCA%2BBA%2B0KB9GWSQir75dGLCbr5bbx1Awd3%2B4zMuOIEE4z8aTRmruPZL4n21ojqb1adVpolvvXaQirl7NaUcu%2Fxoj6MW1skx0UF0bQ%3D%3D--0NFTE3VMgI%2FWA5rs--0bge0GOVyPURPvGZX%2F35og%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1412935829.1781072555; expires=Thu, 10 Jun 2027 06:22:35 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 10 Jun 2027 06:22:35 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 61FF:1C5432:9EC8A58:8010BE4:6A2902AB
+
+HTTP/2 200 
+date: Wed, 10 Jun 2026 06:22:37 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"157f4e3a30c38546e076afc627317694"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=3a3I3TSH7c6Pk7m07EX3pVBfBILw6Q8q529RJlbCqRVV2BDx%2F%2F1sQ85LQvcWLTYhKe2s8wxqKhA10E3IiY%2Fcy92yrE3p%2B0TBNCDv6UPggSHfc2%2FsEHKNalM2I9qI0MZv4AhIC9bckqE8BUu6JYPXlmd9LdUOVkvzR%2BMy7ApxWqixXB9UlYaJBfqMWuym3aAhgeXdf6gXv8gH44UibKhelU9%2Fwu4E4qj0diVPkBcXAY2Rws%2BZqKrIMLwJroXtyHB1omk91Spm4bo4bvQdYoCX7A%3D%3D--FxCLy%2F9nbPu%2FzyWO--igDUMVWpS1stz3VhT%2BX8qA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1089377055.1781072556; expires=Thu, 10 Jun 2027 06:22:36 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 10 Jun 2027 06:22:36 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 620B:3C332:9D4637B:7EF18C8:6A2902AC
+
+
+codex
+I’ve got the field values now: Maven sources, GitHub test tree at `v$version$`, javadoc.io for versioned docs, and the GitHub SCM root from the POM. I’m updating only the requested JSON file and leaving language/native-image exclusion fields absent because this is a JVM Java jar.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a/build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json
+diff --git a/build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json b/build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json
+index 2588da153000242a63a36dfe3c232cee77d317f6..b19b83ab7f3a4b06efd9481c56c9255f6cee88c2
+--- a/build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json
++++ b/build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.appengine:appengine-api-1.0-sdk:2.0.32"
++  "coordinates" : "com.google.appengine:appengine-api-1.0-sdk:2.0.32",
++  "repository-url" : "https://github.com/GoogleCloudPlatform/appengine-java-standard",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/google/appengine/appengine-api-1.0-sdk/$version$/appengine-api-1.0-sdk-$version$-sources.jar",
++  "test-code-url" : "https://github.com/GoogleCloudPlatform/appengine-java-standard/tree/v$version$/api/src/test",
++  "documentation-url" : "https://javadoc.io/doc/com.google.appengine/appengine-api-1.0-sdk/$version$/index.html",
++  "description" : "Provides the Java APIs for Google App Engine standard environment services such as datastore, task queues, memcache, blobstore, mail, users, and search. This artifact packages those APIs as a shaded SDK jar, repackaging selected dependencies under App Engine namespaces."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json b/build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json
+index 2588da153000242a63a36dfe3c232cee77d317f6..b19b83ab7f3a4b06efd9481c56c9255f6cee88c2
+--- a/build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json
++++ b/build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.appengine:appengine-api-1.0-sdk:2.0.32"
++  "coordinates" : "com.google.appengine:appengine-api-1.0-sdk:2.0.32",
++  "repository-url" : "https://github.com/GoogleCloudPlatform/appengine-java-standard",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/google/appengine/appengine-api-1.0-sdk/$version$/appengine-api-1.0-sdk-$version$-sources.jar",
++  "test-code-url" : "https://github.com/GoogleCloudPlatform/appengine-java-standard/tree/v$version$/api/src/test",
++  "documentation-url" : "https://javadoc.io/doc/com.google.appengine/appengine-api-1.0-sdk/$version$/index.html",
++  "description" : "Provides the Java APIs for Google App Engine standard environment services such as datastore, task queues, memcache, blobstore, mail, users, and search. This artifact packages those APIs as a shaded SDK jar, repackaging selected dependencies under App Engine namespaces."
+ }
+
+codex
+The JSON edit is in place. I’ll run a quick structural check and verify the placeholder URLs resolve correctly when `$version$` is replaced with `2.0.32`.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+ succeeded in 0ms:
+{
+  "coordinates": "com.google.appengine:appengine-api-1.0-sdk:2.0.32",
+  "repository-url": "https://github.com/GoogleCloudPlatform/appengine-java-standard",
+  "source-code-url": "https://repo1.maven.org/maven2/com/google/appengine/appengine-api-1.0-sdk/$version$/appengine-api-1.0-sdk-$version$-sources.jar",
+  "test-code-url": "https://github.com/GoogleCloudPlatform/appengine-java-standard/tree/v$version$/api/src/test",
+  "documentation-url": "https://javadoc.io/doc/com.google.appengine/appengine-api-1.0-sdk/$version$/index.html",
+  "description": "Provides the Java APIs for Google App Engine standard environment services such as datastore, task queues, memcache, blobstore, mail, users, and search. This artifact packages those APIs as a shaded SDK jar, repackaging selected dependencies under App Engine namespaces."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  'https://repo1.maven.org/maven2/com/google/appengine/appengine-api-1.0-sdk/2.0.32/appengine-api-1.0-sdk-2.0.32-sources.jar' \\
+  'https://github.com/GoogleCloudPlatform/appengine-java-standard/tree/v2.0.32/api/src/test' \\
+  'https://javadoc.io/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.32/index.html'; do \\
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$url"); '"\\
+  printf '%s %s\\n' \""'$code" "$url"; '"\\
+done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+diff --git a/build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json b/build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json
+index 2588da153000242a63a36dfe3c232cee77d317f6..b19b83ab7f3a4b06efd9481c56c9255f6cee88c2
+--- a/build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json
++++ b/build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.appengine:appengine-api-1.0-sdk:2.0.32"
++  "coordinates" : "com.google.appengine:appengine-api-1.0-sdk:2.0.32",
++  "repository-url" : "https://github.com/GoogleCloudPlatform/appengine-java-standard",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/google/appengine/appengine-api-1.0-sdk/$version$/appengine-api-1.0-sdk-$version$-sources.jar",
++  "test-code-url" : "https://github.com/GoogleCloudPlatform/appengine-java-standard/tree/v$version$/api/src/test",
++  "documentation-url" : "https://javadoc.io/doc/com.google.appengine/appengine-api-1.0-sdk/$version$/index.html",
++  "description" : "Provides the Java APIs for Google App Engine standard environment services such as datastore, task queues, memcache, blobstore, mail, users, and search. This artifact packages those APIs as a shaded SDK jar, repackaging selected dependencies under App Engine namespaces."
+ }
+
+ succeeded in 1380ms:
+200 https://repo1.maven.org/maven2/com/google/appengine/appengine-api-1.0-sdk/2.0.32/appengine-api-1.0-sdk-2.0.32-sources.jar
+200 https://github.com/GoogleCloudPlatform/appengine-java-standard/tree/v2.0.32/api/src/test
+200 https://javadoc.io/doc/com.google.appengine/appengine-api-1.0-sdk/2.0.32/index.html
+
+web search: 
+web search: https://github.com/GoogleCloudPlatform/appengine-java-standard/tree/v2.0.32/api/src/test
+web search: 
+web search: repo1.maven.org maven2 com/google/appengine/appengine-api-1.0-sdk/2.0.32 sources jar
+web search: 
+web search: mvnrepository com.google.appengine appengine-api-1.0-sdk 2.0.32
+codex
+The structural check passed and all three placeholder-expanded URLs returned HTTP 200. I’m doing one final workspace check so I can report exactly what changed.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+ succeeded in 0ms:
+{
+  "coordinates" : "com.google.appengine:appengine-api-1.0-sdk:2.0.32",
+  "repository-url" : "https://github.com/GoogleCloudPlatform/appengine-java-standard",
+  "source-code-url" : "https://repo1.maven.org/maven2/com/google/appengine/appengine-api-1.0-sdk/$version$/appengine-api-1.0-sdk-$version$-sources.jar",
+  "test-code-url" : "https://github.com/GoogleCloudPlatform/appengine-java-standard/tree/v$version$/api/src/test",
+  "documentation-url" : "https://javadoc.io/doc/com.google.appengine/appengine-api-1.0-sdk/$version$/index.html",
+  "description" : "Provides the Java APIs for Google App Engine standard environment services such as datastore, task queues, memcache, blobstore, mail, users, and search. This artifact packages those APIs as a shaded SDK jar, repackaging selected dependencies under App Engine namespaces."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json && git ls-files --error-unmatch build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json >/dev/null 2>&1; echo TRACKED=$?' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a
+ succeeded in 0ms:
+TRACKED=1
+
+diff --git a/build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json b/build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json
+index 2588da153000242a63a36dfe3c232cee77d317f6..b19b83ab7f3a4b06efd9481c56c9255f6cee88c2
+--- a/build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json
++++ b/build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.appengine:appengine-api-1.0-sdk:2.0.32"
++  "coordinates" : "com.google.appengine:appengine-api-1.0-sdk:2.0.32",
++  "repository-url" : "https://github.com/GoogleCloudPlatform/appengine-java-standard",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/google/appengine/appengine-api-1.0-sdk/$version$/appengine-api-1.0-sdk-$version$-sources.jar",
++  "test-code-url" : "https://github.com/GoogleCloudPlatform/appengine-java-standard/tree/v$version$/api/src/test",
++  "documentation-url" : "https://javadoc.io/doc/com.google.appengine/appengine-api-1.0-sdk/$version$/index.html",
++  "description" : "Provides the Java APIs for Google App Engine standard environment services such as datastore, task queues, memcache, blobstore, mail, users, and search. This artifact packages those APIs as a shaded SDK jar, repackaging selected dependencies under App Engine namespaces."
+ }
+
+codex
+Updated [com.google.appengine-appengine-api-1.0-sdk-2.0.32.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a/build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json).
+
+I set the repository, Maven sources jar, versioned GitHub test tree, javadoc.io documentation, and a two-sentence description. I left `language` and `not-for-native-image` absent because this is a JVM Java jar with class files. Verified the JSON with `jq` and confirmed the three `$version$` URLs resolve with `2.0.32`.
+diff --git a/build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json b/build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json
+index 2588da153000242a63a36dfe3c232cee77d317f6..b19b83ab7f3a4b06efd9481c56c9255f6cee88c2
+--- a/build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json
++++ b/build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.google.appengine:appengine-api-1.0-sdk:2.0.32"
++  "coordinates" : "com.google.appengine:appengine-api-1.0-sdk:2.0.32",
++  "repository-url" : "https://github.com/GoogleCloudPlatform/appengine-java-standard",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/google/appengine/appengine-api-1.0-sdk/$version$/appengine-api-1.0-sdk-$version$-sources.jar",
++  "test-code-url" : "https://github.com/GoogleCloudPlatform/appengine-java-standard/tree/v$version$/api/src/test",
++  "documentation-url" : "https://javadoc.io/doc/com.google.appengine/appengine-api-1.0-sdk/$version$/index.html",
++  "description" : "Provides the Java APIs for Google App Engine standard environment services such as datastore, task queues, memcache, blobstore, mail, users, and search. This artifact packages those APIs as a shaded SDK jar, repackaging selected dependencies under App Engine namespaces."
+ }
+
+tokens used
+84,813
+Updated [com.google.appengine-appengine-api-1.0-sdk-2.0.32.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a/build/discovered-artifact-metadata/com.google.appengine-appengine-api-1.0-sdk-2.0.32.json).
+
+I set the repository, Maven sources jar, versioned GitHub test tree, javadoc.io documentation, and a two-sentence description. I left `language` and `not-for-native-image` absent because this is a JVM Java jar with class files. Verified the JSON with `jq` and confirmed the three `$version$` URLs resolve with `2.0.32`.
+Ran agent for com.google.appengine:appengine-api-1.0-sdk:2.0.32 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a/build/agent-artifact-discovery-logs/com.google.appengine-appengine-api-1.0-sdk-2.0.32.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4692-3813fd9a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 15s
+9 actionable tasks: 9 executed

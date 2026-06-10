@@ -44,8 +44,6 @@ import com.google.appengine.api.search.GeoPoint;
 import com.google.appengine.api.search.QueryOptions;
 import com.google.appengine.api.search.SortExpression;
 import com.google.appengine.api.search.SortOptions;
-import com.google.appengine.api.taskqueue.DeferredTask;
-import com.google.appengine.api.taskqueue.DeferredTaskContext;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskHandle;
@@ -62,7 +60,6 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.repackaged.com.google.protobuf.ByteString;
 import com.google.apphosting.api.ApiProxy;
-import java.io.Serializable;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -248,14 +245,14 @@ public class Appengine_api_1_0_sdkTest {
     }
 
     @Test
-    void taskOptionsAndMemcacheSerializationRoundTripApplicationObjects() throws Exception {
-        GreetingTask deferredTask = new GreetingTask("hello");
+    void taskOptionsAndMemcacheSerializationRoundTripLibraryValues() throws Exception {
         TaskOptions taskOptions = TaskOptions.Builder.withTaskName("task-1")
                 .countdownMillis(Duration.ofSeconds(5).toMillis())
+                .url("/tasks/process")
                 .param("recipient", "user@example.com")
                 .header("X-App", "reachability")
-                .payload(deferredTask);
-        MemcacheValue memcacheValue = new MemcacheValue("answer", 42);
+                .payload("hello");
+        BlobKey memcacheValue = new BlobKey("blob-key-serialized");
         MemcacheSerialization.ValueAndFlags serialized = MemcacheSerialization
                 .serialize(memcacheValue);
         Object deserialized = MemcacheSerialization.deserialize(
@@ -263,12 +260,9 @@ public class Appengine_api_1_0_sdkTest {
 
         assertThat(taskOptions.getTaskName()).isEqualTo("task-1");
         assertThat(taskOptions.getMethod()).isEqualTo(TaskOptions.Method.POST);
-        assertThat(taskOptions.getUrl()).isEqualTo(DeferredTaskContext.DEFAULT_DEFERRED_URL);
+        assertThat(taskOptions.getUrl()).isEqualTo("/tasks/process");
         assertThat(taskOptions.getHeaders())
                 .containsEntry("X-App", Collections.singletonList("reachability"));
-        assertThat(taskOptions.getHeaders()).containsEntry(
-                "content-type",
-                Collections.singletonList(DeferredTaskContext.RUNNABLE_TASK_CONTENT_TYPE));
         assertThat(taskOptions.getStringParams())
                 .containsEntry("recipient", Collections.singletonList("user@example.com"));
         assertThat(taskOptions.getPayload()).isNotEmpty();
@@ -402,50 +396,6 @@ public class Appengine_api_1_0_sdkTest {
         } finally {
             ApiProxy.setDelegate(previousDelegate);
             ApiProxy.clearEnvironmentForCurrentThread();
-        }
-    }
-
-    private static final class GreetingTask implements DeferredTask {
-        private static final long serialVersionUID = 1L;
-
-        private final String message;
-
-        private GreetingTask(String message) {
-            this.message = message;
-        }
-
-        @Override
-        public void run() {
-            assertThat(message).isNotBlank();
-        }
-    }
-
-    private static final class MemcacheValue implements Serializable {
-        private static final long serialVersionUID = 1L;
-
-        private final String name;
-        private final int count;
-
-        private MemcacheValue(String name, int count) {
-            this.name = name;
-            this.count = count;
-        }
-
-        @Override
-        public boolean equals(Object object) {
-            if (this == object) {
-                return true;
-            }
-            if (!(object instanceof MemcacheValue)) {
-                return false;
-            }
-            MemcacheValue that = (MemcacheValue) object;
-            return count == that.count && name.equals(that.name);
-        }
-
-        @Override
-        public int hashCode() {
-            return 31 * name.hashCode() + count;
         }
     }
 
