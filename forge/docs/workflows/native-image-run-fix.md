@@ -67,7 +67,7 @@ flowchart TD
     Explore -- yes --> DynamicAccess[dynamic-access explore phase<br/>merge discovered metadata]
     DynamicAccess --> Finalize
     Explore -- no --> Finalize
-    Finalize[_finalize_successful_iteration:<br/>3 native-test lanes + dual-coordinate finalization] --> FinalOK{finalization passed?}
+    Finalize[finalize_run:<br/>3 native-test lanes + dual-coordinate finalization] --> FinalOK{finalization passed?}
     FinalOK -- yes --> Metrics[Write run metrics + return success]
     FinalOK -- no --> Fail
 ```
@@ -109,7 +109,7 @@ Required behavior:
    Exploration is best-effort: a partial or failed explore does not abort the
    workflow, because a reset returns to the valid seed checkpoint and
    finalization is the gate.
-8. **Mandatory finalization.** Run the shared `_finalize_successful_iteration` path
+8. **Mandatory finalization.** Run the shared `finalize_run` path
    (§WF-dynamic-access-iterative-strategy): `generateMetadata
    --agentAllowedPackages=fromJar` (the merge step that preserves seed/agent
    metadata), the three native-test lanes (current-defaults latest GraalVM,

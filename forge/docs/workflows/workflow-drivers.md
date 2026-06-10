@@ -222,3 +222,28 @@ Preparation:
 - Populate artifact URLs after the new version is prepared.
 - Run library finalization for the generated test and metadata before returning
   success.
+
+## 3. Shared run finalization and metrics publication
+
+After the workflow engine returns, a PR-eligible run must be finalized through
+the engine's public `finalize_run(...)` API on `WorkflowStrategy`. That API
+runs the shared finalization path (metadata generation, the native-test lanes,
+per-coordinate library finalization, and the iteration commit) and owns the
+status merge: a chunk-ready run stays `RUN_STATUS_CHUNK_READY` when
+finalization succeeds, otherwise the finalization status becomes the run
+status. Drivers must not call the private finalization internals and must not
+re-implement the status merge at their call sites.
+
+Run metrics flow through the shared writer
+(`metrics_writer.write_workflow_run_metrics`): it appends the run entry to the
+execution-metrics store (or to the local fallback file named by the driver's
+task type), writes the pending metrics consumed by publication, and
+schema-validates the written file. Drivers contribute only their task type and
+the per-workflow metrics payload; benchmark-mode metrics, which update an
+existing benchmark record instead of appending a run entry, remain
+driver-owned.
+
+Failed runs roll the worktree back through the shared checkpoint-reset helpers
+in `utility_scripts/worktree_reset.py`; drivers contribute only the policy —
+which paths survive the reset for follow-up branches, or which directories are
+removed when they did not pre-exist.
