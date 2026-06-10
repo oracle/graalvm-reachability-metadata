@@ -6,7 +6,6 @@
  */
 package org.springframework.test.context.aot;
 
-import java.lang.Class;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
