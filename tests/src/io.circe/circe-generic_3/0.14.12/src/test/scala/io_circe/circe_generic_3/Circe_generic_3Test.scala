@@ -81,6 +81,16 @@ object AuditEvent {
   given Decoder[AuditEvent] = deriveDecoder[AuditEvent]
 }
 
+enum ReleaseStage {
+  case Planned
+  case Building(buildId: String, attempts: Int)
+  case Published(version: String, notes: Option[String])
+}
+
+object ReleaseStage {
+  given Codec.AsObject[ReleaseStage] = deriveCodec[ReleaseStage]
+}
+
 final case class AutoAddress(city: String, postalCode: String)
 
 final case class AutoOwner(name: String, active: Boolean)
@@ -172,6 +182,21 @@ class Circe_generic_3Test {
 
     assertThat(decoded.asJava).containsExactlyElementsOf(events.asJava)
     assertThat(json.asArray.map(_.size)).isEqualTo(Some(3))
+  }
+
+  @Test
+  def derivesSemiautomaticCodecsForScala3Enums(): Unit = {
+    val stages: List[ReleaseStage] = List(
+      ReleaseStage.Planned,
+      ReleaseStage.Building("build-42", attempts = 2),
+      ReleaseStage.Published("stable", Some("ready for deployment"))
+    )
+
+    val json: Json = stages.asJson
+    val decoded: List[ReleaseStage] = expectRight(json.as[List[ReleaseStage]])
+
+    assertThat(json.asArray.map(_.size)).isEqualTo(Some(3))
+    assertThat(decoded.asJava).containsExactlyElementsOf(stages.asJava)
   }
 
   @Test
