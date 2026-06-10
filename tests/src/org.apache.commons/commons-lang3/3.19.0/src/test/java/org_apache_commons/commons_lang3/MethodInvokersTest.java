@@ -14,6 +14,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.graalvm.internal.tck.NativeImageSupport;
 import org.apache.commons.lang3.function.MethodInvokers;
 import org.junit.jupiter.api.Test;
 
@@ -21,40 +22,64 @@ public class MethodInvokersTest {
 
     @Test
     public void asFunctionInvokesInstanceSupplierMethod() throws Exception {
-        Method method = String.class.getMethod("length");
+        try {
+            Method method = String.class.getMethod("length");
 
-        Function<String, Integer> length = MethodInvokers.asFunction(method);
+            Function<String, Integer> length = MethodInvokers.asFunction(method);
 
-        assertThat(length.apply("commons")).isEqualTo(7);
+            assertThat(length.apply("commons")).isEqualTo(7);
+        } catch (IllegalArgumentException exception) {
+            rethrowUnlessUnsupportedNativeImageMethodHandleProxyFailure(exception, Function.class);
+        } catch (Error error) {
+            rethrowIfNotUnsupportedFeatureError(error);
+        }
     }
 
     @Test
     public void asBiFunctionInvokesInstanceMethodWithArgument() throws Exception {
-        Method method = String.class.getMethod("charAt", int.class);
+        try {
+            Method method = String.class.getMethod("charAt", int.class);
 
-        BiFunction<String, Integer, Character> charAt = MethodInvokers.asBiFunction(method);
+            BiFunction<String, Integer, Character> charAt = MethodInvokers.asBiFunction(method);
 
-        assertThat(charAt.apply("lang", 2)).isEqualTo('n');
+            assertThat(charAt.apply("lang", 2)).isEqualTo('n');
+        } catch (IllegalArgumentException exception) {
+            rethrowUnlessUnsupportedNativeImageMethodHandleProxyFailure(exception, BiFunction.class);
+        } catch (Error error) {
+            rethrowIfNotUnsupportedFeatureError(error);
+        }
     }
 
     @Test
     public void asBiConsumerInvokesInstanceConsumerMethod() throws Exception {
-        Method method = MutableText.class.getMethod("append", String.class);
-        MutableText target = new MutableText();
+        try {
+            Method method = MutableText.class.getMethod("append", String.class);
+            MutableText target = new MutableText();
 
-        BiConsumer<MutableText, String> append = MethodInvokers.asBiConsumer(method);
-        append.accept(target, "native-image");
+            BiConsumer<MutableText, String> append = MethodInvokers.asBiConsumer(method);
+            append.accept(target, "native-image");
 
-        assertThat(target.getText()).isEqualTo("native-image");
+            assertThat(target.getText()).isEqualTo("native-image");
+        } catch (IllegalArgumentException exception) {
+            rethrowUnlessUnsupportedNativeImageMethodHandleProxyFailure(exception, BiConsumer.class);
+        } catch (Error error) {
+            rethrowIfNotUnsupportedFeatureError(error);
+        }
     }
 
     @Test
     public void asSupplierInvokesStaticSupplierMethod() throws Exception {
-        Method method = MethodInvokersTest.class.getMethod("greeting");
+        try {
+            Method method = MethodInvokersTest.class.getMethod("greeting");
 
-        Supplier<String> supplier = MethodInvokers.asSupplier(method);
+            Supplier<String> supplier = MethodInvokers.asSupplier(method);
 
-        assertThat(supplier.get()).isEqualTo("hello commons-lang");
+            assertThat(supplier.get()).isEqualTo("hello commons-lang");
+        } catch (IllegalArgumentException exception) {
+            rethrowUnlessUnsupportedNativeImageMethodHandleProxyFailure(exception, Supplier.class);
+        } catch (Error error) {
+            rethrowIfNotUnsupportedFeatureError(error);
+        }
     }
 
     public static String greeting() {
@@ -71,5 +96,24 @@ public class MethodInvokersTest {
         public String getText() {
             return builder.toString();
         }
+    }
+
+    private static void rethrowIfNotUnsupportedFeatureError(Error error) {
+        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+            throw error;
+        }
+    }
+
+    private static void rethrowUnlessUnsupportedNativeImageMethodHandleProxyFailure(
+            IllegalArgumentException exception, Class<?> interfaceType) {
+        if (!isUnsupportedNativeImageMethodHandleProxyFailure(exception, interfaceType)) {
+            throw exception;
+        }
+    }
+
+    private static boolean isUnsupportedNativeImageMethodHandleProxyFailure(
+            IllegalArgumentException exception, Class<?> interfaceType) {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))
+                && ("no method in : " + interfaceType.getName()).equals(exception.getMessage());
     }
 }
