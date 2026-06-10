@@ -10,9 +10,24 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+repositories {
+    exclusiveContent {
+        forRepository {
+            mavenCentral {
+                metadataSources {
+                    artifact()
+                }
+            }
+        }
+        filter {
+            includeGroup 'org.codehaus.woodstox'
+        }
+    }
+}
+
 dependencies {
     testImplementation "net.sf.saxon:Saxon-HE:$libraryVersion"
-    testImplementation 'com.fasterxml.woodstox:woodstox-core:6.5.1'
+    testImplementation 'org.codehaus.woodstox:wstx-asl:3.0.0@jar'
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 

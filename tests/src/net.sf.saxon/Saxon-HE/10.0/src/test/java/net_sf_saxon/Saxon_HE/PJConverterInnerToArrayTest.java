@@ -33,7 +33,7 @@ public class PJConverterInnerToArrayTest {
         XdmValue source = new XdmValue(Arrays.<XdmItem>asList(
                 new XdmAtomicValue("alpha"),
                 new XdmAtomicValue("beta")));
-        GroundedValue<?> underlyingValue = source.getUnderlyingValue();
+        GroundedValue underlyingValue = source.getUnderlyingValue();
 
         Object converted = converter.convert(underlyingValue, String[].class, null);
 

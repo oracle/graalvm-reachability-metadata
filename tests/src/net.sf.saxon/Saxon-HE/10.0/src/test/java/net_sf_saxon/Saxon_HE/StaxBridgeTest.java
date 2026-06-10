@@ -8,6 +8,7 @@ package net_sf_saxon.Saxon_HE;
 
 import com.ctc.wstx.stax.WstxInputFactory;
 
+import net.sf.saxon.Configuration;
 import net.sf.saxon.pull.PullProvider;
 import net.sf.saxon.pull.StaxBridge;
 import net.sf.saxon.pull.UnparsedEntity;
@@ -25,7 +26,7 @@ public class StaxBridgeTest {
     private static final String DOCUMENT_SYSTEM_ID = "https://example.test/documents/source.xml";
 
     @Test
-    void reportsUnparsedEntitiesFromWoodstoxExtensionDeclarations() throws Exception {
+    void reportsUnparsedEntitiesFromLegacyWoodstoxExtensionDeclarations() throws Exception {
         String xml = """
                 <!DOCTYPE root [
                     <!NOTATION png SYSTEM "image/png">
@@ -37,9 +38,10 @@ public class StaxBridgeTest {
         XMLStreamReader reader = inputFactory.createXMLStreamReader(DOCUMENT_SYSTEM_ID, new StringReader(xml));
         StaxBridge bridge = new StaxBridge();
         bridge.setXMLStreamReader(reader);
+        bridge.setPipelineConfiguration(Configuration.newConfiguration().makePipelineConfiguration());
         try {
-            assertThat(bridge.next()).isEqualTo(PullProvider.START_DOCUMENT);
-            assertThat(bridge.next()).isEqualTo(PullProvider.START_ELEMENT);
+            assertThat(bridge.next()).isEqualTo(PullProvider.Event.START_DOCUMENT);
+            assertThat(bridge.next()).isEqualTo(PullProvider.Event.START_ELEMENT);
 
             List<UnparsedEntity> entities = bridge.getUnparsedEntities();
 
