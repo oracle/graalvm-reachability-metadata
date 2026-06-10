@@ -136,6 +136,27 @@ public class Org_osgi_service_logTest {
                 .containsExactly("after snapshot", "newest", "middle", "oldest");
     }
 
+    @Test
+    void logReaderRegistersEqualButDistinctListenersIndependently() {
+        InMemoryLogService logService = new InMemoryLogService();
+        List<String> firstListenerMessages = new ArrayList<>();
+        List<String> secondListenerMessages = new ArrayList<>();
+        LogListener firstListener = new EqualLogListener(firstListenerMessages);
+        LogListener secondListener = new EqualLogListener(secondListenerMessages);
+
+        assertThat(firstListener).isEqualTo(secondListener).isNotSameAs(secondListener);
+
+        logService.addLogListener(firstListener);
+        logService.addLogListener(secondListener);
+        logService.log(LogService.LOG_INFO, "delivered to both");
+
+        logService.removeLogListener(firstListener);
+        logService.log(LogService.LOG_WARNING, "delivered to second");
+
+        assertThat(firstListenerMessages).containsExactly("delivered to both");
+        assertThat(secondListenerMessages).containsExactly("delivered to both", "delivered to second");
+    }
+
     private static final class InMemoryLogService implements LogService, LogReaderService {
         private final List<LogEntry> entries = new ArrayList<>();
         private final List<LogListener> listeners = new ArrayList<>();
@@ -192,6 +213,29 @@ public class Org_osgi_service_logTest {
 
         private List<LogEntry> entriesInMostRecentFirstOrder() {
             return new ArrayList<>(entries);
+        }
+    }
+
+    private static final class EqualLogListener implements LogListener {
+        private final List<String> messages;
+
+        private EqualLogListener(List<String> messages) {
+            this.messages = messages;
+        }
+
+        @Override
+        public void logged(LogEntry entry) {
+            messages.add(entry.getMessage());
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return other instanceof EqualLogListener;
+        }
+
+        @Override
+        public int hashCode() {
+            return EqualLogListener.class.hashCode();
         }
     }
 
