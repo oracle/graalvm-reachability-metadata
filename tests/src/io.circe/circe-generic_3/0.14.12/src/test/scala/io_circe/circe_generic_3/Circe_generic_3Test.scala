@@ -77,6 +77,23 @@ final case class AutoLineItem(name: String, quantity: Int)
 
 final case class AutoOrder(orderId: String, items: List[AutoLineItem], gift: Option[Boolean])
 
+sealed trait DeliveryChannel
+
+object DeliveryChannel {
+  case object Email extends DeliveryChannel
+  case object Sms extends DeliveryChannel
+  final case class Webhook(url: String, headers: Map[String, String]) extends DeliveryChannel
+
+  given Encoder[DeliveryChannel] = deriveEncoder[DeliveryChannel]
+  given Decoder[DeliveryChannel] = deriveDecoder[DeliveryChannel]
+}
+
+final case class DeliveryRule(name: String, channel: DeliveryChannel)
+
+object DeliveryRule {
+  given Codec.AsObject[DeliveryRule] = deriveCodec[DeliveryRule]
+}
+
 class Circe_generic_3Test {
   @Test
   def semiAutomaticallyDerivesEncodersAndDecodersForNestedProducts(): Unit = {
@@ -192,6 +209,32 @@ class Circe_generic_3Test {
     assertEquals(Right(BigDecimal("19.95")), json.hcursor.get[BigDecimal]("amount"))
     assertEquals(Right(false), json.hcursor.downField("method").downField("BankAccount").get[Boolean]("verified"))
     assertEquals(Right(purchase), json.as[Purchase])
+  }
+
+  @Test
+  def derivesSealedTraitCodecsForSingletonAlternatives(): Unit = {
+    val rule: DeliveryRule = DeliveryRule("order-created", DeliveryChannel.Email)
+    val channels: List[DeliveryChannel] = List(
+      DeliveryChannel.Email,
+      DeliveryChannel.Webhook("https://hooks.example.test/orders", Map("X-Event" -> "created")),
+      DeliveryChannel.Sms
+    )
+
+    val ruleJson: Json = rule.asJson
+    val channelsJson: Json = channels.asJson
+
+    assertTrue(ruleJson.hcursor.downField("channel").downField("Email").succeeded)
+    assertEquals(Right(rule), ruleJson.as[DeliveryRule])
+    assertEquals(
+      Right("https://hooks.example.test/orders"),
+      channelsJson.hcursor.downN(1).downField("Webhook").get[String]("url")
+    )
+    assertEquals(
+      Right(Map("X-Event" -> "created")),
+      channelsJson.hcursor.downN(1).downField("Webhook").get[Map[String, String]]("headers")
+    )
+    assertTrue(channelsJson.hcursor.downN(2).downField("Sms").succeeded)
+    assertEquals(Right(channels), channelsJson.as[List[DeliveryChannel]])
   }
 
   @Test
