@@ -1,0 +1,60 @@
+{
+  "fix_javac_fail:2026-06-10": {
+    "timestamp": "2026-06-10T14:02:43.360744Z",
+    "library": "org.apache.maven.scm:maven-scm-provider-gitexe:2.0.0",
+    "starting_commit": "96f06b92b8cc3fa94ec09898956d548f227d9c86",
+    "ending_commit": "9a3b516c44a7bf89b8442b5a582de3b186cbb7b3",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8307,
+      "issue_label": "fails-javac-compile",
+      "library": "org.apache.maven.scm:maven-scm-provider-gitexe:2.0.0",
+      "summary": "No extra Maven dependency, Docker image, environment variable, or system property is needed. The resolved 2.0.0 artifact already brings its required compile/runtime dependencies; the javac failure is from Maven SCM 2.0.0 API changes, not missing setup.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "Meaningful tests that execute real Git commands depend on a git executable being available on PATH; ubuntu-latest normally provides this, so it is not a Forge deterministic setup item.",
+        "Existing 1.11.1 tests use removed/changed 2.0.0 APIs such as org.apache.maven.scm.log.DefaultLog and static GitRemoteInfoCommand.createCommandLine; generated tests must target the 2.0.0 API rather than add old Maven SCM artifacts."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8307 [Automation] javac compile fails for org.apache.maven.scm:maven-scm-provider-gitexe:2.0.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "8 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.apache.maven.scm:maven-scm-provider-gitexe:1.11.1",
+      "new_version": "2.0.0",
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 30002,
+      "output_tokens_used": 4244,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.apache.maven.scm:maven-scm-provider-gitexe:2.0.0/library-preparation-preflight/pi-generation-2026-06-10T13-57-17-997031Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 48674,
+      "cached_input_tokens_used": 106496,
+      "output_tokens_used": 1799,
+      "iterations": 1,
+      "cost_usd": 0.1072,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "test_file": "None",
+      "metadata_file": "None"
+    }
+  }
+}
