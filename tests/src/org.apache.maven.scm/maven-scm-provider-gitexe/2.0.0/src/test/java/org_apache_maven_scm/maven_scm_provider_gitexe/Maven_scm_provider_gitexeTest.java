@@ -13,7 +13,6 @@ import java.nio.file.Path;
 import org.apache.maven.scm.ScmFile;
 import org.apache.maven.scm.ScmFileStatus;
 import org.apache.maven.scm.command.remoteinfo.RemoteInfoScmResult;
-import org.apache.maven.scm.log.DefaultLog;
 import org.apache.maven.scm.provider.git.gitexe.command.remoteinfo.GitRemoteInfoConsumer;
 import org.apache.maven.scm.provider.git.gitexe.command.status.GitStatusConsumer;
 import org.junit.jupiter.api.Test;
@@ -37,7 +36,7 @@ public class Maven_scm_provider_gitexeTest {
         Files.writeString(renamedPath, "renamed\n", StandardCharsets.UTF_8);
         Files.writeString(spacedPath, "spaced\n", StandardCharsets.UTF_8);
 
-        GitStatusConsumer consumer = new GitStatusConsumer(new DefaultLog(), temporaryDirectory.toFile());
+        GitStatusConsumer consumer = new GitStatusConsumer(temporaryDirectory.toFile());
         consumer.consumeLine("A  added.txt");
         consumer.consumeLine(" M modified.txt");
         consumer.consumeLine(" D deleted.txt");
@@ -58,7 +57,7 @@ public class Maven_scm_provider_gitexeTest {
 
     @Test
     void remoteInfoConsumerParsesBranchesAndTagsFromLsRemoteOutput() {
-        GitRemoteInfoConsumer consumer = new GitRemoteInfoConsumer(new DefaultLog(), "git ls-remote origin");
+        GitRemoteInfoConsumer consumer = new GitRemoteInfoConsumer("git ls-remote origin");
         consumer.consumeLine("1111111111111111111111111111111111111111\trefs/heads/main");
         consumer.consumeLine("2222222222222222222222222222222222222222 refs/heads/feature/native-tests");
         consumer.consumeLine("3333333333333333333333333333333333333333\trefs/tags/v1.0.0");
