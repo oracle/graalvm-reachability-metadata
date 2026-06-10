@@ -15,10 +15,13 @@ import javax.swing.JLabel
 import javax.swing.SwingUtilities
 import kotlin.coroutines.resume
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
@@ -61,6 +64,27 @@ public class Kotlinx_coroutines_swingTest {
 
         assertThat(observations).containsExactly(true, true)
         assertThat(label.text).isEqualTo("finished")
+    }
+
+    @Test
+    public fun asyncCoroutinesOnSwingDispatcherReturnValuesFromEventDispatchThread(): Unit = runBlockingWithTimeout {
+        val label: JLabel = JLabel("unset")
+
+        val firstUpdate: Deferred<String> = async(Dispatchers.Swing) {
+            label.text = "first"
+            "first:${label.text}:${SwingUtilities.isEventDispatchThread()}"
+        }
+        val secondUpdate: Deferred<String> = async(Dispatchers.Swing) {
+            label.text = "${label.text}-second"
+            "second:${label.text}:${SwingUtilities.isEventDispatchThread()}"
+        }
+        val updates: List<String> = awaitAll(firstUpdate, secondUpdate)
+
+        assertThat(updates).containsExactly(
+            "first:first:true",
+            "second:first-second:true",
+        )
+        assertThat(label.text).isEqualTo("first-second")
     }
 
     @Test
