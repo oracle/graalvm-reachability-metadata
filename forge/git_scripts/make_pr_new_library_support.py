@@ -6,9 +6,7 @@
 import argparse
 import json
 import os
-import re
 import shutil
-import subprocess
 import sys
 from dataclasses import dataclass
 
@@ -17,31 +15,33 @@ from git_scripts.common_git import (
     gh,
     get_origin_owner,
     parse_coordinate_parts,
-    stage_and_commit as stage_and_commit_common,
     find_issue_for_coordinates as find_issue_common,
     get_model_display_name,
     get_agent_name,
     load_library_stats,
     format_stats_section,
     format_forge_revision_section,
-    build_ai_branch_name,
-    delete_remote_branch_if_exists,
-    get_configured_reviewers,
-    run_git_transport,
+)
+from git_scripts.pr_publication import (
+    BASE_BRANCH,
+    REPO,
+    REVIEWERS,
+    parse_pr_number,
+    publish_branch,
+    stage_library_version_paths,
+    update_large_library_state_after_publish,
 )
 from utility_scripts.metrics_writer import (
     collect_new_library_support_quality_issues,
     read_pending_metrics,
 )
-from utility_scripts.large_library_progress import LABEL_LARGE_LIBRARY_PART, LargeLibraryProgressState
-from utility_scripts.library_stats import stats_artifact_dir
+from utility_scripts.large_library_progress import LABEL_LARGE_LIBRARY_PART
 from utility_scripts.dynamic_access_report import DynamicAccessCallSite, load_dynamic_access_coverage_report
 from utility_scripts.local_ci_verification import (
     HUMAN_INTERVENTION_LABEL,
     LOCAL_CI_VERIFICATION_KEY,
     format_local_ci_verification_pr_section,
     local_ci_requires_human_intervention,
-    run_local_ci_verification,
 )
 from utility_scripts.repo_path_resolver import resolve_repo_roots
 from utility_scripts.test_quality_checks import (
@@ -51,9 +51,6 @@ from utility_scripts.test_quality_checks import (
     format_placeholder_occurrence,
 )
 
-REPO = "oracle/graalvm-reachability-metadata"
-BASE_BRANCH = 'master'
-REVIEWERS = get_configured_reviewers()
 DYNAMIC_ACCESS_METADATA_ENTRY_NOTE_RATIO = 1.75
 DYNAMIC_ACCESS_METADATA_ENTRY_NOTE_MAX_ITEMS = 8
 
@@ -343,53 +340,6 @@ Summary:
     return body
 
 
-def stage_and_commit(
-        group,
-        artifact,
-        library_version,
-        coordinates,
-        repo_path,
-        metrics_repo_path: str | None = None,
-        include_in_repo_metrics: bool = False,
-):
-    """Stage the expected new-library paths and commit with the required message.
-
-    Publication scripts stage the workflow-specific expected paths instead of a
-    generic repository-wide add, keeping the path boundary explicit
-    (§GIT-expected-paths).
-    """
-    candidate_paths = [
-        str(os.path.join("tests", "src", group, artifact, library_version)),
-        str(os.path.join("metadata", group, artifact, "index.json")),
-        str(os.path.join("metadata", group, artifact, library_version)),
-        str(os.path.relpath(stats_artifact_dir(repo_path, group, artifact), repo_path)),
-    ]
-    del metrics_repo_path, include_in_repo_metrics
-    candidate_paths = [path for path in candidate_paths if os.path.exists(os.path.join(repo_path, path))]
-
-    commit_message = f"Add support for {coordinates}"
-    stage_and_commit_common(candidate_paths, commit_message, cwd=repo_path)
-
-
-def _fetch_pr_base(repo_path: str) -> str:
-    """Fetch the upstream PR base and return the ref to rebase onto."""
-    upstream_url = f"https://github.com/{REPO}.git"
-    upstream_remote_url = subprocess.run(
-        ["git", "remote", "get-url", "upstream"],
-        cwd=repo_path,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.DEVNULL,
-        text=True,
-        check=False,
-    )
-    if upstream_remote_url.returncode == 0 and REPO in upstream_remote_url.stdout.strip():
-        run_git_transport(["fetch", "upstream", BASE_BRANCH], cwd=repo_path)
-        return f"upstream/{BASE_BRANCH}"
-
-    run_git_transport(["fetch", upstream_url, BASE_BRANCH], cwd=repo_path)
-    return "FETCH_HEAD"
-
-
 def create_pull_request(
         branch,
         coordinates,
@@ -446,7 +396,7 @@ def create_pull_request(
         for r in REVIEWERS:
             cmd.extend(["--reviewer", r])
     result = gh(*cmd[1:])
-    return _parse_pr_number(result.stdout)
+    return parse_pr_number(result.stdout)
 
 
 def build_pull_request_preview(
@@ -539,29 +489,13 @@ def build_parser():
     return parser
 
 
-def resolve_repo_paths(
-        explicit_repo_path: str | None,
-        explicit_metrics_repo_path: str | None,
-):
-    """Resolve repo and metrics paths similar to add_new_library_support.
-
-    If explicit paths are provided via CLI, use them as-is. Otherwise, use
-    local clones under 'local_repositories'.
-    """
-
-    return resolve_repo_roots(
-        explicit_repo_path,
-        explicit_metrics_repo_path,
-    )
-
-
 def parse_flags(argv_list):
     """Parse CLI flags and return coordinates, repo_path, metrics_repo_path."""
     parser = build_parser()
     flags = parser.parse_args(argv_list)
 
     coordinates = flags.coordinates
-    resolved_repo_path, resolved_metrics_repo_path = resolve_repo_paths(
+    resolved_repo_path, resolved_metrics_repo_path = resolve_repo_roots(
         flags.reachability_metadata_path,
         flags.metrics_repo_path,
     )
@@ -582,7 +516,6 @@ def push_current_branch_to_origin(
         coordinates,
         repo_path,
         metrics_repo_path=None,
-        include_in_repo_metrics=False,
         large_library_part=None,
 ):
     """Create, locally verify, and push a feature branch for PR publication.
@@ -596,59 +529,18 @@ def push_current_branch_to_origin(
     branch_suffix = f"add-lib-support-{group}-{artifact}-{library_version}"
     if large_library_part is not None:
         branch_suffix = f"{branch_suffix}-part-{large_library_part:04d}"
-    new_branch = build_ai_branch_name(branch_suffix, cwd=repo_path)
-    delete_remote_branch_if_exists(new_branch, cwd=repo_path)
-    subprocess.run(["git", "switch", "-C", new_branch], check=True, cwd=repo_path)
 
-    stage_and_commit(
-        group,
-        artifact,
-        library_version,
-        coordinates,
-        repo_path,
-        metrics_repo_path=metrics_repo_path,
-        include_in_repo_metrics=include_in_repo_metrics,
-    )
-
-    base_ref = _fetch_pr_base(repo_path)
-    subprocess.run(["git", "rebase", base_ref], check=True, cwd=repo_path)
-    run_local_ci_verification(
+    new_branch, _ = publish_branch(
         repo_path=repo_path,
+        branch_suffix=branch_suffix,
         coordinates=coordinates,
-        base_commit=base_ref,
+        stage=lambda: stage_library_version_paths(
+            group, artifact, library_version, repo_path, f"Add support for {coordinates}",
+        ),
         metrics_repo_path=metrics_repo_path,
     )
-    run_git_transport(["push", "origin", new_branch], cwd=repo_path)
 
     return new_branch
-
-
-def _parse_pr_number(output: str) -> int | None:
-    """Extract a PR number from gh pr create output."""
-    match = re.search(r"/pull/(\d+)", output)
-    return int(match.group(1)) if match else None
-
-
-def update_large_library_state_after_publish(
-        state_path: str | None,
-        branch: str,
-        repo_path: str,
-        pr_number: int | None,
-        final_part: bool,
-) -> None:
-    """Record the published branch/commit in the large-library progress artifact.
-
-    The next chunk resumes only after this published state is present on the
-    base branch (§WF-dynamic-access-exhaust-report).
-    """
-    if not state_path:
-        return
-    state = LargeLibraryProgressState.load(state_path)
-    commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_path, text=True).strip()
-    state.record_published_pr(branch, commit, pr_number)
-    if not final_part:
-        state.advance_to_next_part()
-    state.save(state_path)
 
 
 def validate_run_quality(coordinates: str, metrics_repo_path: str, repo_path: str) -> None:
