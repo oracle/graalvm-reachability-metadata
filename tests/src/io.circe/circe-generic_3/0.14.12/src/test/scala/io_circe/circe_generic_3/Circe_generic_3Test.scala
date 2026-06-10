@@ -94,6 +94,23 @@ object DeliveryRule {
   given Codec.AsObject[DeliveryRule] = deriveCodec[DeliveryRule]
 }
 
+enum ShipmentStatus {
+  case Queued
+  case InTransit(carrier: String, trackingNumber: String)
+  case Delivered(receivedBy: Option[String])
+}
+
+object ShipmentStatus {
+  given Encoder[ShipmentStatus] = deriveEncoder[ShipmentStatus]
+  given Decoder[ShipmentStatus] = deriveDecoder[ShipmentStatus]
+}
+
+final case class Shipment(id: String, status: ShipmentStatus)
+
+object Shipment {
+  given Codec.AsObject[Shipment] = deriveCodec[Shipment]
+}
+
 class Circe_generic_3Test {
   @Test
   def semiAutomaticallyDerivesEncodersAndDecodersForNestedProducts(): Unit = {
@@ -235,6 +252,30 @@ class Circe_generic_3Test {
     )
     assertTrue(channelsJson.hcursor.downN(2).downField("Sms").succeeded)
     assertEquals(Right(channels), channelsJson.as[List[DeliveryChannel]])
+  }
+
+  @Test
+  def derivesCodecsForScala3EnumsWithSingletonAndProductCases(): Unit = {
+    val queued: ShipmentStatus = ShipmentStatus.Queued
+    val inTransit: ShipmentStatus = ShipmentStatus.InTransit("DHL", "TRACK-1")
+    val delivered: ShipmentStatus = ShipmentStatus.Delivered(Some("Lena"))
+
+    val queuedJson: Json = queued.asJson
+    val inTransitJson: Json = inTransit.asJson
+    val shipmentJson: Json = Shipment("shipment-1", delivered).asJson
+
+    assertTrue(queuedJson.hcursor.downField("Queued").succeeded, s"Expected Queued enum case in $queuedJson")
+    assertEquals(Right(queued), queuedJson.as[ShipmentStatus])
+    assertTrue(inTransitJson.hcursor.downField("InTransit").succeeded, s"Expected InTransit enum case in $inTransitJson")
+    assertEquals(Right("DHL"), inTransitJson.hcursor.downField("InTransit").get[String]("carrier"))
+    assertEquals(Right("TRACK-1"), inTransitJson.hcursor.downField("InTransit").get[String]("trackingNumber"))
+    assertEquals(Right(inTransit), inTransitJson.as[ShipmentStatus])
+    assertEquals(Right("shipment-1"), shipmentJson.hcursor.get[String]("id"))
+    assertEquals(
+      Right(Some("Lena")),
+      shipmentJson.hcursor.downField("status").downField("Delivered").get[Option[String]]("receivedBy")
+    )
+    assertEquals(Right(Shipment("shipment-1", delivered)), shipmentJson.as[Shipment])
   }
 
   @Test
