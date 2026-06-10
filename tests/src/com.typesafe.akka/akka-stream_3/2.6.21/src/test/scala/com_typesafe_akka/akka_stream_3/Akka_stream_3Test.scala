@@ -10,12 +10,14 @@ import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.stream.ActorAttributes
 import akka.stream.FlowShape
+import akka.stream.IOResult
 import akka.stream.Materializer
 import akka.stream.OverflowStrategy
 import akka.stream.QueueOfferResult
 import akka.stream.Supervision
 import akka.stream.SystemMaterializer
 import akka.stream.scaladsl.Broadcast
+import akka.stream.scaladsl.FileIO
 import akka.stream.scaladsl.Flow
 import akka.stream.scaladsl.Framing
 import akka.stream.scaladsl.GraphDSL
@@ -27,6 +29,8 @@ import akka.util.ByteString
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
+import java.nio.file.Files
+import java.nio.file.Path
 import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContextExecutor
@@ -93,6 +97,27 @@ class Akka_stream_3Test {
         .runWith(Sink.seq)
 
       assertThat(await(result).asJava).containsExactly("alpha", "beta", "gamma")
+    }
+  }
+
+  @Test
+  def writesAndReadsByteStringsWithFileIO(): Unit = {
+    withStreamSystem { (_: ActorSystem, materializer: Materializer) =>
+      implicit val mat: Materializer = materializer
+      val path: Path = Files.createTempFile("akka-stream-file-io-", ".txt")
+
+      try {
+        val payload: List[ByteString] = List(ByteString("alpha\n"), ByteString("beta\n"))
+        val writeResult: IOResult = await(Source(payload).runWith(FileIO.toPath(path)))
+        assertThat(writeResult.status.isSuccess).isTrue()
+        assertThat(writeResult.count).isEqualTo(11L)
+
+        val readResult: Future[ByteString] = FileIO.fromPath(path)
+          .runWith(Sink.fold(ByteString.empty)((acc: ByteString, next: ByteString) => acc ++ next))
+        assertThat(await(readResult).utf8String).isEqualTo("alpha\nbeta\n")
+      } finally {
+        Files.deleteIfExists(path)
+      }
     }
   }
 
