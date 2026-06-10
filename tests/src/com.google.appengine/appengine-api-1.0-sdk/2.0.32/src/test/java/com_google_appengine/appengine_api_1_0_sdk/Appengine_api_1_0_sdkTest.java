@@ -51,6 +51,9 @@ import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskHandle;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.appengine.api.taskqueue.TaskQueuePb;
+import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.apphosting.api.ApiProxy;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
@@ -264,6 +267,28 @@ public class Appengine_api_1_0_sdkTest {
         assertThat(deserialized).isEqualTo(memcacheValue);
         assertThat(new String(MemcacheSerialization.makePbKey("short-key"), StandardCharsets.UTF_8))
                 .isEqualTo("\"short-key\"");
+    }
+
+    @Test
+    void usersServiceReadsCurrentEnvironmentAndExposesUserIdentity() {
+        ApiProxy.setEnvironmentForCurrentThread(new TestEnvironment());
+        try {
+            UserService userService = UserServiceFactory.getUserService();
+            User currentUser = userService.getCurrentUser();
+            User explicitUser = new User("member@example.com", "example.com", "user-id-1");
+
+            assertThat(userService.isUserLoggedIn()).isTrue();
+            assertThat(userService.isUserAdmin()).isFalse();
+            assertThat(currentUser.getEmail()).isEqualTo("user@example.com");
+            assertThat(currentUser.getAuthDomain()).isEqualTo("gmail.com");
+            assertThat(explicitUser.getEmail()).isEqualTo("member@example.com");
+            assertThat(explicitUser.getAuthDomain()).isEqualTo("example.com");
+            assertThat(explicitUser.getUserId()).isEqualTo("user-id-1");
+            assertThat(explicitUser).isEqualTo(
+                    new User("member@example.com", "example.com", "user-id-1"));
+        } finally {
+            ApiProxy.clearEnvironmentForCurrentThread();
+        }
     }
 
     @Test
