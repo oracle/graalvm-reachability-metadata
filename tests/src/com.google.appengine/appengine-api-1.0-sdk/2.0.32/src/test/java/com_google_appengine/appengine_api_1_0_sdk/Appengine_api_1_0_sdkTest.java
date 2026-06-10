@@ -51,11 +51,19 @@ import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskHandle;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.appengine.api.taskqueue.TaskQueuePb;
+import com.google.appengine.api.urlfetch.HTTPHeader;
+import com.google.appengine.api.urlfetch.HTTPMethod;
+import com.google.appengine.api.urlfetch.HTTPRequest;
+import com.google.appengine.api.urlfetch.HTTPResponse;
+import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
+import com.google.appengine.api.urlfetch.URLFetchServicePb;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.appengine.repackaged.com.google.protobuf.ByteString;
 import com.google.apphosting.api.ApiProxy;
 import java.io.Serializable;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Base64;
@@ -292,6 +300,58 @@ public class Appengine_api_1_0_sdkTest {
     }
 
     @Test
+    void urlFetchServiceMarshalsRequestOptionsAndResponseHeaders() throws Exception {
+        ApiProxy.Delegate<?> previousDelegate = ApiProxy.getDelegate();
+        RecordingDelegate delegate = new RecordingDelegate();
+        ApiProxy.setEnvironmentForCurrentThread(new TestEnvironment());
+        ApiProxy.setDelegate(delegate);
+        try {
+            com.google.appengine.api.urlfetch.FetchOptions options =
+                    com.google.appengine.api.urlfetch.FetchOptions.Builder
+                            .doNotFollowRedirects()
+                            .validateCertificate()
+                            .setDeadline(2.0);
+            HTTPRequest request = new HTTPRequest(
+                    new URL("https://example.com/api"), HTTPMethod.POST, options);
+            request.setPayload("payload".getBytes(StandardCharsets.UTF_8));
+            request.setHeader(new HTTPHeader("Content-Type", "text/plain"));
+            request.addHeader(new HTTPHeader("X-Trace", "one"));
+            request.addHeader(new HTTPHeader("X-Trace", "two"));
+
+            HTTPResponse response = URLFetchServiceFactory.getURLFetchService().fetch(request);
+            URLFetchServicePb.URLFetchRequest urlFetchRequest =
+                    URLFetchServicePb.URLFetchRequest.parseFrom(delegate.lastRequest);
+
+            assertThat(delegate.calls).containsExactly("urlfetch.Fetch");
+            assertThat(urlFetchRequest.getUrl()).isEqualTo("https://example.com/api");
+            assertThat(urlFetchRequest.getMethod())
+                    .isEqualTo(URLFetchServicePb.URLFetchRequest.RequestMethod.POST);
+            assertThat(urlFetchRequest.getPayload().toStringUtf8()).isEqualTo("payload");
+            assertThat(urlFetchRequest.getFollowRedirects()).isFalse();
+            assertThat(urlFetchRequest.getMustValidateServerCertificate()).isTrue();
+            assertThat(urlFetchRequest.getHeaderList().stream()
+                    .map(header -> header.getKey() + "=" + header.getValue())
+                    .toList())
+                    .containsExactly("Content-Type=text/plain", "X-Trace=one, two");
+            assertThat(response.getResponseCode()).isEqualTo(202);
+            assertThat(new String(response.getContent(), StandardCharsets.UTF_8))
+                    .isEqualTo("accepted");
+            assertThat(response.getFinalUrl()).hasToString("https://example.com/final");
+            assertThat(response.getHeadersUncombined().stream()
+                    .map(header -> header.getName() + "=" + header.getValue())
+                    .toList())
+                    .containsExactly("Set-Cookie=a=1", "Set-Cookie=b=2", "X-Service=urlfetch");
+            assertThat(response.getHeaders().stream()
+                    .map(header -> header.getName() + "=" + header.getValue())
+                    .toList())
+                    .containsExactly("Set-Cookie=a=1, b=2", "X-Service=urlfetch");
+        } finally {
+            ApiProxy.setDelegate(previousDelegate);
+            ApiProxy.clearEnvironmentForCurrentThread();
+        }
+    }
+
+    @Test
     void apiProxyBackedFactoriesMarshalRequestsThroughDelegate() throws Exception {
         ApiProxy.Delegate<?> previousDelegate = ApiProxy.getDelegate();
         RecordingDelegate delegate = new RecordingDelegate();
@@ -460,6 +520,24 @@ public class Appengine_api_1_0_sdkTest {
                 return CapabilityServicePb.IsEnabledResponse.newBuilder()
                         .setSummaryStatus(
                                 CapabilityServicePb.IsEnabledResponse.SummaryStatus.ENABLED)
+                        .build()
+                        .toByteArray();
+            }
+            if ("urlfetch".equals(packageName)) {
+                return URLFetchServicePb.URLFetchResponse.newBuilder()
+                        .setStatusCode(202)
+                        .setContent(ByteString.copyFrom(
+                                "accepted".getBytes(StandardCharsets.UTF_8)))
+                        .setFinalUrl("https://example.com/final")
+                        .addHeader(URLFetchServicePb.URLFetchResponse.Header.newBuilder()
+                                .setKey("Set-Cookie")
+                                .setValue("a=1"))
+                        .addHeader(URLFetchServicePb.URLFetchResponse.Header.newBuilder()
+                                .setKey("Set-Cookie")
+                                .setValue("b=2"))
+                        .addHeader(URLFetchServicePb.URLFetchResponse.Header.newBuilder()
+                                .setKey("X-Service")
+                                .setValue("urlfetch"))
                         .build()
                         .toByteArray();
             }
