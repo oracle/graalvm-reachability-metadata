@@ -24,7 +24,10 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
       none-found: ${{ steps.set-matrix.outputs.none-found }}
+      snapshot-tag-exists: ${{ steps.get-base-ref.outputs.snapshot-tag-exists }}
       snapshot-release-exists: ${{ steps.get-base-ref.outputs.snapshot-release-exists }}
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -43,19 +46,25 @@ jobs:
           if git rev-parse --verify SNAPSHOT >/dev/null 2>&1; then
             echo "Using existing SNAPSHOT tag as base"
             echo "BASE_COMMIT=$(git rev-parse SNAPSHOT)" >> ${GITHUB_ENV}
+            echo "snapshot-tag-exists=true" >> ${GITHUB_OUTPUT}
+          else
+            echo "snapshot-tag-exists=false" >> ${GITHUB_OUTPUT}
+
+            LATEST_VERSION_TAG=$(git tag --list | grep -E '^[0-9]+[.][0-9]+[.][0-9]+$' | sort -V | tail -1)
+            if [[ -z "${LATEST_VERSION_TAG}" ]]; then
+              echo "No existing numbered version tag found to bootstrap the snapshot release"
+              exit 1
+            fi
+
+            echo "Bootstrapping snapshot release from ${LATEST_VERSION_TAG}"
+            echo "BASE_COMMIT=$(git rev-parse ${LATEST_VERSION_TAG})" >> ${GITHUB_ENV}
+          fi
+
+          if gh release view SNAPSHOT >/dev/null 2>&1; then
             echo "snapshot-release-exists=true" >> ${GITHUB_OUTPUT}
-            exit 0
+          else
+            echo "snapshot-release-exists=false" >> ${GITHUB_OUTPUT}
           fi
-
-          LATEST_VERSION_TAG=$(git tag --list | grep -E '^[0-9]+[.][0-9]+[.][0-9]+$' | sort -V | tail -1)
-          if [[ -z "${LATEST_VERSION_TAG}" ]]; then
-            echo "No existing numbered version tag found to bootstrap the snapshot release"
-            exit 1
-          fi
-
-          echo "Bootstrapping snapshot release from ${LATEST_VERSION_TAG}"
-          echo "BASE_COMMIT=$(git rev-parse ${LATEST_VERSION_TAG})" >> ${GITHUB_ENV}
-          echo "snapshot-release-exists=false" >> ${GITHUB_OUTPUT}
 
       - name: "🕸️ Get changed metadata matrix"
         id: set-matrix
@@ -97,6 +106,11 @@ jobs:
         if: needs.get-changed-metadata.outputs.snapshot-release-exists == 'true'
         run: |
           gh release delete SNAPSHOT --cleanup-tag -y
+
+      - name: "🧹 Delete orphan snapshot tag"
+        if: needs.get-changed-metadata.outputs.snapshot-tag-exists == 'true' && needs.get-changed-metadata.outputs.snapshot-release-exists != 'true'
+        run: |
+          git push origin :refs/tags/SNAPSHOT
 
       - name: "📄 Commit changes"
         run: |
