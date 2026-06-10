@@ -8,15 +8,26 @@ package org_osgi.org_osgi_service_log;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.EventListener;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.Version;
 import org.osgi.service.log.LogEntry;
 import org.osgi.service.log.LogListener;
 import org.osgi.service.log.LogReaderService;
@@ -157,9 +168,35 @@ public class Org_osgi_service_logTest {
         assertThat(secondListenerMessages).containsExactly("delivered to both", "delivered to second");
     }
 
+    @Test
+    void logEntryExposesTheBundleThatCreatedTheEntry() {
+        TestBundle bundle = new TestBundle(23L, "example.logging.bundle");
+        InMemoryLogService logService = new InMemoryLogService(bundle);
+        LogReaderService readerService = logService;
+        List<LogEntry> listenerEntries = new ArrayList<>();
+
+        logService.addLogListener(listenerEntries::add);
+        logService.log(LogService.LOG_INFO, "bundle scoped message");
+
+        LogEntry readerEntry = (LogEntry) readerService.getLog().nextElement();
+        assertThat(readerEntry.getBundle()).isSameAs(bundle);
+        assertThat(readerEntry.getBundle().getBundleId()).isEqualTo(23L);
+        assertThat(readerEntry.getBundle().getSymbolicName()).isEqualTo("example.logging.bundle");
+        assertThat(listenerEntries).singleElement().satisfies(entry -> assertThat(entry.getBundle()).isSameAs(bundle));
+    }
+
     private static final class InMemoryLogService implements LogService, LogReaderService {
+        private final Bundle bundle;
         private final List<LogEntry> entries = new ArrayList<>();
         private final List<LogListener> listeners = new ArrayList<>();
+
+        private InMemoryLogService() {
+            this(null);
+        }
+
+        private InMemoryLogService(Bundle bundle) {
+            this.bundle = bundle;
+        }
 
         @Override
         public void log(int level, String message) {
@@ -178,7 +215,7 @@ public class Org_osgi_service_logTest {
 
         @Override
         public void log(ServiceReference sr, int level, String message, Throwable exception) {
-            LogEntry entry = new SimpleLogEntry(null, sr, level, message, exception, System.currentTimeMillis());
+            LogEntry entry = new SimpleLogEntry(bundle, sr, level, message, exception, System.currentTimeMillis());
             entries.add(0, entry);
             for (LogListener listener : new ArrayList<>(listeners)) {
                 listener.logged(entry);
@@ -285,6 +322,161 @@ public class Org_osgi_service_logTest {
         @Override
         public long getTime() {
             return time;
+        }
+    }
+
+    private static final class TestBundle implements Bundle {
+        private final long bundleId;
+        private final String symbolicName;
+
+        private TestBundle(long bundleId, String symbolicName) {
+            this.bundleId = bundleId;
+            this.symbolicName = symbolicName;
+        }
+
+        @Override
+        public int getState() {
+            return ACTIVE;
+        }
+
+        @Override
+        public void start(int options) throws BundleException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void start() throws BundleException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void stop(int options) throws BundleException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void stop() throws BundleException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void update(InputStream input) throws BundleException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void update() throws BundleException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void uninstall() throws BundleException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Dictionary<String, String> getHeaders() {
+            return new Hashtable<>();
+        }
+
+        @Override
+        public long getBundleId() {
+            return bundleId;
+        }
+
+        @Override
+        public String getLocation() {
+            return symbolicName;
+        }
+
+        @Override
+        public ServiceReference<?>[] getRegisteredServices() {
+            return new ServiceReference<?>[0];
+        }
+
+        @Override
+        public ServiceReference<?>[] getServicesInUse() {
+            return new ServiceReference<?>[0];
+        }
+
+        @Override
+        public boolean hasPermission(Object permission) {
+            return true;
+        }
+
+        @Override
+        public URL getResource(String name) {
+            return null;
+        }
+
+        @Override
+        public Dictionary<String, String> getHeaders(String locale) {
+            return getHeaders();
+        }
+
+        @Override
+        public String getSymbolicName() {
+            return symbolicName;
+        }
+
+        @Override
+        public Class<?> loadClass(String name) throws ClassNotFoundException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Enumeration<URL> getResources(String name) throws IOException {
+            return Collections.emptyEnumeration();
+        }
+
+        @Override
+        public Enumeration<String> getEntryPaths(String path) {
+            return Collections.emptyEnumeration();
+        }
+
+        @Override
+        public URL getEntry(String path) {
+            return null;
+        }
+
+        @Override
+        public long getLastModified() {
+            return 0L;
+        }
+
+        @Override
+        public Enumeration<URL> findEntries(String path, String filePattern, boolean recurse) {
+            return Collections.emptyEnumeration();
+        }
+
+        @Override
+        public BundleContext getBundleContext() {
+            return null;
+        }
+
+        @Override
+        public Map<X509Certificate, List<X509Certificate>> getSignerCertificates(int signersType) {
+            return Collections.emptyMap();
+        }
+
+        @Override
+        public Version getVersion() {
+            return Version.emptyVersion;
+        }
+
+        @Override
+        public <A> A adapt(Class<A> type) {
+            return null;
+        }
+
+        @Override
+        public File getDataFile(String filename) {
+            return null;
+        }
+
+        @Override
+        public int compareTo(Bundle other) {
+            return Long.compare(bundleId, other.getBundleId());
         }
     }
 
