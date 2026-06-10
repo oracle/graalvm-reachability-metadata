@@ -64,6 +64,20 @@ object Command {
   given Decoder[Command] = deriveDecoder[Command]
 }
 
+sealed trait JobState
+
+object JobState {
+  case object Queued extends JobState
+
+  final case class Running(worker: String, attempt: Int) extends JobState
+
+  case object Completed extends JobState
+
+  given Encoder[JobState] = deriveEncoder[JobState]
+
+  given Decoder[JobState] = deriveDecoder[JobState]
+}
+
 final case class AutoPoint(x: Int, y: Int)
 
 final case class AutoSegment(name: String, points: List[AutoPoint], closed: Boolean)
@@ -185,6 +199,26 @@ class Circe_generic_3Test {
     assertTrue(compact.contains("Create"), s"Expected encoded coproduct JSON to contain the Create case: $compact")
     assertTrue(compact.contains("Pause"), s"Expected encoded coproduct JSON to contain the Pause case: $compact")
     assertEquals(Right(commands), json.as[List[Command]])
+  }
+
+  @Test
+  def derivesEncodersAndDecodersForSealedTraitSingletonAlternatives(): Unit = {
+    val states: List[JobState] = List(
+      JobState.Queued,
+      JobState.Running("worker-a", 2),
+      JobState.Completed
+    )
+
+    val json: Json = states.asJson
+
+    assertTrue(json.isArray)
+    assertEquals(Some(List("Queued")), json.hcursor.downArray.keys.map(_.toList))
+    assertEquals(Right(Json.obj()), json.hcursor.downArray.get[Json]("Queued"))
+    assertEquals(Right("worker-a"), json.hcursor.downN(1).downField("Running").get[String]("worker"))
+    assertEquals(Right(2), json.hcursor.downN(1).downField("Running").get[Int]("attempt"))
+    assertEquals(Some(List("Completed")), json.hcursor.downN(2).keys.map(_.toList))
+    assertEquals(Right(Json.obj()), json.hcursor.downN(2).get[Json]("Completed"))
+    assertEquals(Right(states), json.as[List[JobState]])
   }
 
   @Test
