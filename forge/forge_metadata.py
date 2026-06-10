@@ -4125,6 +4125,11 @@ def append_library_preparation_preflight_arg(pipeline_argv: list[str], preflight
         pipeline_argv.extend(["--library-preparation-preflight-path", preflight_path])
 
 
+def library_update_route_artifact_root(claimed_issue: ClaimedIssue) -> str:
+    """Return the non-worktree artifact root for library-update route handoff."""
+    return claimed_issue.preflight_info_path or claimed_issue.scratch_metrics_repo_path
+
+
 def build_workflow_driver_invocation(
         claimed_issue: ClaimedIssue,
         strategy_name: str | None,
@@ -4252,7 +4257,7 @@ def build_workflow_driver_invocation(
     elif claimed_issue.label == LABEL_LIBRARY_UPDATE:
         route = select_library_update_route(
             claimed_issue.worktree_path,
-            claimed_issue.scratch_metrics_repo_path,
+            library_update_route_artifact_root(claimed_issue),
             claimed_issue.issue_coordinates,
         )
         if route.selected_driver == ROUTE_FIX_JAVAC:
@@ -5304,6 +5309,9 @@ def _require_publication_value(value: str | None, field_name: str, claimed_issue
 def _load_library_update_publication_route(claimed_issue: ClaimedIssue) -> LibraryUpdateRoute | None:
     if claimed_issue.label != LABEL_LIBRARY_UPDATE:
         return None
+    route = load_library_update_route(library_update_route_artifact_root(claimed_issue))
+    if route is not None:
+        return route
     return load_library_update_route(claimed_issue.scratch_metrics_repo_path)
 
 
