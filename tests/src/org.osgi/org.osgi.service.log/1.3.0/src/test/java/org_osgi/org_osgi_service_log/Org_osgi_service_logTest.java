@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.EventListener;
-import java.util.Hashtable;
+import java.util.Properties;
 import java.util.List;
 import java.util.Map;
 
@@ -376,7 +376,7 @@ public class Org_osgi_service_logTest {
 
         @Override
         public Dictionary<String, String> getHeaders() {
-            return new Hashtable<>();
+            return (Dictionary<String, String>) (Dictionary<?, ?>) new Properties();
         }
 
         @Override
@@ -499,7 +499,7 @@ public class Org_osgi_service_logTest {
 
         @Override
         public String[] getPropertyKeys() {
-            return new String[] { propertyKey };
+            return new String[] {propertyKey};
         }
 
         @Override
