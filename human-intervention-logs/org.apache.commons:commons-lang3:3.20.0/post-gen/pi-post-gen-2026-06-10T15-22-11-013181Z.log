@@ -1,0 +1,19 @@
+Implemented the post-generation intervention.
+
+Changes made:
+- Removed the failing generated JUnit test method from:
+  - `tests/src/org.apache.commons/commons-lang3/3.20.0/src/test/java/org_apache_commons/commons_lang3/EventListenerSupportTest.java`
+- Wrote the required report to:
+  - `post-gen-interventions/org.apache.commons_commons-lang3_3.20.0.md`
+
+Root cause determined:
+- The failure is not a straightforward missing metadata gap.
+- Codex tried the suggested `java.lang.Object` constructor reflection registration plus serialization-related metadata, but the same native runtime failure persisted.
+- The failing test exercises a native-image deserialization limitation around `EventListenerSupport` round-tripping, so the generated test was removed.
+
+Validation:
+- Ran:
+  - `./gradlew compileTestJava -Pcoordinates=org.apache.commons:commons-lang3:3.20.0`
+- Result: `BUILD SUCCESSFUL`
+
+I did not modify metadata files as part of this intervention.
