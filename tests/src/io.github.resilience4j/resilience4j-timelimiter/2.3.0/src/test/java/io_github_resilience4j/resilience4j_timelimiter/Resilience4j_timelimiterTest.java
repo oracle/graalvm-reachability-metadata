@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -155,6 +156,37 @@ public class Resilience4j_timelimiterTest {
             assertThat(resultStage.toCompletableFuture().get(1, TimeUnit.SECONDS)).isEqualTo("stage-ready");
             assertThat(eventTypes).containsExactly(TimeLimiterEvent.Type.SUCCESS);
             assertThat(successNames).containsExactly("stage-success");
+        } finally {
+            scheduler.shutdownNow();
+            assertThat(scheduler.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
+        }
+    }
+
+    @Test
+    void unwrapsCompletionStageFailureAndPublishesErrorEvents() throws Exception {
+        TimeLimiter timeLimiter = TimeLimiter.of("stage-error", TimeLimiterConfig.custom()
+            .timeoutDuration(Duration.ofSeconds(1))
+            .build());
+        IllegalArgumentException failure = new IllegalArgumentException("stage backend rejected request");
+        CompletableFuture<String> failedStage = new CompletableFuture<>();
+        failedStage.completeExceptionally(new CompletionException(failure));
+        List<TimeLimiterEvent.Type> eventTypes = new ArrayList<>();
+        List<TimeLimiterOnErrorEvent> errorEvents = new ArrayList<>();
+        timeLimiter.getEventPublisher().onEvent(event -> eventTypes.add(event.getEventType()));
+        timeLimiter.getEventPublisher().onError(errorEvents::add);
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        try {
+            CompletionStage<String> resultStage = timeLimiter.executeCompletionStage(scheduler, () -> failedStage);
+
+            assertThatThrownBy(() -> resultStage.toCompletableFuture().get(1, TimeUnit.SECONDS))
+                .isInstanceOf(ExecutionException.class)
+                .satisfies(throwable -> assertThat(throwable.getCause()).isSameAs(failure));
+            assertThat(eventTypes).containsExactly(TimeLimiterEvent.Type.ERROR);
+            assertThat(errorEvents).hasSize(1);
+            assertThat(errorEvents.get(0).getTimeLimiterName()).isEqualTo("stage-error");
+            assertThat(errorEvents.get(0).getEventType()).isEqualTo(TimeLimiterEvent.Type.ERROR);
+            assertThat(errorEvents.get(0).getThrowable()).isSameAs(failure);
+            assertThat(errorEvents.get(0).toString()).contains("stage-error", "stage backend rejected request");
         } finally {
             scheduler.shutdownNow();
             assertThat(scheduler.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
