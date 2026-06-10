@@ -1,0 +1,1004 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5071-e9853203/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5071-e9853203/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.130.0
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5071-e9853203
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019eb3e1-73b1-7163-a407-7fb7a2ca64a1
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.scalatest:scalatest-flatspec_2.13:3.2.19
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "3.2.19" when "$version$" is replaced with "3.2.19".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5071-e9853203/build/discovered-artifact-metadata/org.scalatest-scalatest-flatspec_2.13-3.2.19.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "org.scalatest:scalatest-flatspec_2.13:3.2.19".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.2.19".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven/GitHub first, then update the JSON directly with the tag-aware URLs and language classification.
+exec
+/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/org.scalatest-scalatest-flatspec_2.13-3.2.19.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5071-e9853203
+exec
+/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.scalatest-scalatest-flatspec_2.13-3.2.19.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5071-e9853203
+ succeeded in 0ms:
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5071-e9853203
+-rw-rw-r-- 1 jovan jovan 69 Jun 11 01:32 build/discovered-artifact-metadata/org.scalatest-scalatest-flatspec_2.13-3.2.19.json
+
+ succeeded in 0ms:
+{
+  "coordinates" : "org.scalatest:scalatest-flatspec_2.13:3.2.19"
+}
+
+exec
+/bin/bash -lc "rg -n \"scalatest-flatspec|scalatest_2.13|org.scalatest\" metadata build/discovered-artifact-metadata docs tests -g '*.json' -g '*.md' -g '*.toml'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5071-e9853203
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.scalatest-scalatest-flatspec_2.13-3.2.19.json:2:  "coordinates" : "org.scalatest:scalatest-flatspec_2.13:3.2.19"
+metadata/org.scalatest/scalatest-freespec_2.13/3.2.19/reachability-metadata.json:5:        "typeReached": "org.scalatest.freespec.PathAnyFreeSpecLike"
+metadata/org.scalatest/scalatest-freespec_2.13/3.2.19/reachability-metadata.json:11:        "typeReached": "org.scalatest.freespec.PathAnyFreeSpecLike"
+metadata/org.scalatest/scalatest-freespec_2.13/3.2.19/reachability-metadata.json:13:      "type": "org.scalatest.freespec.PathAnyFreeSpec",
+metadata/org.scalatest/scalatest-wordspec_3/3.2.19/reachability-metadata.json:5:        "typeReached": "org.scalatest.Assertions"
+metadata/org.scalatest/scalatest-wordspec_3/3.2.19/reachability-metadata.json:7:      "type": "org.scalatest.Assertions$",
+metadata/org.scalatest/scalatest-wordspec_3/3.2.19/reachability-metadata.json:16:        "typeReached": "org.scalatest.SuperEngine"
+metadata/org.scalatest/scalatest-wordspec_3/3.2.19/reachability-metadata.json:18:      "type": "org.scalatest.SuperEngine",
+metadata/org.scalatest/scalatest-wordspec_3/3.2.19/reachability-metadata.json:27:        "typeReached": "org.scalatest.AsyncSuperEngine"
+metadata/org.scalatest/scalatest-wordspec_3/3.2.19/reachability-metadata.json:29:      "type": "org.scalatest.AsyncSuperEngine",
+metadata/org.scalatest/scalatest-wordspec_3/3.2.19/reachability-metadata.json:115:        "typeReached": "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-wordspec_3/3.2.19/reachability-metadata.json:117:      "type": "org.scalatest.Resources$",
+metadata/org.scalatest/scalatest-wordspec_3/3.2.19/reachability-metadata.json:137:        "typeReached": "org.scalatest.NonImplicitAssertions$"
+metadata/org.scalatest/scalatest-wordspec_3/3.2.19/reachability-metadata.json:139:      "type": "org.scalatest.NonImplicitAssertions$",
+metadata/org.scalatest/scalatest-wordspec_3/3.2.19/reachability-metadata.json:148:        "typeReached": "org.scalatest.events.Event"
+metadata/org.scalatest/scalatest-wordspec_3/3.2.19/reachability-metadata.json:150:      "type": "org.scalatest.events.Event",
+metadata/org.scalatest/scalatest-wordspec_3/3.2.19/reachability-metadata.json:159:        "typeReached": "org.scalatest.exceptions.StackDepthException"
+metadata/org.scalatest/scalatest-wordspec_3/3.2.19/reachability-metadata.json:161:      "type": "org.scalatest.exceptions.StackDepthException",
+metadata/org.scalatest/scalatest-wordspec_3/3.2.19/reachability-metadata.json:170:        "typeReached": "org.scalatest.package$"
+metadata/org.scalatest/scalatest-wordspec_3/3.2.19/reachability-metadata.json:172:      "type": "org.scalatest.package$",
+metadata/org.scalatest/scalatest-wordspec_3/3.2.19/reachability-metadata.json:181:        "typeReached": "org.scalatest.time.Span"
+metadata/org.scalatest/scalatest-wordspec_3/3.2.19/reachability-metadata.json:183:      "type": "org.scalatest.time.Span",
+metadata/org.scalatest/scalatest-wordspec_3/3.2.19/reachability-metadata.json:194:        "typeReached": "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-wordspec_3/3.2.19/reachability-metadata.json:196:      "bundle": "org.scalatest.ScalaTestBundle"
+metadata/org.scalatest/scalatest-freespec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-freespec_2.13/$version$/scalatest-freespec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-freespec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/freespec-test/src/test/scala/org/scalatest/freespec",
+metadata/org.scalatest/scalatest-freespec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-freespec_2.13/$version$/scalatest-freespec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-freespec_2.13/index.json:24:      "org.scalatest.freespec"
+metadata/org.scalatest/scalatest-wordspec_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_3/$version$/scalatest-wordspec_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-wordspec_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_3/$version$/scalatest-wordspec_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-wordspec_3/index.json:22:      "org.scalatest.wordspec",
+metadata/org.scalatest/scalatest-wordspec_3/index.json:25:      "org.scalatest",
+metadata/org.scalatest/scalatest-wordspec_3/index.json:26:      "org.scalatest.events",
+metadata/org.scalatest/scalatest-wordspec_3/index.json:27:      "org.scalatest.exceptions",
+metadata/org.scalatest/scalatest-wordspec_3/index.json:28:      "org.scalatest.time"
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json:5:        "typeReached" : "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json:11:        "typeReached" : "org.scalatest.Suite$"
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json:17:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json:23:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json:29:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json:35:        "typeReached" : "org.scalatest.Suite$"
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json:41:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json:47:        "typeReached" : "org.scalatest.Suite"
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json:49:      "type" : "org.scalatest.Suite[]"
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json:53:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json:55:      "type" : "org.scalatest.Tag[]"
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json:59:        "typeReached" : "org.scalatest.Suite$"
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json:65:        "typeReached" : "org.scalatest.SuperEngine"
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json:71:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json:77:        "typeReached" : "org.scalatest.Suite$"
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json:87:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json:97:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json:107:        "typeReached" : "org.scalatest.Suite$"
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json:111:          "org.scalatest.Finders"
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json:117:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json:121:          "org.scalatest.Ignore"
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json:127:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json:131:          "org.scalatest.TagAnnotation"
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json:137:        "typeReached" : "org.scalatest.Suite$"
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json:149:        "typeReached" : "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json:151:      "bundle" : "org.scalatest.ScalaTestBundle"
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json:5:        "typeReached" : "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json:11:        "typeReached" : "org.scalatest.Suite$"
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json:17:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json:23:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json:29:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json:35:        "typeReached" : "org.scalatest.Suite$"
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json:41:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json:47:        "typeReached" : "org.scalatest.Suite"
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json:49:      "type" : "org.scalatest.Suite[]"
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json:53:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json:55:      "type" : "org.scalatest.Tag[]"
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json:59:        "typeReached" : "org.scalatest.Suite$"
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json:65:        "typeReached" : "org.scalatest.SuperEngine"
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json:71:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json:77:        "typeReached" : "org.scalatest.Suite$"
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json:87:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json:97:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json:107:        "typeReached" : "org.scalatest.Suite$"
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json:111:          "org.scalatest.Finders"
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json:117:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json:121:          "org.scalatest.Ignore"
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json:127:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json:131:          "org.scalatest.TagAnnotation"
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json:137:        "typeReached" : "org.scalatest.Suite$"
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json:149:        "typeReached" : "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json:151:      "bundle" : "org.scalatest.ScalaTestBundle"
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/blob/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest/RefSpecSpec.scala",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:23:      "org.scalatest.refspec",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:24:      "org.scalatest"
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-refspec_2.13/$version$/scalatest-refspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:42:      "org.scalatest.refspec",
+metadata/org.scalatest/scalatest-refspec_2.13/index.json:43:      "org.scalatest"
+metadata/org.scalatest/scalatest_3/index.json:5:    "replacement": "Use the class-bearing ScalaTest module artifacts such as org.scalatest:scalatest-core_3:3.2.19, org.scalatest:scalatest-funsuite_3:3.2.19, and org.scalatest:scalatest-matchers-core_3:3.2.19 as needed."
+metadata/org.scalatest/scalatest-wordspec_2.13/3.3.0-SNAP2/reachability-metadata.json:5:        "typeReached": "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-wordspec_2.13/3.3.0-SNAP2/reachability-metadata.json:11:        "typeReached": "org.scalatest.AsyncSuperEngine"
+metadata/org.scalatest/scalatest-wordspec_2.13/3.3.0-SNAP2/reachability-metadata.json:17:        "typeReached": "org.scalatest.Suite$"
+metadata/org.scalatest/scalatest-wordspec_2.13/3.3.0-SNAP2/reachability-metadata.json:23:        "typeReached": "org.scalatest.SuperEngine"
+metadata/org.scalatest/scalatest-wordspec_2.13/3.3.0-SNAP2/reachability-metadata.json:29:        "typeReached": "org.scalatest.Suite$"
+metadata/org.scalatest/scalatest-wordspec_2.13/3.3.0-SNAP2/reachability-metadata.json:35:        "typeReached": "org.scalatest.Suite"
+metadata/org.scalatest/scalatest-wordspec_2.13/3.3.0-SNAP2/reachability-metadata.json:37:      "type": "org.scalatest.Suite[]"
+metadata/org.scalatest/scalatest-wordspec_2.13/3.3.0-SNAP2/reachability-metadata.json:41:        "typeReached": "org.scalatest.SuperEngine"
+metadata/org.scalatest/scalatest-wordspec_2.13/3.3.0-SNAP2/reachability-metadata.json:47:        "typeReached": "org.scalatest.tools.TestSortingReporter"
+metadata/org.scalatest/scalatest-wordspec_2.13/3.3.0-SNAP2/reachability-metadata.json:53:        "typeReached": "org.scalatest.tools.TestSortingReporter"
+metadata/org.scalatest/scalatest-wordspec_2.13/3.3.0-SNAP2/reachability-metadata.json:59:        "typeReached": "org.scalatest.Suite$"
+metadata/org.scalatest/scalatest-wordspec_2.13/3.3.0-SNAP2/reachability-metadata.json:69:        "typeReached": "org.scalatest.Suite$"
+metadata/org.scalatest/scalatest-wordspec_2.13/3.3.0-SNAP2/reachability-metadata.json:73:          "org.scalatest.Finders"
+metadata/org.scalatest/scalatest-wordspec_2.13/3.3.0-SNAP2/reachability-metadata.json:79:        "typeReached": "org.scalatest.Suite$"
+metadata/org.scalatest/scalatest-wordspec_2.13/3.3.0-SNAP2/reachability-metadata.json:91:        "typeReached": "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-wordspec_2.13/3.3.0-SNAP2/reachability-metadata.json:93:      "bundle": "org.scalatest.ScalaTestBundle"
+metadata/org.scalatest/scalatest-wordspec_2.13/3.2.19/reachability-metadata.json:5:        "typeReached" : "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-wordspec_2.13/3.2.19/reachability-metadata.json:7:      "bundle" : "org.scalatest.ScalaTestBundle"
+metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-sources.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/$version$/scalatest-compatible-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:9:    "description" : "scalatest-compatible provides the org.scalatest.compatible.Assertion marker interface used by ScalaTest-compatible assertion types. It lets third-party libraries define assertion results that can appear as the final expression in ScalaTest test bodies while avoiding Scala binary compatibility concerns.",
+metadata/org.scalatest/scalatest-compatible/index.json:20:      "org.scalatest.compatible"
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/wordspec-test/src/test/scala/org/scalatest/wordspec",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:23:      "org.scalatest.wordspec",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:24:      "org.scalatest"
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:42:      "org.scalatest.wordspec",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:43:      "org.scalatest"
+metadata/org.scalatest/scalatest-flatspec_3/3.2.19/reachability-metadata.json:5:        "typeReached": "org.scalatest.Assertions"
+metadata/org.scalatest/scalatest-flatspec_3/3.2.19/reachability-metadata.json:7:      "type": "org.scalatest.Assertions$",
+metadata/org.scalatest/scalatest-flatspec_3/3.2.19/reachability-metadata.json:16:        "typeReached": "org.scalatest.SuperEngine"
+metadata/org.scalatest/scalatest-flatspec_3/3.2.19/reachability-metadata.json:18:      "type": "org.scalatest.SuperEngine",
+metadata/org.scalatest/scalatest-flatspec_3/3.2.19/reachability-metadata.json:27:        "typeReached": "org.scalatest.AsyncSuperEngine"
+metadata/org.scalatest/scalatest-flatspec_3/3.2.19/reachability-metadata.json:29:      "type": "org.scalatest.AsyncSuperEngine",
+metadata/org.scalatest/scalatest-flatspec_3/3.2.19/reachability-metadata.json:115:        "typeReached": "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-flatspec_3/3.2.19/reachability-metadata.json:117:      "type": "org.scalatest.Resources$",
+metadata/org.scalatest/scalatest-flatspec_3/3.2.19/reachability-metadata.json:137:        "typeReached": "org.scalatest.NonImplicitAssertions$"
+metadata/org.scalatest/scalatest-flatspec_3/3.2.19/reachability-metadata.json:139:      "type": "org.scalatest.NonImplicitAssertions$",
+metadata/org.scalatest/scalatest-flatspec_3/3.2.19/reachability-metadata.json:148:        "typeReached": "org.scalatest.events.Event"
+metadata/org.scalatest/scalatest-flatspec_3/3.2.19/reachability-metadata.json:150:      "type": "org.scalatest.events.Event",
+metadata/org.scalatest/scalatest-flatspec_3/3.2.19/reachability-metadata.json:159:        "typeReached": "org.scalatest.exceptions.StackDepthException"
+metadata/org.scalatest/scalatest-flatspec_3/3.2.19/reachability-metadata.json:161:      "type": "org.scalatest.exceptions.StackDepthException",
+metadata/org.scalatest/scalatest-flatspec_3/3.2.19/reachability-metadata.json:170:        "typeReached": "org.scalatest.package$"
+metadata/org.scalatest/scalatest-flatspec_3/3.2.19/reachability-metadata.json:172:      "type": "org.scalatest.package$",
+metadata/org.scalatest/scalatest-flatspec_3/3.2.19/reachability-metadata.json:181:        "typeReached": "org.scalatest.time.Span"
+metadata/org.scalatest/scalatest-flatspec_3/3.2.19/reachability-metadata.json:183:      "type": "org.scalatest.time.Span",
+metadata/org.scalatest/scalatest-flatspec_3/3.2.19/reachability-metadata.json:194:        "typeReached": "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-flatspec_3/3.2.19/reachability-metadata.json:196:      "bundle": "org.scalatest.ScalaTestBundle"
+metadata/org.scalatest/scalatest-flatspec_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-flatspec_3/$version$/scalatest-flatspec_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-flatspec_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/flatspec-test/src/test/scala/org/scalatest/flatspec",
+metadata/org.scalatest/scalatest-flatspec_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-flatspec_3/$version$/scalatest-flatspec_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-flatspec_3/index.json:22:      "org.scalatest.flatspec",
+metadata/org.scalatest/scalatest-flatspec_3/index.json:25:      "org.scalatest",
+metadata/org.scalatest/scalatest-flatspec_3/index.json:26:      "org.scalatest.events",
+metadata/org.scalatest/scalatest-flatspec_3/index.json:27:      "org.scalatest.exceptions",
+metadata/org.scalatest/scalatest-flatspec_3/index.json:28:      "org.scalatest.time"
+metadata/org.scalatest/scalatest-funspec_3/3.2.19/reachability-metadata.json:5:        "typeReached": "org.scalatest.Assertions"
+metadata/org.scalatest/scalatest-funspec_3/3.2.19/reachability-metadata.json:11:        "typeReached": "org.scalatest.Assertions"
+metadata/org.scalatest/scalatest-funspec_3/3.2.19/reachability-metadata.json:13:      "type": "org.scalatest.Assertions$",
+metadata/org.scalatest/scalatest-funspec_3/3.2.19/reachability-metadata.json:22:        "typeReached": "org.scalatest.SuperEngine"
+metadata/org.scalatest/scalatest-funspec_3/3.2.19/reachability-metadata.json:24:      "type": "org.scalatest.SuperEngine",
+metadata/org.scalatest/scalatest-funspec_3/3.2.19/reachability-metadata.json:33:        "typeReached": "org.scalatest.funspec.PathAnyFunSpec"
+metadata/org.scalatest/scalatest-funspec_3/3.2.19/reachability-metadata.json:35:      "type": "org.scalatest.funspec.PathAnyFunSpec",
+metadata/org.scalatest/scalatest-funspec_3/3.2.19/reachability-metadata.json:44:        "typeReached": "org.scalatest.funspec.PathAnyFunSpecLike"
+metadata/org.scalatest/scalatest-funspec_3/3.2.19/reachability-metadata.json:46:      "type": "org.scalatest.funspec.PathAnyFunSpec",
+metadata/org.scalatest/scalatest-funspec_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funspec_3/$version$/scalatest-funspec_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-funspec_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/funspec-test/src/test/scala/org/scalatest/funspec",
+metadata/org.scalatest/scalatest-funspec_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funspec_3/$version$/scalatest-funspec_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-funspec_3/index.json:22:      "org.scalatest.funspec",
+metadata/org.scalatest/scalatest-funspec_3/index.json:23:      "org.scalatest"
+metadata/org.scalatest/scalatest-funsuite_3/3.2.19/reachability-metadata.json:5:        "typeReached": "org.scalatest.Assertions"
+metadata/org.scalatest/scalatest-funsuite_3/3.2.19/reachability-metadata.json:7:      "type": "org.scalatest.Assertions$",
+metadata/org.scalatest/scalatest-funsuite_3/3.2.19/reachability-metadata.json:16:        "typeReached": "org.scalatest.SuperEngine"
+metadata/org.scalatest/scalatest-funsuite_3/3.2.19/reachability-metadata.json:18:      "type": "org.scalatest.SuperEngine",
+metadata/org.scalatest/scalatest-funsuite_3/3.2.19/reachability-metadata.json:27:        "typeReached": "org.scalatest.AsyncSuperEngine"
+metadata/org.scalatest/scalatest-funsuite_3/3.2.19/reachability-metadata.json:29:      "type": "org.scalatest.AsyncSuperEngine",
+metadata/org.scalatest/scalatest-funsuite_3/3.2.19/reachability-metadata.json:126:        "typeReached": "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-funsuite_3/3.2.19/reachability-metadata.json:128:      "type": "org.scalatest.Resources$",
+metadata/org.scalatest/scalatest-funsuite_3/3.2.19/reachability-metadata.json:148:        "typeReached": "org.scalatest.NonImplicitAssertions$"
+metadata/org.scalatest/scalatest-funsuite_3/3.2.19/reachability-metadata.json:150:      "type": "org.scalatest.NonImplicitAssertions$",
+metadata/org.scalatest/scalatest-funsuite_3/3.2.19/reachability-metadata.json:159:        "typeReached": "org.scalatest.events.Event"
+metadata/org.scalatest/scalatest-funsuite_3/3.2.19/reachability-metadata.json:161:      "type": "org.scalatest.events.Event",
+metadata/org.scalatest/scalatest-funsuite_3/3.2.19/reachability-metadata.json:170:        "typeReached": "org.scalatest.exceptions.StackDepthException"
+metadata/org.scalatest/scalatest-funsuite_3/3.2.19/reachability-metadata.json:172:      "type": "org.scalatest.exceptions.StackDepthException",
+metadata/org.scalatest/scalatest-funsuite_3/3.2.19/reachability-metadata.json:181:        "typeReached": "org.scalatest.package$"
+metadata/org.scalatest/scalatest-funsuite_3/3.2.19/reachability-metadata.json:183:      "type": "org.scalatest.package$",
+metadata/org.scalatest/scalatest-funsuite_3/3.2.19/reachability-metadata.json:192:        "typeReached": "org.scalatest.time.Span"
+metadata/org.scalatest/scalatest-funsuite_3/3.2.19/reachability-metadata.json:194:      "type": "org.scalatest.time.Span",
+metadata/org.scalatest/scalatest-funsuite_3/3.2.19/reachability-metadata.json:205:        "typeReached": "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-funsuite_3/3.2.19/reachability-metadata.json:207:      "bundle": "org.scalatest.ScalaTestBundle"
+metadata/org.scalatest/scalatest-funsuite_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funsuite_3/$version$/scalatest-funsuite_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-funsuite_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/funsuite-test/src/test/scala/org/scalatest/funsuite",
+metadata/org.scalatest/scalatest-funsuite_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funsuite_3/$version$/scalatest-funsuite_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-funsuite_3/index.json:22:      "org.scalatest.funsuite",
+metadata/org.scalatest/scalatest-funsuite_3/index.json:25:      "org.scalatest",
+metadata/org.scalatest/scalatest-funsuite_3/index.json:26:      "org.scalatest.events",
+metadata/org.scalatest/scalatest-funsuite_3/index.json:27:      "org.scalatest.exceptions",
+metadata/org.scalatest/scalatest-funsuite_3/index.json:28:      "org.scalatest.time"
+metadata/org.scalatest/scalatest-mustmatchers_3/3.2.19/reachability-metadata.json:5:        "typeReached": "org.scalatest.Assertions"
+metadata/org.scalatest/scalatest-mustmatchers_3/3.2.19/reachability-metadata.json:7:      "type": "org.scalatest.Assertions$",
+metadata/org.scalatest/scalatest-mustmatchers_3/3.2.19/reachability-metadata.json:16:        "typeReached": "org.scalatest.matchers.must.Matchers"
+metadata/org.scalatest/scalatest-mustmatchers_3/3.2.19/reachability-metadata.json:18:      "type": "org.scalatest.matchers.must.Matchers$",
+metadata/org.scalatest/scalatest-mustmatchers_3/3.2.19/reachability-metadata.json:38:        "typeReached": "org.scalatest.matchers.must.Matchers"
+metadata/org.scalatest/scalatest-mustmatchers_3/3.2.19/reachability-metadata.json:40:      "type": "org.scalatest.Resources$",
+metadata/org.scalatest/scalatest-mustmatchers_3/3.2.19/reachability-metadata.json:49:        "typeReached": "org.scalatest.matchers.must.Matchers"
+metadata/org.scalatest/scalatest-mustmatchers_3/3.2.19/reachability-metadata.json:51:      "type": "org.scalatest.exceptions.StackDepthException",
+metadata/org.scalatest/scalatest-mustmatchers_3/3.2.19/reachability-metadata.json:62:        "typeReached": "org.scalatest.matchers.must.Matchers"
+metadata/org.scalatest/scalatest-mustmatchers_3/3.2.19/reachability-metadata.json:64:      "bundle": "org.scalatest.ScalaTestBundle"
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-mustmatchers_3/$version$/scalatest-mustmatchers_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/dotty/scalatest-test/src/test/scala/org/scalatest/matchers/must",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-mustmatchers_3/$version$/scalatest-mustmatchers_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:9:    "description" : "ScalaTest Must Matchers provides the must-style matcher syntax for ScalaTest assertions on the JVM. It supplies the org.scalatest.matchers.must.Matchers API, allowing Scala 3 tests to express expectations such as values must equal, include, contain, start with, or satisfy custom matchers.",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:22:      "org.scalatest.matchers.must",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:24:      "org.scalatest"
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:5:        "typeReached": "org.scalatest.Assertions"
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:7:      "type": "org.scalatest.Assertions$",
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:16:        "typeReached": "org.scalatest.SuperEngine"
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:18:      "type": "org.scalatest.SuperEngine",
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:27:        "typeReached": "org.scalatest.AsyncSuperEngine"
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:29:      "type": "org.scalatest.AsyncSuperEngine",
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:115:        "typeReached": "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:117:      "type": "org.scalatest.Resources$",
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:137:        "typeReached": "org.scalatest.NonImplicitAssertions$"
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:139:      "type": "org.scalatest.NonImplicitAssertions$",
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:148:        "typeReached": "org.scalatest.events.Event"
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:150:      "type": "org.scalatest.events.Event",
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:159:        "typeReached": "org.scalatest.exceptions.StackDepthException"
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:161:      "type": "org.scalatest.exceptions.StackDepthException",
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:170:        "typeReached": "org.scalatest.package$"
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:172:      "type": "org.scalatest.package$",
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:181:        "typeReached": "org.scalatest.time.Span"
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:183:      "type": "org.scalatest.time.Span",
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:192:        "typeReached": "org.scalatest.featurespec.AnyFeatureSpec"
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:194:      "type": "org.scalatest.featurespec.AnyFeatureSpec",
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:203:        "typeReached": "org.scalatest.featurespec.AsyncFeatureSpec"
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:205:      "type": "org.scalatest.featurespec.AsyncFeatureSpec",
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:214:        "typeReached": "org.scalatest.featurespec.FixtureAnyFeatureSpec"
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:216:      "type": "org.scalatest.featurespec.FixtureAnyFeatureSpec",
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:225:        "typeReached": "org.scalatest.featurespec.FixtureAsyncFeatureSpec"
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:227:      "type": "org.scalatest.featurespec.FixtureAsyncFeatureSpec",
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:238:        "typeReached": "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json:240:      "bundle": "org.scalatest.ScalaTestBundle"
+metadata/org.scalatest/scalatest-featurespec_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-featurespec_3/$version$/scalatest-featurespec_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-featurespec_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/featurespec-test/src/test/scala/org/scalatest/featurespec",
+metadata/org.scalatest/scalatest-featurespec_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-featurespec_3/$version$/scalatest-featurespec_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-featurespec_3/index.json:22:      "org.scalatest.featurespec",
+metadata/org.scalatest/scalatest-featurespec_3/index.json:25:      "org.scalatest",
+metadata/org.scalatest/scalatest-featurespec_3/index.json:26:      "org.scalatest.events",
+metadata/org.scalatest/scalatest-featurespec_3/index.json:27:      "org.scalatest.exceptions",
+metadata/org.scalatest/scalatest-featurespec_3/index.json:28:      "org.scalatest.time"
+metadata/org.scalatest/scalatest-diagrams_3/3.2.19/reachability-metadata.json:5:        "typeReached": "org.scalatest.Assertions"
+metadata/org.scalatest/scalatest-diagrams_3/3.2.19/reachability-metadata.json:7:      "type": "org.scalatest.Assertions$",
+metadata/org.scalatest/scalatest-diagrams_3/3.2.19/reachability-metadata.json:16:        "typeReached": "org.scalatest.diagrams.Diagrams"
+metadata/org.scalatest/scalatest-diagrams_3/3.2.19/reachability-metadata.json:18:      "type": "org.scalatest.diagrams.Diagrams$",
+metadata/org.scalatest/scalatest-diagrams_3/3.2.19/reachability-metadata.json:38:        "typeReached": "org.scalatest.diagrams.DiagrammedByNameExpr"
+metadata/org.scalatest/scalatest-diagrams_3/3.2.19/reachability-metadata.json:40:      "type": "org.scalatest.diagrams.DiagrammedByNameExpr",
+metadata/org.scalatest/scalatest-diagrams_3/3.2.19/reachability-metadata.json:49:        "typeReached": "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-diagrams_3/3.2.19/reachability-metadata.json:51:      "type": "org.scalatest.Resources$",
+metadata/org.scalatest/scalatest-diagrams_3/3.2.19/reachability-metadata.json:60:        "typeReached": "org.scalatest.exceptions.StackDepthException"
+metadata/org.scalatest/scalatest-diagrams_3/3.2.19/reachability-metadata.json:62:      "type": "org.scalatest.exceptions.StackDepthException",
+metadata/org.scalatest/scalatest-diagrams_3/3.2.19/reachability-metadata.json:73:        "typeReached": "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-diagrams_3/3.2.19/reachability-metadata.json:75:      "bundle": "org.scalatest.ScalaTestBundle"
+metadata/org.scalatest/scalatest-diagrams_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/diagrams-test/src/test/scala/org/scalatest/diagrams",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:9:    "description" : "ScalaTest Diagrams adds diagrammed assertion support to ScalaTest, showing evaluated subexpressions when an assertion fails. The Scala 3 artifact provides the org.scalatest.diagrams APIs and macros for writing ScalaTest assertions whose failure messages include expression diagrams.",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:21:      "org.scalatest.diagrams",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:23:      "org.scalatest",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:24:      "org.scalatest.exceptions"
+metadata/org.scalatest/scalatest-diagrams_3/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:33:    "description" : "ScalaTest Diagrams adds diagrammed assertion support to ScalaTest, showing evaluated subexpressions when an assertion fails. The Scala 3 artifact provides the org.scalatest.diagrams APIs and macros for writing ScalaTest assertions whose failure messages include expression diagrams.",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:42:      "org.scalatest.diagrams",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:44:      "org.scalatest",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:45:      "org.scalatest.exceptions"
+metadata/org.scalatest/scalatest-diagrams_3/3.3.0-SNAP4/reachability-metadata.json:5:        "typeReached": "org.scalatest.Assertions"
+metadata/org.scalatest/scalatest-diagrams_3/3.3.0-SNAP4/reachability-metadata.json:7:      "type": "org.scalatest.Assertions$",
+metadata/org.scalatest/scalatest-diagrams_3/3.3.0-SNAP4/reachability-metadata.json:16:        "typeReached": "org.scalatest.diagrams.Diagrams"
+metadata/org.scalatest/scalatest-diagrams_3/3.3.0-SNAP4/reachability-metadata.json:18:      "type": "org.scalatest.diagrams.Diagrams$",
+metadata/org.scalatest/scalatest-diagrams_3/3.3.0-SNAP4/reachability-metadata.json:38:        "typeReached": "org.scalatest.diagrams.DiagrammedByNameExpr"
+metadata/org.scalatest/scalatest-diagrams_3/3.3.0-SNAP4/reachability-metadata.json:40:      "type": "org.scalatest.diagrams.DiagrammedByNameExpr",
+metadata/org.scalatest/scalatest-diagrams_3/3.3.0-SNAP4/reachability-metadata.json:49:        "typeReached": "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-diagrams_3/3.3.0-SNAP4/reachability-metadata.json:51:      "type": "org.scalatest.Resources$",
+metadata/org.scalatest/scalatest-diagrams_3/3.3.0-SNAP4/reachability-metadata.json:60:        "typeReached": "org.scalatest.exceptions.StackDepthException"
+metadata/org.scalatest/scalatest-diagrams_3/3.3.0-SNAP4/reachability-metadata.json:62:      "type": "org.scalatest.exceptions.StackDepthException",
+metadata/org.scalatest/scalatest-diagrams_3/3.3.0-SNAP4/reachability-metadata.json:73:        "typeReached": "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-diagrams_3/3.3.0-SNAP4/reachability-metadata.json:75:      "bundle": "org.scalatest.ScalaTestBundle"
+metadata/org.scalatest/scalatest_2.13/index.json:4:    "reason": "The published scalatest_2.13-3.2.19 JAR contains only META-INF/MANIFEST.MF and no JVM class files; the implementation classes are supplied by its class-bearing module dependencies.",
+metadata/org.scalatest/scalatest_2.13/index.json:5:    "replacement": "Use the class-bearing ScalaTest module artifacts such as org.scalatest:scalatest-core_2.13:3.2.19, org.scalatest:scalatest-funsuite_2.13:3.2.19, and org.scalatest:scalatest-matchers-core_2.13:3.2.19 as needed."
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/3.2.19/reachability-metadata.json:5:        "typeReached" : "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/3.2.19/reachability-metadata.json:7:      "bundle" : "org.scalatest.ScalaTestBundle"
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_2.13/$version$/scalatest-shouldmatchers_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:24:      "org.scalatest.matchers.should",
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:25:      "org.scalatest"
+metadata/org.scalatest/scalatest-funspec_2.13/3.2.19/reachability-metadata.json:5:        "typeReached": "org.scalatest.funspec.PathAnyFunSpecLike"
+metadata/org.scalatest/scalatest-funspec_2.13/3.2.19/reachability-metadata.json:11:        "typeReached": "org.scalatest.funspec.PathAnyFunSpecLike"
+metadata/org.scalatest/scalatest-funspec_2.13/3.2.19/reachability-metadata.json:13:      "type": "org.scalatest.funspec.PathAnyFunSpec",
+metadata/org.scalatest/scalatest-funspec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funspec_2.13/$version$/scalatest-funspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-funspec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/funspec-test/src/test/scala/org/scalatest/funspec",
+metadata/org.scalatest/scalatest-funspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funspec_2.13/$version$/scalatest-funspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-funspec_2.13/index.json:24:      "org.scalatest.funspec"
+metadata/org.scalatest/scalatest-shouldmatchers_3/3.2.19/reachability-metadata.json:5:        "typeReached" : "org.scalatest.Assertions"
+metadata/org.scalatest/scalatest-shouldmatchers_3/3.2.19/reachability-metadata.json:7:      "type" : "org.scalatest.Assertions$",
+metadata/org.scalatest/scalatest-shouldmatchers_3/3.2.19/reachability-metadata.json:16:        "typeReached" : "org.scalatest.matchers.should.Matchers"
+metadata/org.scalatest/scalatest-shouldmatchers_3/3.2.19/reachability-metadata.json:18:      "type" : "org.scalatest.matchers.should.Matchers$",
+metadata/org.scalatest/scalatest-shouldmatchers_3/3.2.19/reachability-metadata.json:38:        "typeReached" : "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-shouldmatchers_3/3.2.19/reachability-metadata.json:40:      "type" : "org.scalatest.Resources$",
+metadata/org.scalatest/scalatest-shouldmatchers_3/3.2.19/reachability-metadata.json:49:        "typeReached" : "org.scalatest.exceptions.StackDepthException"
+metadata/org.scalatest/scalatest-shouldmatchers_3/3.2.19/reachability-metadata.json:51:      "type" : "org.scalatest.exceptions.StackDepthException",
+metadata/org.scalatest/scalatest-shouldmatchers_3/3.2.19/reachability-metadata.json:60:        "typeReached" : "org.scalatest.enablers.Messaging$$anon$3"
+metadata/org.scalatest/scalatest-shouldmatchers_3/3.2.19/reachability-metadata.json:74:        "typeReached" : "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-shouldmatchers_3/3.2.19/reachability-metadata.json:76:      "bundle" : "org.scalatest.ScalaTestBundle"
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_3/$version$/scalatest-shouldmatchers_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/dotty/scalatest-test/src/test/scala/org/scalatest/matchers/should",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-shouldmatchers_3/$version$/scalatest-shouldmatchers_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:22:      "org.scalatest.matchers.should",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:24:      "org.scalatest",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:25:      "org.scalatest.enablers",
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:26:      "org.scalatest.exceptions"
+metadata/org.scalatest/scalatest-mustmatchers_2.13/3.2.19/reachability-metadata.json:5:        "typeReached": "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-mustmatchers_2.13/3.2.19/reachability-metadata.json:7:      "bundle": "org.scalatest.ScalaTestBundle"
+metadata/org.scalatest/scalatest-matchers-core_2.13/3.2.19/reachability-metadata.json:5:        "typeReached" : "org.scalatest.matchers.MatchersHelper$"
+metadata/org.scalatest/scalatest-matchers-core_2.13/3.2.19/reachability-metadata.json:11:        "typeReached" : "org.scalatest.matchers.MatchersHelper$"
+metadata/org.scalatest/scalatest-matchers-core_2.13/3.2.19/reachability-metadata.json:17:        "typeReached" : "org.scalatest.matchers.MatchersHelper$"
+metadata/org.scalatest/scalatest-matchers-core_2.13/3.2.19/reachability-metadata.json:23:        "typeReached" : "org.scalatest.matchers.MatchersHelper$"
+metadata/org.scalatest/scalatest-matchers-core_2.13/3.2.19/reachability-metadata.json:36:        "typeReached" : "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-matchers-core_2.13/3.2.19/reachability-metadata.json:38:      "bundle" : "org.scalatest.ScalaTestBundle"
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-mustmatchers_2.13/$version$/scalatest-mustmatchers_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:9:    "description" : "ScalaTest Must Matchers provides the must-style matcher syntax for ScalaTest assertions on the JVM. It supplies the org.scalatest.matchers.must.Matchers API, allowing tests to express expectations such as values must equal, include, contain, start with, or satisfy custom matchers.",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:24:      "org.scalatest.matchers.must",
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:25:      "org.scalatest"
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-matchers-core_2.13/$version$/scalatest-matchers-core_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/scalatest-test/src/test/scala/org/scalatest/matchers",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-matchers-core_2.13/$version$/scalatest-matchers-core_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:24:      "org.scalatest.matchers",
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:25:      "org.scalatest"
+metadata/org.scalatest/scalatest-funsuite_2.13/3.2.19/reachability-metadata.json:5:        "typeReached" : "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-funsuite_2.13/3.2.19/reachability-metadata.json:7:      "bundle" : "org.scalatest.ScalaTestBundle"
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funsuite_2.13/$version$/scalatest-funsuite_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/funsuite-test/src/test/scala/org/scalatest/funsuite",
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funsuite_2.13/$version$/scalatest-funsuite_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:24:      "org.scalatest.funsuite",
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json:25:      "org.scalatest"
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/$version$/scalatest-featurespec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-featurespec_2.13/$version$/scalatest-featurespec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:23:      "org.scalatest.featurespec",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:24:      "org.scalatest"
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-featurespec_2.13/$version$/scalatest-featurespec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-featurespec_2.13/$version$/scalatest-featurespec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:42:      "org.scalatest.featurespec",
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json:43:      "org.scalatest"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:5:        "typeReached" : "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:11:        "typeReached" : "org.scalatest.AsyncSuperEngine"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:17:        "typeReached" : "org.scalatest.Suite$"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:23:        "typeReached" : "org.scalatest.SuperEngine"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:29:        "typeReached" : "org.scalatest.Suite$"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:35:        "typeReached" : "org.scalatest.Suite"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:37:      "type" : "org.scalatest.Suite[]"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:41:        "typeReached" : "org.scalatest.Args"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:47:        "typeReached" : "org.scalatest.AsyncSuperEngine"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:53:        "typeReached" : "org.scalatest.DynaTags"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:59:        "typeReached" : "org.scalatest.Filter"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:65:        "typeReached" : "org.scalatest.MessageRecorder"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:71:        "typeReached" : "org.scalatest.Suite"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:77:        "typeReached" : "org.scalatest.Suite$"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:83:        "typeReached" : "org.scalatest.SuperEngine"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:89:        "typeReached" : "org.scalatest.events.InfoProvided"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:95:        "typeReached" : "org.scalatest.events.ScopeClosed"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:101:        "typeReached" : "org.scalatest.events.ScopeOpened"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:107:        "typeReached" : "org.scalatest.events.TestIgnored"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:113:        "typeReached" : "org.scalatest.events.TestPending"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:119:        "typeReached" : "org.scalatest.events.TestStarting"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:125:        "typeReached" : "org.scalatest.events.TestSucceeded"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:131:        "typeReached" : "org.scalatest.tools.TestSortingReporter"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:137:        "typeReached" : "org.scalatest.tools.TestSortingReporter"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:143:        "typeReached" : "org.scalatest.tools.TestSortingReporter"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:149:        "typeReached" : "org.scalatest.Suite$"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:159:        "typeReached" : "org.scalatest.Suite$"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:163:          "org.scalatest.Finders"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:169:        "typeReached" : "org.scalatest.Suite$"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:181:        "typeReached" : "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json:183:      "bundle" : "org.scalatest.ScalaTestBundle"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.2.19/reachability-metadata.json:5:        "typeReached" : "org.scalatest.Resources$"
+metadata/org.scalatest/scalatest-featurespec_2.13/3.2.19/reachability-metadata.json:7:      "bundle" : "org.scalatest.ScalaTestBundle"
+tests/src/org.scalatest/scalatest-wordspec_3/3.2.19/user-code-filter.json:7:      "includeClasses" : "org.scalatest.wordspec.**"
+tests/src/org.scalatest/scalatest-wordspec_3/3.2.19/user-code-filter.json:10:      "includeClasses" : "org_scalatest.scalatest_wordspec_3.**"
+tests/src/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/user-code-filter.json:7:      "includeClasses" : "org.scalatest.refspec.**"
+tests/src/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/user-code-filter.json:10:      "includeClasses" : "org.scalatest.**"
+tests/src/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/user-code-filter.json:13:      "includeClasses" : "org_scalatest.scalatest_refspec_2_13.**"
+tests/src/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/src/test/resources/META-INF/native-image/reachability-metadata.json:5:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+tests/src/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/src/test/resources/META-INF/native-image/reachability-metadata.json:7:      "type" : "org_scalatest.scalatest_refspec_2_13.RefSpecLikeTest$ReflectiveRefSpec"
+tests/src/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/src/test/resources/META-INF/native-image/reachability-metadata.json:11:        "typeReached" : "org.scalatest.tools.SuiteDiscoveryHelper$"
+tests/src/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/src/test/resources/META-INF/native-image/reachability-metadata.json:13:      "type" : "org_scalatest.scalatest_refspec_2_13.RefSpecLikeTest$ReflectiveRefSpec"
+tests/src/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/src/test/resources/META-INF/native-image/reachability-metadata.json:17:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+tests/src/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/src/test/resources/META-INF/native-image/reachability-metadata.json:19:      "type" : "org_scalatest.scalatest_refspec_2_13.RefSpecLikeTest$ReflectiveRefSpec$A$u0020calculator$"
+tests/src/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/src/test/resources/META-INF/native-image/reachability-metadata.json:23:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+tests/src/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/src/test/resources/META-INF/native-image/reachability-metadata.json:25:      "type" : "org_scalatest.scalatest_refspec_2_13.RefSpecLikeTest$ReflectiveRefSpec$A$u0020calculator$when$u0020adding$u0020numbers$"
+tests/src/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/src/test/resources/META-INF/native-image/reachability-metadata.json:29:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+tests/src/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/src/test/resources/META-INF/native-image/reachability-metadata.json:31:      "type" : "org_scalatest.scalatest_refspec_2_13.RefSpecLikeTest$ReflectiveRefSpec$A$u0020calculator$when$u0020multiplying$u0020numbers$"
+tests/src/org.scalatest/scalatest-refspec_2.13/3.2.19/user-code-filter.json:7:      "includeClasses" : "org.scalatest.refspec.**"
+tests/src/org.scalatest/scalatest-refspec_2.13/3.2.19/user-code-filter.json:10:      "includeClasses" : "org_scalatest.scalatest_refspec_2_13.**"
+tests/src/org.scalatest/scalatest-refspec_2.13/3.2.19/src/test/resources/META-INF/native-image/reachability-metadata.json:5:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+tests/src/org.scalatest/scalatest-refspec_2.13/3.2.19/src/test/resources/META-INF/native-image/reachability-metadata.json:7:      "type" : "org_scalatest.scalatest_refspec_2_13.RefSpecLikeTest$ReflectiveRefSpec"
+tests/src/org.scalatest/scalatest-refspec_2.13/3.2.19/src/test/resources/META-INF/native-image/reachability-metadata.json:11:        "typeReached" : "org.scalatest.tools.SuiteDiscoveryHelper$"
+tests/src/org.scalatest/scalatest-refspec_2.13/3.2.19/src/test/resources/META-INF/native-image/reachability-metadata.json:13:      "type" : "org_scalatest.scalatest_refspec_2_13.RefSpecLikeTest$ReflectiveRefSpec"
+tests/src/org.scalatest/scalatest-refspec_2.13/3.2.19/src/test/resources/META-INF/native-image/reachability-metadata.json:17:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+tests/src/org.scalatest/scalatest-refspec_2.13/3.2.19/src/test/resources/META-INF/native-image/reachability-metadata.json:19:      "type" : "org_scalatest.scalatest_refspec_2_13.RefSpecLikeTest$ReflectiveRefSpec$A$u0020calculator$"
+tests/src/org.scalatest/scalatest-refspec_2.13/3.2.19/src/test/resources/META-INF/native-image/reachability-metadata.json:23:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+tests/src/org.scalatest/scalatest-refspec_2.13/3.2.19/src/test/resources/META-INF/native-image/reachability-metadata.json:25:      "type" : "org_scalatest.scalatest_refspec_2_13.RefSpecLikeTest$ReflectiveRefSpec$A$u0020calculator$when$u0020adding$u0020numbers$"
+tests/src/org.scalatest/scalatest-refspec_2.13/3.2.19/src/test/resources/META-INF/native-image/reachability-metadata.json:29:        "typeReached" : "org.scalatest.refspec.RefSpecLike"
+tests/src/org.scalatest/scalatest-refspec_2.13/3.2.19/src/test/resources/META-INF/native-image/reachability-metadata.json:31:      "type" : "org_scalatest.scalatest_refspec_2_13.RefSpecLikeTest$ReflectiveRefSpec$A$u0020calculator$when$u0020multiplying$u0020numbers$"
+tests/src/org.scalatest/scalatest-wordspec_2.13/3.3.0-SNAP2/user-code-filter.json:7:      "includeClasses" : "org.scalatest.wordspec.**"
+tests/src/org.scalatest/scalatest-wordspec_2.13/3.3.0-SNAP2/user-code-filter.json:10:      "includeClasses" : "org.scalatest.**"
+tests/src/org.scalatest/scalatest-wordspec_2.13/3.3.0-SNAP2/user-code-filter.json:13:      "includeClasses" : "org_scalatest.scalatest_wordspec_2_13.**"
+tests/src/org.scalatest/scalatest-wordspec_2.13/3.2.19/user-code-filter.json:7:      "includeClasses": "org.scalatest.wordspec.**"
+tests/src/org.scalatest/scalatest-flatspec_3/3.2.19/user-code-filter.json:7:      "includeClasses" : "org.scalatest.flatspec.**"
+tests/src/org.scalatest/scalatest-flatspec_3/3.2.19/user-code-filter.json:10:      "includeClasses" : "org_scalatest.scalatest_flatspec_3.**"
+tests/src/org.scalatest/scalatest-funspec_3/3.2.19/user-code-filter.json:7:      "includeClasses" : "org.scalatest.funspec.**"
+tests/src/org.scalatest/scalatest-funspec_3/3.2.19/user-code-filter.json:10:      "includeClasses" : "org_scalatest.scalatest_funspec_3.**"
+tests/src/org.scalatest/scalatest-funsuite_3/3.2.19/user-code-filter.json:7:      "includeClasses" : "org.scalatest.funsuite.**"
+tests/src/org.scalatest/scalatest-funsuite_3/3.2.19/user-code-filter.json:10:      "includeClasses" : "org_scalatest.scalatest_funsuite_3.**"
+tests/src/org.scalatest/scalatest-mustmatchers_3/3.2.19/user-code-filter.json:7:      "includeClasses" : "org.scalatest.matchers.must.**"
+tests/src/org.scalatest/scalatest-mustmatchers_3/3.2.19/user-code-filter.json:10:      "includeClasses" : "org_scalatest.scalatest_mustmatchers_3.**"
+tests/src/org.scalatest/scalatest-diagrams_3/3.2.19/user-code-filter.json:7:      "includeClasses" : "org.scalatest.diagrams.**"
+tests/src/org.scalatest/scalatest-diagrams_3/3.2.19/user-code-filter.json:10:      "includeClasses" : "org_scalatest.scalatest_diagrams_3.**"
+tests/src/org.scalatest/scalatest-diagrams_3/3.3.0-SNAP4/user-code-filter.json:7:      "includeClasses" : "org.scalatest.diagrams.**"
+tests/src/org.scalatest/scalatest-diagrams_3/3.3.0-SNAP4/user-code-filter.json:13:      "includeClasses" : "org.scalatest.**"
+tests/src/org.scalatest/scalatest-diagrams_3/3.3.0-SNAP4/user-code-filter.json:16:      "includeClasses" : "org.scalatest.exceptions.**"
+tests/src/org.scalatest/scalatest-diagrams_3/3.3.0-SNAP4/user-code-filter.json:19:      "includeClasses" : "org_scalatest.scalatest_diagrams_3.**"
+tests/src/org.scalatest/scalatest-mustmatchers_2.13/3.2.19/user-code-filter.json:7:      "includeClasses" : "org.scalatest.matchers.must.**"
+tests/src/org.scalatest/scalatest-mustmatchers_2.13/3.2.19/user-code-filter.json:10:      "includeClasses" : "org_scalatest.scalatest_mustmatchers_2_13.**"
+tests/src/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/user-code-filter.json:7:      "includeClasses" : "org.scalatest.featurespec.**"
+tests/src/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/user-code-filter.json:10:      "includeClasses" : "org.scalatest.**"
+tests/src/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/user-code-filter.json:13:      "includeClasses" : "org_scalatest.scalatest_featurespec_2_13.**"
+tests/src/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/src/test/resources/META-INF/native-image/reachability-metadata.json:5:        "typeReached" : "org.scalatest.tools.SuiteDiscoveryHelper$"
+tests/src/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/src/test/resources/META-INF/native-image/reachability-metadata.json:7:      "type" : "org_scalatest.scalatest_featurespec_2_13.Scalatest_featurespec_2_13Test$AsyncCalculationFeatureSpec"
+tests/src/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/src/test/resources/META-INF/native-image/reachability-metadata.json:11:        "typeReached" : "org.scalatest.tools.SuiteDiscoveryHelper$"
+tests/src/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/src/test/resources/META-INF/native-image/reachability-metadata.json:13:      "type" : "org_scalatest.scalatest_featurespec_2_13.Scalatest_featurespec_2_13Test$AsyncTextFixtureFeatureSpec"
+tests/src/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/src/test/resources/META-INF/native-image/reachability-metadata.json:17:        "typeReached" : "org.scalatest.tools.SuiteDiscoveryHelper$"
+tests/src/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/src/test/resources/META-INF/native-image/reachability-metadata.json:19:      "type" : "org_scalatest.scalatest_featurespec_2_13.Scalatest_featurespec_2_13Test$CheckoutNarrativeFeatureSpec"
+tests/src/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/src/test/resources/META-INF/native-image/reachability-metadata.json:23:        "typeReached" : "org.scalatest.tools.SuiteDiscoveryHelper$"
+tests/src/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/src/test/resources/META-INF/native-image/reachability-metadata.json:25:      "type" : "org_scalatest.scalatest_featurespec_2_13.Scalatest_featurespec_2_13Test$PendingScenarioFeatureSpec"
+tests/src/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/src/test/resources/META-INF/native-image/reachability-metadata.json:29:        "typeReached" : "org.scalatest.tools.SuiteDiscoveryHelper$"
+tests/src/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/src/test/resources/META-INF/native-image/reachability-metadata.json:31:      "type" : "org_scalatest.scalatest_featurespec_2_13.Scalatest_featurespec_2_13Test$ShoppingCartFeatureSpec"
+tests/src/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/src/test/resources/META-INF/native-image/reachability-metadata.json:35:        "typeReached" : "org.scalatest.tools.SuiteDiscoveryHelper$"
+tests/src/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/src/test/resources/META-INF/native-image/reachability-metadata.json:37:      "type" : "org_scalatest.scalatest_featurespec_2_13.Scalatest_featurespec_2_13Test$TextFixtureFeatureSpec"
+tests/src/org.scalatest/scalatest-featurespec_2.13/3.2.19/user-code-filter.json:7:      "includeClasses" : "org.scalatest.featurespec.**"
+tests/src/org.scalatest/scalatest-featurespec_2.13/3.2.19/user-code-filter.json:10:      "includeClasses" : "org_scalatest.scalatest_featurespec_2_13.**"
+tests/src/org.scalatest/scalatest-shouldmatchers_3/3.2.19/user-code-filter.json:7:      "includeClasses" : "org.scalatest.matchers.should.**"
+tests/src/org.scalatest/scalatest-shouldmatchers_3/3.2.19/user-code-filter.json:10:      "includeClasses" : "org_scalatest.scalatest_shouldmatchers_3.**"
+tests/src/org.scalatest/scalatest-compatible/3.2.19/user-code-filter.json:7:      "includeClasses" : "org.scalatest.compatible.**"
+tests/src/org.scalatest/scalatest-featurespec_3/3.2.19/user-code-filter.json:7:      "includeClasses" : "org.scalatest.featurespec.**"
+tests/src/org.scalatest/scalatest-featurespec_3/3.2.19/user-code-filter.json:10:      "includeClasses" : "org_scalatest.scalatest_featurespec_3.**"
+tests/src/org.scalatest/scalatest-matchers-core_2.13/3.2.19/user-code-filter.json:7:      "includeClasses" : "org.scalatest.matchers.**"
+tests/src/org.scalatest/scalatest-matchers-core_2.13/3.2.19/user-code-filter.json:10:      "includeClasses" : "org_scalatest.scalatest_matchers_core_2_13.**"
+tests/src/org.scalatest/scalatest-shouldmatchers_2.13/3.2.19/user-code-filter.json:7:      "includeClasses" : "org.scalatest.matchers.should.**"
+tests/src/org.scalatest/scalatest-shouldmatchers_2.13/3.2.19/user-code-filter.json:10:      "includeClasses" : "org_scalatest.scalatest_shouldmatchers_2_13.**"
+tests/src/org.scalatest/scalatest-matchers-core_2.13/3.2.19/src/test/resources/META-INF/native-image/reachability-metadata.json:5:        "typeReached" : "org.scalatest.matchers.MatchersHelper$"
+tests/src/org.scalatest/scalatest-matchers-core_2.13/3.2.19/src/test/resources/META-INF/native-image/reachability-metadata.json:7:      "type" : "org_scalatest.scalatest_matchers_core_2_13.BeanMethodBackedProperty",
+tests/src/org.scalatest/scalatest-matchers-core_2.13/3.2.19/src/test/resources/META-INF/native-image/reachability-metadata.json:17:        "typeReached" : "org.scalatest.matchers.MatchersHelper$"
+tests/src/org.scalatest/scalatest-matchers-core_2.13/3.2.19/src/test/resources/META-INF/native-image/reachability-metadata.json:19:      "type" : "org_scalatest.scalatest_matchers_core_2_13.MethodBackedProperty",
+tests/src/org.scalatest/scalatest-funspec_2.13/3.2.19/user-code-filter.json:7:      "includeClasses" : "org.scalatest.funspec.**"
+tests/src/org.scalatest/scalatest-funspec_2.13/3.2.19/user-code-filter.json:10:      "includeClasses" : "org_scalatest.scalatest_funspec_2_13.**"
+tests/src/org.scalatest/scalatest-funsuite_2.13/3.2.19/user-code-filter.json:7:      "includeClasses" : "org.scalatest.funsuite.**"
+tests/src/org.scalatest/scalatest-funsuite_2.13/3.2.19/user-code-filter.json:10:      "includeClasses" : "org_scalatest.scalatest_funsuite_2_13.**"
+tests/src/org.scalatest/scalatest-freespec_2.13/3.2.19/user-code-filter.json:7:      "includeClasses" : "org.scalatest.freespec.**"
+tests/src/org.scalatest/scalatest-freespec_2.13/3.2.19/user-code-filter.json:10:      "includeClasses" : "org_scalatest.scalatest_freespec_2_13.**"
+
+web search: 
+web search: Maven Central org.scalatest scalatest-flatspec_2.13 3.2.19 pom scm source jar javadoc jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/scalatest/scalatest-flatspec_2.13/3.2.19/
+codex
+The workspace already has related ScalaTest metadata, which confirms the local indexing conventions: Maven source and javadoc jars are preferred when available, and Scala suffixes drive the language field. I’m checking the actual 3.2.19 artifact/POM now before writing the discovered metadata file.
+exec
+/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/scalatest/scalatest-flatspec_2.13/3.2.19/scalatest-flatspec_2.13-3.2.19.pom' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5071-e9853203
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.scalatest</groupId>
+    <artifactId>scalatest-flatspec_2.13</artifactId>
+    <packaging>bundle</packaging>
+    <description>scalatest-flatspec</description>
+    <version>3.2.19</version>
+    <name>scalatest-flatspec</name>
+    <organization>
+        <name>org.scalatest</name>
+    </organization>
+    <url>http://www.scalatest.org</url>
+    <licenses>
+        <license>
+            <name>the Apache License, ASL Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>https://github.com/scalatest/scalatest</url>
+        <connection>scm:git:git@github.com:scalatest/scalatest.git</connection>
+        <developerConnection> scm:git:git@github.com:scalatest/scalatest.git </developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>bvenners</id>
+            <name>Bill Venners</name>
+            <email>bill@artima.com</email>
+        </developer>
+        <developer>
+            <id>gcberger</id>
+            <name>George Berger</name>
+            <email>george.berger@gmail.com</email>
+        </developer>
+        <developer>
+            <id>cheeseng</id>
+            <name>Chua Chee Seng</name>
+            <email>cheeseng@amaseng.com</email>
+        </developer>
+    </developers>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-compiler</artifactId>
+            <version>2.13.10</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.13.10</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest-core_2.13</artifactId>
+            <version>3.2.19</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-reflect</artifactId>
+            <version>2.13.10</version>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/scalatest/scalatest-flatspec_2.13/3.2.19/ | sed -n '1,160p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5071-e9853203
+exec
+/bin/bash -lc 'curl -I -L -fsS https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/flatspec-test/src/test/scala/org/scalatest/flatspec' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5071-e9853203
+ succeeded in 238ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/scalatest/scalatest-flatspec_2.13/3.2.19</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/scalatest/scalatest-flatspec_2.13/3.2.19</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="scalatest-flatspec_2.13-3.2.19-javadoc.jar" title="scalatest-flatspec_2.13-3.2.19-javadoc.jar">scalatest-flatspec_2.13-3.2.19-javadoc.jar</a>        2024-06-21 02:50   1620712      
+<a href="scalatest-flatspec_2.13-3.2.19-javadoc.jar.asc" title="scalatest-flatspec_2.13-3.2.19-javadoc.jar.asc">scalatest-flatspec_2.13-3.2.19-javadoc.jar.as...</a>  2024-06-21 02:50       488      
+<a href="scalatest-flatspec_2.13-3.2.19-javadoc.jar.asc.md5" title="scalatest-flatspec_2.13-3.2.19-javadoc.jar.asc.md5">scalatest-flatspec_2.13-3.2.19-javadoc.jar.as...</a>  2024-06-21 02:50        32      
+<a href="scalatest-flatspec_2.13-3.2.19-javadoc.jar.asc.sha1" title="scalatest-flatspec_2.13-3.2.19-javadoc.jar.asc.sha1">scalatest-flatspec_2.13-3.2.19-javadoc.jar.as...</a>  2024-06-21 02:50        40      
+<a href="scalatest-flatspec_2.13-3.2.19-javadoc.jar.md5" title="scalatest-flatspec_2.13-3.2.19-javadoc.jar.md5">scalatest-flatspec_2.13-3.2.19-javadoc.jar.md...</a>  2024-06-21 02:50        32      
+<a href="scalatest-flatspec_2.13-3.2.19-javadoc.jar.sha1" title="scalatest-flatspec_2.13-3.2.19-javadoc.jar.sha1">scalatest-flatspec_2.13-3.2.19-javadoc.jar.sh...</a>  2024-06-21 02:50        40      
+<a href="scalatest-flatspec_2.13-3.2.19-sources.jar" title="scalatest-flatspec_2.13-3.2.19-sources.jar">scalatest-flatspec_2.13-3.2.19-sources.jar</a>        2024-06-21 02:50     87327      
+<a href="scalatest-flatspec_2.13-3.2.19-sources.jar.asc" title="scalatest-flatspec_2.13-3.2.19-sources.jar.asc">scalatest-flatspec_2.13-3.2.19-sources.jar.as...</a>  2024-06-21 02:50       488      
+<a href="scalatest-flatspec_2.13-3.2.19-sources.jar.asc.md5" title="scalatest-flatspec_2.13-3.2.19-sources.jar.asc.md5">scalatest-flatspec_2.13-3.2.19-sources.jar.as...</a>  2024-06-21 02:50        32      
+<a href="scalatest-flatspec_2.13-3.2.19-sources.jar.asc.sha1" title="scalatest-flatspec_2.13-3.2.19-sources.jar.asc.sha1">scalatest-flatspec_2.13-3.2.19-sources.jar.as...</a>  2024-06-21 02:50        40      
+<a href="scalatest-flatspec_2.13-3.2.19-sources.jar.md5" title="scalatest-flatspec_2.13-3.2.19-sources.jar.md5">scalatest-flatspec_2.13-3.2.19-sources.jar.md...</a>  2024-06-21 02:50        32      
+<a href="scalatest-flatspec_2.13-3.2.19-sources.jar.sha1" title="scalatest-flatspec_2.13-3.2.19-sources.jar.sha1">scalatest-flatspec_2.13-3.2.19-sources.jar.sh...</a>  2024-06-21 02:50        40      
+<a href="scalatest-flatspec_2.13-3.2.19.jar" title="scalatest-flatspec_2.13-3.2.19.jar">scalatest-flatspec_2.13-3.2.19.jar</a>                2024-06-21 02:50    174360      
+<a href="scalatest-flatspec_2.13-3.2.19.jar.asc" title="scalatest-flatspec_2.13-3.2.19.jar.asc">scalatest-flatspec_2.13-3.2.19.jar.asc</a>            2024-06-21 02:50       488      
+<a href="scalatest-flatspec_2.13-3.2.19.jar.asc.md5" title="scalatest-flatspec_2.13-3.2.19.jar.asc.md5">scalatest-flatspec_2.13-3.2.19.jar.asc.md5</a>        2024-06-21 02:50        32      
+<a href="scalatest-flatspec_2.13-3.2.19.jar.asc.sha1" title="scalatest-flatspec_2.13-3.2.19.jar.asc.sha1">scalatest-flatspec_2.13-3.2.19.jar.asc.sha1</a>       2024-06-21 02:50        40      
+<a href="scalatest-flatspec_2.13-3.2.19.jar.md5" title="scalatest-flatspec_2.13-3.2.19.jar.md5">scalatest-flatspec_2.13-3.2.19.jar.md5</a>            2024-06-21 02:50        32      
+<a href="scalatest-flatspec_2.13-3.2.19.jar.sha1" title="scalatest-flatspec_2.13-3.2.19.jar.sha1">scalatest-flatspec_2.13-3.2.19.jar.sha1</a>           2024-06-21 02:50        40      
+<a href="scalatest-flatspec_2.13-3.2.19.pom" title="scalatest-flatspec_2.13-3.2.19.pom">scalatest-flatspec_2.13-3.2.19.pom</a>                2024-06-21 02:50      2450      
+<a href="scalatest-flatspec_2.13-3.2.19.pom.asc" title="scalatest-flatspec_2.13-3.2.19.pom.asc">scalatest-flatspec_2.13-3.2.19.pom.asc</a>            2024-06-21 02:50       488      
+<a href="scalatest-flatspec_2.13-3.2.19.pom.asc.md5" title="scalatest-flatspec_2.13-3.2.19.pom.asc.md5">scalatest-flatspec_2.13-3.2.19.pom.asc.md5</a>        2024-06-21 02:50        32      
+<a href="scalatest-flatspec_2.13-3.2.19.pom.asc.sha1" title="scalatest-flatspec_2.13-3.2.19.pom.asc.sha1">scalatest-flatspec_2.13-3.2.19.pom.asc.sha1</a>       2024-06-21 02:50        40      
+<a href="scalatest-flatspec_2.13-3.2.19.pom.md5" title="scalatest-flatspec_2.13-3.2.19.pom.md5">scalatest-flatspec_2.13-3.2.19.pom.md5</a>            2024-06-21 02:50        32      
+<a href="scalatest-flatspec_2.13-3.2.19.pom.sha1" title="scalatest-flatspec_2.13-3.2.19.pom.sha1">scalatest-flatspec_2.13-3.2.19.pom.sha1</a>           2024-06-21 02:50        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 760ms:
+HTTP/2 200 
+date: Wed, 10 Jun 2026 23:32:56 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"8dad6c570ecfc4da16c013484d8eddf2"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=7fE7bV8B8mFQvxRNsJ7Fz8c9B%2Bltpn7rMYorCx0uepYFcIjP56OnKsT8DmKlXm%2FiC8jKy%2FOWn87SclHd%2FQMwFJysbOx2U%2B%2Btb%2F9yy5HnTb334jqwC%2BzKQysCkozlJEOD0V9WRo8A2HolxQHHIzIVhPP9fjakIx8hnBGDK%2B7l4kNJBUVeiPYzMP7nVxfgcy7tIwbm57euCun6dzQzno60JQwU1Ff%2FegESNcLrr8qWqNMLP6gB67GBvfbbpUBJXOGLzdl0X3Yf3sMNjZd0o1ikbQ%3D%3D--zQXBiUoU9Mi%2By22o--eWOxiqodwVYofAfFi9bbTw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1462825182.1781134375; expires=Thu, 10 Jun 2027 23:32:55 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 10 Jun 2027 23:32:55 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 9A26:32C853:4A55D0:3D90F1:6A29F427
+
+
+exec
+/bin/bash -lc 'curl -I -L -fsS https://github.com/scalatest/scalatest/tree/release-3.2.19' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5071-e9853203
+ succeeded in 865ms:
+HTTP/2 200 
+date: Wed, 10 Jun 2026 23:33:04 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"30c43852eac5a1228c6db962825cf5b6"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=szKEZHrd%2B%2FzhZnB0mTJThln68yqYKajzWWh8SUHE1661qLIvW4MQOHT3BwmVr%2FnQJUVsCGqHs4YjoXJDEvOE0uDF0Q12BTLyl5Xoqx6stIed787mMOpqw%2FOR9bNUg8Jo1csRXCSKcjEbsXGUUwSPDi6ahL%2Bki%2Bapz7orBrEHMGVq71qUi5VMKdsirZXme4bqspsMDcB0JmCt1P5DLQWCLfpCiLpfBew4hEZi5yyexOG0zfzlM9z88V%2FAFGyGVLtvQ4xJ8eecgQdtEqUZ%2BCjLQQ%3D%3D--RkyfCwcr%2FDaGYHrQ--mHEu4PfNt1BcUj1Bwjtihg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.784947247.1781134383; expires=Thu, 10 Jun 2027 23:33:03 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 10 Jun 2027 23:33:03 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: BA7A:32C853:4A8FDE:3DC1D1:6A29F42F
+
+
+web search: 
+web search: https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/flatspec-test/src/test/scala/org/scalatest/flatspec
+web search: 
+web search: repo.maven.apache.org maven2 org/scalatest/scalatest-flatspec_2.13/3.2.19 scalatest-flatspec_2.13-3.2.19-javadoc.jar sources.jar
+codex
+The Maven directory has the JVM jar plus `-sources.jar` and `-javadoc.jar`, but no test jar, so I’ll use Maven for source/docs and the release tag’s `jvm/flatspec-test` tree for tests. The artifact suffix `_2.13` makes it Scala 2-specific, and the published JVM jar means it remains a Native Image metadata target.
+exec
+/bin/bash -lc "find metadata/org.scalatest -path '*scalatest-flatspec*index.json' -o -path '*scalatest-flatspec*' -maxdepth 4" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5071-e9853203
+ succeeded in 0ms:
+metadata/org.scalatest/scalatest-flatspec_3
+metadata/org.scalatest/scalatest-flatspec_3/index.json
+metadata/org.scalatest/scalatest-flatspec_3/3.2.19
+metadata/org.scalatest/scalatest-flatspec_3/3.2.19/reachability-metadata.json
+
+exec
+/bin/bash -lc 'for u in https://repo.maven.apache.org/maven2/org/scalatest/scalatest-flatspec_2.13/3.2.19/scalatest-flatspec_2.13-3.2.19-sources.jar https://repo.maven.apache.org/maven2/org/scalatest/scalatest-flatspec_2.13/3.2.19/scalatest-flatspec_2.13-3.2.19-javadoc.jar https://repo.maven.apache.org/maven2/org/scalatest/scalatest-flatspec_2.13/3.2.19/scalatest-flatspec_2.13-3.2.19.jar; do curl -I -L -fsS "$u" | sed -n '"'1,8p'; done" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5071-e9853203
+exec
+/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/scalatest/scalatest-flatspec_2.13/3.2.19/scalatest-flatspec_2.13-3.2.19.jar -o /tmp/scalatest-flatspec_2.13-3.2.19.jar && jar tf /tmp/scalatest-flatspec_2.13-3.2.19.jar | sed -n '1,60p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5071-e9853203
+ succeeded in 234ms:
+META-INF/MANIFEST.MF
+org/
+org/scalatest/
+org/scalatest/flatspec/
+org/scalatest/flatspec/AnyFlatSpec.class
+org/scalatest/flatspec/AnyFlatSpecLike$$anon$1$$anon$2$$anon$3.class
+org/scalatest/flatspec/AnyFlatSpecLike$$anon$1$$anon$2.class
+org/scalatest/flatspec/AnyFlatSpecLike$$anon$1.class
+org/scalatest/flatspec/AnyFlatSpecLike$$anon$4.class
+org/scalatest/flatspec/AnyFlatSpecLike$$anon$5.class
+org/scalatest/flatspec/AnyFlatSpecLike$BehaviorWord.class
+org/scalatest/flatspec/AnyFlatSpecLike$IgnoreVerbString.class
+org/scalatest/flatspec/AnyFlatSpecLike$IgnoreVerbStringTaggedAs.class
+org/scalatest/flatspec/AnyFlatSpecLike$IgnoreWord.class
+org/scalatest/flatspec/AnyFlatSpecLike$InAndIgnoreMethods.class
+org/scalatest/flatspec/AnyFlatSpecLike$InAndIgnoreMethodsAfterTaggedAs.class
+org/scalatest/flatspec/AnyFlatSpecLike$ItVerbString.class
+org/scalatest/flatspec/AnyFlatSpecLike$ItVerbStringTaggedAs.class
+org/scalatest/flatspec/AnyFlatSpecLike$ItWord.class
+org/scalatest/flatspec/AnyFlatSpecLike$TheyVerbString.class
+org/scalatest/flatspec/AnyFlatSpecLike$TheyVerbStringTaggedAs.class
+org/scalatest/flatspec/AnyFlatSpecLike$TheyWord.class
+org/scalatest/flatspec/AnyFlatSpecLike.class
+org/scalatest/flatspec/AsyncFlatSpec.class
+org/scalatest/flatspec/AsyncFlatSpecLike$$anon$1$$anon$2$$anon$3.class
+org/scalatest/flatspec/AsyncFlatSpecLike$$anon$1$$anon$2.class
+org/scalatest/flatspec/AsyncFlatSpecLike$$anon$1.class
+org/scalatest/flatspec/AsyncFlatSpecLike$$anon$4.class
+org/scalatest/flatspec/AsyncFlatSpecLike$$anon$5.class
+org/scalatest/flatspec/AsyncFlatSpecLike$BehaviorWord.class
+org/scalatest/flatspec/AsyncFlatSpecLike$IgnoreVerbString.class
+org/scalatest/flatspec/AsyncFlatSpecLike$IgnoreVerbStringTaggedAs.class
+org/scalatest/flatspec/AsyncFlatSpecLike$IgnoreWord.class
+org/scalatest/flatspec/AsyncFlatSpecLike$InAndIgnoreMethods.class
+org/scalatest/flatspec/AsyncFlatSpecLike$InAndIgnoreMethodsAfterTaggedAs.class
+org/scalatest/flatspec/AsyncFlatSpecLike$ItVerbString.class
+org/scalatest/flatspec/AsyncFlatSpecLike$ItVerbStringTaggedAs.class
+org/scalatest/flatspec/AsyncFlatSpecLike$ItWord.class
+org/scalatest/flatspec/AsyncFlatSpecLike$TheyVerbString.class
+org/scalatest/flatspec/AsyncFlatSpecLike$TheyVerbStringTaggedAs.class
+org/scalatest/flatspec/AsyncFlatSpecLike$TheyWord.class
+org/scalatest/flatspec/AsyncFlatSpecLike.class
+org/scalatest/flatspec/FixtureAnyFlatSpec.class
+org/scalatest/flatspec/FixtureAnyFlatSpecLike$$anon$1$$anon$2$$anon$3.class
+org/scalatest/flatspec/FixtureAnyFlatSpecLike$$anon$1$$anon$2.class
+org/scalatest/flatspec/FixtureAnyFlatSpecLike$$anon$1.class
+org/scalatest/flatspec/FixtureAnyFlatSpecLike$$anon$4.class
+org/scalatest/flatspec/FixtureAnyFlatSpecLike$BehaviorWord.class
+org/scalatest/flatspec/FixtureAnyFlatSpecLike$IgnoreVerbString.class
+org/scalatest/flatspec/FixtureAnyFlatSpecLike$IgnoreVerbStringTaggedAs.class
+org/scalatest/flatspec/FixtureAnyFlatSpecLike$IgnoreWord.class
+org/scalatest/flatspec/FixtureAnyFlatSpecLike$InAndIgnoreMethods.class
+org/scalatest/flatspec/FixtureAnyFlatSpecLike$InAndIgnoreMethodsAfterTaggedAs.class
+org/scalatest/flatspec/FixtureAnyFlatSpecLike$ItVerbString.class
+org/scalatest/flatspec/FixtureAnyFlatSpecLike$ItVerbStringTaggedAs.class
+org/scalatest/flatspec/FixtureAnyFlatSpecLike$ItWord.class
+org/scalatest/flatspec/FixtureAnyFlatSpecLike$TheyVerbString.class
+org/scalatest/flatspec/FixtureAnyFlatSpecLike$TheyVerbStringTaggedAs.class
+org/scalatest/flatspec/FixtureAnyFlatSpecLike$TheyWord.class
+org/scalatest/flatspec/FixtureAnyFlatSpecLike.class
+
+ succeeded in 287ms:
+HTTP/2 200 
+date: Wed, 10 Jun 2026 23:33:21 GMT
+content-type: application/java-archive
+content-length: 1620712
+cf-ray: a09c2e368bb3c687-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 124052
+HTTP/2 200 
+date: Wed, 10 Jun 2026 23:33:21 GMT
+content-type: application/java-archive
+content-length: 174360
+cf-ray: a09c2e3749ddaeaa-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 989948
+
+exec
+/bin/bash -lc "sed -n '1,80p' metadata/org.scalatest/scalatest-flatspec_3/index.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5071-e9853203
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.2.19",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-flatspec_3/$version$/scalatest-flatspec_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/scalatest/scalatest",
+    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/flatspec-test/src/test/scala/org/scalatest/flatspec",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-flatspec_3/$version$/scalatest-flatspec_3-$version$-javadoc.jar",
+    "description" : "ScalaTest FlatSpec provides the FlatSpec testing style for ScalaTest, letting Scala developers write behavior-driven tests as flat specifications with it/should or they/should clauses. This Scala 3 JVM artifact supplies synchronous, asynchronous, and fixture-based FlatSpec suite classes that integrate with ScalaTest assertions, tagging, and reporting.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "3.2.19",
+      "3.2.20",
+      "3.3.0-alpha.1",
+      "3.3.0-alpha.2",
+      "3.3.0-SNAP4"
+    ],
+    "allowed-packages" : [
+      "org.scalatest.flatspec",
+      "org.scalactic",
+      "org.scalactic.source",
+      "org.scalatest",
+      "org.scalatest.events",
+      "org.scalatest.exceptions",
+      "org.scalatest.time"
+    ]
+  }
+]
+
+codex
+I found an existing ScalaTest FlatSpec Scala 3 index entry, so I’ll mirror its established wording and URL shape while changing the artifact suffix and language version for `_2.13`. Next I’m replacing the generated stub JSON with the final discovered metadata.
+apply patch
+patch: completed
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5071-e9853203/build/discovered-artifact-metadata/org.scalatest-scalatest-flatspec_2.13-3.2.19.json
+diff --git a/build/discovered-artifact-metadata/org.scalatest-scalatest-flatspec_2.13-3.2.19.json b/build/discovered-artifact-metadata/org.scalatest-scalatest-flatspec_2.13-3.2.19.json
+index 7b733bb4dc75bf549660d2900e76dae31278b054..a01cde7532296c9131e0f2e66422ab8f45a3401f
+--- a/build/discovered-artifact-metadata/org.scalatest-scalatest-flatspec_2.13-3.2.19.json
++++ b/build/discovered-artifact-metadata/org.scalatest-scalatest-flatspec_2.13-3.2.19.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scalatest:scalatest-flatspec_2.13:3.2.19"
++  "coordinates" : "org.scalatest:scalatest-flatspec_2.13:3.2.19",
++  "repository-url" : "https://github.com/scalatest/scalatest",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-flatspec_2.13/$version$/scalatest-flatspec_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/flatspec-test/src/test/scala/org/scalatest/flatspec",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-flatspec_2.13/$version$/scalatest-flatspec_2.13-$version$-javadoc.jar",
++  "description" : "ScalaTest FlatSpec provides the FlatSpec testing style for ScalaTest, letting Scala developers write behavior-driven tests as flat specifications with it/should or they/should clauses. This Scala 2 JVM artifact supplies synchronous, asynchronous, and fixture-based FlatSpec suite classes that integrate with ScalaTest assertions, tagging, and reporting.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.scalatest-scalatest-flatspec_2.13-3.2.19.json b/build/discovered-artifact-metadata/org.scalatest-scalatest-flatspec_2.13-3.2.19.json
+index 7b733bb4dc75bf549660d2900e76dae31278b054..a01cde7532296c9131e0f2e66422ab8f45a3401f
+--- a/build/discovered-artifact-metadata/org.scalatest-scalatest-flatspec_2.13-3.2.19.json
++++ b/build/discovered-artifact-metadata/org.scalatest-scalatest-flatspec_2.13-3.2.19.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scalatest:scalatest-flatspec_2.13:3.2.19"
++  "coordinates" : "org.scalatest:scalatest-flatspec_2.13:3.2.19",
++  "repository-url" : "https://github.com/scalatest/scalatest",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-flatspec_2.13/$version$/scalatest-flatspec_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/flatspec-test/src/test/scala/org/scalatest/flatspec",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-flatspec_2.13/$version$/scalatest-flatspec_2.13-$version$-javadoc.jar",
++  "description" : "ScalaTest FlatSpec provides the FlatSpec testing style for ScalaTest, letting Scala developers write behavior-driven tests as flat specifications with it/should or they/should clauses. This Scala 2 JVM artifact supplies synchronous, asynchronous, and fixture-based FlatSpec suite classes that integrate with ScalaTest assertions, tagging, and reporting.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+exec
+/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.scalatest-scalatest-flatspec_2.13-3.2.19.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5071-e9853203
+ succeeded in 0ms:
+{
+  "coordinates": "org.scalatest:scalatest-flatspec_2.13:3.2.19",
+  "repository-url": "https://github.com/scalatest/scalatest",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-flatspec_2.13/$version$/scalatest-flatspec_2.13-$version$-sources.jar",
+  "test-code-url": "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/flatspec-test/src/test/scala/org/scalatest/flatspec",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-flatspec_2.13/$version$/scalatest-flatspec_2.13-$version$-javadoc.jar",
+  "description": "ScalaTest FlatSpec provides the FlatSpec testing style for ScalaTest, letting Scala developers write behavior-driven tests as flat specifications with it/should or they/should clauses. This Scala 2 JVM artifact supplies synchronous, asynchronous, and fixture-based FlatSpec suite classes that integrate with ScalaTest assertions, tagging, and reporting.",
+  "language": {
+    "name": "scala",
+    "version": "2"
+  }
+}
+
+exec
+/bin/bash -lc 'for u in $(jq -r '"'.\"source-code-url\", .\"test-code-url\", .\"documentation-url\"' build/discovered-artifact-metadata/org.scalatest-scalatest-flatspec_2.13-3.2.19.json | sed 's/\\"'$version'"\\"'$/3.2.19/g'"'); do printf '%s\\n' \""'$u"; curl -I -L -fsS "$u" | sed -n '"'1p'; done" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5071-e9853203
+diff --git a/build/discovered-artifact-metadata/org.scalatest-scalatest-flatspec_2.13-3.2.19.json b/build/discovered-artifact-metadata/org.scalatest-scalatest-flatspec_2.13-3.2.19.json
+index 7b733bb4dc75bf549660d2900e76dae31278b054..a01cde7532296c9131e0f2e66422ab8f45a3401f
+--- a/build/discovered-artifact-metadata/org.scalatest-scalatest-flatspec_2.13-3.2.19.json
++++ b/build/discovered-artifact-metadata/org.scalatest-scalatest-flatspec_2.13-3.2.19.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scalatest:scalatest-flatspec_2.13:3.2.19"
++  "coordinates" : "org.scalatest:scalatest-flatspec_2.13:3.2.19",
++  "repository-url" : "https://github.com/scalatest/scalatest",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-flatspec_2.13/$version$/scalatest-flatspec_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/flatspec-test/src/test/scala/org/scalatest/flatspec",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-flatspec_2.13/$version$/scalatest-flatspec_2.13-$version$-javadoc.jar",
++  "description" : "ScalaTest FlatSpec provides the FlatSpec testing style for ScalaTest, letting Scala developers write behavior-driven tests as flat specifications with it/should or they/should clauses. This Scala 2 JVM artifact supplies synchronous, asynchronous, and fixture-based FlatSpec suite classes that integrate with ScalaTest assertions, tagging, and reporting.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+ succeeded in 842ms:
+HTTP/2 200 
+https://repo.maven.apache.org/maven2/org/scalatest/scalatest-flatspec_2.13/3.2.19/scalatest-flatspec_2.13-3.2.19-javadoc.jar
+HTTP/2 200 
+
+web search: 
+web search: mvnrepository org.scalatest scalatest-flatspec_2.13 3.2.19
+codex
+Updated [org.scalatest-scalatest-flatspec_2.13-3.2.19.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5071-e9853203/build/discovered-artifact-metadata/org.scalatest-scalatest-flatspec_2.13-3.2.19.json).
+
+I set the repository root from the artifact POM, used Maven Central for sources and javadoc, used the ScalaTest `release-$version$` GitHub test path, and marked it as Scala 2-specific. Maven Central publishes the JVM jar with sources/javadoc, so I did not set `not-for-native-image`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/scalatest/scalatest-flatspec_2.13/3.2.19/scalatest-flatspec_2.13-3.2.19.pom?utm_source=openai))
+
+Validation: `jq` passed, and all three `$version$ -> 3.2.19` URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/org.scalatest-scalatest-flatspec_2.13-3.2.19.json b/build/discovered-artifact-metadata/org.scalatest-scalatest-flatspec_2.13-3.2.19.json
+index 7b733bb4dc75bf549660d2900e76dae31278b054..a01cde7532296c9131e0f2e66422ab8f45a3401f
+--- a/build/discovered-artifact-metadata/org.scalatest-scalatest-flatspec_2.13-3.2.19.json
++++ b/build/discovered-artifact-metadata/org.scalatest-scalatest-flatspec_2.13-3.2.19.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.scalatest:scalatest-flatspec_2.13:3.2.19"
++  "coordinates" : "org.scalatest:scalatest-flatspec_2.13:3.2.19",
++  "repository-url" : "https://github.com/scalatest/scalatest",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-flatspec_2.13/$version$/scalatest-flatspec_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/flatspec-test/src/test/scala/org/scalatest/flatspec",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-flatspec_2.13/$version$/scalatest-flatspec_2.13-$version$-javadoc.jar",
++  "description" : "ScalaTest FlatSpec provides the FlatSpec testing style for ScalaTest, letting Scala developers write behavior-driven tests as flat specifications with it/should or they/should clauses. This Scala 2 JVM artifact supplies synchronous, asynchronous, and fixture-based FlatSpec suite classes that integrate with ScalaTest assertions, tagging, and reporting.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+tokens used
+61,611
+Updated [org.scalatest-scalatest-flatspec_2.13-3.2.19.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5071-e9853203/build/discovered-artifact-metadata/org.scalatest-scalatest-flatspec_2.13-3.2.19.json).
+
+I set the repository root from the artifact POM, used Maven Central for sources and javadoc, used the ScalaTest `release-$version$` GitHub test path, and marked it as Scala 2-specific. Maven Central publishes the JVM jar with sources/javadoc, so I did not set `not-for-native-image`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/scalatest/scalatest-flatspec_2.13/3.2.19/scalatest-flatspec_2.13-3.2.19.pom?utm_source=openai))
+
+Validation: `jq` passed, and all three `$version$ -> 3.2.19` URLs returned HTTP 200.
+Ran agent for org.scalatest:scalatest-flatspec_2.13:3.2.19 (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5071-e9853203/build/agent-artifact-discovery-logs/org.scalatest-scalatest-flatspec_2.13-3.2.19.log
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5071-e9853203/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 9s
+9 actionable tasks: 9 executed
