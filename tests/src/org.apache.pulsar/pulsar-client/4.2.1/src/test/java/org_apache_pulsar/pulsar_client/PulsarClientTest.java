@@ -20,6 +20,7 @@ import org.apache.pulsar.client.api.SubscriptionInitialPosition;
 import org.apache.pulsar.client.api.SubscriptionType;
 import org.apache.pulsar.common.schema.KeyValue;
 import org.apache.pulsar.common.schema.KeyValueEncodingType;
+import org.apache.pulsar.common.schema.SchemaType;
 import org.junit.jupiter.api.Test;
 
 import java.nio.ByteBuffer;
@@ -97,6 +98,22 @@ public class PulsarClientTest {
     }
 
     @Test
+    void encodesAndDecodesJsonSchemaPojo() {
+        Schema<SensorReading> schema = Schema.JSON(SensorReading.class);
+        SensorReading reading = new SensorReading("sensor-1", 21.5D, 3, true);
+
+        byte[] encoded = schema.encode(reading);
+        schema.validate(encoded);
+        SensorReading decoded = schema.decode(encoded);
+
+        assertThat(schema.getSchemaInfo().getType()).isEqualTo(SchemaType.JSON);
+        assertThat(decoded.getDeviceId()).isEqualTo(reading.getDeviceId());
+        assertThat(decoded.getTemperature()).isEqualTo(reading.getTemperature());
+        assertThat(decoded.getSampleCount()).isEqualTo(reading.getSampleCount());
+        assertThat(decoded.getEnabled()).isEqualTo(reading.getEnabled());
+    }
+
+    @Test
     void createsAuthenticationDataAndMessageIdUtilities() throws Exception {
         try (Authentication authentication = AuthenticationFactory.token("sample-token")) {
             authentication.start();
@@ -116,5 +133,54 @@ public class PulsarClientTest {
 
     private static String uniqueTopic(String suffix) {
         return "persistent://public/default/test-" + suffix + "-" + UUID.randomUUID();
+    }
+
+    public static class SensorReading {
+        private String deviceId;
+        private double temperature;
+        private int sampleCount;
+        private boolean enabled;
+
+        public SensorReading() {
+        }
+
+        public SensorReading(String deviceId, double temperature, int sampleCount, boolean enabled) {
+            this.deviceId = deviceId;
+            this.temperature = temperature;
+            this.sampleCount = sampleCount;
+            this.enabled = enabled;
+        }
+
+        public String getDeviceId() {
+            return deviceId;
+        }
+
+        public void setDeviceId(String deviceId) {
+            this.deviceId = deviceId;
+        }
+
+        public double getTemperature() {
+            return temperature;
+        }
+
+        public void setTemperature(double temperature) {
+            this.temperature = temperature;
+        }
+
+        public int getSampleCount() {
+            return sampleCount;
+        }
+
+        public void setSampleCount(int sampleCount) {
+            this.sampleCount = sampleCount;
+        }
+
+        public boolean getEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
     }
 }
