@@ -433,6 +433,7 @@ class PublicationHandoff:
     large_library_final: bool | None
     large_library_series_id: str | None
     not_for_native_image: bool = False
+    publication_kind: str | None = None
 
     def to_json(self) -> dict:
         return {
@@ -454,6 +455,7 @@ class PublicationHandoff:
             "large_library_final": self.large_library_final,
             "large_library_series_id": self.large_library_series_id,
             "not_for_native_image": self.not_for_native_image,
+            "publication_kind": self.publication_kind,
         }
 
 
@@ -5339,6 +5341,7 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
     runner: Callable[[list[str]], None]
     argv: list[str]
     result_label: str
+    publication_kind: str | None = None
     coordinates: str | None = claimed_issue.issue_coordinates
     current_coordinates: str | None = claimed_issue.current_coordinates
     new_version: str | None = claimed_issue.new_version
@@ -5433,7 +5436,8 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
             script_name = "git_scripts/make_pr_javac_fix.py"
             runner_name = "run_make_pr_javac_fix"
             runner = run_make_pr_javac_fix
-            result_label = LABEL_PR_JAVAC_FIX
+            result_label = LABEL_PR_LIBRARY_UPDATE
+            publication_kind = LABEL_PR_JAVAC_FIX
             current_coordinates = _require_publication_value(
                 library_update_route.baseline_coordinates,
                 "library_update_route.baseline_coordinates",
@@ -5445,6 +5449,7 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
                 "--coordinates", current_coordinates,
                 "--new-version", new_version,
                 "--issue-number", str(issue_number),
+                "--pr-label", result_label,
                 "--reachability-metadata-path", claimed_issue.worktree_path,
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
             ]
@@ -5452,7 +5457,8 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
             script_name = "git_scripts/make_pr_java_run_fix.py"
             runner_name = "run_make_pr_java_run_fix"
             runner = run_make_pr_java_run_fix
-            result_label = LABEL_PR_JAVA_RUN_FIX
+            result_label = LABEL_PR_LIBRARY_UPDATE
+            publication_kind = LABEL_PR_JAVA_RUN_FIX
             current_coordinates = _require_publication_value(
                 library_update_route.baseline_coordinates,
                 "library_update_route.baseline_coordinates",
@@ -5464,6 +5470,7 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
                 "--coordinates", current_coordinates,
                 "--new-version", new_version,
                 "--issue-number", str(issue_number),
+                "--pr-label", result_label,
                 "--reachability-metadata-path", claimed_issue.worktree_path,
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
             ]
@@ -5502,6 +5509,7 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
         large_library_final=large_library_final,
         large_library_series_id=None if large_library_state is None else large_library_state.series_id,
         not_for_native_image=not_for_native_image,
+        publication_kind=publication_kind or result_label,
     )
 
 
@@ -5520,6 +5528,7 @@ def _build_fixture_pull_request_preview(handoff: PublicationHandoff) -> tuple[st
     §GIT-pr-preview-builders
     """
     new_coordinates = _publication_new_coordinates(handoff)
+    publication_kind = handoff.publication_kind or handoff.result_label
     if handoff.not_for_native_image and new_coordinates:
         title, body, _local_ci_metrics = build_not_for_native_image_pull_request_preview(
             coordinates=new_coordinates,
@@ -5528,7 +5537,7 @@ def _build_fixture_pull_request_preview(handoff: PublicationHandoff) -> tuple[st
         )
         return title, body
 
-    if handoff.result_label == LABEL_LIBRARY_NEW and new_coordinates:
+    if publication_kind == LABEL_LIBRARY_NEW and new_coordinates:
         title, body, _matched = build_new_library_pull_request_preview(
             coordinates=new_coordinates,
             metrics_repo_root=handoff.scratch_metrics_path,
@@ -5540,7 +5549,7 @@ def _build_fixture_pull_request_preview(handoff: PublicationHandoff) -> tuple[st
         )
         return title, body
 
-    if handoff.result_label == LABEL_PR_LIBRARY_UPDATE and new_coordinates:
+    if publication_kind == LABEL_PR_LIBRARY_UPDATE and new_coordinates:
         group, artifact, version = metadata_coordinate_parts(new_coordinates)
         title, body, _matched = build_improve_coverage_pull_request_preview(
             coordinates=new_coordinates,
@@ -5560,7 +5569,7 @@ def _build_fixture_pull_request_preview(handoff: PublicationHandoff) -> tuple[st
     if handoff.current_coordinates and new_coordinates:
         group, artifact, old_version = metadata_coordinate_parts(handoff.current_coordinates)
         _new_group, _new_artifact, new_version = metadata_coordinate_parts(new_coordinates)
-        if handoff.result_label == LABEL_PR_JAVAC_FIX:
+        if publication_kind == LABEL_PR_JAVAC_FIX:
             title, body, _metrics_entry = build_javac_fix_pull_request_preview(
                 old_coordinates=handoff.current_coordinates,
                 new_coordinates=new_coordinates,
@@ -5573,7 +5582,7 @@ def _build_fixture_pull_request_preview(handoff: PublicationHandoff) -> tuple[st
                 issue_number=handoff.issue_number,
             )
             return title, body
-        if handoff.result_label == LABEL_PR_JAVA_RUN_FIX:
+        if publication_kind == LABEL_PR_JAVA_RUN_FIX:
             title, body, _metrics_entry = build_java_run_fix_pull_request_preview(
                 old_coordinates=handoff.current_coordinates,
                 new_coordinates=new_coordinates,
@@ -5586,7 +5595,7 @@ def _build_fixture_pull_request_preview(handoff: PublicationHandoff) -> tuple[st
                 issue_number=handoff.issue_number,
             )
             return title, body
-        if handoff.result_label == LABEL_PR_NI_RUN_FIX:
+        if publication_kind == LABEL_PR_NI_RUN_FIX:
             title, body, _local_ci_human_intervention, _severe_metadata_drop = (
                 build_ni_run_fix_pull_request_preview(
                     old_coordinates=handoff.current_coordinates,
