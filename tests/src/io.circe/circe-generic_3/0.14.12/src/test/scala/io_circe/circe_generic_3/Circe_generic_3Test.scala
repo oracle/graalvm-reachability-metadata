@@ -154,6 +154,30 @@ class Circe_generic_3Test {
     assertEquals(Right(events), json.as[List[AuditEvent]])
   }
 
+  @Test
+  def semiautomaticCodecDerivationHandlesParameterizedProducts(): Unit = {
+    given Codec[RepositoryOwner] = deriveCodec[RepositoryOwner]
+    given [A: Codec]: Codec[ResultPage[A]] = deriveCodec[ResultPage[A]]
+
+    val page: ResultPage[RepositoryOwner] = ResultPage(
+      values = Vector(
+        RepositoryOwner(login = "circe", organization = true),
+        RepositoryOwner(login = "scala", organization = false)
+      ),
+      nextCursor = Some("page-2"),
+      totalCount = 2
+    )
+
+    val json: Json = page.asJson
+
+    assertEquals(
+      Some(Json.fromString("circe")),
+      json.hcursor.downField("values").downArray.downField("login").focus
+    )
+    assertEquals(Some(Json.fromString("page-2")), json.hcursor.downField("nextCursor").focus)
+    assertEquals(Right(page), json.as[ResultPage[RepositoryOwner]])
+  }
+
   private final case class GeoPoint(
       latitudeMicrodegrees: Int,
       longitudeMicrodegrees: Int
@@ -192,5 +216,13 @@ class Circe_generic_3Test {
       title: String,
       authors: Vector[AutoAuthor],
       metadata: Option[AutoMetadata]
+  )
+
+  private final case class RepositoryOwner(login: String, organization: Boolean)
+
+  private final case class ResultPage[A](
+      values: Vector[A],
+      nextCursor: Option[String],
+      totalCount: Int
   )
 }
