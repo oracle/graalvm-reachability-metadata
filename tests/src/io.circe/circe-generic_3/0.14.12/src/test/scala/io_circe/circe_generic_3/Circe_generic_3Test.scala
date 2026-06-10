@@ -100,6 +100,17 @@ object SupportTicketEvent {
   final case class Closed(ticketId: String, resolution: Option[String]) extends SupportTicketEvent
 }
 
+enum WorkflowState {
+  case Pending(owner: String)
+  case Approved(approver: String, comments: Option[String])
+  case Archived
+}
+
+object WorkflowState {
+  given Encoder[WorkflowState] = deriveEncoder[WorkflowState]
+  given Decoder[WorkflowState] = deriveDecoder[WorkflowState]
+}
+
 final case class Wrapper[A](value: A, history: List[A])
 
 object Wrapper {
@@ -231,6 +242,24 @@ class Circe_generic_3Test {
     assertThat(json.hcursor.downField("value").downN(1).downField("Packed").get[Int]("itemCount"))
       .isEqualTo(Right(3))
     assertThat(json.as[Wrapper[Vector[ShipmentEvent]]]).isEqualTo(Right(wrapper))
+  }
+
+  @Test
+  def semiAutomaticDerivationSupportsScala3Enums(): Unit = {
+    import WorkflowState.*
+
+    val states: List[WorkflowState] = List(
+      Pending("Ada"),
+      Approved("Grace", Some("looks good")),
+      Archived
+    )
+
+    val json: Json = states.asJson
+
+    assertThat(json.hcursor.downArray.downField("Pending").get[String]("owner")).isEqualTo(Right("Ada"))
+    assertThat(json.hcursor.downN(1).downField("Approved").get[String]("approver")).isEqualTo(Right("Grace"))
+    assertThat(json.hcursor.downN(2).downField("Archived").focus.exists(_.isObject)).isTrue
+    assertThat(json.as[List[WorkflowState]]).isEqualTo(Right(states))
   }
 
   @Test
