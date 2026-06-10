@@ -1,0 +1,1276 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.130.0
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019eaec0-6db6-78b2-89e5-d0c1442e87b4
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.springframework:spring-test:7.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [7.0.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457/metadata/org.springframework/spring-test/index.json
+- Entry selector: "metadata-version" = "7.0.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 7.0.0
+- Entry metadata-version: 7.0.0
+- Entry test-version: 7.0.0
+- Entry tested-versions: [7.0.0]
+codex
+I’ll verify the artifact URLs against Maven/Spring sources first, then patch only the missing fields in the selected `index.json` entry.
+exec
+/bin/bash -lc "rg -n '\"metadata-version\": \"7\\.0\\.0\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.springframework/spring-test/index.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457
+exec
+/bin/bash -lc "sed -n '1,220p' metadata/org.springframework/spring-test/index.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457
+ succeeded in 0ms:
+14:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
+15:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+16:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-test/src/test/java",
+17:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/reference/html/testing.html",
+18:    "description" : "Spring Test provides testing support for Spring applications, including mock objects, testing utilities, and integration testing through the Spring TestContext Framework. It helps developers write unit and integration tests that load and manage Spring application contexts across common Java testing frameworks.",
+93:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
+94:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+95:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/org.springframework.test/src/test/java",
+96:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/javadoc-api/org/springframework/test/package-summary.html",
+97:    "description" : "Spring Test provides testing support for Spring applications, including mock objects and integration testing utilities for the Spring TestContext Framework. It helps developers run unit and integration tests that load and manage Spring application contexts across common Java testing frameworks.",
+
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "7.0.0",
+    "tested-versions" : [
+      "7.0.0"
+    ],
+    "allowed-packages" : [
+      "org.springframework"
+    ]
+  },
+  {
+    "metadata-version" : "6.0.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
+    "repository-url" : "https://github.com/spring-projects/spring-framework",
+    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-test/src/test/java",
+    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/reference/html/testing.html",
+    "description" : "Spring Test provides testing support for Spring applications, including mock objects, testing utilities, and integration testing through the Spring TestContext Framework. It helps developers write unit and integration tests that load and manage Spring application contexts across common Java testing frameworks.",
+    "tested-versions" : [
+      "6.0.0",
+      "6.0.1",
+      "6.0.2",
+      "6.0.3",
+      "6.0.4",
+      "6.0.5",
+      "6.0.6",
+      "6.0.7",
+      "6.0.8",
+      "6.0.9",
+      "6.0.10",
+      "6.0.11",
+      "6.0.12",
+      "6.0.13",
+      "6.0.14",
+      "6.0.15",
+      "6.0.16",
+      "6.0.17",
+      "6.0.18",
+      "6.0.19",
+      "6.0.20",
+      "6.0.21",
+      "6.0.22",
+      "6.0.23",
+      "6.1.0",
+      "6.1.1",
+      "6.1.2",
+      "6.1.3",
+      "6.1.4",
+      "6.1.5",
+      "6.1.6",
+      "6.1.7",
+      "6.1.8",
+      "6.1.9",
+      "6.1.10",
+      "6.1.11",
+      "6.1.12",
+      "6.1.13",
+      "6.1.14",
+      "6.1.15",
+      "6.1.16",
+      "6.1.17",
+      "6.1.18",
+      "6.1.19",
+      "6.1.20",
+      "6.1.21",
+      "6.2.0",
+      "6.2.1",
+      "6.2.2",
+      "6.2.3",
+      "6.2.4",
+      "6.2.5",
+      "6.2.6",
+      "6.2.7",
+      "6.2.8",
+      "6.2.9",
+      "6.2.10",
+      "6.2.11",
+      "6.2.12",
+      "6.2.13",
+      "6.2.14",
+      "6.2.15",
+      "6.2.16",
+      "6.2.17",
+      "6.2.18",
+      "6.2.19"
+    ],
+    "allowed-packages" : [
+      "org.springframework"
+    ]
+  },
+  {
+    "metadata-version" : "3.0.5.RELEASE",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
+    "repository-url" : "https://github.com/spring-projects/spring-framework",
+    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/org.springframework.test/src/test/java",
+    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/javadoc-api/org/springframework/test/package-summary.html",
+    "description" : "Spring Test provides testing support for Spring applications, including mock objects and integration testing utilities for the Spring TestContext Framework. It helps developers run unit and integration tests that load and manage Spring application contexts across common Java testing frameworks.",
+    "tested-versions" : [
+      "3.0.5.RELEASE",
+      "3.0.6.RELEASE",
+      "3.0.7.RELEASE",
+      "3.1.0.RELEASE",
+      "3.1.1.RELEASE",
+      "3.1.2.RELEASE",
+      "3.1.3.RELEASE",
+      "3.1.4.RELEASE",
+      "3.2.0.RELEASE",
+      "3.2.1.RELEASE",
+      "3.2.2.RELEASE",
+      "3.2.3.RELEASE",
+      "3.2.4.RELEASE",
+      "3.2.5.RELEASE",
+      "3.2.6.RELEASE",
+      "3.2.7.RELEASE",
+      "3.2.8.RELEASE",
+      "3.2.9.RELEASE",
+      "3.2.10.RELEASE",
+      "3.2.11.RELEASE",
+      "3.2.12.RELEASE",
+      "3.2.13.RELEASE",
+      "3.2.14.RELEASE",
+      "3.2.15.RELEASE",
+      "3.2.16.RELEASE",
+      "3.2.17.RELEASE",
+      "3.2.18.RELEASE",
+      "4.0.0.RELEASE",
+      "4.0.1.RELEASE",
+      "4.0.2.RELEASE",
+      "4.0.3.RELEASE",
+      "4.0.4.RELEASE",
+      "4.0.5.RELEASE",
+      "4.0.6.RELEASE",
+      "4.0.7.RELEASE",
+      "4.0.8.RELEASE",
+      "4.0.9.RELEASE",
+      "4.1.0.RELEASE",
+      "4.1.1.RELEASE",
+      "4.1.2.RELEASE",
+      "4.1.3.RELEASE",
+      "4.1.4.RELEASE",
+      "4.1.5.RELEASE",
+      "4.1.6.RELEASE",
+      "4.1.7.RELEASE",
+      "4.1.8.RELEASE",
+      "4.1.9.RELEASE",
+      "4.2.0.RELEASE",
+      "4.2.1.RELEASE",
+      "4.2.2.RELEASE",
+      "4.2.3.RELEASE",
+      "4.2.4.RELEASE",
+      "4.2.5.RELEASE",
+      "4.2.6.RELEASE",
+      "4.2.7.RELEASE",
+      "4.2.8.RELEASE",
+      "4.2.9.RELEASE",
+      "4.3.0.RELEASE",
+      "4.3.1.RELEASE",
+      "4.3.2.RELEASE",
+      "4.3.3.RELEASE",
+      "4.3.4.RELEASE",
+      "4.3.5.RELEASE",
+      "4.3.6.RELEASE",
+      "4.3.7.RELEASE",
+      "4.3.8.RELEASE",
+      "4.3.9.RELEASE",
+      "4.3.10.RELEASE",
+      "4.3.11.RELEASE",
+      "4.3.12.RELEASE",
+      "4.3.13.RELEASE",
+      "4.3.14.RELEASE",
+      "4.3.15.RELEASE",
+      "4.3.16.RELEASE",
+      "4.3.17.RELEASE",
+      "4.3.18.RELEASE",
+      "4.3.19.RELEASE",
+      "4.3.20.RELEASE",
+      "4.3.21.RELEASE",
+      "4.3.22.RELEASE",
+      "4.3.23.RELEASE",
+      "4.3.24.RELEASE",
+      "4.3.25.RELEASE",
+      "4.3.26.RELEASE",
+      "4.3.27.RELEASE",
+      "4.3.28.RELEASE",
+      "4.3.29.RELEASE",
+      "4.3.30.RELEASE",
+      "5.0.0.RELEASE",
+      "5.0.1.RELEASE",
+      "5.0.2.RELEASE",
+      "5.0.3.RELEASE",
+      "5.0.4.RELEASE",
+      "5.0.5.RELEASE",
+      "5.0.6.RELEASE",
+      "5.0.7.RELEASE",
+      "5.0.8.RELEASE",
+      "5.0.9.RELEASE",
+      "5.0.10.RELEASE",
+      "5.0.11.RELEASE",
+      "5.0.12.RELEASE",
+      "5.0.13.RELEASE",
+      "5.0.14.RELEASE",
+      "5.0.15.RELEASE",
+      "5.0.16.RELEASE",
+      "5.0.17.RELEASE",
+      "5.0.18.RELEASE",
+      "5.0.19.RELEASE",
+      "5.0.20.RELEASE",
+      "5.1.0.RELEASE",
+      "5.1.1.RELEASE",
+      "5.1.2.RELEASE",
+      "5.1.3.RELEASE",
+      "5.1.4.RELEASE",
+      "5.1.5.RELEASE",
+      "5.1.6.RELEASE",
+      "5.1.7.RELEASE",
+      "5.1.8.RELEASE",
+      "5.1.9.RELEASE",
+      "5.1.10.RELEASE",
+      "5.1.11.RELEASE",
+      "5.1.12.RELEASE",
+
+web search: 
+web search: Maven Central org.springframework spring-test 7.0.0 sources jar
+web search: 
+web search: https://central.sonatype.com/artifact/org.springframework/spring-test/7.0.0
+web search: 
+web search: site:docs.spring.io/spring-framework/docs/7.0.0 testing.html Spring Framework 7.0.0
+codex
+The local entry is empty for `7.0.0`; the older Spring entry gives useful patterns, but I’m checking 7.0-specific docs because Spring’s documentation URL layout changed around newer releases.
+exec
+/bin/bash -lc "curl -sSfL https://repo.maven.apache.org/maven2/org/springframework/spring-test/7.0.0/ | sed -n '1,160p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/springframework/spring-test/7.0.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/springframework/spring-test/7.0.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="spring-test-7.0.0-javadoc.jar" title="spring-test-7.0.0-javadoc.jar">spring-test-7.0.0-javadoc.jar</a>                     2025-11-13 10:26   7038253      
+<a href="spring-test-7.0.0-javadoc.jar.asc" title="spring-test-7.0.0-javadoc.jar.asc">spring-test-7.0.0-javadoc.jar.asc</a>                 2025-11-13 10:26       833      
+<a href="spring-test-7.0.0-javadoc.jar.md5" title="spring-test-7.0.0-javadoc.jar.md5">spring-test-7.0.0-javadoc.jar.md5</a>                 2025-11-13 10:26        32      
+<a href="spring-test-7.0.0-javadoc.jar.sha1" title="spring-test-7.0.0-javadoc.jar.sha1">spring-test-7.0.0-javadoc.jar.sha1</a>                2025-11-13 10:26        40      
+<a href="spring-test-7.0.0-sources.jar" title="spring-test-7.0.0-sources.jar">spring-test-7.0.0-sources.jar</a>                     2025-11-13 10:26    871767      
+<a href="spring-test-7.0.0-sources.jar.asc" title="spring-test-7.0.0-sources.jar.asc">spring-test-7.0.0-sources.jar.asc</a>                 2025-11-13 10:26       833      
+<a href="spring-test-7.0.0-sources.jar.md5" title="spring-test-7.0.0-sources.jar.md5">spring-test-7.0.0-sources.jar.md5</a>                 2025-11-13 10:26        32      
+<a href="spring-test-7.0.0-sources.jar.sha1" title="spring-test-7.0.0-sources.jar.sha1">spring-test-7.0.0-sources.jar.sha1</a>                2025-11-13 10:26        40      
+<a href="spring-test-7.0.0.jar" title="spring-test-7.0.0.jar">spring-test-7.0.0.jar</a>                             2025-11-13 10:26   1098610      
+<a href="spring-test-7.0.0.jar.asc" title="spring-test-7.0.0.jar.asc">spring-test-7.0.0.jar.asc</a>                         2025-11-13 10:26       833      
+<a href="spring-test-7.0.0.jar.md5" title="spring-test-7.0.0.jar.md5">spring-test-7.0.0.jar.md5</a>                         2025-11-13 10:26        32      
+<a href="spring-test-7.0.0.jar.sha1" title="spring-test-7.0.0.jar.sha1">spring-test-7.0.0.jar.sha1</a>                        2025-11-13 10:26        40      
+<a href="spring-test-7.0.0.module" title="spring-test-7.0.0.module">spring-test-7.0.0.module</a>                          2025-11-13 10:26      2512      
+<a href="spring-test-7.0.0.module.asc" title="spring-test-7.0.0.module.asc">spring-test-7.0.0.module.asc</a>                      2025-11-13 10:26       833      
+<a href="spring-test-7.0.0.module.md5" title="spring-test-7.0.0.module.md5">spring-test-7.0.0.module.md5</a>                      2025-11-13 10:26        32      
+<a href="spring-test-7.0.0.module.sha1" title="spring-test-7.0.0.module.sha1">spring-test-7.0.0.module.sha1</a>                     2025-11-13 10:26        40      
+<a href="spring-test-7.0.0.pom" title="spring-test-7.0.0.pom">spring-test-7.0.0.pom</a>                             2025-11-13 10:26      2059      
+<a href="spring-test-7.0.0.pom.asc" title="spring-test-7.0.0.pom.asc">spring-test-7.0.0.pom.asc</a>                         2025-11-13 10:26       833      
+<a href="spring-test-7.0.0.pom.md5" title="spring-test-7.0.0.pom.md5">spring-test-7.0.0.pom.md5</a>                         2025-11-13 10:26        32      
+<a href="spring-test-7.0.0.pom.sha1" title="spring-test-7.0.0.pom.sha1">spring-test-7.0.0.pom.sha1</a>                        2025-11-13 10:26        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/bin/bash -lc "for u in \\
+  https://repo.maven.apache.org/maven2/org/springframework/spring-test/7.0.0/spring-test-7.0.0-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/springframework/spring-test/7.0.0/spring-test-7.0.0-test-sources.jar \\
+  https://github.com/spring-projects/spring-framework/tree/v7.0.0/spring-test/src/test/java \\
+  https://docs.spring.io/spring-framework/docs/7.0.0/reference/html/testing.html \\
+  https://docs.spring.io/spring-framework/reference/7.0/testing.html \\
+  https://docs.spring.io/spring-framework/docs/7.0.0/javadoc-api/org/springframework/test/package-summary.html; do
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$u")
+  printf '"'%s %s\\n' \""'$code" "$u"
+done' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457
+ succeeded in 2784ms:
+200 https://repo.maven.apache.org/maven2/org/springframework/spring-test/7.0.0/spring-test-7.0.0-sources.jar
+404 https://repo.maven.apache.org/maven2/org/springframework/spring-test/7.0.0/spring-test-7.0.0-test-sources.jar
+200 https://github.com/spring-projects/spring-framework/tree/v7.0.0/spring-test/src/test/java
+200 https://docs.spring.io/spring-framework/docs/7.0.0/reference/html/testing.html
+200 https://docs.spring.io/spring-framework/reference/7.0/testing.html
+404 https://docs.spring.io/spring-framework/docs/7.0.0/javadoc-api/org/springframework/test/package-summary.html
+
+exec
+/bin/bash -lc "curl -sSfL https://repo.maven.apache.org/maven2/org/springframework/spring-test/7.0.0/spring-test-7.0.0.pom | sed -n '1,220p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.springframework</groupId>
+  <artifactId>spring-test</artifactId>
+  <version>7.0.0</version>
+  <name>Spring TestContext Framework</name>
+  <description>Spring TestContext Framework</description>
+  <url>https://github.com/spring-projects/spring-framework</url>
+  <organization>
+    <name>Spring IO</name>
+    <url>https://spring.io/projects/spring-framework</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>jhoeller</id>
+      <name>Juergen Hoeller</name>
+      <email>juergen.hoeller@broadcom.com</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/spring-projects/spring-framework</connection>
+    <developerConnection>scm:git:git://github.com/spring-projects/spring-framework</developerConnection>
+    <url>https://github.com/spring-projects/spring-framework</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/spring-projects/spring-framework/issues</url>
+  </issueManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>7.0.0</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/bin/bash -lc "curl -sSfL https://docs.spring.io/spring-framework/docs/7.0.0/reference/html/testing.html | rg -n '<title>|Testing|Spring Test|TestContext' | sed -n '1,40p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457
+ succeeded in 0ms:
+3:    <title>Redirecting...</title>
+
+exec
+/bin/bash -lc "curl -sSfL https://github.com/spring-projects/spring-framework/tree/v7.0.0/spring-test/src/test/java | rg -n 'spring-test|src/test/java|org.springframework' | sed -n '1,20p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457
+ succeeded in 260ms:
+158:  <title>spring-framework/spring-test/src/test/java at v7.0.0 · spring-projects/spring-framework · GitHub</title>
+212:    <meta name="apple-itunes-app" content="app-id=1477376905, app-argument=https://github.com/spring-projects/spring-framework/tree/v7.0.0/spring-test/src/test/java" />
+214:      <meta name="twitter:image" content="https://opengraph.githubassets.com/77bc7a02e5b13fab276cc95999f8f0d8c15475a40bf7813867acd6d00c05e44c/spring-projects/spring-framework" /><meta name="twitter:site" content="@github" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:title" content="spring-framework/spring-test/src/test/java at v7.0.0 · spring-projects/spring-framework" /><meta name="twitter:description" content="Spring Framework. Contribute to spring-projects/spring-framework development by creating an account on GitHub." />
+215:  <meta property="og:image" content="https://opengraph.githubassets.com/77bc7a02e5b13fab276cc95999f8f0d8c15475a40bf7813867acd6d00c05e44c/spring-projects/spring-framework" /><meta property="og:image:alt" content="Spring Framework. Contribute to spring-projects/spring-framework development by creating an account on GitHub." /><meta property="og:image:width" content="1200" /><meta property="og:image:height" content="600" /><meta property="og:site_name" content="GitHub" /><meta property="og:type" content="object" /><meta property="og:title" content="spring-framework/spring-test/src/test/java at v7.0.0 · spring-projects/spring-framework" /><meta property="og:url" content="https://github.com/spring-projects/spring-framework/tree/v7.0.0/spring-test/src/test/java" /><meta property="og:description" content="Spring Framework. Contribute to spring-projects/spring-framework development by creating an account on GitHub." />
+347:            href="/login?return_to=https%3A%2F%2Fgithub.com%2Fspring-projects%2Fspring-framework%2Ftree%2Fv7.0.0%2Fspring-test%2Fsrc%2Ftest%2Fjava"
+349:            data-hydro-click="{&quot;event_type&quot;:&quot;authentication.click&quot;,&quot;payload&quot;:{&quot;location_in_page&quot;:&quot;site header menu&quot;,&quot;repository_id&quot;:null,&quot;auth_type&quot;:&quot;SIGN_UP&quot;,&quot;originating_url&quot;:&quot;https://github.com/spring-projects/spring-framework/tree/v7.0.0/spring-test/src/test/java&quot;,&quot;user_id&quot;:null}}" data-hydro-click-hmac="6f4cea77d284f52b041329c41e55d1271d0f1464a65cc39e0e1edcfaa9623a61"
+851:                href="/login?return_to=https%3A%2F%2Fgithub.com%2Fspring-projects%2Fspring-framework%2Ftree%2Fv7.0.0%2Fspring-test%2Fsrc%2Ftest%2Fjava"
+854:                data-hydro-click="{&quot;event_type&quot;:&quot;authentication.click&quot;,&quot;payload&quot;:{&quot;location_in_page&quot;:&quot;site header menu&quot;,&quot;repository_id&quot;:null,&quot;auth_type&quot;:&quot;SIGN_UP&quot;,&quot;originating_url&quot;:&quot;https://github.com/spring-projects/spring-framework/tree/v7.0.0/spring-test/src/test/java&quot;,&quot;user_id&quot;:null}}" data-hydro-click-hmac="6f4cea77d284f52b041329c41e55d1271d0f1464a65cc39e0e1edcfaa9623a61"
+863:                data-hydro-click="{&quot;event_type&quot;:&quot;authentication.click&quot;,&quot;payload&quot;:{&quot;location_in_page&quot;:&quot;site header menu&quot;,&quot;repository_id&quot;:null,&quot;auth_type&quot;:&quot;SIGN_UP&quot;,&quot;originating_url&quot;:&quot;https://github.com/spring-projects/spring-framework/tree/v7.0.0/spring-test/src/test/java&quot;,&quot;user_id&quot;:null}}" data-hydro-click-hmac="6f4cea77d284f52b041329c41e55d1271d0f1464a65cc39e0e1edcfaa9623a61"
+1017:            <a href="/login?return_to=%2Fspring-projects%2Fspring-framework" rel="nofollow" id="repository-details-watch-button" data-hydro-click="{&quot;event_type&quot;:&quot;authentication.click&quot;,&quot;payload&quot;:{&quot;location_in_page&quot;:&quot;notification subscription menu watch&quot;,&quot;repository_id&quot;:null,&quot;auth_type&quot;:&quot;LOG_IN&quot;,&quot;originating_url&quot;:&quot;https://github.com/spring-projects/spring-framework/tree/v7.0.0/spring-test/src/test/java&quot;,&quot;user_id&quot;:null}}" data-hydro-click-hmac="0c04d64f9ad6fcea80c74c9077a682bb6a94db19e80caff11be009ebab182743" aria-label="You must be signed in to change notification settings" data-view-component="true" class="btn-sm btn">    <svg aria-hidden="true" data-component="Octicon" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-bell mr-2 tmp-mr-2">
+1025:          <a icon="repo-forked" id="fork-button" href="/login?return_to=%2Fspring-projects%2Fspring-framework" rel="nofollow" data-hydro-click="{&quot;event_type&quot;:&quot;authentication.click&quot;,&quot;payload&quot;:{&quot;location_in_page&quot;:&quot;repo details fork button&quot;,&quot;repository_id&quot;:1148753,&quot;auth_type&quot;:&quot;LOG_IN&quot;,&quot;originating_url&quot;:&quot;https://github.com/spring-projects/spring-framework/tree/v7.0.0/spring-test/src/test/java&quot;,&quot;user_id&quot;:null}}" data-hydro-click-hmac="704695aed9012a8d841a5001adcb67206828d262c2c7b5ea5b4706f93b3c74ab" data-view-component="true" class="btn-sm btn">    <svg aria-hidden="true" data-component="Octicon" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-repo-forked mr-2 tmp-mr-2">
+1034:        <a href="/login?return_to=%2Fspring-projects%2Fspring-framework" rel="nofollow" data-hydro-click="{&quot;event_type&quot;:&quot;authentication.click&quot;,&quot;payload&quot;:{&quot;location_in_page&quot;:&quot;star button&quot;,&quot;repository_id&quot;:1148753,&quot;auth_type&quot;:&quot;LOG_IN&quot;,&quot;originating_url&quot;:&quot;https://github.com/spring-projects/spring-framework/tree/v7.0.0/spring-test/src/test/java&quot;,&quot;user_id&quot;:null}}" data-hydro-click-hmac="17aa199ed24a6d06c7f1c5dc21b764ceb6af30e3a9a861568de153fa7a50e377" aria-label="You must be signed in to star a repository" data-view-component="true" class="tooltipped tooltipped-sw btn-sm btn">    <svg aria-hidden="true" data-component="Octicon" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-star v-align-text-bottom d-inline-block mr-2 tmp-mr-2">
+1299:  initial-path="/spring-projects/spring-framework/tree/v7.0.0/spring-test/src/test/java"
+1309:  <script type="application/json" data-target="react-app.embeddedData">{"payload":{"codeViewTreeRoute":{"path":"spring-test/src/test/java","refInfo":{"name":"v7.0.0","listCacheKey":"v0:1780939265.0","canEdit":false,"refType":"tag","currentOid":"fe00848be255db1455f0189d9ff28661f301be36"},"tree":{"items":[{"name":"org/springframework","path":"spring-test/src/test/java/org/springframework","contentType":"directory","hasSimplifiedPath":true}],"totalCount":1,"templateDirectorySuggestionUrl":null,"readme":null,"showBranchInfobar":false},"userNameDisplayConfiguration":"handle","treeExpanded":true,"symbolsExpanded":false,"copilotSWEAgentEnabled":false},"codeViewLayoutRoute":{"repo":{"id":1148753,"defaultBranch":"main","name":"spring-framework","ownerLogin":"spring-projects","currentUserCanPush":false,"isFork":false,"isEmpty":false,"createdAt":"2010-12-08T04:04:45.000Z","ownerAvatar":"https://avatars.githubusercontent.com/u/317776?v=4","public":true,"private":false,"isOrgOwned":true},"currentUser":null,"uploadToken":"17M0rQnnFK9binMNZopOkwd-wRun1itMnwLRx5PubCpTiU7lEE2mACuUB8zd48Mq7oqRhfw_0fWgeZzPJDTPmg","allShortcutsEnabled":false,"treeExpanded":true,"path":"spring-test/src/test/java","symbolsExpanded":false,"refInfo":{"name":"v7.0.0","listCacheKey":"v0:1780939265.0","canEdit":false,"currentOid":"fe00848be255db1455f0189d9ff28661f301be36"},"helpUrl":"https://docs.github.com","findFileWorkerPath":"/assets-cdn/worker/find-file-worker-fcacb4fa59227001.js","findInFileWorkerPath":"/assets-cdn/worker/find-in-file-worker-94741d92665be784.js","githubDevUrl":null},"codeViewFileTreeLayoutRoute":{"fileTree":{"spring-test/src/test/java":{"items":[{"name":"org","path":"spring-test/src/test/java/org","contentType":"directory"}],"totalCount":1},"spring-test/src/test":{"items":[{"name":"java","path":"spring-test/src/test/java","contentType":"directory"},{"name":"kotlin","path":"spring-test/src/test/kotlin","contentType":"directory"},{"name":"resources","path":"spring-test/src/test/resources","contentType":"directory"},{"name":"webapp","path":"spring-test/src/test/webapp","contentType":"directory"}],"totalCount":4},"spring-test/src":{"items":[{"name":"main","path":"spring-test/src/main","contentType":"directory"},{"name":"test","path":"spring-test/src/test","contentType":"directory"}],"totalCount":2},"spring-test":{"items":[{"name":"src","path":"spring-test/src","contentType":"directory"},{"name":".springBeans","path":"spring-test/.springBeans","contentType":"file"},{"name":"spring-test.gradle","path":"spring-test/spring-test.gradle","contentType":"file"}],"totalCount":3},"":{"items":[{"name":".github","path":".github","contentType":"directory"},{"name":".idea","path":".idea","contentType":"directory"},{"name":"buildSrc","path":"buildSrc","contentType":"directory"},{"name":"framework-api","path":"framework-api","contentType":"directory"},{"name":"framework-bom","path":"framework-bom","contentType":"directory"},{"name":"framework-docs","path":"framework-docs","contentType":"directory"},{"name":"framework-platform","path":"framework-platform","contentType":"directory"},{"name":"gradle","path":"gradle","contentType":"directory"},{"name":"integration-tests","path":"integration-tests","contentType":"directory"},{"name":"spring-aop","path":"spring-aop","contentType":"directory"},{"name":"spring-aspects","path":"spring-aspects","contentType":"directory"},{"name":"spring-beans","path":"spring-beans","contentType":"directory"},{"name":"spring-context-indexer","path":"spring-context-indexer","contentType":"directory"},{"name":"spring-context-support","path":"spring-context-support","contentType":"directory"},{"name":"spring-context","path":"spring-context","contentType":"directory"},{"name":"spring-core-test","path":"spring-core-test","contentType":"directory"},{"name":"spring-core","path":"spring-core","contentType":"directory"},{"name":"spring-expression","path":"spring-expression","contentType":"directory"},{"name":"spring-instrument","path":"spring-instrument","contentType":"directory"},{"name":"spring-jdbc","path":"spring-jdbc","contentType":"directory"},{"name":"spring-jms","path":"spring-jms","contentType":"directory"},{"name":"spring-messaging","path":"spring-messaging","contentType":"directory"},{"name":"spring-orm","path":"spring-orm","contentType":"directory"},{"name":"spring-oxm","path":"spring-oxm","contentType":"directory"},{"name":"spring-r2dbc","path":"spring-r2dbc","contentType":"directory"},{"name":"spring-test","path":"spring-test","contentType":"directory"},{"name":"spring-tx","path":"spring-tx","contentType":"directory"},{"name":"spring-web","path":"spring-web","contentType":"directory"},{"name":"spring-webflux","path":"spring-webflux","contentType":"directory"},{"name":"spring-webmvc","path":"spring-webmvc","contentType":"directory"},{"name":"spring-websocket","path":"spring-websocket","contentType":"directory"},{"name":"src","path":"src","contentType":"directory"},{"name":".editorconfig","path":".editorconfig","contentType":"file"},{"name":".gitattributes","path":".gitattributes","contentType":"file"},{"name":".gitignore","path":".gitignore","contentType":"file"},{"name":".sdkmanrc","path":".sdkmanrc","contentType":"file"},{"name":"CONTRIBUTING.md","path":"CONTRIBUTING.md","contentType":"file"},{"name":"LICENSE.txt","path":"LICENSE.txt","contentType":"file"},{"name":"README.md","path":"README.md","contentType":"file"},{"name":"SECURITY.md","path":"SECURITY.md","contentType":"file"},{"name":"build.gradle","path":"build.gradle","contentType":"file"},{"name":"gradle.properties","path":"gradle.properties","contentType":"file"},{"name":"gradlew","path":"gradlew","contentType":"file"},{"name":"gradlew.bat","path":"gradlew.bat","contentType":"file"},{"name":"import-into-eclipse.md","path":"import-into-eclipse.md","contentType":"file"},{"name":"import-into-idea.md","path":"import-into-idea.md","contentType":"file"},{"name":"settings.gradle","path":"settings.gradle","contentType":"file"}],"totalCount":47}},"fileTreeProcessingTime":45.785987,"foldersToFetch":[]},"csrf_tokens":{"/spring-projects/spring-framework/branches":{"post":"6EZlD974s-c20PbuoK-KXkVKIvboH-IH6gLK6JRWQv4ItHNB9HR8EmZz2Q1AwKsjy776TKTk1UpUqJMw18eRgg"},"/spring-projects/spring-framework/branches/fetch_and_merge/v7.0.0":{"post":"nvVY2KbFUAgQmtkS5B91oGAspxpnQC_K2QVzURjlvks9GGNOIAFaF895JhJmvqIa4CglVDVTJHKFcrZrtnIbTQ"},"/spring-projects/spring-framework/branches/fetch_and_merge/v7.0.0?discard_changes=true":{"post":"I2MzI6p7SxnSRJroKH9gvoE2OwxlGedDLZqWdPrN3UyAjgi1LL9BBg2nZeiq3rcEATK5QjcK7Ptx7VNOVFp4Sg"}}},"title":"spring-framework/spring-test/src/test/java at v7.0.0 · spring-projects/spring-framework","appPayload":{},"meta":{"title":"spring-framework/spring-test/src/test/java at v7.0.0 · spring-projects/spring-framework"}}</script>
+1310:  <div data-target="react-app.reactRoot"><meta name="github-code-view-meta-stats" id="github-code-view-meta-stats" data-hydrostats="publish"/> <!-- --> <a hidden="" id="code-view-repo-link" href="/spring-projects/spring-framework" data-discover="true"></a> <div class="d-none"></div><div><div style="--spacing:var(--spacing-none)" class="prc-PageLayout-PageLayoutRoot--KH-d"><div class="prc-PageLayout-PageLayoutWrapper-2BhU2" data-width="full"><div class="prc-PageLayout-PageLayoutContent-BneH9"><div class="CodeViewFileTreeLayout-module__sidebar__n_Aau" tabindex="0"><div class="prc-PageLayout-PaneWrapper-pHPop ReposFileTreePane-module__Pane__rBZpI ReposFileTreePane-module__HideTree__AYZnm ReposFileTreePane-module__HidePane__VHAVt" style="--offset-header:0px;--spacing-row:var(--spacing-none);--spacing-column:var(--spacing-none)" data-is-hidden="false" data-position="start" data-sticky="true"><div class="prc-PageLayout-HorizontalDivider-JLVqp prc-PageLayout-PaneHorizontalDivider-9tbnE" data-variant-regular="none" data-variant-narrow="none" data-position="start" style="--spacing-divider:var(--spacing-none);--spacing:var(--spacing-none)"></div><div class="prc-PageLayout-Pane-AyzHK" data-resizable="true" style="--spacing:var(--spacing-none);--pane-min-width:256px;--pane-max-width:calc(100vw - var(--pane-max-width-diff));--pane-width-size:var(--pane-width-large);--pane-width:320px"></div><div class="prc-PageLayout-VerticalDivider-9QRmK prc-PageLayout-PaneVerticalDivider-le57g" data-variant-narrow="none" data-variant-regular="line" data-variant-wide="line" data-position="start" style="--spacing:var(--spacing-none)"><div class="prc-PageLayout-DraggableHandle-9s6B4" role="slider" aria-label="Draggable pane splitter" aria-valuemin="256" aria-valuemax="600" aria-valuenow="320" aria-valuetext="Pane width 320 pixels" tabindex="0"></div></div></div></div><div class="prc-PageLayout-ContentWrapper-gR9eG"><div class="prc-PageLayout-Content-xWL-A" data-width="full" style="--spacing:var(--spacing-none)"><div class="SharedPageLayout-module__content__IwGAp" data-selector="repos-split-pane-content" tabindex="0"><div class="container CodeViewHeader-module__Box__JkPOb"><div class="CodeViewHeader-module__StickyHeader__Qn7UN" id="StickyHeader"><div class="CodeViewHeader-module__Box_1__SbNDV"><div class="CodeViewHeader-module__Box_2__TB46f"><div class="react-code-view-header-wrap--narrow CodeViewHeader-module__Box_3__q1zUL"><div class="CodeViewHeader-module__treeToggleWrapper__RQ__9"><h2 class="use-tree-pane-module__Heading__s4QbZ prc-Heading-Heading-MtWFE" data-component="Heading"><button data-component="Button" type="button" aria-label="Expand file tree" data-testid="expand-file-tree-button-mobile" class="prc-Button-ButtonBase-9n-Xk ExpandFileTreeButton-module__Button_1__Svs95" data-loading="false" data-size="medium" data-variant="invisible"><span data-component="buttonContent" data-align="center" class="prc-Button-ButtonContent-Iohp5"><span data-component="leadingVisual" class="prc-Button-Visual-YNt2F prc-Button-VisualWrap-E4cnq"><svg data-component="Octicon" aria-hidden="true" focusable="false" class="octicon octicon-arrow-left" viewBox="0 0 16 16" width="16" height="16" fill="currentColor" display="inline-block" overflow="visible" style="vertical-align:text-bottom"><path d="M7.78 12.53a.75.75 0 0 1-1.06 0L2.47 8.28a.75.75 0 0 1 0-1.06l4.25-4.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L4.81 7h7.44a.75.75 0 0 1 0 1.5H4.81l2.97 2.97a.75.75 0 0 1 0 1.06Z"></path></svg></span><span data-component="text" class="prc-Button-Label-FWkx3">Files</span></span></button><button data-component="IconButton" type="button" data-testid="expand-file-tree-button" aria-controls="repos-file-tree" class="prc-Button-ButtonBase-9n-Xk position-relative ExpandFileTreeButton-module__expandButton__hDOcv ExpandFileTreeButton-module__filesButtonBreakpoint__zEvz3 fgColor-muted prc-Button-IconButton-fyge7" data-loading="false" data-no-visuals="true" data-size="medium" data-variant="invisible" aria-labelledby="_R_imkjal1d_"><svg data-component="Octicon" aria-hidden="true" focusable="false" class="octicon octicon-sidebar-collapse" viewBox="0 0 16 16" width="16" height="16" fill="currentColor" display="inline-block" overflow="visible" style="vertical-align:text-bottom"><path d="M6.823 7.823a.25.25 0 0 1 0 .354l-2.396 2.396A.25.25 0 0 1 4 10.396V5.604a.25.25 0 0 1 .427-.177Z"></path><path d="M1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0 1 14.25 16H1.75A1.75 1.75 0 0 1 0 14.25V1.75C0 .784.784 0 1.75 0ZM1.5 1.75v12.5c0 .138.112.25.25.25H9.5v-13H1.75a.25.25 0 0 0-.25.25ZM11 14.5h3.25a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25H11Z"></path></svg></button><span class="prc-TooltipV2-Tooltip-tLeuB" data-direction="se" data-component="Tooltip" aria-hidden="true" id="_R_imkjal1d_">Expand file tree</span><div class="d-none"></div></h2></div><div class="react-code-view-header-mb--narrow mr-2"><button data-component="Button" type="button" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-label="v7.0.0 branch" data-testid="anchor-button" data-icv-name="Switch branches/tags" class="prc-Button-ButtonBase-9n-Xk ref-selector-class RefSelectorAnchoredOverlay-module__RefSelectorOverlayBtn__a3WK3" data-loading="false" data-size="medium" data-variant="default" id="ref-picker-repos-header-ref-selector-wide"><span data-component="buttonContent" data-align="center" class="prc-Button-ButtonContent-Iohp5"><span data-component="text" class="prc-Button-Label-FWkx3"><div class="RefSelectorAnchoredOverlay-module__RefSelectorOverlayContainer__yaf4p"><div class="RefSelectorAnchoredOverlay-module__RefSelectorOverlayHeader__XtXRG"><svg data-component="Octicon" aria-hidden="true" focusable="false" class="octicon octicon-git-branch" viewBox="0 0 16 16" width="16" height="16" fill="currentColor" display="inline-block" overflow="visible" style="vertical-align:text-bottom"><path d="M9.5 3.25a2.25 2.25 0 1 1 3 2.122V6A2.5 2.5 0 0 1 10 8.5H6a1 1 0 0 0-1 1v1.128a2.251 2.251 0 1 1-1.5 0V5.372a2.25 2.25 0 1 1 1.5 0v1.836A2.493 2.493 0 0 1 6 7h4a1 1 0 0 0 1-1v-.628A2.25 2.25 0 0 1 9.5 3.25Zm-6 0a.75.75 0 1 0 1.5 0 .75.75 0 0 0-1.5 0Zm8.25-.75a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5ZM4.25 12a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Z"></path></svg></div><div style="max-width:125px" class="ref-selector-button-text-container RefSelectorAnchoredOverlay-module__RefSelectorBtnTextContainer__Di3rk"><span class="RefSelectorAnchoredOverlay-module__RefSelectorText__w_fmP"> <!-- -->v7.0.0</span></div></div></span><span data-component="trailingVisual" class="prc-Button-Visual-YNt2F prc-Button-VisualWrap-E4cnq"><svg data-component="Octicon" aria-hidden="true" focusable="false" class="octicon octicon-triangle-down" viewBox="0 0 16 16" width="16" height="16" fill="currentColor" display="inline-block" overflow="visible" style="vertical-align:text-bottom"><path d="m4.427 7.427 3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 11.396 7H4.604a.25.25 0 0 0-.177.427Z"></path></svg></span></span></button><div class="d-none"></div></div><div class="react-code-view-header-mb--narrow CodeViewHeader-module__Box_5__MQ0hL"><div class="Breadcrumb-module__container__Vxvev Breadcrumb-module__lg__Rjz0A"><nav data-testid="breadcrumbs" aria-labelledby="repos-header-breadcrumb-heading" id="repos-header-breadcrumb" class="Breadcrumb-module__nav__rQFDj"><h2 class="sr-only ScreenReaderHeading-module__userSelectNone__rwWIk prc-Heading-Heading-MtWFE" data-component="Heading" data-testid="screen-reader-heading" id="repos-header-breadcrumb-heading">Breadcrumbs</h2><ol class="Breadcrumb-module__list__ZH6zr"><li class="Breadcrumb-module__listItem__Ib0x_"><a class="Breadcrumb-module__repoLink__O2Nbs prc-Link-Link-9ZwDx" data-component="Link" data-testid="breadcrumbs-repo-link" href="/spring-projects/spring-framework/tree/v7.0.0" data-discover="true">spring-framework</a></li><li class="Breadcrumb-module__listItem__Ib0x_"><span class="Breadcrumb-module__separator__eNwsI Breadcrumb-module__lg__Rjz0A" aria-hidden="true">/</span><a class="Breadcrumb-module__directoryLink__kQy_t prc-Link-Link-9ZwDx" data-component="Link" href="/spring-projects/spring-framework/tree/v7.0.0/spring-test" data-discover="true">spring-test</a></li><li class="Breadcrumb-module__listItem__Ib0x_"><span class="Breadcrumb-module__separator__eNwsI Breadcrumb-module__lg__Rjz0A" aria-hidden="true">/</span><a class="Breadcrumb-module__directoryLink__kQy_t prc-Link-Link-9ZwDx" data-component="Link" href="/spring-projects/spring-framework/tree/v7.0.0/spring-test/src" data-discover="true">src</a></li><li class="Breadcrumb-module__listItem__Ib0x_"><span class="Breadcrumb-module__separator__eNwsI Breadcrumb-module__lg__Rjz0A" aria-hidden="true">/</span><a class="Breadcrumb-module__directoryLink__kQy_t prc-Link-Link-9ZwDx" data-component="Link" href="/spring-projects/spring-framework/tree/v7.0.0/spring-test/src/test" data-discover="true">test</a></li></ol></nav><div data-testid="breadcrumbs-filename" class="Breadcrumb-module__filename__equZR"><span class="Breadcrumb-module__separator__eNwsI Breadcrumb-module__lg__Rjz0A" aria-hidden="true">/</span><h1 class="Breadcrumb-module__filenameHeading__MNMtw Breadcrumb-module__lg__Rjz0A prc-Heading-Heading-MtWFE" data-component="Heading" tabindex="-1" id="file-name-id">java</h1><span class="Breadcrumb-module__separator__eNwsI Breadcrumb-module__lg__Rjz0A" aria-hidden="true">/</span></div><button data-component="IconButton" type="button" class="prc-Button-ButtonBase-9n-Xk ml-2 prc-Button-IconButton-fyge7" data-loading="false" data-no-visuals="true" data-size="small" data-variant="invisible" aria-labelledby="_R_umkjal1d_"><svg data-component="Octicon" aria-hidden="true" focusable="false" class="octicon octicon-copy" viewBox="0 0 16 16" width="16" height="16" fill="currentColor" display="inline-block" overflow="visible" style="vertical-align:text-bottom"><path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path></svg></button><span class="CopyToClipboardButton-module__tooltip__BhMvU prc-TooltipV2-Tooltip-tLeuB" data-direction="nw" data-component="Tooltip" aria-label="Copy path" aria-hidden="true" id="_R_umkjal1d_">Copy path</span></div></div></div><div class="react-code-view-header-element--wide"><div class="CodeViewHeader-module__Box_7___0R6c"><div class="d-flex gap-2"><h2 class="sr-only ScreenReaderHeading-module__userSelectNone__rwWIk prc-Heading-Heading-MtWFE" data-component="Heading" data-testid="screen-reader-heading">Directory actions</h2><div><div class="CodeViewHeader-module__FileResultsList__JDzUy"><span class="d-flex FileResultsList-module__FilesSearchBox__ivVkc TextInput-wrapper prc-components-TextInputWrapper-Hpdqi prc-components-TextInputBaseWrapper-wY-n0" data-no-trailing-action="true" data-component="TextInput" data-leading-visual="true" data-trailing-visual="true" aria-busy="false"><span class="TextInput-icon" id="_R_lj6kjal1d_" aria-hidden="true" data-component="TextInput.LeadingVisual"><svg data-component="Octicon" aria-hidden="true" focusable="false" class="octicon octicon-search" viewBox="0 0 16 16" width="16" height="16" fill="currentColor" display="inline-block" overflow="visible" style="vertical-align:text-bottom"><path d="M10.68 11.74a6 6 0 0 1-7.922-8.982 6 6 0 0 1 8.982 7.922l3.04 3.04a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215ZM11.5 7a4.499 4.499 0 1 0-8.997 0A4.499 4.499 0 0 0 11.5 7Z"></path></svg></span><input type="text" aria-label="Go to file" role="combobox" aria-controls="file-results-list" aria-expanded="false" aria-haspopup="dialog" autoCorrect="off" spellCheck="false" placeholder="Go to file" aria-describedby="_R_lj6kjal1d_ _R_lj6kjal1dH1_" data-component="input" class="prc-components-Input-IwWrt" value=""/><span class="TextInput-icon" id="_R_lj6kjal1dH1_" aria-hidden="true" data-component="TextInput.TrailingVisual"></span></span></div><div class="d-none"></div></div><div class="d-none"></div><h2 class="sr-only ScreenReaderHeading-module__userSelectNone__rwWIk prc-Heading-Heading-MtWFE" data-component="Heading" data-testid="screen-reader-heading">More options</h2><button data-component="IconButton" type="button" title="More options" data-testid="tree-overflow-menu-anchor" aria-haspopup="true" aria-expanded="false" tabindex="0" class="prc-Button-ButtonBase-9n-Xk CodeViewHeader-module__IconButton__PYSHU prc-Button-IconButton-fyge7" data-loading="false" data-no-visuals="true" data-size="medium" data-variant="default" aria-labelledby="_R_3sr6kjal1d_" id="_R_4r6kjal1d_"><svg data-component="Octicon" aria-hidden="true" focusable="false" class="octicon octicon-kebab-horizontal" viewBox="0 0 16 16" width="16" height="16" fill="currentColor" display="inline-block" overflow="visible" style="vertical-align:text-bottom"><path d="M8 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM1.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm13 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"></path></svg></button><span class="prc-TooltipV2-Tooltip-tLeuB" data-direction="s" data-component="Tooltip" aria-hidden="true" id="_R_3sr6kjal1d_">More options</span></div></div></div><div class="react-code-view-header-element--narrow"><div class="CodeViewHeader-module__Box_7___0R6c"><div class="d-flex gap-2"><h2 class="sr-only ScreenReaderHeading-module__userSelectNone__rwWIk prc-Heading-Heading-MtWFE" data-component="Heading" data-testid="screen-reader-heading">Directory actions</h2><div class="d-none"></div><h2 class="sr-only ScreenReaderHeading-module__userSelectNone__rwWIk prc-Heading-Heading-MtWFE" data-component="Heading" data-testid="screen-reader-heading">More options</h2><button data-component="IconButton" type="button" title="More options" data-testid="tree-overflow-menu-anchor" aria-haspopup="true" aria-expanded="false" tabindex="0" class="prc-Button-ButtonBase-9n-Xk CodeViewHeader-module__IconButton__PYSHU prc-Button-IconButton-fyge7" data-loading="false" data-no-visuals="true" data-size="medium" data-variant="default" aria-labelledby="_R_3srmkjal1d_" id="_R_4rmkjal1d_"><svg data-component="Octicon" aria-hidden="true" focusable="false" class="octicon octicon-kebab-horizontal" viewBox="0 0 16 16" width="16" height="16" fill="currentColor" display="inline-block" overflow="visible" style="vertical-align:text-bottom"><path d="M8 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM1.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm13 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"></path></svg></button><span class="prc-TooltipV2-Tooltip-tLeuB" data-direction="s" data-component="Tooltip" aria-hidden="true" id="_R_3srmkjal1d_">More options</span></div></div></div></div></div></div></div><div class="CodeView-module__contentWrapper__cG2JH"><div class="react-code-view-bottom-padding"></div><div class="d-flex flex-column border rounded-2 tmp-mb-3 pl-1"><div class="LatestCommit-module__Box__B25ZT"><h2 class="sr-only ScreenReaderHeading-module__userSelectNone__rwWIk prc-Heading-Heading-MtWFE" data-component="Heading" data-testid="screen-reader-heading">Latest commit</h2><div style="width:120px" class="Skeleton Skeleton--text" data-testid="loading"> </div><div class="d-flex flex-shrink-0 gap-2"><div data-testid="latest-commit-details" class="d-none d-sm-flex flex-items-center"></div><div class="d-flex gap-2"><h2 class="sr-only ScreenReaderHeading-module__userSelectNone__rwWIk prc-Heading-Heading-MtWFE" data-component="Heading" data-testid="screen-reader-heading">History</h2><a data-component="LinkButton" href="/spring-projects/spring-framework/commits/v7.0.0/spring-test/src/test/java" class="prc-Button-ButtonBase-9n-Xk d-none d-lg-flex LinkButton-module__linkButton__nFnov flex-items-center fgColor-default" data-loading="false" data-size="small" data-variant="invisible"><span data-component="buttonContent" data-align="center" class="prc-Button-ButtonContent-Iohp5"><span data-component="leadingVisual" class="prc-Button-Visual-YNt2F prc-Button-VisualWrap-E4cnq"><svg data-component="Octicon" aria-hidden="true" focusable="false" class="octicon octicon-history" viewBox="0 0 16 16" width="16" height="16" fill="currentColor" display="inline-block" overflow="visible" style="vertical-align:text-bottom"><path d="m.427 1.927 1.215 1.215a8.002 8.002 0 1 1-1.6 5.685.75.75 0 1 1 1.493-.154 6.5 6.5 0 1 0 1.18-4.458l1.358 1.358A.25.25 0 0 1 3.896 6H.25A.25.25 0 0 1 0 5.75V2.104a.25.25 0 0 1 .427-.177ZM7.75 4a.75.75 0 0 1 .75.75v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5A.75.75 0 0 1 7.75 4Z"></path></svg></span><span data-component="text" class="prc-Button-Label-FWkx3"><span class="fgColor-default">History</span></span></span></a><div class="d-sm-none"></div><div class="d-flex d-lg-none"><a data-component="LinkButton" aria-label="View commit history for this file." href="/spring-projects/spring-framework/commits/v7.0.0/spring-test/src/test/java" class="prc-Button-ButtonBase-9n-Xk LinkButton-module__linkButton__nFnov flex-items-center fgColor-default" data-loading="false" data-size="small" data-variant="invisible" aria-describedby="_R_4mjakjal1d_"><span data-component="buttonContent" data-align="center" class="prc-Button-ButtonContent-Iohp5"><span data-component="leadingVisual" class="prc-Button-Visual-YNt2F prc-Button-VisualWrap-E4cnq"><svg data-component="Octicon" aria-hidden="true" focusable="false" class="octicon octicon-history" viewBox="0 0 16 16" width="16" height="16" fill="currentColor" display="inline-block" overflow="visible" style="vertical-align:text-bottom"><path d="m.427 1.927 1.215 1.215a8.002 8.002 0 1 1-1.6 5.685.75.75 0 1 1 1.493-.154 6.5 6.5 0 1 0 1.18-4.458l1.358 1.358A.25.25 0 0 1 3.896 6H.25A.25.25 0 0 1 0 5.75V2.104a.25.25 0 0 1 .427-.177ZM7.75 4a.75.75 0 0 1 .75.75v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5A.75.75 0 0 1 7.75 4Z"></path></svg></span></span></a><span class="prc-TooltipV2-Tooltip-tLeuB" data-direction="s" data-component="Tooltip" role="tooltip" aria-hidden="true" id="_R_4mjakjal1d_">History</span></div></div></div></div></div><div class="react-blob-view-header-sticky FolderViewHeader-module__outerWrapper__fj8g_" style="top:0px;z-index:4;background:var(--bgColor-default, var(--color-canvas-default));position:sticky"><div class="FolderViewHeader-module__innerWrapper__R8Bfv FolderViewHeader-module__innerWrapperNotStickied__sdhul"><div class="FileNameStickyHeader-module__outerWrapper__ZL4Xc FileNameStickyHeader-module__outerWrapperHidden__Zpynk"><div class="FileNameStickyHeader-module__Box_1__Hazu5"><div class="FileNameStickyHeader-module__Box_2__hoolP"><div class="FileNameStickyHeader-module__Box_3__MVKsk"><button data-component="Button" type="button" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-label="v7.0.0 tag" data-testid="anchor-button" data-icv-name="Switch branches/tags" class="prc-Button-ButtonBase-9n-Xk ref-selector-class RefSelectorAnchoredOverlay-module__RefSelectorOverlayBtn__a3WK3" data-loading="false" data-size="medium" data-variant="default" id="ref-picker-repos-header-ref-selector"><span data-component="buttonContent" data-align="center" class="prc-Button-ButtonContent-Iohp5"><span data-component="text" class="prc-Button-Label-FWkx3"><div class="RefSelectorAnchoredOverlay-module__RefSelectorOverlayContainer__yaf4p"><div class="RefSelectorAnchoredOverlay-module__RefSelectorOverlayHeader__XtXRG"><svg data-component="Octicon" aria-hidden="true" focusable="false" class="octicon octicon-tag" viewBox="0 0 16 16" width="16" height="16" fill="currentColor" display="inline-block" overflow="visible" style="vertical-align:text-bottom"><path d="M1 7.775V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 0 1 0 2.474l-5.026 5.026a1.75 1.75 0 0 1-2.474 0l-6.25-6.25A1.752 1.752 0 0 1 1 7.775Zm1.5 0c0 .066.026.13.073.177l6.25 6.25a.25.25 0 0 0 .354 0l5.025-5.025a.25.25 0 0 0 0-.354l-6.25-6.25a.25.25 0 0 0-.177-.073H2.75a.25.25 0 0 0-.25.25ZM6 5a1 1 0 1 1 0 2 1 1 0 0 1 0-2Z"></path></svg></div><div style="max-width:125px" class="ref-selector-button-text-container RefSelectorAnchoredOverlay-module__RefSelectorBtnTextContainer__Di3rk"><span class="RefSelectorAnchoredOverlay-module__RefSelectorText__w_fmP"> <!-- -->v7.0.0</span></div></div></span><span data-component="trailingVisual" class="prc-Button-Visual-YNt2F prc-Button-VisualWrap-E4cnq"><svg data-component="Octicon" aria-hidden="true" focusable="false" class="octicon octicon-triangle-down" viewBox="0 0 16 16" width="16" height="16" fill="currentColor" display="inline-block" overflow="visible" style="vertical-align:text-bottom"><path d="m4.427 7.427 3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 11.396 7H4.604a.25.25 0 0 0-.177.427Z"></path></svg></span></span></button><div class="d-none"></div></div><div class="FileNameStickyHeader-module__Box_4__FLhtt"><div class="Breadcrumb-module__container__Vxvev Breadcrumb-module__md__Wb1Gs"><nav data-testid="breadcrumbs" aria-labelledby="sticky-breadcrumb-heading" id="sticky-breadcrumb" class="Breadcrumb-module__nav__rQFDj"><h2 class="sr-only ScreenReaderHeading-module__userSelectNone__rwWIk prc-Heading-Heading-MtWFE" data-component="Heading" data-testid="screen-reader-heading" id="sticky-breadcrumb-heading">Breadcrumbs</h2><ol class="Breadcrumb-module__list__ZH6zr"><li class="Breadcrumb-module__listItem__Ib0x_"><a class="Breadcrumb-module__repoLink__O2Nbs prc-Link-Link-9ZwDx" data-component="Link" data-testid="breadcrumbs-repo-link" href="/spring-projects/spring-framework/tree/v7.0.0" data-discover="true">spring-framework</a></li><li class="Breadcrumb-module__listItem__Ib0x_"><span class="Breadcrumb-module__separator__eNwsI Breadcrumb-module__md__Wb1Gs" aria-hidden="true">/</span><a class="Breadcrumb-module__directoryLink__kQy_t prc-Link-Link-9ZwDx" data-component="Link" href="/spring-projects/spring-framework/tree/v7.0.0/spring-test" data-discover="true">spring-test</a></li><li class="Breadcrumb-module__listItem__Ib0x_"><span class="Breadcrumb-module__separator__eNwsI Breadcrumb-module__md__Wb1Gs" aria-hidden="true">/</span><a class="Breadcrumb-module__directoryLink__kQy_t prc-Link-Link-9ZwDx" data-component="Link" href="/spring-projects/spring-framework/tree/v7.0.0/spring-test/src" data-discover="true">src</a></li><li class="Breadcrumb-module__listItem__Ib0x_"><span class="Breadcrumb-module__separator__eNwsI Breadcrumb-module__md__Wb1Gs" aria-hidden="true">/</span><a class="Breadcrumb-module__directoryLink__kQy_t prc-Link-Link-9ZwDx" data-component="Link" href="/spring-projects/spring-framework/tree/v7.0.0/spring-test/src/test" data-discover="true">test</a></li></ol></nav><div data-testid="breadcrumbs-filename" class="Breadcrumb-module__filename__equZR"><span class="Breadcrumb-module__separator__eNwsI Breadcrumb-module__md__Wb1Gs" aria-hidden="true">/</span><h1 class="Breadcrumb-module__filenameHeading__MNMtw Breadcrumb-module__md__Wb1Gs prc-Heading-Heading-MtWFE" data-component="Heading" tabindex="-1" id="sticky-file-name-id">java</h1><span class="Breadcrumb-module__separator__eNwsI Breadcrumb-module__md__Wb1Gs" aria-hidden="true">/</span></div></div></div></div><button data-component="Button" type="button" class="prc-Button-ButtonBase-9n-Xk FileNameStickyHeader-module__Button__LSEU_ FileNameStickyHeader-module__GoToTopButton__nxAFn" data-loading="false" data-size="small" data-variant="invisible"><span data-component="buttonContent" data-align="center" class="prc-Button-ButtonContent-Iohp5"><span data-component="leadingVisual" class="prc-Button-Visual-YNt2F prc-Button-VisualWrap-E4cnq"><svg data-component="Octicon" aria-hidden="true" focusable="false" class="octicon octicon-arrow-up" viewBox="0 0 16 16" width="16" height="16" fill="currentColor" display="inline-block" overflow="visible" style="vertical-align:text-bottom"><path d="M3.47 7.78a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0l4.25 4.25a.751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018L9 4.81v7.44a.75.75 0 0 1-1.5 0V4.81L4.53 7.78a.75.75 0 0 1-1.06 0Z"></path></svg></span><span data-component="text" class="prc-Button-Label-FWkx3">Top</span></span></button></div></div></div></div><div class="d-flex flex-column gap-3"><div data-hpc="true"><div class="d-none"></div><h2 class="sr-only ScreenReaderHeading-module__userSelectNone__rwWIk prc-Heading-Heading-MtWFE" data-component="Heading" data-testid="screen-reader-heading" id="folders-and-files">Folders and files</h2><table class="Table-module__Box__HZKiQ" aria-labelledby="folders-and-files"><thead class="Table-module__Box_1__VacXC"><tr class="Table-module__Box_2__PBp9s"><th colSpan="2" class="DirectoryContent-module__Box__iC_5e"><span class="text-bold">Name</span></th><th colSpan="1" class="DirectoryContent-module__Box_1__fuSBO"><span class="text-bold">Name</span></th><th class="hide-sm"><div class="width-fit prc-Truncate-Truncate-2G1eo" data-inline="true" title="Last commit message" style="--truncate-max-width:125px"><span class="text-bold">Last commit message</span></div></th><th colSpan="1" class="DirectoryContent-module__Box_2__Ccrx7"><div class="width-fit prc-Truncate-Truncate-2G1eo" data-inline="true" title="Last commit date" style="--truncate-max-width:125px"><span class="text-bold">Last commit date</span></div></th></tr></thead><tbody><tr id="folder-row-0" class="Table-module__Box_3__d9lz1"><td colSpan="3" class="f5 text-normal tmp-px-3"><h3 class="sr-only ScreenReaderHeading-module__userSelectNone__rwWIk prc-Heading-Heading-MtWFE" data-component="Heading" data-testid="screen-reader-heading">parent directory</h3><a class="DirectoryRow-module__PrimerLink__COEaW prc-Link-Link-9ZwDx" data-component="Link" data-muted="true" aria-label="Parent directory" data-react-autofocus="true" data-testid="up-tree" rel="nofollow" href="/spring-projects/spring-framework/tree/v7.0.0/spring-test/src/test" data-discover="true"><div class="width-full DirectoryRow-module__Box__hrMJ9"><svg data-component="Octicon" aria-hidden="true" focusable="false" class="octicon octicon-file-directory-fill DirectoryRow-module__Octicon__mOawz" viewBox="0 0 16 16" width="16" height="16" fill="currentColor" display="inline-block" overflow="visible" style="vertical-align:text-bottom"><path d="M1.75 1A1.75 1.75 0 0 0 0 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0 0 16 13.25v-8.5A1.75 1.75 0 0 0 14.25 3H7.5a.25.25 0 0 1-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1H1.75Z"></path></svg>..</div></a></td></tr><tr class="react-directory-row undefined" id="folder-row-1"><td class="react-directory-row-name-cell-small-screen" colSpan="2"><div class="react-directory-filename-column"><svg data-component="Octicon" aria-hidden="true" focusable="false" class="octicon octicon-file-directory-fill icon-directory" viewBox="0 0 16 16" width="16" height="16" fill="currentColor" display="inline-block" overflow="visible" style="vertical-align:text-bottom"><path d="M1.75 1A1.75 1.75 0 0 0 0 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0 0 16 13.25v-8.5A1.75 1.75 0 0 0 14.25 3H7.5a.25.25 0 0 1-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1H1.75Z"></path></svg><div class="overflow-hidden"><div class="react-directory-filename-cell"><div class="react-directory-truncate"><a title="This path skips through empty directories" aria-label="org/springframework, (Directory)" class="Link--primary" href="/spring-projects/spring-framework/tree/v7.0.0/spring-test/src/test/java/org/springframework" data-discover="true"><span class="react-directory-default-color" data-testid="path-name-segment">org/</span><span class="" data-testid="path-name-segment">springframework</span></a></div></div></div></div></td><td class="react-directory-row-name-cell-large-screen" colSpan="1"><div class="react-directory-filename-column"><svg data-component="Octicon" aria-hidden="true" focusable="false" class="octicon octicon-file-directory-fill icon-directory" viewBox="0 0 16 16" width="16" height="16" fill="currentColor" display="inline-block" overflow="visible" style="vertical-align:text-bottom"><path d="M1.75 1A1.75 1.75 0 0 0 0 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0 0 16 13.25v-8.5A1.75 1.75 0 0 0 14.25 3H7.5a.25.25 0 0 1-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1H1.75Z"></path></svg><div class="overflow-hidden"><div class="react-directory-filename-cell"><div class="react-directory-truncate"><a title="This path skips through empty directories" aria-label="org/springframework, (Directory)" class="Link--primary" href="/spring-projects/spring-framework/tree/v7.0.0/spring-test/src/test/java/org/springframework" data-discover="true"><span class="react-directory-default-color" data-testid="path-name-segment">org/</span><span class="" data-testid="path-name-segment">springframework</span></a></div></div></div></div></td><td class="react-directory-row-commit-cell"><div class="Skeleton Skeleton--text"> </div></td><td><div class="react-directory-commit-age"><div class="Skeleton Skeleton--text"> </div></div></td></tr><tr class="d-none DirectoryContent-module__Box_4__RhIsE" data-testid="view-all-files-row"><td colSpan="3" class="DirectoryContent-module__Box_5__GaE8N"><div><button class="prc-Link-Link-9ZwDx" data-component="Link">View all files</button></div></td></tr></tbody></table></div></div></div></div></div></div></div></div></div><div class="ScrollMarksContainer-module__scrollMarksContainer__Eu7uU" id="find-result-marks-container"></div><div class="d-none"></div><div class="d-none"></div></div> <!-- --> <!-- --> <script type="application/json" id="__PRIMER_DATA__R_1___">{"resolvedServerColorMode":"day"}</script></div>
+
+codex
+Maven Central has the source jar for `7.0.0` and no test-sources jar, so the test URL needs to come from the version tag in the Spring Framework repository. The POM confirms the canonical repository root.
+exec
+/bin/bash -lc "for u in \\
+  https://docs.spring.io/spring-framework/docs/7.0.0/reference/html/testing.html \\
+  https://docs.spring.io/spring-framework/reference/7.0/testing.html \\
+  https://docs.spring.io/spring-framework/reference/testing.html \\
+  https://docs.spring.io/spring-framework/reference/7.0/testing.html; do
+  printf '\\nURL %s\\n' \""'$u"
+  curl -L -s -o /tmp/doccheck.html -w '"'code=%{http_code} final=%{url_effective}\\n' \""'$u"
+  rg -n '"'<title>|Spring Test|TestContext|Testing' /tmp/doccheck.html | sed -n '1,12p'
+done" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457
+exec
+/bin/bash -lc "curl -sSfL https://raw.githubusercontent.com/spring-projects/spring-framework/v7.0.0/spring-test/src/main/java/org/springframework/test/context/TestContext.java | sed -n '1,80p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457
+exec
+/bin/bash -lc "curl -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/spring-projects/spring-framework/tree/v7.0.0/spring-test/src/test/java" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457
+ succeeded in 191ms:
+/*
+ * Copyright 2002-present the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.springframework.test.context;
+
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.function.Function;
+
+import org.jspecify.annotations.Nullable;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.core.AttributeAccessor;
+import org.springframework.test.annotation.DirtiesContext.HierarchyMode;
+
+/**
+ * {@code TestContext} encapsulates the context in which a test is executed,
+ * agnostic of the actual testing framework in use.
+ *
+ * <p>Concrete implementations are highly encouraged to implement a <em>copy
+ * constructor</em> in order to allow the immutable state and attributes of a
+ * {@code TestContext} to be used as a template for additional contexts created
+ * for parallel test execution. The copy constructor must accept a single argument
+ * of the type of the concrete implementation. Any implementation that does not
+ * provide a copy constructor will likely fail in an environment that executes
+ * tests concurrently.
+ *
+ * <p>As of Spring Framework 6.1, concrete implementations are highly encouraged to
+ * override {@link #setMethodInvoker(MethodInvoker)} and {@link #getMethodInvoker()}.
+ *
+ * @author Sam Brannen
+ * @since 2.5
+ * @see TestContextManager
+ * @see TestExecutionListener
+ */
+public interface TestContext extends AttributeAccessor, Serializable {
+
+	/**
+	 * Determine if the {@linkplain ApplicationContext application context} for
+	 * this test context is known to be available.
+	 * <p>If this method returns {@code true}, a subsequent invocation of
+	 * {@link #getApplicationContext()} or {@link #markApplicationContextUnused()}
+	 * should succeed.
+	 * <p>The default implementation of this method always returns {@code false}.
+	 * Custom {@code TestContext} implementations are therefore highly encouraged
+	 * to override this method with a more meaningful implementation. Note that
+	 * the standard {@code TestContext} implementation in Spring overrides this
+	 * method appropriately.
+	 * @return {@code true} if the application context has already been loaded
+	 * @since 5.2
+	 * @see #getApplicationContext()
+	 * @see #markApplicationContextUnused()
+	 */
+	default boolean hasApplicationContext() {
+		return false;
+	}
+
+	/**
+	 * Get the {@linkplain ApplicationContext application context} for this
+	 * test context, possibly cached.
+	 * <p>Implementations of this method are responsible for loading the
+	 * application context if the corresponding context has not already been
+	 * loaded, potentially caching the context as well.
+	 * @return the application context (never {@code null})
+	 * @throws IllegalStateException if an error occurs while retrieving the
+	 * application context
+
+ succeeded in 239ms:
+200 https://github.com/spring-projects/spring-framework/tree/v7.0.0/spring-test/src/test/java
+
+ succeeded in 406ms:
+code=200 final=https://docs.spring.io/spring-framework/reference/testing.html
+6:    <title>Testing :: Spring Framework</title>
+1016:    <a class="nav-link"  href="web/webmvc-test.html">Testing</a>
+1099:    <a class="nav-link"  href="web/websocket/stomp/testing.html">Testing</a>
+1275:    <a class="nav-link"  href="web/webflux-webclient/client-testing.html">Testing</a>
+1286:    <a class="nav-link"  href="web/webflux-test.html">Testing</a>
+1298:    <a class="nav-link"  href="testing.html">Testing</a>
+1301:    <a class="nav-link"  href="testing/introduction.html">Introduction to Spring Testing</a>
+1304:    <a class="nav-link"  href="testing/unit.html">Unit Testing</a>
+1307:    <a class="nav-link"  href="testing/integration.html">Integration Testing</a>
+1310:    <a class="nav-link"  href="testing/support-jdbc.html">JDBC Testing Support</a>
+1314:    <a class="nav-link"  href="testing/testcontext-framework.html">Spring TestContext Framework</a>
+1320:    <a class="nav-link"  href="testing/testcontext-framework/bootstrapping.html">Bootstrapping the TestContext Framework</a>
+
+URL https://docs.spring.io/spring-framework/reference/testing.html
+code=200 final=https://docs.spring.io/spring-framework/reference/testing.html
+6:    <title>Testing :: Spring Framework</title>
+1016:    <a class="nav-link"  href="web/webmvc-test.html">Testing</a>
+1099:    <a class="nav-link"  href="web/websocket/stomp/testing.html">Testing</a>
+1275:    <a class="nav-link"  href="web/webflux-webclient/client-testing.html">Testing</a>
+1286:    <a class="nav-link"  href="web/webflux-test.html">Testing</a>
+1298:    <a class="nav-link"  href="testing.html">Testing</a>
+1301:    <a class="nav-link"  href="testing/introduction.html">Introduction to Spring Testing</a>
+1304:    <a class="nav-link"  href="testing/unit.html">Unit Testing</a>
+1307:    <a class="nav-link"  href="testing/integration.html">Integration Testing</a>
+1310:    <a class="nav-link"  href="testing/support-jdbc.html">JDBC Testing Support</a>
+1314:    <a class="nav-link"  href="testing/testcontext-framework.html">Spring TestContext Framework</a>
+1320:    <a class="nav-link"  href="testing/testcontext-framework/bootstrapping.html">Bootstrapping the TestContext Framework</a>
+
+URL https://docs.spring.io/spring-framework/reference/7.0/testing.html
+code=200 final=https://docs.spring.io/spring-framework/reference/testing.html
+6:    <title>Testing :: Spring Framework</title>
+1016:    <a class="nav-link"  href="web/webmvc-test.html">Testing</a>
+1099:    <a class="nav-link"  href="web/websocket/stomp/testing.html">Testing</a>
+1275:    <a class="nav-link"  href="web/webflux-webclient/client-testing.html">Testing</a>
+1286:    <a class="nav-link"  href="web/webflux-test.html">Testing</a>
+1298:    <a class="nav-link"  href="testing.html">Testing</a>
+1301:    <a class="nav-link"  href="testing/introduction.html">Introduction to Spring Testing</a>
+1304:    <a class="nav-link"  href="testing/unit.html">Unit Testing</a>
+1307:    <a class="nav-link"  href="testing/integration.html">Integration Testing</a>
+1310:    <a class="nav-link"  href="testing/support-jdbc.html">JDBC Testing Support</a>
+1314:    <a class="nav-link"  href="testing/testcontext-framework.html">Spring TestContext Framework</a>
+1320:    <a class="nav-link"  href="testing/testcontext-framework/bootstrapping.html">Bootstrapping the TestContext Framework</a>
+
+exec
+/bin/bash -lc "curl -sSfL https://docs.spring.io/spring-framework/docs/7.0.0/reference/html/testing.html | sed -n '1,80p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457
+ succeeded in 0ms:
+<html>
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-domain-script="018ee325-b3a7-7753-937b-b8b3e643b1a7"></script><script>function OptanonWrapper() {}</script><script>function setGTM(w, d, s, l, i) { w[l] = w[l] || []; w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js"}); var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != "dataLayer" ? "&l=" + l : ""; j.async = true; j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl; f.parentNode.insertBefore(j, f); } if (document.cookie.indexOf("OptanonConsent") > -1 && document.cookie.indexOf("groups=") > -1) { setGTM(window, document, "script", "dataLayer", "GTM-W8CQ8TL"); } else { waitForOnetrustActiveGroups(); } var timer; function waitForOnetrustActiveGroups() { if (document.cookie.indexOf("OptanonConsent") > -1 && document.cookie.indexOf("groups=") > -1) { clearTimeout(timer); setGTM(window, document, "script", "dataLayer", "GTM-W8CQ8TL"); } else { timer = setTimeout(waitForOnetrustActiveGroups, 250); }}</script>
+    <title>Redirecting...</title>
+    <script type="text/javascript">
+        (function() {
+            var base_url = "https://docs.spring.io/spring-framework/reference/";
+            var id_to_url = {"webtestclient-no-content":"testing/webtestclient.html#webtestclient-no-content","testcontext-tel-config-ordering":"testing/testcontext-framework/tel-config.html#testcontext-tel-config-ordering","testcontext-tx-annotation-demo":"testing/testcontext-framework/tx.html#testcontext-tx-annotation-demo","testcontext-aot":"testing/testcontext-framework/aot.html","spring-mvc-test-framework":"testing/spring-mvc-test-framework.html","spring-mvc-test-server-htmlunit-webdriver-why":"testing/spring-mvc-test-framework/server-htmlunit/webdriver.html#spring-mvc-test-server-htmlunit-webdriver-why","integration-testing-annotations-junit-jupiter-springjunitwebconfig":"testing/annotations/integration-junit-jupiter.html#integration-testing-annotations-junit-jupiter-springjunitwebconfig","testcontext-tx-false-positives":"testing/testcontext-framework/tx.html#testcontext-tx-false-positives","testcontext-executing-sql-declaratively-multiple-annotations":"testing/testcontext-framework/executing-sql.html#testcontext-executing-sql-declaratively-multiple-annotations","integration-testing":"testing/integration.html","testcontext-executing-sql-declaratively":"testing/testcontext-framework/executing-sql.html#testcontext-executing-sql-declaratively","spring-testing-annotation-rollback":"testing/annotations/integration-spring/annotation-rollback.html","testcontext-test-execution-events-exception-handling":"testing/testcontext-framework/test-execution-events.html#testcontext-test-execution-events-exception-handling","mock-objects-web-reactive":"testing/unit.html#mock-objects-web-reactive","integration-testing-annotations-junit-jupiter-enabledif":"testing/annotations/integration-junit-jupiter.html#integration-testing-annotations-junit-jupiter-enabledif","testcontext-tel-config-registering-tels":"testing/testcontext-framework/tel-config.html#testcontext-tel-config-registering-tels","inheriting-and-overriding-test-property-sources":"testing/testcontext-framework/ctx-management/property-sources.html#inheriting-and-overriding-test-property-sources","integration-testing-annotations-junit-jupiter-springjunitconfig":"testing/annotations/integration-junit-jupiter.html#integration-testing-annotations-junit-jupiter-springjunitconfig","testcontext-test-execution-events":"testing/testcontext-framework/test-execution-events.html","spring-mvc-test-server-static-imports":"testing/spring-mvc-test-framework/server-static-imports.html","spring-mvc-test-server-performing-requests":"testing/spring-mvc-test-framework/server-performing-requests.html","testcontext-junit4-rules":"testing/testcontext-framework/support-classes.html#testcontext-junit4-rules","testcontext-executing-sql":"testing/testcontext-framework/executing-sql.html","spring-mvc-test-server-htmlunit-geb-setup":"testing/spring-mvc-test-framework/server-htmlunit/geb.html#spring-mvc-test-server-htmlunit-geb-setup","spring-mvc-test-server-filters":"testing/spring-mvc-test-framework/server-filters.html","spring-mvc-test-client":"testing/spring-mvc-test-client.html","integration-testing-annotations-junit4-profilevaluesourceconfiguration":"testing/annotations/integration-junit4.html#integration-testing-annotations-junit4-profilevaluesourceconfiguration","integration-testing-annotations-junit-jupiter":"testing/annotations/integration-junit-jupiter.html","testcontext-key-abstractions":"testing/testcontext-framework/key-abstractions.html","unit-testing-utilities":"testing/unit.html#unit-testing-utilities","mock-objects-env":"testing/unit.html#mock-objects-env","declaring-test-property-sources":"testing/testcontext-framework/ctx-management/property-sources.html#declaring-test-property-sources","testcontext-junit-jupiter-nested-test-configuration":"testing/testcontext-framework/support-classes.html#testcontext-junit-jupiter-nested-test-configuration","spring-mvc-test-server-htmlunit-webdriver":"testing/spring-mvc-test-framework/server-htmlunit/webdriver.html","spring-testing-annotation-testexecutionlisteners":"testing/annotations/integration-spring/annotation-testexecutionlisteners.html","testcontext-executing-sql-declaratively-script-resources":"testing/testcontext-framework/executing-sql.html#testcontext-executing-sql-declaratively-script-resources","testcontext-tx-before-and-after-tx":"testing/testcontext-framework/tx.html#testcontext-tx-before-and-after-tx","mock-objects-jndi":"testing/unit.html#mock-objects-jndi","testcontext-ctx-management":"testing/testcontext-framework/ctx-management.html","testcontext-web-scoped-beans":"testing/testcontext-framework/web-scoped-beans.html","testcontext-executing-sql-declaratively-script-merging":"testing/testcontext-framework/executing-sql.html#testcontext-executing-sql-declaratively-script-merging","testcontext-junit-jupiter-di-constructor":"testing/testcontext-framework/support-classes.html#testcontext-junit-jupiter-di-constructor","integration-testing-support-jdbc":"testing/support-jdbc.html","testcontext-tx-enabling-transactions":"testing/testcontext-framework/tx.html#testcontext-tx-enabling-transactions","spring-testing-annotation-recordapplicationevents":"testing/annotations/integration-spring/annotation-recordapplicationevents.html","spring-mvc-test-server-htmlunit-mock-mvc-test":"testing/spring-mvc-test-framework/server-htmlunit/why.html#spring-mvc-test-server-htmlunit-mock-mvc-test","testcontext-ctx-management-web":"testing/testcontext-framework/ctx-management/web.html","integration-testing-annotations":"testing/annotations.html","testcontext-ctx-management-javaconfig-component-classes":"testing/testcontext-framework/ctx-management/javaconfig.html#testcontext-ctx-management-javaconfig-component-classes","testcontext-junit-jupiter-extension":"testing/testcontext-framework/support-classes.html#testcontext-junit-jupiter-extension","testcontext-ctx-management-caching":"testing/testcontext-framework/ctx-management/caching.html","webtestclient-controller-config":"testing/webtestclient.html#webtestclient-controller-config","spring-mvc-test-vs-streaming-response":"testing/spring-mvc-test-framework/vs-streaming-response.html","testcontext-tx-rollback-and-commit-behavior":"testing/testcontext-framework/tx.html#testcontext-tx-rollback-and-commit-behavior","testing-ctx-management":"testing/integration.html#testing-ctx-management","testexecutionlistener":"testing/testcontext-framework/key-abstractions.html#testexecutionlistener","integration-testing-goals":"testing/integration.html#integration-testing-goals","testing-tx":"testing/integration.html#testing-tx","testcontextmanager":"testing/testcontext-framework/key-abstractions.html#testcontextmanager","testcontext-fixture-di":"testing/testcontext-framework/fixture-di.html","spring-testing-annotation-bootstrapwith":"testing/annotations/integration-spring/annotation-bootstrapwith.html","testing-support-classes":"testing/integration.html#testing-support-classes","spring-mvc-test-server-setup-steps":"testing/spring-mvc-test-framework/server-setup-steps.html","spring-testing-annotation-contextconfiguration":"testing/annotations/integration-spring/annotation-contextconfiguration.html","testcontext-bootstrapping":"testing/testcontext-framework/bootstrapping.html","testcontext-test-execution-events-async":"testing/testcontext-framework/test-execution-events.html#testcontext-test-execution-events-async","spring-mvc-test-server-htmlunit-why-integration":"testing/spring-mvc-test-framework/server-htmlunit/why.html#spring-mvc-test-server-htmlunit-why-integration","testcontext-tel-config-automatic-discovery":"testing/testcontext-framework/tel-config.html#testcontext-tel-config-automatic-discovery","testcontext-ctx-management-inheritance":"testing/testcontext-framework/ctx-management/inheritance.html","spring-mvc-test-server-htmlunit-mah-usage":"testing/spring-mvc-test-framework/server-htmlunit/mah.html#spring-mvc-test-server-htmlunit-mah-usage","spring-testing-annotation-contexthierarchy":"testing/annotations/integration-spring/annotation-contexthierarchy.html","spring-testing-annotation-beforetransaction":"testing/annotations/integration-spring/annotation-beforetransaction.html","testcontext-ctx-management-dynamic-property-sources":"testing/testcontext-framework/ctx-management/dynamic-property-sources.html","spring-mvc-test-server-htmlunit-mah-setup":"testing/spring-mvc-test-framework/server-htmlunit/mah.html#spring-mvc-test-server-htmlunit-mah-setup","spring-testing-annotation-sqlconfig":"testing/annotations/integration-spring/annotation-sqlconfig.html","spring-mvc-test-client-static-imports":"testing/spring-mvc-test-client.html#spring-mvc-test-client-static-imports","testcontext-executing-sql-declaratively-tx":"testing/testcontext-framework/executing-sql.html#testcontext-executing-sql-declaratively-tx","default-properties-file-detection":"testing/testcontext-framework/ctx-management/property-sources.html#default-properties-file-detection","spring-testing-annotation-testpropertysource":"testing/annotations/integration-spring/annotation-testpropertysource.html","spring-mvc-test-server-htmlunit-geb":"testing/spring-mvc-test-framework/server-htmlunit/geb.html","testcontext-parallel-test-execution":"testing/testcontext-framework/parallel-test-execution.html","testcontext-tx-orm-lifecycle-callbacks":"testing/testcontext-framework/tx.html#testcontext-tx-orm-lifecycle-callbacks","spring-testing-annotation-sqlgroup":"testing/annotations/integration-spring/annotation-sqlgroup.html","webtestclient-client-config":"testing/webtestclient.html#webtestclient-client-config","spring-mvc-test-server-htmlunit-webdriver-advanced-builder":"testing/spring-mvc-test-framework/server-htmlunit/webdriver.html#spring-mvc-test-server-htmlunit-webdriver-advanced-builder","webtestclient":"testing/webtestclient.html","spring-mvc-test-server-htmlunit-mah-advanced-builder":"testing/spring-mvc-test-framework/server-htmlunit/mah.html#spring-mvc-test-server-htmlunit-mah-advanced-builder","integration-testing-annotations-meta":"testing/annotations/integration-meta.html","testcontext-executing-sql-programmatically":"testing/testcontext-framework/executing-sql.html#testcontext-executing-sql-programmatically","spring-mvc-test-server-htmlunit-mah":"testing/spring-mvc-test-framework/server-htmlunit/mah.html","testing.appendix":"core/appendix.html","spring-mvc-test-server-htmlunit-options":"testing/spring-mvc-test-framework/server-htmlunit/why.html#spring-mvc-test-server-htmlunit-options","spring-testing-annotation-activeprofiles":"testing/annotations/integration-spring/annotation-activeprofiles.html","spring-mvc-test-async-requests":"testing/spring-mvc-test-framework/async-requests.html","testcontext-tx-test-managed-transactions":"testing/testcontext-framework/tx.html#testcontext-tx-test-managed-transactions","integration-testing-annotations-junit4-timed":"testing/annotations/integration-junit4.html#integration-testing-annotations-junit4-timed","spring-testing-annotation-aftertransaction":"testing/annotations/integration-spring/annotation-aftertransaction.html","testing-introduction":"testing/introduction.html","testcontext-tel-config":"testing/testcontext-framework/tel-config.html","testcontext-tx":"testing/testcontext-framework/tx.html","spring-testing-annotation-dirtiescontext":"testing/annotations/integration-spring/annotation-dirtiescontext.html","spring-mvc-test-server-htmlunit-geb-why":"testing/spring-mvc-test-framework/server-htmlunit/geb.html#spring-mvc-test-server-htmlunit-geb-why","spring-mvc-test-vs-end-to-end-integration-tests":"testing/spring-mvc-test-framework/vs-end-to-end-integration-tests.html","precedence":"testing/testcontext-framework/ctx-management/dynamic-property-sources.html#precedence","integration-testing-annotations-junit-jupiter-disabledif":"testing/annotations/integration-junit-jupiter.html#integration-testing-annotations-junit-jupiter-disabledif","spring-testing-annotation-sqlmergemode":"testing/annotations/integration-spring/annotation-sqlmergemode.html","testcontext-support-classes":"testing/testcontext-framework/support-classes.html","testcontext-framework":"testing/testcontext-framework.html","webtestclient-stream":"testing/webtestclient.html#webtestclient-stream","spring-mvc-test-server-htmlunit-webdriver-usage":"testing/spring-mvc-test-framework/server-htmlunit/webdriver.html#spring-mvc-test-server-htmlunit-webdriver-usage","unit-testing-spring-mvc":"testing/unit.html#unit-testing-spring-mvc","unit-testing":"testing/unit.html","testcontext-executing-sql-declaratively-script-detection":"testing/testcontext-framework/executing-sql.html#testcontext-executing-sql-declaratively-script-detection","mock-objects":"testing/unit.html#mock-objects","testcontext-tx-attribute-support":"testing/testcontext-framework/tx.html#testcontext-tx-attribute-support","testcontext-ctx-management-groovy":"testing/testcontext-framework/ctx-management/groovy.html","webtestclient-context-config":"testing/webtestclient.html#webtestclient-context-config","spring-mvc-test-server-htmlunit":"testing/spring-mvc-test-framework/server-htmlunit.html","testcontext-ctx-management-property-sources":"testing/testcontext-framework/ctx-management/property-sources.html","spring-mvc-test-server":"testing/spring-mvc-test-framework/server.html","testcontext-ctx-management-env-profiles":"testing/testcontext-framework/ctx-management/env-profiles.html","webtestclient-tests":"testing/webtestclient.html#webtestclient-tests","testcontext-support-classes-junit4":"testing/testcontext-framework/support-classes.html#testcontext-support-classes-junit4","spring-mvc-test-server-htmlunit-why-mockmvc":"testing/spring-mvc-test-framework/server-htmlunit/why.html#spring-mvc-test-server-htmlunit-why-mockmvc","context-loaders":"testing/testcontext-framework/key-abstractions.html#context-loaders","testcontext-support-classes-testng":"testing/testcontext-framework/support-classes.html#testcontext-support-classes-testng","webtestclient-setup":"testing/webtestclient.html#webtestclient-setup","integration-testing-support-jdbc-embedded-database":"testing/support-jdbc.html#integration-testing-support-jdbc-embedded-database","testcontext":"testing/testcontext-framework/key-abstractions.html#testcontext","spring-mvc-test-server-setup-options":"testing/spring-mvc-test-framework/server-setup-options.html","testing-resources":"testing/resources.html","integration-testing-annotations-junit4":"testing/annotations/integration-junit4.html","testcontext-executing-sql-declaratively-script-configuration":"testing/testcontext-framework/executing-sql.html#testcontext-executing-sql-declaratively-script-configuration","spring-mvc-test-server-defining-expectations":"testing/spring-mvc-test-framework/server-defining-expectations.html","spring-mvc-test-client-resources":"testing/spring-mvc-test-client.html#spring-mvc-test-client-resources","integration-testing-support-jdbc-test-utils":"testing/support-jdbc.html#integration-testing-support-jdbc-test-utils","testcontext-tx-programmatic-tx-mgt":"testing/testcontext-framework/tx.html#testcontext-tx-programmatic-tx-mgt","testcontext-executing-sql-declaratively-script-execution-phases":"testing/testcontext-framework/executing-sql.html#testcontext-executing-sql-declaratively-script-execution-phases","mock-objects-servlet":"testing/unit.html#mock-objects-servlet","testcontext-tel-config-merging":"testing/testcontext-framework/tel-config.html#testcontext-tel-config-merging","testcontext-ctx-management-mixed-config":"testing/testcontext-framework/ctx-management/mixed-config.html","spring-mvc-test-server-resources":"testing/spring-mvc-test-framework/server-resources.html","testcontext-ctx-management-javaconfig":"testing/testcontext-framework/ctx-management/javaconfig.html","webtestclient-json":"testing/webtestclient.html#webtestclient-json","integration-testing-annotations-nestedtestconfiguration":"testing/annotations/integration-junit-jupiter.html#integration-testing-annotations-nestedtestconfiguration","testcontext-junit-jupiter-di":"testing/testcontext-framework/support-classes.html#testcontext-junit-jupiter-di","spring-mvc-test-server-htmlunit-why":"testing/spring-mvc-test-framework/server-htmlunit/why.html","spring-mvc-test-server-htmlunit-webdriver-setup":"testing/spring-mvc-test-framework/server-htmlunit/webdriver.html#spring-mvc-test-server-htmlunit-webdriver-setup","spring-testing-annotation-commit":"testing/annotations/integration-spring/annotation-commit.html","testcontext-tx-mgr-config":"testing/testcontext-framework/tx.html#testcontext-tx-mgr-config","spring-testing-annotation-sql":"testing/annotations/integration-spring/annotation-sql.html","spring-mvc-test-server-htmlunit-geb-usage":"testing/spring-mvc-test-framework/server-htmlunit/geb.html#spring-mvc-test-server-htmlunit-geb-usage","webtestclient-fn-config":"testing/webtestclient.html#webtestclient-fn-config","webtestclient-mockmvc":"testing/webtestclient.html#webtestclient-mockmvc","integration-testing-annotations-spring":"testing/annotations/integration-spring.html","webtestclient-server-config":"testing/webtestclient.html#webtestclient-server-config","spring-testing-annotation-webappconfiguration":"testing/annotations/integration-spring/annotation-webappconfiguration.html","unit-testing-support-classes":"testing/unit.html#unit-testing-support-classes","testcontext-junit4-runner":"testing/testcontext-framework/support-classes.html#testcontext-junit4-runner","spring-testing-annotation-dynamicpropertysource":"testing/annotations/integration-spring/annotation-dynamicpropertysource.html","integration-testing-annotations-junit4-repeat":"testing/annotations/integration-junit4.html#integration-testing-annotations-junit4-repeat","testcontext-ctx-management-web-mocks":"testing/testcontext-framework/ctx-management/web-mocks.html","integration-testing-annotations-standard":"testing/annotations/integration-standard.html","testcontext-ctx-management-initializers":"testing/testcontext-framework/ctx-management/initializers.html","integration-testing-annotations-testconstructor":"testing/annotations/integration-junit-jupiter.html#integration-testing-annotations-testconstructor","integration-testing-annotations-junit4-ifprofilevalue":"testing/annotations/integration-junit4.html#integration-testing-annotations-junit4-ifprofilevalue","testing-fixture-di":"testing/integration.html#testing-fixture-di","testcontext-ctx-management-env-profiles-ActiveProfilesResolver":"testing/testcontext-framework/ctx-management/env-profiles.html#testcontext-ctx-management-env-profiles-ActiveProfilesResolver","testcontext-application-events":"testing/testcontext-framework/application-events.html","testcontext-ctx-management-xml":"testing/testcontext-framework/ctx-management/xml.html","testcontext-ctx-management-ctx-hierarchies":"testing/testcontext-framework/ctx-management/hierarchies.html","testcontext-junit-jupiter-di-method":"testing/testcontext-framework/support-classes.html#testcontext-junit-jupiter-di-method"}
+
+            var hash = window.location.hash.substring(1);
+            if (hash) {
+                var url = id_to_url[hash]
+                if (url) {
+                    window.location.replace(base_url + url);
+                }
+                else {
+                    window.location.replace(base_url);
+                }
+
+            }
+            else {
+                window.location.replace(base_url);
+            }
+        })();
+
+
+    </script>
+</head>
+<body>
+</body>
+</html>
+codex
+The old `docs/7.0.0/reference/html/testing.html` path returns a page that JavaScript-redirects to unversioned current docs, so I’m not using that as the documentation target. I’m checking versioned API docs and tag-pinned documentation sources instead.
+exec
+/bin/bash -lc "for u in \\
+  https://github.com/spring-projects/spring-framework/blob/v7.0.0/framework-docs/modules/ROOT/pages/testing.adoc \\
+  https://github.com/spring-projects/spring-framework/tree/v7.0.0/framework-docs/modules/ROOT/pages/testing \\
+  https://github.com/spring-projects/spring-framework/blob/v7.0.0/framework-docs/modules/ROOT/pages/testing/testcontext-framework.adoc \\
+  https://raw.githubusercontent.com/spring-projects/spring-framework/v7.0.0/framework-docs/modules/ROOT/pages/testing.adoc; do
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code} %{url_effective}' \""'$u")
+  printf '"'%s %s\\n' \""'$code" "$u"
+done' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457
+exec
+/bin/bash -lc "for u in \\
+  https://docs.spring.io/spring-framework/docs/7.0.0/javadoc-api/ \\
+  https://docs.spring.io/spring-framework/docs/7.0.0/javadoc-api/overview-summary.html \\
+  https://docs.spring.io/spring-framework/docs/7.0.0/javadoc-api/org/springframework/test/context/package-summary.html \\
+  https://docs.spring.io/spring-framework/docs/7.0.0/javadoc-api/org/springframework/test/web/package-summary.html \\
+  https://docs.spring.io/spring-framework/docs/7.0.0/javadoc-api/org/springframework/mock/web/package-summary.html; do
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code} %{url_effective}' \""'$u")
+  printf '"'%s %s\\n' \""'$code" "$u"
+done' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457
+exec
+/bin/bash -lc "curl -sSfL https://raw.githubusercontent.com/spring-projects/spring-framework/v7.0.0/framework-docs/modules/ROOT/pages/testing.adoc | sed -n '1,80p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457
+ succeeded in 201ms:
+[[testing]]
+= Testing
+:page-section-summary-toc: 1
+
+This chapter covers Spring's support for integration testing and best practices for unit
+testing. The Spring team advocates test-driven development (TDD). The Spring team has
+found that the correct use of inversion of control (IoC) certainly does make both unit
+and integration testing easier (in that the presence of setter methods and appropriate
+constructors on classes makes them easier to wire together in a test without having to
+set up service locator registries and similar structures).
+
+ succeeded in 1656ms:
+200 https://docs.spring.io/spring-framework/docs/7.0.0/javadoc-api/ https://docs.spring.io/spring-framework/docs/7.0.0/javadoc-api/
+200 https://docs.spring.io/spring-framework/docs/7.0.0/javadoc-api/overview-summary.html https://docs.spring.io/spring-framework/docs/7.0.0/javadoc-api/overview-summary.html
+200 https://docs.spring.io/spring-framework/docs/7.0.0/javadoc-api/org/springframework/test/context/package-summary.html https://docs.spring.io/spring-framework/docs/7.0.0/javadoc-api/org/springframework/test/context/package-summary.html
+200 https://docs.spring.io/spring-framework/docs/7.0.0/javadoc-api/org/springframework/test/web/package-summary.html https://docs.spring.io/spring-framework/docs/7.0.0/javadoc-api/org/springframework/test/web/package-summary.html
+200 https://docs.spring.io/spring-framework/docs/7.0.0/javadoc-api/org/springframework/mock/web/package-summary.html https://docs.spring.io/spring-framework/docs/7.0.0/javadoc-api/org/springframework/mock/web/package-summary.html
+
+ succeeded in 2885ms:
+200 https://github.com/spring-projects/spring-framework/blob/v7.0.0/framework-docs/modules/ROOT/pages/testing.adoc https://github.com/spring-projects/spring-framework/blob/v7.0.0/framework-docs/modules/ROOT/pages/testing.adoc
+200 https://github.com/spring-projects/spring-framework/tree/v7.0.0/framework-docs/modules/ROOT/pages/testing https://github.com/spring-projects/spring-framework/tree/v7.0.0/framework-docs/modules/ROOT/pages/testing
+200 https://github.com/spring-projects/spring-framework/blob/v7.0.0/framework-docs/modules/ROOT/pages/testing/testcontext-framework.adoc https://github.com/spring-projects/spring-framework/blob/v7.0.0/framework-docs/modules/ROOT/pages/testing/testcontext-framework.adoc
+200 https://raw.githubusercontent.com/spring-projects/spring-framework/v7.0.0/framework-docs/modules/ROOT/pages/testing.adoc https://raw.githubusercontent.com/spring-projects/spring-framework/v7.0.0/framework-docs/modules/ROOT/pages/testing.adoc
+
+web search: 
+web search: https://github.com/spring-projects/spring-framework/tree/v7.0.0/spring-test/src/test/java
+web search: 
+web search: repo.maven.apache.org/maven2/org/springframework/spring-test/7.0.0/spring-test-7.0.0-sources.jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/springframework/spring-test/7.0.0/spring-test-7.0.0.pom
+codex
+I’ve got validated templates for the single tested alias: Maven sources, GitHub tag-pinned tests, and tag-pinned Spring reference documentation source. I’m patching only the empty `7.0.0` entry and leaving `language` absent because `spring-test` is a Java/Spring Framework module, not a Kotlin/Groovy/Scala-specific library.
+apply patch
+patch: completed
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457/metadata/org.springframework/spring-test/index.json
+diff --git a/metadata/org.springframework/spring-test/index.json b/metadata/org.springframework/spring-test/index.json
+index 635ab366821a27fe39dc459bffd4e42bda5713ec..f6e492ad545e5a0fa04f56871c0cd40424c54af2
+--- a/metadata/org.springframework/spring-test/index.json
++++ b/metadata/org.springframework/spring-test/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "7.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
++    "repository-url" : "https://github.com/spring-projects/spring-framework",
++    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-test/src/test/java",
++    "documentation-url" : "https://github.com/spring-projects/spring-framework/blob/v$version$/framework-docs/modules/ROOT/pages/testing.adoc",
++    "description" : "Spring Test provides testing support for Spring applications, including mock objects, utilities, and integration testing through the Spring TestContext Framework. It helps developers write unit and integration tests that load, cache, and manage Spring application contexts across common Java testing frameworks.",
+     "tested-versions" : [
+       "7.0.0"
+     ],
+
+diff --git a/metadata/org.springframework/spring-test/index.json b/metadata/org.springframework/spring-test/index.json
+index 635ab366821a27fe39dc459bffd4e42bda5713ec..f6e492ad545e5a0fa04f56871c0cd40424c54af2
+--- a/metadata/org.springframework/spring-test/index.json
++++ b/metadata/org.springframework/spring-test/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "7.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
++    "repository-url" : "https://github.com/spring-projects/spring-framework",
++    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-test/src/test/java",
++    "documentation-url" : "https://github.com/spring-projects/spring-framework/blob/v$version$/framework-docs/modules/ROOT/pages/testing.adoc",
++    "description" : "Spring Test provides testing support for Spring applications, including mock objects, utilities, and integration testing through the Spring TestContext Framework. It helps developers write unit and integration tests that load, cache, and manage Spring application contexts across common Java testing frameworks.",
+     "tested-versions" : [
+       "7.0.0"
+     ],
+
+codex
+The JSON is patched. I’m doing a quick structural check plus URL re-render checks, then I’ll run the project metadata validation for this coordinate if the quick checks pass.
+exec
+/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"7.0.0\")' metadata/org.springframework/spring-test/index.json" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "7.0.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
+  "repository-url": "https://github.com/spring-projects/spring-framework",
+  "test-code-url": "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-test/src/test/java",
+  "documentation-url": "https://github.com/spring-projects/spring-framework/blob/v$version$/framework-docs/modules/ROOT/pages/testing.adoc",
+  "description": "Spring Test provides testing support for Spring applications, including mock objects, utilities, and integration testing through the Spring TestContext Framework. It helps developers write unit and integration tests that load, cache, and manage Spring application contexts across common Java testing frameworks.",
+  "tested-versions": [
+    "7.0.0"
+  ],
+  "allowed-packages": [
+    "org.springframework"
+  ]
+}
+
+exec
+/bin/bash -lc "for u in \\
+  https://repo.maven.apache.org/maven2/org/springframework/spring-test/7.0.0/spring-test-7.0.0-sources.jar \\
+  https://github.com/spring-projects/spring-framework \\
+  https://github.com/spring-projects/spring-framework/tree/v7.0.0/spring-test/src/test/java \\
+  https://github.com/spring-projects/spring-framework/blob/v7.0.0/framework-docs/modules/ROOT/pages/testing.adoc; do
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$u")
+  printf '"'%s %s\\n' \""'$code" "$u"
+done' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457
+diff --git a/metadata/org.springframework/spring-test/index.json b/metadata/org.springframework/spring-test/index.json
+index 635ab366821a27fe39dc459bffd4e42bda5713ec..f6e492ad545e5a0fa04f56871c0cd40424c54af2
+--- a/metadata/org.springframework/spring-test/index.json
++++ b/metadata/org.springframework/spring-test/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "7.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
++    "repository-url" : "https://github.com/spring-projects/spring-framework",
++    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-test/src/test/java",
++    "documentation-url" : "https://github.com/spring-projects/spring-framework/blob/v$version$/framework-docs/modules/ROOT/pages/testing.adoc",
++    "description" : "Spring Test provides testing support for Spring applications, including mock objects, utilities, and integration testing through the Spring TestContext Framework. It helps developers write unit and integration tests that load, cache, and manage Spring application contexts across common Java testing frameworks.",
+     "tested-versions" : [
+       "7.0.0"
+     ],
+
+ succeeded in 2867ms:
+200 https://repo.maven.apache.org/maven2/org/springframework/spring-test/7.0.0/spring-test-7.0.0-sources.jar
+200 https://github.com/spring-projects/spring-framework
+200 https://github.com/spring-projects/spring-framework/tree/v7.0.0/spring-test/src/test/java
+200 https://github.com/spring-projects/spring-framework/blob/v7.0.0/framework-docs/modules/ROOT/pages/testing.adoc
+
+diff --git a/metadata/org.springframework/spring-test/index.json b/metadata/org.springframework/spring-test/index.json
+index 635ab366821a27fe39dc459bffd4e42bda5713ec..f6e492ad545e5a0fa04f56871c0cd40424c54af2
+--- a/metadata/org.springframework/spring-test/index.json
++++ b/metadata/org.springframework/spring-test/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "7.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
++    "repository-url" : "https://github.com/spring-projects/spring-framework",
++    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-test/src/test/java",
++    "documentation-url" : "https://github.com/spring-projects/spring-framework/blob/v$version$/framework-docs/modules/ROOT/pages/testing.adoc",
++    "description" : "Spring Test provides testing support for Spring applications, including mock objects, utilities, and integration testing through the Spring TestContext Framework. It helps developers write unit and integration tests that load, cache, and manage Spring application contexts across common Java testing frameworks.",
+     "tested-versions" : [
+       "7.0.0"
+     ],
+
+codex
+The rendered URLs all return `200`, and the JSON parses cleanly. I’m running the targeted metadata-file validation now.
+exec
+/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.springframework:spring-test:7.0.0 --stacktrace' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457
+diff --git a/metadata/org.springframework/spring-test/index.json b/metadata/org.springframework/spring-test/index.json
+index 635ab366821a27fe39dc459bffd4e42bda5713ec..f6e492ad545e5a0fa04f56871c0cd40424c54af2
+--- a/metadata/org.springframework/spring-test/index.json
++++ b/metadata/org.springframework/spring-test/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "7.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
++    "repository-url" : "https://github.com/spring-projects/spring-framework",
++    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-test/src/test/java",
++    "documentation-url" : "https://github.com/spring-projects/spring-framework/blob/v$version$/framework-docs/modules/ROOT/pages/testing.adoc",
++    "description" : "Spring Test provides testing support for Spring applications, including mock objects, utilities, and integration testing through the Spring TestContext Framework. It helps developers write unit and integration tests that load, cache, and manage Spring application contexts across common Java testing frameworks.",
+     "tested-versions" : [
+       "7.0.0"
+     ],
+
+ exited 1 in 9831ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.springframework:spring-test:7.0.0: ERROR: Missing reachability-metadata.json in file:/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457/metadata/org.springframework/spring-test/7.0.0/
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.springframework:spring-test:7.0.0: ERROR: Missing reachability-metadata.json in file:/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457/metadata/org.springframework/spring-test/7.0.0/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:146)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:131)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:45)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.springframework:spring-test:7.0.0: ERROR: Missing reachability-metadata.json in file:/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457/metadata/org.springframework/spring-test/7.0.0/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 57 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 9s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+The targeted Gradle validation fails before it reaches the URL metadata because this worktree lacks `metadata/org.springframework/spring-test/7.0.0/reachability-metadata.json`. I’m checking whether there’s an index-only validation task so we can still verify the edited file through the repo tooling.
+exec
+/bin/bash -lc 'git diff -- metadata/org.springframework/spring-test/index.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457
+ succeeded in 0ms:
+diff --git a/metadata/org.springframework/spring-test/index.json b/metadata/org.springframework/spring-test/index.json
+index 635ab36682..f6e492ad54 100644
+--- a/metadata/org.springframework/spring-test/index.json
++++ b/metadata/org.springframework/spring-test/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "7.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
++    "repository-url" : "https://github.com/spring-projects/spring-framework",
++    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-test/src/test/java",
++    "documentation-url" : "https://github.com/spring-projects/spring-framework/blob/v$version$/framework-docs/modules/ROOT/pages/testing.adoc",
++    "description" : "Spring Test provides testing support for Spring applications, including mock objects, utilities, and integration testing through the Spring TestContext Framework. It helps developers write unit and integration tests that load, cache, and manage Spring application contexts across common Java testing frameworks.",
+     "tested-versions" : [
+       "7.0.0"
+     ],
+
+exec
+/bin/bash -lc "./gradlew tasks --all | rg -n 'Index|index|Metadata|metadata|checkMetadataFiles|validate'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457
+diff --git a/metadata/org.springframework/spring-test/index.json b/metadata/org.springframework/spring-test/index.json
+index 635ab366821a27fe39dc459bffd4e42bda5713ec..f6e492ad545e5a0fa04f56871c0cd40424c54af2
+--- a/metadata/org.springframework/spring-test/index.json
++++ b/metadata/org.springframework/spring-test/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "7.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
++    "repository-url" : "https://github.com/spring-projects/spring-framework",
++    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-test/src/test/java",
++    "documentation-url" : "https://github.com/spring-projects/spring-framework/blob/v$version$/framework-docs/modules/ROOT/pages/testing.adoc",
++    "description" : "Spring Test provides testing support for Spring applications, including mock objects, utilities, and integration testing through the Spring TestContext Framework. It helps developers write unit and integration tests that load, cache, and manage Spring application contexts across common Java testing frameworks.",
+     "tested-versions" : [
+       "7.0.0"
+     ],
+
+ succeeded in 2681ms:
+12:GraalVM Reachability Metadata TCK
+18:Tasks runnable from root project 'reachability-metadata'
+39:artifactTransforms - Displays the Artifact Transforms that can be executed in root project 'reachability-metadata'.
+40:buildEnvironment - Displays all buildscript dependencies declared in root project 'reachability-metadata'.
+41:dependencies - Displays all dependencies declared in root project 'reachability-metadata'.
+42:dependencyInsight - Displays the insight into a specific dependency in root project 'reachability-metadata'.
+45:outgoingVariants - Displays the outgoing variants of root project 'reachability-metadata'.
+46:projects - Displays the sub-projects of root project 'reachability-metadata'.
+47:properties - Displays the properties of root project 'reachability-metadata'.
+48:resolvableConfigurations - Displays the configurations that can be resolved in root project 'reachability-metadata'.
+49:tasks - Displays the tasks runnable from root project 'reachability-metadata'.
+51:Metadata tasks
+53:addLibraryAsLatestMetadataIndexJson - Marks given coordinates as latest in metadata/group/artifact/index.json
+54:addLibraryMetadataIndexJson - Adds given coordinates to metadata/group/artifact/index.json without changing the latest entry
+58:checkMetadataFiles - Checks content of metadata files for matching coordinates
+59:contribute - Generates metadata and prepares pull request for contibuting on metadata repository based on provided tests.
+60:discoverArtifactMetadata - Uses a coding agent command to discover artifact metadata for a single coordinate and stores it under build/.
+67:generateChangedIndexFileCoordinatesList - Returns a list of changed coordinates for validation based on git diff
+68:generateChangedMetadataTestMatrix - Returns matrix definition populated with changed coordinates and batched tested versions from metadata index files
+73:generateLibraryStats - Generates local library stats and updates stats/<group>/<artifact>/<metadata-version>/stats.json
+76:generateMetadata - Generates metadata based on provided tests.
+81:mergeNativeTraceMetadata - Merges runtime metadata trace output directories with native-image-utils generate
+82:populateArtifactURLs - Uses a coding agent command to fill source-code-url, repository-url, test-code-url, documentation-url, description, and language in matching metadata index entries.
+84:scaffold - Creates a metadata and test scaffold for the given coordindates
+85:splitTestOnlyMetadata - Moves test-only entries from library reachability metadata into test resources metadata.
+89:package - Packages current repository to 'build/graalvm-reachability-metadata-1.0.0-SNAPSHOT.zip'
+96:diff - Tests GraalVM Reflection Metadata that was changed between 'baseCommit' and 'newCommit'
+106:testInfra - Runs clean and pullAllowedDockerImages, then runs (validateIndexFiles, checkstyle, spotlessCheck, checkMetadataFiles, fetchExistingLibrariesWithNewerVersions, test, jacocoTestReport, listLibraryJars, generateDynamicAccessReport, generateDynamicAccessCoverageReport, generateLibraryStats, listCoordinates, generateDependencyGraph, splitTestOnlyMetadata) concurrently with isolated logs for a single coordinate.
+108:validateIndexFiles - Checks content of index.json files for matching coordinates or files
+109:validateLibraryStats - Validates exploded stats/*.json files against the committed JSON schema
+145:[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457/build/reports/problems/problems-report.html
+
+codex
+There is a `validateIndexFiles` task, which is the right fit for this index-only update. I’m running it against the coordinate now.
+exec
+/bin/bash -lc './gradlew validateIndexFiles -Pcoordinates=org.springframework:spring-test:7.0.0 --stacktrace' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457
+diff --git a/metadata/org.springframework/spring-test/index.json b/metadata/org.springframework/spring-test/index.json
+index 635ab366821a27fe39dc459bffd4e42bda5713ec..f6e492ad545e5a0fa04f56871c0cd40424c54af2
+--- a/metadata/org.springframework/spring-test/index.json
++++ b/metadata/org.springframework/spring-test/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "7.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
++    "repository-url" : "https://github.com/spring-projects/spring-framework",
++    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-test/src/test/java",
++    "documentation-url" : "https://github.com/spring-projects/spring-framework/blob/v$version$/framework-docs/modules/ROOT/pages/testing.adoc",
++    "description" : "Spring Test provides testing support for Spring applications, including mock objects, utilities, and integration testing through the Spring TestContext Framework. It helps developers write unit and integration tests that load, cache, and manage Spring application contexts across common Java testing frameworks.",
+     "tested-versions" : [
+       "7.0.0"
+     ],
+
+ succeeded in 1525ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :validateIndexFiles
+✅ metadata/org.springframework/spring-test/index.json: Valid
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: Spring Framework GitHub spring-projects spring-framework
+codex
+Index validation passed. I’m grabbing the final line reference so I can point you at the exact edit cleanly.
+exec
+/bin/bash -lc "nl -ba metadata/org.springframework/spring-test/index.json | sed -n '1,24p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "7.0.0",
+     5	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
+     6	    "repository-url" : "https://github.com/spring-projects/spring-framework",
+     7	    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-test/src/test/java",
+     8	    "documentation-url" : "https://github.com/spring-projects/spring-framework/blob/v$version$/framework-docs/modules/ROOT/pages/testing.adoc",
+     9	    "description" : "Spring Test provides testing support for Spring applications, including mock objects, utilities, and integration testing through the Spring TestContext Framework. It helps developers write unit and integration tests that load, cache, and manage Spring application contexts across common Java testing frameworks.",
+    10	    "tested-versions" : [
+    11	      "7.0.0"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "org.springframework"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "6.0.0",
+    19	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
+    20	    "repository-url" : "https://github.com/spring-projects/spring-framework",
+    21	    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-test/src/test/java",
+    22	    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/reference/html/testing.html",
+    23	    "description" : "Spring Test provides testing support for Spring applications, including mock objects, testing utilities, and integration testing through the Spring TestContext Framework. It helps developers write unit and integration tests that load and manage Spring application contexts across common Java testing frameworks.",
+    24	    "tested-versions" : [
+
+diff --git a/metadata/org.springframework/spring-test/index.json b/metadata/org.springframework/spring-test/index.json
+index 635ab366821a27fe39dc459bffd4e42bda5713ec..f6e492ad545e5a0fa04f56871c0cd40424c54af2
+--- a/metadata/org.springframework/spring-test/index.json
++++ b/metadata/org.springframework/spring-test/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "7.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
++    "repository-url" : "https://github.com/spring-projects/spring-framework",
++    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-test/src/test/java",
++    "documentation-url" : "https://github.com/spring-projects/spring-framework/blob/v$version$/framework-docs/modules/ROOT/pages/testing.adoc",
++    "description" : "Spring Test provides testing support for Spring applications, including mock objects, utilities, and integration testing through the Spring TestContext Framework. It helps developers write unit and integration tests that load, cache, and manage Spring application contexts across common Java testing frameworks.",
+     "tested-versions" : [
+       "7.0.0"
+     ],
+
+codex
+Updated [metadata/org.springframework/spring-test/index.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457/metadata/org.springframework/spring-test/index.json:5) for `metadata-version` `7.0.0`.
+
+Set missing fields:
+```json
+"source-code-url": "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
+"repository-url": "https://github.com/spring-projects/spring-framework",
+"test-code-url": "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-test/src/test/java",
+"documentation-url": "https://github.com/spring-projects/spring-framework/blob/v$version$/framework-docs/modules/ROOT/pages/testing.adoc"
+```
+
+I left `language` absent because `spring-test` is a Spring Framework Java module, not a Kotlin/Groovy/Scala-specific library. The description is two sentences and matches Spring’s testing/TestContext purpose. citeturn0search13turn0search14
+
+Verification:
+- Rendered all selected URLs for `7.0.0`: `200`
+- `jq` parse check: passed
+- `./gradlew validateIndexFiles -Pcoordinates=org.springframework:spring-test:7.0.0 --stacktrace`: passed
+- `checkMetadataFiles` fails because `metadata/org.springframework/spring-test/7.0.0/reachability-metadata.json` is missing in this worktree, unrelated to the index URL update.
+diff --git a/metadata/org.springframework/spring-test/index.json b/metadata/org.springframework/spring-test/index.json
+index 635ab366821a27fe39dc459bffd4e42bda5713ec..f6e492ad545e5a0fa04f56871c0cd40424c54af2
+--- a/metadata/org.springframework/spring-test/index.json
++++ b/metadata/org.springframework/spring-test/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "7.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
++    "repository-url" : "https://github.com/spring-projects/spring-framework",
++    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-test/src/test/java",
++    "documentation-url" : "https://github.com/spring-projects/spring-framework/blob/v$version$/framework-docs/modules/ROOT/pages/testing.adoc",
++    "description" : "Spring Test provides testing support for Spring applications, including mock objects, utilities, and integration testing through the Spring TestContext Framework. It helps developers write unit and integration tests that load, cache, and manage Spring application contexts across common Java testing frameworks.",
+     "tested-versions" : [
+       "7.0.0"
+     ],
+
+tokens used
+102,485
+Updated [metadata/org.springframework/spring-test/index.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457/metadata/org.springframework/spring-test/index.json:5) for `metadata-version` `7.0.0`.
+
+Set missing fields:
+```json
+"source-code-url": "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
+"repository-url": "https://github.com/spring-projects/spring-framework",
+"test-code-url": "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-test/src/test/java",
+"documentation-url": "https://github.com/spring-projects/spring-framework/blob/v$version$/framework-docs/modules/ROOT/pages/testing.adoc"
+```
+
+I left `language` absent because `spring-test` is a Spring Framework Java module, not a Kotlin/Groovy/Scala-specific library. The description is two sentences and matches Spring’s testing/TestContext purpose. citeturn0search13turn0search14
+
+Verification:
+- Rendered all selected URLs for `7.0.0`: `200`
+- `jq` parse check: passed
+- `./gradlew validateIndexFiles -Pcoordinates=org.springframework:spring-test:7.0.0 --stacktrace`: passed
+- `checkMetadataFiles` fails because `metadata/org.springframework/spring-test/7.0.0/reachability-metadata.json` is missing in this worktree, unrelated to the index URL update.
+Ran agent for org.springframework:spring-test:7.0.0 (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457/build/agent-url-discovery-logs/org.springframework-spring-test-7.0.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8258-e5e68457/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 9s
+9 actionable tasks: 1 executed, 8 up-to-date

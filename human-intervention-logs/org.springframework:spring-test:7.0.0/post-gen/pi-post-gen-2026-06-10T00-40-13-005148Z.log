@@ -1,0 +1,21 @@
+Warning: Model "gpt-5.5" not found for provider "OCA". Using custom model id.
+Done.
+
+Changed:
+- Removed non-metadata-related failing test:
+  - `tests/src/org.springframework/spring-test/7.0.0/src/test/java/org_springframework/spring_test/TestBeanOverrideHandlerTest.java`
+- Wrote report:
+  - `post-gen-interventions/org.springframework_spring-test_7.0.0.md`
+
+Root cause:
+- The failure was not missing reachability metadata.
+- Spring’s AOT test scanner did not discover `TestBeanOverrideTest$TestBeanOverrideTestCase`, so no AOT initializer mapping was generated for it in native mode.
+
+Preserved:
+- Remaining generated tests and the generated empty AOT initializer support class, because they are still valid and needed by other Spring test paths.
+
+Verification:
+- `./gradlew clean test -Pcoordinates=org.springframework:spring-test:7.0.0 --stacktrace` passed after removing the failing test.
+
+Note:
+- I did not modify metadata files during this intervention; `metadata/org.springframework/spring-test/7.0.0/reachability-metadata.json` was already modified from the prior metadata-fix step.
