@@ -18,6 +18,7 @@ import scala.util.Try
 import org.junit.jupiter.api.Test
 import org.scalatest.Args
 import org.scalatest.BeforeAndAfter
+import org.scalatest.BeforeAndAfterAll
 import org.scalatest.Filter
 import org.scalatest.FutureOutcome
 import org.scalatest.Outcome
@@ -205,6 +206,16 @@ class Scalatest_flatspec_2_13Test {
     assert(result.succeeded)
     assert(succeededEvents(result.events).size == 2)
     assert(suite.events == Vector("before", "first", "after", "before", "second", "after"))
+  }
+
+  @Test
+  def appliesBeforeAndAfterAllHooksAroundFlatSpecSuite(): Unit = {
+    val suite: SuiteHookedFlatSpec = new SuiteHookedFlatSpec
+    val result: RunResult = runSuite(suite)
+
+    assert(result.succeeded)
+    assert(succeededEvents(result.events).size == 2)
+    assert(suite.events == Vector("beforeAll", "first", "second", "afterAll"))
   }
 
   private final class CalculatorFlatSpec extends AnyFlatSpec {
@@ -437,6 +448,30 @@ class Scalatest_flatspec_2_13Test {
     it should "wrap the second example independently" in {
       events = events :+ "second"
       assert(events.endsWith(Vector("before", "second")))
+    }
+  }
+
+  private final class SuiteHookedFlatSpec extends AnyFlatSpec with BeforeAndAfterAll {
+    var events: Vector[String] = Vector.empty
+
+    override protected def beforeAll(): Unit = {
+      super.beforeAll()
+      events = events :+ "beforeAll"
+    }
+
+    override protected def afterAll(): Unit = {
+      events = events :+ "afterAll"
+      super.afterAll()
+    }
+
+    "A flat spec with suite hooks" should "run the first example after setup" in {
+      events = events :+ "first"
+      assert(events == Vector("beforeAll", "first"))
+    }
+
+    it should "run the second example before teardown" in {
+      events = events :+ "second"
+      assert(events == Vector("beforeAll", "first", "second"))
     }
   }
 
