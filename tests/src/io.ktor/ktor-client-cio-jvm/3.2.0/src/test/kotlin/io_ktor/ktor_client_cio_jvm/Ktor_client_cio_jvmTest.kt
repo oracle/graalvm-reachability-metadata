@@ -10,6 +10,7 @@ import com.sun.net.httpserver.HttpExchange
 import com.sun.net.httpserver.HttpServer
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
+import io.ktor.client.engine.ProxyBuilder
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.engine.cio.CIOEngineConfig
 import io.ktor.client.plugins.HttpTimeout
@@ -31,6 +32,7 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.Parameters
 import io.ktor.http.URLProtocol
+import io.ktor.http.Url
 import io.ktor.http.content.OutgoingContent
 import io.ktor.http.contentType
 import io.ktor.http.withCharset
@@ -303,6 +305,40 @@ public class Ktor_client_cio_jvmTest {
                     }.map { deferred -> deferred.await() }
 
                     assertThat(responses).containsExactlyElementsOf((1..8).map { index: Int -> (index * 3).toString() })
+                }
+            }
+        }
+    }
+
+    @Test
+    public fun `cio engine sends plain http requests through configured proxy`(): Unit = runBlocking {
+        withTimeout(TEST_TIMEOUT_MILLIS) {
+            LocalHttpServer().use { proxyServer: LocalHttpServer ->
+                proxyServer.handle("/") { exchange: HttpExchange ->
+                    val responseText: String = buildString {
+                        appendLine("method=${exchange.requestMethod}")
+                        appendLine("uri=${exchange.requestURI}")
+                        appendLine("host=${exchange.requestHeaders.getFirst(HttpHeaders.Host)}")
+                        append("proxyAuthorization=${exchange.requestHeaders.getFirst(HttpHeaders.ProxyAuthorization)}")
+                    }
+                    exchange.respond(HttpStatusCode.OK.value, responseText, "text/plain; charset=utf-8")
+                }
+
+                withCioClient({
+                    engine {
+                        proxy = ProxyBuilder.http(Url(proxyServer.url("/")))
+                    }
+                }) { client: HttpClient ->
+                    val response: HttpResponse = client.get("http://metadata.test/proxied?name=cio") {
+                        header(HttpHeaders.ProxyAuthorization, "Basic cHJveHktdXNlcjpzZWNyZXQ=")
+                    }
+
+                    assertThat(response.status).isEqualTo(HttpStatusCode.OK)
+                    assertThat(response.bodyAsText())
+                        .contains("method=GET")
+                        .contains("uri=http://metadata.test/proxied?name=cio")
+                        .contains("host=metadata.test")
+                        .contains("proxyAuthorization=Basic cHJveHktdXNlcjpzZWNyZXQ=")
                 }
             }
         }
