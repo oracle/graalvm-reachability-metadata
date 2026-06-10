@@ -114,6 +114,23 @@ public class Resilience4j_timelimiterTest {
     }
 
     @Test
+    void leavesFutureSupplierRunningOnTimeoutWhenCancellationIsDisabled() {
+        TimeLimiterConfig config = TimeLimiterConfig.custom()
+            .timeoutDuration(Duration.ofMillis(10))
+            .cancelRunningFuture(false)
+            .build();
+        TimeLimiter timeLimiter = TimeLimiter.of("future-timeout-without-cancel", config);
+        TimeoutOnlyFuture<String> future = new TimeoutOnlyFuture<>();
+
+        assertThatThrownBy(() -> timeLimiter.executeFutureSupplier(() -> future))
+            .isInstanceOf(TimeoutException.class)
+            .hasMessageContaining("future-timeout-without-cancel");
+
+        assertThat(future.isCancelled()).isFalse();
+        assertThat(future.wasCancelledWithInterrupt()).isFalse();
+    }
+
+    @Test
     void unwrapsFutureSupplierFailureAndPublishesErrorEvents() {
         TimeLimiter timeLimiter = TimeLimiter.of("future-error", TimeLimiterConfig.custom()
             .timeoutDuration(Duration.ofSeconds(1))
