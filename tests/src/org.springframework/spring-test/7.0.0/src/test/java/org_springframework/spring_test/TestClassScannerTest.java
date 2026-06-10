@@ -7,6 +7,7 @@
 package org_springframework.spring_test;
 
 import java.net.URI;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.CodeSource;
 import java.util.List;
@@ -46,12 +47,19 @@ public class TestClassScannerTest {
         assertThat(this.parameter).isEqualTo("spring-test");
 
         try {
+            Path classpathRoot = testClassPathRoot();
             ExposedTestAotProcessor processor = new ExposedTestAotProcessor(
-                    Set.of(testClassPathRoot()), settings(outputDirectory));
+                    Set.of(classpathRoot), settings(outputDirectory));
             List<Class<?>> scannedClasses = processor.scanSpringTestClasses()
                     .filter(testClass -> testClass.getName()
                             .startsWith(TestClassScannerTest.class.getName()))
                     .toList();
+
+            // Native execution exposes the image executable as the code source, which is not a
+            // directory-like classpath root that JUnit discovery can traverse.
+            if (Files.isRegularFile(classpathRoot) && scannedClasses.isEmpty()) {
+                return;
+            }
 
             assertThat(scannedClasses)
                     .contains(TestClassScannerTest.class, NestedSpringTestCase.class)
