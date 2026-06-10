@@ -59,5 +59,61 @@
       "test_file": "tests/src/co.fs2/fs2-io_3/3.9.4/src/test/scala/co_fs2/fs2_io_3/IojvmnativeTest.scala",
       "metadata_file": "metadata/co.fs2/fs2-io_3/3.9.4/reachability-metadata.json"
     }
+  },
+  "add_new_library_support:2026-06-10": {
+    "timestamp": "2026-06-10T02:50:40.387257Z",
+    "library": "co.fs2:fs2-io_3:3.11.0",
+    "starting_commit": "a3325a9e307558e33194d5f153052a90e773e187",
+    "ending_commit": "a3325a9e307558e33194d5f153052a90e773e187",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 4915,
+      "issue_label": "library-new-request",
+      "library": "co.fs2:fs2-io_3:3.11.0",
+      "summary": "fs2-io_3 3.11.0 is usable with its normal transitive dependencies for meaningful file, resource, local networking, process, and TLS coverage; no external service, Docker image, system property, or library-specific extra dependency is required.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The artifact declares optional com.github.jnr:jnr-unixsocket for Unix socket fallback, but on JDK 21 fs2 uses the JDK Unix-domain-socket implementation, so do not add jnr-unixsocket unless explicitly testing the fallback path.",
+        "Network and TLS tests should remain self-contained with localhost/in-process servers or JDK TLS/key-store APIs; relying on external endpoints would be unnecessary and brittle."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#4915 Support for co.fs2:fs2-io_3:3.11.0; label=library-new-request; body_chars=91"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "10 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 29752,
+      "output_tokens_used": 4064,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/co.fs2:fs2-io_3:3.11.0/library-preparation-preflight/pi-generation-2026-06-10T02-46-28-881683Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 0,
+      "cached_input_tokens_used": 0,
+      "output_tokens_used": 0,
+      "iterations": 0,
+      "cost_usd": 0.0,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "test_file": "None",
+      "metadata_file": "None"
+    }
   }
 }

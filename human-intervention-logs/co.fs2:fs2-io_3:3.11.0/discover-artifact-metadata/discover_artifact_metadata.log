@@ -1,0 +1,668 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4915-d7e41b52/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4915-d7e41b52/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4915-d7e41b52
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019eaf6d-2c6a-7153-a963-f8eeebbf1193
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: co.fs2:fs2-io_3:3.11.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "3.11.0" when "$version$" is replaced with "3.11.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4915-d7e41b52/build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "co.fs2:fs2-io_3:3.11.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.11.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the upstream project, then update the JSON in place using the repository’s existing discovered-metadata style.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4915-d7e41b52
+ succeeded in 0ms:
+{
+  "coordinates" : "co.fs2:fs2-io_3:3.11.0"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata metadata | head -n 50' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4915-d7e41b52
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4915-d7e41b52
+build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json
+metadata/org.apache.thrift/libthrift/0.13.0/reachability-metadata.json
+metadata/org.apache.thrift/libthrift/index.json
+metadata/org.apache.thrift/libthrift/0.17.0/reachability-metadata.json
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/3.0.2/reachability-metadata.json
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json
+metadata/org.junit.jupiter/junit-jupiter-engine/5.8.2/reachability-metadata.json
+metadata/org.junit.jupiter/junit-jupiter/index.json
+metadata/org.junit.jupiter/junit-jupiter-params/5.9.2/reachability-metadata.json
+metadata/org.junit.jupiter/junit-jupiter-params/index.json
+metadata/com.typesafe.slick/slick_2.13/index.json
+metadata/com.typesafe.slick/slick_2.13/3.6.1/reachability-metadata.json
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json
+metadata/com.typesafe.slick/slick-hikaricp_2.13/3.6.1/reachability-metadata.json
+metadata/org.awaitility/awaitility/4.2.1/reachability-metadata.json
+metadata/org.awaitility/awaitility/index.json
+metadata/org.awaitility/awaitility/4.2.0/reachability-metadata.json
+metadata/org.scalatest/scalatest-mustmatchers_3/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json
+metadata/org.scalatest/scalatest_2.13/index.json
+metadata/org.scalatest/scalatest-wordspec_2.13/3.3.0-SNAP2/reachability-metadata.json
+metadata/org.scalatest/scalatest-wordspec_2.13/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json
+metadata/org.scalatest/scalatest-matchers-core_2.13/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-compatible/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json
+metadata/org.scalatest/scalatest-matchers-core_2.13/index.json
+metadata/org.scalatest/scalatest-compatible/index.json
+metadata/org.scalatest/scalatest-diagrams_3/3.3.0-SNAP4/reachability-metadata.json
+metadata/org.scalatest/scalatest-shouldmatchers_3/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-shouldmatchers_3/index.json
+metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-featurespec_3/index.json
+metadata/org.scalatest/scalatest-funsuite_3/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-funsuite_3/index.json
+metadata/org.scalatest/scalatest-featurespec_2.13/3.3.0-SNAP2/reachability-metadata.json
+metadata/org.scalatest/scalatest-featurespec_2.13/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-featurespec_2.13/index.json
+metadata/org.scalatest/scalatest-funspec_3/index.json
+metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json
+metadata/org.scalatest/scalatest-refspec_2.13/index.json
+metadata/org.scalatest/scalatest-funsuite_2.13/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-funspec_3/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-funsuite_2.13/index.json
+metadata/org.scalatest/scalatest-refspec_2.13/3.3.0-SNAP2/reachability-metadata.json
+metadata/org.scalatest/scalatest-diagrams_3/index.json
+metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json
+metadata/org.scalatest/scalatest-mustmatchers_2.13/3.2.19/reachability-metadata.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"' build/discovered-artifact-metadata metadata/co.fs2 metadata 2>/dev/null | head -n 80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4915-d7e41b52
+ succeeded in 0ms:
+metadata/co.fs2/fs2-reactive-streams_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/co/fs2/fs2-reactive-streams_3/$version$/fs2-reactive-streams_3-$version$-sources.jar",
+metadata/co.fs2/fs2-reactive-streams_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/fs2/tree/v$version$/reactive-streams/src/test/scala",
+metadata/co.fs2/fs2-reactive-streams_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/co/fs2/fs2-reactive-streams_3/$version$/fs2-reactive-streams_3-$version$-javadoc.jar",
+metadata/co.fs2/fs2-reactive-streams_3/index.json:10:    "language" : {
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:35:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/co.fs2/fs2-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/co/fs2/fs2-core_3/$version$/fs2-core_3-$version$-sources.jar",
+metadata/co.fs2/fs2-core_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/fs2/tree/1713a29/core/shared/src/test",
+metadata/co.fs2/fs2-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/co/fs2/fs2-core_3/$version$/fs2-core_3-$version$-javadoc.jar",
+metadata/co.fs2/fs2-core_3/index.json:10:    "language" : {
+metadata/co.fs2/fs2-core_3/index.json:25:    "source-code-url" : "https://repo.maven.apache.org/maven2/co/fs2/fs2-core_3/$version$/fs2-core_3-$version$-sources.jar",
+metadata/co.fs2/fs2-core_3/index.json:27:    "test-code-url" : "https://github.com/typelevel/fs2/tree/v$version$/core/shared/src/test",
+metadata/co.fs2/fs2-core_3/index.json:28:    "documentation-url" : "https://repo.maven.apache.org/maven2/co/fs2/fs2-core_3/$version$/fs2-core_3-$version$-javadoc.jar",
+metadata/co.fs2/fs2-core_3/index.json:30:    "language" : {
+metadata/co.fs2/fs2-io_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/co/fs2/fs2-io_3/$version$/fs2-io_3-$version$-sources.jar",
+metadata/co.fs2/fs2-io_3/index.json:7:    "test-code-url" : "https://github.com/typelevel/fs2/tree/v$version$/io/jvm/src/test",
+metadata/co.fs2/fs2-io_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/co/fs2/fs2-io_3/$version$/fs2-io_3-$version$-javadoc.jar",
+metadata/co.fs2/fs2-io_3/index.json:10:    "language" : {
+metadata/org.glassfish.hk2/hk2-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:22:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:37:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:38:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_caffeine/index.json:7:    "test-code-url": "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient_caffeine/src/test/java",
+metadata/io.prometheus/simpleclient_caffeine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_caffeine/$version$/simpleclient_caffeine-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-sources.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/asn1/ber/src/test/java/org/apache/directory/api/asn1/ber/",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+metadata/io.prometheus/simpleclient/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient/src/test",
+metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_agent",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:7:    "test-code-url" : "N/A",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_sdk/src/test",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:7:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:28:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:30:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model/",
+metadata/org.apache.directory.api/api-ldap-model/index.json:31:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:42:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:44:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:45:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:56:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:58:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:59:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:73:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:75:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:76:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:87:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:89:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:90:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:101:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:103:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:104:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:115:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:117:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:118:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-ldap-model/$version$/",
+metadata/org.apache.directory.api/api-ldap-model/index.json:129:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:131:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model/",
+metadata/org.apache.directory.api/api-ldap-model/index.json:132:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_httpserver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_httpserver/$version$/simpleclient_httpserver-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_httpserver/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient_httpserver/src/test",
+metadata/io.prometheus/simpleclient_httpserver/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_httpserver/$version$/simpleclient_httpserver-$version$-javadoc.jar",
+metadata/io.lettuce/lettuce-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-sources.jar",
+
+codex
+There is already an indexed `co.fs2:fs2-io_3` entry in `metadata/`, so I’m using that as the local baseline and checking it against Maven/upstream before copying it into the discovered artifact file.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/co.fs2/fs2-io_3/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4915-d7e41b52
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.9.4",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/co/fs2/fs2-io_3/$version$/fs2-io_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/typelevel/fs2",
+    "test-code-url" : "https://github.com/typelevel/fs2/tree/v$version$/io/jvm/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/co/fs2/fs2-io_3/$version$/fs2-io_3-$version$-javadoc.jar",
+    "description" : "FS2 IO is the FS2 module that adds effectful file, process, networking, UDP, Unix socket, and TLS I/O APIs for Scala applications. It builds on FS2 and Cats Effect so these I/O operations can be composed as functional streams with resource-safe acquisition, transformation, and concurrency.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "3.9.4",
+      "3.10-365636d",
+      "3.10-4b5f50b",
+      "3.10.0",
+      "3.10.1",
+      "3.10.2",
+      "3.11.0",
+      "3.12.0",
+      "3.12.1",
+      "3.12.2",
+      "3.13.0"
+    ],
+    "allowed-packages" : [
+      "fs2.io"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/co/fs2/fs2-io_3/3.11.0/fs2-io_3-3.11.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4915-d7e41b52
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>co.fs2</groupId>
+    <artifactId>fs2-io_3</artifactId>
+    <packaging>jar</packaging>
+    <description>fs2-io</description>
+    <url>https://typelevel.org/fs2</url>
+    <version>3.11.0</version>
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <url>http://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>fs2-io</name>
+    <inceptionYear>2013</inceptionYear>
+    <organization>
+        <name>Functional Streams for Scala</name>
+    </organization>
+    <scm>
+        <url>https://github.com/typelevel/fs2</url>
+        <connection>scm:git:https://github.com/typelevel/fs2.git</connection>
+        <developerConnection>scm:git:git@github.com:typelevel/fs2.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>typelevel</id>
+            <name>fs2 contributors</name>
+            <url>https://github.com/typelevel/fs2/contributors</url>
+            <email>@typelevel</email>
+        </developer>
+        <developer>
+            <id>mpilquist</id>
+            <name>Michael Pilquist</name>
+            <url>https://github.com/mpilquist</url>
+            <email>@mpilquist</email>
+        </developer>
+        <developer>
+            <id>pchiusano</id>
+            <name>Paul Chiusano</name>
+            <url>https://github.com/pchiusano</url>
+            <email>@pchiusano</email>
+        </developer>
+        <developer>
+            <id>pchlupacek</id>
+            <name>Pavel Chlupáček</name>
+            <url>https://github.com/pchlupacek</url>
+            <email>@pchlupacek</email>
+        </developer>
+        <developer>
+            <id>SystemFw</id>
+            <name>Fabio Labella</name>
+            <url>https://github.com/SystemFw</url>
+            <email>@SystemFw</email>
+        </developer>
+        <developer>
+            <id>alissapajer</id>
+            <name>Alissa Pajer</name>
+            <url>https://github.com/alissapajer</url>
+            <email>@alissapajer</email>
+        </developer>
+        <developer>
+            <id>djspiewak</id>
+            <name>Daniel Spiewak</name>
+            <url>https://github.com/djspiewak</url>
+            <email>@djspiewak</email>
+        </developer>
+        <developer>
+            <id>fthomas</id>
+            <name>Frank Thomas</name>
+            <url>https://github.com/fthomas</url>
+            <email>@fthomas</email>
+        </developer>
+        <developer>
+            <id>runarorama</id>
+            <name>Rúnar Ó. Bjarnason</name>
+            <url>https://github.com/runarorama</url>
+            <email>@runarorama</email>
+        </developer>
+        <developer>
+            <id>jedws</id>
+            <name>Jed Wesley-Smith</name>
+            <url>https://github.com/jedws</url>
+            <email>@jedws</email>
+        </developer>
+        <developer>
+            <id>durban</id>
+            <name>Daniel Urban</name>
+            <url>https://github.com/durban</url>
+            <email>@durban</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://www.javadoc.io/doc/co.fs2/fs2-docs_3/3.11.0/</info.apiURL>
+        <info.releaseNotesUrl>https://github.com/typelevel/fs2/releases/tag/v3.11.0</info.releaseNotesUrl>
+        <info.versionScheme>early-semver</info.versionScheme>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>co.fs2</groupId>
+            <artifactId>fs2-core_3</artifactId>
+            <version>3.11.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.3.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>scalac-compat-annotation_3</artifactId>
+            <version>0.1.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.comcast</groupId>
+            <artifactId>ip4s-core_3</artifactId>
+            <version>3.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.jnr</groupId>
+            <artifactId>jnr-unixsocket</artifactId>
+            <version>0.38.22</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.google.jimfs</groupId>
+            <artifactId>jimfs</artifactId>
+            <version>1.3.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://repo.maven.apache.org/maven2/co/fs2/fs2-io_3/3.11.0/fs2-io_3-3.11.0-sources.jar && curl -I -L --fail https://repo.maven.apache.org/maven2/co/fs2/fs2-io_3/3.11.0/fs2-io_3-3.11.0-javadoc.jar && curl -I -L --fail https://repo.maven.apache.org/maven2/co/fs2/fs2-io_3/3.11.0/fs2-io_3-3.11.0-tests.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4915-d7e41b52
+ exited 22 in 1125ms:
+
+  0  127k    0     0    0     0      0      0 --:-HTTP/2 200 
+date: Wed, 10 Jun 2026 02:47:24 GMT
+content-type: application/java-archive
+content-length: 130202
+cf-ray: a0950d193c4e3b52-GVA
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "3b859e1db100a4563836ca6d7586a6d2"
+last-modified: Mon, 26 Aug 2024 19:41:47 GMT
+x-checksum-md5: 3b859e1db100a4563836ca6d7586a6d2
+x-checksum-sha1: 8b1678e34c4624ba77edf99c5196b9e991e02b87
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+-:-- --:--:-- --:--:--     0
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+date: Wed, 10 Jun 2026 02:47:25 GMT
+content-type: application/java-archive
+content-length: 3477793
+cf-ray: a0950d1bcffb3b51-GVA
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "280c28ce67de9b57447b282a147a888f"
+last-modified: Mon, 26 Aug 2024 19:41:47 GMT
+x-checksum-md5: 280c28ce67de9b57447b282a147a888f
+x-checksum-sha1: e6c49a390f0ba69658af9d01fd1443791d5e8b48
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+  0 3396k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0HTTP/2 404 
+date: Wed, 10 Jun 2026 02:47:25 GMT
+content-type: text/html
+cf-ray: a0950d1ea8ef3b5e-GVA
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/co/fs2/fs2-io_3/3.11.0/fs2-io_3-3.11.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+curl: (22) The requested URL returned error: 404
+
+web search: 
+web search: https://github.com/typelevel/fs2/tree/v3.11.0/io/jvm/src/test
+web search: 
+web search: repo.maven.apache.org maven2 co fs2 fs2-io_3 3.11.0 pom fs2-io_3 3.11.0
+web search: 
+web search: https://repo1.maven.org/maven2/co/fs2/fs2-io_3/3.11.0/
+codex
+Maven has the source and javadoc JARs for `3.11.0`; I checked for a Maven test JAR and it is absent, so the versioned GitHub test path is the right fallback. The artifact is a JVM JAR for Scala 3, so it should stay eligible for Native Image metadata and only needs the `language` field.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4915-d7e41b52/build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json
+diff --git a/build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json b/build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json
+index a40f2972d4105fd24d1f8be811a2c39f8f2ece34..5b8381cc38f07c1c0294154494281d71fdd59d6a
+--- a/build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json
++++ b/build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "co.fs2:fs2-io_3:3.11.0"
++  "coordinates" : "co.fs2:fs2-io_3:3.11.0",
++  "repository-url" : "https://github.com/typelevel/fs2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/co/fs2/fs2-io_3/$version$/fs2-io_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/typelevel/fs2/tree/v$version$/io/jvm/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/co/fs2/fs2-io_3/$version$/fs2-io_3-$version$-javadoc.jar",
++  "description" : "FS2 IO is the FS2 module that adds effectful file, process, networking, UDP, Unix socket, and TLS I/O APIs for Scala applications. It builds on FS2 and Cats Effect so these I/O operations can be composed as functional streams with resource-safe acquisition, transformation, and concurrency.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json b/build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json
+index a40f2972d4105fd24d1f8be811a2c39f8f2ece34..5b8381cc38f07c1c0294154494281d71fdd59d6a
+--- a/build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json
++++ b/build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "co.fs2:fs2-io_3:3.11.0"
++  "coordinates" : "co.fs2:fs2-io_3:3.11.0",
++  "repository-url" : "https://github.com/typelevel/fs2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/co/fs2/fs2-io_3/$version$/fs2-io_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/typelevel/fs2/tree/v$version$/io/jvm/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/co/fs2/fs2-io_3/$version$/fs2-io_3-$version$-javadoc.jar",
++  "description" : "FS2 IO is the FS2 module that adds effectful file, process, networking, UDP, Unix socket, and TLS I/O APIs for Scala applications. It builds on FS2 and Cats Effect so these I/O operations can be composed as functional streams with resource-safe acquisition, transformation, and concurrency.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+web search: 
+web search: fs2-io_3 3.11.0 Maven Central
+web search: 
+web search: "co.fs2" "fs2-io_3" "3.11.0" "sources.jar"
+web search: 
+web search: https://repo1.maven.org/maven2/co/fs2/fs2-io_3/3.11.0/
+web search: 
+web search: "fs2-io_3-3.11.0-javadoc.jar"
+codex
+I’ve written the discovered metadata. I’m doing a quick JSON and diff check now, plus one artifact sanity check so the final state is clear.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4915-d7e41b52
+ succeeded in 0ms:
+{
+  "coordinates": "co.fs2:fs2-io_3:3.11.0",
+  "repository-url": "https://github.com/typelevel/fs2",
+  "source-code-url": "https://repo.maven.apache.org/maven2/co/fs2/fs2-io_3/$version$/fs2-io_3-$version$-sources.jar",
+  "test-code-url": "https://github.com/typelevel/fs2/tree/v$version$/io/jvm/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/co/fs2/fs2-io_3/$version$/fs2-io_3-$version$-javadoc.jar",
+  "description": "FS2 IO is the FS2 module that adds effectful file, process, networking, UDP, Unix socket, and TLS I/O APIs for Scala applications. It builds on FS2 and Cats Effect so these I/O operations can be composed as functional streams with resource-safe acquisition, transformation, and concurrency.",
+  "language": {
+    "name": "scala",
+    "version": "3"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4915-d7e41b52
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://repo.maven.apache.org/maven2/co/fs2/fs2-io_3/3.11.0/fs2-io_3-3.11.0.jar -o "$tmp/fs2-io.jar"; jar tf "$tmp/fs2-io.jar" | rg '"'\\.class"'$'"' | head -n 5; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4915-d7e41b52
+diff --git a/build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json b/build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json
+index a40f2972d4105fd24d1f8be811a2c39f8f2ece34..5b8381cc38f07c1c0294154494281d71fdd59d6a
+--- a/build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json
++++ b/build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "co.fs2:fs2-io_3:3.11.0"
++  "coordinates" : "co.fs2:fs2-io_3:3.11.0",
++  "repository-url" : "https://github.com/typelevel/fs2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/co/fs2/fs2-io_3/$version$/fs2-io_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/typelevel/fs2/tree/v$version$/io/jvm/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/co/fs2/fs2-io_3/$version$/fs2-io_3-$version$-javadoc.jar",
++  "description" : "FS2 IO is the FS2 module that adds effectful file, process, networking, UDP, Unix socket, and TLS I/O APIs for Scala applications. It builds on FS2 and Cats Effect so these I/O operations can be composed as functional streams with resource-safe acquisition, transformation, and concurrency.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 370ms:
+fs2/io/CollectionCompat$.class
+fs2/io/CollectionCompat$EnumerationOps$.class
+fs2/io/CollectionCompat$EnumerationOps.class
+fs2/io/CollectionCompat$JIterableOps$.class
+fs2/io/CollectionCompat$JIterableOps.class
+
+codex
+The JSON validates and the main artifact contains JVM class files. `git diff` did not show it because this discovered metadata path appears to be untracked or ignored, so I’m checking file status explicitly.
+exec
+/usr/bin/bash -lc "sed -n '1,80p' build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4915-d7e41b52
+ succeeded in 0ms:
+{
+  "coordinates" : "co.fs2:fs2-io_3:3.11.0",
+  "repository-url" : "https://github.com/typelevel/fs2",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/co/fs2/fs2-io_3/$version$/fs2-io_3-$version$-sources.jar",
+  "test-code-url" : "https://github.com/typelevel/fs2/tree/v$version$/io/jvm/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/co/fs2/fs2-io_3/$version$/fs2-io_3-$version$-javadoc.jar",
+  "description" : "FS2 IO is the FS2 module that adds effectful file, process, networking, UDP, Unix socket, and TLS I/O APIs for Scala applications. It builds on FS2 and Cats Effect so these I/O operations can be composed as functional streams with resource-safe acquisition, transformation, and concurrency.",
+  "language" : {
+    "name" : "scala",
+    "version" : "3"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git ls-files --stage build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4915-d7e41b52
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4915-d7e41b52
+diff --git a/build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json b/build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json
+index a40f2972d4105fd24d1f8be811a2c39f8f2ece34..5b8381cc38f07c1c0294154494281d71fdd59d6a
+--- a/build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json
++++ b/build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "co.fs2:fs2-io_3:3.11.0"
++  "coordinates" : "co.fs2:fs2-io_3:3.11.0",
++  "repository-url" : "https://github.com/typelevel/fs2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/co/fs2/fs2-io_3/$version$/fs2-io_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/typelevel/fs2/tree/v$version$/io/jvm/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/co/fs2/fs2-io_3/$version$/fs2-io_3-$version$-javadoc.jar",
++  "description" : "FS2 IO is the FS2 module that adds effectful file, process, networking, UDP, Unix socket, and TLS I/O APIs for Scala applications. It builds on FS2 and Cats Effect so these I/O operations can be composed as functional streams with resource-safe acquisition, transformation, and concurrency.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 433ms:
+!! build/
+
+web search: 
+web search: https://github.com/typelevel/fs2
+web search: 
+web search: https://repo.maven.apache.org/maven2/co/fs2/fs2-io_3/3.11.0/
+web search: 
+web search: site:repo.maven.apache.org/maven2/co/fs2/fs2-io_3/3.11.0 fs2-io_3-3.11.0.pom
+web search: 
+web search: Maven Central co.fs2 fs2-io_3 3.11.0
+web search: 
+web search: https://repo1.maven.org/maven2/co/fs2/fs2-io_3/3.11.0/
+web search: 
+web search: https://central.sonatype.com/artifact/co.fs2/fs2-io_3/3.11.0
+web search: 
+web search: central.sonatype.com/artifact/co.fs2/fs2-io_3/3.11.0
+web search: 
+web search: https://github.com/typelevel/fs2/tree/v3.11.0/io/jvm/src/test
+codex
+Updated [co.fs2-fs2-io_3-3.11.0.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4915-d7e41b52/build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json:1).
+
+Set repository, Maven source/javadoc URLs, GitHub `v$version$` test path, the exact two-sentence description, and `language` as Scala 3. I left `not-for-native-image` absent because the artifact is a JVM JAR with class files; Maven/GitHub also show it as the Scala 3 FS2 IO artifact and the `v3.11.0` test path exists. ([mvnrepository.com](https://mvnrepository.com/artifact/co.fs2/fs2-io?utm_source=openai))
+
+Validation: `jq` passed; Maven source and javadoc URLs returned 200; Maven test JAR was absent, so GitHub tests were used.
+diff --git a/build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json b/build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json
+index a40f2972d4105fd24d1f8be811a2c39f8f2ece34..5b8381cc38f07c1c0294154494281d71fdd59d6a
+--- a/build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json
++++ b/build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "co.fs2:fs2-io_3:3.11.0"
++  "coordinates" : "co.fs2:fs2-io_3:3.11.0",
++  "repository-url" : "https://github.com/typelevel/fs2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/co/fs2/fs2-io_3/$version$/fs2-io_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/typelevel/fs2/tree/v$version$/io/jvm/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/co/fs2/fs2-io_3/$version$/fs2-io_3-$version$-javadoc.jar",
++  "description" : "FS2 IO is the FS2 module that adds effectful file, process, networking, UDP, Unix socket, and TLS I/O APIs for Scala applications. It builds on FS2 and Cats Effect so these I/O operations can be composed as functional streams with resource-safe acquisition, transformation, and concurrency.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+tokens used
+87,528
+Updated [co.fs2-fs2-io_3-3.11.0.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4915-d7e41b52/build/discovered-artifact-metadata/co.fs2-fs2-io_3-3.11.0.json:1).
+
+Set repository, Maven source/javadoc URLs, GitHub `v$version$` test path, the exact two-sentence description, and `language` as Scala 3. I left `not-for-native-image` absent because the artifact is a JVM JAR with class files; Maven/GitHub also show it as the Scala 3 FS2 IO artifact and the `v3.11.0` test path exists. ([mvnrepository.com](https://mvnrepository.com/artifact/co.fs2/fs2-io?utm_source=openai))
+
+Validation: `jq` passed; Maven source and javadoc URLs returned 200; Maven test JAR was absent, so GitHub tests were used.
+Ran agent for co.fs2:fs2-io_3:3.11.0 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4915-d7e41b52/build/agent-artifact-discovery-logs/co.fs2-fs2-io_3-3.11.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/4915-d7e41b52/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 9s
+9 actionable tasks: 9 executed
