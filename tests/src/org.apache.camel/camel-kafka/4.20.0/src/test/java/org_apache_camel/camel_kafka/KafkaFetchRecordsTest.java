@@ -24,13 +24,18 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.Consumer;
 import org.apache.camel.Route;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.kafka.KafkaClientFactory;
+import org.apache.camel.component.kafka.KafkaComponent;
+import org.apache.camel.component.kafka.KafkaConfiguration;
 import org.apache.camel.component.kafka.KafkaConsumer;
 import org.apache.camel.component.kafka.TaskHealthState;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.clients.consumer.MockConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.errors.TopicExistsException;
@@ -43,6 +48,38 @@ public class KafkaFetchRecordsTest {
     private static final String KAFKA_IMAGE = "apache/kafka:4.2.0";
     private static final Duration KAFKA_START_TIMEOUT = Duration.ofSeconds(30);
     private static final Duration HEALTH_TIMEOUT = Duration.ofSeconds(6);
+
+    @Test
+    void customConsumerFactoryAllowsFetchRecordsToDiscoverClientIdFromConsumerField() throws Exception {
+        String topic = "camel-fetch-records-client-id-" + UUID.randomUUID();
+        String groupId = "camel-fetch-records-client-id-group-" + UUID.randomUUID();
+        String routeId = "kafka-fetch-records-client-id-route-" + UUID.randomUUID();
+        String clientId = "declared-client-id-" + UUID.randomUUID();
+
+        CamelContext context = new DefaultCamelContext();
+        KafkaComponent kafkaComponent = new KafkaComponent();
+        kafkaComponent.setKafkaClientFactory(new DeclaredClientIdConsumerFactory(clientId));
+        context.addComponent("kafka", kafkaComponent);
+        try {
+            context.addRoutes(new RouteBuilder() {
+                @Override
+                public void configure() {
+                    from(kafkaEndpoint(topic, "localhost:1", groupId))
+                            .routeId(routeId)
+                            .process(exchange -> exchange.getMessage().setHeader("handled", true));
+                }
+            });
+            context.start();
+
+            KafkaConsumer kafkaConsumer = kafkaConsumer(context, routeId);
+            TaskHealthState state = waitForClientId(kafkaConsumer, clientId);
+
+            assertThat(state.getClientId()).isEqualTo(clientId);
+            assertThat(state.getGroupId()).isEqualTo(groupId);
+        } finally {
+            context.stop();
+        }
+    }
 
     @Test
     void kafkaConsumerRouteReportsReadyFetchRecordHealthState() throws Exception {
@@ -110,6 +147,28 @@ public class KafkaFetchRecordsTest {
         Consumer consumer = route.getConsumer();
         assertThat(consumer).isInstanceOf(KafkaConsumer.class);
         return (KafkaConsumer) consumer;
+    }
+
+    private static TaskHealthState waitForClientId(
+            KafkaConsumer kafkaConsumer, String clientId) throws InterruptedException {
+        long deadline = System.nanoTime() + HEALTH_TIMEOUT.toNanos();
+        TaskHealthState lastState = null;
+        while (System.nanoTime() < deadline) {
+            List<TaskHealthState> states = kafkaConsumer.healthStates();
+            if (!states.isEmpty()) {
+                lastState = states.get(0);
+                if (clientId.equals(lastState.getClientId())) {
+                    return lastState;
+                }
+            }
+            Thread.sleep(100);
+        }
+
+        assertThat(lastState)
+                .describedAs("Kafka fetch records health state should expose the reflected client id")
+                .isNotNull();
+        assertThat(lastState.getClientId()).isEqualTo(clientId);
+        return lastState;
     }
 
     private static TaskHealthState waitForReadyHealthState(KafkaConsumer kafkaConsumer) throws InterruptedException {
@@ -190,6 +249,38 @@ public class KafkaFetchRecordsTest {
     private static int findAvailablePort() throws IOException {
         try (ServerSocket socket = new ServerSocket(0)) {
             return socket.getLocalPort();
+        }
+    }
+
+    private static final class DeclaredClientIdConsumerFactory implements KafkaClientFactory {
+        private final String clientId;
+
+        private DeclaredClientIdConsumerFactory(String clientId) {
+            this.clientId = clientId;
+        }
+
+        @Override
+        public Producer getProducer(Properties kafkaProps) {
+            throw new UnsupportedOperationException("This test only starts a Kafka consumer route");
+        }
+
+        @Override
+        public org.apache.kafka.clients.consumer.Consumer getConsumer(Properties kafkaProps) {
+            return new DeclaredClientIdConsumer(clientId);
+        }
+
+        @Override
+        public String getBrokers(KafkaConfiguration configuration) {
+            return configuration.getBrokers();
+        }
+    }
+
+    private static final class DeclaredClientIdConsumer extends MockConsumer<String, String> {
+        private final String clientId;
+
+        private DeclaredClientIdConsumer(String clientId) {
+            super("earliest");
+            this.clientId = clientId;
         }
     }
 
