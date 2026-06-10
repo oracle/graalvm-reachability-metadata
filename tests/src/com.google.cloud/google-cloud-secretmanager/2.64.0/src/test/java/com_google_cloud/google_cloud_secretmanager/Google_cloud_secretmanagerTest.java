@@ -350,6 +350,43 @@ public class Google_cloud_secretmanagerTest {
     }
 
     @Test
+    void clientDispatchesConditionalMutationRequestsWithEtags() throws Exception {
+        FakeSecretManagerServiceStub stub = new FakeSecretManagerServiceStub();
+        SecretName secretName = SecretName.of(PROJECT, SECRET);
+        SecretVersionName versionName = SecretVersionName.of(PROJECT, SECRET, VERSION);
+
+        try (SecretManagerServiceClient client = SecretManagerServiceClient.create(stub)) {
+            client.deleteSecret(DeleteSecretRequest.newBuilder()
+                    .setName(secretName.toString())
+                    .setEtag("secret-etag")
+                    .build());
+            assertThat(stub.deleteSecret.getLastRequest().getName()).isEqualTo(secretName.toString());
+            assertThat(stub.deleteSecret.getLastRequest().getEtag()).isEqualTo("secret-etag");
+
+            SecretVersion disabled = client.disableSecretVersion(DisableSecretVersionRequest.newBuilder()
+                    .setName(versionName.toString())
+                    .setEtag("disable-etag")
+                    .build());
+            assertThat(disabled.getState()).isEqualTo(SecretVersion.State.DISABLED);
+            assertThat(stub.disableSecretVersion.getLastRequest().getEtag()).isEqualTo("disable-etag");
+
+            SecretVersion enabled = client.enableSecretVersion(EnableSecretVersionRequest.newBuilder()
+                    .setName(versionName.toString())
+                    .setEtag("enable-etag")
+                    .build());
+            assertThat(enabled.getState()).isEqualTo(SecretVersion.State.ENABLED);
+            assertThat(stub.enableSecretVersion.getLastRequest().getEtag()).isEqualTo("enable-etag");
+
+            SecretVersion destroyed = client.destroySecretVersion(DestroySecretVersionRequest.newBuilder()
+                    .setName(versionName.toString())
+                    .setEtag("destroy-etag")
+                    .build());
+            assertThat(destroyed.getState()).isEqualTo(SecretVersion.State.DESTROYED);
+            assertThat(stub.destroySecretVersion.getLastRequest().getEtag()).isEqualTo("destroy-etag");
+        }
+    }
+
+    @Test
     void legacyBetaPackagesExposeCompatibleResourceNamesAndPayloadModels() {
         com.google.cloud.secretmanager.v1beta2.SecretName beta2SecretName =
                 com.google.cloud.secretmanager.v1beta2.SecretName.ofProjectLocationSecretName(
