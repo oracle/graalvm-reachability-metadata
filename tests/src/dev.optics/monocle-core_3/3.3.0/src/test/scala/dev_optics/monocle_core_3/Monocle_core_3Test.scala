@@ -6,12 +6,14 @@
  */
 package dev_optics.monocle_core_3
 
+import cats.instances.option.*
 import monocle.Focus
 import monocle.Fold
 import monocle.Getter
 import monocle.Iso
 import monocle.Lens
 import monocle.Optional
+import monocle.PLens
 import monocle.Prism
 import monocle.Setter
 import monocle.Traversal
@@ -136,6 +138,29 @@ class Monocle_core_3Test {
   }
 
   @Test
+  def polymorphicLensChangesFocusedFieldAndOuterContainerTypes(): Unit = {
+    val boxValueLens: PLens[TypedBox[Int], TypedBox[String], Int, String] =
+      PLens[TypedBox[Int], TypedBox[String], Int, String](_.value)(value => box => TypedBox(value, box.label))
+    val envelopeBoxLens: PLens[TypedEnvelope[Int], TypedEnvelope[String], TypedBox[Int], TypedBox[String]] =
+      PLens[TypedEnvelope[Int], TypedEnvelope[String], TypedBox[Int], TypedBox[String]](_.box)(box => envelope =>
+        TypedEnvelope(box, envelope.source)
+      )
+    val envelopeValueLens: PLens[TypedEnvelope[Int], TypedEnvelope[String], Int, String] =
+      envelopeBoxLens.andThen(boxValueLens)
+    val original: TypedEnvelope[Int] = TypedEnvelope(TypedBox(7, "score"), "manual")
+
+    assertThat(envelopeValueLens.get(original)).isEqualTo(7)
+    assertThat(envelopeValueLens.getOrModify(original)).isEqualTo(Right(7))
+    assertThat(envelopeValueLens.modify(value => s"#$value")(original))
+      .isEqualTo(TypedEnvelope(TypedBox("#7", "score"), "manual"))
+    assertThat(envelopeValueLens.replace("done")(original))
+      .isEqualTo(TypedEnvelope(TypedBox("done", "score"), "manual"))
+    assertThat(envelopeValueLens.modifyF(value => Option.when(value > 0)(value.toString))(original))
+      .isEqualTo(Some(TypedEnvelope(TypedBox("7", "score"), "manual")))
+    assertThat(envelopeValueLens.modifyF(value => Option.when(value < 0)(value.toString))(original)).isEqualTo(None)
+  }
+
+  @Test
   def getterSetterAndFoldExposeReadOnlyWriteOnlyAndAggregateViews(): Unit = {
     val user: User = User("Grace", 42, Address(Street("Arlington", 7)))
     val nameGetter: Getter[User, String] = Getter[User, String](_.name)
@@ -210,6 +235,8 @@ final case class User(name: String, age: Int, address: Address)
 final case class Address(street: Street)
 final case class Street(city: String, number: Int)
 final case class Scores(math: Int, science: Int, literature: Int)
+final case class TypedBox[A](value: A, label: String)
+final case class TypedEnvelope[A](box: TypedBox[A], source: String)
 
 sealed trait Payment
 final case class Card(token: String, cents: Int) extends Payment
