@@ -17,6 +17,7 @@ import monocle.Setter
 import monocle.Traversal
 import monocle.function.all.at
 import monocle.function.all.each
+import monocle.function.all.filterIndex
 import monocle.function.all.index
 import monocle.std.either.stdLeft
 import monocle.std.either.stdRight
@@ -187,6 +188,21 @@ class Monocle_core_3Test {
     assertThat(at[Map[String, Int], String, Option[Int]]("banana").replace(Some(5))(inventory))
       .isEqualTo(Map("apple" -> 2, "banana" -> 5))
     assertThat(at[Map[String, Int], String, Option[Int]]("apple").replace(None)(inventory)).isEqualTo(Map.empty)
+  }
+
+  @Test
+  def filterIndexTraversalUpdatesOnlyEntriesWhoseKeysMatchPredicate(): Unit = {
+    val produce: Map[String, Int] = Map("apple" -> 2, "banana" -> 3, "apricot" -> 4, "pear" -> 5)
+    val quantitiesForAItems: Traversal[Map[String, Int], Int] =
+      filterIndex[Map[String, Int], String, Int](_.startsWith("a"))
+
+    assertThat(quantitiesForAItems.getAll(produce).toSet).isEqualTo(Set(2, 4))
+    assertThat(quantitiesForAItems.modify(_ + 10)(produce))
+      .isEqualTo(Map("apple" -> 12, "banana" -> 3, "apricot" -> 14, "pear" -> 5))
+    assertThat(quantitiesForAItems.replace(0)(produce))
+      .isEqualTo(Map("apple" -> 0, "banana" -> 3, "apricot" -> 0, "pear" -> 5))
+    assertThat(quantitiesForAItems.isEmpty(produce)).isFalse()
+    assertThat(quantitiesForAItems.isEmpty(Map("banana" -> 3, "pear" -> 5))).isTrue()
   }
 }
 
