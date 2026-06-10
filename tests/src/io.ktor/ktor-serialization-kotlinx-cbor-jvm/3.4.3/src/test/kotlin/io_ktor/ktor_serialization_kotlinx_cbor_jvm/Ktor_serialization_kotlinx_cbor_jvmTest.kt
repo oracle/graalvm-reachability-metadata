@@ -24,6 +24,7 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.cbor.ByteString
 import kotlinx.serialization.cbor.Cbor
+import kotlinx.serialization.cbor.CborArray
 import kotlinx.serialization.cbor.CborLabel
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
@@ -174,6 +175,26 @@ public class KtorSerializationKotlinxCborJvmTest {
     }
 
     @Test
+    public fun cborArrayAnnotatedDocumentsAreSerializedAsArrays(): Unit = runBlocking {
+        withTimeout(TEST_TIMEOUT_MILLIS) {
+            val configuration = RecordingConfiguration()
+            configuration.cbor(
+                cbor = Cbor {
+                    useDefiniteLengthEncoding = true
+                }
+            )
+            val converter = configuration.singleRegistration().converter
+            val original = ArrayEncodedCborPoint(x = -2, y = 3)
+
+            val bytes = converter.serializeToByteArray(original)
+            val decoded = converter.deserializeFromByteArray<ArrayEncodedCborPoint>(bytes)
+
+            assertArrayEquals(byteArrayOf(0x82.toByte(), 0x21, 0x03), bytes)
+            assertThat(decoded).isEqualTo(original)
+        }
+    }
+
+    @Test
     public fun malformedPayloadFailsWithKtorConversionException(): Unit {
         val converter = registeredConverter()
         val malformedCbor = byteArrayOf(0xbf.toByte(), 0x62, 0x69, 0x64)
@@ -294,6 +315,13 @@ private data class ContextualCborEnvelope(
 private data class LabeledCborMessage(
     @CborLabel(1) val id: Int,
     @CborLabel(2) val label: String
+)
+
+@CborArray
+@Serializable
+private data class ArrayEncodedCborPoint(
+    val x: Int,
+    val y: Int
 )
 
 private data class TrackingCode(
