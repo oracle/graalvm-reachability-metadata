@@ -159,7 +159,9 @@ class Circe_generic_3Test {
       "note" -> Json.fromInt(123)
     )
 
-    val failures: List[DecodingFailure] = invalid.asAccumulating[Invoice].fold(
+    val failures: List[DecodingFailure] = summon[Decoder[Invoice]]
+      .decodeAccumulating(invalid.hcursor)
+      .fold(
       _.toList,
       value => fail(s"Expected derived invoice decoding to fail, but decoded: $value")
     )
