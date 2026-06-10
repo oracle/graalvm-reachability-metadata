@@ -11,6 +11,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: create-snapshot-release
+  cancel-in-progress: true
+
 jobs:
   get-changed-metadata:
     name: "📋 Get a list of changed metadata"
