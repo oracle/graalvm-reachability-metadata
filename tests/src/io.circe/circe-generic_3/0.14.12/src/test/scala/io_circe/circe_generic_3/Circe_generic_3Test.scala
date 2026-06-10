@@ -75,6 +75,15 @@ object CirceGenericFixtures {
   final case class AutoPermission(resource: String, scopes: Set[String])
   final case class AutoMember(userName: String, permissions: Vector[AutoPermission])
   final case class AutoTeam(name: String, members: List[AutoMember])
+
+  sealed trait DocumentNode
+
+  object DocumentNode {
+    final case class Section(title: String, children: List[DocumentNode]) extends DocumentNode
+    final case class Paragraph(text: String) extends DocumentNode
+
+    given Codec.AsObject[DocumentNode] = deriveCodec[DocumentNode]
+  }
 }
 
 class Circe_generic_3Test {
@@ -193,5 +202,34 @@ class Circe_generic_3Test {
     assertThat(json.hcursor.downField("members").downN(0).downField("permissions").downN(0).get[Set[String]]("scopes"))
       .isEqualTo(Right(Set("read", "write")))
     assertThat(json.as[AutoTeam]).isEqualTo(Right(team))
+  }
+
+  @Test
+  def semiautomaticDerivationSupportsRecursiveAdts(): Unit = {
+    import DocumentNode._
+
+    val document: DocumentNode = Section(
+      title = "guide",
+      children = List(
+        Paragraph("intro"),
+        Section("details", List(Paragraph("body")))
+      )
+    )
+
+    val json: Json = document.asJson
+    val rootKeys: Set[String] = json.hcursor.keys.map(_.toSet).getOrElse(Set.empty)
+    val sectionCursor = json.hcursor.downField("Section")
+    val nestedKeys: Set[String] = sectionCursor
+      .downField("children")
+      .downN(1)
+      .keys
+      .map(_.toSet)
+      .getOrElse(Set.empty)
+
+    assertThat(rootKeys.asJava).containsExactly("Section")
+    assertThat(sectionCursor.get[String]("title")).isEqualTo(Right("guide"))
+    assertThat(sectionCursor.downField("children").values.map(_.size)).isEqualTo(Some(2))
+    assertThat(nestedKeys.asJava).containsExactly("Section")
+    assertThat(json.as[DocumentNode]).isEqualTo(Right(document))
   }
 }
