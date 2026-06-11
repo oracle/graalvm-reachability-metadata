@@ -101,6 +101,24 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def interpolatesComputedExpressionsInValueAndKeyPositions(): Unit = {
+    val suffix: String = "requests"
+    val base: Int = 40
+
+    val document: Json = json"""{
+      ${"metric-" + suffix}: ${base + 2},
+      "values": [${base * 2}, ${List(base, base + 1)}],
+      "rootValue": ${Option.empty[String]}
+    }"""
+
+    assertThat(decodeField[Int](document, "metric-requests")).isEqualTo(42)
+    assertThat(decodeField[List[Json]](document, "values")).isEqualTo(
+      List(Json.fromInt(80), Json.arr(Json.fromInt(40), Json.fromInt(41)))
+    )
+    assertThat(document.hcursor.downField("rootValue").focus).isEqualTo(Some(Json.Null))
+  }
+
+  @Test
   def usesCustomValueAndKeyEncodersDuringInterpolation(): Unit = {
     final case class Temperature(celsius: Int)
 
