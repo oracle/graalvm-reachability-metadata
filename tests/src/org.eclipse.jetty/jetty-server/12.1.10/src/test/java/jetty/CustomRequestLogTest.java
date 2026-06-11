@@ -118,7 +118,7 @@ public class CustomRequestLogTest {
 
         server.start();
         try {
-            int port = ((NetworkConnector)server.getConnectors()[0]).getLocalPort();
+            int port = ((NetworkConnector) server.getConnectors()[0]).getLocalPort();
             HttpResponse<String> response = sendRequest(port);
 
             assertThat(response.statusCode()).isEqualTo(200);
