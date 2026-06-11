@@ -1,0 +1,58 @@
+{
+  "improve_library_coverage:2026-06-11": {
+    "timestamp": "2026-06-11T18:08:43.121356Z",
+    "library": "org.mockito:mockito-core:5.0.0",
+    "starting_commit": "81c308769998f1ff7a4d5a48a63db3db229bf175",
+    "ending_commit": "81c308769998f1ff7a4d5a48a63db3db229bf175",
+    "strategy_name": "library_update_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 3997,
+      "issue_label": "library-update-request",
+      "library": "org.mockito:mockito-core:5.0.0",
+      "summary": "Mockito core has no external service or missing Maven dependency, but native-image-reachable tests need Mockito's proxy MockMaker selected instead of the default inline Byte Buddy mock maker.",
+      "deterministic_setup": [],
+      "agent_guidance": "Add a test resource `src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker` containing `mock-maker-proxy` for Mockito 5.0.0, or the equivalent `org.mockito.internal.creation.proxy.ProxyMockMaker` used by the existing tests. Keep meaningful native coverage focused on interface mocks, stubbing, verification, argument matching/captors, answers, and settings that work with the proxy mock maker. Register the mocked test interfaces for dynamic proxy metadata as needed. Avoid relying on default inline/class/final mocking because it depends on Byte Buddy instrumentation/runtime agent behavior that is not a good native-image target.",
+      "risks": [
+        "The proxy MockMaker can only mock interfaces, so tests that try to mock classes, final types, spies, or constructor/static mocking are likely to fail or be unsuitable for native-image coverage.",
+        "Mockito 5.0.0 already resolves `net.bytebuddy:byte-buddy`, `net.bytebuddy:byte-buddy-agent`, and `org.objenesis:objenesis` transitively; adding extra dependencies is not justified from the artifact dependency graph."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#3997 Update existing library: org.mockito:mockito-core:5.0.0; label=library-update-request; body_chars=270"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "9 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 44922,
+      "output_tokens_used": 2772,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.mockito:mockito-core:5.0.0/library-preparation-preflight/pi-generation-2026-06-11T16-51-56-847490Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 478062,
+      "cached_input_tokens_used": 8139264,
+      "output_tokens_used": 64791,
+      "iterations": 10,
+      "cost_usd": 6.0133,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "test_file": "None",
+      "metadata_file": "None"
+    }
+  }
+}

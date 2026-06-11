@@ -14,6 +14,10 @@ dependencies {
     testImplementation "org.mockito:mockito-core:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
+
+tasks.withType(Test).configureEach {
+    jvmArgs '-Djdk.attach.allowAttachSelf=true'
+}
 graalvmNative {
     agent {
         defaultMode = "conditional"
