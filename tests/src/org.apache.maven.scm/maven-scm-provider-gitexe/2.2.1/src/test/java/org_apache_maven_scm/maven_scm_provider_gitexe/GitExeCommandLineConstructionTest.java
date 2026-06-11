@@ -10,15 +10,20 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.maven.scm.CommandParameter;
 import org.apache.maven.scm.CommandParameters;
+import org.apache.maven.scm.CommandParameters.SignOption;
 import org.apache.maven.scm.ScmBranch;
 import org.apache.maven.scm.ScmException;
 import org.apache.maven.scm.ScmFileSet;
+import org.apache.maven.scm.ScmResult;
 import org.apache.maven.scm.ScmTag;
+import org.apache.maven.scm.ScmTagParameters;
 import org.apache.maven.scm.command.info.InfoItem;
 import org.apache.maven.scm.provider.ScmProviderRepository;
 import org.apache.maven.scm.provider.git.gitexe.command.checkin.GitCheckInCommand;
@@ -91,6 +96,7 @@ public class GitExeCommandLineConstructionTest {
         Files.createDirectories(removableDirectory);
 
         GitScmProviderRepository repository = new GitScmProviderRepository("https://example.invalid/team/project.git");
+        repository.setPushChanges(false);
         ScmTag startTag = new ScmTag("v1.0.0");
         ScmTag endTag = new ScmTag("v1.1.0");
 
@@ -102,17 +108,31 @@ public class GitExeCommandLineConstructionTest {
         Commandline rawDiffCommandLine = GitDiffCommand.createDiffRawCommandLine(workingDirectory, "HEAD");
         assertThat(rawDiffCommandLine.getArguments()).containsExactly("diff", "--raw", "HEAD");
 
-        Commandline tagCommandLine = GitTagCommand.createCommandLine(
-                repository, workingDirectory, "v1.1.0", messagePath.toFile(), false);
-        assertThat(tagCommandLine.getArguments())
-                .containsExactly("tag", "-F", messagePath.toAbsolutePath().toString(), "v1.1.0");
+        initializeGitRepository(workingDirectory);
 
-        Commandline signedTagCommandLine = GitTagCommand.createCommandLine(
-                repository, workingDirectory, "v1.1.0", messagePath.toFile(), true);
-        assertThat(signedTagCommandLine.getArguments())
-                .containsExactly("tag", "-s", "-F", messagePath.toAbsolutePath().toString(), "v1.1.0");
+        GitTagCommand tagCommand = new GitTagCommand(Map.of());
+        ScmFileSet repositoryFileSet = new ScmFileSet(workingDirectory);
+        ScmTagParameters defaultTagParameters = new ScmTagParameters("release v1.1.0");
+        defaultTagParameters.setSignOption(SignOption.DEFAULT);
+        ScmResult tagResult = tagCommand.executeTagCommand(
+                repository, repositoryFileSet, "v1.1.0", defaultTagParameters);
+        assertThat(tagResult.isSuccess())
+                .as("tag result should succeed: %s", tagResult.getProviderMessage())
+                .isTrue();
+        assertThat(tagResult.getCommandLine()).contains("tag", "-F", "v1.1.0");
+        verifyGitReference(workingDirectory, "refs/tags/v1.1.0");
 
-        Commandline tagPushCommandLine = GitTagCommand.createPushCommandLine(
+        ScmTagParameters noSignTagParameters = new ScmTagParameters("release v1.1.1");
+        noSignTagParameters.setSignOption(SignOption.FORCE_NO_SIGN);
+        ScmResult noSignTagResult = tagCommand.executeTagCommand(
+                repository, repositoryFileSet, "v1.1.1", noSignTagParameters);
+        assertThat(noSignTagResult.isSuccess())
+                .as("no-sign tag result should succeed: %s", noSignTagResult.getProviderMessage())
+                .isTrue();
+        assertThat(noSignTagResult.getCommandLine()).contains("tag", "--no-sign", "-F", "v1.1.1");
+        verifyGitReference(workingDirectory, "refs/tags/v1.1.1");
+
+        Commandline tagPushCommandLine = tagCommand.createPushCommandLine(
                 repository, new ScmFileSet(workingDirectory, trackedPath.toFile()), "v1.1.0");
         assertThat(tagPushCommandLine.getArguments())
                 .containsExactly("push", "https://example.invalid/team/project.git", "refs/tags/v1.1.0");
@@ -130,6 +150,34 @@ public class GitExeCommandLineConstructionTest {
 
     private static void assertGitExecutable(Commandline commandLine) {
         assertThat(commandLine.getExecutable()).isIn("git", "'git'");
+    }
+
+    private static void initializeGitRepository(File workingDirectory) throws Exception {
+        runGit(workingDirectory, "init");
+        runGit(workingDirectory, "config", "user.email", "native-tests@example.invalid");
+        runGit(workingDirectory, "config", "user.name", "Native Tests");
+        runGit(workingDirectory, "add", "tracked.txt");
+        runGit(workingDirectory, "commit", "-m", "initial commit");
+    }
+
+    private static void verifyGitReference(File workingDirectory, String reference) throws Exception {
+        runGit(workingDirectory, "rev-parse", "--verify", reference);
+    }
+
+    private static void runGit(File workingDirectory, String... arguments) throws Exception {
+        List<String> command = new ArrayList<>();
+        command.add("git");
+        command.addAll(List.of(arguments));
+        Process process = new ProcessBuilder(command)
+                .directory(workingDirectory)
+                .redirectErrorStream(true)
+                .start();
+        if (!process.waitFor(10, TimeUnit.SECONDS)) {
+            process.destroyForcibly();
+            assertThat(false).as("git command timed out: %s", command).isTrue();
+        }
+        String output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+        assertThat(process.exitValue()).as("git command failed: %s%n%s", command, output).isZero();
     }
 
     private static final class CapturingGitInfoCommand extends GitInfoCommand {
