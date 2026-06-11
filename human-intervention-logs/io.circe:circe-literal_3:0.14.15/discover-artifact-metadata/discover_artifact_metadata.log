@@ -1,0 +1,1504 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019eb512-e685-7130-92f1-2196e8e5b597
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.circe:circe-literal_3:0.14.15
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "0.14.15" when "$version$" is replaced with "0.14.15".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "io.circe:circe-literal_3:0.14.15".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "0.14.15".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream Circe tags, then update the JSON in place with the Scala/JVM classification.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json && sed -n '1,160p' build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8
+-rw-rw-r-- 1 vjovanov vjovanov 57 Jun 11 07:06 build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+{
+  "coordinates" : "io.circe:circe-literal_3:0.14.15"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'circe-literal|source-code-url|test-code-url|documentation-url|language' metadata build/discovered-artifact-metadata -g '*.json' | head -120" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8
+ succeeded in 0ms:
+build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json:2:  "coordinates" : "io.circe:circe-literal_3:0.14.15"
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:35:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/io.lettuce/lettuce-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-sources.jar",
+metadata/io.lettuce/lettuce-core/index.json:7:    "test-code-url" : "https://github.com/redis/lettuce/tree/$version$/src/test",
+metadata/io.lettuce/lettuce-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-javadoc.jar",
+metadata/jdom/jdom/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jdom/jdom/$version$/jdom-$version$-sources.jar",
+metadata/jdom/jdom/index.json:7:    "test-code-url" : "https://www.jdom.org/dist/binary/archive/jdom-test-$version$.zip",
+metadata/jdom/jdom/index.json:8:    "documentation-url" : "https://www.jdom.org/dist/binary/archive/jdom-$version$.zip",
+metadata/org.glassfish.hk2/hk2-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:22:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:37:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:38:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.crac/crac/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/crac/crac/$version$/crac-$version$-sources.jar",
+metadata/org.crac/crac/index.json:7:    "test-code-url" : "N/A",
+metadata/org.crac/crac/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/crac/crac/$version$/crac-$version$-javadoc.jar",
+metadata/tools.jackson.jaxrs/jackson-jaxrs-json-provider/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/tools/jackson/jaxrs/jackson-jaxrs-json-provider/$version$/jackson-jaxrs-json-provider-$version$-sources.jar",
+metadata/tools.jackson.jaxrs/jackson-jaxrs-json-provider/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-jaxrs-providers/tree/jackson-jaxrs-providers-$version$/json/src/test",
+metadata/tools.jackson.jaxrs/jackson-jaxrs-json-provider/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/tools/jackson/jaxrs/jackson-jaxrs-json-provider/$version$/jackson-jaxrs-json-provider-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-sources.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/asn1/ber/src/test/java/org/apache/directory/api/asn1/ber/",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-javadoc.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-sources.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.mortbay.jetty/servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-javadoc.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-sources.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:7:    "test-code-url" : "https://github.com/eclipse-jgit/jgit/tree/v$version$/org.eclipse.jgit.test",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-javadoc.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-sources.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:25:    "test-code-url" : "https://github.com/eclipse-jgit/jgit/tree/v$version$/org.eclipse.jgit.test",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:26:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-javadoc.jar",
+metadata/tools.jackson.jaxrs/jackson-jaxrs-base/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/tools/jackson/jaxrs/jackson-jaxrs-base/$version$/jackson-jaxrs-base-$version$-sources.jar",
+metadata/tools.jackson.jaxrs/jackson-jaxrs-base/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-jaxrs-providers/tree/jackson-jaxrs-providers-$version$/base/src/test",
+metadata/tools.jackson.jaxrs/jackson-jaxrs-base/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/tools/jackson/jaxrs/jackson-jaxrs-base/$version$/jackson-jaxrs-base-$version$-javadoc.jar",
+metadata/org.mortbay.jetty/jetty-sslengine/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty-sslengine/$version$/jetty-sslengine-$version$-sources.jar",
+metadata/org.mortbay.jetty/jetty-sslengine/index.json:7:    "test-code-url": "https://github.com/jetty-project/codehaus-jetty6/tree/jetty-$version$/extras/sslengine/src/test/java/org/mortbay/jetty/security",
+metadata/org.mortbay.jetty/jetty-sslengine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty-sslengine/$version$/jetty-sslengine-$version$-javadoc.jar",
+metadata/org.jooq/jooq/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-sources.jar",
+metadata/org.jooq/jooq/index.json:8:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-javadoc.jar",
+metadata/org.jooq/jooq/index.json:39:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-sources.jar",
+metadata/org.jooq/jooq/index.json:41:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:42:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-javadoc.jar",
+metadata/org.jooq/jooq/index.json:115:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-sources.jar",
+metadata/org.jooq/jooq/index.json:117:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:118:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/$version$/jooq-$version$-javadoc.jar",
+metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/$version$/jboss-classfilewriter-$version$-sources.jar",
+metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/$version$/jboss-classfilewriter-$version$-source-release.zip",
+metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/$version$/jboss-classfilewriter-$version$-javadoc.jar",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/ccil/cowan/tagsoup/tagsoup/$version$/tagsoup-$version$-sources.jar",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:7:    "test-code-url" : "N/A",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/ccil/cowan/tagsoup/tagsoup/$version$/tagsoup-$version$-javadoc.jar",
+metadata/net.java.dev.jna/jna/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/net/java/dev/jna/jna/$version$/jna-$version$-sources.jar",
+metadata/net.java.dev.jna/jna/index.json:10:    "test-code-url": "https://github.com/java-native-access/jna/tree/$version$/test",
+metadata/net.java.dev.jna/jna/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/net/java/dev/jna/jna/$version$/jna-$version$-javadoc.jar",
+metadata/com.squareup.moshi/moshi-adapters/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-adapters/$version$/moshi-adapters-$version$-sources.jar",
+metadata/com.squareup.moshi/moshi-adapters/index.json:7:    "test-code-url" : "https://github.com/square/moshi/tree/$version$/moshi-adapters/src/test",
+metadata/com.squareup.moshi/moshi-adapters/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-adapters/$version$/moshi-adapters-$version$-javadoc.jar",
+metadata/com.squareup.moshi/moshi-adapters/index.json:10:    "language" : {
+metadata/com.github.package-url/packageurl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/package-url/packageurl-java/$version$/packageurl-java-$version$-sources.jar",
+metadata/com.github.package-url/packageurl-java/index.json:7:    "test-code-url" : "https://github.com/package-url/packageurl-java/tree/packageurl-java-$version$/src/test",
+metadata/com.github.package-url/packageurl-java/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/package-url/packageurl-java/$version$/packageurl-java-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.github.takayahilton/sql-formatter_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/takayahilton/sql-formatter_2.13/$version$/sql-formatter_2.13-$version$-sources.jar",
+metadata/com.github.takayahilton/sql-formatter_2.13/index.json:7:    "test-code-url" : "https://github.com/takayahilton/sql-formatter/tree/v$version$/shared/src/test",
+metadata/com.github.takayahilton/sql-formatter_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/takayahilton/sql-formatter_2.13/$version$/sql-formatter_2.13-$version$-javadoc.jar",
+metadata/com.github.takayahilton/sql-formatter_2.13/index.json:10:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-core-jvm/$version$/clikt-core-jvm-$version$-sources.jar",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:7:    "test-code-url" : "https://github.com/ajalt/clikt/tree/$version$/test/src",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-core-jvm/$version$/clikt-core-jvm-$version$-javadoc.jar",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:10:    "language" : {
+metadata/org.freemarker/freemarker/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/freemarker/freemarker/$version$/freemarker-$version$-sources.jar",
+metadata/org.freemarker/freemarker/index.json:11:    "test-code-url": "https://github.com/apache/freemarker/tree/v$version$/src/test",
+metadata/org.freemarker/freemarker/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/freemarker/freemarker/$version$/freemarker-$version$-javadoc.jar",
+metadata/com.squareup.moshi/moshi-kotlin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-kotlin/$version$/moshi-kotlin-$version$-sources.jar",
+metadata/com.squareup.moshi/moshi-kotlin/index.json:7:    "test-code-url" : "https://github.com/square/moshi/tree/$version$/moshi-kotlin/src/test",
+metadata/com.squareup.moshi/moshi-kotlin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-kotlin/$version$/moshi-kotlin-$version$-javadoc.jar",
+metadata/com.squareup.moshi/moshi-kotlin/index.json:10:    "language" : {
+metadata/org.jboss.threads/jboss-threads/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/threads/jboss-threads/$version$/jboss-threads-$version$-sources.jar",
+metadata/org.jboss.threads/jboss-threads/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/threads/jboss-threads/$version$/jboss-threads-$version$-source-release.zip",
+metadata/org.jboss.threads/jboss-threads/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/threads/jboss-threads/$version$/jboss-threads-$version$-javadoc.jar",
+metadata/org.jboss.threads/jboss-threads/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/threads/jboss-threads/$version$/jboss-threads-$version$-sources.jar",
+metadata/org.jboss.threads/jboss-threads/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/threads/jboss-threads/$version$/jboss-threads-$version$-source-release.zip",
+metadata/org.jboss.threads/jboss-threads/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/threads/jboss-threads/$version$/jboss-threads-$version$-javadoc.jar",
+metadata/org.jboss.threads/jboss-threads/index.json:45:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/threads/jboss-threads/$version$/jboss-threads-$version$-sources.jar",
+metadata/org.jboss.threads/jboss-threads/index.json:47:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/threads/jboss-threads/$version$/jboss-threads-$version$-source-release.zip",
+metadata/org.jboss.threads/jboss-threads/index.json:48:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/threads/jboss-threads/$version$/jboss-threads-$version$-javadoc.jar",
+metadata/org.jboss.threads/jboss-threads/index.json:59:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/threads/jboss-threads/$version$/jboss-threads-$version$-sources.jar",
+metadata/org.jboss.threads/jboss-threads/index.json:61:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/threads/jboss-threads/$version$/jboss-threads-$version$-source-release.zip",
+metadata/org.jboss.threads/jboss-threads/index.json:62:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/threads/jboss-threads/$version$/jboss-threads-$version$-javadoc.jar",
+metadata/org.jboss.threads/jboss-threads/index.json:73:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/threads/jboss-threads/$version$/jboss-threads-$version$-sources.jar",
+metadata/org.jboss.threads/jboss-threads/index.json:75:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/threads/jboss-threads/$version$/jboss-threads-$version$-source-release.zip",
+metadata/org.jboss.threads/jboss-threads/index.json:76:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/threads/jboss-threads/$version$/jboss-threads-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:7:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:28:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:30:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model/",
+metadata/org.apache.directory.api/api-ldap-model/index.json:31:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:42:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:44:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:45:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:56:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:58:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:59:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:73:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+
+web search: 
+web search: io.circe circe-literal_3 0.14.15 Maven Central
+web search: 
+web search: https://repo1.maven.org/maven2/io/circe/circe-literal_3/0.14.15/
+web search: 
+web search: https://repo1.maven.org/maven2/io/circe/circe-literal_3/0.14.15/
+web search: 
+web search: site:github.com/circe/circe/releases 0.14.15 circe
+codex
+Maven Central has the JVM jar, sources jar, and javadoc jar for `circe-literal_3` 0.14.15, so I’m using those for source/docs and checking upstream GitHub only for the test tree.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/0.14.15/circe-literal_3-0.14.15.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>io.circe</groupId>
+    <artifactId>circe-literal_3</artifactId>
+    <packaging>jar</packaging>
+    <description>circe literal</description>
+    <url>https://github.com/circe/circe</url>
+    <version>0.14.15</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>Circe literal</name>
+    <inceptionYear>2024</inceptionYear>
+    <organization>
+        <name>circe</name>
+    </organization>
+    <scm>
+        <url>https://github.com/circe/circe</url>
+        <connection>scm:git:https://github.com/circe/circe.git</connection>
+        <developerConnection>scm:git:git@github.com:circe/circe.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>travisbrown</id>
+            <name>Travis Brown</name>
+            <url>https://twitter.com/travisbrown</url>
+            <email>travisrobertbrown@gmail.com</email>
+        </developer>
+        <developer>
+            <id>zmccoy</id>
+            <name>Zach McCoy</name>
+            <url>https://twitter.com/zachamccoy</url>
+            <email>zachabbott@gmail.com</email>
+        </developer>
+        <developer>
+            <id>zarthross</id>
+            <name>Darren Gibson</name>
+            <url>https://twitter.com/zarthross</url>
+            <email>zarthross@gmail.com</email>
+        </developer>
+        <developer>
+            <id>hamnis</id>
+            <name>Erlend Hamnaberg</name>
+            <url>https://github.com/hamnis</url>
+            <email>erlend@hamnaberg.net</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://javadoc.io/doc/io.circe/circe-literal_3/0.14.15/</info.apiURL>
+        <info.releaseNotesUrl>https://github.com/circe/circe/releases/tag/v0.14.15</info.releaseNotesUrl>
+        <info.versionScheme>early-semver</info.versionScheme>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>io.circe</groupId>
+            <artifactId>circe-core_3</artifactId>
+            <version>0.14.15</version>
+        </dependency>
+        <dependency>
+            <groupId>io.circe</groupId>
+            <artifactId>circe-jawn_3</artifactId>
+            <version>0.14.15</version>
+        </dependency>
+        <dependency>
+            <groupId>io.circe</groupId>
+            <artifactId>circe-testing_3</artifactId>
+            <version>0.14.15</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.3.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>scalac-compat-annotation_3</artifactId>
+            <version>0.1.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scalacheck</groupId>
+            <artifactId>scalacheck_3</artifactId>
+            <version>1.19.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scalameta</groupId>
+            <artifactId>munit_3</artifactId>
+            <version>1.2.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scalameta</groupId>
+            <artifactId>munit-scalacheck_3</artifactId>
+            <version>1.2.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>jawn-parser_3</artifactId>
+            <version>1.6.0</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/circe/circe/tree/v0.14.15/modules/literal/shared/src/test && curl -fsI https://github.com/circe/circe/tree/v0.14.15/modules/literal/jvm/src/test && curl -fsI https://github.com/circe/circe/tree/v0.14.15/modules/literal/src/test' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/0.14.15/circe-literal_3-0.14.15-sources.jar && curl -fsI https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/0.14.15/circe-literal_3-0.14.15-javadoc.jar && curl -fsI https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/0.14.15/circe-literal_3-0.14.15-test-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/circe-literal.jar" https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/0.14.15/circe-literal_3-0.14.15.jar; jar tf "$tmp/circe-literal.jar" | sed -n '"'1,120p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8
+ succeeded in 0ms:
+META-INF/MANIFEST.MF
+io/
+io/circe/
+io/circe/literal/
+io/circe/literal/JsonLiteralMacros$$anon$3.class
+io/circe/literal/JsonLiteralMacros$.class
+io/circe/literal/JsonLiteralMacros$given_Facade_Expr$1$$anon$1.class
+io/circe/literal/JsonLiteralMacros$given_Facade_Expr$1$$anon$2.class
+io/circe/literal/JsonLiteralMacros$given_Facade_Expr$1.class
+io/circe/literal/JsonLiteralMacros.class
+io/circe/literal/JsonLiteralMacros.tasty
+io/circe/literal/Replacement$.class
+io/circe/literal/Replacement.class
+io/circe/literal/Replacement.tasty
+io/circe/literal/package$.class
+io/circe/literal/package.class
+io/circe/literal/package.tasty
+
+ exited 22 in 526ms:
+HTTP/2 404 
+date: Thu, 11 Jun 2026 05:06:38 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=ABhVeZQDqi6Qrqp04YjC8Z7cTz0fIo1A%2B78Idd3wQ9vriEG6YZcccyOfHT5WjAEyRz7yXYGRBwzNaNyeDk5v8YlAy0uXzFA11Uaor%2BshOJd2dPSu4G5Ty83ZpNsnkgPNgI%2BTIQjnOX2nwwLQptzP86gONpX5CUQbmlT4zNa%2FFt2IRiF4Haa8WvPR1cbnNa8Rvdh0wx5c%2BSIwoFPD6dCr3R%2FAt%2F8gEEr5LkiPYXEUkJ9S1dk%2FXDQa%2BKgoii7HDTLCNx%2BbMY32I2ICnxtZbo7uOg%3D%3D--WitWDqSa0JECGyLh--YR2Taq9sDBSvpwQVkOKyiA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.51100915.1781154398; expires=Fri, 11 Jun 2027 05:06:38 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 11 Jun 2027 05:06:38 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6223:2F2564:1193398:E49F17:6A2A425E
+
+
+ exited 22 in 860ms:
+HTTP/2 200 
+date: Thu, 11 Jun 2026 05:06:38 GMT
+content-type: application/java-archive
+content-length: 3848
+cf-ray: a09e166d2fed27a6-LYS
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "4f4e5dfa9e03be89d66afd33f96c4a47"
+last-modified: Tue, 30 Sep 2025 17:40:41 GMT
+x-checksum-md5: 4f4e5dfa9e03be89d66afd33f96c4a47
+x-checksum-sha1: 6899df76c0e97d796c259d052356e331d56eee7c
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Thu, 11 Jun 2026 05:06:38 GMT
+content-type: application/java-archive
+content-length: 2775596
+cf-ray: a09e166f3c6fbb29-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "c1c7c46511c84859584250855d3cde6f"
+last-modified: Tue, 30 Sep 2025 17:40:40 GMT
+x-checksum-md5: c1c7c46511c84859584250855d3cde6f
+x-checksum-sha1: 8ebfa66156bf1a3617cee99f94455348f4d94cbb
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Thu, 11 Jun 2026 05:06:39 GMT
+content-type: text/html
+cf-ray: a09e1670ada427bb-LYS
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/io/circe/circe-literal_3/0.14.15/circe-literal_3-0.14.15-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+The artifact is a Scala 3 JVM jar with `.class` and `.tasty` files, so it remains a Native Image metadata target. The GitHub test path I guessed was wrong; I’m checking the tagged source layout now.
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/src.jar" https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/0.14.15/circe-literal_3-0.14.15-sources.jar; jar tf "$tmp/src.jar"; rm -rf "$tmp"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8
+ succeeded in 0ms:
+META-INF/MANIFEST.MF
+io/
+io/circe/
+io/circe/literal/
+io/circe/literal/JsonLiteralMacros.scala
+io/circe/literal/Replacement.scala
+io/circe/literal/package.scala
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/circe/circe/git/refs/tags/v0.14.15' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8
+ succeeded in 274ms:
+{
+  "ref": "refs/tags/v0.14.15",
+  "node_id": "MDM6UmVmNDAwMTEwODA6cmVmcy90YWdzL3YwLjE0LjE1",
+  "url": "https://api.github.com/repos/circe/circe/git/refs/tags/v0.14.15",
+  "object": {
+    "sha": "8e33e325b1715a7ac2fda0e3e027e8052ae4d86b",
+    "type": "commit",
+    "url": "https://api.github.com/repos/circe/circe/git/commits/8e33e325b1715a7ac2fda0e3e027e8052ae4d86b"
+  }
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/circe/circe/contents?ref=v0.14.15 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8
+ succeeded in 274ms:
+[
+  {
+    "name": ".codecov.yml",
+    "path": ".codecov.yml",
+    "sha": "5077db3009d4a2c6895a36e9f807fdf91bb5d6c4",
+    "size": 70,
+    "url": "https://api.github.com/repos/circe/circe/contents/.codecov.yml?ref=v0.14.15",
+    "html_url": "https://github.com/circe/circe/blob/v0.14.15/.codecov.yml",
+    "git_url": "https://api.github.com/repos/circe/circe/git/blobs/5077db3009d4a2c6895a36e9f807fdf91bb5d6c4",
+    "download_url": "https://raw.githubusercontent.com/circe/circe/v0.14.15/.codecov.yml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/circe/circe/contents/.codecov.yml?ref=v0.14.15",
+      "git": "https://api.github.com/repos/circe/circe/git/blobs/5077db3009d4a2c6895a36e9f807fdf91bb5d6c4",
+      "html": "https://github.com/circe/circe/blob/v0.14.15/.codecov.yml"
+    }
+  },
+  {
+    "name": ".git-blame-ignore-revs",
+    "path": ".git-blame-ignore-revs",
+    "sha": "a547a249a764abb8e31c11452f0be4e2f0315581",
+    "size": 439,
+    "url": "https://api.github.com/repos/circe/circe/contents/.git-blame-ignore-revs?ref=v0.14.15",
+    "html_url": "https://github.com/circe/circe/blob/v0.14.15/.git-blame-ignore-revs",
+    "git_url": "https://api.github.com/repos/circe/circe/git/blobs/a547a249a764abb8e31c11452f0be4e2f0315581",
+    "download_url": "https://raw.githubusercontent.com/circe/circe/v0.14.15/.git-blame-ignore-revs",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/circe/circe/contents/.git-blame-ignore-revs?ref=v0.14.15",
+      "git": "https://api.github.com/repos/circe/circe/git/blobs/a547a249a764abb8e31c11452f0be4e2f0315581",
+      "html": "https://github.com/circe/circe/blob/v0.14.15/.git-blame-ignore-revs"
+    }
+  },
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "5ce64fe5298ab583e35a16d82f145e7beffb8068",
+    "size": 0,
+    "url": "https://api.github.com/repos/circe/circe/contents/.github?ref=v0.14.15",
+    "html_url": "https://github.com/circe/circe/tree/v0.14.15/.github",
+    "git_url": "https://api.github.com/repos/circe/circe/git/trees/5ce64fe5298ab583e35a16d82f145e7beffb8068",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/circe/circe/contents/.github?ref=v0.14.15",
+      "git": "https://api.github.com/repos/circe/circe/git/trees/5ce64fe5298ab583e35a16d82f145e7beffb8068",
+      "html": "https://github.com/circe/circe/tree/v0.14.15/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "0011b299e08fac81c16341f5d876851a9b7e6501",
+    "size": 132,
+    "url": "https://api.github.com/repos/circe/circe/contents/.gitignore?ref=v0.14.15",
+    "html_url": "https://github.com/circe/circe/blob/v0.14.15/.gitignore",
+    "git_url": "https://api.github.com/repos/circe/circe/git/blobs/0011b299e08fac81c16341f5d876851a9b7e6501",
+    "download_url": "https://raw.githubusercontent.com/circe/circe/v0.14.15/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/circe/circe/contents/.gitignore?ref=v0.14.15",
+      "git": "https://api.github.com/repos/circe/circe/git/blobs/0011b299e08fac81c16341f5d876851a9b7e6501",
+      "html": "https://github.com/circe/circe/blob/v0.14.15/.gitignore"
+    }
+  },
+  {
+    "name": ".jvmopts",
+    "path": ".jvmopts",
+    "sha": "8e92a8aef9b1e13dbe881c7f5a4cf4ca5c009307",
+    "size": 140,
+    "url": "https://api.github.com/repos/circe/circe/contents/.jvmopts?ref=v0.14.15",
+    "html_url": "https://github.com/circe/circe/blob/v0.14.15/.jvmopts",
+    "git_url": "https://api.github.com/repos/circe/circe/git/blobs/8e92a8aef9b1e13dbe881c7f5a4cf4ca5c009307",
+    "download_url": "https://raw.githubusercontent.com/circe/circe/v0.14.15/.jvmopts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/circe/circe/contents/.jvmopts?ref=v0.14.15",
+      "git": "https://api.github.com/repos/circe/circe/git/blobs/8e92a8aef9b1e13dbe881c7f5a4cf4ca5c009307",
+      "html": "https://github.com/circe/circe/blob/v0.14.15/.jvmopts"
+    }
+  },
+  {
+    "name": ".scala-steward.conf",
+    "path": ".scala-steward.conf",
+    "sha": "d8a7b7852ba2c462831f97415c7dc9486a752a0e",
+    "size": 346,
+    "url": "https://api.github.com/repos/circe/circe/contents/.scala-steward.conf?ref=v0.14.15",
+    "html_url": "https://github.com/circe/circe/blob/v0.14.15/.scala-steward.conf",
+    "git_url": "https://api.github.com/repos/circe/circe/git/blobs/d8a7b7852ba2c462831f97415c7dc9486a752a0e",
+    "download_url": "https://raw.githubusercontent.com/circe/circe/v0.14.15/.scala-steward.conf",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/circe/circe/contents/.scala-steward.conf?ref=v0.14.15",
+      "git": "https://api.github.com/repos/circe/circe/git/blobs/d8a7b7852ba2c462831f97415c7dc9486a752a0e",
+      "html": "https://github.com/circe/circe/blob/v0.14.15/.scala-steward.conf"
+    }
+  },
+  {
+    "name": ".scalafix.conf",
+    "path": ".scalafix.conf",
+    "sha": "edf55aeef901b3ec6669e98ba0226ae755ed90dd",
+    "size": 30,
+    "url": "https://api.github.com/repos/circe/circe/contents/.scalafix.conf?ref=v0.14.15",
+    "html_url": "https://github.com/circe/circe/blob/v0.14.15/.scalafix.conf",
+    "git_url": "https://api.github.com/repos/circe/circe/git/blobs/edf55aeef901b3ec6669e98ba0226ae755ed90dd",
+    "download_url": "https://raw.githubusercontent.com/circe/circe/v0.14.15/.scalafix.conf",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/circe/circe/contents/.scalafix.conf?ref=v0.14.15",
+      "git": "https://api.github.com/repos/circe/circe/git/blobs/edf55aeef901b3ec6669e98ba0226ae755ed90dd",
+      "html": "https://github.com/circe/circe/blob/v0.14.15/.scalafix.conf"
+    }
+  },
+  {
+    "name": ".scalafmt.conf",
+    "path": ".scalafmt.conf",
+    "sha": "e936d22f94b72b574c0fadef5e82d4d0161c1867",
+    "size": 801,
+    "url": "https://api.github.com/repos/circe/circe/contents/.scalafmt.conf?ref=v0.14.15",
+    "html_url": "https://github.com/circe/circe/blob/v0.14.15/.scalafmt.conf",
+    "git_url": "https://api.github.com/repos/circe/circe/git/blobs/e936d22f94b72b574c0fadef5e82d4d0161c1867",
+    "download_url": "https://raw.githubusercontent.com/circe/circe/v0.14.15/.scalafmt.conf",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/circe/circe/contents/.scalafmt.conf?ref=v0.14.15",
+      "git": "https://api.github.com/repos/circe/circe/git/blobs/e936d22f94b72b574c0fadef5e82d4d0161c1867",
+      "html": "https://github.com/circe/circe/blob/v0.14.15/.scalafmt.conf"
+    }
+  },
+  {
+    "name": "CODEOWNERS",
+    "path": "CODEOWNERS",
+    "sha": "9b319acea04dd671161a88d8d51a6d4b8c7d59e4",
+    "size": 21,
+    "url": "https://api.github.com/repos/circe/circe/contents/CODEOWNERS?ref=v0.14.15",
+    "html_url": "https://github.com/circe/circe/blob/v0.14.15/CODEOWNERS",
+    "git_url": "https://api.github.com/repos/circe/circe/git/blobs/9b319acea04dd671161a88d8d51a6d4b8c7d59e4",
+    "download_url": "https://raw.githubusercontent.com/circe/circe/v0.14.15/CODEOWNERS",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/circe/circe/contents/CODEOWNERS?ref=v0.14.15",
+      "git": "https://api.github.com/repos/circe/circe/git/blobs/9b319acea04dd671161a88d8d51a6d4b8c7d59e4",
+      "html": "https://github.com/circe/circe/blob/v0.14.15/CODEOWNERS"
+    }
+  },
+  {
+    "name": "CODE_OF_CONDUCT.md",
+    "path": "CODE_OF_CONDUCT.md",
+    "sha": "28eb1a7c5978df3bdebc51a8b35bec6b0d53d22e",
+    "size": 847,
+    "url": "https://api.github.com/repos/circe/circe/contents/CODE_OF_CONDUCT.md?ref=v0.14.15",
+    "html_url": "https://github.com/circe/circe/blob/v0.14.15/CODE_OF_CONDUCT.md",
+    "git_url": "https://api.github.com/repos/circe/circe/git/blobs/28eb1a7c5978df3bdebc51a8b35bec6b0d53d22e",
+    "download_url": "https://raw.githubusercontent.com/circe/circe/v0.14.15/CODE_OF_CONDUCT.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/circe/circe/contents/CODE_OF_CONDUCT.md?ref=v0.14.15",
+      "git": "https://api.github.com/repos/circe/circe/git/blobs/28eb1a7c5978df3bdebc51a8b35bec6b0d53d22e",
+      "html": "https://github.com/circe/circe/blob/v0.14.15/CODE_OF_CONDUCT.md"
+    }
+  },
+  {
+    "name": "CONTRIBUTING.md",
+    "path": "CONTRIBUTING.md",
+    "sha": "568c60e247e54d5730a95997e7cef1e235b59f4f",
+    "size": 5825,
+    "url": "https://api.github.com/repos/circe/circe/contents/CONTRIBUTING.md?ref=v0.14.15",
+    "html_url": "https://github.com/circe/circe/blob/v0.14.15/CONTRIBUTING.md",
+    "git_url": "https://api.github.com/repos/circe/circe/git/blobs/568c60e247e54d5730a95997e7cef1e235b59f4f",
+    "download_url": "https://raw.githubusercontent.com/circe/circe/v0.14.15/CONTRIBUTING.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/circe/circe/contents/CONTRIBUTING.md?ref=v0.14.15",
+      "git": "https://api.github.com/repos/circe/circe/git/blobs/568c60e247e54d5730a95997e7cef1e235b59f4f",
+      "html": "https://github.com/circe/circe/blob/v0.14.15/CONTRIBUTING.md"
+    }
+  },
+  {
+    "name": "DESIGN.md",
+    "path": "DESIGN.md",
+    "sha": "d4c88f80ebab452a08c269d154e61f18a723932c",
+    "size": 10397,
+    "url": "https://api.github.com/repos/circe/circe/contents/DESIGN.md?ref=v0.14.15",
+    "html_url": "https://github.com/circe/circe/blob/v0.14.15/DESIGN.md",
+    "git_url": "https://api.github.com/repos/circe/circe/git/blobs/d4c88f80ebab452a08c269d154e61f18a723932c",
+    "download_url": "https://raw.githubusercontent.com/circe/circe/v0.14.15/DESIGN.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/circe/circe/contents/DESIGN.md?ref=v0.14.15",
+      "git": "https://api.github.com/repos/circe/circe/git/blobs/d4c88f80ebab452a08c269d154e61f18a723932c",
+      "html": "https://github.com/circe/circe/blob/v0.14.15/DESIGN.md"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+    "size": 11358,
+    "url": "https://api.github.com/repos/circe/circe/contents/LICENSE?ref=v0.14.15",
+    "html_url": "https://github.com/circe/circe/blob/v0.14.15/LICENSE",
+    "git_url": "https://api.github.com/repos/circe/circe/git/blobs/d645695673349e3947e8e5ae42332d0ac3164cd7",
+    "download_url": "https://raw.githubusercontent.com/circe/circe/v0.14.15/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/circe/circe/contents/LICENSE?ref=v0.14.15",
+      "git": "https://api.github.com/repos/circe/circe/git/blobs/d645695673349e3947e8e5ae42332d0ac3164cd7",
+      "html": "https://github.com/circe/circe/blob/v0.14.15/LICENSE"
+    }
+  },
+  {
+    "name": "LICENSE.argonaut",
+    "path": "LICENSE.argonaut",
+    "sha": "65c268be5c000a05bcf79180dd89514ae1d39169",
+    "size": 1445,
+    "url": "https://api.github.com/repos/circe/circe/contents/LICENSE.argonaut?ref=v0.14.15",
+    "html_url": "https://github.com/circe/circe/blob/v0.14.15/LICENSE.argonaut",
+    "git_url": "https://api.github.com/repos/circe/circe/git/blobs/65c268be5c000a05bcf79180dd89514ae1d39169",
+    "download_url": "https://raw.githubusercontent.com/circe/circe/v0.14.15/LICENSE.argonaut",
+    "type": "file",
+    "_links": {
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/circe/circe/v0.14.15/README.md | sed -n '1,180p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8
+ succeeded in 0ms:
+# circe
+
+[![Build status](https://img.shields.io/github/actions/workflow/status/circe/circe/ci.yml)](https://github.com/circe/circe/actions)
+[![Coverage status](https://img.shields.io/codecov/c/github/circe/circe/master.svg)](https://codecov.io/github/circe/circe)
+![Maven Central](https://img.shields.io/maven-central/v/io.circe/circe-core_2.13?versionPrefix=0.14)
+[![Discord](https://img.shields.io/discord/632277896739946517.svg?label=&logo=discord&logoColor=ffffff&color=404244&labelColor=6A7EC2)](https://discord.gg/XF3CXcMzqD)
+
+circe is a JSON library for Scala (and [Scala.js][scala-js]).
+
+Please see the [guide](https://circe.github.io/circe/) for more information
+about why circe exists and how to use it.
+
+## Community
+
+### Adopters
+
+Are you using circe? Please consider opening a pull request to list your organization here:
+
+* [Abacus](https://abacusprotocol.com/)
+* [Anduin Transactions](https://anduintransact.com/)
+* [Apollo Agriculture](https://apolloagriculture.com/)
+* [AutoScout24](https://www.autoscout24.com/)
+* [Babylon Health](https://www.babylonhealth.com/)
+* [Banno inside of Jack Henry](https://banno.com/)
+* [BBC](http://www.bbc.co.uk)
+* [Broad Institute](https://www.broadinstitute.org/data-sciences-platform)
+* [Chartboost](https://www.chartboost.com/) (sending hundreds of thousands of messages per second on our Ad Exchange)
+* [CiBO Technologies](http://www.cibotechnologies.com) (using circe to (de)serialize data in support of a sustainable revolution in agriculture)
+* [ClearScore](https://www.clearscore.com)
+* [Codacy](https://www.codacy.com)
+* [Colisweb](https://www.colisweb.com)
+* [Connio](https://www.connio.com) (creating and managing digital twins with Circe and Akka)
+* [Coya](https://www.coya.com/)
+* [Criteo](https://www.criteo.com/) ([collecting 200.000 events per second from our banners](https://medium.com/criteo-labs/migrate-a-service-getting-200kqps-from-jackson-to-circe-a475b2718206))
+* [Dassault Systèmes](https://www.3ds.com/)
+* [Datalogue](https://datalogue.io)
+* [Dreamlines](https://www.dreamlines.com/)
+* [DriveTribe](https://drivetribe.com)
+* [Earnest](https://www.earnest.com)
+* [Elastic](https://www.elastic.co)
+* [Emmy Sharing](https://emmy-sharing.de/en/)
+* [FOLIO](https://folio-sec.com/)
+* [GLNGN Server](https://glngn.com)
+* [Gympass](https://www.gympass.com/)
+* [Gutefrage](https://www.gutefrage.net)
+* [Hello Soda](https://hellosoda.com/)
+* [HERE Technologies](https://www.here.com/)
+* [Hireproof](https://hireproof.io/)
+* [HolidayCheck](https://www.holidaycheck.de)
+* [ImmobilienScout24](https://www.immobilienscout24.de/)
+* [Immozentral](https://www.immozentral.com/)
+* [Indix](https://www.indix.com)
+* [ITV](https://www.itv.com/)
+* [Kinoplan](https://kinoplan.ru/)
+* [Latitude Financial Services](https://www.latitudefinancial.com.au/)
+* [MatchesFashion](https://www.matchesfashion.com)
+* [Merit](https://merits.com)
+* [Metacommerce](https://www.metacommerce.ru)
+* [Mobile GmbH](https://www.mobile.de)
+* [MomentFeed](https://momentfeed.com)
+* [New Work](https://www.new-work.se/en/)
+* [Nike](https://www.nike.com)
+* [Ocado Technology](https://ocadotechnology.com)
+* [On Air Entertainment](https://onairentertainment.com/)
+* [Onfocus](https://onfocus.io)
+* [Opt Technologies](https://opt-technologies.jp/)
+* [OVO Energy](https://www.ovoenergy.com)
+* [Panaseer](https://panaseer.com)
+* [Permutive](http://permutive.com)
+* [Prezi](https://prezi.com)
+* [Project September](http://www.projectseptember.com) (using circe to exchange and store data within the platform and serve data using GraphQL with Sangria)
+* [Raster Foundry](https://github.com/raster-foundry/raster-foundry/)
+* [Ravel Law](http://ravellaw.com/technology/) (using circe to (de)serialize data for search, analytics, and visualization of tens of millions of legal opinions)
+* [REA Group - realestate.com.au](https://www.realestate.com.au/)
+* [Reonomy](https://reonomy.com/)
+* [Resilient plc](https://resilientplc.com/)
+* [Sky](https://www.sky.com/)
+* [Snowplow Analytics](https://snowplowanalytics.com/)
+* [SoundCloud](https://www.soundcloud.com) (transforming 200,000,000 JSON events every hour in MapReduce ETLs)
+* [Spotify](https://www.spotify.com) (using circe for JSON IO in [Scio][scio])
+* [SpotX](https://www.spotx.tv/)
+* [Stripe](https://stripe.com)
+* [Stylight](https://stylight.de)
+* [TabMo](http://tabmo-group.io/) (parsing more than 100k events per second with Akka Stream and Spark)
+* [Tinkoff](https://tinkoff.ru/)
+* [The Guardian](https://www.theguardian.com)
+* [Threat Stack](https://www.threatstack.com/)
+* [Tranzzo](https://tranzzo.com/)
+* [Twilio](https://www.twilio.com) (sending many, many millions of messages a day with Circe and Akka)
+* [Uberall](https://stackshare.io/uberall/uberall)
+* [VEACT](https://veact.net/)
+* [WeWork](https://www.wework.com)
+* [Whisk](https://whisk.com)
+* [Wide Angle Analytics](https://wideangle.co)
+* [Zalando](https://zalando.de)
+* [Zendesk](https://zendesk.com)
+
+### Other circe organization projects
+
+Please get in touch on [Gitter][gitter] if you have a circe-related project that you'd like to discuss hosting under the
+[circe organization][circe-org] on GitHub.
+
+* [circe-benchmarks][circe-benchmarks]: Benchmarks for comparing the performance of circe and other JSON libraries for the JVM.
+* [circe-config][circe-config]: A library for translating between HOCON, Java properties, and JSON documents.
+* [circe-derivation][circe-derivation]: Experimental generic derivation with improved compile times.
+* [circe-fs2][circe-fs2]: A library that provides streaming JSON parsing and decoding built on [fs2][fs2] and [Jawn][jawn].
+* [circe-iteratee][circe-iteratee]: A library that provides streaming JSON parsing and decoding built on [iteratee.io][iteratee] and [Jawn][jawn].
+* [circe-jackson][circe-jackson]: A library that provides [Jackson][jackson]-supported parsing and printing for circe.
+* [circe-spray][circe-spray]: A library that provides JSON marshallers and unmarshallers for [Spray][spray] using circe.
+* [circe-yaml][circe-yaml]: A library that uses [SnakeYAML][snakeyaml] to support parsing YAML 1.1
+  into circe's `Json`.
+* [circe-refined][circe-refined]: A library that provides encoders and decoders using [Refined][refined].
+
+### Related projects
+
+The following open source projects are either built on circe or provide circe support:
+
+* [Actor Messenger][actor-im]: A platform for instant messaging.
+* [akka-http-json][akka-http-json]: A library that supports using circe for JSON marshalling and
+  unmarshalling in [Akka HTTP][akka-http].
+* [akka-stream-json][akka-stream-json]: A library that provides JSON support for stream based applications using Jawn as a parser with a convenience example for circe.
+* [Argus][argus]: Generates models and circe encoders and decoders from JSON schemas.
+* [Blackdoor JOSE][jose-json-circe]: circe JSON support for blackdoor JOSE and JWT.
+* [borer][borer]: Allows circe encoders/decoders to be reused for CBOR (de)serialization.
+* [circe-debezium][circe-debezium]: Circe codecs for [Debezium][debezium] payload types
+* [circe-geojson][circe-geojson]: Circe support for GeoJSON (RFC 7946)
+* [circe-kafka][circe-kafka]: Implicit conversion of Encoder and Decoder into Kafka Serializer/Deserializer/Serde
+* [cornichon][cornichon]: A DSL for JSON API testing.
+* [Cosmos][cosmos]: An API for [DCOS][dcos] services that uses circe.
+* [crjdt][crjdt]: A conflict-free replicated JSON datatype in Scala.
+* [diffson][diffson]: A Scala diff / patch library for JSON.
+* [elastic4s][elastic4s]: A Scala client for [Elasticsearch][elasticsearch] with circe support.
+* [Enumeratum][enumeratum]: Enumerations for Scala with circe integration.
+* [Featherbed][featherbed]: A REST client library with circe support.
+* [Finch][finch]: A library for building web services with circe support.
+* [fintrospect][fintrospect]: HTTP contracts for [Finagle][finagle] with circe support.
+* [fluflu][fluflu]: A [Fluentd][fluentd] logger.
+* [Github4s][github4s]: A GitHub API wrapper written in Scala.
+* [content-api-models][guardian-content-api-models]: The Guardian's Content API Thrift models.
+* [http4s][http4s]: A purely functional HTTP library for client and server applications.
+* [IdeaLingua][izumi-r2]: Staged Interface Definition and Data Modeling Language & RPC system currently targeting Scala, Go, C# and TypeScript. Scala codegen generates models and JSON codecs using circe.
+* [Iglu Schema Repository][iglu]: A [JSON Schema][json-schema] repository with circe support.
+* [jsactor][jsactor]: An actor library for Scala.js with circe support.
+* [jsoniter-scala-circe][jsoniter-scala-circe]: A booster for faster parsing/printing to/from circe AST and decoding/encoding of `java.time._` and `BigInt` types.
+* [jwt-circe][jwt-circe]: A [JSON Web Token][jwt] implementation with circe support.
+* [kadai-log][kadai-log]: A logging library with circe support.
+* [msgpack4z-circe][msgpack4z-circe]: A [MessagePack][msgpack] implementation with circe support.
+* [ohNoMyCirce][ohNoMyCirce]: Friendly compile error messages for [shapeless][shapeless]'s Generic, [circe][circe-org]'s Encoder & Decoder and [slick][slick]'s case class mapping.
+* [pekko-http-json][pekko-http-json]: A library that supports using circe for JSON marshalling and
+  unmarshalling in [Pekko HTTP][pekko-http].
+* [pekko-streams-circe][pekko-streams-circe]: A library that provides JSON support for stream based applications using Jawn as a parser with a convenience example for circe.
+* [play-circe][play-circe]: circe support for [Play!][play].
+* [pulsar4s][pulsar4s]: A Scala client for [Apache-Pulsar][pulsar] with circe support.
+* [Rapture][rapture]: Support for using circe's parsing and AST in Rapture JSON.
+* [roc][roc]: A PostgreSQL client built on Finagle.
+* [sangria-circe][sangria-circe]: circe marshalling for [Sangria][sangria], a [GraphQL][graphql]
+  implementation.
+* [scalist][scalist]: A [Todoist][todoist] API client.
+* [scala-jsonapi][scala-jsonapi]:  Scala support library for integrating the JSON API spec with Spray, Play! or Circe
+* [scala-json-rpc]: [JSON-RPC][json-rpc] 2.0 library for Scala and Scala.js 
+* [scalatest-json-circe]: Scalatest matchers for Json with appropriate equality and descriptive error messages.
+* [Scio][scio]: A Scala API for Apache Beam and Google Cloud Dataflow, uses circe for JSON IO
+* [seals][seals]: Tools for schema evolution and language-integrated schemata (derives circe encoders and decoders).
+* [shaclex][shaclex]: RDF validation using SHACL or ShEx. 
+* [Slick-pg][slick-pg]: [Slick][slick] extensions for PostgreSQL.
+* [sttp][sttp]: Scala HTTP client.
+* [Synapses][synapses]: A lightweight Neural Network library, for js, jvm and .net.
+* [telepooz][telepooz]: A Scala wrapper for the [Telegram Bot API][telegram-bot-api] built on circe.
+* [Zenith][zenith]: Functional HTTP library built on circe.
+
+### Examples
+
+The following projects provide examples, templates, or benchmarks that include circe:
+
+* https://github.com/alanphillips78/akka-http-microservice-blueprint
+* https://github.com/bneil/fcs_boilerplate
+* https://github.com/gvolpe/simple-http4s-api
+* https://github.com/vitorsvieira/akka-http-circe-json-template
+* https://github.com/stephennancekivell/some-jmh-json-benchmarks-circe-jackson
+* https://github.com/pauljamescleary/scala-pet-store
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/circe/circe/v0.14.15/build.sbt | rg -n 'literal|circe-literal|lazy val' -C 3" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/circe/circe/git/trees/v0.14.15?recursive=1' | rg 'literal|circe-literal|modules/literal' | head -200" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8
+ succeeded in 164ms:
+54-
+55-val scalaFiddleCirceVersion = "0.9.1"
+56-
+57:lazy val allSettings = Seq()
+58-
+59-/**
+60- * Replace '/' with '-' in a path which represents a module name.
+--
+107-    )
+108-}
+109-
+110:lazy val docs = project
+111-  .in(file("site"))
+112-  .dependsOn(core.jvm, parser.jvm, shapes.jvm, testing.jvm)
+113-  .settings(
+--
+125-  .enablePlugins(CirceOrgSitePlugin)
+126-  .settings(macroSettings)
+127-
+128:lazy val macroSettings: Seq[Setting[?]] = Seq(
+129-  libraryDependencies ++= (if (tlIsScala3.value) Nil
+130-                           else
+131-                             Seq(
+--
+146-  scalacOptions -= "-source:3.0-migration"
+147-)
+148-
+149:lazy val root = tlCrossRootProject
+150-  .settings(
+151-    console / initialCommands :=
+152-      """
+153-        |import io.circe._
+154-        |import io.circe.generic.auto._
+155:        |import io.circe.literal._
+156-        |import io.circe.parser._
+157-        |import io.circe.syntax._
+158-      """.stripMargin
+--
+164-    generic,
+165-    hygiene,
+166-    jawn,
+167:    literal,
+168-    numbers,
+169-    numbersTesting,
+170-    parser,
+--
+183-  )
+184-  .disablePlugins(ScalafixPlugin)
+185-
+186:lazy val scalafixInternalRules =
+187-  baseModule("scalafix/internal/rules")
+188-    .settings(
+189-      skip := tlIsScala3.value,
+--
+195-    .enablePlugins(NoPublishPlugin)
+196-    .disablePlugins(ScalafixPlugin)
+197-
+198:lazy val scalafixInternalInput =
+199-  baseModule("scalafix/internal/input")
+200-    .settings(
+201-      skip := tlIsScala3.value,
+--
+204-    .disablePlugins(ScalafixPlugin)
+205-    .enablePlugins(NoPublishPlugin)
+206-
+207:lazy val scalafixInternalOutput =
+208-  baseModule("scalafix/internal/output")
+209-    .settings(
+210-      skip := tlIsScala3.value,
+--
+213-    .disablePlugins(ScalafixPlugin)
+214-    .enablePlugins(NoPublishPlugin)
+215-
+216:lazy val scalafixInternalTests =
+217-  baseModule("scalafix/internal/tests")
+218-    .enablePlugins(NoPublishPlugin, ScalafixTestkitPlugin)
+219-    .settings(
+--
+243-    .disablePlugins(ScalafixPlugin)
+244-    .dependsOn(scalafixInternalInput, scalafixInternalOutput, scalafixInternalRules)
+245-
+246:lazy val numbersTesting =
+247-  circeCrossModule("numbers-testing", CrossType.Pure).settings(
+248-    libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalaCheckVersion,
+249-    coverageExcludedPackages := "io\\.circe\\.numbers\\.testing\\..*"
+250-  )
+251-
+252:lazy val numbers = circeCrossModule("numbers")
+253-  .settings(
+254-    libraryDependencies ++= Seq(
+255-      "org.scalameta" %%% "munit" % munitVersion % Test,
+--
+258-  )
+259-  .dependsOn(numbersTesting % Test)
+260-
+261:lazy val core = circeCrossModule("core")
+262-  .settings(
+263-    libraryDependencies += "org.typelevel" %%% "cats-core" % catsVersion,
+264-    Compile / sourceGenerators += Def.task {
+--
+277-  )
+278-  .dependsOn(numbers)
+279-
+280:lazy val generic = circeCrossModule("generic")
+281-  .settings(macroSettings)
+282-  .settings(
+283-    libraryDependencies ++= (if (tlIsScala3.value) Nil
+--
+291-  )
+292-  .dependsOn(core, tests % Test)
+293-
+294:lazy val genericSimple = circeCrossModule("generic-simple", CrossType.Pure)
+295-  .settings(macroSettings)
+296-  .settings(
+297-    crossScalaVersions := (ThisBuild / crossScalaVersions).value.filter(_.startsWith("2.13")),
+--
+304-      "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
+305-    )
+306-  )
+307:  .dependsOn(core, tests % Test, literal % Test)
+308-
+309:lazy val shapes = circeCrossModule("shapes", CrossType.Pure)
+310-  .settings(macroSettings)
+311-  .settings(
+312-    publish / skip := tlIsScala3.value,
+--
+319-      "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion % Test
+320-    )
+321-  )
+322:  .dependsOn(core, tests % Test, literal % Test)
+323-
+324:lazy val literal = circeCrossModule("literal", CrossType.Pure)
+325-  .settings(macroSettings)
+326-  .settings(
+327-    tlVersionIntroduced += "3" -> "0.14.2",
+--
+343-  )
+344-  .dependsOn(core, jawn, testing % Test)
+345-
+346:lazy val parser =
+347-  circeCrossModule("parser")
+348-    .jvmConfigure(_.dependsOn(jawn.jvm))
+349-    .jsConfigure(_.dependsOn(scalajs))
+350-    .nativeConfigure(_.dependsOn(jawn.native))
+351-    .dependsOn(core)
+352-
+353:lazy val scalajs =
+354-  circeModule("scalajs").enablePlugins(ScalaJSPlugin).dependsOn(core.js)
+355:lazy val scalajsJavaTimeTest = circeModule("scalajs-java-time-test")
+356-  .enablePlugins(ScalaJSPlugin)
+357-  .enablePlugins(NoPublishPlugin)
+358-  .settings(
+--
+362-  )
+363-  .dependsOn(core.js)
+364-
+365:lazy val scodec = circeCrossModule("scodec")
+366-  .settings(
+367-    libraryDependencies += "org.scodec" %%% "scodec-bits" % "1.2.4"
+368-  )
+--
+371-  )
+372-  .dependsOn(core, tests % Test)
+373-
+374:lazy val testing = circeCrossModule("testing")
+375-  .settings(
+376-    scalacOptions ~= {
+377-      _.filterNot(Set("-Yno-predef"))
+--
+387-  )
+388-  .dependsOn(core, numbersTesting)
+389-
+390:lazy val tests = circeCrossModule("tests")
+391-  .enablePlugins(NoPublishPlugin)
+392-  .settings(
+393-    scalacOptions ~= {
+--
+416-  )
+417-  .dependsOn(core, parser, testing, jawn)
+418-
+419:lazy val hygiene = circeCrossModule("hygiene")
+420-  .enablePlugins(NoPublishPlugin)
+421-  .settings(
+422-    scalacOptions ++= Seq("-Yno-imports", "-Yno-predef")
+423-  )
+424:  .dependsOn(core, generic, literal, jawn)
+425-
+426:lazy val jawn = circeCrossModule("jawn", CrossType.Full)
+427-  .settings(
+428-    libraryDependencies ++= Seq(
+429-      "org.typelevel" %%% "jawn-parser" % jawnVersion,
+--
+436-  )
+437-  .dependsOn(core)
+438-
+439:lazy val pointer =
+440-  circeCrossModule("pointer", CrossType.Pure)
+441-    .settings(
+442-      libraryDependencies ++= Seq(
+--
+446-    )
+447-    .dependsOn(core, parser % Test)
+448-
+449:lazy val pointerLiteral = circeCrossModule("pointer-literal", CrossType.Pure)
+450-  .settings(macroSettings)
+451-  .settings(
+452-    tlVersionIntroduced += "3" -> "0.14.2",
+--
+460-  )
+461-  .dependsOn(core, pointer % "compile;test->test")
+462-
+463:lazy val extras = circeCrossModule("extras").enablePlugins(NoPublishPlugin).dependsOn(core, tests % Test)
+464-
+465:lazy val benchmark = circeModule("benchmark")
+466-  .settings(
+467-    libraryDependencies ++= Seq(
+468-      "org.scalameta" %% "munit" % munitVersion % Test
+
+ succeeded in 545ms:
+      "path": "modules/literal",
+      "path": "modules/literal/src",
+      "path": "modules/literal/src/main",
+      "path": "modules/literal/src/main/scala-2",
+      "path": "modules/literal/src/main/scala-2/io",
+      "path": "modules/literal/src/main/scala-2/io/circe",
+      "path": "modules/literal/src/main/scala-2/io/circe/literal",
+      "path": "modules/literal/src/main/scala-2/io/circe/literal/JsonLiteralMacros.scala",
+      "path": "modules/literal/src/main/scala-2/io/circe/literal/LiteralInstanceMacros.scala",
+      "path": "modules/literal/src/main/scala-2/io/circe/literal/package.scala",
+      "path": "modules/literal/src/main/scala-3",
+      "path": "modules/literal/src/main/scala-3/io",
+      "path": "modules/literal/src/main/scala-3/io/circe",
+      "path": "modules/literal/src/main/scala-3/io/circe/literal",
+      "path": "modules/literal/src/main/scala-3/io/circe/literal/JsonLiteralMacros.scala",
+      "path": "modules/literal/src/main/scala-3/io/circe/literal/Replacement.scala",
+      "path": "modules/literal/src/main/scala-3/io/circe/literal/package.scala",
+      "path": "modules/literal/src/test",
+      "path": "modules/literal/src/test/scala-2",
+      "path": "modules/literal/src/test/scala-2/io",
+      "path": "modules/literal/src/test/scala-2/io/circe",
+      "path": "modules/literal/src/test/scala-2/io/circe/literal",
+      "path": "modules/literal/src/test/scala-2/io/circe/literal/LiteralInstancesSuite.scala",
+      "path": "modules/literal/src/test/scala",
+      "path": "modules/literal/src/test/scala/io",
+      "path": "modules/literal/src/test/scala/io/circe",
+      "path": "modules/literal/src/test/scala/io/circe/literal",
+      "path": "modules/literal/src/test/scala/io/circe/literal/interpolator",
+      "path": "modules/literal/src/test/scala/io/circe/literal/interpolator/JsonInterpolatorSuite.scala",
+      "path": "modules/pointer-literal",
+      "path": "modules/pointer-literal/src",
+      "path": "modules/pointer-literal/src/main",
+      "path": "modules/pointer-literal/src/main/scala-2",
+      "path": "modules/pointer-literal/src/main/scala-2/io",
+      "path": "modules/pointer-literal/src/main/scala-2/io/circe",
+      "path": "modules/pointer-literal/src/main/scala-2/io/circe/pointer",
+      "path": "modules/pointer-literal/src/main/scala-2/io/circe/pointer/literal",
+      "path": "modules/pointer-literal/src/main/scala-2/io/circe/pointer/literal/PointerLiteralMacro.scala",
+      "path": "modules/pointer-literal/src/main/scala-2/io/circe/pointer/literal/package.scala",
+      "path": "modules/pointer-literal/src/main/scala-3",
+      "path": "modules/pointer-literal/src/main/scala-3/io",
+      "path": "modules/pointer-literal/src/main/scala-3/io/circe",
+      "path": "modules/pointer-literal/src/main/scala-3/io/circe/pointer",
+      "path": "modules/pointer-literal/src/main/scala-3/io/circe/pointer/literal",
+      "path": "modules/pointer-literal/src/main/scala-3/io/circe/pointer/literal/PointerLiteralMacro.scala",
+      "path": "modules/pointer-literal/src/main/scala-3/io/circe/pointer/literal/package.scala",
+      "path": "modules/pointer-literal/src/test",
+      "path": "modules/pointer-literal/src/test/scala-2",
+      "path": "modules/pointer-literal/src/test/scala-2/io",
+      "path": "modules/pointer-literal/src/test/scala-2/io/circe",
+      "path": "modules/pointer-literal/src/test/scala-2/io/circe/pointer",
+      "path": "modules/pointer-literal/src/test/scala-2/io/circe/pointer/literal",
+      "path": "modules/pointer-literal/src/test/scala-2/io/circe/pointer/literal/PointerInterpolatorCompileErrorsSuite.scala",
+      "path": "modules/pointer-literal/src/test/scala-3",
+      "path": "modules/pointer-literal/src/test/scala-3/io",
+      "path": "modules/pointer-literal/src/test/scala-3/io/circe",
+      "path": "modules/pointer-literal/src/test/scala-3/io/circe/pointer",
+      "path": "modules/pointer-literal/src/test/scala-3/io/circe/pointer/literal",
+      "path": "modules/pointer-literal/src/test/scala-3/io/circe/pointer/literal/PointerInterpolatorCompileErrorsSuite.scala",
+      "path": "modules/pointer-literal/src/test/scala",
+      "path": "modules/pointer-literal/src/test/scala/io",
+      "path": "modules/pointer-literal/src/test/scala/io/circe",
+      "path": "modules/pointer-literal/src/test/scala/io/circe/pointer",
+      "path": "modules/pointer-literal/src/test/scala/io/circe/pointer/literal",
+      "path": "modules/pointer-literal/src/test/scala/io/circe/pointer/literal/PointerInterpolatorSuite.scala",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/circe/circe/v0.14.15/modules/literal/src/test/scala/io/circe/literal/interpolator/JsonInterpolatorSuite.scala | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8
+ succeeded in 0ms:
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package io.circe.literal.interpolator
+
+import io.circe.{ Encoder, Json }
+import io.circe.literal._
+import io.circe.jawn.parse
+import io.circe.testing.instances.arbitraryJson
+import munit.ScalaCheckSuite
+import org.scalacheck.Prop
+
+class JsonInterpolatorSuite extends ScalaCheckSuite {
+  test("The json string interpolater should fail to compile with invalid JSON") {
+    compileErrors("json\"\"\"1a2b3c\"\"\"")
+  }
+
+  test("The json string interpolater should work with top-level null") {
+    assertEquals(json"null", Json.Null)
+  }
+
+  property("The json string interpolater should work with top-level booleans") {
+    Prop.forAll { (value: Boolean) =>
+      assertEquals(json"$value", Json.fromBoolean(value))
+    }
+  }
+
+  property("The json string interpolater should work with top-level strings") {
+    Prop.forAll { (value: String) =>
+      assertEquals(json"$value", Json.fromString(value))
+    }
+  }
+
+  property("The json string interpolater should work with top-level numbers") {
+    Prop.forAll { (value: BigDecimal) =>
+      assertEquals(json"$value", Json.fromBigDecimal(value))
+    }
+  }
+
+  test("The json string interpolater should work with no interpolated variables") {
+    val interpolated = json"""
+      {
+        "a": [1, 2, 3],
+        "b": { "foo": false },
+        "c": null,
+        "d": "bar",
+        "e": 0.0001
+      }
+    """
+
+    val parsed = parse(
+      """
+        {
+          "a": [1, 2, 3],
+          "b": { "foo": false },
+          "c": null,
+          "d": "bar",
+          "e": 0.0001
+        }
+      """
+    )
+
+    assertEquals(parsed, Right(interpolated))
+  }
+
+  test(
+    "The json string interpolater with interpolation in JSON value positions should work with interpolated variables"
+  ) {
+    val i = 13
+    val m = Map("bar" -> List(1, 2, 3), "baz" -> Nil)
+    val interpolated = json"""{ "i": $i, "ms": [$m, $m], "other": [1.0, "abc"] }"""
+    val parsed = parse(
+      """
+        {
+          "i": 13,
+          "ms": [
+            { "bar": [1, 2, 3], "baz": [] },
+            { "bar": [1, 2, 3], "baz": [] }
+          ],
+          "other": [1.0, "abc"]
+        }
+      """
+    )
+
+    assertEquals(parsed, Right(interpolated))
+  }
+
+  test(
+    "The json string interpolater with interpolation in JSON value positions should work with interpolated literals"
+  ) {
+    val interpolated = json"""{ "k": ${1} }"""
+    val parsed = parse(s"""{ "k": 1 }""")
+
+    assertEquals(parsed, Right(interpolated))
+  }
+
+  test(
+    "The json string interpolater with interpolation in JSON value positions should fail with unencodeable interpolated variables"
+  ) {
+    trait Foo
+    val foo = new Foo {}
+
+    compileErrors("json\"$foo\"")
+  }
+
+  property(
+    "The json string interpolater with interpolation in JSON key positions should work with interpolated string variables"
+  ) {
+    Prop.forAll { (key: String, value: Json) =>
+      val interpolated = json"{ $key: $value }"
+      val escapedKey = Encoder[String].apply(key).noSpaces
+      val parsed = parse(s"{ $escapedKey: ${value.noSpaces} }")
+
+      assertEquals(parsed, Right(interpolated))
+    }
+  }
+
+  property(
+    "The json string interpolater with interpolation in JSON key positions should work with interpolated non-string variables"
+  ) {
+    Prop.forAll { (key: Int, value: Json) =>
+      val interpolated = json"{ $key: $value }"
+      val parsed = parse(s"""{ "${key.toString}": ${value.noSpaces} }""")
+
+      assertEquals(parsed, Right(interpolated))
+    }
+  }
+
+  test("The json string interpolater with interpolation in JSON key positions should work with interpolated literals") {
+    val interpolated = json"""{ ${1}: "v" }"""
+    val parsed = parse(s"""{ "1": "v" }""")
+
+    assertEquals(parsed, Right(interpolated))
+  }
+
+  test(
+    "The json string interpolater with interpolation in JSON key positions should fail with unencodeable interpolated variables"
+  ) {
+    trait Foo
+    val foo = new Foo {}
+
+    compileErrors("json\"{ $foo: 1 }\"")
+  }
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/circe/circe/v0.14.15/modules/literal/src/main/scala-3/io/circe/literal/package.scala | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8
+ succeeded in 0ms:
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package io.circe
+
+import io.circe.literal.JsonLiteralMacros
+
+package object literal {
+  extension (inline sc: StringContext) {
+    inline final def json(inline args: Any*): Json = ${ JsonLiteralMacros.jsonImpl('sc, 'args) }
+  }
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/0.14.15/circe-literal_3-0.14.15.module | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/circe/circe/git/trees/v0.14.15?recursive=1' | rg 'site/.*literal|literal.*md|Literal|interpolator' | head -200" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8
+ succeeded in 255ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 288ms:
+      "path": "modules/core/shared/src/main/scala-2.12/io/circe/LiteralDecoders.scala",
+      "path": "modules/core/shared/src/main/scala-2.12/io/circe/LiteralEncoders.scala",
+      "path": "modules/core/shared/src/main/scala-2.13+/io/circe/LiteralDecoders.scala",
+      "path": "modules/core/shared/src/main/scala-2.13+/io/circe/LiteralEncoders.scala",
+      "path": "modules/literal/src/main/scala-2/io/circe/literal/JsonLiteralMacros.scala",
+      "path": "modules/literal/src/main/scala-2/io/circe/literal/LiteralInstanceMacros.scala",
+      "path": "modules/literal/src/main/scala-3/io/circe/literal/JsonLiteralMacros.scala",
+      "path": "modules/literal/src/test/scala-2/io/circe/literal/LiteralInstancesSuite.scala",
+      "path": "modules/literal/src/test/scala/io/circe/literal/interpolator",
+      "path": "modules/literal/src/test/scala/io/circe/literal/interpolator/JsonInterpolatorSuite.scala",
+      "path": "modules/pointer-literal/src/main/scala-2/io/circe/pointer/literal/PointerLiteralMacro.scala",
+      "path": "modules/pointer-literal/src/main/scala-3/io/circe/pointer/literal/PointerLiteralMacro.scala",
+      "path": "modules/tests/shared/src/test/scala-2.13/io/circe/LiteralSuite.scala",
+
+codex
+I found no Maven test-sources artifact for this module, but the tagged upstream repo contains the `modules/literal/src/test` suite. I’m writing Maven URLs for sources and docs, the GitHub tag URL for tests, and the Scala 3 language marker.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+diff --git a/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json b/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+index bbf0de8a9d93b2a771d4a3f6c3703ef151d85698..f71d2c71e64e314399f79441820c9b6cfaecf3be
+--- a/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
++++ b/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.circe:circe-literal_3:0.14.15"
++  "coordinates" : "io.circe:circe-literal_3:0.14.15",
++  "repository-url" : "https://github.com/circe/circe",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/literal/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-javadoc.jar",
++  "description" : "Circe literal provides Scala string interpolators for constructing circe Json values from inline JSON syntax. It validates literal JSON at compile time and supports interpolating values through circe encoders.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json b/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+index bbf0de8a9d93b2a771d4a3f6c3703ef151d85698..f71d2c71e64e314399f79441820c9b6cfaecf3be
+--- a/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
++++ b/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.circe:circe-literal_3:0.14.15"
++  "coordinates" : "io.circe:circe-literal_3:0.14.15",
++  "repository-url" : "https://github.com/circe/circe",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/literal/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-javadoc.jar",
++  "description" : "Circe literal provides Scala string interpolators for constructing circe Json values from inline JSON syntax. It validates literal JSON at compile time and supports interpolating values through circe encoders.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+web search: 
+web search: Maven Central io.circe circe-literal_3 0.14.15
+web search: 
+web search: https://github.com/circe/circe/tree/v0.14.15/modules/literal/src/test
+web search: 
+web search: repo.maven.apache.org io/circe/circe-literal_3/0.14.15/circe-literal_3-0.14.15.pom
+exec
+/usr/bin/bash -lc 'python3 -m json.tool build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8
+ succeeded in 0ms:
+{
+    "coordinates": "io.circe:circe-literal_3:0.14.15",
+    "repository-url": "https://github.com/circe/circe",
+    "source-code-url": "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-sources.jar",
+    "test-code-url": "https://github.com/circe/circe/tree/v$version$/modules/literal/src/test",
+    "documentation-url": "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-javadoc.jar",
+    "description": "Circe literal provides Scala string interpolators for constructing circe Json values from inline JSON syntax. It validates literal JSON at compile time and supports interpolating values through circe encoders.",
+    "language": {
+        "name": "scala",
+        "version": "3"
+    }
+}
+
+exec
+/usr/bin/bash -lc "for url in \\
+  'https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/0.14.15/circe-literal_3-0.14.15-sources.jar' \\
+  'https://github.com/circe/circe/tree/v0.14.15/modules/literal/src/test' \\
+  'https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/0.14.15/circe-literal_3-0.14.15-javadoc.jar'; do \\
+  printf '%s -> ' \""'$url"; curl -fsI -o /dev/null -w '"'%{http_code}\\n' \""'$url"; '"\\
+done" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8
+ succeeded in 708ms:
+200
+https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/0.14.15/circe-literal_3-0.14.15-javadoc.jar -> 200
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json b/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+index bbf0de8a9d93b2a771d4a3f6c3703ef151d85698..f71d2c71e64e314399f79441820c9b6cfaecf3be
+--- a/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
++++ b/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.circe:circe-literal_3:0.14.15"
++  "coordinates" : "io.circe:circe-literal_3:0.14.15",
++  "repository-url" : "https://github.com/circe/circe",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/literal/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-javadoc.jar",
++  "description" : "Circe literal provides Scala string interpolators for constructing circe Json values from inline JSON syntax. It validates literal JSON at compile time and supports interpolating values through circe encoders.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+codex
+The JSON parses cleanly and all three resolved URLs return HTTP 200 after substituting `0.14.15`. The file is under `build/`, so it may not appear in `git diff` if that path is ignored, but the on-disk content is updated.
+codex
+Updated [io.circe-circe-literal_3-0.14.15.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json) with repository, Maven source/docs URLs, tagged GitHub test URL, two-sentence description, and Scala 3 language metadata.
+
+Verified:
+- JSON is valid.
+- Source, test, and documentation URLs resolve with `0.14.15`.
+- Artifact is a JVM jar with class files, so I did not set `not-for-native-image`.
+diff --git a/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json b/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+index bbf0de8a9d93b2a771d4a3f6c3703ef151d85698..f71d2c71e64e314399f79441820c9b6cfaecf3be
+--- a/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
++++ b/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.circe:circe-literal_3:0.14.15"
++  "coordinates" : "io.circe:circe-literal_3:0.14.15",
++  "repository-url" : "https://github.com/circe/circe",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/literal/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-javadoc.jar",
++  "description" : "Circe literal provides Scala string interpolators for constructing circe Json values from inline JSON syntax. It validates literal JSON at compile time and supports interpolating values through circe encoders.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+tokens used
+68,600
+Updated [io.circe-circe-literal_3-0.14.15.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json) with repository, Maven source/docs URLs, tagged GitHub test URL, two-sentence description, and Scala 3 language metadata.
+
+Verified:
+- JSON is valid.
+- Source, test, and documentation URLs resolve with `0.14.15`.
+- Artifact is a JVM jar with class files, so I did not set `not-for-native-image`.
+Ran agent for io.circe:circe-literal_3:0.14.15 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8/build/agent-artifact-discovery-logs/io.circe-circe-literal_3-0.14.15.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-c7e752e8/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 43s
+9 actionable tasks: 9 executed
