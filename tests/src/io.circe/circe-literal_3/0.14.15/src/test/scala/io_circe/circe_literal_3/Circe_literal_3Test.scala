@@ -6,7 +6,9 @@
  */
 package io_circe.circe_literal_3
 
+import io.circe.Encoder
 import io.circe.Json
+import io.circe.KeyEncoder
 import io.circe.literal._
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -160,6 +162,60 @@ class Circe_literal_3Test {
     assertEquals(
       Some(Json.fromString("numeric key value")),
       payload.hcursor.downField(numericKey.toString).focus
+    )
+  }
+
+  @Test
+  def jsonInterpolatorUsesCustomEncodersForInterpolatedDomainValues(): Unit = {
+    final case class AuditEvent(action: String, attempts: Int)
+
+    given Encoder[AuditEvent] = Encoder.instance { (event: AuditEvent) =>
+      Json.obj(
+        "action" -> Json.fromString(event.action),
+        "attempts" -> Json.fromInt(event.attempts)
+      )
+    }
+
+    val event: AuditEvent = AuditEvent("login", 2)
+    val expectedEvent: Json = Json.obj(
+      "action" -> Json.fromString("login"),
+      "attempts" -> Json.fromInt(2)
+    )
+
+    val payload: Json = json"""
+      {
+        "event": $event,
+        "events": [$event]
+      }
+    """
+
+    assertEquals(Some(expectedEvent), payload.hcursor.downField("event").focus)
+    assertEquals(Some(Json.arr(expectedEvent)), payload.hcursor.downField("events").focus)
+  }
+
+  @Test
+  def jsonInterpolatorUsesCustomKeyEncodersForInterpolatedObjectKeys(): Unit = {
+    final case class TenantKey(value: String)
+
+    given KeyEncoder[TenantKey] = KeyEncoder.instance { (key: TenantKey) =>
+      s"tenant:${key.value}"
+    }
+
+    val tenantKey: TenantKey = TenantKey("analytics")
+    val payload: Json = json"""
+      {
+        $tenantKey: "enabled",
+        "literal": "unchanged"
+      }
+    """
+
+    assertEquals(
+      Some(Json.fromString("enabled")),
+      payload.hcursor.downField("tenant:analytics").focus
+    )
+    assertEquals(
+      Some(Json.fromString("unchanged")),
+      payload.hcursor.downField("literal").focus
     )
   }
 }
