@@ -352,7 +352,41 @@
       "type" : "com.google.appengine.api.appidentity.AppIdentityService",
       "methods" : [
         {
+          "name" : "getAccessToken",
+          "parameterTypes" : [
+            "java.lang.Iterable"
+          ]
+        },
+        {
           "name" : "getServiceAccountName",
+          "parameterTypes" : [ ]
+        },
+        {
+          "name" : "signForApp",
+          "parameterTypes" : [
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "com.google.auth.oauth2.AppEngineCredentials"
+      },
+      "type" : "com.google.appengine.api.appidentity.AppIdentityService$GetAccessTokenResult",
+      "serializable" : true,
+      "fields" : [
+        {
+          "name" : "serialVersionUID"
+        }
+      ],
+      "methods" : [
+        {
+          "name" : "getAccessToken",
+          "parameterTypes" : [ ]
+        },
+        {
+          "name" : "getExpirationTime",
           "parameterTypes" : [ ]
         }
       ]
@@ -361,7 +395,13 @@
       "condition" : {
         "typeReached" : "com.google.auth.oauth2.AppEngineCredentials"
       },
-      "type" : "com.google.appengine.api.appidentity.AppIdentityService$GetAccessTokenResult"
+      "type" : "com.google.appengine.api.appidentity.AppIdentityService$SigningResult",
+      "methods" : [
+        {
+          "name" : "getSignature",
+          "parameterTypes" : [ ]
+        }
+      ]
     },
     {
       "condition" : {
@@ -505,6 +545,13 @@
           "parameterTypes" : [ ]
         }
       ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "com.google.auth.oauth2.AppEngineCredentials"
+      },
+      "type" : "java.util.Date",
+      "serializable" : true
     },
     {
       "condition" : {

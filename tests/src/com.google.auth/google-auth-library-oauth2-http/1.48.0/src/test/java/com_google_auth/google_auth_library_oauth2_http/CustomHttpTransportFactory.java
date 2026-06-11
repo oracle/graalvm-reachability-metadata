@@ -11,7 +11,8 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.auth.http.HttpTransportFactory;
 
 public final class CustomHttpTransportFactory implements HttpTransportFactory {
-    public CustomHttpTransportFactory() {}
+    public CustomHttpTransportFactory() {
+    }
 
     @Override
     public HttpTransport create() {
