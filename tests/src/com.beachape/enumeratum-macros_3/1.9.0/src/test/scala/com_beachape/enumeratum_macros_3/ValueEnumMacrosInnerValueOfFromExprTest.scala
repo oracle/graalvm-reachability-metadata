@@ -10,6 +10,7 @@ import enumeratum.values.IntEnum
 import enumeratum.values.IntEnumEntry
 import org.assertj.core.api.Assertions.assertThat
 import org.graalvm.internal.tck.NativeImageSupport
+import org.junit.jupiter.api.Assumptions.assumeFalse
 import org.junit.jupiter.api.Test
 
 import scala.jdk.CollectionConverters.*
@@ -40,6 +41,7 @@ class ValueEnumMacrosInnerValueOfFromExprTest {
 
   @Test
   def stagedValueOfExtractionLoadsSingletonModuleFields(): Unit = {
+    assumeFalse(isNativeImageRuntime(), "Scala staging compiler execution is only verified on the JVM")
     try {
       given Compiler = Compiler.make(Thread.currentThread.getContextClassLoader)
 
@@ -69,4 +71,7 @@ class ValueEnumMacrosInnerValueOfFromExprTest {
             NativeImageSupport.isUnsupportedFeatureError(exception.getCause.asInstanceOf[Error]) =>
     }
   }
+
+  private def isNativeImageRuntime(): Boolean =
+    System.getProperty("org.graalvm.nativeimage.imagecode") != null
 }
