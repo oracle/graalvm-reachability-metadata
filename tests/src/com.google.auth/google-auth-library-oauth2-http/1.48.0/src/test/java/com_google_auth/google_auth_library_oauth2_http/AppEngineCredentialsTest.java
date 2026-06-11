@@ -16,7 +16,11 @@ import com.google.appengine.spi.ServiceFactoryFactory;
 import com.google.auth.ServiceAccountSigner;
 import com.google.auth.oauth2.AccessToken;
 import com.google.auth.oauth2.GoogleCredentials;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -74,20 +78,49 @@ public class AppEngineCredentialsTest {
     public void applicationDefaultCredentialsRefreshesAndSignsWithAppIdentityService()
             throws IOException {
         GoogleCredentials credentials = GoogleCredentials.getApplicationDefault();
-        assertThat(credentials.getClass().getName())
-                .isEqualTo("com.google.auth.oauth2.AppEngineCredentials");
+        assertAppEngineCredentials(credentials);
         assertThat(credentials.createScopedRequired()).isTrue();
-
-        assertThat(credentials).isInstanceOf(ServiceAccountSigner.class);
-        ServiceAccountSigner signer = (ServiceAccountSigner) credentials;
-        assertThat(signer.getAccount()).isEqualTo(SERVICE_ACCOUNT);
-        assertThat(signer.sign("payload".getBytes(StandardCharsets.UTF_8))).isEqualTo(SIGNATURE);
 
         GoogleCredentials scopedCredentials = credentials.createScoped(List.of("scope-one"));
         AccessToken token = scopedCredentials.refreshAccessToken();
 
         assertThat(token.getTokenValue()).isEqualTo(ACCESS_TOKEN);
         assertThat(token.getExpirationTime()).isAfter(new Date());
+    }
+
+    @Test
+    public void serializedApplicationDefaultCredentialsReinitializesAppIdentityService()
+            throws Exception {
+        GoogleCredentials credentials = GoogleCredentials.getApplicationDefault()
+                .createScoped(List.of("scope-one"));
+
+        GoogleCredentials restored;
+        try (ObjectInputStream input = new ObjectInputStream(
+                new ByteArrayInputStream(serialize(credentials)))) {
+            restored = (GoogleCredentials) input.readObject();
+        }
+
+        assertAppEngineCredentials(restored);
+        AccessToken token = restored.refreshAccessToken();
+        assertThat(token.getTokenValue()).isEqualTo(ACCESS_TOKEN);
+        assertThat(token.getExpirationTime()).isAfter(new Date());
+    }
+
+    private static void assertAppEngineCredentials(GoogleCredentials credentials) {
+        assertThat(credentials.getClass().getName())
+                .isEqualTo("com.google.auth.oauth2.AppEngineCredentials");
+        assertThat(credentials).isInstanceOf(ServiceAccountSigner.class);
+        ServiceAccountSigner signer = (ServiceAccountSigner) credentials;
+        assertThat(signer.getAccount()).isEqualTo(SERVICE_ACCOUNT);
+        assertThat(signer.sign("payload".getBytes(StandardCharsets.UTF_8))).isEqualTo(SIGNATURE);
+    }
+
+    private static byte[] serialize(GoogleCredentials credentials) throws IOException {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try (ObjectOutputStream output = new ObjectOutputStream(bytes)) {
+            output.writeObject(credentials);
+        }
+        return bytes.toByteArray();
     }
 
     static void configureAppEngineStandardEnvironment() {
