@@ -167,6 +167,20 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def decodesEscapedLiteralFieldNamesAndStringValues(): Unit = {
+    val document: Json = json"""
+      {
+        "line\nkey": "tab\tcarriage\rbackspace\bformfeed\fslash\/quote\"backslash\\",
+        "quote\"key": "plain"
+      }
+    """
+
+    assertThat(document.hcursor.get[String]("line\nkey"))
+      .isEqualTo(Right("tab\tcarriage\rbackspace\bformfeed\fslash/quote\"backslash\\"))
+    assertThat(document.hcursor.get[String]("quote\"key")).isEqualTo(Right("plain"))
+  }
+
+  @Test
   def reportsCompileTimeErrorsForInvalidJsonAndMissingEncoders(): Unit = {
     val invalidJsonErrors = typeCheckErrors("""
       import io.circe.literal.*
