@@ -8,7 +8,7 @@ package org_apache_pekko.pekko_stream_2_13
 
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.stream.{ClosedShape, Materializer, OverflowStrategy, QueueOfferResult}
-import org.apache.pekko.stream.scaladsl.{Broadcast, Flow, Framing, GraphDSL, Keep, RunnableGraph, Sink, Source, StreamConverters}
+import org.apache.pekko.stream.scaladsl.{Broadcast, Compression, Flow, Framing, GraphDSL, Keep, RunnableGraph, Sink, Source, StreamConverters}
 import org.apache.pekko.util.ByteString
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -162,6 +162,24 @@ class Pekko_stream_2_13Test {
         timeout)
 
       assertThat(result.utf8String).isEqualTo("pekko-stream-input")
+    }
+  }
+
+  @Test
+  def compressionRoundTripsGzipByteStringStreams(): Unit = {
+    withSystem("compression") { (_, materializer) =>
+      implicit val mat: Materializer = materializer
+
+      val payload: ByteString = ByteString("alpha beta gamma" * 12)
+      val roundTripped: ByteString = Await.result(
+        Source
+          .single(payload)
+          .via(Compression.gzip)
+          .via(Compression.gunzip())
+          .runFold(ByteString.empty)((accumulator, bytes) => accumulator ++ bytes),
+        timeout)
+
+      assertThat(roundTripped).isEqualTo(payload)
     }
   }
 
