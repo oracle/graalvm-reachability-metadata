@@ -1,0 +1,122 @@
+{
+  "fix_ni_run:2026-06-11": {
+    "timestamp": "2026-06-11T00:42:23.880796Z",
+    "library": "io.vertx:vertx-web-client:5.0.1",
+    "starting_commit": "336c8c3268b2098fcfa23bb03ed5e2d4a276e401",
+    "ending_commit": "cd7686770dfb0f3fb10498a8c7eedc191c46ca28",
+    "previous_library": "io.vertx:vertx-web-client:5.0.0",
+    "strategy_name": "library_update_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "5.0.1",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 3051,
+          "missed": 4056,
+          "ratio": 0.429295,
+          "total": 7107
+        },
+        "line": {
+          "covered": 747,
+          "missed": 904,
+          "ratio": 0.452453,
+          "total": 1651
+        },
+        "method": {
+          "covered": 182,
+          "missed": 375,
+          "ratio": 0.32675,
+          "total": 557
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "5.0.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 3051,
+          "missed": 4056,
+          "ratio": 0.429295,
+          "total": 7107
+        },
+        "line": {
+          "covered": 747,
+          "missed": 904,
+          "ratio": 0.452453,
+          "total": 1651
+        },
+        "method": {
+          "covered": 182,
+          "missed": 375,
+          "ratio": 0.32675,
+          "total": 557
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 7998,
+      "issue_label": "fails-native-image-run",
+      "library": "io.vertx:vertx-web-client:5.0.1",
+      "summary": "Vert.x Web Client 5.0.1 is usable with its normal transitive dependencies and can be meaningfully covered against an in-process Vert.x HTTP server, but its Netty 4.2.x runtime path needs the same native-run system properties already used for 5.0.0 on JDK 25.",
+      "deterministic_setup": [],
+      "agent_guidance": "Ensure generated native tests pass the Vert.x/Netty runtime properties for 5.0.1 as well as 5.0.0: `-Dsun.misc.unsafe.memory.access=allow` and `-Dio.netty.tryReflectionSetAccessible=true`. A local `Vertx` HTTP server is sufficient for meaningful WebClient coverage; no external service is required.",
+      "risks": [
+        "If the generated tests choose to exercise POJO JSON mapping via `sendJson` rather than `JsonObject`/buffer/string APIs, Jackson databind may become relevant, but it is not required for core WebClient coverage.",
+        "TLS, OAuth2, or native-transport-specific scenarios may require additional optional dependencies, but they are not necessary for representative WebClient request/response, form, multipart, caching, redirect, and session coverage."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#7998 [Automation] native-image run fails for io.vertx:vertx-web-client:5.0.1; label=fails-native-image-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "current_library": "io.vertx:vertx-web-client:5.0.0",
+      "new_version": "5.0.1",
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 87674,
+      "output_tokens_used": 2947,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/io.vertx:vertx-web-client:5.0.1/library-preparation-preflight/pi-generation-2026-06-11T00-13-36-037685Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 0,
+      "cached_input_tokens_used": 0,
+      "output_tokens_used": 0,
+      "iterations": 0,
+      "cost_usd": 0.0,
+      "tested_library_loc": 747,
+      "metadata_entries": 11,
+      "test_only_metadata_entries": 58,
+      "previous_library_metadata_entries": 57,
+      "previous_library_test_only_metadata_entries": 58,
+      "code_coverage_percent": 45.25,
+      "previous_library_coverage_percent": 45.25
+    },
+    "artifacts": {
+      "test_file": "tests/src/io.vertx/vertx-web-client/5.0.0/src/test/java/io_vertx/vertx_web_client/Vertx_web_clientTest.java",
+      "metadata_file": "metadata/io.vertx/vertx-web-client/5.0.1/reachability-metadata.json"
+    }
+  }
+}
