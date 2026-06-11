@@ -13,6 +13,8 @@ import io.circe.jawn.parse
 import io.circe.literal.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import scala.compiletime.testing.Error
+import scala.compiletime.testing.typeCheckErrors
 
 class Circe_literal_3Test {
   @Test
@@ -147,6 +149,17 @@ class Circe_literal_3Test {
     )
 
     assertEquals(expected, literal)
+  }
+
+  @Test
+  def rejectsInvalidJsonLiteralsAtCompileTime(): Unit = {
+    val errors: List[Error] = typeCheckErrors("""
+      import io.circe.literal.*
+      val invalid = json"{ \"missingColon\" true }"
+    """)
+
+    assertFalse(errors.isEmpty)
+    assertTrue(errors.exists(_.message.nonEmpty))
   }
 
   private def parseJson(input: String): Json = {
