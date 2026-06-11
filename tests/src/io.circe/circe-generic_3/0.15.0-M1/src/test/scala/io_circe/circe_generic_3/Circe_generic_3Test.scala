@@ -159,10 +159,12 @@ class Circe_generic_3Test {
       "note" -> Json.fromInt(123)
     )
 
-    val failures: List[DecodingFailure] = invalid.asAccumulating[Invoice].fold(
-      _.toList,
-      value => fail(s"Expected derived invoice decoding to fail, but decoded: $value")
-    )
+    val failures: List[DecodingFailure] = Decoder[Invoice]
+      .decodeAccumulating(invalid.hcursor)
+      .fold(
+        _.toList,
+        value => fail(s"Expected derived invoice decoding to fail, but decoded: $value")
+      )
 
     assertThat(failures.size).isGreaterThanOrEqualTo(3)
     assertThat(failures.map(_.history.nonEmpty).asJava).contains(true)
