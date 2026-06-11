@@ -11,6 +11,7 @@ import org.apache.pekko.http.scaladsl.Http
 import org.apache.pekko.http.scaladsl.server.Route
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import sttp.model.StatusCode
 import sttp.tapir.*
 import sttp.tapir.server.pekkohttp.PekkoHttpServerInterpreter
 
@@ -86,6 +87,44 @@ class Tapir_pekko_http_server_3Test {
 
       assertThat(response.statusCode()).isEqualTo(200)
       assertThat(response.body()).isEqualTo("ripat okkep")
+    }
+  }
+
+  @Test
+  def shouldReturnConfiguredErrorOutputFromServerLogic(): Unit = {
+    withServer { executionContext =>
+      implicit val ec: ExecutionContext = executionContext
+      val divisionEndpoint = endpoint.get
+        .in("divide")
+        .in(query[Int]("numerator"))
+        .in(query[Int]("denominator"))
+        .errorOut(statusCode.and(stringBody))
+        .out(stringBody)
+
+      PekkoHttpServerInterpreter().toRoute(
+        divisionEndpoint.serverLogic { case (numerator, denominator) =>
+          Future.successful {
+            if (denominator == 0) {
+              Left((StatusCode.BadRequest, "denominator must not be zero"))
+            } else {
+              Right((numerator / denominator).toString)
+            }
+          }
+        }
+      )
+    } { baseUri =>
+      val response = send(
+        HttpRequest.newBuilder(baseUri.resolve("/divide?numerator=10&denominator=0"))
+          .timeout(RequestTimeout)
+          .GET()
+          .build()
+      )
+
+      assertThat(response.statusCode()).isEqualTo(400)
+      assertThat(response.body()).isEqualTo("denominator must not be zero")
+      assertThat(response.headers().firstValue("Content-Type")).hasValueSatisfying { contentType =>
+        assertThat(contentType).startsWith("text/plain")
+      }
     }
   }
 
