@@ -80,6 +80,12 @@ iterative phase refines remaining call sites; and library-update coverage
 strategies, where Forge improves dynamic-access coverage on existing tests
 without first generating a new library test suite.
 
+When the iterative dynamic-access phase returns `RUN_STATUS_CHUNK_READY`, the
+composite returns that status immediately. A chunk-ready part is a reviewable
+boundary, so reporter-requested metadata work is deferred until a later resumed
+run reaches final workflow success instead of blocking publication of the
+current chunk.
+
 ### WF-dynamic-access-fallback-and-failure: Required fallback and failure behavior
 
 Dynamic-access fallback is intentionally narrow. The iterative and bulk engines
@@ -543,10 +549,11 @@ chunked workflow:
 #### WF-chunked-dynamic-access-pr-linking: Chunk PR linking
 
 After a chunk passes local CI-equivalent verification, PR creation must link the
-chunk to the issue without completing it unless the chunk is final. Non-final
-chunk PRs use `Refs: #<issue>` and commit the exhaust-report state required for
-the next run to skip classes already completed, skipped, exhausted, or failed.
-Only the final chunk PR may use `Fixes: #<issue>` and move the issue to `Done`.
+chunk to the issue without completing it unless the chunk is final. Chunk PRs
+carry the `chunked-dynamic-access` label. Non-final chunk PRs use
+`Refs: #<issue>` and commit the exhaust-report state required for the next run
+to skip classes already completed, skipped, exhausted, or failed. Only the final
+chunk PR may use `Fixes: #<issue>` and move the issue to `Done`.
 
 #### WF-dynamic-access-exhaust-report: Dynamic-access exhaust report
 

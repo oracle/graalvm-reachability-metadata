@@ -7,6 +7,7 @@ import argparse
 import json
 import os
 import shutil
+import subprocess
 import sys
 from dataclasses import dataclass
 
@@ -21,6 +22,7 @@ from git_scripts.common_git import (
     load_library_stats,
     format_stats_section,
     format_forge_revision_section,
+    run_git_transport,
 )
 from git_scripts.pr_publication import (
     BASE_BRANCH,
@@ -29,13 +31,15 @@ from git_scripts.pr_publication import (
     parse_pr_number,
     publish_branch,
     stage_library_version_paths,
-    update_large_library_state_after_publish,
 )
 from utility_scripts.metrics_writer import (
     collect_new_library_support_quality_issues,
     read_pending_metrics,
 )
-from utility_scripts.large_library_progress import LABEL_LARGE_LIBRARY_PART
+from utility_scripts.dynamic_access_exhaust_report import (
+    DynamicAccessExhaustReport,
+    find_dynamic_access_exhaust_report_path,
+)
 from utility_scripts.dynamic_access_report import DynamicAccessCallSite, load_dynamic_access_coverage_report
 from utility_scripts.local_ci_verification import (
     HUMAN_INTERVENTION_LABEL,
@@ -269,16 +273,15 @@ def build_pull_request_body(
         metrics,
         library_stats=None,
         post_generation_intervention=None,
-        is_large_library_part=False,
-        is_final_large_library_part=True,
-        large_library_part=None,
-        series_id=None,
+        chunked_dynamic_access: bool = False,
+        chunk_final: bool = True,
+        dynamic_access_exhaust_report: DynamicAccessExhaustReport | None = None,
         local_ci_verification=None,
         dynamic_access_evidence: DynamicAccessMetadataEvidence | None = None,
 ):
     """Build the PR body with metrics, strategy name, stats, and issue linkage.
 
-    Chunked dynamic-access parts use ``Refs`` until the final part may close the
+    Chunked dynamic-access runs use ``Refs`` until the final chunk may close the
     backing issue (§WF-chunked-dynamic-access-pr-linking), following the chunked
     linking contract (§GIT-chunked-linking); the body records the run's tracked
     parameters (§GIT-pr-body) so verification and intervention context stay
@@ -298,11 +301,12 @@ def build_pull_request_body(
         test_only_metadata_entries_line = f"- Test-only metadata entries: {test_only_metadata_entries}\n"
 
     issue_reference = f"Fixes: #{issue_no}"
-    if is_large_library_part and not is_final_large_library_part:
+    if chunked_dynamic_access and not chunk_final:
         issue_reference = f"Refs: #{issue_no}"
-    part_line = ""
-    if is_large_library_part:
-        part_line = f"- Large-library series: `{series_id or 'unknown'}`\n- Part: {large_library_part}\n"
+    chunk_line = format_chunked_dynamic_access_summary(
+        chunked_dynamic_access,
+        dynamic_access_exhaust_report,
+    )
 
     body = f"""
 ## What does this PR do?
@@ -312,7 +316,7 @@ def build_pull_request_body(
 This PR introduces tests and metadata for {coordinates}, enabling support for this library.
 
 Summary:
-{part_line}\
+{chunk_line}\
 - Strategy: {strategy_name}
 - Agent: {agent_name}
 - Model: {model_display_name}
@@ -340,20 +344,40 @@ Summary:
     return body
 
 
+def format_chunked_dynamic_access_summary(
+        chunked_dynamic_access: bool,
+        exhaust_report: DynamicAccessExhaustReport | None,
+) -> str:
+    """Return compact PR body lines for a chunked dynamic-access run."""
+    if not chunked_dynamic_access:
+        return ""
+    if exhaust_report is None:
+        return "- Chunked dynamic-access: yes\n"
+    return (
+        "- Chunked dynamic-access: yes\n"
+        f"- Chunk class threshold: {exhaust_report.class_threshold or 'unknown'}\n"
+        f"- Current chunk class count: {exhaust_report.current_chunk_class_count or 'unknown'}\n"
+        "- Processed dynamic-access classes: "
+        f"completed={len(exhaust_report.completed_classes)}, "
+        f"skipped={len(exhaust_report.skipped_classes)}, "
+        f"exhausted={len(exhaust_report.exhausted_classes)}, "
+        f"failed={len(exhaust_report.failed_classes)}\n"
+    )
+
+
 def create_pull_request(
         branch,
         coordinates,
         metrics_repo_root,
         repo_path,
         issue_number=None,
-        large_library_part=None,
-        is_final_large_library_part=True,
-        series_id=None,
+        chunked_dynamic_access: bool = False,
+        chunk_final: bool = True,
 ):
     """Create a GitHub pull request for the current branch and matching issue.
 
     Links the PR to its issue per §GIT-issue-linking and applies the
-    workflow PR label, optional large-library part label, reviewer list, and
+    workflow PR label, reviewer list, and
     human-intervention visibility.
     """
     if shutil.which("gh") is None:
@@ -373,9 +397,8 @@ def create_pull_request(
         metrics_repo_root=metrics_repo_root,
         repo_path=repo_path,
         issue_number=issue_number,
-        large_library_part=large_library_part,
-        is_final_large_library_part=is_final_large_library_part,
-        series_id=series_id,
+        chunked_dynamic_access=chunked_dynamic_access,
+        chunk_final=chunk_final,
     )
 
     cmd = [
@@ -388,10 +411,10 @@ def create_pull_request(
         "--label", "GenAI",
         "--label", "library-new-request",
     ]
+    if chunked_dynamic_access:
+        cmd.extend(["--label", "chunked-dynamic-access"])
     if local_ci_requires_human_intervention(matched.get(LOCAL_CI_VERIFICATION_KEY)):
         cmd.extend(["--label", HUMAN_INTERVENTION_LABEL])
-    if large_library_part is not None:
-        cmd.extend(["--label", LABEL_LARGE_LIBRARY_PART])
     if REVIEWERS:
         for r in REVIEWERS:
             cmd.extend(["--reviewer", r])
@@ -404,9 +427,8 @@ def build_pull_request_preview(
         metrics_repo_root: str,
         repo_path: str,
         issue_number: int | None = None,
-        large_library_part: int | None = None,
-        is_final_large_library_part: bool = True,
-        series_id: str | None = None,
+        chunked_dynamic_access: bool = False,
+        chunk_final: bool = True,
 ) -> tuple[str, str, dict]:
     """Build the PR title/body without creating a GitHub pull request."""
     issue_no = issue_number if issue_number is not None else find_issue_common(coordinates, REPO)
@@ -416,8 +438,8 @@ def build_pull_request_preview(
     model_display_name = get_model_display_name(strategy_name)
     agent_name = get_agent_name(strategy_name)
     title = f"[GenAI] Add support for {coordinates} using {model_display_name}"
-    if large_library_part is not None:
-        title = f"{title} (part {large_library_part})"
+    if chunked_dynamic_access and not chunk_final:
+        title = f"{title} (chunked dynamic-access)"
     body = build_pull_request_body(
         issue_no=issue_no,
         coordinates=coordinates,
@@ -429,13 +451,38 @@ def build_pull_request_preview(
         library_stats=load_library_stats(repo_path, coordinates),
         post_generation_intervention=matched.get("post_generation_intervention"),
         local_ci_verification=matched.get(LOCAL_CI_VERIFICATION_KEY),
-        is_large_library_part=large_library_part is not None,
-        is_final_large_library_part=is_final_large_library_part,
-        large_library_part=large_library_part,
-        series_id=series_id,
+        chunked_dynamic_access=chunked_dynamic_access,
+        chunk_final=chunk_final,
+        dynamic_access_exhaust_report=load_dynamic_access_exhaust_report(repo_path, coordinates),
         dynamic_access_evidence=load_dynamic_access_metadata_evidence(repo_path, coordinates),
     )
     return title, body, matched
+
+
+def load_dynamic_access_exhaust_report(
+        repo_path: str,
+        coordinates: str,
+) -> DynamicAccessExhaustReport | None:
+    """Load the coordinate-derived exhaust report when this run is chunked."""
+    report_path = find_dynamic_access_exhaust_report_path(repo_path, coordinates)
+    if report_path is None:
+        return None
+    return DynamicAccessExhaustReport.load(report_path)
+
+
+def remove_dynamic_access_exhaust_report_for_final_chunk(
+        repo_path: str,
+        coordinates: str,
+        chunked_dynamic_access: bool,
+        chunk_final: bool,
+) -> None:
+    """Remove the resumable exhaust report from the final chunk PR."""
+    if not chunked_dynamic_access or not chunk_final:
+        return
+    report_path = find_dynamic_access_exhaust_report_path(repo_path, coordinates)
+    if report_path is None:
+        return
+    os.remove(report_path)
 
 
 def build_parser():
@@ -478,14 +525,16 @@ def build_parser():
         ),
     )
     parser.add_argument("--issue-number", type=int, help="Explicit backing GitHub issue number.")
-    parser.add_argument("--large-library-part", type=int, help="Part number for a large-library PR series.")
     parser.add_argument(
-        "--large-library-final",
+        "--chunked-dynamic-access",
         action="store_true",
-        help="Use Fixes instead of Refs for a large-library part.",
+        help="Publish this PR as part of a chunked dynamic-access run.",
     )
-    parser.add_argument("--series-id", help="Large-library series identifier for the PR body.")
-    parser.add_argument("--large-library-state-path", help="Progress state JSON path to update after publishing.")
+    parser.add_argument(
+        "--chunk-final",
+        action="store_true",
+        help="Use Fixes instead of Refs for a chunked dynamic-access run.",
+    )
     return parser
 
 
@@ -505,10 +554,8 @@ def parse_flags(argv_list):
         resolved_repo_path,
         resolved_metrics_repo_path,
         flags.issue_number,
-        flags.large_library_part,
-        flags.large_library_final,
-        flags.series_id,
-        flags.large_library_state_path,
+        flags.chunked_dynamic_access,
+        flags.chunk_final,
     )
 
 
@@ -516,7 +563,8 @@ def push_current_branch_to_origin(
         coordinates,
         repo_path,
         metrics_repo_path=None,
-        large_library_part=None,
+        chunked_dynamic_access: bool = False,
+        chunk_final: bool = True,
 ):
     """Create, locally verify, and push a feature branch for PR publication.
 
@@ -527,20 +575,60 @@ def push_current_branch_to_origin(
     group, artifact, library_version = parse_coordinate_parts(coordinates)
 
     branch_suffix = f"add-lib-support-{group}-{artifact}-{library_version}"
-    if large_library_part is not None:
-        branch_suffix = f"{branch_suffix}-part-{large_library_part:04d}"
+    if chunked_dynamic_access:
+        branch_suffix = f"{branch_suffix}-chunked"
+
+    def stage() -> None:
+        remove_dynamic_access_exhaust_report_for_final_chunk(
+            repo_path,
+            coordinates,
+            chunked_dynamic_access,
+            chunk_final,
+        )
+        stage_library_version_paths(
+            group, artifact, library_version, repo_path, f"Add support for {coordinates}",
+        )
 
     new_branch, _ = publish_branch(
         repo_path=repo_path,
         branch_suffix=branch_suffix,
         coordinates=coordinates,
-        stage=lambda: stage_library_version_paths(
-            group, artifact, library_version, repo_path, f"Add support for {coordinates}",
-        ),
+        stage=stage,
         metrics_repo_path=metrics_repo_path,
     )
 
     return new_branch
+
+
+def update_dynamic_access_exhaust_report_after_publish(
+        coordinates: str,
+        repo_path: str,
+        branch: str,
+        pr_number: int | None,
+        chunked_dynamic_access: bool,
+) -> None:
+    """Record the published chunk PR/commit in the coordinate-local exhaust report."""
+    if not chunked_dynamic_access:
+        return
+    report_path = find_dynamic_access_exhaust_report_path(repo_path, coordinates)
+    if report_path is None:
+        return
+    report = DynamicAccessExhaustReport.load(report_path)
+    commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_path, text=True).strip()
+    report.record_published_chunk(commit, pr_number)
+    report.save(report_path)
+
+    relative_report_path = os.path.relpath(report_path, repo_path)
+    subprocess.run(["git", "add", "--", relative_report_path], cwd=repo_path, check=True)
+    diff_result = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=repo_path, check=False)
+    if diff_result.returncode == 0:
+        return
+    subprocess.run(
+        ["git", "commit", "-m", f"Record chunked dynamic-access publication for {coordinates}"],
+        cwd=repo_path,
+        check=True,
+    )
+    run_git_transport(["push", "origin", f"HEAD:{branch}"], cwd=repo_path)
 
 
 def validate_run_quality(coordinates: str, metrics_repo_path: str, repo_path: str) -> None:
@@ -579,10 +667,8 @@ def main(argv=None):
         repo_path,
         metrics_repo_path,
         issue_number,
-        large_library_part,
-        large_library_final,
-        series_id,
-        large_library_state_path,
+        chunked_dynamic_access,
+        chunk_final,
     ) = parse_flags(argv if argv is not None else sys.argv[1:])
 
     ensure_gh_authenticated()
@@ -593,7 +679,8 @@ def main(argv=None):
         coordinates=coordinates,
         repo_path=repo_path,
         metrics_repo_path=metrics_repo_path,
-        large_library_part=large_library_part,
+        chunked_dynamic_access=chunked_dynamic_access,
+        chunk_final=chunk_final,
     )
     pr_number = create_pull_request(
         branch,
@@ -601,16 +688,15 @@ def main(argv=None):
         metrics_repo_path,
         repo_path,
         issue_number=issue_number,
-        large_library_part=large_library_part,
-        is_final_large_library_part=large_library_final or large_library_part is None,
-        series_id=series_id,
+        chunked_dynamic_access=chunked_dynamic_access,
+        chunk_final=chunk_final or not chunked_dynamic_access,
     )
-    update_large_library_state_after_publish(
-        large_library_state_path,
-        branch,
+    update_dynamic_access_exhaust_report_after_publish(
+        coordinates,
         repo_path,
+        branch,
         pr_number,
-        large_library_final or large_library_part is None,
+        chunked_dynamic_access,
     )
 
 

@@ -112,11 +112,7 @@ def _preflight(
     )
 
 
-def _claimed_issue(
-        label: str = forge_metadata.LABEL_LIBRARY_NEW,
-        large_library_resume_artifact: str | None = None,
-        large_library_part: int | None = None,
-) -> forge_metadata.ClaimedIssue:
+def _claimed_issue(label: str = forge_metadata.LABEL_LIBRARY_NEW) -> forge_metadata.ClaimedIssue:
     return forge_metadata.ClaimedIssue(
         issue={
             "number": 1412,
@@ -128,8 +124,6 @@ def _claimed_issue(
         worktree_path="/tmp/reachability-worktree",
         scratch_metrics_repo_path="/tmp/metrics-worktree",
         issue_coordinates="org.example:lib:1.0.0",
-        large_library_resume_artifact=large_library_resume_artifact,
-        large_library_part=large_library_part,
     )
 
 
@@ -157,7 +151,7 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
     def test_not_for_native_image_pr_receives_metrics_repo_path_for_local_ci(self) -> None:
         claimed_issue = _claimed_issue()
 
-        with patch.object(forge_metadata, "find_progress_state_path", return_value=None), \
+        with patch.object(forge_metadata, "find_dynamic_access_exhaust_report_path", return_value=None), \
                 patch.object(forge_metadata, "require_claimed_issue_worktree"), \
                 patch.object(forge_metadata, "_load_pending_run_metrics", return_value={"status": "success"}), \
                 patch.object(forge_metadata, "metadata_coordinate_parts", return_value=("org.example", "lib", "1.0.0")), \
@@ -586,7 +580,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
         )
 
     def test_chunked_dynamic_access_preflight_skips_in_progress_issue(self) -> None:
-        issue = _search_issue(1412, [forge_metadata.LABEL_LARGE_LIBRARY_NEXT_PART])
+        issue = _search_issue(1412, [forge_metadata.LABEL_CHUNKED_DYNAMIC_ACCESS])
         self.assertTrue(
             forge_metadata.should_skip_issue_from_preflight(
                 issue,
@@ -1118,38 +1112,32 @@ class IssueClaimPreflightTests(unittest.TestCase):
 
 
 class SingleIssueProcessingTests(unittest.TestCase):
-    def test_append_large_library_workflow_args_passes_issue_context_for_first_run(self) -> None:
+    def test_append_chunked_dynamic_access_workflow_args_passes_issue_context_for_first_run(self) -> None:
         claimed_issue = _claimed_issue()
         pipeline_argv = ["--coordinates", claimed_issue.issue_coordinates]
 
-        forge_metadata.append_large_library_workflow_args(pipeline_argv, claimed_issue, 4)
+        forge_metadata.append_chunked_dynamic_access_workflow_args(pipeline_argv, claimed_issue, 4)
 
         self.assertEqual(
             pipeline_argv,
             [
                 "--coordinates", claimed_issue.issue_coordinates,
                 "--issue-number", "1412",
-                "--large-library-series",
-                "--chunk-class-limit", "4",
+                "--chunk-class-count", "4",
             ],
         )
 
-    def test_append_large_library_workflow_args_does_not_pass_resume_artifact(self) -> None:
-        claimed_issue = _claimed_issue(
-            large_library_resume_artifact="/tmp/large-library-state.json",
-            large_library_part=2,
-        )
+    def test_append_chunked_dynamic_access_workflow_args_omits_count_when_not_chunked(self) -> None:
+        claimed_issue = _claimed_issue()
         pipeline_argv = ["--coordinates", claimed_issue.issue_coordinates]
 
-        forge_metadata.append_large_library_workflow_args(pipeline_argv, claimed_issue, 2)
+        forge_metadata.append_chunked_dynamic_access_workflow_args(pipeline_argv, claimed_issue, None)
 
         self.assertEqual(
             pipeline_argv,
             [
                 "--coordinates", claimed_issue.issue_coordinates,
                 "--issue-number", "1412",
-                "--large-library-series",
-                "--chunk-class-limit", "2",
             ],
         )
 
@@ -1159,7 +1147,7 @@ class SingleIssueProcessingTests(unittest.TestCase):
             claimed_issue = forge_metadata.ClaimedIssue(
                 **{
                     **claimed_issue.__dict__,
-                    "scratch_metrics_repo_path": tmpdir,
+                    "worktree_path": tmpdir,
                 },
             )
             report = _dynamic_access_report([
@@ -1178,14 +1166,17 @@ class SingleIssueProcessingTests(unittest.TestCase):
                     patch.dict(os.environ, {"FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD": "5"}, clear=True):
                 chunk_count = forge_metadata.prepare_dynamic_access_chunking(claimed_issue, "test-strategy")
 
-            state_path = forge_metadata.find_progress_state_path(tmpdir, 1412)
+            report_path = forge_metadata.dynamic_access_exhaust_report_path(
+                tmpdir,
+                claimed_issue.issue_coordinates,
+            )
             self.assertEqual(chunk_count, 5)
             self.assertTrue(forge_metadata.issue_has_label(claimed_issue.issue, forge_metadata.LABEL_CHUNKED_DYNAMIC_ACCESS))
             add_issue_label.assert_called_once_with(1412, forge_metadata.LABEL_CHUNKED_DYNAMIC_ACCESS)
-            self.assertIsNotNone(state_path)
-            state = forge_metadata.LargeLibraryProgressState.load(state_path)
-            self.assertEqual(state.class_threshold, 5)
-            self.assertEqual(state.current_chunk_class_count, 5)
+            self.assertTrue(os.path.isfile(report_path))
+            report_state = forge_metadata.DynamicAccessExhaustReport.load(report_path)
+            self.assertEqual(report_state.class_threshold, 5)
+            self.assertEqual(report_state.current_chunk_class_count, 5)
 
     def test_prepare_dynamic_access_chunking_uses_remaining_class_count_for_final_chunk(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -1194,20 +1185,18 @@ class SingleIssueProcessingTests(unittest.TestCase):
             claimed_issue = forge_metadata.ClaimedIssue(
                 **{
                     **claimed_issue.__dict__,
-                    "scratch_metrics_repo_path": tmpdir,
+                    "worktree_path": tmpdir,
                 },
             )
-            state = forge_metadata.LargeLibraryProgressState.create(
+            report_state = forge_metadata.DynamicAccessExhaustReport.create(
                 coordinate=claimed_issue.issue_coordinates,
                 issue_number=1412,
-                request_label=forge_metadata.LABEL_LIBRARY_NEW,
-                strategy_name="test-strategy",
             )
-            state.mark_completed("org.example.A")
-            state.mark_completed("org.example.B")
-            state.mark_completed("org.example.C")
-            state.mark_completed("org.example.D")
-            state.save(state.default_path(tmpdir))
+            report_state.mark_completed("org.example.A")
+            report_state.mark_completed("org.example.B")
+            report_state.mark_completed("org.example.C")
+            report_state.mark_completed("org.example.D")
+            report_state.save(report_state.default_path(tmpdir))
             report = _dynamic_access_report([
                 "org.example.A",
                 "org.example.B",
@@ -1224,20 +1213,18 @@ class SingleIssueProcessingTests(unittest.TestCase):
                     patch.dict(os.environ, {"FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD": "5"}, clear=True):
                 chunk_count = forge_metadata.prepare_dynamic_access_chunking(claimed_issue, "test-strategy")
 
-            state = forge_metadata.LargeLibraryProgressState.load(state.default_path(tmpdir))
+            report_state = forge_metadata.DynamicAccessExhaustReport.load(report_state.default_path(tmpdir))
             self.assertEqual(chunk_count, 2)
-            self.assertEqual(state.class_threshold, 5)
-            self.assertEqual(state.current_chunk_class_count, 2)
+            self.assertEqual(report_state.class_threshold, 5)
+            self.assertEqual(report_state.current_chunk_class_count, 2)
             add_issue_label.assert_not_called()
 
-    def test_large_library_base_check_uses_pr_merge_commit_for_squash_merges(self) -> None:
-        state = forge_metadata.LargeLibraryProgressState.create(
+    def test_chunked_dynamic_access_base_check_uses_pr_merge_commit_for_squash_merges(self) -> None:
+        report_state = forge_metadata.DynamicAccessExhaustReport.create(
             coordinate="org.example:lib:1.0.0",
             issue_number=1412,
-            request_label=forge_metadata.LABEL_LIBRARY_NEW,
-            strategy_name="dynamic_access_main_sources_pi_gpt-5.5",
         )
-        state.record_published_pr("ai/example-part-0001", "head-commit", 4242)
+        report_state.record_published_chunk("head-commit", 4242)
 
         with patch.object(
                 forge_metadata,
@@ -1253,8 +1240,8 @@ class SingleIssueProcessingTests(unittest.TestCase):
                     "run",
                     return_value=subprocess.CompletedProcess(["git"], 0),
                 ) as run:
-            forge_metadata.verify_large_library_base_contains_published_commit(
-                state,
+            forge_metadata.verify_chunked_dynamic_access_base_contains_published_commit(
+                report_state,
                 "/tmp/reachability-worktree",
             )
 
@@ -1264,7 +1251,7 @@ class SingleIssueProcessingTests(unittest.TestCase):
             check=False,
         )
 
-    def test_process_single_issue_claims_without_large_library_artifact_override(self) -> None:
+    def test_process_single_issue_claims_without_chunk_artifact_override(self) -> None:
         issue = {
             "number": 1412,
             "title": "Add support for org.example:lib:1.0.0",
@@ -1306,61 +1293,6 @@ class SingleIssueProcessingTests(unittest.TestCase):
             "/tmp/metrics",
             "automation-user",
         )
-
-    def test_process_large_library_continuation_passes_explicit_artifact_to_claim(self) -> None:
-        issue = _search_issue(1412, [forge_metadata.LABEL_LARGE_LIBRARY_NEXT_PART])
-        with tempfile.TemporaryDirectory() as tmpdir:
-            state = forge_metadata.LargeLibraryProgressState.create(
-                coordinate="org.example:lib:1.0.0",
-                issue_number=1412,
-                request_label=forge_metadata.LABEL_LIBRARY_NEW,
-                strategy_name="dynamic_access_main_sources_pi_gpt-5.5",
-            )
-            state.part = 2
-            resume_artifact = state.default_path(tmpdir)
-            state.save(resume_artifact)
-
-            with patch.object(
-                    forge_metadata,
-                    "get_issue_by_number",
-                    return_value=(issue, forge_metadata.LABEL_LIBRARY_NEW),
-            ), \
-                    patch.object(
-                        forge_metadata,
-                        "claim_issue_for_processing",
-                        return_value=_claimed_issue(
-                            large_library_resume_artifact=resume_artifact,
-                            large_library_part=2,
-                        ),
-                    ) as claim_issue_for_processing, \
-                    patch.object(
-                        forge_metadata,
-                        "process_claimed_issue_lifecycle",
-                        return_value=True,
-                    ) as process_claimed_issue_lifecycle:
-                self.assertTrue(
-                    forge_metadata.process_large_library_continuation(
-                        resume_artifact,
-                        "/tmp/reachability",
-                        "/tmp/metrics",
-                        None,
-                        False,
-                        "automation-user",
-                    )
-                )
-
-        claim_issue_for_processing.assert_called_once_with(
-            issue,
-            forge_metadata.LABEL_LIBRARY_NEW,
-            "/tmp/reachability",
-            "/tmp/metrics",
-            "automation-user",
-            large_library_resume_artifact_override=resume_artifact,
-        )
-        claimed_issue = process_claimed_issue_lifecycle.call_args.args[0]
-        self.assertEqual(claimed_issue.large_library_resume_artifact, resume_artifact)
-        self.assertEqual(claimed_issue.large_library_part, 2)
-
 
 class WorkQueueSchedulerTests(unittest.TestCase):
     def test_work_queue_configs_allow_zero_limits_from_environment(self) -> None:
@@ -2196,7 +2128,7 @@ class IssueClaimLockTests(unittest.TestCase):
         set_item_status.assert_called_once_with("project-item", forge_metadata.STATUS_IN_PROGRESS)
 
     def test_try_claim_issue_skips_chunked_dynamic_access_when_in_progress(self) -> None:
-        issue = _search_issue(1412, [forge_metadata.LABEL_LARGE_LIBRARY_NEXT_PART])
+        issue = _search_issue(1412, [forge_metadata.LABEL_CHUNKED_DYNAMIC_ACCESS])
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
@@ -2537,6 +2469,43 @@ class PullRequestReviewTests(unittest.TestCase):
 
         validate_candidate.assert_not_called()
         gh.assert_called_once()
+
+    def test_merge_pull_request_releases_non_final_chunked_dynamic_access_issue(self) -> None:
+        pr = {
+            "number": 3513,
+            "url": "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
+            "headRefOid": "abc123",
+            "body": "Refs: #1412\n\nSummary:\n- Chunked dynamic-access: yes\n",
+        }
+
+        with patch.object(forge_metadata, "get_pull_request_changed_index_files", return_value=[]), \
+                patch.object(forge_metadata, "gh"), \
+                patch.object(forge_metadata, "get_project_item_id", return_value="project-item"), \
+                patch.object(forge_metadata, "set_item_status") as set_item_status, \
+                patch.object(forge_metadata, "clear_issue_assignees") as clear_issue_assignees, \
+                patch.object(forge_metadata, "invalidate_issue_claim_cache_entry") as invalidate_cache:
+            forge_metadata.merge_pull_request(pr, "/repo")
+
+        set_item_status.assert_called_once_with("project-item", forge_metadata.STATUS_TODO)
+        clear_issue_assignees.assert_called_once_with(1412)
+        invalidate_cache.assert_called_once_with(1412)
+
+    def test_merge_pull_request_does_not_release_final_chunked_dynamic_access_issue(self) -> None:
+        pr = {
+            "number": 3513,
+            "url": "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
+            "headRefOid": "abc123",
+            "body": "Fixes: #1412\n\nSummary:\n- Chunked dynamic-access: yes\n",
+        }
+
+        with patch.object(forge_metadata, "get_pull_request_changed_index_files", return_value=[]), \
+                patch.object(forge_metadata, "gh"), \
+                patch.object(forge_metadata, "set_item_status") as set_item_status, \
+                patch.object(forge_metadata, "clear_issue_assignees") as clear_issue_assignees:
+            forge_metadata.merge_pull_request(pr, "/repo")
+
+        set_item_status.assert_not_called()
+        clear_issue_assignees.assert_not_called()
 
     def test_merge_pull_request_stops_when_final_index_validation_fails(self) -> None:
         pr = {

@@ -42,11 +42,11 @@ from ai_workflows.core.workflow_strategy import (
 )
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists, ensure_gh_authenticated, load_library_stats
 from utility_scripts import metrics_writer
+from utility_scripts.dynamic_access_exhaust_report import resolve_workflow_exhaust_report
 from utility_scripts.issue_requested_metadata import (
     NO_REPORTER_METADATA_CONTEXT,
     format_issue_requested_test_requirements,
 )
-from utility_scripts.large_library_progress import resolve_workflow_progress_state
 from utility_scripts.library_preparation_preflight import (
     prepare_library_preparation_preflight,
 )
@@ -143,30 +143,15 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("-v", "--verbose", action="store_true", help="enable verbose mode for the configured agent")
     parser.add_argument(
-        "--large-library-series",
-        action="store_true",
-        help="Enable resumable large-library chunking for dynamic-access workflows.",
-    )
-    parser.add_argument(
-        "--chunk-class-limit",
+        "--chunk-class-count",
         type=int,
         default=0,
-        help="Stop a large-library part after this many resolved, skipped, or exhausted classes. 0 disables it.",
-    )
-    parser.add_argument(
-        "--chunk-call-limit",
-        type=int,
-        default=0,
-        help="Deprecated; chunked dynamic-access runs are bounded by class count only.",
-    )
-    parser.add_argument(
-        "--resume-artifact",
-        help="Path to a large-library progress state JSON artifact to resume from.",
+        help="Stop a chunked dynamic-access run after this many processed classes. 0 disables chunking.",
     )
     parser.add_argument(
         "--issue-number",
         type=int,
-        help="GitHub issue number for durable large-library progress state.",
+        help="GitHub issue number for the dynamic-access exhaust report.",
     )
     parser.add_argument(
         "--issue-requested-metadata-context",
@@ -200,10 +185,7 @@ def parse_flags(argv_list: list[str]):
         flags.verbose,
         flags.reachability_metadata_path,
         flags.metrics_repo_path,
-        flags.large_library_series,
-        flags.chunk_class_limit,
-        0,
-        flags.resume_artifact,
+        flags.chunk_class_count,
         flags.issue_number,
         flags.issue_requested_metadata_context,
         flags.library_preparation_preflight_path,
@@ -718,10 +700,7 @@ def main(argv=None) -> int:
         is_verbose,
         explicit_repo_path,
         explicit_metrics_repo_path,
-        large_library_series,
-        chunk_class_limit,
-        chunk_call_limit,
-        resume_artifact,
+        chunk_class_count,
         issue_number,
         issue_requested_metadata_context,
         library_preparation_preflight_path,
@@ -764,16 +743,6 @@ def main(argv=None) -> int:
             ),
         )
     model_name = strategy.get("model") or DEFAULT_MODEL_NAME
-    large_library_state, large_library_state_path = resolve_workflow_progress_state(
-        metrics_repo_root=metrics_repo_root,
-        issue_number=issue_number,
-        coordinate=library,
-        request_label="library-update-request",
-        strategy_name=strategy_name,
-        large_library_series=large_library_series,
-        resume_artifact=resume_artifact,
-    )
-
     # Create feature branch
     new_branch = build_ai_branch_name(f"improve-coverage-{group}-{artifact}-{version}")
     delete_remote_branch_if_exists(new_branch)
@@ -782,6 +751,12 @@ def main(argv=None) -> int:
     # Commit existing state as checkpoint
     test_version = update_target.resolved_test_version
     tests_dir = update_target.test_dir
+    dynamic_access_exhaust_report, dynamic_access_exhaust_report_path = resolve_workflow_exhaust_report(
+        repo_path=reachability_repo_path,
+        issue_number=issue_number,
+        coordinate=library,
+        chunk_class_count=chunk_class_count,
+    )
     if not os.path.isdir(tests_dir):
         print(
             "ERROR: Test directory for {library} does not exist: {path}".format(
@@ -819,11 +794,6 @@ def main(argv=None) -> int:
         "metadata_entries": baseline_metadata_entries,
         "test_only_metadata_entries": baseline_test_only_entries,
     }
-    if large_library_state is not None and large_library_state.baseline_stats is None:
-        large_library_state.baseline_stats = baseline_stats
-        large_library_state.baseline_metadata_entries = baseline_metadata_entries
-        large_library_state.baseline_test_only_metadata_entries = baseline_test_only_entries
-        large_library_state.save(large_library_state_path)
     baseline_stats_path = os.path.join(tests_dir, BASELINE_STATS_FILENAME)
     with open(baseline_stats_path, "w", encoding="utf-8") as f:
         json.dump(baseline_snapshot, f, indent=2)
@@ -868,14 +838,9 @@ def main(argv=None) -> int:
         test_source_dir_name=test_source_layout.source_dir_name,
         metadata_version=update_target.resolved_metadata_version,
         library_preparation_preflight_context=library_preparation_preflight_context,
-        large_library_progress_state=large_library_state,
-        large_library_progress_state_path=large_library_state_path,
-        large_library_issue_number=issue_number,
-        large_library_request_label="library-update-request",
-        large_library_metrics_repo_root=metrics_repo_root,
-        large_library_strategy_name=strategy_name,
-        chunk_class_limit=chunk_class_limit,
-        chunk_call_limit=chunk_call_limit,
+        dynamic_access_exhaust_report=dynamic_access_exhaust_report,
+        dynamic_access_exhaust_report_path=dynamic_access_exhaust_report_path,
+        chunk_class_count=chunk_class_count,
     )
 
     # Initialize agent

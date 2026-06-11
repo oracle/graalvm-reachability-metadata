@@ -18,8 +18,8 @@ from utility_scripts.dynamic_access_report import (
     format_call_sites,
     load_dynamic_access_coverage_report,
 )
+from utility_scripts.dynamic_access_exhaust_report import DynamicAccessExhaustReport
 from utility_scripts.issue_requested_metadata import has_issue_requested_metadata_context
-from utility_scripts.large_library_progress import LargeLibraryProgressState
 from utility_scripts.metadata_index import resolve_metadata_version, resolve_test_version
 from utility_scripts.native_test_verification import (
     STATUS_FAILED as NATIVE_TEST_GATE_FAILED,
@@ -76,16 +76,13 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         )
         if self.native_test_verification_batch_size < 1:
             raise ValueError("Strategy parameter 'native-test-verification-batch-size' must be >= 1")
-        self.large_library_progress_state: LargeLibraryProgressState | None = self.context.get(
-            "large_library_progress_state",
+        self.dynamic_access_exhaust_report: DynamicAccessExhaustReport | None = self.context.get(
+            "dynamic_access_exhaust_report",
         )
-        self.large_library_progress_state_path: str | None = self.context.get("large_library_progress_state_path")
-        self.large_library_issue_number: int | None = self.context.get("large_library_issue_number")
-        self.large_library_request_label = str(self.context.get("large_library_request_label") or "")
-        self.large_library_metrics_repo_root: str | None = self.context.get("large_library_metrics_repo_root")
-        self.large_library_strategy_name = str(self.context.get("large_library_strategy_name") or "")
-        self.chunk_class_limit = int(self.context.get("chunk_class_limit") or 0)
-        self.chunk_call_limit = 0
+        self.dynamic_access_exhaust_report_path: str | None = self.context.get(
+            "dynamic_access_exhaust_report_path",
+        )
+        self.chunk_class_count = int(self.context.get("chunk_class_count") or 0)
         self._last_phase_status = RUN_STATUS_SUCCESS
         self.dynamic_access_report_path = os.path.join(
             self.reachability_repo_path,
@@ -226,26 +223,47 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             return True, 0
 
         exhausted_classes: set[str] = set()
-        if self.large_library_progress_state is not None:
-            exhausted_classes.update(self.large_library_progress_state.exhausted_classes)
+        if self.dynamic_access_exhaust_report is not None:
+            exhausted_classes.update(self.dynamic_access_exhaust_report.processed_classes())
         previous_report = None
         prompt_iterations = 0
         successful_classes = 0
-        processed_classes_this_part = 0
+        terminal_classes_this_part: set[str] = set()
         pending_native_test_classes: list[str] = []
-        if self.large_library_progress_state is not None:
-            self.large_library_progress_state.mark_class_order([
-                class_coverage.class_name for class_coverage in current_report.classes
-            ])
-            self._save_large_library_progress(current_report)
+        self._save_dynamic_access_exhaust_report()
         initial_test_change_signature = self._library_test_change_signature()
         initial_class_positions = {
             class_coverage.class_name: index
             for index, class_coverage in enumerate(current_report.classes, start=1)
         }
         initial_class_count = len(current_report.classes)
+        initial_uncovered_classes = {
+            class_coverage.class_name
+            for class_coverage in current_report.classes
+            if class_coverage.uncovered_calls > 0 and class_coverage.class_name not in exhausted_classes
+        }
 
-        def flush_native_test_batch(reason: str) -> bool:
+        def record_indirectly_completed_classes(active_class_name: str | None = None) -> None:
+            nonlocal current_report
+            if self.dynamic_access_exhaust_report is None:
+                return
+            for candidate in sorted(initial_uncovered_classes):
+                if candidate == active_class_name:
+                    continue
+                if candidate in terminal_classes_this_part or candidate in exhausted_classes:
+                    continue
+                candidate_coverage = current_report.get_class(candidate)
+                if candidate_coverage is not None and candidate_coverage.uncovered_calls > 0:
+                    continue
+                self._print_dynamic_access_detail(
+                    f"chunked-dynamic-access: indirectly completed class={candidate}",
+                    indent_level=2,
+                )
+                terminal_classes_this_part.add(candidate)
+                exhausted_classes.add(candidate)
+                self._mark_chunk_class_completed(candidate)
+
+        def flush_native_test_batch(reason: str, active_class_name: str | None = None) -> bool:
             nonlocal current_report
             ok, gate_label = self._run_pending_native_test_verification_gate(
                 pending_native_test_classes,
@@ -255,6 +273,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                 return False
             if gate_label is not None:
                 current_report = self._refresh_report_after_gate(gate_label) or current_report
+                record_indirectly_completed_classes(active_class_name)
             return True
 
         while True:
@@ -394,6 +413,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                         class_name=class_name,
                     )
                     return False, prompt_iterations
+                record_indirectly_completed_classes(class_name)
 
                 updated_class = current_report.get_class(class_name)
                 if updated_class is None:
@@ -412,17 +432,17 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                             exhausted_classes.add(class_name)
                             break
                         if self._native_test_verification_batch_ready(pending_native_test_classes):
-                            if not flush_native_test_batch("batch-size"):
+                            if not flush_native_test_batch("batch-size", class_name):
                                 gate_failed = True
                                 exhausted_classes.add(class_name)
                                 break
-                        self._mark_large_library_completed(class_name, current_report)
+                        self._mark_chunk_class_completed(class_name)
                     else:
                         self._print_dynamic_access_detail(
                             "result: class disappeared without coverage gain, skipping",
                             indent_level=2,
                         )
-                        self._mark_large_library_exhausted(class_name, current_report)
+                        self._mark_chunk_class_skipped(class_name)
                     exhausted_classes.add(class_name)
                     break
                 if updated_class.uncovered_calls == 0:
@@ -440,10 +460,10 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                         gate_failed = True
                         break
                     if self._native_test_verification_batch_ready(pending_native_test_classes):
-                        if not flush_native_test_batch("batch-size"):
+                        if not flush_native_test_batch("batch-size", class_name):
                             gate_failed = True
                             break
-                    self._mark_large_library_completed(class_name, current_report)
+                    self._mark_chunk_class_completed(class_name)
                     break
                 if updated_class.covered_calls > active_class.covered_calls:
                     # Coverage improved but class is not fully resolved yet.
@@ -471,11 +491,11 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                         gate_failed = True
                         break
                     if self._native_test_verification_batch_ready(pending_native_test_classes):
-                        if not flush_native_test_batch("batch-size"):
+                        if not flush_native_test_batch("batch-size", class_name):
                             gate_failed = True
                             break
                         updated_class = current_report.get_class(class_name) or updated_class
-                    self._save_large_library_progress(current_report)
+                    self._save_dynamic_access_exhaust_report()
                 else:
                     self._print_dynamic_access_detail(
                         "result: no new coverage, {remaining} {call_label} still uncovered".format(
@@ -508,13 +528,29 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     class_name=class_name,
                 )
                 exhausted_classes.add(class_name)
-                self._mark_large_library_failed(class_name, current_report)
+                self._mark_chunk_class_failed(class_name)
+                terminal_classes_this_part.add(class_name)
                 self._print_class_completion_progress(
                     class_name,
                     self._completed_class_count(current_report, exhausted_classes),
                     self._class_completion_total(initial_class_count, current_report, exhausted_classes),
                     current_report,
                 )
+                if self._should_stop_for_chunked_dynamic_access(
+                        current_report,
+                        exhausted_classes,
+                        terminal_classes_this_part,
+                ):
+                    if not flush_native_test_batch("chunked-dynamic-access-boundary"):
+                        return False, prompt_iterations
+                    self._last_phase_status = RUN_STATUS_CHUNK_READY
+                    self._print_dynamic_access_message(
+                        "Chunked dynamic-access boundary reached after {count} terminal class(es).".format(
+                            count=len(terminal_classes_this_part),
+                        )
+                    )
+                    self._save_dynamic_access_exhaust_report()
+                    return True, prompt_iterations
                 continue
             updated_class = current_report.get_class(class_name)
             if updated_class is not None and updated_class.uncovered_calls > 0:
@@ -537,28 +573,28 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                 exhausted_classes.add(class_name)
                 if class_committed:
                     successful_classes += 1
-                self._mark_large_library_exhausted(class_name, current_report)
+                self._mark_chunk_class_exhausted(class_name)
             self._print_class_completion_progress(
                 class_name,
                 self._completed_class_count(current_report, exhausted_classes),
                 self._class_completion_total(initial_class_count, current_report, exhausted_classes),
                 current_report,
             )
-            processed_classes_this_part += 1
-            if self._should_stop_for_large_library_chunk(
+            terminal_classes_this_part.add(class_name)
+            if self._should_stop_for_chunked_dynamic_access(
                     current_report,
                     exhausted_classes,
-                    processed_classes_this_part,
+                    terminal_classes_this_part,
             ):
-                if not flush_native_test_batch("large-library-chunk-boundary"):
+                if not flush_native_test_batch("chunked-dynamic-access-boundary"):
                     return False, prompt_iterations
                 self._last_phase_status = RUN_STATUS_CHUNK_READY
                 self._print_dynamic_access_message(
-                    "Large-library chunk boundary reached after {count} class(es).".format(
-                        count=processed_classes_this_part,
+                    "Chunked dynamic-access boundary reached after {count} terminal class(es).".format(
+                        count=len(terminal_classes_this_part),
                     )
                 )
-                self._save_large_library_progress(current_report)
+                self._save_dynamic_access_exhaust_report()
                 return True, prompt_iterations
 
     def _queue_native_test_verification_step(
@@ -672,69 +708,58 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             )
         return refreshed
 
-    def _save_large_library_progress(self, current_report) -> None:
-        """Persist resumable large-library state, when enabled.
-
-        Writes the durable exhaust report (§WF-dynamic-access-exhaust-report):
-        intentionally minimal and coordinate-derived, so a later chunk resumes
-        by regenerating the current report.
-        """
-        if self.large_library_progress_state is None or self.large_library_progress_state_path is None:
+    def _save_dynamic_access_exhaust_report(self) -> None:
+        """Persist the coordinate-derived exhaust report, when chunked mode is active."""
+        if self.dynamic_access_exhaust_report is None or self.dynamic_access_exhaust_report_path is None:
             return
-        self.large_library_progress_state.update_coverage(
-            current_report.covered_calls,
-            current_report.total_calls,
-        )
-        self.large_library_progress_state.save(self.large_library_progress_state_path)
+        self.dynamic_access_exhaust_report.save(self.dynamic_access_exhaust_report_path)
 
-    def _initial_part_covered_calls(self, current_report: DynamicAccessCoverageReport) -> int:
-        """Return the coverage baseline for logs that compare one chunk's progress."""
-        if (
-                self.large_library_progress_state is not None
-                and self.large_library_progress_state.covered_calls > 0
-        ):
-            return self.large_library_progress_state.covered_calls
-        return current_report.covered_calls
-
-    def _mark_large_library_completed(self, class_name: str, current_report) -> None:
-        """Persist a completed class boundary for large-library continuation."""
-        if self.large_library_progress_state is None:
+    def _mark_chunk_class_completed(self, class_name: str) -> None:
+        """Persist a completed class boundary for chunk continuation."""
+        if self.dynamic_access_exhaust_report is None:
             return
-        self.large_library_progress_state.mark_completed(class_name)
-        self._save_large_library_progress(current_report)
+        self.dynamic_access_exhaust_report.mark_completed(class_name)
+        self._save_dynamic_access_exhaust_report()
 
-    def _mark_large_library_exhausted(self, class_name: str, current_report) -> None:
-        """Persist an exhausted or skipped class boundary for large-library continuation."""
-        if self.large_library_progress_state is None:
+    def _mark_chunk_class_skipped(self, class_name: str) -> None:
+        """Persist a skipped class boundary for chunk continuation."""
+        if self.dynamic_access_exhaust_report is None:
             return
-        self.large_library_progress_state.mark_exhausted(class_name)
-        self._save_large_library_progress(current_report)
+        self.dynamic_access_exhaust_report.mark_skipped(class_name)
+        self._save_dynamic_access_exhaust_report()
 
-    def _mark_large_library_failed(self, class_name: str, current_report) -> None:
-        """Persist a failed class boundary for large-library diagnostics."""
-        if self.large_library_progress_state is None:
+    def _mark_chunk_class_exhausted(self, class_name: str) -> None:
+        """Persist an exhausted class boundary for chunk continuation."""
+        if self.dynamic_access_exhaust_report is None:
             return
-        self.large_library_progress_state.mark_failed(class_name)
-        self.large_library_progress_state.mark_exhausted(class_name)
-        self._save_large_library_progress(current_report)
+        self.dynamic_access_exhaust_report.mark_exhausted(class_name)
+        self._save_dynamic_access_exhaust_report()
 
-    def _should_stop_for_large_library_chunk(
+    def _mark_chunk_class_failed(self, class_name: str) -> None:
+        """Persist a failed class boundary for chunk diagnostics."""
+        if self.dynamic_access_exhaust_report is None:
+            return
+        self.dynamic_access_exhaust_report.mark_failed(class_name)
+        self.dynamic_access_exhaust_report.mark_exhausted(class_name)
+        self._save_dynamic_access_exhaust_report()
+
+    def _should_stop_for_chunked_dynamic_access(
             self,
             current_report,
             exhausted_classes: set[str],
-            processed_classes_this_part: int,
+            terminal_classes_this_part: set[str],
     ) -> bool:
-        """Return True when the current large-library part reached its configured boundary.
+        """Return True when the current chunk reached its configured boundary.
 
         A class is never split across chunks (§WF-dynamic-access-exhaust-report):
-        the strategy stops only after the selected class has been completed,
-        skipped, exhausted, or failed.
+        the strategy stops only after enough classes have reached a terminal
+        state, whether explicitly selected or incidentally completed.
         """
-        if self.large_library_progress_state is None:
+        if self.dynamic_access_exhaust_report is None:
             return False
         if current_report.next_uncovered_class(exhausted_classes) is None:
             return False
-        return self.chunk_class_limit > 0 and processed_classes_this_part >= self.chunk_class_limit
+        return self.chunk_class_count > 0 and len(terminal_classes_this_part) >= self.chunk_class_count
 
     @staticmethod
     def _resolve_class_progress(
