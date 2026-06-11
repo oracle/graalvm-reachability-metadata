@@ -1,0 +1,813 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-4f9994b1/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-4f9994b1/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-4f9994b1
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019eb5cb-70d2-79c0-be5e-c70a8312f52a
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.circe:circe-literal_3:0.14.15
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "0.14.15" when "$version$" is replaced with "0.14.15".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-4f9994b1/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "io.circe:circe-literal_3:0.14.15".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "0.14.15".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact coordinates against Maven and the upstream project, then update the discovered metadata JSON in place using the repository’s existing URL conventions.
+web search: 
+web search: io.circe circe-literal_3 0.14.15 Maven Central sources
+codex
+The broad search results are noisy because of the `io.circe` group name, so I’m switching to Maven Central/POM data and local index conventions for the authoritative fields.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-4f9994b1
+ succeeded in 0ms:
+{
+  "coordinates" : "io.circe:circe-literal_3:0.14.15"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata metadata | rg 'circe|discovered-artifact-metadata' | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-4f9994b1
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-4f9994b1
+build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+metadata/io.circe/circe-jawn_3/0.14.12/reachability-metadata.json
+metadata/io.circe/circe-jawn_3/index.json
+metadata/io.circe/circe-generic_3/0.14.12/reachability-metadata.json
+metadata/io.circe/circe-generic_3/index.json
+metadata/io.circe/circe-parser_3/0.14.12/reachability-metadata.json
+metadata/io.circe/circe-parser_3/index.json
+metadata/io.circe/circe-numbers_3/0.14.10/reachability-metadata.json
+metadata/io.circe/circe-numbers_3/index.json
+metadata/io.circe/circe-numbers_3/0.15.0-M1/reachability-metadata.json
+metadata/io.circe/circe-core_3/0.14.10/reachability-metadata.json
+metadata/io.circe/circe-core_3/0.14.11/reachability-metadata.json
+metadata/io.circe/circe-core_3/index.json
+metadata/io.circe/circe-core_3/0.15.0-M1/reachability-metadata.json
+metadata/com.beachape/enumeratum-circe_3/1.9.7/reachability-metadata.json
+metadata/com.beachape/enumeratum-circe_3/index.json
+metadata/com.softwaremill.sttp.client4/circe_3/4.0.23/reachability-metadata.json
+metadata/com.softwaremill.sttp.client4/circe_3/index.json
+metadata/org.http4s/http4s-circe_3/index.json
+metadata/org.http4s/http4s-circe_3/0.23.34/reachability-metadata.json
+metadata/com.softwaremill.sttp.tapir/tapir-json-circe_3/index.json
+metadata/com.softwaremill.sttp.tapir/tapir-json-circe_3/1.11.25/reachability-metadata.json
+
+exec
+/usr/bin/bash -lc "rg '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"' -n metadata/io.circe build/discovered-artifact-metadata 2>/dev/null | head -120" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-4f9994b1
+ succeeded in 0ms:
+metadata/io.circe/circe-jawn_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-jawn_3/$version$/circe-jawn_3-$version$-sources.jar",
+metadata/io.circe/circe-jawn_3/index.json:6:    "repository-url" : "https://github.com/circe/circe",
+metadata/io.circe/circe-jawn_3/index.json:7:    "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/jawn/shared/src/test/scala/io/circe/jawn",
+metadata/io.circe/circe-jawn_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-jawn_3/$version$/circe-jawn_3-$version$-javadoc.jar",
+metadata/io.circe/circe-jawn_3/index.json:10:    "language" : {
+metadata/io.circe/circe-generic_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/$version$/circe-generic_3-$version$-sources.jar",
+metadata/io.circe/circe-generic_3/index.json:6:    "repository-url" : "https://github.com/circe/circe",
+metadata/io.circe/circe-generic_3/index.json:7:    "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/generic/shared/src/test/scala-0/io/circe/generic",
+metadata/io.circe/circe-generic_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-generic_3/$version$/circe-generic_3-$version$-javadoc.jar",
+metadata/io.circe/circe-generic_3/index.json:10:    "language" : {
+metadata/io.circe/circe-parser_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-parser_3/$version$/circe-parser_3-$version$-sources.jar",
+metadata/io.circe/circe-parser_3/index.json:6:    "repository-url" : "https://github.com/circe/circe",
+metadata/io.circe/circe-parser_3/index.json:7:    "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/tests/shared/src/test/scala/io/circe/parser",
+metadata/io.circe/circe-parser_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-parser_3/$version$/circe-parser_3-$version$-javadoc.jar",
+metadata/io.circe/circe-parser_3/index.json:10:    "language" : {
+metadata/io.circe/circe-numbers_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-numbers_3/$version$/circe-numbers_3-$version$-sources.jar",
+metadata/io.circe/circe-numbers_3/index.json:6:    "repository-url" : "https://github.com/circe/circe",
+metadata/io.circe/circe-numbers_3/index.json:7:    "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/numbers/shared/src/test/scala/io/circe/numbers",
+metadata/io.circe/circe-numbers_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-numbers_3/$version$/circe-numbers_3-$version$-javadoc.jar",
+metadata/io.circe/circe-numbers_3/index.json:10:    "language" : {
+metadata/io.circe/circe-numbers_3/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-numbers_3/$version$/circe-numbers_3-$version$-sources.jar",
+metadata/io.circe/circe-numbers_3/index.json:24:    "repository-url" : "https://github.com/circe/circe",
+metadata/io.circe/circe-numbers_3/index.json:25:    "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/numbers/shared/src/test/scala/io/circe/numbers",
+metadata/io.circe/circe-numbers_3/index.json:26:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-numbers_3/$version$/circe-numbers_3-$version$-javadoc.jar",
+metadata/io.circe/circe-numbers_3/index.json:28:    "language" : {
+metadata/io.circe/circe-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-core_3/$version$/circe-core_3-$version$-sources.jar",
+metadata/io.circe/circe-core_3/index.json:6:    "repository-url" : "https://github.com/circe/circe",
+metadata/io.circe/circe-core_3/index.json:7:    "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/tests/shared/src/test",
+metadata/io.circe/circe-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-core_3/$version$/circe-core_3-$version$-javadoc.jar",
+metadata/io.circe/circe-core_3/index.json:10:    "language" : {
+metadata/io.circe/circe-core_3/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-core_3/$version$/circe-core_3-$version$-sources.jar",
+metadata/io.circe/circe-core_3/index.json:24:    "repository-url" : "https://github.com/circe/circe",
+metadata/io.circe/circe-core_3/index.json:25:    "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/tests/shared/src/test",
+metadata/io.circe/circe-core_3/index.json:26:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-core_3/$version$/circe-core_3-$version$-javadoc.jar",
+metadata/io.circe/circe-core_3/index.json:28:    "language" : {
+metadata/io.circe/circe-core_3/index.json:45:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-core_3/$version$/circe-core_3-$version$-sources.jar",
+metadata/io.circe/circe-core_3/index.json:46:    "repository-url" : "https://github.com/circe/circe",
+metadata/io.circe/circe-core_3/index.json:47:    "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/tests/shared/src/test",
+metadata/io.circe/circe-core_3/index.json:48:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-core_3/$version$/circe-core_3-$version$-javadoc.jar",
+metadata/io.circe/circe-core_3/index.json:50:    "language" : {
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/0.14.15/
+web search: 
+web search: repo.maven.apache.org/maven2/io/circe/circe-literal_3/0.14.15/circe-literal_3-0.14.15.pom
+codex
+Local metadata for neighboring circe modules already uses Maven Central for sources and Scaladoc jars, with GitHub tag paths for tests. I’m checking the circe `v0.14.15` tree now to avoid guessing the literal module’s test directory.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/circe/circe-literal_3/0.14.15/circe-literal_3-0.14.15.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-4f9994b1
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>io.circe</groupId>
+    <artifactId>circe-literal_3</artifactId>
+    <packaging>jar</packaging>
+    <description>circe literal</description>
+    <url>https://github.com/circe/circe</url>
+    <version>0.14.15</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>Circe literal</name>
+    <inceptionYear>2024</inceptionYear>
+    <organization>
+        <name>circe</name>
+    </organization>
+    <scm>
+        <url>https://github.com/circe/circe</url>
+        <connection>scm:git:https://github.com/circe/circe.git</connection>
+        <developerConnection>scm:git:git@github.com:circe/circe.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>travisbrown</id>
+            <name>Travis Brown</name>
+            <url>https://twitter.com/travisbrown</url>
+            <email>travisrobertbrown@gmail.com</email>
+        </developer>
+        <developer>
+            <id>zmccoy</id>
+            <name>Zach McCoy</name>
+            <url>https://twitter.com/zachamccoy</url>
+            <email>zachabbott@gmail.com</email>
+        </developer>
+        <developer>
+            <id>zarthross</id>
+            <name>Darren Gibson</name>
+            <url>https://twitter.com/zarthross</url>
+            <email>zarthross@gmail.com</email>
+        </developer>
+        <developer>
+            <id>hamnis</id>
+            <name>Erlend Hamnaberg</name>
+            <url>https://github.com/hamnis</url>
+            <email>erlend@hamnaberg.net</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://javadoc.io/doc/io.circe/circe-literal_3/0.14.15/</info.apiURL>
+        <info.releaseNotesUrl>https://github.com/circe/circe/releases/tag/v0.14.15</info.releaseNotesUrl>
+        <info.versionScheme>early-semver</info.versionScheme>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>io.circe</groupId>
+            <artifactId>circe-core_3</artifactId>
+            <version>0.14.15</version>
+        </dependency>
+        <dependency>
+            <groupId>io.circe</groupId>
+            <artifactId>circe-jawn_3</artifactId>
+            <version>0.14.15</version>
+        </dependency>
+        <dependency>
+            <groupId>io.circe</groupId>
+            <artifactId>circe-testing_3</artifactId>
+            <version>0.14.15</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.3.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>scalac-compat-annotation_3</artifactId>
+            <version>0.1.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scalacheck</groupId>
+            <artifactId>scalacheck_3</artifactId>
+            <version>1.19.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scalameta</groupId>
+            <artifactId>munit_3</artifactId>
+            <version>1.2.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scalameta</groupId>
+            <artifactId>munit-scalacheck_3</artifactId>
+            <version>1.2.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>jawn-parser_3</artifactId>
+            <version>1.6.0</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/circe/circe/git/trees/v0.14.15?recursive=1 | rg 'modules/literal|circe/literal|literal' | head -160" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-4f9994b1
+ succeeded in 602ms:
+      "path": "modules/literal",
+      "path": "modules/literal/src",
+      "path": "modules/literal/src/main",
+      "path": "modules/literal/src/main/scala-2",
+      "path": "modules/literal/src/main/scala-2/io",
+      "path": "modules/literal/src/main/scala-2/io/circe",
+      "path": "modules/literal/src/main/scala-2/io/circe/literal",
+      "path": "modules/literal/src/main/scala-2/io/circe/literal/JsonLiteralMacros.scala",
+      "path": "modules/literal/src/main/scala-2/io/circe/literal/LiteralInstanceMacros.scala",
+      "path": "modules/literal/src/main/scala-2/io/circe/literal/package.scala",
+      "path": "modules/literal/src/main/scala-3",
+      "path": "modules/literal/src/main/scala-3/io",
+      "path": "modules/literal/src/main/scala-3/io/circe",
+      "path": "modules/literal/src/main/scala-3/io/circe/literal",
+      "path": "modules/literal/src/main/scala-3/io/circe/literal/JsonLiteralMacros.scala",
+      "path": "modules/literal/src/main/scala-3/io/circe/literal/Replacement.scala",
+      "path": "modules/literal/src/main/scala-3/io/circe/literal/package.scala",
+      "path": "modules/literal/src/test",
+      "path": "modules/literal/src/test/scala-2",
+      "path": "modules/literal/src/test/scala-2/io",
+      "path": "modules/literal/src/test/scala-2/io/circe",
+      "path": "modules/literal/src/test/scala-2/io/circe/literal",
+      "path": "modules/literal/src/test/scala-2/io/circe/literal/LiteralInstancesSuite.scala",
+      "path": "modules/literal/src/test/scala",
+      "path": "modules/literal/src/test/scala/io",
+      "path": "modules/literal/src/test/scala/io/circe",
+      "path": "modules/literal/src/test/scala/io/circe/literal",
+      "path": "modules/literal/src/test/scala/io/circe/literal/interpolator",
+      "path": "modules/literal/src/test/scala/io/circe/literal/interpolator/JsonInterpolatorSuite.scala",
+      "path": "modules/pointer-literal",
+      "path": "modules/pointer-literal/src",
+      "path": "modules/pointer-literal/src/main",
+      "path": "modules/pointer-literal/src/main/scala-2",
+      "path": "modules/pointer-literal/src/main/scala-2/io",
+      "path": "modules/pointer-literal/src/main/scala-2/io/circe",
+      "path": "modules/pointer-literal/src/main/scala-2/io/circe/pointer",
+      "path": "modules/pointer-literal/src/main/scala-2/io/circe/pointer/literal",
+      "path": "modules/pointer-literal/src/main/scala-2/io/circe/pointer/literal/PointerLiteralMacro.scala",
+      "path": "modules/pointer-literal/src/main/scala-2/io/circe/pointer/literal/package.scala",
+      "path": "modules/pointer-literal/src/main/scala-3",
+      "path": "modules/pointer-literal/src/main/scala-3/io",
+      "path": "modules/pointer-literal/src/main/scala-3/io/circe",
+      "path": "modules/pointer-literal/src/main/scala-3/io/circe/pointer",
+      "path": "modules/pointer-literal/src/main/scala-3/io/circe/pointer/literal",
+      "path": "modules/pointer-literal/src/main/scala-3/io/circe/pointer/literal/PointerLiteralMacro.scala",
+      "path": "modules/pointer-literal/src/main/scala-3/io/circe/pointer/literal/package.scala",
+      "path": "modules/pointer-literal/src/test",
+      "path": "modules/pointer-literal/src/test/scala-2",
+      "path": "modules/pointer-literal/src/test/scala-2/io",
+      "path": "modules/pointer-literal/src/test/scala-2/io/circe",
+      "path": "modules/pointer-literal/src/test/scala-2/io/circe/pointer",
+      "path": "modules/pointer-literal/src/test/scala-2/io/circe/pointer/literal",
+      "path": "modules/pointer-literal/src/test/scala-2/io/circe/pointer/literal/PointerInterpolatorCompileErrorsSuite.scala",
+      "path": "modules/pointer-literal/src/test/scala-3",
+      "path": "modules/pointer-literal/src/test/scala-3/io",
+      "path": "modules/pointer-literal/src/test/scala-3/io/circe",
+      "path": "modules/pointer-literal/src/test/scala-3/io/circe/pointer",
+      "path": "modules/pointer-literal/src/test/scala-3/io/circe/pointer/literal",
+      "path": "modules/pointer-literal/src/test/scala-3/io/circe/pointer/literal/PointerInterpolatorCompileErrorsSuite.scala",
+      "path": "modules/pointer-literal/src/test/scala",
+      "path": "modules/pointer-literal/src/test/scala/io",
+      "path": "modules/pointer-literal/src/test/scala/io/circe",
+      "path": "modules/pointer-literal/src/test/scala/io/circe/pointer",
+      "path": "modules/pointer-literal/src/test/scala/io/circe/pointer/literal",
+      "path": "modules/pointer-literal/src/test/scala/io/circe/pointer/literal/PointerInterpolatorSuite.scala",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/circe/circe-literal_3/0.14.15/ | rg 'test|sources|javadoc|\\.jar|\\.pom'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-4f9994b1
+ succeeded in 0ms:
+<a href="circe-literal_3-0.14.15-javadoc.jar" title="circe-literal_3-0.14.15-javadoc.jar">circe-literal_3-0.14.15-javadoc.jar</a>               2025-09-30 17:40   2775596      
+<a href="circe-literal_3-0.14.15-javadoc.jar.asc" title="circe-literal_3-0.14.15-javadoc.jar.asc">circe-literal_3-0.14.15-javadoc.jar.asc</a>           2025-09-30 17:40       228      
+<a href="circe-literal_3-0.14.15-javadoc.jar.asc.md5" title="circe-literal_3-0.14.15-javadoc.jar.asc.md5">circe-literal_3-0.14.15-javadoc.jar.asc.md5</a>       2025-09-30 17:40        32      
+<a href="circe-literal_3-0.14.15-javadoc.jar.asc.sha1" title="circe-literal_3-0.14.15-javadoc.jar.asc.sha1">circe-literal_3-0.14.15-javadoc.jar.asc.sha1</a>      2025-09-30 17:40        40      
+<a href="circe-literal_3-0.14.15-javadoc.jar.md5" title="circe-literal_3-0.14.15-javadoc.jar.md5">circe-literal_3-0.14.15-javadoc.jar.md5</a>           2025-09-30 17:40        32      
+<a href="circe-literal_3-0.14.15-javadoc.jar.sha1" title="circe-literal_3-0.14.15-javadoc.jar.sha1">circe-literal_3-0.14.15-javadoc.jar.sha1</a>          2025-09-30 17:40        40      
+<a href="circe-literal_3-0.14.15-sources.jar" title="circe-literal_3-0.14.15-sources.jar">circe-literal_3-0.14.15-sources.jar</a>               2025-09-30 17:40      3848      
+<a href="circe-literal_3-0.14.15-sources.jar.asc" title="circe-literal_3-0.14.15-sources.jar.asc">circe-literal_3-0.14.15-sources.jar.asc</a>           2025-09-30 17:40       228      
+<a href="circe-literal_3-0.14.15-sources.jar.asc.md5" title="circe-literal_3-0.14.15-sources.jar.asc.md5">circe-literal_3-0.14.15-sources.jar.asc.md5</a>       2025-09-30 17:40        32      
+<a href="circe-literal_3-0.14.15-sources.jar.asc.sha1" title="circe-literal_3-0.14.15-sources.jar.asc.sha1">circe-literal_3-0.14.15-sources.jar.asc.sha1</a>      2025-09-30 17:40        40      
+<a href="circe-literal_3-0.14.15-sources.jar.md5" title="circe-literal_3-0.14.15-sources.jar.md5">circe-literal_3-0.14.15-sources.jar.md5</a>           2025-09-30 17:40        32      
+<a href="circe-literal_3-0.14.15-sources.jar.sha1" title="circe-literal_3-0.14.15-sources.jar.sha1">circe-literal_3-0.14.15-sources.jar.sha1</a>          2025-09-30 17:40        40      
+<a href="circe-literal_3-0.14.15.jar" title="circe-literal_3-0.14.15.jar">circe-literal_3-0.14.15.jar</a>                       2025-09-30 17:40     40111      
+<a href="circe-literal_3-0.14.15.jar.asc" title="circe-literal_3-0.14.15.jar.asc">circe-literal_3-0.14.15.jar.asc</a>                   2025-09-30 17:40       228      
+<a href="circe-literal_3-0.14.15.jar.asc.md5" title="circe-literal_3-0.14.15.jar.asc.md5">circe-literal_3-0.14.15.jar.asc.md5</a>               2025-09-30 17:40        32      
+<a href="circe-literal_3-0.14.15.jar.asc.sha1" title="circe-literal_3-0.14.15.jar.asc.sha1">circe-literal_3-0.14.15.jar.asc.sha1</a>              2025-09-30 17:40        40      
+<a href="circe-literal_3-0.14.15.jar.md5" title="circe-literal_3-0.14.15.jar.md5">circe-literal_3-0.14.15.jar.md5</a>                   2025-09-30 17:40        32      
+<a href="circe-literal_3-0.14.15.jar.sha1" title="circe-literal_3-0.14.15.jar.sha1">circe-literal_3-0.14.15.jar.sha1</a>                  2025-09-30 17:40        40      
+<a href="circe-literal_3-0.14.15.pom" title="circe-literal_3-0.14.15.pom">circe-literal_3-0.14.15.pom</a>                       2025-09-30 17:40      4127      
+<a href="circe-literal_3-0.14.15.pom.asc" title="circe-literal_3-0.14.15.pom.asc">circe-literal_3-0.14.15.pom.asc</a>                   2025-09-30 17:40       228      
+<a href="circe-literal_3-0.14.15.pom.asc.md5" title="circe-literal_3-0.14.15.pom.asc.md5">circe-literal_3-0.14.15.pom.asc.md5</a>               2025-09-30 17:40        32      
+<a href="circe-literal_3-0.14.15.pom.asc.sha1" title="circe-literal_3-0.14.15.pom.asc.sha1">circe-literal_3-0.14.15.pom.asc.sha1</a>              2025-09-30 17:40        40      
+<a href="circe-literal_3-0.14.15.pom.md5" title="circe-literal_3-0.14.15.pom.md5">circe-literal_3-0.14.15.pom.md5</a>                   2025-09-30 17:40        32      
+<a href="circe-literal_3-0.14.15.pom.sha1" title="circe-literal_3-0.14.15.pom.sha1">circe-literal_3-0.14.15.pom.sha1</a>                  2025-09-30 17:40        40      
+
+codex
+The Maven directory confirms normal JVM jars plus sources and Scaladoc jars, and there is no Maven test-sources jar listed. The artifact suffix and dependency on `scala3-library_3` identify it as Scala 3, while the presence of a standard `.jar` with JVM dependencies means it remains a Native Image metadata candidate.
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d); curl -fsSL https://repo1.maven.org/maven2/io/circe/circe-literal_3/0.14.15/circe-literal_3-0.14.15-sources.jar -o "$tmpdir/src.jar"; jar tf "$tmpdir/src.jar"; rm -rf "$tmpdir"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-4f9994b1
+ succeeded in 0ms:
+META-INF/MANIFEST.MF
+io/
+io/circe/
+io/circe/literal/
+io/circe/literal/JsonLiteralMacros.scala
+io/circe/literal/Replacement.scala
+io/circe/literal/package.scala
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/circe/circe/v0.14.15/modules/literal/src/main/scala-3/io/circe/literal/package.scala | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-4f9994b1
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/circe/circe/v0.14.15/modules/literal/src/test/scala/io/circe/literal/interpolator/JsonInterpolatorSuite.scala | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-4f9994b1
+ succeeded in 0ms:
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package io.circe.literal.interpolator
+
+import io.circe.{ Encoder, Json }
+import io.circe.literal._
+import io.circe.jawn.parse
+import io.circe.testing.instances.arbitraryJson
+import munit.ScalaCheckSuite
+import org.scalacheck.Prop
+
+class JsonInterpolatorSuite extends ScalaCheckSuite {
+  test("The json string interpolater should fail to compile with invalid JSON") {
+    compileErrors("json\"\"\"1a2b3c\"\"\"")
+  }
+
+  test("The json string interpolater should work with top-level null") {
+    assertEquals(json"null", Json.Null)
+  }
+
+  property("The json string interpolater should work with top-level booleans") {
+    Prop.forAll { (value: Boolean) =>
+      assertEquals(json"$value", Json.fromBoolean(value))
+    }
+  }
+
+  property("The json string interpolater should work with top-level strings") {
+    Prop.forAll { (value: String) =>
+      assertEquals(json"$value", Json.fromString(value))
+    }
+  }
+
+  property("The json string interpolater should work with top-level numbers") {
+    Prop.forAll { (value: BigDecimal) =>
+      assertEquals(json"$value", Json.fromBigDecimal(value))
+    }
+  }
+
+  test("The json string interpolater should work with no interpolated variables") {
+    val interpolated = json"""
+      {
+        "a": [1, 2, 3],
+        "b": { "foo": false },
+        "c": null,
+        "d": "bar",
+        "e": 0.0001
+      }
+    """
+
+    val parsed = parse(
+      """
+        {
+          "a": [1, 2, 3],
+          "b": { "foo": false },
+          "c": null,
+          "d": "bar",
+          "e": 0.0001
+        }
+      """
+    )
+
+    assertEquals(parsed, Right(interpolated))
+  }
+
+  test(
+    "The json string interpolater with interpolation in JSON value positions should work with interpolated variables"
+  ) {
+    val i = 13
+    val m = Map("bar" -> List(1, 2, 3), "baz" -> Nil)
+    val interpolated = json"""{ "i": $i, "ms": [$m, $m], "other": [1.0, "abc"] }"""
+    val parsed = parse(
+      """
+        {
+          "i": 13,
+          "ms": [
+            { "bar": [1, 2, 3], "baz": [] },
+            { "bar": [1, 2, 3], "baz": [] }
+          ],
+          "other": [1.0, "abc"]
+        }
+      """
+    )
+
+    assertEquals(parsed, Right(interpolated))
+  }
+
+  test(
+    "The json string interpolater with interpolation in JSON value positions should work with interpolated literals"
+  ) {
+    val interpolated = json"""{ "k": ${1} }"""
+    val parsed = parse(s"""{ "k": 1 }""")
+
+    assertEquals(parsed, Right(interpolated))
+  }
+
+  test(
+    "The json string interpolater with interpolation in JSON value positions should fail with unencodeable interpolated variables"
+  ) {
+    trait Foo
+    val foo = new Foo {}
+
+    compileErrors("json\"$foo\"")
+  }
+
+  property(
+    "The json string interpolater with interpolation in JSON key positions should work with interpolated string variables"
+  ) {
+    Prop.forAll { (key: String, value: Json) =>
+      val interpolated = json"{ $key: $value }"
+      val escapedKey = Encoder[String].apply(key).noSpaces
+      val parsed = parse(s"{ $escapedKey: ${value.noSpaces} }")
+
+      assertEquals(parsed, Right(interpolated))
+    }
+  }
+
+  property(
+    "The json string interpolater with interpolation in JSON key positions should work with interpolated non-string variables"
+  ) {
+    Prop.forAll { (key: Int, value: Json) =>
+      val interpolated = json"{ $key: $value }"
+      val parsed = parse(s"""{ "${key.toString}": ${value.noSpaces} }""")
+
+      assertEquals(parsed, Right(interpolated))
+    }
+  }
+
+  test("The json string interpolater with interpolation in JSON key positions should work with interpolated literals") {
+    val interpolated = json"""{ ${1}: "v" }"""
+    val parsed = parse(s"""{ "1": "v" }""")
+
+    assertEquals(parsed, Right(interpolated))
+  }
+
+  test(
+    "The json string interpolater with interpolation in JSON key positions should fail with unencodeable interpolated variables"
+  ) {
+    trait Foo
+    val foo = new Foo {}
+
+    compileErrors("json\"{ $foo: 1 }\"")
+  }
+}
+
+ succeeded in 150ms:
+/*
+ * Copyright 2024 circe
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package io.circe
+
+import io.circe.literal.JsonLiteralMacros
+
+package object literal {
+  extension (inline sc: StringContext) {
+    inline final def json(inline args: Any*): Json = ${ JsonLiteralMacros.jsonImpl('sc, 'args) }
+  }
+}
+
+web search: 
+web search: circe-literal_3 0.14.15 repo.maven.apache.org
+web search: 
+web search: https://github.com/circe/circe/blob/series/0.14.x/modules/literal/src/test/scala/io/circe/literal/interpolator/JsonInterpolatorSuite.scala
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/0.14.15/circe-literal_3-0.14.15.pom
+web search: 
+web search: central.sonatype.com/artifact/io.circe/circe-literal_3/0.14.15
+web search: 
+web search: https://mvnrepository.com/artifact/io.circe/circe-literal
+web search: 
+web search: https://mvnrepository.com/artifact/io.circe/circe-literal
+codex
+I have enough evidence now. I’m going to write the JSON using the Maven Central sources/Scaladoc jars, the circe GitHub root and tagged literal test path, and mark it as Scala 3 without any `not-for-native-image` fields.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-4f9994b1/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+diff --git a/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json b/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+index bbf0de8a9d93b2a771d4a3f6c3703ef151d85698..b921dd95c868c26f8400233ac6dc960b51054e35
+--- a/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
++++ b/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.circe:circe-literal_3:0.14.15"
++  "coordinates" : "io.circe:circe-literal_3:0.14.15",
++  "repository-url" : "https://github.com/circe/circe",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/literal/src/test/scala/io/circe/literal",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-javadoc.jar",
++  "description" : "Circe literal provides a Scala 3 json string interpolator that constructs circe Json values from JSON literals at compile time. It validates literal JSON and supports interpolating Scala values through circe encoders for object keys and values.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json b/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+index bbf0de8a9d93b2a771d4a3f6c3703ef151d85698..b921dd95c868c26f8400233ac6dc960b51054e35
+--- a/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
++++ b/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.circe:circe-literal_3:0.14.15"
++  "coordinates" : "io.circe:circe-literal_3:0.14.15",
++  "repository-url" : "https://github.com/circe/circe",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/literal/src/test/scala/io/circe/literal",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-javadoc.jar",
++  "description" : "Circe literal provides a Scala 3 json string interpolator that constructs circe Json values from JSON literals at compile time. It validates literal JSON and supports interpolating Scala values through circe encoders for object keys and values.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+codex
+The file is updated; I’m doing a quick JSON parse and URL status check with `0.14.15` substituted so the metadata will not fail on formatting or dead obvious links.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-4f9994b1
+ succeeded in 0ms:
+{
+  "coordinates": "io.circe:circe-literal_3:0.14.15",
+  "repository-url": "https://github.com/circe/circe",
+  "source-code-url": "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-sources.jar",
+  "test-code-url": "https://github.com/circe/circe/tree/v$version$/modules/literal/src/test/scala/io/circe/literal",
+  "documentation-url": "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-javadoc.jar",
+  "description": "Circe literal provides a Scala 3 json string interpolator that constructs circe Json values from JSON literals at compile time. It validates literal JSON and supports interpolating Scala values through circe encoders for object keys and values.",
+  "language": {
+    "name": "scala",
+    "version": "3"
+  }
+}
+
+exec
+/usr/bin/bash -lc "for url in \\
+  'https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/0.14.15/circe-literal_3-0.14.15-sources.jar' \\
+  'https://github.com/circe/circe/tree/v0.14.15/modules/literal/src/test/scala/io/circe/literal' \\
+  'https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/0.14.15/circe-literal_3-0.14.15-javadoc.jar'; do
+  status="'$(curl -L -o /dev/null -s -w '"'%{http_code}' \""'$url")
+  printf '"'%s %s\\n' \""'$status" "$url"
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-4f9994b1
+diff --git a/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json b/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+index bbf0de8a9d93b2a771d4a3f6c3703ef151d85698..b921dd95c868c26f8400233ac6dc960b51054e35
+--- a/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
++++ b/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.circe:circe-literal_3:0.14.15"
++  "coordinates" : "io.circe:circe-literal_3:0.14.15",
++  "repository-url" : "https://github.com/circe/circe",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/literal/src/test/scala/io/circe/literal",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-javadoc.jar",
++  "description" : "Circe literal provides a Scala 3 json string interpolator that constructs circe Json values from JSON literals at compile time. It validates literal JSON and supports interpolating Scala values through circe encoders for object keys and values.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 1143ms:
+200 https://github.com/circe/circe/tree/v0.14.15/modules/literal/src/test/scala/io/circe/literal
+200 https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/0.14.15/circe-literal_3-0.14.15-javadoc.jar
+
+codex
+The JSON parses cleanly and the source/test links are already returning 200; I’m waiting on the final documentation jar check before closing this out.
+diff --git a/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json b/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+index bbf0de8a9d93b2a771d4a3f6c3703ef151d85698..b921dd95c868c26f8400233ac6dc960b51054e35
+--- a/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
++++ b/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.circe:circe-literal_3:0.14.15"
++  "coordinates" : "io.circe:circe-literal_3:0.14.15",
++  "repository-url" : "https://github.com/circe/circe",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/literal/src/test/scala/io/circe/literal",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-javadoc.jar",
++  "description" : "Circe literal provides a Scala 3 json string interpolator that constructs circe Json values from JSON literals at compile time. It validates literal JSON and supports interpolating Scala values through circe encoders for object keys and values.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-4f9994b1
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-4f9994b1
+diff --git a/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json b/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+index bbf0de8a9d93b2a771d4a3f6c3703ef151d85698..b921dd95c868c26f8400233ac6dc960b51054e35
+--- a/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
++++ b/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.circe:circe-literal_3:0.14.15"
++  "coordinates" : "io.circe:circe-literal_3:0.14.15",
++  "repository-url" : "https://github.com/circe/circe",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/literal/src/test/scala/io/circe/literal",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-javadoc.jar",
++  "description" : "Circe literal provides a Scala 3 json string interpolator that constructs circe Json values from JSON literals at compile time. It validates literal JSON and supports interpolating Scala values through circe encoders for object keys and values.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 139ms:
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-4f9994b1
+ succeeded in 0ms:
+{
+  "coordinates" : "io.circe:circe-literal_3:0.14.15",
+  "repository-url" : "https://github.com/circe/circe",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-sources.jar",
+  "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/literal/src/test/scala/io/circe/literal",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-javadoc.jar",
+  "description" : "Circe literal provides a Scala 3 json string interpolator that constructs circe Json values from JSON literals at compile time. It validates literal JSON and supports interpolating Scala values through circe encoders for object keys and values.",
+  "language" : {
+    "name" : "scala",
+    "version" : "3"
+  }
+}
+
+diff --git a/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json b/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+index bbf0de8a9d93b2a771d4a3f6c3703ef151d85698..b921dd95c868c26f8400233ac6dc960b51054e35
+--- a/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
++++ b/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.circe:circe-literal_3:0.14.15"
++  "coordinates" : "io.circe:circe-literal_3:0.14.15",
++  "repository-url" : "https://github.com/circe/circe",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/literal/src/test/scala/io/circe/literal",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-javadoc.jar",
++  "description" : "Circe literal provides a Scala 3 json string interpolator that constructs circe Json values from JSON literals at compile time. It validates literal JSON and supports interpolating Scala values through circe encoders for object keys and values.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+web search: 
+web search: "circe-literal_3" "0.14.15" "javadoc.jar"
+web search: 
+web search: site:mvnrepository.com/artifact/io.circe/circe-literal_3/0.14.15 "Circe Literal"
+codex
+Updated [io.circe-circe-literal_3-0.14.15.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-4f9994b1/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json:1).
+
+I set the repository root to circe’s GitHub project, used Maven Central source and Scaladoc jar templates, and pointed tests at the tagged literal module test path. The artifact is Scala 3-specific and still a normal JVM jar candidate, so I added `"language": { "name": "scala", "version": "3" }` and left `not-for-native-image` absent. ([mvnrepository.com](https://mvnrepository.com/artifact/io.circe/circe-literal_3/0.14.15?utm_source=openai))
+
+Validation: `jq .` parsed the file, and the substituted source, test, and documentation URLs all returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json b/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+index bbf0de8a9d93b2a771d4a3f6c3703ef151d85698..b921dd95c868c26f8400233ac6dc960b51054e35
+--- a/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
++++ b/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "io.circe:circe-literal_3:0.14.15"
++  "coordinates" : "io.circe:circe-literal_3:0.14.15",
++  "repository-url" : "https://github.com/circe/circe",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/circe/circe/tree/v$version$/modules/literal/src/test/scala/io/circe/literal",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/circe/circe-literal_3/$version$/circe-literal_3-$version$-javadoc.jar",
++  "description" : "Circe literal provides a Scala 3 json string interpolator that constructs circe Json values from JSON literals at compile time. It validates literal JSON and supports interpolating Scala values through circe encoders for object keys and values.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+tokens used
+75,849
+Updated [io.circe-circe-literal_3-0.14.15.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-4f9994b1/build/discovered-artifact-metadata/io.circe-circe-literal_3-0.14.15.json:1).
+
+I set the repository root to circe’s GitHub project, used Maven Central source and Scaladoc jar templates, and pointed tests at the tagged literal module test path. The artifact is Scala 3-specific and still a normal JVM jar candidate, so I added `"language": { "name": "scala", "version": "3" }` and left `not-for-native-image` absent. ([mvnrepository.com](https://mvnrepository.com/artifact/io.circe/circe-literal_3/0.14.15?utm_source=openai))
+
+Validation: `jq .` parsed the file, and the substituted source, test, and documentation URLs all returned HTTP 200.
+Ran agent for io.circe:circe-literal_3:0.14.15 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-4f9994b1/build/agent-artifact-discovery-logs/io.circe-circe-literal_3-0.14.15.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5342-4f9994b1/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 10s
+9 actionable tasks: 9 executed
