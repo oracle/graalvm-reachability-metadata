@@ -8,6 +8,7 @@ package io_circe.circe_literal_3
 
 import io.circe.Encoder
 import io.circe.Json
+import io.circe.KeyEncoder
 import io.circe.literal.*
 import java.net.URI
 import org.assertj.core.api.Assertions.assertThat
@@ -68,6 +69,31 @@ class Circe_literal_3Test {
       "aliases" -> Json.arr(Json.fromString("admin"), Json.fromString("operator")),
       "label" -> Json.fromString("primary"),
       "score" -> Json.Null
+    )
+
+    assertThat(document).isEqualTo(expected)
+  }
+
+  @Test
+  def interpolationUsesCustomKeyEncodersForObjectKeys(): Unit = {
+    final case class TenantSegment(region: String, shard: Int)
+    given KeyEncoder[TenantSegment] = KeyEncoder.instance { segment =>
+      s"${segment.region}/shard-${segment.shard}"
+    }
+
+    val primary: TenantSegment = TenantSegment("eu", 2)
+    val fallback: TenantSegment = TenantSegment("us", 7)
+
+    val document: Json = json"""
+      {
+        $primary: "active",
+        $fallback: { "status": "standby" }
+      }
+      """
+
+    val expected: Json = Json.obj(
+      "eu/shard-2" -> Json.fromString("active"),
+      "us/shard-7" -> Json.obj("status" -> Json.fromString("standby"))
     )
 
     assertThat(document).isEqualTo(expected)
