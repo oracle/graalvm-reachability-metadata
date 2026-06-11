@@ -23,6 +23,7 @@ import org.scalatest.Outcome
 import org.scalatest.Reporter
 import org.scalatest.Suite
 import org.scalatest.Tag
+import org.scalatest.TestData
 import org.scalatest.events.AlertProvided
 import org.scalatest.events.Event
 import org.scalatest.events.InfoProvided
@@ -150,6 +151,19 @@ class Scalatest_propspec_2_13Test {
     ))
     assert(suite.observed == Vector("list:first", "list:size", "vector:first", "vector:size"))
     assert(succeededEvents(result.events).size == 4)
+  }
+
+  @Test
+  def exposesPropertyTestDataIncludingConfigMapAndTags(): Unit = {
+    val suite: TestDataPropertySpec = new TestDataPropertySpec
+    val configMap: ConfigMap = ConfigMap("profile" -> "native-image", "limit" -> 3)
+    val testData: TestData = suite.dataForProperty(configMap)
+
+    assert(testData.name == "property with queryable test data")
+    assert(testData.configMap == configMap)
+    assert(testData.tags == Set(FastTag.name, SlowTag.name))
+    assert(testData.scopes.isEmpty)
+    assert(testData.text == "property with queryable test data")
   }
 
   @Test
@@ -304,6 +318,16 @@ class Scalatest_propspec_2_13Test {
         observed = observed :+ s"$label:size"
         assert(values.size == 2)
       }
+    }
+  }
+
+  private final class TestDataPropertySpec extends AnyPropSpec {
+    property("property with queryable test data", FastTag, SlowTag) {
+      assert(true)
+    }
+
+    def dataForProperty(configMap: ConfigMap): TestData = {
+      testDataFor("property with queryable test data", configMap)
     }
   }
 
