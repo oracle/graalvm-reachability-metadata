@@ -8,6 +8,7 @@ package io_circe.circe_literal_3
 
 import io.circe.Encoder
 import io.circe.Json
+import io.circe.KeyEncoder
 import io.circe.literal.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -17,9 +18,13 @@ import org.junit.jupiter.api.Test
 class Circe_literal_3Test {
   private final case class GeoPoint(latitude: BigDecimal, longitude: BigDecimal)
 
+  private final case class FeatureKey(section: String, name: String)
+
   private given Encoder[GeoPoint] = Encoder.forProduct2("latitude", "longitude") { point =>
     (point.latitude, point.longitude)
   }
+
+  private given KeyEncoder[FeatureKey] = key => s"${key.section}.${key.name}"
 
   @Test
   def createsNestedJsonObjectsArraysAndScalarValuesFromLiterals(): Unit = {
@@ -151,6 +156,27 @@ class Circe_literal_3Test {
     assertEquals(42, expectRight(cursor.downField("object").get[Int](nestedKey)))
     assertTrue(expectRight(cursor.get[Boolean]("fixed")))
     assertFalse(cursor.downField("dynamicKey").succeeded)
+  }
+
+  @Test
+  def interpolatesDomainObjectKeysWithCustomKeyEncoders(): Unit = {
+    val displayNameKey: FeatureKey = FeatureKey("profile", "displayName")
+    val notificationsKey: FeatureKey = FeatureKey("settings", "notifications")
+
+    val document: Json = json"""
+      {
+        ${displayNameKey}: "Ada Lovelace",
+        "preferences": {
+          ${notificationsKey}: true
+        }
+      }
+      """
+    val cursor = document.hcursor
+
+    assertEquals("Ada Lovelace", expectRight(cursor.get[String]("profile.displayName")))
+    assertTrue(expectRight(cursor.downField("preferences").get[Boolean]("settings.notifications")))
+    assertFalse(cursor.downField("displayNameKey").succeeded)
+    assertFalse(cursor.downField("preferences").downField("notificationsKey").succeeded)
   }
 
   @Test
