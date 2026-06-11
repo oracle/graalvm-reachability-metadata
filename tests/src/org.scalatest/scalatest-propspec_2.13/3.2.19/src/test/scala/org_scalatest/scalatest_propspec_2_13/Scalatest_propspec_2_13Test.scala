@@ -23,8 +23,11 @@ import org.scalatest.Outcome
 import org.scalatest.Reporter
 import org.scalatest.Suite
 import org.scalatest.Tag
+import org.scalatest.events.AlertProvided
 import org.scalatest.events.Event
 import org.scalatest.events.InfoProvided
+import org.scalatest.events.MarkupProvided
+import org.scalatest.events.NoteProvided
 import org.scalatest.events.TestCanceled
 import org.scalatest.events.TestFailed
 import org.scalatest.events.TestIgnored
@@ -87,6 +90,29 @@ class Scalatest_propspec_2_13Test {
     assert(result.succeeded)
     assert(success.testName == "property records diagnostic information")
     assert(messages == Vector("created sample data", "verified transformed data"))
+    assert(suite.observed == Vector("start", "end"))
+  }
+
+  @Test
+  def emitsNotificationsAlertsAndMarkupFromProperties(): Unit = {
+    val suite: NotificationPropertySpec = new NotificationPropertySpec
+    val result: RunResult = runSuite(suite)
+    val success: TestSucceeded = succeededEvents(result.events).head
+    val notes: Vector[String] = result.events.collect {
+      case event: NoteProvided => event.message
+    }
+    val alerts: Vector[String] = result.events.collect {
+      case event: AlertProvided => event.message
+    }
+    val markupBlocks: Vector[String] = success.recordedEvents.collect {
+      case event: MarkupProvided => event.text
+    }.toVector
+
+    assert(result.succeeded)
+    assert(success.testName == "property emits supplemental reporter output")
+    assert(notes == Vector("prepared externalized test data"))
+    assert(alerts == Vector("using fallback validation path"))
+    assert(markupBlocks == Vector("**generated property report**"))
     assert(suite.observed == Vector("start", "end"))
   }
 
@@ -227,6 +253,19 @@ class Scalatest_propspec_2_13Test {
       info("verified transformed data")
       observed = observed :+ "end"
       assert(transformed == "metadata")
+    }
+  }
+
+  private final class NotificationPropertySpec extends AnyPropSpec {
+    var observed: Vector[String] = Vector.empty
+
+    property("property emits supplemental reporter output") {
+      observed = observed :+ "start"
+      note("prepared externalized test data")
+      alert("using fallback validation path")
+      markup("**generated property report**")
+      observed = observed :+ "end"
+      assert(observed.nonEmpty)
     }
   }
 
