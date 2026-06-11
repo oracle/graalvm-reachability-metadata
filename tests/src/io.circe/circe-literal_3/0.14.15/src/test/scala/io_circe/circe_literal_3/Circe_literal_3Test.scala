@@ -149,3 +149,25 @@ class Circe_literal_3Test:
     assert(
       array == Json.arr(encodedReplacement, Json.False, Json.Null, Json.fromString("constant"))
     )
+
+  @Test
+  def jsonInterpolatorBuildsEmptyArraysAndObjects(): Unit =
+    val emptyArray: Json = json"""[]"""
+    val emptyObject: Json = json"""{}"""
+    val document: Json = json"""
+      {
+        "emptyArray": [],
+        "emptyObject": {},
+        "nested": [{}, []]
+      }
+      """
+
+    val expected: Json = Json.obj(
+      "emptyArray" -> Json.arr(),
+      "emptyObject" -> Json.obj(),
+      "nested" -> Json.arr(Json.obj(), Json.arr())
+    )
+
+    assert(emptyArray == Json.arr())
+    assert(emptyObject == Json.obj())
+    assert(document == expected)
