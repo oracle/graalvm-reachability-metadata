@@ -161,13 +161,17 @@ Preparation:
 - If compilation passes but the JVM test run fails, dispatch
   `ai_workflows/drivers/fix_java_run_fail.py`; that driver owns runtime repair
   and the java-run composite coverage phase.
-- If compilation and JVM tests pass, dispatch
+- If compilation and JVM tests pass but native-image tests fail, dispatch
+  `ai_workflows/drivers/fix_ni_run.py`; that driver owns native-image runtime
+  repair for the requested version.
+- If compilation, JVM tests, and native-image tests pass, dispatch
   `ai_workflows/drivers/improve_library_coverage.py` for the requested version
   because the latest test suite is compatible.
 
 The selected driver must own its normal setup after the probe; the
-`library-update-request` router must not duplicate javac-fix, java-run-fix, or
-coverage workflow setup logic (§WF-improve-library-coverage.2).
+`library-update-request` router must not duplicate javac-fix, java-run-fix,
+native-image-run-fix, or coverage workflow setup logic
+(§WF-improve-library-coverage.2).
 
 ### `fails-javac-compile`
 

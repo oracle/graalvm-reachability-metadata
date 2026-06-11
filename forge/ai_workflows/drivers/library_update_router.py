@@ -32,6 +32,7 @@ LIBRARY_UPDATE_ROUTE_FILENAME = ".library_update_route.json"
 ROUTE_IMPROVE_COVERAGE = "improve_library_coverage"
 ROUTE_FIX_JAVAC = "fix_javac_fail"
 ROUTE_FIX_JAVA_RUN = "fix_java_run_fail"
+ROUTE_FIX_NI_RUN = "fix_ni_run"
 
 
 @dataclass(frozen=True)
@@ -46,8 +47,10 @@ class LibraryUpdateRoute:
     match_type: str
     compile_exit_code: int | None = None
     java_test_exit_code: int | None = None
+    native_test_exit_code: int | None = None
     compile_log_path: str | None = None
     java_test_log_path: str | None = None
+    native_test_log_path: str | None = None
 
     def to_json(self) -> dict[str, Any]:
         return {
@@ -59,8 +62,10 @@ class LibraryUpdateRoute:
             "match_type": self.match_type,
             "compile_exit_code": self.compile_exit_code,
             "java_test_exit_code": self.java_test_exit_code,
+            "native_test_exit_code": self.native_test_exit_code,
             "compile_log_path": self.compile_log_path,
             "java_test_log_path": self.java_test_log_path,
+            "native_test_log_path": self.native_test_log_path,
         }
 
     @classmethod
@@ -80,8 +85,10 @@ class LibraryUpdateRoute:
             match_type=match_type,
             compile_exit_code=_optional_int(payload, "compile_exit_code"),
             java_test_exit_code=_optional_int(payload, "java_test_exit_code"),
+            native_test_exit_code=_optional_int(payload, "native_test_exit_code"),
             compile_log_path=_optional_str(payload, "compile_log_path"),
             java_test_log_path=_optional_str(payload, "java_test_log_path"),
+            native_test_log_path=_optional_str(payload, "native_test_log_path"),
         )
 
 
@@ -195,7 +202,7 @@ def select_library_update_route(repo_path: str, metrics_repo_root: str, coordina
             f"supported test version {baseline_coordinates}"
         ),
     )
-    compile_result, java_test_result = _probe_latest_suite(
+    compile_result, java_test_result, native_test_result = _probe_latest_suite(
         repo_path=repo_path,
         group=group,
         artifact=artifact,
@@ -226,6 +233,21 @@ def select_library_update_route(repo_path: str, metrics_repo_root: str, coordina
             compile_log_path=compile_result.log_path,
             java_test_log_path=java_test_result.log_path,
         )
+    elif native_test_result is not None and native_test_result.exit_code != 0:
+        route = LibraryUpdateRoute(
+            selected_driver=ROUTE_FIX_NI_RUN,
+            requested_coordinates=coordinates,
+            baseline_coordinates=baseline_coordinates,
+            new_version=requested_version,
+            reason="compatibility probe compiled and passed JVM tests but failed native-image tests",
+            match_type=target.match_type,
+            compile_exit_code=compile_result.exit_code,
+            java_test_exit_code=java_test_result.exit_code if java_test_result is not None else None,
+            native_test_exit_code=native_test_result.exit_code,
+            compile_log_path=compile_result.log_path,
+            java_test_log_path=java_test_result.log_path if java_test_result is not None else None,
+            native_test_log_path=native_test_result.log_path,
+        )
     else:
         route = LibraryUpdateRoute(
             selected_driver=ROUTE_IMPROVE_COVERAGE,
@@ -236,8 +258,10 @@ def select_library_update_route(repo_path: str, metrics_repo_root: str, coordina
             match_type=target.match_type,
             compile_exit_code=compile_result.exit_code,
             java_test_exit_code=None if java_test_result is None else java_test_result.exit_code,
+            native_test_exit_code=None if native_test_result is None else native_test_result.exit_code,
             compile_log_path=compile_result.log_path,
             java_test_log_path=None if java_test_result is None else java_test_result.log_path,
+            native_test_log_path=None if native_test_result is None else native_test_result.log_path,
         )
     write_library_update_route(metrics_repo_root, route)
     log_stage("library-update-router", f"Selected {route.selected_driver} for {coordinates}: {route.reason}")
@@ -250,7 +274,7 @@ def _probe_latest_suite(
         artifact: str,
         requested_version: str,
         latest_entry: dict[str, Any],
-) -> tuple[_ProbeCommandResult, _ProbeCommandResult | None]:
+) -> tuple[_ProbeCommandResult, _ProbeCommandResult | None, _ProbeCommandResult | None]:
     requested_coordinates = f"{group}:{artifact}:{requested_version}"
     snapshot = _PathSnapshot([
         os.path.join(repo_path, "metadata", group, artifact, "index.json"),
@@ -262,8 +286,12 @@ def _probe_latest_suite(
         clone_library_update_support(repo_path, group, artifact, requested_version, latest_entry)
         compile_result = _run_probe_gradle_task(repo_path, requested_coordinates, "compileTestJava")
         if compile_result.exit_code != 0:
-            return compile_result, None
-        return compile_result, _run_probe_gradle_task(repo_path, requested_coordinates, "javaTest")
+            return compile_result, None, None
+        java_test_result = _run_probe_gradle_task(repo_path, requested_coordinates, "javaTest")
+        if java_test_result.exit_code != 0:
+            return compile_result, java_test_result, None
+        native_test_result = _run_probe_gradle_task(repo_path, requested_coordinates, "nativeTest")
+        return compile_result, java_test_result, native_test_result
     finally:
         snapshot.restore()
 

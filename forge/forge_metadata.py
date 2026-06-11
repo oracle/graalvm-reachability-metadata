@@ -68,6 +68,7 @@ from ai_workflows.drivers.improve_library_coverage import (
 from ai_workflows.drivers.library_update_router import (
     ROUTE_FIX_JAVA_RUN,
     ROUTE_FIX_JAVAC,
+    ROUTE_FIX_NI_RUN,
     ROUTE_IMPROVE_COVERAGE,
     LibraryUpdateRoute,
     load_library_update_route,
@@ -4316,6 +4317,34 @@ def build_workflow_driver_invocation(
                 ),
                 failure_name="fix_java_run",
             )
+        if route.selected_driver == ROUTE_FIX_NI_RUN:
+            if route.baseline_coordinates is None:
+                raise ValueError(f"Missing baseline coordinates for route {route.selected_driver}.")
+            pipeline_argv = [
+                "--coordinates", route.baseline_coordinates,
+                "--new-version", route.new_version,
+                "--reachability-metadata-path", claimed_issue.worktree_path,
+                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+            ]
+            append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+            return WorkflowDriverInvocation(
+                driver_name="fix_ni_run",
+                script_name="fix_ni_run.py",
+                runner_name="run_fix_ni_run_workflow",
+                runner=run_fix_ni_run_workflow,
+                argv=pipeline_argv,
+                issue_number=issue_number,
+                issue_label=claimed_issue.label,
+                coordinates=None,
+                current_coordinates=route.baseline_coordinates,
+                new_version=route.new_version,
+                log_stage_name="native-image-fix-workflow",
+                log_message=(
+                    f"Invoking fix_ni_run workflow for library-update issue #{issue_number}: "
+                    f"{route.baseline_coordinates} -> {route.new_version}"
+                ),
+                failure_name="fix_ni_run",
+            )
         if route.selected_driver != ROUTE_IMPROVE_COVERAGE:
             raise ValueError(f"Unknown library-update route '{route.selected_driver}'")
         pipeline_argv = [
@@ -5464,6 +5493,27 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
             runner = run_make_pr_java_run_fix
             result_label = LABEL_PR_LIBRARY_UPDATE
             publication_kind = LABEL_PR_JAVA_RUN_FIX
+            current_coordinates = _require_publication_value(
+                library_update_route.baseline_coordinates,
+                "library_update_route.baseline_coordinates",
+                claimed_issue,
+            )
+            new_version = library_update_route.new_version
+            coordinates = None
+            argv = [
+                "--coordinates", current_coordinates,
+                "--new-version", new_version,
+                "--issue-number", str(issue_number),
+                "--pr-label", result_label,
+                "--reachability-metadata-path", claimed_issue.worktree_path,
+                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+            ]
+        elif library_update_route is not None and library_update_route.selected_driver == ROUTE_FIX_NI_RUN:
+            script_name = "git_scripts/make_pr_ni_run_fix.py"
+            runner_name = "run_make_pr_ni_run_fix"
+            runner = run_make_pr_ni_run_fix
+            result_label = LABEL_PR_LIBRARY_UPDATE
+            publication_kind = LABEL_PR_NI_RUN_FIX
             current_coordinates = _require_publication_value(
                 library_update_route.baseline_coordinates,
                 "library_update_route.baseline_coordinates",
