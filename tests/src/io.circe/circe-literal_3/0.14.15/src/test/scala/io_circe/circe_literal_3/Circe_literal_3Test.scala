@@ -249,4 +249,32 @@ class Circe_literal_3Test {
     assertEquals(Json.arr(), json"[]")
     assertEquals(Json.obj(), json"{}")
   }
+
+  @Test
+  def supportsComputedInterpolatedKeysWithLiteralValues(): Unit = {
+    val prefix: String = "feature"
+    val id: Int = 7
+
+    val document: Json = json"""
+      {
+        ${prefix + "-enabled"}: true,
+        ${id + 1}: "literal value",
+        ${List("meta", "data").mkString("-")}: {
+          "count": 2,
+          "tags": ["json", "literal"]
+        }
+      }
+    """
+
+    val expected: Json = Json.obj(
+      "feature-enabled" -> Json.True,
+      "8" -> Json.fromString("literal value"),
+      "meta-data" -> Json.obj(
+        "count" -> Json.fromInt(2),
+        "tags" -> Json.arr(Json.fromString("json"), Json.fromString("literal"))
+      )
+    )
+
+    assertEquals(expected, document)
+  }
 }
