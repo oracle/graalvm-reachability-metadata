@@ -46,6 +46,20 @@ class Circe_literal_3Test:
     assert(document == expected)
 
   @Test
+  def jsonInterpolatorBuildsTopLevelPrimitiveJsonValues(): Unit =
+    val nullValue: Json = json"""null"""
+    val trueValue: Json = json"""true"""
+    val falseValue: Json = json"""false"""
+    val stringValue: Json = json""" "standalone string" """
+    val numberValue: Json = json"""12345.6789"""
+
+    assert(nullValue == Json.Null)
+    assert(trueValue == Json.True)
+    assert(falseValue == Json.False)
+    assert(stringValue == Json.fromString("standalone string"))
+    assert(numberValue == Json.fromBigDecimal(BigDecimal("12345.6789")))
+
+  @Test
   def jsonInterpolatorDecodesEscapesAndPreservesNumberValues(): Unit =
     val document: Json = json"""
       {
