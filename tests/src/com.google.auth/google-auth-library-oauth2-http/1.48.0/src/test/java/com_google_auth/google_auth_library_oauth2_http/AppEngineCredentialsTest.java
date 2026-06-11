@@ -8,14 +8,18 @@ package com_google_auth.google_auth_library_oauth2_http;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.google.auth.ServiceAccountSigner;
+import com.google.auth.oauth2.AccessToken;
 import com.google.auth.oauth2.GoogleCredentials;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-public class DefaultCredentialsProviderTest {
+public class AppEngineCredentialsTest {
     static {
         AppEngineCredentialsTestSupport.configureAppEngineStandardEnvironment();
     }
@@ -35,10 +39,21 @@ public class DefaultCredentialsProviderTest {
     }
 
     @Test
-    public void applicationDefaultCredentialsChecksAppEngineSignalClass() throws Exception {
+    public void appEngineCredentialsRefreshesTokensAndSignsBytes() throws Exception {
         GoogleCredentials credentials = GoogleCredentials.getApplicationDefault();
+        ServiceAccountSigner signer = (ServiceAccountSigner) credentials;
+        GoogleCredentials scopedCredentials =
+                credentials.createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
+
+        AccessToken accessToken = scopedCredentials.refreshAccessToken();
+        byte[] signature = signer.sign("payload".getBytes(StandardCharsets.UTF_8));
 
         assertThat(credentials.getClass().getName())
                 .isEqualTo("com.google.auth.oauth2.AppEngineCredentials");
+        assertThat(signer.getAccount()).isEqualTo(AppEngineCredentialsTestSupport.SERVICE_ACCOUNT);
+        assertThat(accessToken.getTokenValue())
+                .isEqualTo(AppEngineCredentialsTestSupport.ACCESS_TOKEN);
+        assertThat(accessToken.getExpirationTime()).isNotNull();
+        assertThat(signature).containsExactly(AppEngineCredentialsTestSupport.SIGNATURE);
     }
 }
