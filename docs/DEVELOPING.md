@@ -174,10 +174,12 @@ Schema:
 ./gradlew generateLibraryStats -Pcoordinates=[group:artifact:version|group:artifact|k/n|all]
 ./gradlew validateLibraryStats
 ./gradlew listTopCoordinatesByMetric --metric=dynamic-accesses --limit=256
+./gradlew generateTopCoordinatesByMetricMatrix --metric=dynamic-accesses --limit=256
 ```
 
 - `generateLibraryStats`: recomputes selected coordinates and updates matching exploded stats files under `stats/`.
 - `listTopCoordinatesByMetric`: prints the top-N `group:artifact:version` coordinates from committed stats, currently ordered by `dynamic-accesses`.
+- `generateTopCoordinatesByMetricMatrix`: emits a GitHub Actions matrix with the same coordinates after verifying that each selected version is listed in the committed metadata index and has a metadata directory.
 - Workflow scripts write execution metrics under `stats/<groupId>/<artifactId>/<metadata-version>/execution-metrics.json`.
 - `validateLibraryStats`: validates mirrored committed stats files, schema compliance, and normalized sorting without recomputing metrics.
 
