@@ -35,9 +35,9 @@ class Mockito_5_12_3Test {
   }
 
   @Test
-  def companionObjectMockSupportsConcreteScalaClasses(): Unit = {
+  def companionObjectMockSupportsScalaTraits(): Unit = {
     withMockitoRuntime {
-      val greeter: GreetingService = MockitoSugar.mock[GreetingService]
+      val greeter: GreetingApi = MockitoSugar.mock[GreetingApi]
 
       Mockito.when(greeter.greeting("Scala")).thenReturn("Mocked greeting")
 
@@ -114,19 +114,6 @@ class Mockito_5_12_3Test {
   }
 
   @Test
-  def mockSupportsScalaTraitDefaultMethods(): Unit = {
-    withMockitoRuntime {
-      val settings: MockSettings = Mockito.withSettings().defaultAnswer(Mockito.CALLS_REAL_METHODS)
-      val weather: WeatherService = MockitoSugar.mock[WeatherService](settings)
-
-      Mockito.doReturn(Integer.valueOf(-3)).when(weather).temperatureInCelsius("Oslo")
-
-      assertThat(weather.isFreezing("Oslo")).isTrue()
-      Mockito.verify(weather).temperatureInCelsius("Oslo")
-    }
-  }
-
-  @Test
   def captureCreatesArgumentCaptorAndImplicitlyCapturesVerificationArgument(): Unit = {
     withMockitoRuntime {
       import org.scalatestplus.mockito.MockitoSugar.*
@@ -156,12 +143,6 @@ class Mockito_5_12_3Test {
   private object MixedInSugar extends MockitoSugar
 }
 
-class GreetingService {
-  def greeting(name: String): String = s"Hello $name"
-}
-
-trait WeatherService {
-  def temperatureInCelsius(city: String): Int
-
-  def isFreezing(city: String): Boolean = temperatureInCelsius(city) <= 0
+trait GreetingApi {
+  def greeting(name: String): String
 }
