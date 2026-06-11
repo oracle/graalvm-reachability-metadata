@@ -10,6 +10,7 @@ import cats.arrow.FunctionK
 import cats.tagless.Derive
 import dotty.tools.dotc.Driver
 import org.graalvm.internal.tck.NativeImageSupport
+import org.junit.jupiter.api.Assumptions.assumeFalse
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
@@ -47,6 +48,7 @@ class DeriveMacrosTest:
 
   @Test
   def runtimeCompilerRunsDeriveMacroForAlgWithTypeMember(@TempDir tempDir: Path): Unit =
+    assumeFalse(isNativeImageRuntime, "Scala 3 runtime compiler macro expansion is JVM-only")
     try
       val sourceFile: Path = tempDir.resolve("RuntimeDerivedFunctorK.scala")
       val outputDirectory: Path = Files.createDirectories(tempDir.resolve("classes"))
@@ -109,3 +111,6 @@ class DeriveMacrosTest:
       |  val copiedKey: mapped.Key = mapped.key
       |  val copiedValue: List[String] = mapped.read(copiedKey)
       |""".stripMargin
+
+  private def isNativeImageRuntime: Boolean =
+    "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))

@@ -8,6 +8,7 @@ package org_typelevel.cats_tagless_core_3
 
 import dotty.tools.dotc.Driver
 import org.graalvm.internal.tck.NativeImageSupport
+import org.junit.jupiter.api.Assumptions.assumeFalse
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -23,6 +24,7 @@ import scala.annotation.experimental
 class MacroAspectTest:
   @Test
   def runtimeCompilerRunsAspectMacroForAlgWithGivenParameter(@TempDir tempDir: Path): Unit =
+    assumeFalse(isNativeImageRuntime, "Scala 3 runtime compiler macro expansion is JVM-only")
     try
       val sourceFile: Path = tempDir.resolve("RuntimeDerivedAspect.scala")
       val outputDirectory: Path = Files.createDirectories(tempDir.resolve("classes"))
@@ -97,3 +99,6 @@ class MacroAspectTest:
       |  val codomainMethodName: String = advice.codomain.name
       |  val codomainValue: String = advice.codomain.target
       |""".stripMargin
+
+  private def isNativeImageRuntime: Boolean =
+    "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))
