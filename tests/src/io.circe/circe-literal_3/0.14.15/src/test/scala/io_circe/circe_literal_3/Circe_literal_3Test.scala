@@ -8,6 +8,7 @@ package io_circe.circe_literal_3
 
 import io.circe.Encoder
 import io.circe.Json
+import io.circe.JsonNumber
 import io.circe.KeyEncoder
 import io.circe.literal.*
 import org.junit.jupiter.api.Test
@@ -74,6 +75,22 @@ class Circe_literal_3Test:
     assert(nullValue == Json.Null)
 
   @Test
+  def jsonInterpolatorParsesScientificAndArbitraryPrecisionNumbers(): Unit =
+    val actual: Json = json"""{
+      "negativeExponent": -6.022e-23,
+      "positiveExponent": 1.25E+40,
+      "largeInteger": 123456789012345678901234567890
+    }"""
+
+    val expected: Json = Json.obj(
+      "negativeExponent" -> jsonNumber("-6.022e-23"),
+      "positiveExponent" -> jsonNumber("1.25E+40"),
+      "largeInteger" -> jsonNumber("123456789012345678901234567890")
+    )
+
+    assert(actual == expected)
+
+  @Test
   def jsonInterpolatorEncodesInterpolatedValuesAndKeys(): Unit =
     val featureKey: FeatureKey = FeatureKey("search")
     val enabled: Boolean = true
@@ -110,6 +127,11 @@ class Circe_literal_3Test:
     val actual: Json = json""" $widget """
 
     assert(actual == Widget.encoder(widget))
+
+  private def jsonNumber(value: String): Json =
+    Json.fromJsonNumber(
+      JsonNumber.fromString(value).getOrElse(throw new AssertionError(s"Invalid JSON number: $value"))
+    )
 
   private final case class FeatureKey(value: String)
 
