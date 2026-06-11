@@ -155,6 +155,21 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def escapesInterpolatedStringsAndKeysContainingJsonSpecialCharacters(): Unit = {
+    val dynamicKey: String = "line\nbreak quote\" slash\\ snowman☃"
+    val dynamicValue: String = "tab\treturn\rquote\" slash\\ snowman☃"
+
+    val document: Json = json"""{
+      $dynamicKey: $dynamicValue
+    }"""
+
+    assertThat(document.hcursor.get[String](dynamicKey)).isEqualTo(Right(dynamicValue))
+    assertThat(document.noSpaces).isEqualTo(
+      """{"line\nbreak quote\" slash\\ snowman☃":"tab\treturn\rquote\" slash\\ snowman☃"}"""
+    )
+  }
+
+  @Test
   def interpolatesDomainObjectsThroughUserProvidedEncoders(): Unit = {
     val shipment: Shipment = Shipment(
       id = "shipment-1",
