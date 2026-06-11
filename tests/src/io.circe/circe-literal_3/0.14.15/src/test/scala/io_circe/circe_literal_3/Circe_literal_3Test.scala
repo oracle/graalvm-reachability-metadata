@@ -158,6 +158,19 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def buildsTopLevelJsonFromInterpolatedCollections(): Unit = {
+    val numbers: List[Int] = List(2, 4, 6)
+    val labels: Map[String, String] = Map("tier" -> "gold", "region" -> "eu")
+
+    val arrayJson: Json = json"$numbers"
+    val objectJson: Json = json"$labels"
+
+    assertEquals(List(2, 4, 6), expectRight(arrayJson.as[List[Int]]))
+    assertEquals("gold", expectRight(objectJson.hcursor.get[String]("tier")))
+    assertEquals("eu", expectRight(objectJson.hcursor.get[String]("region")))
+  }
+
+  @Test
   def composesLiteralJsonWithCirceTransformations(): Unit = {
     val source: Json = json"""
       {
