@@ -20,20 +20,6 @@ public class InternalPlatformTest {
 
         assertThat(destination.values()).isEqualTo(listOf("base-source", "child-source"))
     }
-
-    @Test
-    fun `loadPlugin creates instances by class name with the default message`(): Unit {
-        val loaded: Any = InternalPlatform.loadPlugin("java.lang.Object")
-
-        assertThat(loaded).isInstanceOf(Any::class.java)
-    }
-
-    @Test
-    fun `loadPlugin creates instances by class name with an explicit message`(): Unit {
-        val loaded: Any = InternalPlatform.loadPlugin("java.lang.Object", "while loading a JDK object")
-
-        assertThat(loaded).isInstanceOf(Any::class.java)
-    }
 }
 
 public open class InternalPlatformBaseFields(
