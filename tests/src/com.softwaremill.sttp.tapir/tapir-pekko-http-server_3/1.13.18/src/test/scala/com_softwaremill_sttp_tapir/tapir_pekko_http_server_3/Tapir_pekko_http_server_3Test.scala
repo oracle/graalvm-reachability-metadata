@@ -129,6 +129,45 @@ class Tapir_pekko_http_server_3Test {
   }
 
   @Test
+  def shouldAuthenticateBearerTokenUsingTapirSecurityLogic(): Unit = {
+    withServer { executionContext =>
+      implicit val ec: ExecutionContext = executionContext
+      val securedEndpoint = endpoint.get
+        .securityIn(auth.bearer[String]())
+        .in("secure")
+        .out(stringBody)
+        .errorOut(statusCode.and(stringBody))
+
+      PekkoHttpServerInterpreter().toRoute(
+        securedEndpoint
+          .serverSecurityLogic { token =>
+            Future.successful {
+              if (token == "access-token") {
+                Right(token)
+              } else {
+                Left((StatusCode.Unauthorized, "invalid bearer token"))
+              }
+            }
+          }
+          .serverLogic { token => _ =>
+            Future.successful(Right(s"authenticated:$token"))
+          }
+      )
+    } { baseUri =>
+      val response = send(
+        HttpRequest.newBuilder(baseUri.resolve("/secure"))
+          .timeout(RequestTimeout)
+          .header("Authorization", "Bearer access-token")
+          .GET()
+          .build()
+      )
+
+      assertThat(response.statusCode()).isEqualTo(200)
+      assertThat(response.body()).isEqualTo("authenticated:access-token")
+    }
+  }
+
+  @Test
   def shouldDispatchAmongSeveralServerEndpoints(): Unit = {
     withServer { executionContext =>
       implicit val ec: ExecutionContext = executionContext
