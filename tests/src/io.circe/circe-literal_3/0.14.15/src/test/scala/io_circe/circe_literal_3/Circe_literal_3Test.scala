@@ -8,6 +8,7 @@ package io_circe.circe_literal_3
 
 import io.circe.Encoder
 import io.circe.Json
+import io.circe.JsonNumber
 import io.circe.KeyEncoder
 import io.circe.literal.*
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -58,6 +59,25 @@ final class Circe_literal_3Test {
     assertEquals(Json.Null, nullValue)
     assertEquals(Json.fromInt(42), numberValue)
     assertEquals(Json.arr(Json.fromInt(1), Json.fromString("two"), Json.True), arrayValue)
+  }
+
+  @Test
+  def numericLiteralsPreserveJsonNumberFormsBeyondIntegers(): Unit = {
+    val actual: Json = json"""
+      {
+        "negativeDecimal": -12.75,
+        "exponent": 6.022e23,
+        "largeInteger": 123456789012345678901234567890
+      }
+      """
+
+    val expected: Json = Json.obj(
+      "negativeDecimal" -> jsonNumber("-12.75"),
+      "exponent" -> jsonNumber("6.022e23"),
+      "largeInteger" -> jsonNumber("123456789012345678901234567890")
+    )
+
+    assertEquals(expected, actual)
   }
 
   @Test
@@ -175,6 +195,9 @@ final class Circe_literal_3Test {
 
     assertEquals(expected, actual)
   }
+
+  private def jsonNumber(value: String): Json =
+    JsonNumber.fromString(value).map(Json.fromJsonNumber).get
 
   private final case class FieldName(value: String)
 
