@@ -8,7 +8,10 @@ package com_google_auth.google_auth_library_oauth2_http;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.auth.http.AuthHttpConstants;
+import com.google.auth.http.HttpTransportFactory;
 import com.google.auth.oauth2.AccessToken;
 import com.google.auth.oauth2.UserCredentials;
 import java.io.ByteArrayInputStream;
@@ -21,12 +24,17 @@ import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
-public class OAuth2CredentialsTest {
+public class OAuth2CredentialsTest implements HttpTransportFactory {
     private static final URI AUDIENCE_URI = URI.create("https://example.test/resource");
 
     static {
         AppEngineCredentialsTest.configureAppEngineStandardEnvironment();
         AppEngineCredentialsTest.installAppIdentityServiceFactory();
+    }
+
+    @Override
+    public HttpTransport create() {
+        return new NetHttpTransport();
     }
 
     @Test
@@ -52,6 +60,32 @@ public class OAuth2CredentialsTest {
                 .containsEntry(AuthHttpConstants.AUTHORIZATION, List.of("Bearer access-token"));
         assertThat(restored).isEqualTo(credentials);
         assertThat(restored.toString()).contains("client-id", "quota-project");
+    }
+
+    @Test
+    public void userCredentialsDeserializationRestoresCustomTransportFactory() throws Exception {
+        AccessToken accessToken = new AccessToken(
+                "custom-transport-access-token",
+                new Date(System.currentTimeMillis() + 3_600_000));
+        UserCredentials credentials = UserCredentials.newBuilder()
+                .setClientId("custom-client-id")
+                .setClientSecret("custom-client-secret")
+                .setAccessToken(accessToken)
+                .setHttpTransportFactory(new OAuth2CredentialsTest())
+                .build();
+
+        UserCredentials restored;
+        try (ObjectInputStream input = new ObjectInputStream(
+                new ByteArrayInputStream(serialize(credentials)))) {
+            restored = (UserCredentials) input.readObject();
+        }
+
+        assertThat(restored.toBuilder().getHttpTransportFactory())
+                .isInstanceOf(OAuth2CredentialsTest.class);
+        assertThat(restored.getRequestMetadata(AUDIENCE_URI))
+                .containsEntry(
+                        AuthHttpConstants.AUTHORIZATION,
+                        List.of("Bearer custom-transport-access-token"));
     }
 
     private static byte[] serialize(UserCredentials credentials) throws Exception {
