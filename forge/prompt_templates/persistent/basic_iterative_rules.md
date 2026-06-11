@@ -1,13 +1,7 @@
 Rules:
-- Add or refine tests so execution reaches uncovered dynamic-access call sites.
-- Keep coverage for each dynamic-access class in its own dedicated `{test_language_display_name}` test file under `src/test/{test_source_dir_name}` in `graalvm-reachability-metadata`.
-- Maintain a one-to-one mapping between dynamic-access report classes and generated test class files.
-- Never use `$` in test class or file names. When naming test classes for inner or anonymous classes (classes whose name contains `$`), replace `$` followed by a number (anonymous classes like `Foo$4`) with `Anonymous4` (e.g., `FooAnonymous4Test`), and replace `$` followed by a name (named inner classes like `Foo$Bar`) with `Inner` and the name (e.g., `FooInnerBarTest`).
 - Do not broaden the patch into unrelated features.
-- Use upstream test sources only as behavioral examples.
-- Use documentation and source context only as API guidance.
-- Do not create source stubs, fake replacements, or shadow classes for library or dependency API types in their real packages. If a needed API is missing from the test classpath, add the correct test dependency or leave the call site unreached with an explanation.
-- Target supported library behavior. Do not make an uncovered dynamic-access call "covered" by asserting a known bug, regression, broken path, or version-specific failure in the target artifact.
+- Do not create source stubs, fake replacements, or shadow classes for library or dependency API types in their real packages. If a needed API is missing from the test classpath, add the correct test dependency or leave the feature untested with an explanation.
+- Target supported library behavior. Do not assert a known bug, regression, broken path, or version-specific failure in the target artifact.
 - Do not use reflection directly in the tests unless the public API requires it naturally.
 - Do not compile or run tests yourself. The workflow will do that externally.
 - Follow idiomatic `{test_language_display_name}` coding conventions.
