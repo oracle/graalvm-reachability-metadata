@@ -49,6 +49,8 @@ import java.util.stream.Stream;
  */
 public final class LibraryStatsSupport {
 
+    public static final String DYNAMIC_ACCESSES_METRIC = "dynamic-accesses";
+
     private static final TypeReference<LibraryStatsModels.LibraryStats> LIBRARY_STATS_TYPE = new TypeReference<>() {
     };
     private static final TypeReference<LibraryStatsModels.MetadataVersionStats> METADATA_VERSION_STATS_TYPE = new TypeReference<>() {
@@ -134,6 +136,44 @@ public final class LibraryStatsSupport {
             throw new GradleException("Failed to traverse repository stats root " + statsRoot, e);
         }
         return libraryStats;
+    }
+
+    public static List<LibraryStatsModels.CoordinateMetric> topCoordinatesByMetric(
+            LibraryStatsModels.LibraryStats libraryStats,
+            String metric,
+            int limit
+    ) {
+        if (limit < 1) {
+            throw new GradleException("Top coordinate limit must be positive. Got: " + limit);
+        }
+        if (!DYNAMIC_ACCESSES_METRIC.equals(metric)) {
+            throw new GradleException("Unsupported library stats metric '" + metric + "'. Supported metrics: " + DYNAMIC_ACCESSES_METRIC);
+        }
+
+        Map<String, Long> metricByCoordinate = new HashMap<>();
+        LibraryStatsModels.LibraryStats normalizedStats = normalizeLibraryStats(libraryStats);
+        for (Map.Entry<String, LibraryStatsModels.ArtifactStats> artifactEntry : normalizedStats.entries().entrySet()) {
+            String artifact = artifactEntry.getKey();
+            LibraryStatsModels.ArtifactStats artifactStats = artifactEntry.getValue();
+            for (LibraryStatsModels.MetadataVersionStats metadataVersionStats : artifactStats.metadataVersions().values()) {
+                for (LibraryStatsModels.VersionStats versionStats : metadataVersionStats.versions()) {
+                    if (versionStats.dynamicAccess() == null || !versionStats.dynamicAccess().isAvailable()) {
+                        continue;
+                    }
+                    String coordinate = artifact + ":" + versionStats.version();
+                    metricByCoordinate.merge(coordinate, versionStats.dynamicAccess().totalCalls(), Math::max);
+                }
+            }
+        }
+
+        return metricByCoordinate.entrySet().stream()
+                .map(entry -> new LibraryStatsModels.CoordinateMetric(entry.getKey(), entry.getValue()))
+                .sorted(Comparator
+                        .comparingLong(LibraryStatsModels.CoordinateMetric::value)
+                        .reversed()
+                        .thenComparing(LibraryStatsModels.CoordinateMetric::coordinate))
+                .limit(limit)
+                .toList();
     }
 
     private static void writeJsonWithTrailingNewline(Path targetFile, Object value, String errorPrefix) {

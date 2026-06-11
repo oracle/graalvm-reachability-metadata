@@ -20,6 +20,7 @@ import java.util.jar.JarOutputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class LibraryStatsSupportTests {
 
@@ -740,6 +741,62 @@ class LibraryStatsSupportTests {
         assertThat(LibraryStatsSupport.metadataVersionStats(libraryStats, "org.demo:alpha", "2.0.0").versions())
                 .extracting(LibraryStatsModels.VersionStats::version)
                 .containsExactly("2.0.1");
+    }
+
+    @Test
+    void topCoordinatesByMetricRanksDynamicAccessAndDeduplicatesCoordinates() {
+        LibraryStatsModels.LibraryStats libraryStats = new LibraryStatsModels.LibraryStats(Map.of());
+        libraryStats = LibraryStatsSupport.withMetadataVersionStats(
+                libraryStats,
+                "com.example:alpha",
+                "1.0.0",
+                new LibraryStatsModels.MetadataVersionStats(List.of(
+                        createVersionStats("1.0.0", 10, 3),
+                        createVersionStats("1.1.0", 6, 2)
+                ))
+        );
+        libraryStats = LibraryStatsSupport.withMetadataVersionStats(
+                libraryStats,
+                "com.example:alpha",
+                "2.0.0",
+                new LibraryStatsModels.MetadataVersionStats(List.of(createVersionStats("1.0.0", 12, 4)))
+        );
+        libraryStats = LibraryStatsSupport.withMetadataVersionStats(
+                libraryStats,
+                "org.demo:beta",
+                "1.0.0",
+                new LibraryStatsModels.MetadataVersionStats(List.of(
+                        createVersionStats("3.0.0", 12, 5),
+                        new LibraryStatsModels.VersionStats(
+                                "4.0.0",
+                                LibraryStatsModels.DynamicAccessStatsValue.notAvailable(),
+                                LibraryStatsSupport.unavailableLibraryCoverage()
+                        )
+                ))
+        );
+
+        List<LibraryStatsModels.CoordinateMetric> topCoordinates = LibraryStatsSupport.topCoordinatesByMetric(
+                libraryStats,
+                LibraryStatsSupport.DYNAMIC_ACCESSES_METRIC,
+                3
+        );
+
+        assertThat(topCoordinates)
+                .extracting(LibraryStatsModels.CoordinateMetric::coordinate)
+                .containsExactly("com.example:alpha:1.0.0", "org.demo:beta:3.0.0", "com.example:alpha:1.1.0");
+        assertThat(topCoordinates)
+                .extracting(LibraryStatsModels.CoordinateMetric::value)
+                .containsExactly(12L, 12L, 6L);
+    }
+
+    @Test
+    void topCoordinatesByMetricRejectsUnsupportedInputs() {
+        LibraryStatsModels.LibraryStats libraryStats = new LibraryStatsModels.LibraryStats(Map.of());
+
+        assertThatThrownBy(() -> LibraryStatsSupport.topCoordinatesByMetric(libraryStats, "coverage", 1))
+                .hasMessageContaining("Unsupported library stats metric 'coverage'");
+        assertThatThrownBy(() -> LibraryStatsSupport.topCoordinatesByMetric(libraryStats, LibraryStatsSupport.DYNAMIC_ACCESSES_METRIC, 0))
+                .hasMessageContaining("Top coordinate limit must be positive");
     }
 
     private LibraryStatsModels.VersionStats createVersionStats(
