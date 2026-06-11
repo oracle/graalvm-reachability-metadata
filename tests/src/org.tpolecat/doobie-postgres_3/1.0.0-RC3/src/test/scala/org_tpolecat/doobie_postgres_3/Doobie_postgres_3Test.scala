@@ -12,6 +12,7 @@ import cats.instances.either._
 import cats.~>
 import doobie.Meta
 import doobie.enumerated.SqlState
+import doobie.implicits.javatimedrivernative.JavaZonedDateTimeMeta
 import doobie.postgres.Text
 import doobie.postgres.free.Embedded
 import doobie.postgres.free.copyin
