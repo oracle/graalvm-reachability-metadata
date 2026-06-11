@@ -6,8 +6,10 @@
  */
 package io_circe.circe_literal_3
 
+import io.circe.Encoder
 import io.circe.Json
 import io.circe.literal.*
+import java.net.URI
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -97,6 +99,24 @@ class Circe_literal_3Test {
       Json.fromBoolean(false),
       Json.fromString("literal"),
       Json.Null
+    )
+
+    assertThat(document).isEqualTo(expected)
+  }
+
+  @Test
+  def interpolationUsesCustomEncodersInScope(): Unit = {
+    given Encoder[URI] = Encoder.encodeString.contramap[URI](_.toASCIIString)
+
+    val endpoint: URI = URI.create("https://example.com/services/search?q=circe%20literal")
+    val document: Json = json"""
+      {
+        "endpoint": $endpoint
+      }
+      """
+
+    val expected: Json = Json.obj(
+      "endpoint" -> Json.fromString("https://example.com/services/search?q=circe%20literal")
     )
 
     assertThat(document).isEqualTo(expected)
