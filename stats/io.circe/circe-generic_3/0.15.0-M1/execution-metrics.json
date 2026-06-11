@@ -1,0 +1,60 @@
+{
+  "fix_java_run_fail:2026-06-11": {
+    "timestamp": "2026-06-11T13:26:06.241735Z",
+    "library": "io.circe:circe-generic_3:0.15.0-M1",
+    "starting_commit": "3529e671bc707756f46fe8ad40dbeaec4ff52b5f",
+    "ending_commit": "0a4ded8685159d8a3d0b78716bca8fb5aefffdea",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8301,
+      "issue_label": "fails-java-run",
+      "library": "io.circe:circe-generic_3:0.15.0-M1",
+      "summary": "circe-generic_3 is a pure Scala generic derivation module; its resolved artifact already brings circe-core and Scala 3 runtime dependencies, and meaningful coverage is reachable by deriving encoders/decoders against constructed Json values without extra services, properties, or dependencies.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "If generated tests choose to parse raw JSON strings with io.circe.parser, they would need circe-parser_3, but parsing is documented as a separate optional module and is not required to cover circe-generic derivation behavior.",
+        "The reported failure is an API/source compatibility issue in existing test code, not evidence of missing setup."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8301 [Automation] java run fails for io.circe:circe-generic_3:0.15.0-M1; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "current_library": "io.circe:circe-generic_3:0.14.12",
+      "new_version": "0.15.0-M1",
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 22096,
+      "output_tokens_used": 1743,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/io.circe:circe-generic_3:0.15.0-M1/library-preparation-preflight/pi-generation-2026-06-11T13-19-41-819399Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 21065,
+      "cached_input_tokens_used": 126976,
+      "output_tokens_used": 1433,
+      "iterations": 1,
+      "cost_usd": 0.1065,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "test_file": "None",
+      "metadata_file": "None"
+    }
+  }
+}
