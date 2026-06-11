@@ -159,6 +159,35 @@ final class Circe_literal_3Test {
   }
 
   @Test
+  def objectKeysPreserveEscapedLiteralAndEncodedInterpolatedCharacters(): Unit = {
+    val quotedKey: String = "dynamic\"quote"
+    val newlineKey: FieldName = FieldName("dynamic\nline")
+    given KeyEncoder[FieldName] = KeyEncoder.instance(_.value)
+
+    val actual: Json = json"""
+      {
+        "literal\\backslash": 1,
+        "literal\"quote": 2,
+        "literal\nline": 3,
+        "literal\u2603snowman": 4,
+        $quotedKey: 5,
+        $newlineKey: 6
+      }
+      """
+
+    val expected: Json = Json.obj(
+      "literal\\backslash" -> Json.fromInt(1),
+      "literal\"quote" -> Json.fromInt(2),
+      "literal\nline" -> Json.fromInt(3),
+      "literal☃snowman" -> Json.fromInt(4),
+      "dynamic\"quote" -> Json.fromInt(5),
+      "dynamic\nline" -> Json.fromInt(6)
+    )
+
+    assertEquals(expected, actual)
+  }
+
+  @Test
   def interpolatedCustomTypesUseLocalEncoders(): Unit = {
     val person: Person = Person("Ada", 36)
     val team: List[Person] = List(person, Person("Grace", 85))
