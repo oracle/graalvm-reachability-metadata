@@ -7,26 +7,25 @@
 package io_mockk.mockk_jvm
 
 import io.mockk.clearAllMocks
+import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-public class JvmAnyValueGeneratorInnerAnyValueAnonymous2Test {
+public class JvmAutoHinterTest {
     @Test
-    fun `relaxed mock returns an empty reference array default value`(): Unit {
-        runMockKScenario {
-            val service: JvmAnyValueGeneratorArrayService = mockk(relaxed = true)
+    fun `records a chained generic call by auto hinting the erased return type`(): Unit {
+        runAutoHintScenario {
+            val root: JvmAutoHinterGenericRoot<JvmAutoHinterGenericChild> = mockk()
 
-            val generatedValues: Array<String> = service.values()
+            every { root.next().value() } returns "auto-hinted"
 
-            assertThat(generatedValues).isEmpty()
-            verify(exactly = 1) { service.values() }
+            assertThat(root.next().value()).isEqualTo("auto-hinted")
             clearAllMocks()
         }
     }
 
-    private fun runMockKScenario(block: () -> Unit): Unit {
+    private fun runAutoHintScenario(block: () -> Unit): Unit {
         try {
             block()
         } catch (throwable: Throwable) {
@@ -37,6 +36,10 @@ public class JvmAnyValueGeneratorInnerAnyValueAnonymous2Test {
     }
 }
 
-public interface JvmAnyValueGeneratorArrayService {
-    public fun values(): Array<String>
+public interface JvmAutoHinterGenericRoot<T : Any> {
+    public fun next(): T
+}
+
+public interface JvmAutoHinterGenericChild {
+    public fun value(): String
 }

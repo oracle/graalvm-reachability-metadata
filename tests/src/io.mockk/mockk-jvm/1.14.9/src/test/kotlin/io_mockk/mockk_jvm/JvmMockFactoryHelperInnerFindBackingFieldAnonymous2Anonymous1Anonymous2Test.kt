@@ -11,7 +11,6 @@ import io.mockk.every
 import io.mockk.spyk
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
-import org.graalvm.internal.tck.NativeImageSupport
 import org.junit.jupiter.api.Test
 
 public class JvmMockFactoryHelperInnerFindBackingFieldAnonymous2Anonymous1Anonymous2Test {
@@ -38,23 +37,11 @@ public class JvmMockFactoryHelperInnerFindBackingFieldAnonymous2Anonymous1Anonym
         try {
             block()
         } catch (throwable: Throwable) {
-            if (!isExpectedNativeImageAgentFailure(throwable)) {
+            if (!MockkNativeImageSupport.isExpectedNativeImageFailure(throwable)) {
                 throw throwable
             }
         }
     }
-
-    private fun isExpectedNativeImageAgentFailure(throwable: Throwable): Boolean =
-        throwable.causeSequence().any { current: Throwable ->
-            current is Error && NativeImageSupport.isUnsupportedFeatureError(current)
-        } || throwable.causeSequence().any { current: Throwable ->
-            current is IllegalStateException &&
-                (current.message?.startsWith("Error during attachment using:") == true ||
-                    current.message == "No compatible attachment provider is available")
-        }
-
-    private fun Throwable.causeSequence(): Sequence<Throwable> =
-        generateSequence(this) { current: Throwable -> current.cause }
 }
 
 public class JvmMockFactoryHelperSetBackingFieldSubject(initialLabel: String) {
