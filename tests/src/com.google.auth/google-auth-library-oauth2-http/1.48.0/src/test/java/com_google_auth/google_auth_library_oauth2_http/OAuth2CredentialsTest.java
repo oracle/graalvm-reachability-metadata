@@ -36,17 +36,43 @@ public class OAuth2CredentialsTest {
                 .setQuotaProjectId("quota-project")
                 .build();
 
-        UserCredentials restored;
-        try (ObjectInputStream input = new ObjectInputStream(
-                new ByteArrayInputStream(serialize(credentials)))) {
-            restored = (UserCredentials) input.readObject();
-        }
+        UserCredentials restored = deserialize(credentials);
 
         Map<String, List<String>> requestMetadata = restored.getRequestMetadata(AUDIENCE_URI);
         assertThat(requestMetadata)
                 .containsEntry(AuthHttpConstants.AUTHORIZATION, List.of("Bearer access-token"));
         assertThat(restored).isEqualTo(credentials);
         assertThat(restored.toString()).contains("client-id", "quota-project");
+    }
+
+    @Test
+    public void userCredentialsDeserializationInstantiatesCustomTransportFactory()
+            throws Exception {
+        AccessToken accessToken = new AccessToken(
+                "custom-access-token",
+                new Date(System.currentTimeMillis() + 3_600_000));
+        UserCredentials credentials = UserCredentials.newBuilder()
+                .setClientId("client-id")
+                .setClientSecret("client-secret")
+                .setAccessToken(accessToken)
+                .setHttpTransportFactory(new CustomHttpTransportFactory())
+                .build();
+
+        UserCredentials restored = deserialize(credentials);
+
+        assertThat(restored.toBuilder().getHttpTransportFactory())
+                .isInstanceOf(CustomHttpTransportFactory.class);
+        assertThat(restored.getRequestMetadata(AUDIENCE_URI))
+                .containsEntry(
+                        AuthHttpConstants.AUTHORIZATION,
+                        List.of("Bearer custom-access-token"));
+    }
+
+    private static UserCredentials deserialize(UserCredentials credentials) throws Exception {
+        try (ObjectInputStream input = new ObjectInputStream(
+                new ByteArrayInputStream(serialize(credentials)))) {
+            return (UserCredentials) input.readObject();
+        }
     }
 
     private static byte[] serialize(UserCredentials credentials) throws Exception {
