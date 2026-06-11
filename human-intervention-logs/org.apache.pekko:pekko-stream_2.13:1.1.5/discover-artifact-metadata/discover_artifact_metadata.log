@@ -1,0 +1,2251 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019eb6c6-95f8-7140-bbf5-1770bd99762b
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.pekko:pekko-stream_2.13:1.1.5
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "1.1.5" when "$version$" is replaced with "1.1.5".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d/build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "org.apache.pekko:pekko-stream_2.13:1.1.5".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.1.5".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify this against Maven/release sources first, then patch the JSON directly with the smallest valid metadata shape.
+web search: 
+web search: Maven Central org.apache.pekko pekko-stream_2.13 1.1.5 sources tests jar
+web search: 
+web search: https://github.com/apache/pekko/tree/v1.1.5
+web search: 
+web search: repo1.maven.org/maven2/org/apache/pekko/pekko-stream_2.13/1.1.5/pekko-stream_2.13-1.1.5-sources.jar
+codex
+The Maven search results show Scala 2.13 artifacts and published source/javadoc jars around the same release, but I need the exact stream artifact listing and current local file contents before editing.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json && sed -n '1,200p' build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d
+-rw-rw-r-- 1 vjovanov vjovanov 65 Jun 11 15:02 build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json
+{
+  "coordinates" : "org.apache.pekko:pekko-stream_2.13:1.1.5"
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/pekko/pekko-stream_2.13/1.1.5/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d
+ succeeded in 320ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/pekko/pekko-stream_2.13/1.1.5</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/pekko/pekko-stream_2.13/1.1.5</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="pekko-stream_2.13-1.1.5-cyclonedx.xml" title="pekko-stream_2.13-1.1.5-cyclonedx.xml">pekko-stream_2.13-1.1.5-cyclonedx.xml</a>             2025-07-01 13:00      2252      
+<a href="pekko-stream_2.13-1.1.5-cyclonedx.xml.asc" title="pekko-stream_2.13-1.1.5-cyclonedx.xml.asc">pekko-stream_2.13-1.1.5-cyclonedx.xml.asc</a>         2025-07-01 13:00       488      
+<a href="pekko-stream_2.13-1.1.5-cyclonedx.xml.asc.md5" title="pekko-stream_2.13-1.1.5-cyclonedx.xml.asc.md5">pekko-stream_2.13-1.1.5-cyclonedx.xml.asc.md5</a>     2025-07-01 13:00        32      
+<a href="pekko-stream_2.13-1.1.5-cyclonedx.xml.asc.sha1" title="pekko-stream_2.13-1.1.5-cyclonedx.xml.asc.sha1">pekko-stream_2.13-1.1.5-cyclonedx.xml.asc.sha...</a>  2025-07-01 13:00        40      
+<a href="pekko-stream_2.13-1.1.5-cyclonedx.xml.md5" title="pekko-stream_2.13-1.1.5-cyclonedx.xml.md5">pekko-stream_2.13-1.1.5-cyclonedx.xml.md5</a>         2025-07-01 13:00        32      
+<a href="pekko-stream_2.13-1.1.5-cyclonedx.xml.sha1" title="pekko-stream_2.13-1.1.5-cyclonedx.xml.sha1">pekko-stream_2.13-1.1.5-cyclonedx.xml.sha1</a>        2025-07-01 13:00        40      
+<a href="pekko-stream_2.13-1.1.5-javadoc.jar" title="pekko-stream_2.13-1.1.5-javadoc.jar">pekko-stream_2.13-1.1.5-javadoc.jar</a>               2025-07-01 13:00  10401627      
+<a href="pekko-stream_2.13-1.1.5-javadoc.jar.asc" title="pekko-stream_2.13-1.1.5-javadoc.jar.asc">pekko-stream_2.13-1.1.5-javadoc.jar.asc</a>           2025-07-01 13:00       488      
+<a href="pekko-stream_2.13-1.1.5-javadoc.jar.asc.md5" title="pekko-stream_2.13-1.1.5-javadoc.jar.asc.md5">pekko-stream_2.13-1.1.5-javadoc.jar.asc.md5</a>       2025-07-01 13:00        32      
+<a href="pekko-stream_2.13-1.1.5-javadoc.jar.asc.sha1" title="pekko-stream_2.13-1.1.5-javadoc.jar.asc.sha1">pekko-stream_2.13-1.1.5-javadoc.jar.asc.sha1</a>      2025-07-01 13:00        40      
+<a href="pekko-stream_2.13-1.1.5-javadoc.jar.md5" title="pekko-stream_2.13-1.1.5-javadoc.jar.md5">pekko-stream_2.13-1.1.5-javadoc.jar.md5</a>           2025-07-01 13:00        32      
+<a href="pekko-stream_2.13-1.1.5-javadoc.jar.sha1" title="pekko-stream_2.13-1.1.5-javadoc.jar.sha1">pekko-stream_2.13-1.1.5-javadoc.jar.sha1</a>          2025-07-01 13:00        40      
+<a href="pekko-stream_2.13-1.1.5-sources.jar" title="pekko-stream_2.13-1.1.5-sources.jar">pekko-stream_2.13-1.1.5-sources.jar</a>               2025-07-01 13:00    661985      
+<a href="pekko-stream_2.13-1.1.5-sources.jar.asc" title="pekko-stream_2.13-1.1.5-sources.jar.asc">pekko-stream_2.13-1.1.5-sources.jar.asc</a>           2025-07-01 13:00       488      
+<a href="pekko-stream_2.13-1.1.5-sources.jar.asc.md5" title="pekko-stream_2.13-1.1.5-sources.jar.asc.md5">pekko-stream_2.13-1.1.5-sources.jar.asc.md5</a>       2025-07-01 13:00        32      
+<a href="pekko-stream_2.13-1.1.5-sources.jar.asc.sha1" title="pekko-stream_2.13-1.1.5-sources.jar.asc.sha1">pekko-stream_2.13-1.1.5-sources.jar.asc.sha1</a>      2025-07-01 13:00        40      
+<a href="pekko-stream_2.13-1.1.5-sources.jar.md5" title="pekko-stream_2.13-1.1.5-sources.jar.md5">pekko-stream_2.13-1.1.5-sources.jar.md5</a>           2025-07-01 13:00        32      
+<a href="pekko-stream_2.13-1.1.5-sources.jar.sha1" title="pekko-stream_2.13-1.1.5-sources.jar.sha1">pekko-stream_2.13-1.1.5-sources.jar.sha1</a>          2025-07-01 13:00        40      
+<a href="pekko-stream_2.13-1.1.5.buildinfo" title="pekko-stream_2.13-1.1.5.buildinfo">pekko-stream_2.13-1.1.5.buildinfo</a>                 2025-07-01 13:00       765      
+<a href="pekko-stream_2.13-1.1.5.buildinfo.asc" title="pekko-stream_2.13-1.1.5.buildinfo.asc">pekko-stream_2.13-1.1.5.buildinfo.asc</a>             2025-07-01 13:00       488      
+<a href="pekko-stream_2.13-1.1.5.buildinfo.asc.md5" title="pekko-stream_2.13-1.1.5.buildinfo.asc.md5">pekko-stream_2.13-1.1.5.buildinfo.asc.md5</a>         2025-07-01 13:00        32      
+<a href="pekko-stream_2.13-1.1.5.buildinfo.asc.sha1" title="pekko-stream_2.13-1.1.5.buildinfo.asc.sha1">pekko-stream_2.13-1.1.5.buildinfo.asc.sha1</a>        2025-07-01 13:00        40      
+<a href="pekko-stream_2.13-1.1.5.buildinfo.md5" title="pekko-stream_2.13-1.1.5.buildinfo.md5">pekko-stream_2.13-1.1.5.buildinfo.md5</a>             2025-07-01 13:00        32      
+<a href="pekko-stream_2.13-1.1.5.buildinfo.sha1" title="pekko-stream_2.13-1.1.5.buildinfo.sha1">pekko-stream_2.13-1.1.5.buildinfo.sha1</a>            2025-07-01 13:00        40      
+<a href="pekko-stream_2.13-1.1.5.jar" title="pekko-stream_2.13-1.1.5.jar">pekko-stream_2.13-1.1.5.jar</a>                       2025-07-01 13:00   5251750      
+<a href="pekko-stream_2.13-1.1.5.jar.asc" title="pekko-stream_2.13-1.1.5.jar.asc">pekko-stream_2.13-1.1.5.jar.asc</a>                   2025-07-01 13:00       488      
+<a href="pekko-stream_2.13-1.1.5.jar.asc.md5" title="pekko-stream_2.13-1.1.5.jar.asc.md5">pekko-stream_2.13-1.1.5.jar.asc.md5</a>               2025-07-01 13:00        32      
+<a href="pekko-stream_2.13-1.1.5.jar.asc.sha1" title="pekko-stream_2.13-1.1.5.jar.asc.sha1">pekko-stream_2.13-1.1.5.jar.asc.sha1</a>              2025-07-01 13:00        40      
+<a href="pekko-stream_2.13-1.1.5.jar.md5" title="pekko-stream_2.13-1.1.5.jar.md5">pekko-stream_2.13-1.1.5.jar.md5</a>                   2025-07-01 13:00        32      
+<a href="pekko-stream_2.13-1.1.5.jar.sha1" title="pekko-stream_2.13-1.1.5.jar.sha1">pekko-stream_2.13-1.1.5.jar.sha1</a>                  2025-07-01 13:00        40      
+<a href="pekko-stream_2.13-1.1.5.pom" title="pekko-stream_2.13-1.1.5.pom">pekko-stream_2.13-1.1.5.pom</a>                       2025-07-01 13:00      2940      
+<a href="pekko-stream_2.13-1.1.5.pom.asc" title="pekko-stream_2.13-1.1.5.pom.asc">pekko-stream_2.13-1.1.5.pom.asc</a>                   2025-07-01 13:00       488      
+<a href="pekko-stream_2.13-1.1.5.pom.asc.md5" title="pekko-stream_2.13-1.1.5.pom.asc.md5">pekko-stream_2.13-1.1.5.pom.asc.md5</a>               2025-07-01 13:00        32      
+<a href="pekko-stream_2.13-1.1.5.pom.asc.sha1" title="pekko-stream_2.13-1.1.5.pom.asc.sha1">pekko-stream_2.13-1.1.5.pom.asc.sha1</a>              2025-07-01 13:00        40      
+<a href="pekko-stream_2.13-1.1.5.pom.md5" title="pekko-stream_2.13-1.1.5.pom.md5">pekko-stream_2.13-1.1.5.pom.md5</a>                   2025-07-01 13:00        32      
+<a href="pekko-stream_2.13-1.1.5.pom.sha1" title="pekko-stream_2.13-1.1.5.pom.sha1">pekko-stream_2.13-1.1.5.pom.sha1</a>                  2025-07-01 13:00        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/pekko/pekko-stream_2.13/1.1.5/pekko-stream_2.13-1.1.5.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.apache.pekko</groupId>
+    <artifactId>pekko-stream_2.13</artifactId>
+    <packaging>jar</packaging>
+    <description>Apache Pekko is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala.</description>
+    <url>https://pekko.apache.org/</url>
+    <version>1.1.5</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>Apache Pekko Stream</name>
+    <inceptionYear>2022</inceptionYear>
+    <organization>
+        <name>Apache Software Foundation</name>
+        <url>https://www.apache.org</url>
+    </organization>
+    <scm>
+        <url>https://github.com/apache/pekko</url>
+        <connection>scm:git:https://github.com/apache/pekko.git</connection>
+        <developerConnection>scm:git:git@github.com:apache/pekko.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>pekko-contributors</id>
+            <name>Apache Pekko Contributors</name>
+            <url>https://github.com/apache/pekko/graphs/contributors</url>
+            <email>dev@pekko.apache.org</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://pekko.apache.org/api/pekko/1.1.5</info.apiURL>
+        <info.versionScheme>semver-spec</info.versionScheme>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.13.15</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-actor_2.13</artifactId>
+            <version>1.1.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-protobuf-v3_2.13</artifactId>
+            <version>1.1.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.reactivestreams</groupId>
+            <artifactId>reactive-streams</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>ssl-config-core_2.13</artifactId>
+            <version>0.6.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_2.13</artifactId>
+            <version>3.2.19</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+codex
+Maven Central has the normal JVM jar, sources jar, and javadoc jar for `1.1.5`; there is no test-sources or tests classifier in that artifact directory, so I’m checking the release tag layout for the test tree.
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/pekko/v1.1.5/build.sbt | sed -n '1,240p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/pekko.git 'refs/tags/*1.1.5*'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d
+ succeeded in 178ms:
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * license agreements; and to You under the Apache License, version 2.0:
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * This file is part of the Apache Pekko project, which was derived from Akka.
+ */
+
+import net.bzzt.reproduciblebuilds.ReproducibleBuildsPlugin.reproducibleBuildsCheckResolver
+
+scalaVersion := Dependencies.allScalaVersions.head
+
+ThisBuild / versionScheme := Some(VersionScheme.SemVerSpec)
+sourceDistName := "apache-pekko"
+sourceDistIncubating := false
+
+ThisBuild / reproducibleBuildsCheckResolver := Resolver.ApacheMavenStagingRepo
+
+ThisBuild / pekkoCoreProject := true
+
+enablePlugins(
+  UnidocRoot,
+  UnidocWithPrValidation,
+  NoPublish,
+  ScalafixIgnoreFilePlugin,
+  JavaFormatterPlugin)
+disablePlugins(MimaPlugin)
+
+addCommandAlias("checkCodeStyle", "scalafmtCheckAll; scalafmtSbtCheck; javafmtCheckAll; +headerCheckAll")
+addCommandAlias("applyCodeStyle", "+headerCreateAll; scalafmtAll; scalafmtSbt; javafmtAll")
+
+addCommandAlias(
+  name = "fixall",
+  value = ";scalafixEnable; scalafixAll; scalafmtAll; test:compile; multi-jvm:compile; reload")
+
+addCommandAlias(name = "sortImports", value = ";scalafixEnable; scalafixAll SortImports; scalafmtAll")
+
+import PekkoBuild._
+import com.typesafe.tools.mima.plugin.MimaPlugin
+import sbt.Keys.{ initialCommands, parallelExecution }
+import spray.boilerplate.BoilerplatePlugin
+
+initialize := {
+  // Load system properties from a file to make configuration from Jenkins easier
+  loadSystemProperties("project/pekko-build.properties")
+  initialize.value
+}
+
+shellPrompt := { s =>
+  Project.extract(s).currentProject.id + " > "
+}
+resolverSettings
+
+// When this is updated the set of modules in ActorSystem.allModules should also be updated
+lazy val userProjects: Seq[ProjectReference] = List[ProjectReference](
+  actor,
+  actorTestkitTyped,
+  actorTyped,
+  cluster,
+  clusterMetrics,
+  clusterSharding,
+  clusterShardingTyped,
+  clusterTools,
+  clusterTyped,
+  coordination,
+  discovery,
+  distributedData,
+  jackson,
+  multiNodeTestkit,
+  osgi,
+  persistence,
+  persistenceQuery,
+  persistenceTyped,
+  persistenceTestkit,
+  protobufV3,
+  pki,
+  remote,
+  slf4j,
+  stream,
+  streamTestkit,
+  streamTyped,
+  testkit)
+
+lazy val aggregatedProjects: Seq[ProjectReference] = userProjects ++ List[ProjectReference](
+  actorTests,
+  actorTypedTests,
+  benchJmh,
+  docs,
+  billOfMaterials,
+  persistenceShared,
+  persistenceTck,
+  persistenceTypedTests,
+  remoteTests,
+  streamTests,
+  streamTypedTests,
+  streamTestsTck)
+
+lazy val root = Project(id = "pekko", base = file("."))
+  .aggregate(aggregatedProjects: _*)
+  .settings(
+    name := "pekko-root")
+  .settings(rootSettings: _*)
+  .settings(
+    UnidocRoot.autoImport.unidocRootIgnoreProjects := Seq(
+      remoteTests,
+      benchJmh,
+      protobufV3,
+      pekkoScalaNightly,
+      docs,
+      serialversionRemoverPlugin))
+  .settings(
+    Compile / headerCreate / unmanagedSources := (baseDirectory.value / "project").**("*.scala").get)
+  .settings(PekkoBuild.welcomeSettings)
+  .enablePlugins(CopyrightHeaderForBuild)
+
+lazy val actor = pekkoModule("actor")
+  .settings(Dependencies.actor)
+  .settings(OSGi.actor)
+  .settings(AutomaticModuleName.settings("pekko.actor"))
+  .settings(AddMetaInfLicenseFiles.actorSettings)
+  .settings(VersionGenerator.settings)
+  .settings(serialversionRemoverPluginSettings)
+  .enablePlugins(BoilerplatePlugin, SbtOsgi, Jdk9)
+
+lazy val actorTests = pekkoModule("actor-tests")
+  .configs(Jdk9.TestJdk9)
+  .dependsOn(testkit % "compile->compile;test->test", actor)
+  .settings(Dependencies.actorTests)
+  .enablePlugins(NoPublish, Jdk9)
+  .disablePlugins(MimaPlugin)
+
+lazy val pekkoScalaNightly = pekkoModule("scala-nightly")
+  .aggregate(aggregatedProjects: _*)
+  .disablePlugins(MimaPlugin)
+  .disablePlugins(ValidatePullRequest, MimaPlugin)
+
+lazy val benchJmh = pekkoModule("bench-jmh")
+  .enablePlugins(Jdk9)
+  .dependsOn(Seq(actor, actorTyped, stream, streamTestkit, persistence, distributedData, jackson, testkit).map(
+    _ % "compile->compile;compile->test"): _*)
+  .settings(Dependencies.benchJmh)
+  .settings(javacOptions += "-parameters") // for Jackson
+  .enablePlugins(JmhPlugin, ScaladocNoVerificationOfDiagrams, NoPublish)
+  .disablePlugins(MimaPlugin, ValidatePullRequest)
+
+lazy val cluster = pekkoModule("cluster")
+  .dependsOn(
+    remote,
+    coordination % "compile->compile;test->test",
+    remoteTests % "test->test",
+    testkit % "test->test",
+    jackson % "test->test")
+  .settings(Dependencies.cluster)
+  .settings(AutomaticModuleName.settings("pekko.cluster"))
+  .settings(AddMetaInfLicenseFiles.clusterSettings)
+  .settings(OSGi.cluster)
+  .settings(Protobuf.settings)
+  .settings(Test / parallelExecution := false)
+  .enablePlugins(MultiNodeScalaTest, SbtOsgi)
+
+lazy val clusterMetrics = pekkoModule("cluster-metrics")
+  .dependsOn(
+    cluster % "compile->compile;test->test;multi-jvm->multi-jvm",
+    slf4j % "test->compile",
+    jackson % "test->test")
+  .settings(OSGi.clusterMetrics)
+  .settings(Dependencies.clusterMetrics)
+  .settings(AutomaticModuleName.settings("pekko.cluster.metrics"))
+  .settings(Protobuf.settings)
+  .settings(SigarLoader.sigarSettings)
+  .settings(Test / parallelExecution := false)
+  .enablePlugins(MultiNodeScalaTest, SbtOsgi)
+
+lazy val clusterSharding = pekkoModule("cluster-sharding")
+// TODO pekko-persistence dependency should be provided in pom.xml artifact.
+//      If I only use "provided" here it works, but then we can't run tests.
+//      Scope "test" is alright in the pom.xml, but would have been nicer with
+//      provided.
+  .dependsOn(
+    cluster % "compile->compile;test->test;multi-jvm->multi-jvm",
+    distributedData,
+    persistence % "compile->compile",
+    clusterTools % "compile->compile;test->test",
+    jackson % "test->test")
+  .settings(Dependencies.clusterSharding)
+  .settings(AutomaticModuleName.settings("pekko.cluster.sharding"))
+  .settings(OSGi.clusterSharding)
+  .settings(Protobuf.settings)
+  .settings(PekkoDependWalker.jdk9CompileCheckSetting)
+  .enablePlugins(MultiNode, ScaladocNoVerificationOfDiagrams, Jdk9, DependWalkerPlugin, SbtOsgi)
+
+lazy val clusterTools = pekkoModule("cluster-tools")
+  .dependsOn(
+    cluster % "compile->compile;test->test;multi-jvm->multi-jvm",
+    coordination % "compile->compile;test->test",
+    jackson % "test->test")
+  .settings(Dependencies.clusterTools)
+  .settings(AutomaticModuleName.settings("pekko.cluster.tools"))
+  .settings(OSGi.clusterTools)
+  .settings(Protobuf.settings)
+  .enablePlugins(MultiNode, ScaladocNoVerificationOfDiagrams, SbtOsgi)
+
+lazy val distributedData = pekkoModule("distributed-data")
+  .dependsOn(cluster % "compile->compile;test->test;multi-jvm->multi-jvm", jackson % "test->test")
+  .settings(Dependencies.distributedData)
+  .settings(AutomaticModuleName.settings("pekko.cluster.ddata"))
+  .settings(AddMetaInfLicenseFiles.distributedDataSettings)
+  .settings(OSGi.distributedData)
+  .settings(Protobuf.settings)
+  .enablePlugins(MultiNodeScalaTest, SbtOsgi)
+
+lazy val docs = pekkoModule("docs")
+  .configs(Jdk9.TestJdk9)
+  .dependsOn(
+    actor,
+    cluster,
+    clusterMetrics,
+    slf4j,
+    osgi,
+    persistenceTck,
+    persistenceQuery,
+    distributedData,
+    stream,
+    stream % "TestJdk9->CompileJdk9",
+    actorTyped,
+    clusterTools % "compile->compile;test->test",
+    clusterSharding % "compile->compile;test->test",
+    discovery % "compile->compile;test->test",
+    testkit % "compile->compile;test->test",
+    remote % "compile->compile;test->test",
+    persistence % "compile->compile;test->test",
+    actorTyped % "compile->compile;test->test",
+    persistenceTyped % "compile->compile;test->test",
+    clusterTyped % "compile->compile;test->test",
+    clusterShardingTyped % "compile->compile;test->test",
+    actorTypedTests % "compile->compile;test->test",
+    streamTestkit % "compile->compile;test->test",
+    persistenceTestkit % "compile->compile;test->test")
+  .settings(Dependencies.docs)
+
+ succeeded in 347ms:
+f6f0a2dd364928c8842fcf9fdb65e4b37ce7edbe	refs/tags/v1.1.5
+4655e057844d2c4dbc602b6928b5609f4f04b7d1	refs/tags/v1.1.5^{}
+701511e36ccee79b9b5de937b0bb7e9b6f616099	refs/tags/v1.1.5-RC1
+4655e057844d2c4dbc602b6928b5609f4f04b7d1	refs/tags/v1.1.5-RC1^{}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/pekko/contents?ref=v1.1.5' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d
+ succeeded in 284ms:
+[
+  {
+    "name": ".asf.yaml",
+    "path": ".asf.yaml",
+    "sha": "92c54d357d04920c830fc2431b6aab1ce1efc1ee",
+    "size": 1938,
+    "url": "https://api.github.com/repos/apache/pekko/contents/.asf.yaml?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/.asf.yaml",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/92c54d357d04920c830fc2431b6aab1ce1efc1ee",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/.asf.yaml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/.asf.yaml?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/92c54d357d04920c830fc2431b6aab1ce1efc1ee",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/.asf.yaml"
+    }
+  },
+  {
+    "name": ".git-blame-ignore-revs",
+    "path": ".git-blame-ignore-revs",
+    "sha": "63318f3144bc6d1ff35ea5f2c7f4f5361676c848",
+    "size": 2880,
+    "url": "https://api.github.com/repos/apache/pekko/contents/.git-blame-ignore-revs?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/.git-blame-ignore-revs",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/63318f3144bc6d1ff35ea5f2c7f4f5361676c848",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/.git-blame-ignore-revs",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/.git-blame-ignore-revs?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/63318f3144bc6d1ff35ea5f2c7f4f5361676c848",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/.git-blame-ignore-revs"
+    }
+  },
+  {
+    "name": ".gitattributes",
+    "path": ".gitattributes",
+    "sha": "9dde9b97632bec8ca597ec3ea55bd1b312a08aa9",
+    "size": 244,
+    "url": "https://api.github.com/repos/apache/pekko/contents/.gitattributes?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/.gitattributes",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/9dde9b97632bec8ca597ec3ea55bd1b312a08aa9",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/.gitattributes",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/.gitattributes?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/9dde9b97632bec8ca597ec3ea55bd1b312a08aa9",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/.gitattributes"
+    }
+  },
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "20e0e27e33bd3f6d2720fdf99fd86bc097eec599",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/.github?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/.github",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/20e0e27e33bd3f6d2720fdf99fd86bc097eec599",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/.github?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/20e0e27e33bd3f6d2720fdf99fd86bc097eec599",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "1561267507096af4041944b9d83a22213d7d7ebe",
+    "size": 1203,
+    "url": "https://api.github.com/repos/apache/pekko/contents/.gitignore?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/.gitignore",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/1561267507096af4041944b9d83a22213d7d7ebe",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/.gitignore?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/1561267507096af4041944b9d83a22213d7d7ebe",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/.gitignore"
+    }
+  },
+  {
+    "name": ".jvmopts-ci",
+    "path": ".jvmopts-ci",
+    "sha": "75b23e439ccab628f928f85b778ae5b5c325cc13",
+    "size": 324,
+    "url": "https://api.github.com/repos/apache/pekko/contents/.jvmopts-ci?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/.jvmopts-ci",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/75b23e439ccab628f928f85b778ae5b5c325cc13",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/.jvmopts-ci",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/.jvmopts-ci?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/75b23e439ccab628f928f85b778ae5b5c325cc13",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/.jvmopts-ci"
+    }
+  },
+  {
+    "name": ".sbt-java-formatter.conf",
+    "path": ".sbt-java-formatter.conf",
+    "sha": "eaf139d7c8ff550eda236f30a6a4d6fa8f27e485",
+    "size": 1935,
+    "url": "https://api.github.com/repos/apache/pekko/contents/.sbt-java-formatter.conf?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/.sbt-java-formatter.conf",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/eaf139d7c8ff550eda236f30a6a4d6fa8f27e485",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/.sbt-java-formatter.conf",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/.sbt-java-formatter.conf?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/eaf139d7c8ff550eda236f30a6a4d6fa8f27e485",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/.sbt-java-formatter.conf"
+    }
+  },
+  {
+    "name": ".sbtopts",
+    "path": ".sbtopts",
+    "sha": "85d631bdd70a8d84903581211f3c3ec8778b8ca7",
+    "size": 89,
+    "url": "https://api.github.com/repos/apache/pekko/contents/.sbtopts?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/.sbtopts",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/85d631bdd70a8d84903581211f3c3ec8778b8ca7",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/.sbtopts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/.sbtopts?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/85d631bdd70a8d84903581211f3c3ec8778b8ca7",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/.sbtopts"
+    }
+  },
+  {
+    "name": ".scala-steward.conf",
+    "path": ".scala-steward.conf",
+    "sha": "37d642f9ee25508a6760f8586c807f7c8c0ca536",
+    "size": 1627,
+    "url": "https://api.github.com/repos/apache/pekko/contents/.scala-steward.conf?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/.scala-steward.conf",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/37d642f9ee25508a6760f8586c807f7c8c0ca536",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/.scala-steward.conf",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/.scala-steward.conf?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/37d642f9ee25508a6760f8586c807f7c8c0ca536",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/.scala-steward.conf"
+    }
+  },
+  {
+    "name": ".scalafix.conf",
+    "path": ".scalafix.conf",
+    "sha": "c8e1383dbb6904764bf21ace9243ae9f09916ef2",
+    "size": 1196,
+    "url": "https://api.github.com/repos/apache/pekko/contents/.scalafix.conf?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/.scalafix.conf",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/c8e1383dbb6904764bf21ace9243ae9f09916ef2",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/.scalafix.conf",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/.scalafix.conf?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/c8e1383dbb6904764bf21ace9243ae9f09916ef2",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/.scalafix.conf"
+    }
+  },
+  {
+    "name": ".scalafmt.conf",
+    "path": ".scalafmt.conf",
+    "sha": "83b7c741385e96496d7369ed963b4429ab1adf84",
+    "size": 2100,
+    "url": "https://api.github.com/repos/apache/pekko/contents/.scalafmt.conf?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/.scalafmt.conf",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/83b7c741385e96496d7369ed963b4429ab1adf84",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/.scalafmt.conf",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/.scalafmt.conf?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/83b7c741385e96496d7369ed963b4429ab1adf84",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/.scalafmt.conf"
+    }
+  },
+  {
+    "name": "CHANGELOG.md",
+    "path": "CHANGELOG.md",
+    "sha": "88819e34b4019b3195ae8875b803f2db953ee93d",
+    "size": 427,
+    "url": "https://api.github.com/repos/apache/pekko/contents/CHANGELOG.md?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/CHANGELOG.md",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/88819e34b4019b3195ae8875b803f2db953ee93d",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/CHANGELOG.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/CHANGELOG.md?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/88819e34b4019b3195ae8875b803f2db953ee93d",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/CHANGELOG.md"
+    }
+  },
+  {
+    "name": "CONTRIBUTING.md",
+    "path": "CONTRIBUTING.md",
+    "sha": "6a65249840e386d914b42b1f21b141b672e4319e",
+    "size": 36797,
+    "url": "https://api.github.com/repos/apache/pekko/contents/CONTRIBUTING.md?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/CONTRIBUTING.md",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/6a65249840e386d914b42b1f21b141b672e4319e",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/CONTRIBUTING.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/CONTRIBUTING.md?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/6a65249840e386d914b42b1f21b141b672e4319e",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/CONTRIBUTING.md"
+    }
+  },
+  {
+    "name": "COPYING.protobuf",
+    "path": "COPYING.protobuf",
+    "sha": "705db579c94f7fe3e95528e9fb0d7de71d606369",
+    "size": 1732,
+    "url": "https://api.github.com/repos/apache/pekko/contents/COPYING.protobuf?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/COPYING.protobuf",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/705db579c94f7fe3e95528e9fb0d7de71d606369",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/COPYING.protobuf",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/COPYING.protobuf?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/705db579c94f7fe3e95528e9fb0d7de71d606369",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/COPYING.protobuf"
+    }
+  },
+  {
+    "name": "KEYS",
+    "path": "KEYS",
+    "sha": "8b4ede800fe0bb399d128a8a94c3e8bb071ce3e2",
+    "size": 12622,
+    "url": "https://api.github.com/repos/apache/pekko/contents/KEYS?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/KEYS",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/8b4ede800fe0bb399d128a8a94c3e8bb071ce3e2",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/KEYS",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/KEYS?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/8b4ede800fe0bb399d128a8a94c3e8bb071ce3e2",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/KEYS"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "a6e6defab87ea3f72642befa7e9c8ce20f936ebe",
+    "size": 25202,
+    "url": "https://api.github.com/repos/apache/pekko/contents/LICENSE?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/LICENSE",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/a6e6defab87ea3f72642befa7e9c8ce20f936ebe",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/LICENSE?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/a6e6defab87ea3f72642befa7e9c8ce20f936ebe",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/LICENSE"
+    }
+  },
+  {
+    "name": "NOTICE",
+    "path": "NOTICE",
+    "sha": "2aeba4431a579f8696e771cbae0028aabb00b269",
+    "size": 2671,
+    "url": "https://api.github.com/repos/apache/pekko/contents/NOTICE?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/NOTICE",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/2aeba4431a579f8696e771cbae0028aabb00b269",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/NOTICE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/NOTICE?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/2aeba4431a579f8696e771cbae0028aabb00b269",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/NOTICE"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "5158c3d532cd63100914ead75c0aab4cd85f2dc7",
+    "size": 5298,
+    "url": "https://api.github.com/repos/apache/pekko/contents/README.md?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/README.md",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/5158c3d532cd63100914ead75c0aab4cd85f2dc7",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/README.md?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/5158c3d532cd63100914ead75c0aab4cd85f2dc7",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/README.md"
+    }
+  },
+  {
+    "name": "actor-testkit-typed",
+    "path": "actor-testkit-typed",
+    "sha": "06885d537578c0dde39927fef0a39008d7be6f7b",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/actor-testkit-typed?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/actor-testkit-typed",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/06885d537578c0dde39927fef0a39008d7be6f7b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/actor-testkit-typed?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/06885d537578c0dde39927fef0a39008d7be6f7b",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/actor-testkit-typed"
+    }
+  },
+  {
+    "name": "actor-tests",
+    "path": "actor-tests",
+    "sha": "36a31e3afce4bd3179f8e4a56eb84437b40720c2",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/actor-tests?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/actor-tests",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/36a31e3afce4bd3179f8e4a56eb84437b40720c2",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/actor-tests?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/36a31e3afce4bd3179f8e4a56eb84437b40720c2",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/actor-tests"
+    }
+  },
+  {
+    "name": "actor-typed-tests",
+    "path": "actor-typed-tests",
+    "sha": "4dd541e8bd6feb457dbcdd0f96c3ac63607373f9",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/actor-typed-tests?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/actor-typed-tests",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/4dd541e8bd6feb457dbcdd0f96c3ac63607373f9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/actor-typed-tests?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/4dd541e8bd6feb457dbcdd0f96c3ac63607373f9",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/actor-typed-tests"
+    }
+  },
+  {
+    "name": "actor-typed",
+    "path": "actor-typed",
+    "sha": "1dc6254603f4cb6185f7ed7c6be62584ce3e84cc",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/actor-typed?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/actor-typed",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/1dc6254603f4cb6185f7ed7c6be62584ce3e84cc",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/actor-typed?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/1dc6254603f4cb6185f7ed7c6be62584ce3e84cc",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/actor-typed"
+    }
+  },
+  {
+    "name": "actor",
+    "path": "actor",
+    "sha": "1fe0e300b033c1433c1b340acb99a8bdf307d78d",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/actor?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/actor",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/1fe0e300b033c1433c1b340acb99a8bdf307d78d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/actor?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/1fe0e300b033c1433c1b340acb99a8bdf307d78d",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/actor"
+    }
+  },
+  {
+    "name": "bench-jmh",
+    "path": "bench-jmh",
+    "sha": "05975ae562a660234e1b54c97206130ae2c91185",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/bench-jmh?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/bench-jmh",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/05975ae562a660234e1b54c97206130ae2c91185",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/bench-jmh?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/05975ae562a660234e1b54c97206130ae2c91185",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/bench-jmh"
+    }
+  },
+  {
+    "name": "build.sbt",
+    "path": "build.sbt",
+    "sha": "f3ba8323e19cdc298c65b350d601cf5910cfc72a",
+    "size": 25841,
+    "url": "https://api.github.com/repos/apache/pekko/contents/build.sbt?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/build.sbt",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/f3ba8323e19cdc298c65b350d601cf5910cfc72a",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/build.sbt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/build.sbt?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/f3ba8323e19cdc298c65b350d601cf5910cfc72a",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/build.sbt"
+    }
+  },
+  {
+    "name": "cluster-metrics",
+    "path": "cluster-metrics",
+    "sha": "c8d8750c02969784716627ab1e84254362440092",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/cluster-metrics?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/cluster-metrics",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/c8d8750c02969784716627ab1e84254362440092",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/cluster-metrics?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/c8d8750c02969784716627ab1e84254362440092",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/cluster-metrics"
+    }
+  },
+  {
+    "name": "cluster-sharding-typed",
+    "path": "cluster-sharding-typed",
+    "sha": "55358e98f8760ef1755ddf54a0963db55eea941c",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/cluster-sharding-typed?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/cluster-sharding-typed",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/55358e98f8760ef1755ddf54a0963db55eea941c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/cluster-sharding-typed?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/55358e98f8760ef1755ddf54a0963db55eea941c",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/cluster-sharding-typed"
+    }
+  },
+  {
+    "name": "cluster-sharding",
+    "path": "cluster-sharding",
+    "sha": "e33a45c13c716072996bfa4fe9ce9126a48f3ccd",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/cluster-sharding?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/cluster-sharding",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/e33a45c13c716072996bfa4fe9ce9126a48f3ccd",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/cluster-sharding?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/e33a45c13c716072996bfa4fe9ce9126a48f3ccd",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/cluster-sharding"
+    }
+  },
+  {
+    "name": "cluster-tools",
+    "path": "cluster-tools",
+    "sha": "9693171c36839b8754e8e636e76e0fe6d685d977",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/cluster-tools?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/cluster-tools",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/9693171c36839b8754e8e636e76e0fe6d685d977",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/cluster-tools?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/9693171c36839b8754e8e636e76e0fe6d685d977",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/cluster-tools"
+    }
+  },
+  {
+    "name": "cluster-typed",
+    "path": "cluster-typed",
+    "sha": "62068306c769ecb38e04d1613ab0311bb2013816",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/cluster-typed?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/cluster-typed",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/62068306c769ecb38e04d1613ab0311bb2013816",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/cluster-typed?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/62068306c769ecb38e04d1613ab0311bb2013816",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/cluster-typed"
+    }
+  },
+  {
+    "name": "cluster",
+    "path": "cluster",
+    "sha": "a012652fe2e39cfa7417ab2475e5f9d81bef7ef9",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/cluster?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/cluster",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/a012652fe2e39cfa7417ab2475e5f9d81bef7ef9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/cluster?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/a012652fe2e39cfa7417ab2475e5f9d81bef7ef9",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/cluster"
+    }
+  },
+  {
+    "name": "coordination",
+    "path": "coordination",
+    "sha": "07131e0967dfc5c69cec473dea35cca5e1b2f5ca",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/coordination?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/coordination",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/07131e0967dfc5c69cec473dea35cca5e1b2f5ca",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/coordination?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/07131e0967dfc5c69cec473dea35cca5e1b2f5ca",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/coordination"
+    }
+  },
+  {
+    "name": "discovery",
+    "path": "discovery",
+    "sha": "59c740961c7ba0884e624faa4b50db3f4edfa3c7",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/discovery?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/discovery",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/59c740961c7ba0884e624faa4b50db3f4edfa3c7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/discovery?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/59c740961c7ba0884e624faa4b50db3f4edfa3c7",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/discovery"
+    }
+  },
+  {
+    "name": "distributed-data",
+    "path": "distributed-data",
+    "sha": "f42e5517e505934ab1ffcd8ed8e2456d0e043d73",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/distributed-data?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/distributed-data",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/f42e5517e505934ab1ffcd8ed8e2456d0e043d73",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/distributed-data?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/f42e5517e505934ab1ffcd8ed8e2456d0e043d73",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/distributed-data"
+    }
+  },
+  {
+    "name": "docs",
+    "path": "docs",
+    "sha": "6ef58609a48dad95aea6ddaf1bc5cba22d5292c1",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/docs?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/docs",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/6ef58609a48dad95aea6ddaf1bc5cba22d5292c1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/docs?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/6ef58609a48dad95aea6ddaf1bc5cba22d5292c1",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/docs"
+    }
+  },
+  {
+    "name": "kubernetes",
+    "path": "kubernetes",
+    "sha": "55f7b54939db712872f4e8c1db93e724e7ffa43d",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/kubernetes?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/kubernetes",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/55f7b54939db712872f4e8c1db93e724e7ffa43d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/kubernetes?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/55f7b54939db712872f4e8c1db93e724e7ffa43d",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/kubernetes"
+    }
+  },
+  {
+    "name": "legal",
+    "path": "legal",
+    "sha": "26cc366f94696d3a73573c2ee11cac2fdabe0fcd",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/legal?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/legal",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/26cc366f94696d3a73573c2ee11cac2fdabe0fcd",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/legal?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/26cc366f94696d3a73573c2ee11cac2fdabe0fcd",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/legal"
+    }
+  },
+  {
+    "name": "multi-node-testkit",
+    "path": "multi-node-testkit",
+    "sha": "98dad00adb3444bcbd122955727274cd1a3f5a77",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/multi-node-testkit?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/multi-node-testkit",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/98dad00adb3444bcbd122955727274cd1a3f5a77",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/multi-node-testkit?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/98dad00adb3444bcbd122955727274cd1a3f5a77",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/multi-node-testkit"
+    }
+  },
+  {
+    "name": "osgi",
+    "path": "osgi",
+    "sha": "a442db5fe80086fc8dddd7095ea6e4b04a3f0698",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/osgi?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/osgi",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/a442db5fe80086fc8dddd7095ea6e4b04a3f0698",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/osgi?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/a442db5fe80086fc8dddd7095ea6e4b04a3f0698",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/osgi"
+    }
+  },
+  {
+    "name": "persistence-query",
+    "path": "persistence-query",
+    "sha": "13fa1586a49da6920576352322c2ac8cd5476799",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/persistence-query?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/persistence-query",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/13fa1586a49da6920576352322c2ac8cd5476799",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/persistence-query?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/13fa1586a49da6920576352322c2ac8cd5476799",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/persistence-query"
+    }
+  },
+  {
+    "name": "persistence-shared",
+    "path": "persistence-shared",
+    "sha": "42d6fc4fc3e07506817b28d8b0778b9b99b33617",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/persistence-shared?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/persistence-shared",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/42d6fc4fc3e07506817b28d8b0778b9b99b33617",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/persistence-shared?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/42d6fc4fc3e07506817b28d8b0778b9b99b33617",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/persistence-shared"
+    }
+  },
+  {
+    "name": "persistence-tck",
+    "path": "persistence-tck",
+    "sha": "ef42f7972a44fe1fd62b6b62a5827b8ba044bbaa",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/persistence-tck?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/persistence-tck",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/ef42f7972a44fe1fd62b6b62a5827b8ba044bbaa",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/persistence-tck?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/ef42f7972a44fe1fd62b6b62a5827b8ba044bbaa",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/persistence-tck"
+    }
+  },
+  {
+    "name": "persistence-testkit",
+    "path": "persistence-testkit",
+    "sha": "ad9a0127548d988137e6d40412fb8eee09ac121e",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/persistence-testkit?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/persistence-testkit",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/ad9a0127548d988137e6d40412fb8eee09ac121e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/persistence-testkit?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/ad9a0127548d988137e6d40412fb8eee09ac121e",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/persistence-testkit"
+    }
+  },
+  {
+    "name": "persistence-typed-tests",
+    "path": "persistence-typed-tests",
+    "sha": "6ede69fe5dc2dff2ab8fa30d2226718595e2bd25",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/persistence-typed-tests?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/persistence-typed-tests",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/6ede69fe5dc2dff2ab8fa30d2226718595e2bd25",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/persistence-typed-tests?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/6ede69fe5dc2dff2ab8fa30d2226718595e2bd25",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/persistence-typed-tests"
+    }
+  },
+  {
+    "name": "persistence-typed",
+    "path": "persistence-typed",
+    "sha": "ed26e5ce77b51b7451f0a4283dfa56a555183c97",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/persistence-typed?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/persistence-typed",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/ed26e5ce77b51b7451f0a4283dfa56a555183c97",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/persistence-typed?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/ed26e5ce77b51b7451f0a4283dfa56a555183c97",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/persistence-typed"
+    }
+  },
+  {
+    "name": "persistence",
+    "path": "persistence",
+    "sha": "561633836617d6b7da5735aa4ab90eb36bca02e1",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/persistence?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/persistence",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/561633836617d6b7da5735aa4ab90eb36bca02e1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/persistence?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/561633836617d6b7da5735aa4ab90eb36bca02e1",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/persistence"
+    }
+  },
+  {
+    "name": "pki",
+    "path": "pki",
+    "sha": "ac84b887ee9c0fb0463ade0a625d1b1d61e3c8cf",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/pki?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/pki",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/ac84b887ee9c0fb0463ade0a625d1b1d61e3c8cf",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/pki?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/ac84b887ee9c0fb0463ade0a625d1b1d61e3c8cf",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/pki"
+    }
+  },
+  {
+    "name": "plugins",
+    "path": "plugins",
+    "sha": "65b336d3dcd41de5039aacc70fcb05786510d49e",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/plugins?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/plugins",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/65b336d3dcd41de5039aacc70fcb05786510d49e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/plugins?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/65b336d3dcd41de5039aacc70fcb05786510d49e",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/plugins"
+    }
+  },
+  {
+    "name": "project",
+    "path": "project",
+    "sha": "cb5bac1d45944e41f19ffd6609fb0104819dbebf",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/project?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/project",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/cb5bac1d45944e41f19ffd6609fb0104819dbebf",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/project?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/cb5bac1d45944e41f19ffd6609fb0104819dbebf",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/project"
+    }
+  },
+  {
+    "name": "remote-tests",
+    "path": "remote-tests",
+    "sha": "4aa1569ec03bcc89ae38bf53cd00f3c750515758",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/remote-tests?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/remote-tests",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/4aa1569ec03bcc89ae38bf53cd00f3c750515758",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/remote-tests?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/4aa1569ec03bcc89ae38bf53cd00f3c750515758",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/remote-tests"
+    }
+  },
+  {
+    "name": "remote",
+    "path": "remote",
+    "sha": "52845a8df7365adca3a46fd9ec9b675190baaef9",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/remote?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/remote",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/52845a8df7365adca3a46fd9ec9b675190baaef9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/remote?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/52845a8df7365adca3a46fd9ec9b675190baaef9",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/remote"
+    }
+  },
+  {
+    "name": "scripts",
+    "path": "scripts",
+    "sha": "4f8d7a4dc2a448f509e0161b76e6c5defc1fc18f",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/scripts?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/scripts",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/4f8d7a4dc2a448f509e0161b76e6c5defc1fc18f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/scripts?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/4f8d7a4dc2a448f509e0161b76e6c5defc1fc18f",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/scripts"
+    }
+  },
+  {
+    "name": "serialization-jackson",
+    "path": "serialization-jackson",
+    "sha": "efac4b57107f4cf1260934cce58912d9f5e96487",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/serialization-jackson?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/serialization-jackson",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/efac4b57107f4cf1260934cce58912d9f5e96487",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/serialization-jackson?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/efac4b57107f4cf1260934cce58912d9f5e96487",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/serialization-jackson"
+    }
+  },
+  {
+    "name": "slf4j",
+    "path": "slf4j",
+    "sha": "461585d9d1d5d5a2a7594608f0892f0cefaedb94",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/slf4j?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/slf4j",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/461585d9d1d5d5a2a7594608f0892f0cefaedb94",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/slf4j?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/461585d9d1d5d5a2a7594608f0892f0cefaedb94",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/slf4j"
+    }
+  },
+  {
+    "name": "stream-testkit",
+    "path": "stream-testkit",
+    "sha": "9183c2672cbbc4572acd45195e68719351c17bea",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/stream-testkit?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/stream-testkit",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/9183c2672cbbc4572acd45195e68719351c17bea",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/stream-testkit?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/9183c2672cbbc4572acd45195e68719351c17bea",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/stream-testkit"
+    }
+  },
+  {
+    "name": "stream-tests-tck",
+    "path": "stream-tests-tck",
+    "sha": "af93ff58e87b03b2c82b7edf2279a9be9fcc942a",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/stream-tests-tck?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/stream-tests-tck",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/af93ff58e87b03b2c82b7edf2279a9be9fcc942a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/stream-tests-tck?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/af93ff58e87b03b2c82b7edf2279a9be9fcc942a",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/stream-tests-tck"
+    }
+  },
+  {
+    "name": "stream-tests",
+    "path": "stream-tests",
+    "sha": "9928a4726e96b279dc380c7a27e0df3ec6dc89c2",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/stream-tests?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/stream-tests",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/9928a4726e96b279dc380c7a27e0df3ec6dc89c2",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/stream-tests?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/9928a4726e96b279dc380c7a27e0df3ec6dc89c2",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/stream-tests"
+    }
+  },
+  {
+    "name": "stream-typed-tests",
+    "path": "stream-typed-tests",
+    "sha": "c38826d2aad71ac7b006cdcce67fb735b77ecd4e",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/stream-typed-tests?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/stream-typed-tests",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/c38826d2aad71ac7b006cdcce67fb735b77ecd4e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/stream-typed-tests?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/c38826d2aad71ac7b006cdcce67fb735b77ecd4e",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/stream-typed-tests"
+    }
+  },
+  {
+    "name": "stream-typed",
+    "path": "stream-typed",
+    "sha": "0c59a54a33533f8bafe59393c845397789f44cf1",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/stream-typed?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/stream-typed",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/0c59a54a33533f8bafe59393c845397789f44cf1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/stream-typed?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/0c59a54a33533f8bafe59393c845397789f44cf1",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/stream-typed"
+    }
+  },
+  {
+    "name": "stream",
+    "path": "stream",
+    "sha": "07f6154366678d56527f2dddecd9bb651e07be09",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/stream?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/stream",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/07f6154366678d56527f2dddecd9bb651e07be09",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/stream?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/07f6154366678d56527f2dddecd9bb651e07be09",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/stream"
+    }
+  },
+  {
+    "name": "testkit",
+    "path": "testkit",
+    "sha": "dfb56f1ca3769a470b3572eaf81e4996c1536c32",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/testkit?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/testkit",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/dfb56f1ca3769a470b3572eaf81e4996c1536c32",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/testkit?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/dfb56f1ca3769a470b3572eaf81e4996c1536c32",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/testkit"
+    }
+  }
+]
+
+codex
+The `v1.1.5` release tag exists, and the build defines `stream` as the published module with separate `stream-tests` and `stream-tests-tck` projects aggregated for tests. I’m checking the exact test/documentation paths now so the URL fields don’t land on a broad repository root.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/pekko/contents/stream/src/test?ref=v1.1.5' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream?ref=v1.1.5' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/pekko/contents/stream-tests/src/test?ref=v1.1.5' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d
+ exited 22 in 188ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 242ms:
+[
+  {
+    "name": "actor-interop.md",
+    "path": "docs/src/main/paradox/stream/actor-interop.md",
+    "sha": "cd1bee5a163a8393a75ecc46c70ce55a663766df",
+    "size": 12263,
+    "url": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/actor-interop.md?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/actor-interop.md",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/cd1bee5a163a8393a75ecc46c70ce55a663766df",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/docs/src/main/paradox/stream/actor-interop.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/actor-interop.md?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/cd1bee5a163a8393a75ecc46c70ce55a663766df",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/actor-interop.md"
+    }
+  },
+  {
+    "name": "futures-interop.md",
+    "path": "docs/src/main/paradox/stream/futures-interop.md",
+    "sha": "673ba8b530d045cc19e0bd20d0c56430760162db",
+    "size": 9650,
+    "url": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/futures-interop.md?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/futures-interop.md",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/673ba8b530d045cc19e0bd20d0c56430760162db",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/docs/src/main/paradox/stream/futures-interop.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/futures-interop.md?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/673ba8b530d045cc19e0bd20d0c56430760162db",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/futures-interop.md"
+    }
+  },
+  {
+    "name": "index.md",
+    "path": "docs/src/main/paradox/stream/index.md",
+    "sha": "96354940d44bfc0fd149da2dfe1c6630e4eb0d26",
+    "size": 1655,
+    "url": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/index.md?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/index.md",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/96354940d44bfc0fd149da2dfe1c6630e4eb0d26",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/docs/src/main/paradox/stream/index.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/index.md?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/96354940d44bfc0fd149da2dfe1c6630e4eb0d26",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/index.md"
+    }
+  },
+  {
+    "name": "operators",
+    "path": "docs/src/main/paradox/stream/operators",
+    "sha": "2641699629247a8e661ef42e9d38ca244d2c466c",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/operators?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/docs/src/main/paradox/stream/operators",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/2641699629247a8e661ef42e9d38ca244d2c466c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/operators?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/2641699629247a8e661ef42e9d38ca244d2c466c",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/docs/src/main/paradox/stream/operators"
+    }
+  },
+  {
+    "name": "reactive-streams-interop.md",
+    "path": "docs/src/main/paradox/stream/reactive-streams-interop.md",
+    "sha": "d952bacf2e17d0f875a2f1db5b21c35d44985087",
+    "size": 6498,
+    "url": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/reactive-streams-interop.md?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/reactive-streams-interop.md",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/d952bacf2e17d0f875a2f1db5b21c35d44985087",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/docs/src/main/paradox/stream/reactive-streams-interop.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/reactive-streams-interop.md?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/d952bacf2e17d0f875a2f1db5b21c35d44985087",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/reactive-streams-interop.md"
+    }
+  },
+  {
+    "name": "stream-composition.md",
+    "path": "docs/src/main/paradox/stream/stream-composition.md",
+    "sha": "e94d6b4cf7ac557d022f376efbda0c7a74307e39",
+    "size": 20147,
+    "url": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-composition.md?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-composition.md",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/e94d6b4cf7ac557d022f376efbda0c7a74307e39",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/docs/src/main/paradox/stream/stream-composition.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-composition.md?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/e94d6b4cf7ac557d022f376efbda0c7a74307e39",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-composition.md"
+    }
+  },
+  {
+    "name": "stream-context.md",
+    "path": "docs/src/main/paradox/stream/stream-context.md",
+    "sha": "a625a4be95469669e0da4588d2178c71c69846ce",
+    "size": 3562,
+    "url": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-context.md?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-context.md",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/a625a4be95469669e0da4588d2178c71c69846ce",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/docs/src/main/paradox/stream/stream-context.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-context.md?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/a625a4be95469669e0da4588d2178c71c69846ce",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-context.md"
+    }
+  },
+  {
+    "name": "stream-cookbook.md",
+    "path": "docs/src/main/paradox/stream/stream-cookbook.md",
+    "sha": "48636856c7ae95b71217f045a864c47b27d31af8",
+    "size": 30734,
+    "url": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-cookbook.md?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-cookbook.md",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/48636856c7ae95b71217f045a864c47b27d31af8",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/docs/src/main/paradox/stream/stream-cookbook.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-cookbook.md?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/48636856c7ae95b71217f045a864c47b27d31af8",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-cookbook.md"
+    }
+  },
+  {
+    "name": "stream-customize.md",
+    "path": "docs/src/main/paradox/stream/stream-customize.md",
+    "sha": "56b6eda1e7023f9f8bf5aa8a7c4cfe580cef73bd",
+    "size": 33639,
+    "url": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-customize.md?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-customize.md",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/56b6eda1e7023f9f8bf5aa8a7c4cfe580cef73bd",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/docs/src/main/paradox/stream/stream-customize.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-customize.md?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/56b6eda1e7023f9f8bf5aa8a7c4cfe580cef73bd",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-customize.md"
+    }
+  },
+  {
+    "name": "stream-dynamic.md",
+    "path": "docs/src/main/paradox/stream/stream-dynamic.md",
+    "sha": "18a3c24f06cdbcb6e8b3ba104e733f0e2d92b151",
+    "size": 14953,
+    "url": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-dynamic.md?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-dynamic.md",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/18a3c24f06cdbcb6e8b3ba104e733f0e2d92b151",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/docs/src/main/paradox/stream/stream-dynamic.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-dynamic.md?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/18a3c24f06cdbcb6e8b3ba104e733f0e2d92b151",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-dynamic.md"
+    }
+  },
+  {
+    "name": "stream-error.md",
+    "path": "docs/src/main/paradox/stream/stream-error.md",
+    "sha": "17001855fa54c4316df30578d81ef316fcdf2b7a",
+    "size": 16573,
+    "url": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-error.md?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-error.md",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/17001855fa54c4316df30578d81ef316fcdf2b7a",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/docs/src/main/paradox/stream/stream-error.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-error.md?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/17001855fa54c4316df30578d81ef316fcdf2b7a",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-error.md"
+    }
+  },
+  {
+    "name": "stream-flows-and-basics.md",
+    "path": "docs/src/main/paradox/stream/stream-flows-and-basics.md",
+    "sha": "ef1c5662405df1ba6ab520dd9134e2511eeed31e",
+    "size": 28356,
+    "url": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-flows-and-basics.md?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-flows-and-basics.md",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/ef1c5662405df1ba6ab520dd9134e2511eeed31e",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/docs/src/main/paradox/stream/stream-flows-and-basics.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-flows-and-basics.md?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/ef1c5662405df1ba6ab520dd9134e2511eeed31e",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-flows-and-basics.md"
+    }
+  },
+  {
+    "name": "stream-graphs.md",
+    "path": "docs/src/main/paradox/stream/stream-graphs.md",
+    "sha": "23cdabf9071fc30074b03b1aad0f95d2d7cf5412",
+    "size": 28309,
+    "url": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-graphs.md?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-graphs.md",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/23cdabf9071fc30074b03b1aad0f95d2d7cf5412",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/docs/src/main/paradox/stream/stream-graphs.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-graphs.md?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/23cdabf9071fc30074b03b1aad0f95d2d7cf5412",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-graphs.md"
+    }
+  },
+  {
+    "name": "stream-introduction.md",
+    "path": "docs/src/main/paradox/stream/stream-introduction.md",
+    "sha": "9a3c4112bfef5940781271a61c23f0e3e6192993",
+    "size": 4233,
+    "url": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-introduction.md?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-introduction.md",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/9a3c4112bfef5940781271a61c23f0e3e6192993",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/docs/src/main/paradox/stream/stream-introduction.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-introduction.md?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/9a3c4112bfef5940781271a61c23f0e3e6192993",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-introduction.md"
+    }
+  },
+  {
+    "name": "stream-io.md",
+    "path": "docs/src/main/paradox/stream/stream-io.md",
+    "sha": "b53ef2efea103fc1dca9af28ac53fb9e7700ab8a",
+    "size": 12300,
+    "url": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-io.md?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-io.md",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/b53ef2efea103fc1dca9af28ac53fb9e7700ab8a",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/docs/src/main/paradox/stream/stream-io.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-io.md?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/b53ef2efea103fc1dca9af28ac53fb9e7700ab8a",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-io.md"
+    }
+  },
+  {
+    "name": "stream-parallelism.md",
+    "path": "docs/src/main/paradox/stream/stream-parallelism.md",
+    "sha": "e1f6c0c04ee7cda19e19a6504b369999563addb8",
+    "size": 7857,
+    "url": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-parallelism.md?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-parallelism.md",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/e1f6c0c04ee7cda19e19a6504b369999563addb8",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/docs/src/main/paradox/stream/stream-parallelism.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-parallelism.md?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/e1f6c0c04ee7cda19e19a6504b369999563addb8",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-parallelism.md"
+    }
+  },
+  {
+    "name": "stream-quickstart.md",
+    "path": "docs/src/main/paradox/stream/stream-quickstart.md",
+    "sha": "206899b83af5611b033a6ddece2657b07f76c4af",
+    "size": 31813,
+    "url": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-quickstart.md?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-quickstart.md",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/206899b83af5611b033a6ddece2657b07f76c4af",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/docs/src/main/paradox/stream/stream-quickstart.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-quickstart.md?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/206899b83af5611b033a6ddece2657b07f76c4af",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-quickstart.md"
+    }
+  },
+  {
+    "name": "stream-rate.md",
+    "path": "docs/src/main/paradox/stream/stream-rate.md",
+    "sha": "bd570bc49172ed5cbf02154ef9ca71f594132edd",
+    "size": 14330,
+    "url": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-rate.md?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-rate.md",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/bd570bc49172ed5cbf02154ef9ca71f594132edd",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/docs/src/main/paradox/stream/stream-rate.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-rate.md?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/bd570bc49172ed5cbf02154ef9ca71f594132edd",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-rate.md"
+    }
+  },
+  {
+    "name": "stream-refs.md",
+    "path": "docs/src/main/paradox/stream/stream-refs.md",
+    "sha": "40d5f5e01968859a58dbc8bcb358770547c57ef6",
+    "size": 11574,
+    "url": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-refs.md?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-refs.md",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/40d5f5e01968859a58dbc8bcb358770547c57ef6",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/docs/src/main/paradox/stream/stream-refs.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-refs.md?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/40d5f5e01968859a58dbc8bcb358770547c57ef6",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-refs.md"
+    }
+  },
+  {
+    "name": "stream-substream.md",
+    "path": "docs/src/main/paradox/stream/stream-substream.md",
+    "sha": "435b4254b9b06384f98d693fc8bb0ed7e6e69372",
+    "size": 8967,
+    "url": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-substream.md?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-substream.md",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/435b4254b9b06384f98d693fc8bb0ed7e6e69372",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/docs/src/main/paradox/stream/stream-substream.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-substream.md?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/435b4254b9b06384f98d693fc8bb0ed7e6e69372",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-substream.md"
+    }
+  },
+  {
+    "name": "stream-testkit.md",
+    "path": "docs/src/main/paradox/stream/stream-testkit.md",
+    "sha": "bd2dd2223a045d11397e8147a3dd482e81ac4886",
+    "size": 8674,
+    "url": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-testkit.md?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-testkit.md",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/blobs/bd2dd2223a045d11397e8147a3dd482e81ac4886",
+    "download_url": "https://raw.githubusercontent.com/apache/pekko/v1.1.5/docs/src/main/paradox/stream/stream-testkit.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/docs/src/main/paradox/stream/stream-testkit.md?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/blobs/bd2dd2223a045d11397e8147a3dd482e81ac4886",
+      "html": "https://github.com/apache/pekko/blob/v1.1.5/docs/src/main/paradox/stream/stream-testkit.md"
+    }
+  }
+]
+
+ succeeded in 266ms:
+[
+  {
+    "name": "java-jdk9-only",
+    "path": "stream-tests/src/test/java-jdk9-only",
+    "sha": "de2437b27e155a1dd0f97e6484727f1e7e33f836",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/stream-tests/src/test/java-jdk9-only?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/stream-tests/src/test/java-jdk9-only",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/de2437b27e155a1dd0f97e6484727f1e7e33f836",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/stream-tests/src/test/java-jdk9-only?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/de2437b27e155a1dd0f97e6484727f1e7e33f836",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/stream-tests/src/test/java-jdk9-only"
+    }
+  },
+  {
+    "name": "java",
+    "path": "stream-tests/src/test/java",
+    "sha": "84c95f12ae9335a8fcb253cad909684dd6d56c73",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/stream-tests/src/test/java?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/stream-tests/src/test/java",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/84c95f12ae9335a8fcb253cad909684dd6d56c73",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/stream-tests/src/test/java?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/84c95f12ae9335a8fcb253cad909684dd6d56c73",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/stream-tests/src/test/java"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "stream-tests/src/test/resources",
+    "sha": "b4bcf2128053321c068a1cb436c8ebb8e58bf59b",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/stream-tests/src/test/resources?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/stream-tests/src/test/resources",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/b4bcf2128053321c068a1cb436c8ebb8e58bf59b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/stream-tests/src/test/resources?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/b4bcf2128053321c068a1cb436c8ebb8e58bf59b",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/stream-tests/src/test/resources"
+    }
+  },
+  {
+    "name": "scala-jdk9-only",
+    "path": "stream-tests/src/test/scala-jdk9-only",
+    "sha": "c3fb7c6a6c7f1e64866547a067423fb60e639182",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/stream-tests/src/test/scala-jdk9-only?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/stream-tests/src/test/scala-jdk9-only",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/c3fb7c6a6c7f1e64866547a067423fb60e639182",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/stream-tests/src/test/scala-jdk9-only?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/c3fb7c6a6c7f1e64866547a067423fb60e639182",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/stream-tests/src/test/scala-jdk9-only"
+    }
+  },
+  {
+    "name": "scala",
+    "path": "stream-tests/src/test/scala",
+    "sha": "8b424e9eddc16177c360d6a23a3329b66a3004f8",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/stream-tests/src/test/scala?ref=v1.1.5",
+    "html_url": "https://github.com/apache/pekko/tree/v1.1.5/stream-tests/src/test/scala",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/8b424e9eddc16177c360d6a23a3329b66a3004f8",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/stream-tests/src/test/scala?ref=v1.1.5",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/8b424e9eddc16177c360d6a23a3329b66a3004f8",
+      "html": "https://github.com/apache/pekko/tree/v1.1.5/stream-tests/src/test/scala"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/pekko/pekko-stream_2.13/1.1.5/pekko-stream_2.13-1.1.5.jar -o /tmp/pekko-stream_2.13-1.1.5.jar && jar tf /tmp/pekko-stream_2.13-1.1.5.jar | sed -n '1,40p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d
+ succeeded in 405ms:
+META-INF/MANIFEST.MF
+META-INF/
+META-INF/LICENSE
+META-INF/NOTICE
+com/
+com/typesafe/
+com/typesafe/sslconfig/
+com/typesafe/sslconfig/pekko/
+com/typesafe/sslconfig/pekko/DefaultSSLEngineConfigurator.class
+com/typesafe/sslconfig/pekko/PekkoSSLConfig$.class
+com/typesafe/sslconfig/pekko/PekkoSSLConfig.class
+com/typesafe/sslconfig/pekko/SSLEngineConfigurator.class
+com/typesafe/sslconfig/pekko/util/
+com/typesafe/sslconfig/pekko/util/PekkoLoggerBridge.class
+com/typesafe/sslconfig/pekko/util/PekkoLoggerFactory.class
+org/
+org/apache/
+org/apache/pekko/
+org/apache/pekko/stream/
+org/apache/pekko/stream/AbruptIOTerminationException$.class
+org/apache/pekko/stream/AbruptIOTerminationException.class
+org/apache/pekko/stream/AbruptStageTerminationException.class
+org/apache/pekko/stream/AbruptStreamTerminationException.class
+org/apache/pekko/stream/AbruptTerminationException$.class
+org/apache/pekko/stream/AbruptTerminationException.class
+org/apache/pekko/stream/AbstractShape.class
+org/apache/pekko/stream/ActorAttributes$.class
+org/apache/pekko/stream/ActorAttributes$DebugLogging$.class
+org/apache/pekko/stream/ActorAttributes$DebugLogging.class
+org/apache/pekko/stream/ActorAttributes$Dispatcher$.class
+org/apache/pekko/stream/ActorAttributes$Dispatcher.class
+org/apache/pekko/stream/ActorAttributes$FuzzingMode$.class
+org/apache/pekko/stream/ActorAttributes$FuzzingMode.class
+org/apache/pekko/stream/ActorAttributes$MaxFixedBufferSize$.class
+org/apache/pekko/stream/ActorAttributes$MaxFixedBufferSize.class
+org/apache/pekko/stream/ActorAttributes$OutputBurstLimit$.class
+org/apache/pekko/stream/ActorAttributes$OutputBurstLimit.class
+org/apache/pekko/stream/ActorAttributes$StreamSubscriptionTimeout$.class
+org/apache/pekko/stream/ActorAttributes$StreamSubscriptionTimeout.class
+org/apache/pekko/stream/ActorAttributes$SupervisionStrategy$.class
+
+codex
+The artifact is a JVM jar with `.class` files, so I will not mark it `not-for-native-image`. The `_2.13` suffix and POM dependency on `scala-library 2.13.15` make it a Scala 2 artifact, so the JSON should include `language` as Scala 2.
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -name '*_2.13*.json' | head -30 | xargs -r sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.pekko:pekko-stream_2.13:1.1.5"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'pekko-stream|org.apache.pekko|source-code-url|documentation-url' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json:2:  "coordinates" : "org.apache.pekko:pekko-stream_2.13:1.1.5"
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.springframework/spring-web/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-web/$version$/spring-web-$version$-sources.jar",
+metadata/org.springframework/spring-web/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-web/$version$/spring-web-$version$-javadoc.jar",
+metadata/org.springframework/spring-context-support/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context-support/$version$/spring-context-support-$version$-sources.jar",
+metadata/org.springframework/spring-context-support/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context-support/$version$/spring-context-support-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:91:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:94:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:126:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:129:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.springframework/spring-tx/index.json:140:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:143:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-javadoc.jar",
+metadata/org.playframework/play-exceptions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/org.playframework/play-exceptions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:92:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:95:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:109:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:112:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:126:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:129:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:143:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:146:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/javadoc-api/org/springframework/expression/package-summary.html",
+metadata/org.springframework/spring-expression/index.json:160:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:163:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/javadoc-api/org/springframework/expression/package-summary.html",
+metadata/org.springframework/spring-expression/index.json:177:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:180:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:194:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:197:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.springframework/spring-expression/index.json:211:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:214:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-javadoc.jar",
+metadata/org.playframework/play-configuration_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-configuration_3/$version$/play-configuration_3-$version$-sources.jar",
+metadata/org.playframework/play-configuration_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-configuration_3/$version$/play-configuration_3-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-test/$version$/kotlin-test-$version$-javadoc.jar",
+metadata/org.apache.maven.scm/maven-scm-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/maven/scm/maven-scm-api/$version$/maven-scm-api-$version$-sources.jar",
+metadata/org.apache.maven.scm/maven-scm-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/maven/scm/maven-scm-api/$version$/maven-scm-api-$version$-javadoc.jar",
+metadata/org.apache.maven.scm/maven-scm-api/index.json:25:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/maven/scm/maven-scm-api/$version$/maven-scm-api-$version$-sources.jar",
+metadata/org.apache.maven.scm/maven-scm-api/index.json:28:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/maven/scm/maven-scm-api/$version$/maven-scm-api-$version$-javadoc.jar",
+metadata/org.log4s/log4s_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/log4s/log4s_3/$version$/log4s_3-$version$-sources.jar",
+metadata/org.log4s/log4s_3/index.json:8:    "documentation-url" : "https://github.com/Log4s/log4s/blob/v$version$/README.md",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/$version$/kotlin-daemon-embeddable-$version$-javadoc.jar",
+metadata/org.playframework/play-build-link/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-sources.jar",
+metadata/org.playframework/play-build-link/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-build-link/$version$/play-build-link-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/$version$/kotlin-script-runtime-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:8:    "documentation-url" : "https://github.com/JetBrains/kotlin/releases/tag/v$version$",
+metadata/org.springframework/spring-test/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
+metadata/org.springframework/spring-test/index.json:8:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/reference/html/testing.html",
+metadata/org.springframework/spring-test/index.json:84:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
+metadata/org.springframework/spring-test/index.json:87:    "documentation-url" : "https://docs.spring.io/spring-framework/docs/$version$/javadoc-api/org/springframework/test/package-summary.html",
+metadata/org.playframework/play-server_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-server_3/$version$/play-server_3-$version$-sources.jar",
+metadata/org.playframework/play-server_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/playframework/play-server_3/$version$/play-server_3-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/org.lz4/lz4-java/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/lz4/lz4-java/$version$/lz4-java-$version$-sources.jar",
+metadata/org.lz4/lz4-java/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/lz4/lz4-java/$version$/lz4-java-$version$-javadoc.jar",
+metadata/org.antlr/antlr4-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/$version$/antlr4-runtime-$version$-sources.jar",
+metadata/org.antlr/antlr4-runtime/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/$version$/antlr4-runtime-$version$-javadoc.jar",
+metadata/org.playframework/play-json_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-json_3/$version$/play-json_3-$version$-sources.jar",
+metadata/org.playframework/play-json_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-json_3/$version$/play-json_3-$version$-javadoc.jar",
+metadata/org.springframework/spring-aspects/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+metadata/org.springframework/spring-aspects/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/$version$/kotlin-scripting-jvm-$version$-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-scripting-jvm/$version$/kotlin-scripting-jvm-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/org.playframework/play-functional_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/playframework/play-functional_3/$version$/play-functional_3-$version$-sources.jar",
+
+codex
+I’m going to use Maven Central for the source and javadoc artifacts because they are published for this coordinate, and GitHub’s `v$version$` tag for the test suite because Maven Central does not publish a test artifact here.
+codex
+Editing the discovered metadata file now with the resolved repository root, Maven source/javadoc URLs, GitHub tagged test URL, the Scala language marker, and a two-sentence description.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d/build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json
+index 585144ddfa2a807b88e8b4c027bdbed17dfaa369..7d384a3c98dc407c32f3268feacb1af15c8ad55e
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-stream_2.13:1.1.5"
++  "coordinates" : "org.apache.pekko:pekko-stream_2.13:1.1.5",
++  "repository-url" : "https://github.com/apache/pekko",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/pekko/pekko-stream_2.13/$version$/pekko-stream_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/stream-tests/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/pekko/pekko-stream_2.13/$version$/pekko-stream_2.13-$version$-javadoc.jar",
++  "description" : "Apache Pekko Stream provides a Reactive Streams implementation for building asynchronous, back-pressured data pipelines on top of Apache Pekko actors. It includes Java and Scala APIs for composing, materializing, and running stream graphs for concurrent and resilient JVM applications.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json
+index 585144ddfa2a807b88e8b4c027bdbed17dfaa369..7d384a3c98dc407c32f3268feacb1af15c8ad55e
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-stream_2.13:1.1.5"
++  "coordinates" : "org.apache.pekko:pekko-stream_2.13:1.1.5",
++  "repository-url" : "https://github.com/apache/pekko",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/pekko/pekko-stream_2.13/$version$/pekko-stream_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/stream-tests/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/pekko/pekko-stream_2.13/$version$/pekko-stream_2.13-$version$-javadoc.jar",
++  "description" : "Apache Pekko Stream provides a Reactive Streams implementation for building asynchronous, back-pressured data pipelines on top of Apache Pekko actors. It includes Java and Scala APIs for composing, materializing, and running stream graphs for concurrent and resilient JVM applications.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+web search: 
+web search: https://github.com/apache/pekko/tree/v1.1.5/stream-tests/src/test
+web search: 
+web search: site:mvnrepository.com org.apache.pekko pekko-stream_2.13 1.1.5
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.pekko/pekko-stream_2.13/1.1.5
+web search: 
+web search: central.sonatype.com/artifact/org.apache.pekko/pekko-stream_2.13/1.1.5
+web search: 
+web search: https://mvnrepository.com/artifact/org.apache.pekko/pekko-stream_2.13/1.1.5
+web search: 
+web search: https://mvnrepository.com/artifact/org.apache.pekko/pekko-stream_2.13/1.1.5
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/pekko/pekko-stream_2.13/1.1.5/
+codex
+I’ve patched the file. I’m doing a quick JSON/schema sanity check plus URL reachability checks with `1.1.5` substituted before I close this out.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.pekko:pekko-stream_2.13:1.1.5",
+  "repository-url": "https://github.com/apache/pekko",
+  "source-code-url": "https://repo1.maven.org/maven2/org/apache/pekko/pekko-stream_2.13/$version$/pekko-stream_2.13-$version$-sources.jar",
+  "test-code-url": "https://github.com/apache/pekko/tree/v$version$/stream-tests/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/org/apache/pekko/pekko-stream_2.13/$version$/pekko-stream_2.13-$version$-javadoc.jar",
+  "description": "Apache Pekko Stream provides a Reactive Streams implementation for building asynchronous, back-pressured data pipelines on top of Apache Pekko actors. It includes Java and Scala APIs for composing, materializing, and running stream graphs for concurrent and resilient JVM applications.",
+  "language": {
+    "name": "scala",
+    "version": "2"
+  }
+}
+
+exec
+/usr/bin/bash -lc "jq -r 'keys_unsorted[]' build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d
+ succeeded in 0ms:
+coordinates
+repository-url
+source-code-url
+test-code-url
+documentation-url
+description
+language
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://github.com/apache/pekko/tree/v1.1.5/stream-tests/src/test >/tmp/pekko-tests.headers && sed -n '1,8p' /tmp/pekko-tests.headers" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo1.maven.org/maven2/org/apache/pekko/pekko-stream_2.13/1.1.5/pekko-stream_2.13-1.1.5-sources.jar >/tmp/pekko-sources.headers && sed -n '1,8p' /tmp/pekko-sources.headers && curl -I -fsSL https://repo1.maven.org/maven2/org/apache/pekko/pekko-stream_2.13/1.1.5/pekko-stream_2.13-1.1.5-javadoc.jar >/tmp/pekko-javadoc.headers && sed -n '1,8p' /tmp/pekko-javadoc.headers" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d
+ succeeded in 630ms:
+HTTP/2 200 
+date: Thu, 11 Jun 2026 13:03:40 GMT
+content-type: application/java-archive
+content-length: 10401627
+cf-ray: a0a0d1309e86343e-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "d71645816624c104c7075c73b25a34da"
+
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json
+index 585144ddfa2a807b88e8b4c027bdbed17dfaa369..7d384a3c98dc407c32f3268feacb1af15c8ad55e
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-stream_2.13:1.1.5"
++  "coordinates" : "org.apache.pekko:pekko-stream_2.13:1.1.5",
++  "repository-url" : "https://github.com/apache/pekko",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/pekko/pekko-stream_2.13/$version$/pekko-stream_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/stream-tests/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/pekko/pekko-stream_2.13/$version$/pekko-stream_2.13-$version$-javadoc.jar",
++  "description" : "Apache Pekko Stream provides a Reactive Streams implementation for building asynchronous, back-pressured data pipelines on top of Apache Pekko actors. It includes Java and Scala APIs for composing, materializing, and running stream graphs for concurrent and resilient JVM applications.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+ succeeded in 937ms:
+HTTP/2 200 
+date: Thu, 11 Jun 2026 13:03:40 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"76814f808f93cfc2c7271b8529b55d74"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+
+web search: 
+web search: Apache Pekko Stream documentation 1.1.5
+codex
+The sanity checks passed: the JSON parses, only allowed top-level keys are present, and the substituted source, javadoc, and tagged test URLs return HTTP 200.
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json
+index 585144ddfa2a807b88e8b4c027bdbed17dfaa369..7d384a3c98dc407c32f3268feacb1af15c8ad55e
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-stream_2.13:1.1.5"
++  "coordinates" : "org.apache.pekko:pekko-stream_2.13:1.1.5",
++  "repository-url" : "https://github.com/apache/pekko",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/pekko/pekko-stream_2.13/$version$/pekko-stream_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/stream-tests/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/pekko/pekko-stream_2.13/$version$/pekko-stream_2.13-$version$-javadoc.jar",
++  "description" : "Apache Pekko Stream provides a Reactive Streams implementation for building asynchronous, back-pressured data pipelines on top of Apache Pekko actors. It includes Java and Scala APIs for composing, materializing, and running stream graphs for concurrent and resilient JVM applications.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+ succeeded in 425ms:
+web search: 
+web search: https://pekko.apache.org/docs/pekko/current/stream/
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/pekko/pekko-stream_2.13/1.1.5/pekko-stream_2.13-1.1.5.pom
+web search: 
+web search: "pekko-stream_2.13-1.1.5-sources.jar"
+codex
+Updated [org.apache.pekko-pekko-stream_2.13-1.1.5.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d/build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json) with the repository, source, test, documentation, two-sentence description, and Scala 2 language marker. Pekko docs identify Streams as a Java/Scala JVM module and link the `apache/pekko` source repository, which matches the selected metadata. ([pekko.apache.org](https://pekko.apache.org/docs/pekko/current/stream/))
+
+Validation done: `jq` parses the file, only allowed top-level keys are present, and the substituted source, javadoc, and test URLs returned HTTP 200. I left `not-for-native-image` absent because the artifact is a JVM jar with class files.
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json
+index 585144ddfa2a807b88e8b4c027bdbed17dfaa369..7d384a3c98dc407c32f3268feacb1af15c8ad55e
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-stream_2.13:1.1.5"
++  "coordinates" : "org.apache.pekko:pekko-stream_2.13:1.1.5",
++  "repository-url" : "https://github.com/apache/pekko",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/pekko/pekko-stream_2.13/$version$/pekko-stream_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/stream-tests/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/pekko/pekko-stream_2.13/$version$/pekko-stream_2.13-$version$-javadoc.jar",
++  "description" : "Apache Pekko Stream provides a Reactive Streams implementation for building asynchronous, back-pressured data pipelines on top of Apache Pekko actors. It includes Java and Scala APIs for composing, materializing, and running stream graphs for concurrent and resilient JVM applications.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+tokens used
+116,081
+Updated [org.apache.pekko-pekko-stream_2.13-1.1.5.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d/build/discovered-artifact-metadata/org.apache.pekko-pekko-stream_2.13-1.1.5.json) with the repository, source, test, documentation, two-sentence description, and Scala 2 language marker. Pekko docs identify Streams as a Java/Scala JVM module and link the `apache/pekko` source repository, which matches the selected metadata. ([pekko.apache.org](https://pekko.apache.org/docs/pekko/current/stream/))
+
+Validation done: `jq` parses the file, only allowed top-level keys are present, and the substituted source, javadoc, and test URLs returned HTTP 200. I left `not-for-native-image` absent because the artifact is a JVM jar with class files.
+Ran agent for org.apache.pekko:pekko-stream_2.13:1.1.5 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d/build/agent-artifact-discovery-logs/org.apache.pekko-pekko-stream_2.13-1.1.5.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5365-bb26438d/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 29s
+9 actionable tasks: 9 executed
