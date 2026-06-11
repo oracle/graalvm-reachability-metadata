@@ -11,6 +11,7 @@ import io.circe.DecodingFailure
 import io.circe.Encoder
 import io.circe.Json
 import io.circe.JsonObject
+import io.circe.KeyEncoder
 import io.circe.jawn.parse
 import io.circe.literal.*
 import org.assertj.core.api.Assertions.assertThat
@@ -44,6 +45,12 @@ object LiteralUser {
   given Encoder[LiteralUser] = Encoder.forProduct6("id", "name", "active", "address", "tags", "score")(user =>
     (user.id, user.name, user.active, user.address, user.tags, user.score)
   )
+}
+
+final case class LiteralFieldKey(section: String, name: String)
+
+object LiteralFieldKey {
+  given KeyEncoder[LiteralFieldKey] = KeyEncoder.instance(key => s"${key.section}.${key.name}")
 }
 
 class Circe_literal_3Test {
@@ -198,6 +205,25 @@ class Circe_literal_3Test {
     assertThat(obj("404")).isEqualTo(Some(jsonValue))
     assertThat(obj("literal-expression-key")).isEqualTo(Some(Json.fromBigDecimal(BigDecimal("1.25"))))
     assertThat(obj.keys.toList.asJava).containsExactly(stringKey, "404", "literal-expression-key")
+  }
+
+  @Test
+  def interpolatesObjectKeysWithCustomKeyEncoders(): Unit = {
+    val displayName: LiteralFieldKey = LiteralFieldKey("profile", "displayName")
+    val auditTrail: LiteralFieldKey = LiteralFieldKey("system", "auditTrail")
+
+    val document: Json = json"""
+      {
+        $displayName: "Ada Lovelace",
+        $auditTrail: ["created", "verified"]
+      }
+    """
+
+    val obj: JsonObject = expectObject(document)
+    assertThat(obj.keys.toList.asJava).containsExactly("profile.displayName", "system.auditTrail")
+    assertThat(obj("profile.displayName")).isEqualTo(Some(Json.fromString("Ada Lovelace")))
+    assertThat(document.hcursor.downField("system.auditTrail").as[List[String]])
+      .isEqualTo(Right(List("created", "verified")))
   }
 
   @Test
