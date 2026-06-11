@@ -216,4 +216,37 @@ class Circe_literal_3Test {
     assertEquals(Json.fromBigDecimal(number), json"$number")
     assertEquals(jsonValue, json"$jsonValue")
   }
+
+  @Test
+  def supportsEmptyArraysAndObjectsInLiterals(): Unit = {
+    val document: Json = json"""
+      {
+        "emptyArray": [],
+        "emptyObject": {},
+        "nested": {
+          "arrayWithEmptyValues": [[], {}],
+          "objectWithEmptyValues": {
+            "array": [],
+            "object": {}
+          }
+        }
+      }
+    """
+
+    val expected: Json = Json.obj(
+      "emptyArray" -> Json.arr(),
+      "emptyObject" -> Json.obj(),
+      "nested" -> Json.obj(
+        "arrayWithEmptyValues" -> Json.arr(Json.arr(), Json.obj()),
+        "objectWithEmptyValues" -> Json.obj(
+          "array" -> Json.arr(),
+          "object" -> Json.obj()
+        )
+      )
+    )
+
+    assertEquals(expected, document)
+    assertEquals(Json.arr(), json"[]")
+    assertEquals(Json.obj(), json"{}")
+  }
 }
