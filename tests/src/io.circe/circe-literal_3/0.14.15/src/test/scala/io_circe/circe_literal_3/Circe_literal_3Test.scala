@@ -187,6 +187,25 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def supportsInlineExpressionsInInterpolatedKeysAndValues(): Unit = {
+    val first: Int = 21
+    val second: Int = 2
+
+    val document: Json = json"""
+      {
+        ${first * second}: ${List(1, 2, 3).map(_ * second)},
+        "computed": ${("circe" + "-literal").toUpperCase},
+        "enabled": ${first < second}
+      }
+      """
+    val cursor = document.hcursor
+
+    assertEquals(List(2, 4, 6), expectRight(cursor.get[List[Int]]("42")))
+    assertEquals("CIRCE-LITERAL", expectRight(cursor.get[String]("computed")))
+    assertFalse(expectRight(cursor.get[Boolean]("enabled")))
+  }
+
+  @Test
   def supportsTopLevelInterpolatedEncodedValues(): Unit = {
     val widgets: Vector[Widget] = Vector(
       Widget(id = 1, label = "first", enabled = true),
