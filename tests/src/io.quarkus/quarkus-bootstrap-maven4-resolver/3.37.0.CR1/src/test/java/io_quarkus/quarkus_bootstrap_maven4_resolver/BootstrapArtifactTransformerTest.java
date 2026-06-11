@@ -92,7 +92,8 @@ public class BootstrapArtifactTransformerTest {
 
     @Test
     void transformerRetainsSisuComponentPriority() {
-        Priority priority = BootstrapArtifactTransformer.class.getAnnotation(Priority.class);
+        Class<BootstrapArtifactTransformer> transformerAnnotationAccess = BootstrapArtifactTransformer.class;
+        Priority priority = transformerAnnotationAccess.getAnnotation(Priority.class);
 
         assertThat(priority).isNotNull();
         assertThat(priority.value()).isEqualTo(100);
@@ -105,7 +106,7 @@ public class BootstrapArtifactTransformerTest {
 
         assertThat(transformerType).isEqualTo(BootstrapArtifactTransformer.class);
         assertThat(ArtifactTransformer.class.isAssignableFrom(transformerType)).isTrue();
-        assertThat(BootstrapArtifactTransformer.class.getAnnotation(Named.class)).isNotNull();
-        assertThat(BootstrapArtifactTransformer.class.getAnnotation(Singleton.class)).isNotNull();
+        assertThat(BootstrapArtifactTransformer.class).hasAnnotation(Named.class);
+        assertThat(BootstrapArtifactTransformer.class).hasAnnotation(Singleton.class);
     }
 }
