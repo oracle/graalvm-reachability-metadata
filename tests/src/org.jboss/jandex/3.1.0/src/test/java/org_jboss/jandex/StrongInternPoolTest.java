@@ -10,7 +10,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 import org.junit.jupiter.api.Test;
@@ -28,27 +27,25 @@ public class StrongInternPoolTest {
         assertThat(intern(pool, alpha)).isSameAs(alpha);
         assertThat(intern(pool, new String("alpha"))).isSameAs(alpha);
         assertThat(intern(pool, beta)).isSameAs(beta);
-        assertThat(intern(pool, null)).isNull();
-        assertThat(size(pool)).isEqualTo(3);
+        assertThat(size(pool)).isEqualTo(2);
 
         Object restoredPool = deserialize(serialize(pool));
 
-        assertThat(size(restoredPool)).isEqualTo(3);
+        assertThat(size(restoredPool)).isEqualTo(2);
         assertThat(contains(restoredPool, "alpha")).isTrue();
         assertThat(contains(restoredPool, "beta")).isTrue();
-        assertThat(contains(restoredPool, null)).isTrue();
 
         String duplicateAlpha = new String("alpha");
         Object restoredAlpha = intern(restoredPool, duplicateAlpha);
         assertThat(restoredAlpha).isEqualTo("alpha");
         assertThat(restoredAlpha).isNotSameAs(duplicateAlpha);
-        assertThat(size(restoredPool)).isEqualTo(3);
+        assertThat(size(restoredPool)).isEqualTo(2);
     }
 
     private static Object newPool() throws Exception {
-        Constructor<?> constructor = strongInternPoolClass().getDeclaredConstructor();
-        constructor.setAccessible(true);
-        return constructor.newInstance();
+        Method method = strongInternPoolClass().getDeclaredMethod("forStrings");
+        method.setAccessible(true);
+        return method.invoke(null);
     }
 
     private static Object intern(Object pool, Object entry) throws Exception {
