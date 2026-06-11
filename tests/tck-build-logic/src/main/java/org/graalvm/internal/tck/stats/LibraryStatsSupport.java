@@ -176,6 +176,57 @@ public final class LibraryStatsSupport {
                 .toList();
     }
 
+    public static void requireCoordinatesInMetadata(Path metadataRoot, List<String> coordinates) {
+        List<String> missing = coordinates.stream()
+                .filter(coordinate -> !isCoordinateInMetadata(metadataRoot, coordinate))
+                .toList();
+        if (!missing.isEmpty()) {
+            throw new GradleException("Unknown reachability metadata coordinates: " + String.join(", ", missing));
+        }
+    }
+
+    private static boolean isCoordinateInMetadata(Path metadataRoot, String coordinate) {
+        String[] parts = coordinate.split(":", 3);
+        if (parts.length != 3) {
+            return false;
+        }
+        String group = parts[0];
+        String artifact = parts[1];
+        String version = parts[2];
+        Path artifactRoot = metadataRoot.resolve(group).resolve(artifact);
+        Path indexFile = artifactRoot.resolve("index.json");
+        if (!Files.isRegularFile(indexFile)) {
+            return false;
+        }
+        try {
+            JsonNode index = OBJECT_MAPPER.readTree(indexFile.toFile());
+            if (!index.isArray()) {
+                return false;
+            }
+            for (JsonNode entry : index) {
+                JsonNode testedVersions = entry.path("tested-versions");
+                String metadataVersion = entry.path("metadata-version").asText("");
+                if (testedVersions.isArray()
+                        && containsTextValue(testedVersions, version)
+                        && Files.isDirectory(artifactRoot.resolve(metadataVersion))) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (IOException e) {
+            throw new GradleException("Failed to read metadata index " + indexFile, e);
+        }
+    }
+
+    private static boolean containsTextValue(JsonNode values, String expected) {
+        for (JsonNode value : values) {
+            if (expected.equals(value.asText())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private static void writeJsonWithTrailingNewline(Path targetFile, Object value, String errorPrefix) {
         try {
             Path parent = targetFile.getParent();

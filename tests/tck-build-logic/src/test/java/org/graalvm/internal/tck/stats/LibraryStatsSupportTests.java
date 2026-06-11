@@ -799,6 +799,32 @@ class LibraryStatsSupportTests {
                 .hasMessageContaining("Top coordinate limit must be positive");
     }
 
+    @Test
+    void requireCoordinatesInMetadataAcceptsIndexedTestedVersion() throws IOException {
+        writeMetadataIndex("com.example", "demo", "1.0.0", "1.0.0");
+
+        assertThatCode(() -> LibraryStatsSupport.requireCoordinatesInMetadata(
+                tempDir.resolve("metadata"),
+                List.of("com.example:demo:1.0.0")
+        )).doesNotThrowAnyException();
+    }
+
+    @Test
+    void requireCoordinatesInMetadataRejectsUnknownCoordinates() throws IOException {
+        writeMetadataIndex("com.example", "demo", "1.0.0", "1.0.0");
+
+        assertThatThrownBy(() -> LibraryStatsSupport.requireCoordinatesInMetadata(
+                tempDir.resolve("metadata"),
+                List.of(
+                        "com.example:demo:2.0.0",
+                        "org.demo:missing:1.0.0",
+                        "malformed"
+                )
+        ))
+                .hasMessageContaining("Unknown reachability metadata coordinates: "
+                        + "com.example:demo:2.0.0, org.demo:missing:1.0.0, malformed");
+    }
+
     private LibraryStatsModels.VersionStats createVersionStats(
             String version,
             long totalCalls,
@@ -817,6 +843,30 @@ class LibraryStatsSupportTests {
                         new LibraryStatsModels.CoverageMetric(2, 1, 3, new java.math.BigDecimal("0.666667")),
                         new LibraryStatsModels.CoverageMetric(2, 1, 3, new java.math.BigDecimal("0.666667"))
                 )
+        );
+    }
+
+    private void writeMetadataIndex(
+            String group,
+            String artifact,
+            String metadataVersion,
+            String testedVersion
+    ) throws IOException {
+        Path artifactRoot = tempDir.resolve("metadata").resolve(group).resolve(artifact);
+        Files.createDirectories(artifactRoot.resolve(metadataVersion));
+        Files.writeString(
+                artifactRoot.resolve("index.json"),
+                """
+                [
+                  {
+                    "metadata-version": "%s",
+                    "tested-versions": [
+                      "%s"
+                    ]
+                  }
+                ]
+                """.formatted(metadataVersion, testedVersion),
+                StandardCharsets.UTF_8
         );
     }
 
