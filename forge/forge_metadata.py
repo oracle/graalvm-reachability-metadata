@@ -65,6 +65,15 @@ from ai_workflows.drivers.fix_ni_run import (
 from ai_workflows.drivers.improve_library_coverage import (
     main as run_improve_library_coverage_workflow,
 )
+from ai_workflows.drivers.library_update_router import (
+    ROUTE_FIX_JAVA_RUN,
+    ROUTE_FIX_JAVAC,
+    ROUTE_FIX_NI_RUN,
+    ROUTE_IMPROVE_COVERAGE,
+    LibraryUpdateRoute,
+    load_library_update_route,
+    select_library_update_route,
+)
 from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_CHUNK_READY,
     RUN_STATUS_FAILURE,
@@ -425,6 +434,7 @@ class PublicationHandoff:
     large_library_final: bool | None
     large_library_series_id: str | None
     not_for_native_image: bool = False
+    publication_kind: str | None = None
 
     def to_json(self) -> dict:
         return {
@@ -446,6 +456,7 @@ class PublicationHandoff:
             "large_library_final": self.large_library_final,
             "large_library_series_id": self.large_library_series_id,
             "not_for_native_image": self.not_for_native_image,
+            "publication_kind": self.publication_kind,
         }
 
 
@@ -4095,8 +4106,10 @@ def append_large_library_workflow_args(pipeline_argv: list[str], claimed_issue: 
 def run_library_preparation_preflight(
         claimed_issue: ClaimedIssue,
         strategy_name: str | None,
-) -> str:
+) -> str | None:
     """Run and persist the library-specific preparation preflight before workflow dispatch."""
+    if claimed_issue.preflight_info_path is None:
+        return None
     return run_preflight_decision(
         claimed_issue=claimed_issue,
         strategy_name=strategy_name,
@@ -4111,6 +4124,11 @@ def append_library_preparation_preflight_arg(pipeline_argv: list[str], preflight
     """Append the dispatcher preflight path when one was produced."""
     if preflight_path:
         pipeline_argv.extend(["--library-preparation-preflight-path", preflight_path])
+
+
+def library_update_route_artifact_root(claimed_issue: ClaimedIssue) -> str:
+    """Return the non-worktree artifact root for library-update route handoff."""
+    return claimed_issue.preflight_info_path or claimed_issue.scratch_metrics_repo_path
 
 
 def build_workflow_driver_invocation(
@@ -4238,6 +4256,97 @@ def build_workflow_driver_invocation(
         )
 
     elif claimed_issue.label == LABEL_LIBRARY_UPDATE:
+        route = select_library_update_route(
+            claimed_issue.worktree_path,
+            library_update_route_artifact_root(claimed_issue),
+            claimed_issue.issue_coordinates,
+        )
+        if route.selected_driver == ROUTE_FIX_JAVAC:
+            if route.baseline_coordinates is None:
+                raise ValueError(f"Missing baseline coordinates for route {route.selected_driver}.")
+            pipeline_argv = [
+                "--coordinates", route.baseline_coordinates,
+                "--new-version", route.new_version,
+                "--reachability-metadata-path", claimed_issue.worktree_path,
+                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+            ]
+            append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+            return WorkflowDriverInvocation(
+                driver_name="fix_javac_fail",
+                script_name="fix_javac_fail.py",
+                runner_name="run_fix_javac_workflow",
+                runner=run_fix_javac_workflow,
+                argv=pipeline_argv,
+                issue_number=issue_number,
+                issue_label=claimed_issue.label,
+                coordinates=None,
+                current_coordinates=route.baseline_coordinates,
+                new_version=route.new_version,
+                log_stage_name="javac-fix-workflow",
+                log_message=(
+                    f"Invoking fix_javac_fail workflow for library-update issue #{issue_number}: "
+                    f"{route.baseline_coordinates} -> {route.new_version}"
+                ),
+                failure_name="fix_javac",
+            )
+        if route.selected_driver == ROUTE_FIX_JAVA_RUN:
+            if route.baseline_coordinates is None:
+                raise ValueError(f"Missing baseline coordinates for route {route.selected_driver}.")
+            pipeline_argv = [
+                "--coordinates", route.baseline_coordinates,
+                "--new-version", route.new_version,
+                "--reachability-metadata-path", claimed_issue.worktree_path,
+                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+            ]
+            append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+            return WorkflowDriverInvocation(
+                driver_name="fix_java_run_fail",
+                script_name="fix_java_run_fail.py",
+                runner_name="run_fix_java_run_workflow",
+                runner=run_fix_java_run_workflow,
+                argv=pipeline_argv,
+                issue_number=issue_number,
+                issue_label=claimed_issue.label,
+                coordinates=None,
+                current_coordinates=route.baseline_coordinates,
+                new_version=route.new_version,
+                log_stage_name="java-run-fix-workflow",
+                log_message=(
+                    f"Invoking fix_java_run_fail workflow for library-update issue #{issue_number}: "
+                    f"{route.baseline_coordinates} -> {route.new_version}"
+                ),
+                failure_name="fix_java_run",
+            )
+        if route.selected_driver == ROUTE_FIX_NI_RUN:
+            if route.baseline_coordinates is None:
+                raise ValueError(f"Missing baseline coordinates for route {route.selected_driver}.")
+            pipeline_argv = [
+                "--coordinates", route.baseline_coordinates,
+                "--new-version", route.new_version,
+                "--reachability-metadata-path", claimed_issue.worktree_path,
+                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+            ]
+            append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+            return WorkflowDriverInvocation(
+                driver_name="fix_ni_run",
+                script_name="fix_ni_run.py",
+                runner_name="run_fix_ni_run_workflow",
+                runner=run_fix_ni_run_workflow,
+                argv=pipeline_argv,
+                issue_number=issue_number,
+                issue_label=claimed_issue.label,
+                coordinates=None,
+                current_coordinates=route.baseline_coordinates,
+                new_version=route.new_version,
+                log_stage_name="native-image-fix-workflow",
+                log_message=(
+                    f"Invoking fix_ni_run workflow for library-update issue #{issue_number}: "
+                    f"{route.baseline_coordinates} -> {route.new_version}"
+                ),
+                failure_name="fix_ni_run",
+            )
+        if route.selected_driver != ROUTE_IMPROVE_COVERAGE:
+            raise ValueError(f"Unknown library-update route '{route.selected_driver}'")
         pipeline_argv = [
             "--coordinates", claimed_issue.issue_coordinates,
             "--reachability-metadata-path", claimed_issue.worktree_path,
@@ -4259,8 +4368,8 @@ def build_workflow_driver_invocation(
             issue_number=issue_number,
             issue_label=claimed_issue.label,
             coordinates=claimed_issue.issue_coordinates,
-            current_coordinates=claimed_issue.current_coordinates,
-            new_version=claimed_issue.new_version,
+            current_coordinates=route.baseline_coordinates,
+            new_version=route.new_version,
             log_stage_name="improve-coverage-workflow",
             log_message=(
                 f"Invoking improve_library_coverage workflow for issue #{issue_number}: "
@@ -5226,6 +5335,12 @@ def _require_publication_value(value: str | None, field_name: str, claimed_issue
     return value
 
 
+def _load_library_update_publication_route(claimed_issue: ClaimedIssue) -> LibraryUpdateRoute | None:
+    if claimed_issue.label != LABEL_LIBRARY_UPDATE:
+        return None
+    return load_library_update_route(library_update_route_artifact_root(claimed_issue))
+
+
 def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff:
     """Build the live-or-fixture PR publication handoff.
 
@@ -5260,8 +5375,12 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
     runner: Callable[[list[str]], None]
     argv: list[str]
     result_label: str
+    publication_kind: str | None = None
     coordinates: str | None = claimed_issue.issue_coordinates
+    current_coordinates: str | None = claimed_issue.current_coordinates
+    new_version: str | None = claimed_issue.new_version
     not_for_native_image = False
+    library_update_route = _load_library_update_publication_route(claimed_issue)
 
     if claimed_issue.label == LABEL_LIBRARY_NEW:
         group, artifact, _version = metadata_coordinate_parts(claimed_issue.issue_coordinates)
@@ -5347,17 +5466,81 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
     elif claimed_issue.label == LABEL_LIBRARY_UPDATE:
-        script_name = "git_scripts/make_pr_improve_coverage.py"
-        runner_name = "run_make_pr_improve_coverage"
-        runner = run_make_pr_improve_coverage
-        result_label = LABEL_PR_LIBRARY_UPDATE
-        argv = [
-            "--coordinates", claimed_issue.issue_coordinates,
-            *issue_number_args,
-            "--reachability-metadata-path", claimed_issue.worktree_path,
-            "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
-            *large_library_pr_args,
-        ]
+        if library_update_route is not None and library_update_route.selected_driver == ROUTE_FIX_JAVAC:
+            script_name = "git_scripts/make_pr_javac_fix.py"
+            runner_name = "run_make_pr_javac_fix"
+            runner = run_make_pr_javac_fix
+            result_label = LABEL_PR_LIBRARY_UPDATE
+            publication_kind = LABEL_PR_JAVAC_FIX
+            current_coordinates = _require_publication_value(
+                library_update_route.baseline_coordinates,
+                "library_update_route.baseline_coordinates",
+                claimed_issue,
+            )
+            new_version = library_update_route.new_version
+            coordinates = None
+            argv = [
+                "--coordinates", current_coordinates,
+                "--new-version", new_version,
+                "--issue-number", str(issue_number),
+                "--pr-label", result_label,
+                "--reachability-metadata-path", claimed_issue.worktree_path,
+                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+            ]
+        elif library_update_route is not None and library_update_route.selected_driver == ROUTE_FIX_JAVA_RUN:
+            script_name = "git_scripts/make_pr_java_run_fix.py"
+            runner_name = "run_make_pr_java_run_fix"
+            runner = run_make_pr_java_run_fix
+            result_label = LABEL_PR_LIBRARY_UPDATE
+            publication_kind = LABEL_PR_JAVA_RUN_FIX
+            current_coordinates = _require_publication_value(
+                library_update_route.baseline_coordinates,
+                "library_update_route.baseline_coordinates",
+                claimed_issue,
+            )
+            new_version = library_update_route.new_version
+            coordinates = None
+            argv = [
+                "--coordinates", current_coordinates,
+                "--new-version", new_version,
+                "--issue-number", str(issue_number),
+                "--pr-label", result_label,
+                "--reachability-metadata-path", claimed_issue.worktree_path,
+                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+            ]
+        elif library_update_route is not None and library_update_route.selected_driver == ROUTE_FIX_NI_RUN:
+            script_name = "git_scripts/make_pr_ni_run_fix.py"
+            runner_name = "run_make_pr_ni_run_fix"
+            runner = run_make_pr_ni_run_fix
+            result_label = LABEL_PR_LIBRARY_UPDATE
+            publication_kind = LABEL_PR_NI_RUN_FIX
+            current_coordinates = _require_publication_value(
+                library_update_route.baseline_coordinates,
+                "library_update_route.baseline_coordinates",
+                claimed_issue,
+            )
+            new_version = library_update_route.new_version
+            coordinates = None
+            argv = [
+                "--coordinates", current_coordinates,
+                "--new-version", new_version,
+                "--issue-number", str(issue_number),
+                "--pr-label", result_label,
+                "--reachability-metadata-path", claimed_issue.worktree_path,
+                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+            ]
+        else:
+            script_name = "git_scripts/make_pr_improve_coverage.py"
+            runner_name = "run_make_pr_improve_coverage"
+            runner = run_make_pr_improve_coverage
+            result_label = LABEL_PR_LIBRARY_UPDATE
+            argv = [
+                "--coordinates", claimed_issue.issue_coordinates,
+                *issue_number_args,
+                "--reachability-metadata-path", claimed_issue.worktree_path,
+                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+                *large_library_pr_args,
+            ]
     else:
         raise ValueError(f"Unknown label '{claimed_issue.label}'")
 
@@ -5370,8 +5553,8 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
         issue_label=claimed_issue.label,
         result_label=result_label,
         coordinates=coordinates,
-        current_coordinates=claimed_issue.current_coordinates,
-        new_version=claimed_issue.new_version,
+        current_coordinates=current_coordinates,
+        new_version=new_version,
         worktree_path=claimed_issue.worktree_path,
         scratch_metrics_path=claimed_issue.scratch_metrics_repo_path,
         workflow_status=workflow_status,
@@ -5381,6 +5564,7 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
         large_library_final=large_library_final,
         large_library_series_id=None if large_library_state is None else large_library_state.series_id,
         not_for_native_image=not_for_native_image,
+        publication_kind=publication_kind or result_label,
     )
 
 
@@ -5399,6 +5583,7 @@ def _build_fixture_pull_request_preview(handoff: PublicationHandoff) -> tuple[st
     §GIT-pr-preview-builders
     """
     new_coordinates = _publication_new_coordinates(handoff)
+    publication_kind = handoff.publication_kind or handoff.result_label
     if handoff.not_for_native_image and new_coordinates:
         title, body, _local_ci_metrics = build_not_for_native_image_pull_request_preview(
             coordinates=new_coordinates,
@@ -5407,7 +5592,7 @@ def _build_fixture_pull_request_preview(handoff: PublicationHandoff) -> tuple[st
         )
         return title, body
 
-    if handoff.issue_label == LABEL_LIBRARY_NEW and new_coordinates:
+    if publication_kind == LABEL_LIBRARY_NEW and new_coordinates:
         title, body, _matched = build_new_library_pull_request_preview(
             coordinates=new_coordinates,
             metrics_repo_root=handoff.scratch_metrics_path,
@@ -5419,7 +5604,7 @@ def _build_fixture_pull_request_preview(handoff: PublicationHandoff) -> tuple[st
         )
         return title, body
 
-    if handoff.issue_label == LABEL_LIBRARY_UPDATE and new_coordinates:
+    if publication_kind == LABEL_PR_LIBRARY_UPDATE and new_coordinates:
         group, artifact, version = metadata_coordinate_parts(new_coordinates)
         title, body, _matched = build_improve_coverage_pull_request_preview(
             coordinates=new_coordinates,
@@ -5439,7 +5624,7 @@ def _build_fixture_pull_request_preview(handoff: PublicationHandoff) -> tuple[st
     if handoff.current_coordinates and new_coordinates:
         group, artifact, old_version = metadata_coordinate_parts(handoff.current_coordinates)
         _new_group, _new_artifact, new_version = metadata_coordinate_parts(new_coordinates)
-        if handoff.issue_label == LABEL_JAVAC_FAIL:
+        if publication_kind == LABEL_PR_JAVAC_FIX:
             title, body, _metrics_entry = build_javac_fix_pull_request_preview(
                 old_coordinates=handoff.current_coordinates,
                 new_coordinates=new_coordinates,
@@ -5452,7 +5637,7 @@ def _build_fixture_pull_request_preview(handoff: PublicationHandoff) -> tuple[st
                 issue_number=handoff.issue_number,
             )
             return title, body
-        if handoff.issue_label == LABEL_JAVA_RUN_FAIL:
+        if publication_kind == LABEL_PR_JAVA_RUN_FIX:
             title, body, _metrics_entry = build_java_run_fix_pull_request_preview(
                 old_coordinates=handoff.current_coordinates,
                 new_coordinates=new_coordinates,
@@ -5465,7 +5650,7 @@ def _build_fixture_pull_request_preview(handoff: PublicationHandoff) -> tuple[st
                 issue_number=handoff.issue_number,
             )
             return title, body
-        if handoff.issue_label == LABEL_NI_RUN_FAIL:
+        if publication_kind == LABEL_PR_NI_RUN_FIX:
             title, body, _local_ci_human_intervention, _severe_metadata_drop = (
                 build_ni_run_fix_pull_request_preview(
                     old_coordinates=handoff.current_coordinates,

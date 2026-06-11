@@ -45,6 +45,7 @@ from utility_scripts.repo_path_resolver import resolve_repo_roots
 
 SEVERE_METADATA_DROP_RATIO = 0.25
 TEST_SOURCE_DIR_NAMES: tuple[str, ...] = ("java", "kotlin", "groovy", "scala")
+DEFAULT_PR_LABEL = "fixes-native-image-run-fail"
 
 
 def is_severe_metadata_drop(previous_entries: int, new_entries: int) -> bool:
@@ -144,6 +145,7 @@ def create_pull_request(
         local_ci_verification: LocalCIVerificationResult | None = None,
         issue_number: int | None = None,
         metrics_repo_path: str | None = None,
+        pr_label: str = DEFAULT_PR_LABEL,
 ):
     """Create a GitHub pull request for the current branch."""
     origin_owner = get_origin_owner(cwd=repo_path)
@@ -171,7 +173,7 @@ def create_pull_request(
         "--body", body,
         "--base", BASE_BRANCH,
         "--head", f"{origin_owner}:{branch}",
-        "--label", "fixes-native-image-run-fail",
+        "--label", pr_label,
     ]
     if severe_metadata_drop or local_ci_human_intervention:
         cmd.extend(["--label", HUMAN_INTERVENTION_LABEL])
@@ -333,6 +335,11 @@ def build_parser():
         help="Path to the metrics repository root.",
     )
     parser.add_argument("--issue-number", type=int, help="Explicit backing GitHub issue number.")
+    parser.add_argument(
+        "--pr-label",
+        default=DEFAULT_PR_LABEL,
+        help="Primary label to apply to the generated pull request.",
+    )
     return parser
 
 
@@ -344,7 +351,7 @@ def parse_flags(argv_list):
         flags.reachability_metadata_path,
         flags.metrics_repo_path,
     )
-    return flags.coordinates, flags.new_version, repo_path, metrics_repo_path, flags.issue_number
+    return flags.coordinates, flags.new_version, repo_path, metrics_repo_path, flags.issue_number, flags.pr_label
 
 
 def push_current_branch_to_origin(
@@ -389,7 +396,7 @@ def push_current_branch_to_origin(
 def main(argv=None):
     ensure_gh_authenticated()
 
-    old_coordinates, new_version, repo_path, metrics_repo_path, issue_number = parse_flags(
+    old_coordinates, new_version, repo_path, metrics_repo_path, issue_number, pr_label = parse_flags(
         argv if argv is not None else sys.argv[1:]
     )
 
@@ -409,6 +416,7 @@ def main(argv=None):
         local_ci_verification=local_ci_verification,
         issue_number=issue_number,
         metrics_repo_path=metrics_repo_path,
+        pr_label=pr_label,
     )
 
 

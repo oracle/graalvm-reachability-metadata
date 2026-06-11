@@ -49,7 +49,7 @@ The dispatcher routes issue work by issue labels, not by PR labels:
 | Issue label | Workflow driver | Successful PR label |
 | --- | --- | --- |
 | `library-new-request` | `ai_workflows/drivers/add_new_library_support.py` | `library-new-request` |
-| `library-update-request` | `ai_workflows/drivers/improve_library_coverage.py` | `library-update-request` |
+| `library-update-request` | `ai_workflows/drivers/improve_library_coverage.py`, or a missing-version compatibility repair driver | `library-update-request` |
 | `fails-javac-compile` | `ai_workflows/drivers/fix_javac_fail.py` | `fixes-javac-fail` |
 | `fails-java-run` | `ai_workflows/drivers/fix_java_run_fail.py` | `fixes-java-run-fail` |
 | `fails-native-image-run` | `ai_workflows/drivers/fix_ni_run.py` | `fixes-native-image-run-fail` |

@@ -492,7 +492,7 @@ they run:
 | Queue | Driver script | Workflow spec |
 | --- | --- | --- |
 | `library-new-request` | `add_new_library_support.py` | new library support (§WF-add-new-library-support), which runs dynamic-access generation plus native metadata tracing and verification |
-| `library-update-request` | `improve_library_coverage.py`, or the missing-version router | dynamic-access coverage improvement (§WF-improve-library-coverage) |
+| `library-update-request` | `improve_library_coverage.py`, or the missing-version router | dynamic-access coverage improvement (§WF-improve-library-coverage), Java repair (§WF-java-fail-fix-workflow), or native-image run repair (§WF-native-image-run-fix-workflow) depending on the compatibility probe |
 | `fails-javac-compile` | `fix_javac_fail.py` | Java failure repair (§WF-java-fail-fix-workflow) |
 | `fails-java-run` | `fix_java_run_fail.py` | Java failure repair (§WF-java-fail-fix-workflow) |
 | `fails-native-image-run` | `fix_ni_run.py` | native-image run repair (§WF-native-image-run-fix-workflow) |

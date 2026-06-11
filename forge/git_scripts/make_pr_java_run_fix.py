@@ -36,6 +36,8 @@ from utility_scripts.local_ci_verification import (
 from utility_scripts.metrics_writer import read_pending_metrics
 from utility_scripts.repo_path_resolver import resolve_repo_roots
 
+DEFAULT_PR_LABEL = "fixes-java-run-fail"
+
 
 def create_pull_request(
         branch: str,
@@ -48,6 +50,7 @@ def create_pull_request(
         metrics_repo_root: str,
         repo_path: str,
         issue_number: int | None = None,
+        pr_label: str = DEFAULT_PR_LABEL,
 ):
     """Create a GitHub pull request for the java-run fix branch."""
     if shutil.which("gh") is None:
@@ -91,7 +94,7 @@ def create_pull_request(
         "--head",
         f"{origin_owner}:{branch}",
         "--label",
-        "fixes-java-run-fail",
+        pr_label,
         "--label",
         "GenAI",
     ]
@@ -202,6 +205,11 @@ def build_parser():
         help="Path to the metrics repository root.",
     )
     parser.add_argument("--issue-number", type=int, help="Explicit backing GitHub issue number.")
+    parser.add_argument(
+        "--pr-label",
+        default=DEFAULT_PR_LABEL,
+        help="Primary label to apply to the generated pull request.",
+    )
     return parser
 
 
@@ -213,7 +221,7 @@ def parse_flags(argv_list):
         flags.reachability_metadata_path,
         flags.metrics_repo_path,
     )
-    return flags.coordinates, flags.new_version, repo_path, metrics_repo_path, flags.issue_number
+    return flags.coordinates, flags.new_version, repo_path, metrics_repo_path, flags.issue_number, flags.pr_label
 
 
 def push_current_branch_to_origin(
@@ -245,7 +253,7 @@ def push_current_branch_to_origin(
 def main(argv=None):
     ensure_gh_authenticated()
 
-    old_coordinates, new_version, repo_path, metrics_repo_path, issue_number = parse_flags(
+    old_coordinates, new_version, repo_path, metrics_repo_path, issue_number, pr_label = parse_flags(
         argv if argv is not None else sys.argv[1:]
     )
 
@@ -266,6 +274,7 @@ def main(argv=None):
         metrics_repo_root=metrics_repo_path,
         repo_path=repo_path,
         issue_number=issue_number,
+        pr_label=pr_label,
     )
 
 if __name__ == "__main__":

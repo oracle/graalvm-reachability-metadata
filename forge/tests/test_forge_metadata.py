@@ -240,6 +240,18 @@ class LibraryUpdateIssueTests(unittest.TestCase):
                         "Cannot reflectively invoke method 'public void org.example.Demo.setName(java.lang.String)'."
                     ),
                 ) as issue_body, \
+                patch.object(
+                    forge_metadata,
+                    "select_library_update_route",
+                    return_value=forge_metadata.LibraryUpdateRoute(
+                        selected_driver=forge_metadata.ROUTE_IMPROVE_COVERAGE,
+                        requested_coordinates="org.example:lib:1.0.0",
+                        baseline_coordinates=None,
+                        new_version="1.0.0",
+                        reason="test route",
+                        match_type="tested-version",
+                    ),
+                ), \
                 patch.object(forge_metadata, "run_improve_library_coverage_workflow", return_value=0) as workflow:
             self.assertTrue(forge_metadata.invoke_pipeline(claimed_issue, "library_update_pi_gpt-5.5", False))
 
