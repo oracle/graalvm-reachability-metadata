@@ -1,0 +1,75 @@
+{
+  "fix_java_run_fail:2026-06-11": {
+    "timestamp": "2026-06-11T09:36:40.548200Z",
+    "library": "org.tpolecat:doobie-postgres_3:1.0.0-RC3",
+    "starting_commit": "e2b7f1eb150a3fe6dd7b8bfa51711b086b8fe22a",
+    "ending_commit": "a37f8866bcf2c39b6a65786c5c4c80babecab3e3",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8369,
+      "issue_label": "fails-java-run",
+      "library": "org.tpolecat:doobie-postgres_3:1.0.0-RC3",
+      "summary": "doobie-postgres is normally exercised through JDBC against a PostgreSQL server; the artifact already brings doobie-core, cats-effect/fs2, and the PostgreSQL JDBC driver, but meaningful connection/query coverage needs a local PostgreSQL database.",
+      "deterministic_setup": [
+        {
+          "kind": "docker_image",
+          "image": "postgres:18-alpine",
+          "slug": "postgres",
+          "reason": "The library documentation shows normal doobie-postgres usage via Transactor.fromDriverManager with org.postgresql.Driver and jdbc:postgresql URLs, and the repository already allows this PostgreSQL image for JDBC/PostgreSQL tests."
+        }
+      ],
+      "agent_guidance": "No extra Maven dependency is needed for ordinary doobie-postgres coverage. For Scala tests that summon Meta[java.time.ZonedDateTime], import doobie.implicits.javatimedrivernative.JavaZonedDateTimeMeta or avoid ZonedDateTime; doobie.postgres.implicits._ in 1.0.0-RC3 provides Instant, OffsetDateTime, LocalDateTime, LocalDate, LocalTime, and OffsetTime but not ZonedDateTime. Live database tests should create a JDBC transactor with org.postgresql.Driver and a jdbc:postgresql URL using the database/user/password configured when starting the declared local container.",
+      "risks": [
+        "PostGIS mappings exist behind provided net.postgis:postgis-jdbc types; do not cover those unless intentionally adding that optional dependency and a PostGIS-capable database setup.",
+        "Docker-based tests must use the declared pre-pulled image and local container networking; CI will not permit ad-hoc image pulls."
+      ],
+      "applied_setup": [
+        {
+          "kind": "docker_image",
+          "image": "postgres:18-alpine",
+          "slug": "postgres",
+          "result": "already_present",
+          "target": "tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-postgres"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8369 [Automation] java run fails for org.tpolecat:doobie-postgres_3:1.0.0-RC3; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.tpolecat:doobie-postgres_3:0.13.4",
+      "new_version": "1.0.0-RC3",
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 66352,
+      "output_tokens_used": 3458,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.tpolecat:doobie-postgres_3:1.0.0-RC3/library-preparation-preflight/pi-generation-2026-06-11T09-29-24-968799Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 22643,
+      "cached_input_tokens_used": 98816,
+      "output_tokens_used": 1090,
+      "iterations": 1,
+      "cost_usd": 0.0821,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "test_file": "None",
+      "metadata_file": "None"
+    }
+  }
+}
