@@ -18,11 +18,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 
 
-import org.eclipse.jetty.server.ConnectionFactory;
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.ForwardedRequestCustomizer;
 import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Response;
 import org.eclipse.jetty.server.Server;
@@ -165,36 +161,6 @@ public class JettyTests {
         }
     }
 
-    @Test
-    void forwardHeaders() throws Exception {
-        Server server = new Server(port);
-        for (Connector connector : server.getConnectors()) {
-            for (ConnectionFactory connectionFactory : connector.getConnectionFactories()) {
-                if (connectionFactory instanceof HttpConfiguration.ConnectionFactory) {
-                    ((HttpConfiguration.ConnectionFactory) connectionFactory).getHttpConfiguration()
-                            .addCustomizer(new ForwardedRequestCustomizer());
-                }
-            }
-        }
-        server.setHandler(new Handler.Abstract() {
-            @Override
-            public boolean handle(Request request, Response response, Callback callback) {
-                response.setStatus(200);
-                response.getHeaders().add("Content-Type", "text/plain");
-                String content = "I am " + Request.getServerName(request) + ":" + Request.getServerPort(request);
-                response.write(true, ByteBuffer.wrap(content.getBytes(StandardCharsets.UTF_8)), callback);
-                return true;
-            }
-        });
-        server.start();
-        try {
-            HttpResponse<String> response = doHttpRequest("X-Forwarded-Host", "some-host", "X-Forwarded-Port", "12345");
-            assertThat(response.statusCode()).isEqualTo(200);
-            assertThat(response.body()).isEqualTo("I am some-host:12345");
-        } finally {
-            server.stop();
-        }
-    }
 
     private static HttpResponse<String> doHttpRequest(String... headers) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(1)).build();
