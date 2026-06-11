@@ -1,0 +1,60 @@
+{
+  "fix_java_run_fail:2026-06-11": {
+    "timestamp": "2026-06-11T10:20:21.389261Z",
+    "library": "io.circe:circe-generic_3:0.15.0-M1",
+    "starting_commit": "c240bcc9b818020afbfdeb2148e2a9b1ac7d8f5c",
+    "ending_commit": "8035b7f2d10fa01a69e1f22862d84f806f633dd1",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8301,
+      "issue_label": "fails-java-run",
+      "library": "io.circe:circe-generic_3:0.15.0-M1",
+      "summary": "io.circe:circe-generic_3 is a pure Scala 3 generic codec-derivation module; its resolved POM only requires circe-core_3, scala3-library_3, and transitive cats/circe-numbers dependencies, and meaningful coverage is reachable by deriving Encoder/Decoder/Codec instances and exercising them with io.circe.Json/asJson without Docker, environment variables, system properties, or extra Maven dependencies.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The reported failure is an API/test-source compatibility issue: the existing 0.14.12 test calls Json.asAccumulating, which is not available on io.circe.Json in 0.15.0-M1. Generated tests should avoid relying on that removed/changed call or use the current Circe decoding API.",
+        "circe-parser is commonly used when parsing raw JSON strings, but it is a separate optional module and is not required to exercise circe-generic derivation; only add it if tests intentionally cover string parsing rather than the circe-generic artifact itself."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8301 [Automation] java run fails for io.circe:circe-generic_3:0.15.0-M1; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "current_library": "io.circe:circe-generic_3:0.14.12",
+      "new_version": "0.15.0-M1",
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 23468,
+      "output_tokens_used": 2578,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/io.circe:circe-generic_3:0.15.0-M1/library-preparation-preflight/pi-generation-2026-06-11T10-12-49-510044Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 57419,
+      "cached_input_tokens_used": 97280,
+      "output_tokens_used": 1639,
+      "iterations": 2,
+      "cost_usd": 0.0978,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "test_file": "None",
+      "metadata_file": "None"
+    }
+  }
+}
