@@ -15,10 +15,13 @@ import java.util.Map;
 
 import org.apache.maven.scm.CommandParameter;
 import org.apache.maven.scm.CommandParameters;
+import org.apache.maven.scm.CommandParameters.SignOption;
 import org.apache.maven.scm.ScmBranch;
 import org.apache.maven.scm.ScmException;
 import org.apache.maven.scm.ScmFileSet;
+import org.apache.maven.scm.ScmResult;
 import org.apache.maven.scm.ScmTag;
+import org.apache.maven.scm.ScmTagParameters;
 import org.apache.maven.scm.command.info.InfoItem;
 import org.apache.maven.scm.provider.ScmProviderRepository;
 import org.apache.maven.scm.provider.git.gitexe.command.checkin.GitCheckInCommand;
@@ -32,10 +35,12 @@ import org.apache.maven.scm.provider.git.gitexe.command.update.GitUpdateCommand;
 import org.apache.maven.scm.provider.git.repository.GitScmProviderRepository;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Timeout(60)
 public class GitExeCommandLineConstructionTest {
     @TempDir
     Path temporaryDirectory;
@@ -102,17 +107,23 @@ public class GitExeCommandLineConstructionTest {
         Commandline rawDiffCommandLine = GitDiffCommand.createDiffRawCommandLine(workingDirectory, "HEAD");
         assertThat(rawDiffCommandLine.getArguments()).containsExactly("diff", "--raw", "HEAD");
 
-        Commandline tagCommandLine = GitTagCommand.createCommandLine(
-                repository, workingDirectory, "v1.1.0", messagePath.toFile(), false);
-        assertThat(tagCommandLine.getArguments())
-                .containsExactly("tag", "-F", messagePath.toAbsolutePath().toString(), "v1.1.0");
+        ScmResult tagResult = executeTag(repository, workingDirectory, "v1.1.0", SignOption.DEFAULT);
+        assertThat(tagResult.isSuccess()).isFalse();
+        assertThat(commandLineTokens(tagResult))
+                .contains("tag", "-F", "v1.1.0")
+                .doesNotContain("-s", "--no-sign");
 
-        Commandline signedTagCommandLine = GitTagCommand.createCommandLine(
-                repository, workingDirectory, "v1.1.0", messagePath.toFile(), true);
-        assertThat(signedTagCommandLine.getArguments())
-                .containsExactly("tag", "-s", "-F", messagePath.toAbsolutePath().toString(), "v1.1.0");
+        ScmResult signedTagResult = executeTag(repository, workingDirectory, "v1.1.0", SignOption.FORCE_SIGN);
+        assertThat(signedTagResult.isSuccess()).isFalse();
+        assertThat(commandLineTokens(signedTagResult))
+                .contains("tag", "-s", "-F", "v1.1.0");
 
-        Commandline tagPushCommandLine = GitTagCommand.createPushCommandLine(
+        ScmResult unsignedTagResult = executeTag(repository, workingDirectory, "v1.1.0", SignOption.FORCE_NO_SIGN);
+        assertThat(unsignedTagResult.isSuccess()).isFalse();
+        assertThat(commandLineTokens(unsignedTagResult))
+                .contains("tag", "--no-sign", "-F", "v1.1.0");
+
+        Commandline tagPushCommandLine = new GitTagCommand(Map.of()).createPushCommandLine(
                 repository, new ScmFileSet(workingDirectory, trackedPath.toFile()), "v1.1.0");
         assertThat(tagPushCommandLine.getArguments())
                 .containsExactly("push", "https://example.invalid/team/project.git", "refs/tags/v1.1.0");
@@ -126,6 +137,30 @@ public class GitExeCommandLineConstructionTest {
         Commandline removeCommandLine = GitRemoveCommand.createCommandLine(
                 workingDirectory, List.of(removableDirectory.toFile(), trackedPath.toFile()));
         assertThat(removeCommandLine.getArguments()).contains("rm", "-r", "directory-to-remove", "tracked.txt");
+    }
+
+    private static ScmResult executeTag(
+            GitScmProviderRepository repository,
+            File workingDirectory,
+            String tag,
+            SignOption signOption) throws ScmException {
+        ScmTagParameters tagParameters = new ScmTagParameters("message");
+        tagParameters.setSignOption(signOption);
+        return new GitTagCommand(Map.of()).executeTagCommand(
+                repository, new ScmFileSet(workingDirectory), tag, tagParameters);
+    }
+
+    private static List<String> commandLineTokens(ScmResult result) {
+        return List.of(result.getCommandLine().split("\\s+")).stream()
+                .map(GitExeCommandLineConstructionTest::removeShellQuotes)
+                .toList();
+    }
+
+    private static String removeShellQuotes(String token) {
+        if (token.length() >= 2 && token.startsWith("'") && token.endsWith("'")) {
+            return token.substring(1, token.length() - 1);
+        }
+        return token;
     }
 
     private static void assertGitExecutable(Commandline commandLine) {
