@@ -24,6 +24,11 @@ import org.junit.jupiter.api.Test;
 public class OAuth2CredentialsTest {
     private static final URI AUDIENCE_URI = URI.create("https://example.test/resource");
 
+    static {
+        AppEngineCredentialsTest.configureAppEngineStandardEnvironment();
+        AppEngineCredentialsTest.installAppIdentityServiceFactory();
+    }
+
     @Test
     public void userCredentialsDeserializationRestoresDefaultTransportFactory() throws Exception {
         AccessToken accessToken = new AccessToken(

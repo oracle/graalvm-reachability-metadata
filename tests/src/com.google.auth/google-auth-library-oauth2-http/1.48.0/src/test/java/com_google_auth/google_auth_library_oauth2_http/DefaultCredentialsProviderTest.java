@@ -18,11 +18,11 @@ import org.junit.jupiter.api.io.TempDir;
 
 public class DefaultCredentialsProviderTest {
     private static final String GAE_RUNTIME_VERSION_PROPERTY =
-            "com.google.appengine.runtime.version";
+            AppEngineCredentialsTest.GAE_RUNTIME_VERSION_PROPERTY;
     private static final String GAE_RUNTIME_ENVIRONMENT_PROPERTY =
-            "com.google.appengine.runtime.environment";
+            AppEngineCredentialsTest.GAE_RUNTIME_ENVIRONMENT_PROPERTY;
     private static final String JETTY_LOGGER_PROPERTY =
-            "org.eclipse.jetty.util.log.class";
+            AppEngineCredentialsTest.JETTY_LOGGER_PROPERTY;
     private static final String USER_HOME_PROPERTY = "user.home";
     private static final String INITIAL_GAE_RUNTIME_VERSION =
             System.getProperty(GAE_RUNTIME_VERSION_PROPERTY);
@@ -32,6 +32,7 @@ public class DefaultCredentialsProviderTest {
 
     static {
         configureAppEngineStandardEnvironment();
+        AppEngineCredentialsTest.installAppIdentityServiceFactory();
     }
 
     @TempDir
@@ -67,16 +68,10 @@ public class DefaultCredentialsProviderTest {
     }
 
     private static void configureAppEngineStandardEnvironment() {
-        System.setProperty(GAE_RUNTIME_VERSION_PROPERTY, "test-runtime");
-        System.setProperty(GAE_RUNTIME_ENVIRONMENT_PROPERTY, "Development");
-        System.clearProperty(JETTY_LOGGER_PROPERTY);
+        AppEngineCredentialsTest.configureAppEngineStandardEnvironment();
     }
 
     private static void restoreProperty(String name, String value) {
-        if (value == null) {
-            System.clearProperty(name);
-        } else {
-            System.setProperty(name, value);
-        }
+        AppEngineCredentialsTest.restoreProperty(name, value);
     }
 }
