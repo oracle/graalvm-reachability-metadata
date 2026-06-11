@@ -72,7 +72,7 @@ public class NativeTest {
     }
 
     @Test
-    void registersDirectMappedOuterClassFromNestedInitializer() {
+    void registersDirectMappedOuterClassFromNestedInitializerWithExplicitClass() {
         DirectMappedOuter.Registrar.ensureRegistered();
 
         assertThat(DirectMappedOuter.atol("42")).isEqualTo(42);
@@ -202,7 +202,7 @@ public class NativeTest {
 
         public static class Registrar {
             static {
-                Native.register("c");
+                Native.register(DirectMappedOuter.class, "c");
             }
 
             public static void ensureRegistered() {
