@@ -155,6 +155,21 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def decodesEscapedLiteralObjectKeys(): Unit = {
+    val document: Json = json"""{
+      "line\nbreak": "newline",
+      "unicode\u2603": true,
+      "quote\"and\\slash": 9,
+      "control\tkey": [1, 2]
+    }"""
+
+    assertThat(document.hcursor.get[String]("line\nbreak")).isEqualTo(Right("newline"))
+    assertThat(document.hcursor.get[Boolean]("unicode☃")).isEqualTo(Right(true))
+    assertThat(document.hcursor.get[Int]("quote\"and\\slash")).isEqualTo(Right(9))
+    assertThat(document.hcursor.get[List[Int]]("control\tkey")).isEqualTo(Right(List(1, 2)))
+  }
+
+  @Test
   def escapesInterpolatedStringsAndKeysContainingJsonSpecialCharacters(): Unit = {
     val dynamicKey: String = "line\nbreak quote\" slash\\ snowman☃"
     val dynamicValue: String = "tab\treturn\rquote\" slash\\ snowman☃"
