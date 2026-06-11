@@ -11,6 +11,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.google.auth.ServiceAccountSigner;
 import com.google.auth.oauth2.AccessToken;
 import com.google.auth.oauth2.GoogleCredentials;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
@@ -55,5 +59,38 @@ public class AppEngineCredentialsTest {
                 .isEqualTo(AppEngineCredentialsTestSupport.ACCESS_TOKEN);
         assertThat(accessToken.getExpirationTime()).isNotNull();
         assertThat(signature).containsExactly(AppEngineCredentialsTestSupport.SIGNATURE);
+    }
+
+    @Test
+    public void appEngineCredentialsDeserializationRestoresAppIdentityAccess() throws Exception {
+        GoogleCredentials credentials = GoogleCredentials.getApplicationDefault();
+        GoogleCredentials restored = deserialize(serialize(credentials));
+        ServiceAccountSigner signer = (ServiceAccountSigner) restored;
+        GoogleCredentials scopedCredentials =
+                restored.createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
+
+        AccessToken accessToken = scopedCredentials.refreshAccessToken();
+        byte[] signature = signer.sign("restored-payload".getBytes(StandardCharsets.UTF_8));
+
+        assertThat(restored).isEqualTo(credentials);
+        assertThat(signer.getAccount()).isEqualTo(AppEngineCredentialsTestSupport.SERVICE_ACCOUNT);
+        assertThat(accessToken.getTokenValue())
+                .isEqualTo(AppEngineCredentialsTestSupport.ACCESS_TOKEN);
+        assertThat(signature).containsExactly(AppEngineCredentialsTestSupport.SIGNATURE);
+    }
+
+    private static byte[] serialize(GoogleCredentials credentials) throws Exception {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try (ObjectOutputStream output = new ObjectOutputStream(bytes)) {
+            output.writeObject(credentials);
+        }
+        return bytes.toByteArray();
+    }
+
+    private static GoogleCredentials deserialize(byte[] credentials) throws Exception {
+        try (ObjectInputStream input = new ObjectInputStream(
+                new ByteArrayInputStream(credentials))) {
+            return (GoogleCredentials) input.readObject();
+        }
     }
 }
