@@ -1,0 +1,60 @@
+{
+  "fix_javac_fail:2026-06-11": {
+    "timestamp": "2026-06-11T06:06:53.280728Z",
+    "library": "org.apache.maven.scm:maven-scm-provider-gitexe:2.2.1",
+    "starting_commit": "1ec1baab56a56c20fed9c8c6e930800eae71aa30",
+    "ending_commit": "53f104918fb2c21a692683cc6aa851ec71f387f9",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8354,
+      "issue_label": "fails-javac-compile",
+      "library": "org.apache.maven.scm:maven-scm-provider-gitexe:2.2.1",
+      "summary": "No extra deterministic setup is required. The resolved artifact is the Git executable Maven SCM provider; its compile/runtime dependencies are declared transitively, and the reported failure is an API-change compile error in existing tests, not missing dependency, Docker service, or environment configuration.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The library shells out to the local `git` executable for end-to-end provider operations; Ubuntu CI normally has Git available, but tests that execute real commits should use a temp repository and local git config rather than relying on global user settings.",
+        "Avoid network-backed Git remotes in generated tests; meaningful coverage can be reached through command-line construction, parser/consumer behavior, and temp local repositories."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8354 [Automation] javac compile fails for org.apache.maven.scm:maven-scm-provider-gitexe:2.2.1; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "8 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.apache.maven.scm:maven-scm-provider-gitexe:2.1.0",
+      "new_version": "2.2.1",
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 34940,
+      "output_tokens_used": 3566,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.apache.maven.scm:maven-scm-provider-gitexe:2.2.1/library-preparation-preflight/pi-generation-2026-06-11T05-58-49-322686Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 65114,
+      "cached_input_tokens_used": 390144,
+      "output_tokens_used": 7241,
+      "iterations": 2,
+      "cost_usd": 0.4123,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "test_file": "None",
+      "metadata_file": "None"
+    }
+  }
+}
