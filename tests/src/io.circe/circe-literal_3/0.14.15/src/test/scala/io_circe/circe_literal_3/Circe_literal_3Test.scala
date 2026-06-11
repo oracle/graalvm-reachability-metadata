@@ -56,6 +56,25 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def preservesExactJsonNumberValues(): Unit = {
+    val document: Json = json"""{
+      "large": 9007199254740993,
+      "fraction": 1234567890.12345678901234567890,
+      "exponent": 1.234567890123456789e5
+    }"""
+
+    assertThat(document.hcursor.downField("large").focus.flatMap(_.asNumber).flatMap(_.toBigInt)).isEqualTo(
+      Some(BigInt("9007199254740993"))
+    )
+    assertThat(document.hcursor.downField("fraction").focus.flatMap(_.asNumber).flatMap(_.toBigDecimal)).isEqualTo(
+      Some(BigDecimal("1234567890.12345678901234567890"))
+    )
+    assertThat(document.hcursor.downField("exponent").focus.flatMap(_.asNumber).flatMap(_.toBigDecimal)).isEqualTo(
+      Some(BigDecimal("123456.7890123456789"))
+    )
+  }
+
+  @Test
   def interpolatesEncodedValuesInObjectsArraysAndRootPositions(): Unit = {
     val name: String = "Ada"
     val count: Int = 3
