@@ -86,6 +86,33 @@ class Circe_literal_3Test:
     assert(cursor.downField("roles").focus.contains(roles))
 
   @Test
+  def jsonLiteralInterpolatesScalaValuesWithEncodersAndDynamicObjectKeys(): Unit =
+    val nameKey: String = "name"
+    val metadataKey: String = "metadata"
+    val name: String = "Grace Hopper"
+    val score: Int = 99
+    val flags: List[Boolean] = List(true, false, true)
+    val absentNickname: Option[String] = None
+    val document: Json = json"""
+      {
+        $nameKey: $name,
+        "score": $score,
+        "flags": $flags,
+        "nickname": $absentNickname,
+        $metadataKey: {
+          "source": "encoder interpolation"
+        }
+      }
+    """
+    val cursor = document.hcursor
+
+    assert(cursor.downField("name").as[String] == Right("Grace Hopper"))
+    assert(cursor.downField("score").as[Int] == Right(99))
+    assert(cursor.downField("flags").as[List[Boolean]] == Right(List(true, false, true)))
+    assert(cursor.downField("nickname").focus.contains(Json.Null))
+    assert(cursor.downField("metadata").downField("source").as[String] == Right("encoder interpolation"))
+
+  @Test
   def jsonLiteralInterpolatesValuesAtMultipleArrayPositions(): Unit =
     val first: Json = Json.obj("id" -> Json.fromInt(1), "label" -> Json.fromString("first"))
     val second: Json = json""" { "id": 2, "label": "second" } """
