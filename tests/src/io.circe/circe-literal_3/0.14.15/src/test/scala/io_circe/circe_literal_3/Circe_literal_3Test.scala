@@ -187,6 +187,25 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def supportsTopLevelInterpolatedEncodedValues(): Unit = {
+    val widgets: Vector[Widget] = Vector(
+      Widget(id = 1, label = "first", enabled = true),
+      Widget(id = 2, label = "second", enabled = false)
+    )
+    val maybeLabel: Option[String] = None
+
+    val arrayDocument: Json = json"""$widgets"""
+    val nullDocument: Json = json"""$maybeLabel"""
+    val decodedWidgets: List[Json] = expectRight(arrayDocument.as[List[Json]])
+
+    assertTrue(arrayDocument.isArray)
+    assertEquals(List(1, 2), decodedWidgets.map(widget => expectRight(widget.hcursor.get[Int]("id"))))
+    assertEquals(List("first", "second"), decodedWidgets.map(widget => expectRight(widget.hcursor.get[String]("label"))))
+    assertEquals(List(true, false), decodedWidgets.map(widget => expectRight(widget.hcursor.get[Boolean]("enabled"))))
+    assertTrue(nullDocument.isNull)
+  }
+
+  @Test
   def producedJsonValuesRemainUsableThroughCirceCursorAndPrintingApis(): Unit = {
     val base: Json = json"""{"items":[{"id":1},{"id":2}],"ok":true}"""
     val ids: List[Int] = expectRight(base.hcursor.downField("items").as[List[Json]])
