@@ -176,6 +176,24 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def interpolatesInlineExpressionsInValueAndKeyPositions(): Unit = {
+    val document: Json = json"""
+      {
+        ${"computed" + "Key"}: ${List(1, 2, 3).map(_ * 2)},
+        ${40 + 2}: ${Option("available")},
+        "summary": ${FeatureFlag("inline-expression", enabled = true, rolloutPercent = 50)}
+      }
+      """
+
+    assertEquals(Right(List(2, 4, 6)), document.hcursor.get[List[Int]]("computedKey"))
+    assertEquals(Right(Some("available")), document.hcursor.get[Option[String]]("42"))
+    assertEquals(
+      Right(FeatureFlag("inline-expression", enabled = true, rolloutPercent = 50)),
+      document.hcursor.get[FeatureFlag]("summary")
+    )
+  }
+
+  @Test
   def interpolatesDomainObjectsThroughUserProvidedEncoders(): Unit = {
     val enabledFlag: FeatureFlag = FeatureFlag("new-search", enabled = true, rolloutPercent = 25)
     val disabledFlag: FeatureFlag = FeatureFlag("legacy-checkout", enabled = false, rolloutPercent = 0)
