@@ -1,0 +1,100 @@
+{
+  "improve_library_coverage:2026-06-11": {
+    "timestamp": "2026-06-11T21:40:17.661709Z",
+    "library": "org.mockito:mockito-core:5.0.0",
+    "starting_commit": "5613a1073da9f8edd4b7d26ef95579c54c42b023",
+    "ending_commit": "0392035c7c0449ef88b7a5cf12a1ce1b3da8535a",
+    "strategy_name": "library_update_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "chunk_ready",
+    "stats": {
+      "version": "5.0.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.267327,
+            "coveredCalls": 27,
+            "totalCalls": 101
+          },
+          "resources": {
+            "coverageRatio": 0.666667,
+            "coveredCalls": 2,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 0.278846,
+        "coveredCalls": 29,
+        "totalCalls": 104
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 5974,
+          "missed": 30367,
+          "ratio": 0.164387,
+          "total": 36341
+        },
+        "line": {
+          "covered": 1558,
+          "missed": 7255,
+          "ratio": 0.176784,
+          "total": 8813
+        },
+        "method": {
+          "covered": 513,
+          "missed": 1801,
+          "ratio": 0.221694,
+          "total": 2314
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 3997,
+      "issue_label": "library-update-request",
+      "library": "org.mockito:mockito-core:5.0.0",
+      "summary": "Mockito 5.0.0 depends only on transitive Byte Buddy/Objenesis artifacts and needs no extra Maven dependency or Docker service, but native-image-relevant tests need Mockito configured away from its Mockito 5 default inline mock maker before reliable meaningful coverage is reachable.",
+      "deterministic_setup": [],
+      "agent_guidance": "Configure Mockito tests with `src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker` containing `mock-maker-proxy` or `org.mockito.internal.creation.proxy.ProxyMockMaker`, and focus coverage on interface mocks, stubbing, verification, argument captors, answers, sessions, and related core APIs that work with proxy-based mocks. Avoid relying on default inline/static/construction/final-class mocking for native-image coverage; Mockito 5.0.0 defaults to the inline Byte Buddy mock maker, which uses Java-agent/instrumentation machinery unsuitable as the baseline for GraalVM native-image tests.",
+      "risks": [
+        "ProxyMockMaker can only mock interfaces, so tests that try to increase coverage through class, final, static, or construction mocking may fail or be non-portable in native image.",
+        "The existing test setup already uses ProxyMockMaker; generation should preserve or recreate that resource rather than adding extra dependencies.",
+        "Local Gradle and Native Image verification remain authoritative because some Byte Buddy/agent paths may still be discovered if tests accidentally use Mockito features that require inline or subclass mock makers."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#3997 Update existing library: org.mockito:mockito-core:5.0.0; label=library-update-request; body_chars=270"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "9 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 36860,
+      "output_tokens_used": 2966,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.mockito:mockito-core:5.0.0/library-preparation-preflight/pi-generation-2026-06-11T21-07-21-768632Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 156036,
+      "cached_input_tokens_used": 1715200,
+      "output_tokens_used": 16822,
+      "iterations": 3,
+      "cost_usd": 1.3623,
+      "generated_loc": 112,
+      "tested_library_loc": 1558,
+      "metadata_entries": 132,
+      "test_only_metadata_entries": 37,
+      "code_coverage_percent": 17.68
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.mockito/mockito-core/5.0.0/src/test/java/org_mockito/mockito_core/MyService.java",
+      "metadata_file": "metadata/org.mockito/mockito-core/5.0.0/reachability-metadata.json"
+    }
+  }
+}
