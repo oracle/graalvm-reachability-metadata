@@ -18,9 +18,11 @@ import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.EventListener;
-import java.util.Properties;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
@@ -28,23 +30,27 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
+import org.osgi.service.log.FormatterLogger;
 import org.osgi.service.log.LogEntry;
+import org.osgi.service.log.LogLevel;
 import org.osgi.service.log.LogListener;
 import org.osgi.service.log.LogReaderService;
 import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
+import org.osgi.service.log.LoggerConsumer;
 
 public class Org_osgi_service_logTest {
     @Test
-    void logLevelsExposeSpecifiedSeverityValues() {
-        assertThat(LogService.LOG_ERROR).isEqualTo(1);
-        assertThat(LogService.LOG_WARNING).isEqualTo(2);
-        assertThat(LogService.LOG_INFO).isEqualTo(3);
-        assertThat(LogService.LOG_DEBUG).isEqualTo(4);
-        assertThat(List.of(
-                LogService.LOG_ERROR,
-                LogService.LOG_WARNING,
-                LogService.LOG_INFO,
-                LogService.LOG_DEBUG)).containsExactly(1, 2, 3, 4);
+    void logLevelsExposeOrderedSeverityValues() {
+        assertThat(List.of(LogLevel.values())).containsExactly(
+                LogLevel.AUDIT,
+                LogLevel.ERROR,
+                LogLevel.WARN,
+                LogLevel.INFO,
+                LogLevel.DEBUG,
+                LogLevel.TRACE);
+        assertThat(LogLevel.DEBUG.implies(LogLevel.INFO)).isTrue();
+        assertThat(LogLevel.INFO.implies(LogLevel.DEBUG)).isFalse();
     }
 
     @Test
@@ -54,10 +60,10 @@ public class Org_osgi_service_logTest {
         IllegalStateException exception = new IllegalStateException("not available");
         long before = System.currentTimeMillis();
 
-        logService.log(LogService.LOG_INFO, "started");
-        logService.log(LogService.LOG_WARNING, "warning", exception);
-        logService.log(reference, LogService.LOG_DEBUG, "service debug");
-        logService.log(reference, LogService.LOG_ERROR, "service failed", exception);
+        logService.log(LogLevel.INFO.ordinal(), "started");
+        logService.log(LogLevel.WARN.ordinal(), "warning", exception);
+        logService.log(reference, LogLevel.DEBUG.ordinal(), "service debug");
+        logService.log(reference, LogLevel.ERROR.ordinal(), "service failed", exception);
         logService.log(99, null, null);
         long after = System.currentTimeMillis();
 
@@ -65,13 +71,13 @@ public class Org_osgi_service_logTest {
         assertThat(entries).hasSize(5);
 
         LogEntry nullPayload = entries.get(0);
-        assertThat(nullPayload.getLevel()).isEqualTo(99);
+        assertThat(nullPayload.getLogLevel()).isEqualTo(LogLevel.TRACE);
         assertThat(nullPayload.getMessage()).isNull();
         assertThat(nullPayload.getException()).isNull();
         assertThat(nullPayload.getServiceReference()).isNull();
 
         LogEntry serviceFailure = entries.get(1);
-        assertThat(serviceFailure.getLevel()).isEqualTo(LogService.LOG_ERROR);
+        assertThat(serviceFailure.getLogLevel()).isEqualTo(LogLevel.ERROR);
         assertThat(serviceFailure.getMessage()).isEqualTo("service failed");
         assertThat(serviceFailure.getException()).isSameAs(exception);
         assertThat(serviceFailure.getServiceReference()).isSameAs(reference);
@@ -79,19 +85,19 @@ public class Org_osgi_service_logTest {
         assertThat(serviceFailure.getTime()).isBetween(before, after);
 
         LogEntry serviceDebug = entries.get(2);
-        assertThat(serviceDebug.getLevel()).isEqualTo(LogService.LOG_DEBUG);
+        assertThat(serviceDebug.getLogLevel()).isEqualTo(LogLevel.DEBUG);
         assertThat(serviceDebug.getMessage()).isEqualTo("service debug");
         assertThat(serviceDebug.getException()).isNull();
         assertThat(serviceDebug.getServiceReference()).isSameAs(reference);
 
         LogEntry warning = entries.get(3);
-        assertThat(warning.getLevel()).isEqualTo(LogService.LOG_WARNING);
+        assertThat(warning.getLogLevel()).isEqualTo(LogLevel.WARN);
         assertThat(warning.getMessage()).isEqualTo("warning");
         assertThat(warning.getException()).isSameAs(exception);
         assertThat(warning.getServiceReference()).isNull();
 
         LogEntry started = entries.get(4);
-        assertThat(started.getLevel()).isEqualTo(LogService.LOG_INFO);
+        assertThat(started.getLogLevel()).isEqualTo(LogLevel.INFO);
         assertThat(started.getMessage()).isEqualTo("started");
         assertThat(started.getException()).isNull();
         assertThat(started.getServiceReference()).isNull();
@@ -115,10 +121,10 @@ public class Org_osgi_service_logTest {
         logService.addLogListener(secondListener);
         logService.removeLogListener(absentListener);
 
-        logService.log(LogService.LOG_INFO, "first");
-        logService.log(LogService.LOG_WARNING, "second");
+        logService.log(LogLevel.INFO.ordinal(), "first");
+        logService.log(LogLevel.WARN.ordinal(), "second");
         logService.removeLogListener(firstListener);
-        logService.log(LogService.LOG_ERROR, "third");
+        logService.log(LogLevel.ERROR.ordinal(), "third");
 
         assertThat(firstListenerEntries).extracting(LogEntry::getMessage).containsExactly("first", "second");
         assertThat(secondListenerEntries).extracting(LogEntry::getMessage).containsExactly("first", "second", "third");
@@ -129,16 +135,16 @@ public class Org_osgi_service_logTest {
         InMemoryLogService logService = new InMemoryLogService();
         LogReaderService readerService = logService;
 
-        logService.log(LogService.LOG_INFO, "oldest");
-        logService.log(LogService.LOG_WARNING, "middle");
-        logService.log(LogService.LOG_ERROR, "newest");
+        logService.log(LogLevel.INFO.ordinal(), "oldest");
+        logService.log(LogLevel.WARN.ordinal(), "middle");
+        logService.log(LogLevel.ERROR.ordinal(), "newest");
 
-        Enumeration logSnapshot = readerService.getLog();
-        logService.log(LogService.LOG_DEBUG, "after snapshot");
+        Enumeration<LogEntry> logSnapshot = readerService.getLog();
+        logService.log(LogLevel.DEBUG.ordinal(), "after snapshot");
 
         List<String> messages = new ArrayList<>();
         while (logSnapshot.hasMoreElements()) {
-            messages.add(((LogEntry) logSnapshot.nextElement()).getMessage());
+            messages.add(logSnapshot.nextElement().getMessage());
         }
 
         assertThat(messages).containsExactly("newest", "middle", "oldest");
@@ -159,10 +165,10 @@ public class Org_osgi_service_logTest {
 
         logService.addLogListener(firstListener);
         logService.addLogListener(secondListener);
-        logService.log(LogService.LOG_INFO, "delivered to both");
+        logService.log(LogLevel.INFO.ordinal(), "delivered to both");
 
         logService.removeLogListener(firstListener);
-        logService.log(LogService.LOG_WARNING, "delivered to second");
+        logService.log(LogLevel.WARN.ordinal(), "delivered to second");
 
         assertThat(firstListenerMessages).containsExactly("delivered to both");
         assertThat(secondListenerMessages).containsExactly("delivered to both", "delivered to second");
@@ -176,19 +182,57 @@ public class Org_osgi_service_logTest {
         List<LogEntry> listenerEntries = new ArrayList<>();
 
         logService.addLogListener(listenerEntries::add);
-        logService.log(LogService.LOG_INFO, "bundle scoped message");
+        logService.log(LogLevel.INFO.ordinal(), "bundle scoped message");
 
-        LogEntry readerEntry = (LogEntry) readerService.getLog().nextElement();
+        LogEntry readerEntry = readerService.getLog().nextElement();
         assertThat(readerEntry.getBundle()).isSameAs(bundle);
         assertThat(readerEntry.getBundle().getBundleId()).isEqualTo(23L);
         assertThat(readerEntry.getBundle().getSymbolicName()).isEqualTo("example.logging.bundle");
         assertThat(listenerEntries).singleElement().satisfies(entry -> assertThat(entry.getBundle()).isSameAs(bundle));
     }
 
+    @Test
+    void loggerFactoryCreatesTypedLoggersAndEntriesExposeNewAttributes() {
+        TestBundle bundle = new TestBundle(42L, "example.logger.bundle");
+        InMemoryLogService logService = new InMemoryLogService(bundle);
+        String currentThreadName = Thread.currentThread().getName();
+
+        Logger namedLogger = logService.getLogger("example.logger");
+        FormatterLogger formatterLogger = logService.getLogger(bundle, "example.formatter", FormatterLogger.class);
+        Logger classLogger = logService.getLogger(Org_osgi_service_logTest.class, Logger.class);
+
+        assertThat(namedLogger.getName()).isEqualTo("example.logger");
+        assertThat(formatterLogger.getName()).isEqualTo("example.formatter");
+        assertThat(classLogger.getName()).isEqualTo(Org_osgi_service_logTest.class.getName());
+        assertThat(namedLogger.isInfoEnabled()).isTrue();
+        assertThat(formatterLogger.isWarnEnabled()).isTrue();
+
+        namedLogger.info("logger api message");
+        formatterLogger.warn("formatted %s", "message");
+
+        List<LogEntry> entries = logService.entriesInMostRecentFirstOrder();
+        assertThat(entries).hasSize(2);
+
+        LogEntry formattedEntry = entries.get(0);
+        assertThat(formattedEntry.getBundle()).isSameAs(bundle);
+        assertThat(formattedEntry.getLoggerName()).isEqualTo("example.formatter");
+        assertThat(formattedEntry.getLogLevel()).isEqualTo(LogLevel.WARN);
+        assertThat(formattedEntry.getMessage()).isEqualTo("formatted message");
+        assertThat(formattedEntry.getSequence()).isGreaterThan(entries.get(1).getSequence());
+        assertThat(formattedEntry.getThreadInfo()).contains(currentThreadName);
+        assertThat(formattedEntry.getLocation()).isNotNull();
+
+        LogEntry namedEntry = entries.get(1);
+        assertThat(namedEntry.getLoggerName()).isEqualTo("example.logger");
+        assertThat(namedEntry.getLogLevel()).isEqualTo(LogLevel.INFO);
+        assertThat(namedEntry.getMessage()).isEqualTo("logger api message");
+    }
+
     private static final class InMemoryLogService implements LogService, LogReaderService {
         private final Bundle bundle;
         private final List<LogEntry> entries = new ArrayList<>();
         private final List<LogListener> listeners = new ArrayList<>();
+        private final AtomicLong nextSequence = new AtomicLong();
 
         private InMemoryLogService() {
             this(null);
@@ -196,6 +240,36 @@ public class Org_osgi_service_logTest {
 
         private InMemoryLogService(Bundle bundle) {
             this.bundle = bundle;
+        }
+
+        @Override
+        public Logger getLogger(String name) {
+            return getLogger(name, Logger.class);
+        }
+
+        @Override
+        public Logger getLogger(Class<?> clazz) {
+            return getLogger(clazz, Logger.class);
+        }
+
+        @Override
+        public <L extends Logger> L getLogger(String name, Class<L> loggerType) {
+            return getLogger(bundle, name, loggerType);
+        }
+
+        @Override
+        public <L extends Logger> L getLogger(Class<?> clazz, Class<L> loggerType) {
+            return getLogger(clazz.getName(), loggerType);
+        }
+
+        @Override
+        public <L extends Logger> L getLogger(Bundle loggerBundle, String name, Class<L> loggerType) {
+            SimpleLogger logger = new SimpleLogger(this, loggerBundle, name,
+                    FormatterLogger.class.equals(loggerType));
+            if (!loggerType.isInstance(logger)) {
+                throw new IllegalArgumentException("Unsupported logger type: " + loggerType.getName());
+            }
+            return loggerType.cast(logger);
         }
 
         @Override
@@ -209,17 +283,13 @@ public class Org_osgi_service_logTest {
         }
 
         @Override
-        public void log(ServiceReference sr, int level, String message) {
+        public void log(ServiceReference<?> sr, int level, String message) {
             log(sr, level, message, null);
         }
 
         @Override
-        public void log(ServiceReference sr, int level, String message, Throwable exception) {
-            LogEntry entry = new SimpleLogEntry(bundle, sr, level, message, exception, System.currentTimeMillis());
-            entries.add(0, entry);
-            for (LogListener listener : new ArrayList<>(listeners)) {
-                listener.logged(entry);
-            }
+        public void log(ServiceReference<?> sr, int level, String message, Throwable exception) {
+            append(bundle, sr, level, toLogLevel(level), "LogService", message, exception);
         }
 
         @Override
@@ -235,8 +305,34 @@ public class Org_osgi_service_logTest {
         }
 
         @Override
-        public Enumeration getLog() {
+        public Enumeration<LogEntry> getLog() {
             return Collections.enumeration(new ArrayList<>(entries));
+        }
+
+        private void append(Bundle entryBundle, ServiceReference<?> serviceReference, int level, LogLevel logLevel,
+                String loggerName, String message, Throwable exception) {
+            LogEntry entry = new SimpleLogEntry(entryBundle, serviceReference, level, logLevel, loggerName, message,
+                    exception, System.currentTimeMillis(), nextSequence.getAndIncrement(),
+                    Thread.currentThread().getName(), new Throwable().getStackTrace()[2]);
+            entries.add(0, entry);
+            for (LogListener listener : new ArrayList<>(listeners)) {
+                listener.logged(entry);
+            }
+        }
+
+        private static LogLevel toLogLevel(int level) {
+            switch (level) {
+                case 1:
+                    return LogLevel.ERROR;
+                case 2:
+                    return LogLevel.WARN;
+                case 3:
+                    return LogLevel.INFO;
+                case 4:
+                    return LogLevel.DEBUG;
+                default:
+                    return LogLevel.TRACE;
+            }
         }
 
         private boolean containsSameListener(LogListener listener) {
@@ -250,6 +346,217 @@ public class Org_osgi_service_logTest {
 
         private List<LogEntry> entriesInMostRecentFirstOrder() {
             return new ArrayList<>(entries);
+        }
+    }
+
+    private static final class SimpleLogger implements FormatterLogger {
+        private final InMemoryLogService logService;
+        private final Bundle bundle;
+        private final String name;
+        private final boolean formatterStyle;
+
+        private SimpleLogger(InMemoryLogService logService, Bundle bundle, String name, boolean formatterStyle) {
+            this.logService = logService;
+            this.bundle = bundle;
+            this.name = name;
+            this.formatterStyle = formatterStyle;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public boolean isTraceEnabled() {
+            return true;
+        }
+
+        @Override
+        public void trace(String message) {
+            log(LogLevel.TRACE, message);
+        }
+
+        @Override
+        public void trace(String format, Object arg) {
+            log(LogLevel.TRACE, formatMessage(format, arg));
+        }
+
+        @Override
+        public void trace(String format, Object arg1, Object arg2) {
+            log(LogLevel.TRACE, formatMessage(format, arg1, arg2));
+        }
+
+        @Override
+        public void trace(String format, Object... arguments) {
+            log(LogLevel.TRACE, formatMessage(format, arguments));
+        }
+
+        @Override
+        public <E extends Exception> void trace(LoggerConsumer<E> consumer) throws E {
+            consumer.accept(this);
+        }
+
+        @Override
+        public boolean isDebugEnabled() {
+            return true;
+        }
+
+        @Override
+        public void debug(String message) {
+            log(LogLevel.DEBUG, message);
+        }
+
+        @Override
+        public void debug(String format, Object arg) {
+            log(LogLevel.DEBUG, formatMessage(format, arg));
+        }
+
+        @Override
+        public void debug(String format, Object arg1, Object arg2) {
+            log(LogLevel.DEBUG, formatMessage(format, arg1, arg2));
+        }
+
+        @Override
+        public void debug(String format, Object... arguments) {
+            log(LogLevel.DEBUG, formatMessage(format, arguments));
+        }
+
+        @Override
+        public <E extends Exception> void debug(LoggerConsumer<E> consumer) throws E {
+            consumer.accept(this);
+        }
+
+        @Override
+        public boolean isInfoEnabled() {
+            return true;
+        }
+
+        @Override
+        public void info(String message) {
+            log(LogLevel.INFO, message);
+        }
+
+        @Override
+        public void info(String format, Object arg) {
+            log(LogLevel.INFO, formatMessage(format, arg));
+        }
+
+        @Override
+        public void info(String format, Object arg1, Object arg2) {
+            log(LogLevel.INFO, formatMessage(format, arg1, arg2));
+        }
+
+        @Override
+        public void info(String format, Object... arguments) {
+            log(LogLevel.INFO, formatMessage(format, arguments));
+        }
+
+        @Override
+        public <E extends Exception> void info(LoggerConsumer<E> consumer) throws E {
+            consumer.accept(this);
+        }
+
+        @Override
+        public boolean isWarnEnabled() {
+            return true;
+        }
+
+        @Override
+        public void warn(String message) {
+            log(LogLevel.WARN, message);
+        }
+
+        @Override
+        public void warn(String format, Object arg) {
+            log(LogLevel.WARN, formatMessage(format, arg));
+        }
+
+        @Override
+        public void warn(String format, Object arg1, Object arg2) {
+            log(LogLevel.WARN, formatMessage(format, arg1, arg2));
+        }
+
+        @Override
+        public void warn(String format, Object... arguments) {
+            log(LogLevel.WARN, formatMessage(format, arguments));
+        }
+
+        @Override
+        public <E extends Exception> void warn(LoggerConsumer<E> consumer) throws E {
+            consumer.accept(this);
+        }
+
+        @Override
+        public boolean isErrorEnabled() {
+            return true;
+        }
+
+        @Override
+        public void error(String message) {
+            log(LogLevel.ERROR, message);
+        }
+
+        @Override
+        public void error(String format, Object arg) {
+            log(LogLevel.ERROR, formatMessage(format, arg));
+        }
+
+        @Override
+        public void error(String format, Object arg1, Object arg2) {
+            log(LogLevel.ERROR, formatMessage(format, arg1, arg2));
+        }
+
+        @Override
+        public void error(String format, Object... arguments) {
+            log(LogLevel.ERROR, formatMessage(format, arguments));
+        }
+
+        @Override
+        public <E extends Exception> void error(LoggerConsumer<E> consumer) throws E {
+            consumer.accept(this);
+        }
+
+        @Override
+        public void audit(String message) {
+            log(LogLevel.AUDIT, message);
+        }
+
+        @Override
+        public void audit(String format, Object arg) {
+            log(LogLevel.AUDIT, formatMessage(format, arg));
+        }
+
+        @Override
+        public void audit(String format, Object arg1, Object arg2) {
+            log(LogLevel.AUDIT, formatMessage(format, arg1, arg2));
+        }
+
+        @Override
+        public void audit(String format, Object... arguments) {
+            log(LogLevel.AUDIT, formatMessage(format, arguments));
+        }
+
+        private void log(LogLevel logLevel, String message) {
+            logService.append(bundle, null, logLevel.ordinal(), logLevel, name, message, null);
+        }
+
+        private String formatMessage(String format, Object... arguments) {
+            if (format == null || arguments.length == 0) {
+                return format;
+            }
+            if (formatterStyle) {
+                return String.format(Locale.ROOT, format, arguments);
+            }
+            String formatted = format;
+            for (Object argument : arguments) {
+                int placeholder = formatted.indexOf("{}");
+                if (placeholder < 0) {
+                    break;
+                }
+                formatted = formatted.substring(0, placeholder) + argument + formatted.substring(placeholder + 2);
+            }
+            return formatted;
         }
     }
 
@@ -278,20 +585,31 @@ public class Org_osgi_service_logTest {
 
     private static final class SimpleLogEntry implements LogEntry {
         private final Bundle bundle;
-        private final ServiceReference serviceReference;
+        private final ServiceReference<?> serviceReference;
         private final int level;
+        private final LogLevel logLevel;
+        private final String loggerName;
         private final String message;
         private final Throwable exception;
         private final long time;
+        private final long sequence;
+        private final String threadInfo;
+        private final StackTraceElement location;
 
-        private SimpleLogEntry(Bundle bundle, ServiceReference serviceReference, int level, String message,
-                Throwable exception, long time) {
+        private SimpleLogEntry(Bundle bundle, ServiceReference<?> serviceReference, int level, LogLevel logLevel,
+                String loggerName, String message, Throwable exception, long time, long sequence, String threadInfo,
+                StackTraceElement location) {
             this.bundle = bundle;
             this.serviceReference = serviceReference;
             this.level = level;
+            this.logLevel = logLevel;
+            this.loggerName = loggerName;
             this.message = message;
             this.exception = exception;
             this.time = time;
+            this.sequence = sequence;
+            this.threadInfo = threadInfo;
+            this.location = location;
         }
 
         @Override
@@ -300,7 +618,7 @@ public class Org_osgi_service_logTest {
         }
 
         @Override
-        public ServiceReference getServiceReference() {
+        public ServiceReference<?> getServiceReference() {
             return serviceReference;
         }
 
@@ -322,6 +640,31 @@ public class Org_osgi_service_logTest {
         @Override
         public long getTime() {
             return time;
+        }
+
+        @Override
+        public LogLevel getLogLevel() {
+            return logLevel;
+        }
+
+        @Override
+        public String getLoggerName() {
+            return loggerName;
+        }
+
+        @Override
+        public long getSequence() {
+            return sequence;
+        }
+
+        @Override
+        public String getThreadInfo() {
+            return threadInfo;
+        }
+
+        @Override
+        public StackTraceElement getLocation() {
+            return location;
         }
     }
 
