@@ -114,6 +114,19 @@ class Mockito_5_12_3Test {
   }
 
   @Test
+  def mockSupportsScalaTraitDefaultMethods(): Unit = {
+    withMockitoRuntime {
+      val settings: MockSettings = Mockito.withSettings().defaultAnswer(Mockito.CALLS_REAL_METHODS)
+      val weather: WeatherService = MockitoSugar.mock[WeatherService](settings)
+
+      Mockito.doReturn(Integer.valueOf(-3)).when(weather).temperatureInCelsius("Oslo")
+
+      assertThat(weather.isFreezing("Oslo")).isTrue()
+      Mockito.verify(weather).temperatureInCelsius("Oslo")
+    }
+  }
+
+  @Test
   def captureCreatesArgumentCaptorAndImplicitlyCapturesVerificationArgument(): Unit = {
     withMockitoRuntime {
       import org.scalatestplus.mockito.MockitoSugar.*
@@ -145,4 +158,10 @@ class Mockito_5_12_3Test {
 
 class GreetingService {
   def greeting(name: String): String = s"Hello $name"
+}
+
+trait WeatherService {
+  def temperatureInCelsius(city: String): Int
+
+  def isFreezing(city: String): Boolean = temperatureInCelsius(city) <= 0
 }
