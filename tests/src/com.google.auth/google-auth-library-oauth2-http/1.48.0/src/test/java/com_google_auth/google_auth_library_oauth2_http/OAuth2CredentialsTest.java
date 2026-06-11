@@ -36,11 +36,7 @@ public class OAuth2CredentialsTest {
                 .setQuotaProjectId("quota-project")
                 .build();
 
-        UserCredentials restored;
-        try (ObjectInputStream input = new ObjectInputStream(
-                new ByteArrayInputStream(serialize(credentials)))) {
-            restored = (UserCredentials) input.readObject();
-        }
+        UserCredentials restored = deserialize(serialize(credentials));
 
         Map<String, List<String>> requestMetadata = restored.getRequestMetadata(AUDIENCE_URI);
         assertThat(requestMetadata)
@@ -49,11 +45,45 @@ public class OAuth2CredentialsTest {
         assertThat(restored.toString()).contains("client-id", "quota-project");
     }
 
+    @Test
+    public void userCredentialsDeserializationRestoresCustomTransportFactory() throws Exception {
+        AccessToken accessToken = new AccessToken(
+                "custom-access-token",
+                new Date(System.currentTimeMillis() + 3_600_000));
+        OAuth2CredentialsTestTransportFactory.resetConstructorCalls();
+        UserCredentials credentials = UserCredentials.newBuilder()
+                .setClientId("custom-client-id")
+                .setClientSecret("custom-client-secret")
+                .setAccessToken(accessToken)
+                .setHttpTransportFactory(new OAuth2CredentialsTestTransportFactory())
+                .build();
+        byte[] serializedCredentials = serialize(credentials);
+
+        OAuth2CredentialsTestTransportFactory.resetConstructorCalls();
+        UserCredentials restored = deserialize(serializedCredentials);
+
+        assertThat(OAuth2CredentialsTestTransportFactory.getConstructorCalls()).isEqualTo(1);
+        assertThat(restored).isEqualTo(credentials);
+        assertThat(restored.getRequestMetadata(AUDIENCE_URI))
+                .containsEntry(
+                        AuthHttpConstants.AUTHORIZATION,
+                        List.of("Bearer custom-access-token"));
+        assertThat(restored.toString())
+                .contains(OAuth2CredentialsTestTransportFactory.class.getName());
+    }
+
     private static byte[] serialize(UserCredentials credentials) throws Exception {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         try (ObjectOutputStream output = new ObjectOutputStream(bytes)) {
             output.writeObject(credentials);
         }
         return bytes.toByteArray();
+    }
+
+    private static UserCredentials deserialize(byte[] credentials) throws Exception {
+        try (ObjectInputStream input = new ObjectInputStream(
+                new ByteArrayInputStream(credentials))) {
+            return (UserCredentials) input.readObject();
+        }
     }
 }
