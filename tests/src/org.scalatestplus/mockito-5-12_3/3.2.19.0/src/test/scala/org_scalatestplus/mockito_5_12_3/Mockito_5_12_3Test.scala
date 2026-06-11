@@ -35,6 +35,19 @@ class Mockito_5_12_3Test {
   }
 
   @Test
+  def companionObjectMockSupportsConcreteScalaClasses(): Unit = {
+    withMockitoRuntime {
+      val greeter: GreetingService = MockitoSugar.mock[GreetingService]
+
+      Mockito.when(greeter.greeting("Scala")).thenReturn("Mocked greeting")
+
+      assertThat(greeter.greeting("Scala")).isEqualTo("Mocked greeting")
+      assertThat(Mockito.mockingDetails(greeter).isMock).isTrue()
+      Mockito.verify(greeter).greeting("Scala")
+    }
+  }
+
+  @Test
   def importedCompanionMembersCreateMocksWithoutMixingInTheTrait(): Unit = {
     withMockitoRuntime {
       import org.scalatestplus.mockito.MockitoSugar.mock
@@ -128,4 +141,8 @@ class Mockito_5_12_3Test {
   }
 
   private object MixedInSugar extends MockitoSugar
+}
+
+class GreetingService {
+  def greeting(name: String): String = s"Hello $name"
 }
