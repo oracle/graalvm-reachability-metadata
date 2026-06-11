@@ -171,6 +171,23 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def interpolatesInlineScalaExpressionsInKeysAndValues(): Unit = {
+    val document: Json = json"""
+      {
+        ${"stat" + "us"}: ${List("o", "k").mkString},
+        "answer": ${40 + 2},
+        "derived": ${List(1, 2, 3).map(_ * 2)}
+      }
+      """
+
+    val cursor = document.hcursor
+
+    assertEquals("ok", expectRight(cursor.get[String]("status")))
+    assertEquals(42, expectRight(cursor.get[Int]("answer")))
+    assertEquals(List(2, 4, 6), expectRight(cursor.get[List[Int]]("derived")))
+  }
+
+  @Test
   def composesLiteralJsonWithCirceTransformations(): Unit = {
     val source: Json = json"""
       {
