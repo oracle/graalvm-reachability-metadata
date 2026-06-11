@@ -113,6 +113,14 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def interpolatesInlineExpressionsInJsonValueAndKeyPositions(): Unit = {
+    val literal: Json = json"""{ ${40 + 2}: ${List("forty", "two").mkString("-")} }"""
+    val expected: Json = Json.obj("42" -> Json.fromString("forty-two"))
+
+    assertEquals(expected, literal)
+  }
+
+  @Test
   def usesCustomEncodersForInterpolatedValuesAndKeys(): Unit = {
     final case class Pet(name: String, age: Int)
 
