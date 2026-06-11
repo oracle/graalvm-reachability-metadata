@@ -181,6 +181,34 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def preservesSourceOrderForLiteralObjectFields(): Unit = {
+    val document: Json = json"""
+      {
+        "first": 1,
+        "second": {
+          "nested-a": true,
+          "nested-b": false,
+          "nested-c": null
+        },
+        "third": ["kept", "in", "order"],
+        "fourth": 4
+      }
+    """
+
+    val topLevelKeys: Seq[String] = document.asObject.map(_.keys.toSeq).getOrElse(Seq.empty)
+    val nestedKeys: Seq[String] = document.hcursor
+      .downField("second")
+      .focus
+      .flatMap(_.asObject)
+      .map(_.keys.toSeq)
+      .getOrElse(Seq.empty)
+
+    assertThat(topLevelKeys.asJava).containsExactly("first", "second", "third", "fourth")
+    assertThat(nestedKeys.asJava).containsExactly("nested-a", "nested-b", "nested-c")
+    assertThat(document.hcursor.get[List[String]]("third")).isEqualTo(Right(List("kept", "in", "order")))
+  }
+
+  @Test
   def reportsCompileTimeErrorsForInvalidJsonAndMissingEncoders(): Unit = {
     val invalidJsonErrors = typeCheckErrors("""
       import io.circe.literal.*
