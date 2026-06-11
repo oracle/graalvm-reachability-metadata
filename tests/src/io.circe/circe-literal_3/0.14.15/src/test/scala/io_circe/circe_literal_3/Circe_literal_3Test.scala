@@ -70,6 +70,17 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def createsTopLevelJsonFromInterpolatedValuesThroughEncoders(): Unit = {
+    val origin: GeoPoint = GeoPoint(BigDecimal("45.0"), BigDecimal("15.5"))
+
+    val document: Json = json"$origin"
+    val cursor = document.hcursor
+
+    assertEquals(BigDecimal("45.0"), expectRight(cursor.get[BigDecimal]("latitude")))
+    assertEquals(BigDecimal("15.5"), expectRight(cursor.get[BigDecimal]("longitude")))
+  }
+
+  @Test
   def interpolatesPrimitiveAndCollectionValuesThroughCirceEncoders(): Unit = {
     val name: String = "Ada"
     val age: Int = 36
