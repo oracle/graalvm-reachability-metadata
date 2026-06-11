@@ -1,0 +1,60 @@
+{
+  "fix_javac_fail:2026-06-11": {
+    "timestamp": "2026-06-11T08:14:52.626484Z",
+    "library": "org.apache.maven.scm:maven-scm-provider-gitexe:2.2.1",
+    "starting_commit": "4404d894688b32a644a7d4ce5e46c277ebe7fd0e",
+    "ending_commit": "ae39c710b10ceba14536078acea286c3b7b7729b",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8354,
+      "issue_label": "fails-javac-compile",
+      "library": "org.apache.maven.scm:maven-scm-provider-gitexe:2.2.1",
+      "summary": "No extra setup is required: the artifact is the Maven SCM Git executable provider, its runtime dependencies are resolved transitively, and meaningful coverage is reachable through command-line factory, parser/consumer, repository URL, and provider behavior tests using local temporary files without additional Maven dependencies, Docker services, or required system properties.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "Tests that execute real Git operations instead of only constructing/parsing commands will rely on a `git` executable on `PATH` and may need local temporary-repository configuration such as `user.name` and `user.email`; that is test-code setup, not driver-level deterministic setup.",
+        "The reported javac failure is caused by Maven SCM 2.2.1 API changes such as `GitTagCommand.createCommandLine` now taking `CommandParameters.SignOption` and `createPushCommandLine` being instance-based, not by missing setup."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8354 [Automation] javac compile fails for org.apache.maven.scm:maven-scm-provider-gitexe:2.2.1; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "8 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.apache.maven.scm:maven-scm-provider-gitexe:2.1.0",
+      "new_version": "2.2.1",
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 76158,
+      "output_tokens_used": 2970,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.apache.maven.scm:maven-scm-provider-gitexe:2.2.1/library-preparation-preflight/pi-generation-2026-06-11T08-05-34-457733Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 76600,
+      "cached_input_tokens_used": 612864,
+      "output_tokens_used": 9738,
+      "iterations": 1,
+      "cost_usd": 0.5985,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "test_file": "None",
+      "metadata_file": "None"
+    }
+  }
+}
