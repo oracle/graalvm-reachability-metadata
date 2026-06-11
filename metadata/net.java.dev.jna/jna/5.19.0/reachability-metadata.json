@@ -17,6 +17,21 @@
       "condition": {
         "typeReached": "com.sun.jna.Native"
       },
+      "type": "com.sun.jna.CallbackProxy",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "callback",
+          "parameterTypes": [
+            "java.lang.Object[]"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.sun.jna.Native"
+      },
       "type": "com.sun.jna.CallbackReference",
       "jniAccessible": true,
       "methods": [
@@ -197,6 +212,18 @@
       "fields": [
         {
           "name": "pointer"
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "com.sun.jna.ptr.ByReference"
+      },
+      "type": "com.sun.jna.ptr.PointerByReference",
+      "methods": [
+        {
+          "name": "getValue",
+          "parameterTypes": []
         }
       ]
     },
@@ -887,16 +914,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "condition": {
-        "typeReached": "com.sun.jna.Native"
-      },
-      "type": {
-        "proxy": [
-          "net_java_dev_jna.jna.CLibrary"
-        ]
-      }
     }
   ],
   "resources": [
@@ -904,7 +921,31 @@
       "condition": {
         "typeReached": "com.sun.jna.Native"
       },
+      "glob": "com/sun/jna/darwin-aarch64/libjnidispatch.jnilib"
+    },
+    {
+      "condition": {
+        "typeReached": "com.sun.jna.Native"
+      },
+      "glob": "com/sun/jna/darwin-x86-64/libjnidispatch.jnilib"
+    },
+    {
+      "condition": {
+        "typeReached": "com.sun.jna.Native"
+      },
+      "glob": "com/sun/jna/linux-aarch64/libjnidispatch.so"
+    },
+    {
+      "condition": {
+        "typeReached": "com.sun.jna.Native"
+      },
       "glob": "com/sun/jna/linux-x86-64/libjnidispatch.so"
+    },
+    {
+      "condition": {
+        "typeReached": "com.sun.jna.Native"
+      },
+      "glob": "com/sun/jna/win32-x86-64/jnidispatch.dll"
     }
   ]
 }
