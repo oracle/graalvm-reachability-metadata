@@ -76,6 +76,21 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def interpolatesTopLevelValuesThroughCirceEncoders(): Unit = {
+    val flag: FeatureFlag = FeatureFlag("instant-rollout", enabled = true, rolloutPercent = 100)
+    val tags: List[String] = List("stable", "public")
+    val absentLabel: Option[String] = None
+
+    val flagJson: Json = json""" $flag """
+    val tagsJson: Json = json""" $tags """
+    val absentLabelJson: Json = json""" $absentLabel """
+
+    assertEquals(Right(flag), flagJson.as[FeatureFlag])
+    assertEquals(Right(tags), tagsJson.as[List[String]])
+    assertTrue(absentLabelJson.isNull)
+  }
+
+  @Test
   def interpolatesPrimitiveCollectionAndOptionalValuesWithCirceEncoders(): Unit = {
     val name: String = "Ada Lovelace"
     val age: Int = 36
