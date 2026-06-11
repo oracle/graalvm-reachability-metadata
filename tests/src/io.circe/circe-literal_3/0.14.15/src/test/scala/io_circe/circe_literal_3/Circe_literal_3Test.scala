@@ -128,6 +128,23 @@ class Circe_literal_3Test:
 
     assert(actual == Widget.encoder(widget))
 
+  @Test
+  def jsonInterpolatorEscapesInterpolatedStringKeysAndValues(): Unit =
+    val dynamicKey: String = "header \"X-Native\"\nline"
+    val dynamicValue: String = "hello \"circe\"\nsecond line ☃"
+
+    val actual: Json = json"""{
+      $dynamicKey: $dynamicValue,
+      "array": [$dynamicValue]
+    }"""
+
+    val expected: Json = Json.obj(
+      dynamicKey -> Json.fromString(dynamicValue),
+      "array" -> Json.arr(Json.fromString(dynamicValue))
+    )
+
+    assert(actual == expected)
+
   private def jsonNumber(value: String): Json =
     Json.fromJsonNumber(
       JsonNumber.fromString(value).getOrElse(throw new AssertionError(s"Invalid JSON number: $value"))
