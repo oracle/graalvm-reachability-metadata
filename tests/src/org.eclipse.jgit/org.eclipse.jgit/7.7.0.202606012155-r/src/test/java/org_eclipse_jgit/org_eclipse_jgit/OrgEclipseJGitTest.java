@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Fail.fail;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class OrgEclipseJGitTest {
+public class OrgEclipseJGitTest {
 
     private static final Logger logger = LoggerFactory.getLogger("OrgEclipseJGitTest");
 
