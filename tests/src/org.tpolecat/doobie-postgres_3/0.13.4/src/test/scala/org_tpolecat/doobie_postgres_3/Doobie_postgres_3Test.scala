@@ -26,6 +26,7 @@ import doobie.postgres.free.largeobjectmanager
 import doobie.postgres.free.largeobjectmanager.LargeObjectManagerOp
 import doobie.postgres.free.pgconnection
 import doobie.postgres.free.pgconnection.PGConnectionOp
+import doobie.postgres.hi.{pgconnection => hiPgConnection}
 import doobie.postgres.implicits._
 import doobie.postgres.sqlstate
 import org.junit.jupiter.api.Assertions.assertArrayEquals
@@ -35,6 +36,7 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
+import org.postgresql.PGNotification
 import org.postgresql.copy.CopyManager
 import org.postgresql.jdbc.AutoSave
 import org.postgresql.jdbc.PreferQueryMode
@@ -218,6 +220,32 @@ class Doobie_postgres_3Test {
   }
 
   @Test
+  def highLevelPgConnectionNotificationsConvertDriverArraysToScalaLists(): Unit = {
+    val firstNotification: PGNotification = notification("account_events", "created", 101)
+    val secondNotification: PGNotification = notification("account_events", "updated", 102)
+
+    val arrayInterpreter: PGConnectionOp ~> Id = new (PGConnectionOp ~> Id) {
+      override def apply[A](operation: PGConnectionOp[A]): Id[A] = operation match {
+        case PGConnectionOp.GetNotifications => Array(firstNotification, secondNotification).asInstanceOf[A]
+        case other => fail(s"Unexpected PG connection operation: $other")
+      }
+    }
+
+    val emptyInterpreter: PGConnectionOp ~> Id = new (PGConnectionOp ~> Id) {
+      override def apply[A](operation: PGConnectionOp[A]): Id[A] = operation match {
+        case PGConnectionOp.GetNotifications => null.asInstanceOf[Array[PGNotification]].asInstanceOf[A]
+        case other => fail(s"Unexpected PG connection operation: $other")
+      }
+    }
+
+    assertEquals(
+      List(firstNotification, secondNotification),
+      hiPgConnection.getNotifications.foldMap(arrayInterpreter)
+    )
+    assertEquals(Nil, hiPgConnection.getNotifications.foldMap(emptyInterpreter))
+  }
+
+  @Test
   def copyInAndCopyOutAlgebrasDescribeStreamingCopyProtocol(): Unit = {
     val copyInEvents: ArrayBuffer[String] = ArrayBuffer.empty[String]
     val copyInInterpreter: CopyInOp ~> Id = new (CopyInOp ~> Id) {
@@ -390,6 +418,14 @@ class Doobie_postgres_3Test {
       ),
       events.toSeq
     )
+  }
+
+  private def notification(name: String, parameter: String, processId: Int): PGNotification = new PGNotification {
+    override def getName: String = name
+
+    override def getParameter: String = parameter
+
+    override def getPID: Int = processId
   }
 
   private def readAll(reader: Reader): String = {
