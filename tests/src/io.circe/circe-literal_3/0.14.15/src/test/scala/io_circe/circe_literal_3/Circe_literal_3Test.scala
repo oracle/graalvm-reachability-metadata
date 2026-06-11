@@ -218,4 +218,25 @@ class Circe_literal_3Test {
       payload.hcursor.downField("literal").focus
     )
   }
+
+  @Test
+  def jsonInterpolatorAcceptsComputedExpressionsInValueAndKeyPositions(): Unit = {
+    val region: String = "west"
+
+    val payload: Json = json"""
+      {
+        ${"region-" + region}: ${List(1, 2, 3).map(_ * 10)},
+        "summary": ${s"${region.toUpperCase}:active"}
+      }
+    """
+
+    assertEquals(
+      Some(Json.arr(Json.fromInt(10), Json.fromInt(20), Json.fromInt(30))),
+      payload.hcursor.downField("region-west").focus
+    )
+    assertEquals(
+      Some(Json.fromString("WEST:active")),
+      payload.hcursor.downField("summary").focus
+    )
+  }
 }
