@@ -89,6 +89,23 @@ class Pekko_stream_2_13Test {
   }
 
   @Test
+  def zipWithCombinesIndependentSourcesUntilTheFirstSourceCompletes(): Unit = {
+    withSystem("zip-with") { (_, materializer) =>
+      implicit val mat: Materializer = materializer
+
+      val result: Seq[String] = Await.result(
+        Source(1 to 4)
+          .zipWith(Source(List("one", "two", "three"))) { (number: Int, word: String) =>
+            s"$number:$word"
+          }
+          .runWith(Sink.seq),
+        timeout)
+
+      assertThat(result.asJava).containsExactly("1:one", "2:two", "3:three")
+    }
+  }
+
+  @Test
   def queueSourceAcceptsOfferedElementsAndCompletesDownstream(): Unit = {
     withSystem("queue-source") { (_, materializer) =>
       implicit val mat: Materializer = materializer
