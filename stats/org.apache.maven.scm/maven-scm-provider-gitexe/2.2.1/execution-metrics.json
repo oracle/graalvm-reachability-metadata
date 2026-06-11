@@ -1,0 +1,59 @@
+{
+  "fix_javac_fail:2026-06-11": {
+    "timestamp": "2026-06-11T07:23:41.131337Z",
+    "library": "org.apache.maven.scm:maven-scm-provider-gitexe:2.2.1",
+    "starting_commit": "b71ab0d039add1b4945bf7ad17a541cb9567ec22",
+    "ending_commit": "5e0f6241ca5c97443c79b8c479cd871e936c2caa",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8354,
+      "issue_label": "fails-javac-compile",
+      "library": "org.apache.maven.scm:maven-scm-provider-gitexe:2.2.1",
+      "summary": "The artifact resolves with its required Maven dependencies transitively, and meaningful tests can be written against command-line construction and output consumers without extra Maven dependencies, Docker services, or mandatory environment/system properties.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The provider is the Git executable implementation and normally shells out to `git`; if tests choose real command execution instead of command construction/consumer coverage, they should use a temporary local repository and configure Git identity locally in that repo. Ubuntu CI normally already has `git` available, so no deterministic setup is justified."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8354 [Automation] javac compile fails for org.apache.maven.scm:maven-scm-provider-gitexe:2.2.1; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "8 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.apache.maven.scm:maven-scm-provider-gitexe:2.1.0",
+      "new_version": "2.2.1",
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 91768,
+      "output_tokens_used": 4396,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.apache.maven.scm:maven-scm-provider-gitexe:2.2.1/library-preparation-preflight/pi-generation-2026-06-11T07-08-55-397290Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 96934,
+      "cached_input_tokens_used": 963584,
+      "output_tokens_used": 10989,
+      "iterations": 1,
+      "cost_usd": 0.8115,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "test_file": "None",
+      "metadata_file": "None"
+    }
+  }
+}
