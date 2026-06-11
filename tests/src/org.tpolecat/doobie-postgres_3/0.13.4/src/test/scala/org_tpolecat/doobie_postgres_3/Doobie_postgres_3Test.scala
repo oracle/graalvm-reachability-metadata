@@ -8,6 +8,7 @@ package org_tpolecat.doobie_postgres_3
 
 import cats.Id
 import cats.catsInstancesForId
+import cats.instances.either._
 import cats.~>
 import doobie.Meta
 import doobie.enumerated.SqlState
@@ -46,6 +47,7 @@ import org.postgresql.util.PGobject
 import java.io.Reader
 import java.io.StringReader
 import java.net.InetAddress
+import java.sql.SQLException
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -96,6 +98,30 @@ class Doobie_postgres_3Test {
     assertEquals(SqlState("40001"), sqlstate.class40.SERIALIZATION_FAILURE)
     assertEquals(SqlState("42P01"), sqlstate.class42.UNDEFINED_TABLE)
     assertEquals("23505", sqlstate.class23.UNIQUE_VIOLATION.value)
+  }
+
+  @Test
+  def postgresMonadErrorSyntaxRecoversSpecificSqlStates(): Unit = {
+    type Result[A] = Either[Throwable, A]
+
+    val duplicateKey: SQLException = new SQLException("duplicate key", sqlstate.class23.UNIQUE_VIOLATION.value)
+    val recoveredUniqueViolation: Result[String] =
+      (Left(duplicateKey): Result[String]).onUniqueViolation(Right("insert ignored"))
+    assertEquals(Right("insert ignored"), recoveredUniqueViolation)
+
+    val serializationFailure: SQLException =
+      new SQLException("serialization failure", sqlstate.class40.SERIALIZATION_FAILURE.value)
+    val recoveredSerializationFailure: Result[String] =
+      (Left(serializationFailure): Result[String]).onSerializationFailure(Right("retry transaction"))
+    assertEquals(Right("retry transaction"), recoveredSerializationFailure)
+
+    val undefinedTable: SQLException = new SQLException("undefined table", sqlstate.class42.UNDEFINED_TABLE.value)
+    val notRecoveredByUniqueViolationHandler: Result[String] =
+      (Left(undefinedTable): Result[String]).onUniqueViolation(Right("not used"))
+    notRecoveredByUniqueViolationHandler match {
+      case Left(error) => assertSame(undefinedTable, error)
+      case Right(value) => fail(s"Unexpected recovery for a different SQL state: $value")
+    }
   }
 
   @Test
