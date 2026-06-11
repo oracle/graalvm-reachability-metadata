@@ -7,18 +7,24 @@
 package org_apache_maven_scm.maven_scm_provider_gitexe;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.maven.scm.CommandParameter;
 import org.apache.maven.scm.CommandParameters;
+import org.apache.maven.scm.CommandParameters.SignOption;
 import org.apache.maven.scm.ScmBranch;
 import org.apache.maven.scm.ScmException;
 import org.apache.maven.scm.ScmFileSet;
+import org.apache.maven.scm.ScmResult;
 import org.apache.maven.scm.ScmTag;
+import org.apache.maven.scm.ScmTagParameters;
 import org.apache.maven.scm.command.info.InfoItem;
 import org.apache.maven.scm.provider.ScmProviderRepository;
 import org.apache.maven.scm.provider.git.gitexe.command.checkin.GitCheckInCommand;
@@ -102,17 +108,29 @@ public class GitExeCommandLineConstructionTest {
         Commandline rawDiffCommandLine = GitDiffCommand.createDiffRawCommandLine(workingDirectory, "HEAD");
         assertThat(rawDiffCommandLine.getArguments()).containsExactly("diff", "--raw", "HEAD");
 
-        Commandline tagCommandLine = GitTagCommand.createCommandLine(
-                repository, workingDirectory, "v1.1.0", messagePath.toFile(), false);
-        assertThat(tagCommandLine.getArguments())
-                .containsExactly("tag", "-F", messagePath.toAbsolutePath().toString(), "v1.1.0");
+        initializeGitRepository(workingDirectory, trackedPath);
+        repository.setPushChanges(false);
+        GitTagCommand tagCommand = new GitTagCommand(Map.of());
 
-        Commandline signedTagCommandLine = GitTagCommand.createCommandLine(
-                repository, workingDirectory, "v1.1.0", messagePath.toFile(), true);
-        assertThat(signedTagCommandLine.getArguments())
-                .containsExactly("tag", "-s", "-F", messagePath.toAbsolutePath().toString(), "v1.1.0");
+        ScmTagParameters defaultTagParameters = new ScmTagParameters("release message");
+        defaultTagParameters.setSignOption(SignOption.DEFAULT);
+        ScmResult tagResult = tagCommand.executeTagCommand(
+                repository, new ScmFileSet(workingDirectory), "v1.1.0", defaultTagParameters);
+        assertThat(tagResult.isSuccess())
+                .as(tagResult.getProviderMessage() + System.lineSeparator() + tagResult.getCommandOutput())
+                .isTrue();
+        assertThat(tagResult.getCommandLine()).contains("tag", "v1.1.0").doesNotContain("--no-sign");
 
-        Commandline tagPushCommandLine = GitTagCommand.createPushCommandLine(
+        ScmTagParameters noSignTagParameters = new ScmTagParameters("no sign release message");
+        noSignTagParameters.setSignOption(SignOption.FORCE_NO_SIGN);
+        ScmResult noSignTagResult = tagCommand.executeTagCommand(
+                repository, new ScmFileSet(workingDirectory), "v1.2.0", noSignTagParameters);
+        assertThat(noSignTagResult.isSuccess())
+                .as(noSignTagResult.getProviderMessage() + System.lineSeparator() + noSignTagResult.getCommandOutput())
+                .isTrue();
+        assertThat(noSignTagResult.getCommandLine()).contains("tag", "--no-sign", "v1.2.0");
+
+        Commandline tagPushCommandLine = new GitTagCommand(Map.of()).createPushCommandLine(
                 repository, new ScmFileSet(workingDirectory, trackedPath.toFile()), "v1.1.0");
         assertThat(tagPushCommandLine.getArguments())
                 .containsExactly("push", "https://example.invalid/team/project.git", "refs/tags/v1.1.0");
@@ -130,6 +148,34 @@ public class GitExeCommandLineConstructionTest {
 
     private static void assertGitExecutable(Commandline commandLine) {
         assertThat(commandLine.getExecutable()).isIn("git", "'git'");
+    }
+
+    private static void initializeGitRepository(File workingDirectory, Path trackedPath)
+            throws IOException, InterruptedException {
+        runGit(workingDirectory, "init");
+        runGit(workingDirectory, "config", "user.email", "native-test@example.invalid");
+        runGit(workingDirectory, "config", "user.name", "Native Test");
+        runGit(workingDirectory, "config", "tag.gpgSign", "false");
+        runGit(workingDirectory, "add", trackedPath.getFileName().toString());
+        runGit(workingDirectory, "commit", "-m", "Initial commit");
+    }
+
+    private static void runGit(File workingDirectory, String... arguments) throws IOException, InterruptedException {
+        List<String> command = new ArrayList<>();
+        command.add("git");
+        command.addAll(List.of(arguments));
+        Process process = new ProcessBuilder(command)
+                .directory(workingDirectory)
+                .redirectErrorStream(true)
+                .start();
+        boolean finished = process.waitFor(20, TimeUnit.SECONDS);
+        if (!finished) {
+            process.destroyForcibly();
+            process.waitFor(5, TimeUnit.SECONDS);
+        }
+        String output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+        assertThat(finished).as("git command timed out: %s%n%s", command, output).isTrue();
+        assertThat(process.exitValue()).as("git command failed: %s%n%s", command, output).isZero();
     }
 
     private static final class CapturingGitInfoCommand extends GitInfoCommand {
