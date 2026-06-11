@@ -1,0 +1,1537 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5363-8d4611e4/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5363-8d4611e4/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5363-8d4611e4
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019eb60f-9133-7e82-87c2-6ce4b75c3c14
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.softwaremill.sttp.tapir:tapir-pekko-http-server_3:1.13.18
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "1.13.18" when "$version$" is replaced with "1.13.18".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5363-8d4611e4/build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "com.softwaremill.sttp.tapir:tapir-pekko-http-server_3:1.13.18".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.13.18".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the upstream project, then patch the JSON file in place with the exact key set the index expects.
+exec
+/usr/bin/bash -lc "ls -l build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json && sed -n '1,200p' build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5363-8d4611e4
+ succeeded in 0ms:
+-rw-rw-r-- 1 vjovanov vjovanov 86 Jun 11 11:42 build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json
+{
+  "coordinates" : "com.softwaremill.sttp.tapir:tapir-pekko-http-server_3:1.13.18"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"tapir-pekko-http-server|tapir.*1\\.13|softwaremill.sttp.tapir\" build/discovered-artifact-metadata metadata tests -g '*.json' -g '*.gradle' -g '*.java' -g '*.scala'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5363-8d4611e4
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json:2:  "coordinates" : "com.softwaremill.sttp.tapir:tapir-pekko-http-server_3:1.13.18"
+metadata/com.softwaremill.sttp.tapir/tapir-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-core_3/$version$/tapir-core_3-$version$-sources.jar",
+metadata/com.softwaremill.sttp.tapir/tapir-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-core_3/$version$/tapir-core_3-$version$-javadoc.jar",
+metadata/com.softwaremill.sttp.tapir/tapir-http4s-server_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/tapir/tapir-http4s-server_3/$version$/tapir-http4s-server_3-$version$-sources.jar",
+metadata/com.softwaremill.sttp.tapir/tapir-http4s-server_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/tapir/tapir-http4s-server_3/$version$/tapir-http4s-server_3-$version$-javadoc.jar",
+metadata/com.softwaremill.sttp.tapir/tapir-cats_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/tapir/tapir-cats_3/$version$/tapir-cats_3-$version$-sources.jar",
+metadata/com.softwaremill.sttp.tapir/tapir-cats_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/tapir/tapir-cats_3/$version$/tapir-cats_3-$version$-javadoc.jar",
+metadata/com.softwaremill.sttp.tapir/tapir-server_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-server_3/$version$/tapir-server_3-$version$-sources.jar",
+metadata/com.softwaremill.sttp.tapir/tapir-server_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-server_3/$version$/tapir-server_3-$version$-javadoc.jar",
+metadata/com.softwaremill.sttp.tapir/tapir-zio_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/tapir/tapir-zio_3/$version$/tapir-zio_3-$version$-sources.jar",
+metadata/com.softwaremill.sttp.tapir/tapir-zio_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/tapir/tapir-zio_3/$version$/tapir-zio_3-$version$-javadoc.jar",
+metadata/com.softwaremill.sttp.tapir/tapir-json-circe_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-json-circe_3/$version$/tapir-json-circe_3-$version$-sources.jar",
+metadata/com.softwaremill.sttp.tapir/tapir-json-circe_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-json-circe_3/$version$/tapir-json-circe_3-$version$-javadoc.jar",
+tests/src/com.softwaremill.sttp.tapir/tapir-core_3/1.11.25/build.gradle:15:    testImplementation "com.softwaremill.sttp.tapir:tapir-core_3:$libraryVersion"
+tests/src/com.softwaremill.sttp.tapir/tapir-core_3/1.11.25/settings.gradle:20:rootProject.name = 'com.softwaremill.sttp.tapir.tapir-core_3_tests'
+tests/src/com.softwaremill.sttp.tapir/tapir-core_3/1.11.25/src/test/scala/com_softwaremill_sttp_tapir/tapir_core_3/Tapir_core_3Test.scala:7:package com_softwaremill_sttp_tapir.tapir_core_3
+tests/src/com.softwaremill.sttp.tapir/tapir-core_3/1.11.25/user-code-filter.json:10:      "includeClasses" : "com_softwaremill_sttp_tapir.tapir_core_3.**"
+tests/src/com.softwaremill.sttp.tapir/tapir-http4s-server_3/1.11.25/build.gradle:15:    testImplementation "com.softwaremill.sttp.tapir:tapir-http4s-server_3:$libraryVersion"
+tests/src/com.softwaremill.sttp.tapir/tapir-http4s-server_3/1.11.25/settings.gradle:20:rootProject.name = 'com.softwaremill.sttp.tapir.tapir-http4s-server_3_tests'
+tests/src/com.softwaremill.sttp.tapir/tapir-http4s-server_3/1.11.25/src/test/scala/com_softwaremill_sttp_tapir/tapir_http4s_server_3/Tapir_http4s_server_3Test.scala:7:package com_softwaremill_sttp_tapir.tapir_http4s_server_3
+tests/src/com.softwaremill.sttp.tapir/tapir-http4s-server_3/1.11.25/user-code-filter.json:10:      "includeClasses" : "com_softwaremill_sttp_tapir.tapir_http4s_server_3.**"
+tests/src/com.softwaremill.sttp.tapir/tapir-cats_3/1.11.25/build.gradle:15:    testImplementation "com.softwaremill.sttp.tapir:tapir-cats_3:$libraryVersion"
+tests/src/com.softwaremill.sttp.tapir/tapir-cats_3/1.11.25/settings.gradle:20:rootProject.name = 'com.softwaremill.sttp.tapir.tapir-cats_3_tests'
+tests/src/com.softwaremill.sttp.tapir/tapir-cats_3/1.11.25/src/test/scala/com_softwaremill_sttp_tapir/tapir_cats_3/Tapir_cats_3Test.scala:7:package com_softwaremill_sttp_tapir.tapir_cats_3
+tests/src/com.softwaremill.sttp.tapir/tapir-cats_3/1.11.25/user-code-filter.json:10:      "includeClasses" : "com_softwaremill_sttp_tapir.tapir_cats_3.**"
+tests/src/com.softwaremill.sttp.tapir/tapir-server_3/1.11.25/build.gradle:15:    testImplementation "com.softwaremill.sttp.tapir:tapir-server_3:$libraryVersion"
+tests/src/com.softwaremill.sttp.tapir/tapir-server_3/1.11.25/settings.gradle:20:rootProject.name = 'com.softwaremill.sttp.tapir.tapir-server_3_tests'
+tests/src/com.softwaremill.sttp.tapir/tapir-server_3/1.11.25/src/test/scala/com_softwaremill_sttp_tapir/tapir_server_3/Tapir_server_3Test.scala:7:package com_softwaremill_sttp_tapir.tapir_server_3
+tests/src/com.softwaremill.sttp.tapir/tapir-server_3/1.11.25/user-code-filter.json:10:      "includeClasses" : "com_softwaremill_sttp_tapir.tapir_server_3.**"
+tests/src/com.softwaremill.sttp.tapir/tapir-zio_3/1.13.18/build.gradle:15:    testImplementation "com.softwaremill.sttp.tapir:tapir-zio_3:$libraryVersion"
+tests/src/com.softwaremill.sttp.tapir/tapir-zio_3/1.13.18/settings.gradle:20:rootProject.name = 'com.softwaremill.sttp.tapir.tapir-zio_3_tests'
+tests/src/com.softwaremill.sttp.tapir/tapir-zio_3/1.13.18/src/test/scala/com_softwaremill_sttp_tapir/tapir_zio_3/Tapir_zio_3Test.scala:7:package com_softwaremill_sttp_tapir.tapir_zio_3
+tests/src/com.softwaremill.sttp.tapir/tapir-zio_3/1.13.18/user-code-filter.json:10:      "includeClasses" : "com_softwaremill_sttp_tapir.tapir_zio_3.**"
+tests/src/com.softwaremill.sttp.tapir/tapir-json-circe_3/1.11.25/build.gradle:15:    testImplementation "com.softwaremill.sttp.tapir:tapir-json-circe_3:$libraryVersion"
+tests/src/com.softwaremill.sttp.tapir/tapir-json-circe_3/1.11.25/settings.gradle:20:rootProject.name = 'com.softwaremill.sttp.tapir.tapir-json-circe_3_tests'
+tests/src/com.softwaremill.sttp.tapir/tapir-json-circe_3/1.11.25/src/test/scala/com_softwaremill_sttp_tapir/tapir_json_circe_3/Tapir_json_circe_3Test.scala:7:package com_softwaremill_sttp_tapir.tapir_json_circe_3
+tests/src/com.softwaremill.sttp.tapir/tapir-json-circe_3/1.11.25/user-code-filter.json:10:      "includeClasses" : "com_softwaremill_sttp_tapir.tapir_json_circe_3.**"
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"' build/discovered-artifact-metadata metadata -g '*.json' | head -120" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5363-8d4611e4
+ succeeded in 0ms:
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-sources.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:7:    "test-code-url" : "https://download.eclipse.org/jakartaee/authentication/3.0/jakarta-authentication-tck-$version$.zip",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-javadoc.jar",
+metadata/dev.optics/monocle-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/optics/monocle-core_3/$version$/monocle-core_3-$version$-sources.jar",
+metadata/dev.optics/monocle-core_3/index.json:7:    "test-code-url" : "https://github.com/optics-dev/Monocle/tree/v$version$/core/shared/src/test",
+metadata/dev.optics/monocle-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/optics/monocle-core_3/$version$/monocle-core_3-$version$-javadoc.jar",
+metadata/dev.optics/monocle-core_3/index.json:10:    "language" : {
+metadata/org.apache.thrift/libthrift/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:7:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/src/test",
+metadata/org.apache.thrift/libthrift/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:26:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:28:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/test",
+metadata/org.apache.thrift/libthrift/index.json:29:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/soap/jakarta.xml.soap-api/$version$/jakarta.xml.soap-api-$version$-sources.jar",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/saaj-api/tree/$version$/api/src/test",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/soap/jakarta.xml.soap-api/$version$/jakarta.xml.soap-api-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r$version$/junit-jupiter-engine/src/test",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit5/tree/r5.9.2/junit-jupiter-params/src/test/java",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-sources.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:7:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala",
+metadata/com.typesafe.slick/slick_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-sources.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:7:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala/slick/test/jdbc/hikaricp",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:10:    "language" : {
+metadata/org.awaitility/awaitility/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-mustmatchers_3/$version$/scalatest-mustmatchers_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/dotty/scalatest-test/src/test/scala/org/scalatest/matchers/must",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-mustmatchers_3/$version$/scalatest-mustmatchers_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:10:    "language" : {
+metadata/org.apache.maven.wagon/wagon-http-shared/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-sources.jar",
+metadata/org.apache.maven.wagon/wagon-http-shared/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/wagon/tags/wagon-$version$/wagon-providers/wagon-http-shared/src/test/",
+metadata/org.apache.maven.wagon/wagon-http-shared/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http-shared/$version$/wagon-http-shared-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-javadoc.jar",
+metadata/org.jetbrains/annotations-java5/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/annotations-java5/$version$/annotations-java5-$version$-sources.jar",
+metadata/org.jetbrains/annotations-java5/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jetbrains/annotations-java5/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/annotations-java5/$version$/annotations-java5-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/wordspec-test/src/test/scala/org/scalatest/wordspec",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-sources.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:31:    "test-code-url" : "N/A",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-wordspec_2.13/$version$/scalatest-wordspec_2.13-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-wordspec_2.13/index.json:34:    "language" : {
+metadata/org.springframework.security/spring-security-crypto/index.json:45:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/$version$/spring-security-crypto-$version$-sources.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:47:    "test-code-url" : "https://github.com/spring-projects/spring-security/tree/$version$/crypto/src/test",
+metadata/org.springframework.security/spring-security-crypto/index.json:48:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/$version$/spring-security-crypto-$version$-javadoc.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:97:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/$version$/spring-security-crypto-$version$-sources.jar",
+metadata/org.springframework.security/spring-security-crypto/index.json:99:    "test-code-url" : "https://github.com/spring-projects/spring-security/tree/$version$/crypto/src/test",
+metadata/org.springframework.security/spring-security-crypto/index.json:100:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/security/spring-security-crypto/$version$/spring-security-crypto-$version$-javadoc.jar",
+metadata/org.jetbrains/annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/jetbrains/annotations/$version$/annotations-$version$-sources.jar",
+metadata/org.jetbrains/annotations/index.json:8:    "test-code-url": "N/A",
+metadata/org.jetbrains/annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/jetbrains/annotations/$version$/annotations-$version$-javadoc.jar",
+metadata/org.apache.pulsar/pulsar-client-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/pulsar-client-api/$version$/pulsar-client-api-$version$-sources.jar",
+metadata/org.apache.pulsar/pulsar-client-api/index.json:7:    "test-code-url" : "https://github.com/apache/pulsar/tree/v$version$/pulsar-client/src/test/java/org/apache/pulsar/client/api",
+metadata/org.apache.pulsar/pulsar-client-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/pulsar-client-api/$version$/pulsar-client-api-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/org.parboiled/parboiled_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/parboiled/parboiled_2.13/$version$/parboiled_2.13-$version$-sources.jar",
+metadata/org.parboiled/parboiled_2.13/index.json:7:    "test-code-url" : "https://github.com/sirthias/parboiled2/tree/v$version$/parboiled/src/test",
+metadata/org.parboiled/parboiled_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/parboiled/parboiled_2.13/$version$/parboiled_2.13-$version$-javadoc.jar",
+metadata/org.parboiled/parboiled_2.13/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-diagrams_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/diagrams-test/src/test/scala/org/scalatest/diagrams",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:10:    "language" : {
+metadata/org.scalatest/scalatest-diagrams_3/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:31:    "test-code-url" : "N/A",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-diagrams_3/$version$/scalatest-diagrams_3-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-diagrams_3/index.json:34:    "language" : {
+metadata/org.apache.maven.wagon/wagon-ssh/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh/$version$/wagon-ssh-$version$-sources.jar",
+metadata/org.apache.maven.wagon/wagon-ssh/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon/$version$/wagon-$version$-source-release.zip",
+metadata/org.apache.maven.wagon/wagon-ssh/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh/$version$/wagon-ssh-$version$-javadoc.jar",
+metadata/org.apache.maven.wagon/wagon-ssh/index.json:30:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh/$version$/wagon-ssh-$version$-sources.jar",
+metadata/org.apache.maven.wagon/wagon-ssh/index.json:32:    "test-code-url" : "https://github.com/apache/maven-wagon/tree/wagon-$version$/wagon-providers/wagon-ssh/src/test",
+metadata/org.apache.maven.wagon/wagon-ssh/index.json:33:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-ssh/$version$/wagon-ssh-$version$-javadoc.jar",
+metadata/org.codehaus.plexus/plexus-compiler-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-compiler-api/$version$/plexus-compiler-api-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-compiler-api/index.json:7:    "test-code-url" : "https://github.com/codehaus-plexus/plexus-compiler/tree/plexus-compiler-$version$/plexus-compiler-api/src/test",
+metadata/org.codehaus.plexus/plexus-compiler-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-compiler-api/$version$/plexus-compiler-api-$version$-javadoc.jar",
+metadata/org.apache.pulsar/bouncy-castle-bc/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/bouncy-castle-bc/$version$/bouncy-castle-bc-$version$-sources.jar",
+metadata/org.apache.pulsar/bouncy-castle-bc/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.pulsar/bouncy-castle-bc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/bouncy-castle-bc/$version$/bouncy-castle-bc-$version$-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:10:    "test-code-url": "https://github.com/bcgit/bc-java/tree/r1rv70/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+metadata/org.parboiled/parboiled_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/parboiled/parboiled_3/$version$/parboiled_3-$version$-sources.jar",
+metadata/org.parboiled/parboiled_3/index.json:7:    "test-code-url" : "https://github.com/sirthias/parboiled2/tree/v$version$/parboiled/src/test",
+metadata/org.parboiled/parboiled_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/parboiled/parboiled_3/$version$/parboiled_3-$version$-javadoc.jar",
+metadata/org.parboiled/parboiled_3/index.json:10:    "language" : {
+metadata/org.apache.maven.wagon/wagon-http/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/$version$/wagon-http-$version$-sources.jar",
+metadata/org.apache.maven.wagon/wagon-http/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon/$version$/wagon-$version$-source-release.zip",
+metadata/org.apache.maven.wagon/wagon-http/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/wagon/wagon-http/$version$/wagon-http-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/org.codehaus.plexus/plexus-sec-dispatcher/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-sec-dispatcher/$version$/plexus-sec-dispatcher-$version$-sources.jar",
+metadata/org.codehaus.plexus/plexus-sec-dispatcher/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-sec-dispatcher/$version$/plexus-sec-dispatcher-$version$-source-release.zip",
+metadata/org.codehaus.plexus/plexus-sec-dispatcher/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-sec-dispatcher/$version$/plexus-sec-dispatcher-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-funsuite_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-funsuite_3/$version$/scalatest-funsuite_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-funsuite_3/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/jvm/funsuite-test/src/test/scala/org/scalatest/funsuite",
+
+web search: 
+web search: Maven Central com.softwaremill.sttp.tapir tapir-pekko-http-server_3 1.13.18 POM SCM tapir GitHub
+web search: 
+web search: https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-pekko-http-server_3/1.13.18/tapir-pekko-http-server_3-1.13.18.pom
+web search: 
+web search: https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-pekko-http-server_3/1.13.18/tapir-pekko-http-server_3-1.13.18.pom
+codex
+The local metadata already has several Tapir Scala 3 entries. I’m checking Maven classifiers and the tagged upstream tree now so the URLs use Maven where available and GitHub only where Maven does not publish tests.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-pekko-http-server_3/1.13.18/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5363-8d4611e4
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-pekko-http-server_3/1.13.18/tapir-pekko-http-server_3-1.13.18.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5363-8d4611e4
+ succeeded in 303ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/softwaremill/sttp/tapir/tapir-pekko-http-server_3/1.13.18</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/softwaremill/sttp/tapir/tapir-pekko-http-server_3/1.13.18</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="tapir-pekko-http-server_3-1.13.18-javadoc.jar" title="tapir-pekko-http-server_3-1.13.18-javadoc.jar">tapir-pekko-http-server_3-1.13.18-javadoc.jar</a>     2026-04-30 22:13   2732346      
+<a href="tapir-pekko-http-server_3-1.13.18-javadoc.jar.asc" title="tapir-pekko-http-server_3-1.13.18-javadoc.jar.asc">tapir-pekko-http-server_3-1.13.18-javadoc.jar...</a>  2026-04-30 22:13       228      
+<a href="tapir-pekko-http-server_3-1.13.18-javadoc.jar.asc.md5" title="tapir-pekko-http-server_3-1.13.18-javadoc.jar.asc.md5">tapir-pekko-http-server_3-1.13.18-javadoc.jar...</a>  2026-04-30 22:13        32      
+<a href="tapir-pekko-http-server_3-1.13.18-javadoc.jar.asc.sha1" title="tapir-pekko-http-server_3-1.13.18-javadoc.jar.asc.sha1">tapir-pekko-http-server_3-1.13.18-javadoc.jar...</a>  2026-04-30 22:13        40      
+<a href="tapir-pekko-http-server_3-1.13.18-javadoc.jar.md5" title="tapir-pekko-http-server_3-1.13.18-javadoc.jar.md5">tapir-pekko-http-server_3-1.13.18-javadoc.jar...</a>  2026-04-30 22:13        32      
+<a href="tapir-pekko-http-server_3-1.13.18-javadoc.jar.sha1" title="tapir-pekko-http-server_3-1.13.18-javadoc.jar.sha1">tapir-pekko-http-server_3-1.13.18-javadoc.jar...</a>  2026-04-30 22:13        40      
+<a href="tapir-pekko-http-server_3-1.13.18-sources.jar" title="tapir-pekko-http-server_3-1.13.18-sources.jar">tapir-pekko-http-server_3-1.13.18-sources.jar</a>     2026-04-30 22:13     14536      
+<a href="tapir-pekko-http-server_3-1.13.18-sources.jar.asc" title="tapir-pekko-http-server_3-1.13.18-sources.jar.asc">tapir-pekko-http-server_3-1.13.18-sources.jar...</a>  2026-04-30 22:13       228      
+<a href="tapir-pekko-http-server_3-1.13.18-sources.jar.asc.md5" title="tapir-pekko-http-server_3-1.13.18-sources.jar.asc.md5">tapir-pekko-http-server_3-1.13.18-sources.jar...</a>  2026-04-30 22:13        32      
+<a href="tapir-pekko-http-server_3-1.13.18-sources.jar.asc.sha1" title="tapir-pekko-http-server_3-1.13.18-sources.jar.asc.sha1">tapir-pekko-http-server_3-1.13.18-sources.jar...</a>  2026-04-30 22:13        40      
+<a href="tapir-pekko-http-server_3-1.13.18-sources.jar.md5" title="tapir-pekko-http-server_3-1.13.18-sources.jar.md5">tapir-pekko-http-server_3-1.13.18-sources.jar...</a>  2026-04-30 22:13        32      
+<a href="tapir-pekko-http-server_3-1.13.18-sources.jar.sha1" title="tapir-pekko-http-server_3-1.13.18-sources.jar.sha1">tapir-pekko-http-server_3-1.13.18-sources.jar...</a>  2026-04-30 22:13        40      
+<a href="tapir-pekko-http-server_3-1.13.18.jar" title="tapir-pekko-http-server_3-1.13.18.jar">tapir-pekko-http-server_3-1.13.18.jar</a>             2026-04-30 22:13    122739      
+<a href="tapir-pekko-http-server_3-1.13.18.jar.asc" title="tapir-pekko-http-server_3-1.13.18.jar.asc">tapir-pekko-http-server_3-1.13.18.jar.asc</a>         2026-04-30 22:13       228      
+<a href="tapir-pekko-http-server_3-1.13.18.jar.asc.md5" title="tapir-pekko-http-server_3-1.13.18.jar.asc.md5">tapir-pekko-http-server_3-1.13.18.jar.asc.md5</a>     2026-04-30 22:13        32      
+<a href="tapir-pekko-http-server_3-1.13.18.jar.asc.sha1" title="tapir-pekko-http-server_3-1.13.18.jar.asc.sha1">tapir-pekko-http-server_3-1.13.18.jar.asc.sha...</a>  2026-04-30 22:13        40      
+<a href="tapir-pekko-http-server_3-1.13.18.jar.md5" title="tapir-pekko-http-server_3-1.13.18.jar.md5">tapir-pekko-http-server_3-1.13.18.jar.md5</a>         2026-04-30 22:13        32      
+<a href="tapir-pekko-http-server_3-1.13.18.jar.sha1" title="tapir-pekko-http-server_3-1.13.18.jar.sha1">tapir-pekko-http-server_3-1.13.18.jar.sha1</a>        2026-04-30 22:13        40      
+<a href="tapir-pekko-http-server_3-1.13.18.pom" title="tapir-pekko-http-server_3-1.13.18.pom">tapir-pekko-http-server_3-1.13.18.pom</a>             2026-04-30 22:13      3056      
+<a href="tapir-pekko-http-server_3-1.13.18.pom.asc" title="tapir-pekko-http-server_3-1.13.18.pom.asc">tapir-pekko-http-server_3-1.13.18.pom.asc</a>         2026-04-30 22:13       228      
+<a href="tapir-pekko-http-server_3-1.13.18.pom.asc.md5" title="tapir-pekko-http-server_3-1.13.18.pom.asc.md5">tapir-pekko-http-server_3-1.13.18.pom.asc.md5</a>     2026-04-30 22:13        32      
+<a href="tapir-pekko-http-server_3-1.13.18.pom.asc.sha1" title="tapir-pekko-http-server_3-1.13.18.pom.asc.sha1">tapir-pekko-http-server_3-1.13.18.pom.asc.sha...</a>  2026-04-30 22:13        40      
+<a href="tapir-pekko-http-server_3-1.13.18.pom.md5" title="tapir-pekko-http-server_3-1.13.18.pom.md5">tapir-pekko-http-server_3-1.13.18.pom.md5</a>         2026-04-30 22:13        32      
+<a href="tapir-pekko-http-server_3-1.13.18.pom.sha1" title="tapir-pekko-http-server_3-1.13.18.pom.sha1">tapir-pekko-http-server_3-1.13.18.pom.sha1</a>        2026-04-30 22:13        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 325ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.softwaremill.sttp.tapir</groupId>
+    <artifactId>tapir-pekko-http-server_3</artifactId>
+    <packaging>jar</packaging>
+    <description>tapir-pekko-http-server</description>
+    <url>http://softwaremill.com/open-source</url>
+    <version>1.13.18</version>
+    <licenses>
+        <license>
+            <name>Apache 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>tapir-pekko-http-server</name>
+    <organization>
+        <name>com.softwaremill.sttp.tapir</name>
+        <url>https://softwaremill.com</url>
+    </organization>
+    <scm>
+        <url>https://github.com/softwaremill/tapir</url>
+        <connection>scm:git:https://github.com/softwaremill/tapir.git</connection>
+        <developerConnection>scm:git:git@github.com:softwaremill/tapir.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>softwaremill</id>
+            <name>SoftwareMill</name>
+            <url>https://softwaremill.com</url>
+            <email>info@softwaremill.com</email>
+        </developer>
+    </developers>
+    <dependencies>
+        <dependency>
+            <groupId>com.softwaremill.sttp.tapir</groupId>
+            <artifactId>tapir-server_3</artifactId>
+            <version>1.13.18</version>
+        </dependency>
+        <dependency>
+            <groupId>com.softwaremill.sttp.tapir</groupId>
+            <artifactId>tapir-server-tests_3</artifactId>
+            <version>1.13.18</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.3.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-http_3</artifactId>
+            <version>1.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-stream_3</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pekko</groupId>
+            <artifactId>pekko-slf4j_3</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.softwaremill.sttp.shared</groupId>
+            <artifactId>pekko_3</artifactId>
+            <version>1.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.softwaremill.sttp.client4</groupId>
+            <artifactId>pekko-http-backend_3</artifactId>
+            <version>4.0.23</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/softwaremill/tapir/git/trees/v1.13.18?recursive=1 | jq -r '.tree[].path' | rg '("'^|/)pekko|tapir-pekko|pekko-http|src/test'"' | head -300" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5363-8d4611e4
+ succeeded in 760ms:
+client/http4s-client/src/test
+client/http4s-client/src/test/scala
+client/http4s-client/src/test/scala/sttp
+client/http4s-client/src/test/scala/sttp/tapir
+client/http4s-client/src/test/scala/sttp/tapir/client
+client/http4s-client/src/test/scala/sttp/tapir/client/http4s
+client/http4s-client/src/test/scala/sttp/tapir/client/http4s/Http4ClientStreamingTests.scala
+client/http4s-client/src/test/scala/sttp/tapir/client/http4s/Http4sClientBasicTests.scala
+client/http4s-client/src/test/scala/sttp/tapir/client/http4s/Http4sClientRequestTests.scala
+client/http4s-client/src/test/scala/sttp/tapir/client/http4s/Http4sClientTests.scala
+client/play-client/src/test
+client/play-client/src/test/scala
+client/play-client/src/test/scala/sttp
+client/play-client/src/test/scala/sttp/tapir
+client/play-client/src/test/scala/sttp/tapir/client
+client/play-client/src/test/scala/sttp/tapir/client/play
+client/play-client/src/test/scala/sttp/tapir/client/play/PlayClientBasicTests.scala
+client/play-client/src/test/scala/sttp/tapir/client/play/PlayClientStreamingTests.scala
+client/play-client/src/test/scala/sttp/tapir/client/play/PlayClientTests.scala
+client/play29-client/src/test
+client/play29-client/src/test/scala
+client/play29-client/src/test/scala/sttp
+client/play29-client/src/test/scala/sttp/tapir
+client/play29-client/src/test/scala/sttp/tapir/client
+client/play29-client/src/test/scala/sttp/tapir/client/play
+client/play29-client/src/test/scala/sttp/tapir/client/play/PlayClientBasicTests.scala
+client/play29-client/src/test/scala/sttp/tapir/client/play/PlayClientStreamingTests.scala
+client/play29-client/src/test/scala/sttp/tapir/client/play/PlayClientTests.scala
+client/sttp-client/src/main/scalajvm/sttp/tapir/client/sttp/ws/pekkohttp
+client/sttp-client/src/main/scalajvm/sttp/tapir/client/sttp/ws/pekkohttp/TapirSttpClientPekkoHttpWebSockets.scala
+client/sttp-client/src/main/scalajvm/sttp/tapir/client/sttp/ws/pekkohttp/WebSocketToPekkoPipe.scala
+client/sttp-client/src/main/scalajvm/sttp/tapir/client/sttp/ws/pekkohttp/package.scala
+client/sttp-client/src/test
+client/sttp-client/src/test/scala
+client/sttp-client/src/test/scala/sttp
+client/sttp-client/src/test/scala/sttp/tapir
+client/sttp-client/src/test/scala/sttp/tapir/client
+client/sttp-client/src/test/scala/sttp/tapir/client/sttp
+client/sttp-client/src/test/scala/sttp/tapir/client/sttp/SttpClientBasicTests.scala
+client/sttp-client/src/test/scala/sttp/tapir/client/sttp/SttpClientMultipartTests.scala
+client/sttp-client/src/test/scala/sttp/tapir/client/sttp/SttpClientRequestTests.scala
+client/sttp-client/src/test/scalajs
+client/sttp-client/src/test/scalajs/sttp
+client/sttp-client/src/test/scalajs/sttp/tapir
+client/sttp-client/src/test/scalajs/sttp/tapir/client
+client/sttp-client/src/test/scalajs/sttp/tapir/client/sttp
+client/sttp-client/src/test/scalajs/sttp/tapir/client/sttp/SttpClientTests.scala
+client/sttp-client/src/test/scalajs/sttp/tapir/client/sttp/SttpClientWebSocketZioTests.scala
+client/sttp-client/src/test/scalajs/sttp/tapir/client/sttp/SttpClientZioTests.scala
+client/sttp-client/src/test/scalajvm-2
+client/sttp-client/src/test/scalajvm-2/sttp.tapir.client.sttp
+client/sttp-client/src/test/scalajvm-2/sttp.tapir.client.sttp/SttpAkkaClientTests.scala
+client/sttp-client/src/test/scalajvm-2/sttp.tapir.client.sttp/SttpAkkaClientWebSocketTests.scala
+client/sttp-client/src/test/scalajvm
+client/sttp-client/src/test/scalajvm/sttp
+client/sttp-client/src/test/scalajvm/sttp/tapir
+client/sttp-client/src/test/scalajvm/sttp/tapir/client
+client/sttp-client/src/test/scalajvm/sttp/tapir/client/sttp
+client/sttp-client/src/test/scalajvm/sttp/tapir/client/sttp/SttpClientBasicZioTests.scala
+client/sttp-client/src/test/scalajvm/sttp/tapir/client/sttp/SttpClientPekkoTests.scala
+client/sttp-client/src/test/scalajvm/sttp/tapir/client/sttp/SttpClientStreamingTests.scala
+client/sttp-client/src/test/scalajvm/sttp/tapir/client/sttp/SttpClientStreamingZioTests.scala
+client/sttp-client/src/test/scalajvm/sttp/tapir/client/sttp/SttpClientTests.scala
+client/sttp-client/src/test/scalajvm/sttp/tapir/client/sttp/SttpClientWebSocketPekkoTests.scala
+client/sttp-client/src/test/scalajvm/sttp/tapir/client/sttp/SttpClientWebSocketTests.scala
+client/sttp-client/src/test/scalajvm/sttp/tapir/client/sttp/SttpClientWebSocketZioTests.scala
+client/sttp-client/src/test/scalajvm/sttp/tapir/client/sttp/SttpClientZioTests.scala
+client/sttp-client/src/test/scalanative
+client/sttp-client/src/test/scalanative/sttp
+client/sttp-client/src/test/scalanative/sttp/tapir
+client/sttp-client/src/test/scalanative/sttp/tapir/client
+client/sttp-client/src/test/scalanative/sttp/tapir/client/sttp
+client/sttp-client/src/test/scalanative/sttp/tapir/client/sttp/SttpClientTests.scala
+client/sttp-client4/src/main/scalajvm/sttp/tapir/client/sttp4/ws/pekkohttp
+client/sttp-client4/src/main/scalajvm/sttp/tapir/client/sttp4/ws/pekkohttp/TapirSttpClientPekkoHttpWebSockets.scala
+client/sttp-client4/src/main/scalajvm/sttp/tapir/client/sttp4/ws/pekkohttp/WebSocketToPekkoPipe.scala
+client/sttp-client4/src/main/scalajvm/sttp/tapir/client/sttp4/ws/pekkohttp/package.scala
+client/sttp-client4/src/test
+client/sttp-client4/src/test/scala
+client/sttp-client4/src/test/scala/sttp
+client/sttp-client4/src/test/scala/sttp/tapir
+client/sttp-client4/src/test/scala/sttp/tapir/client
+client/sttp-client4/src/test/scala/sttp/tapir/client/sttp4
+client/sttp-client4/src/test/scala/sttp/tapir/client/sttp4/SttpClientMultipartTests.scala
+client/sttp-client4/src/test/scala/sttp/tapir/client/sttp4/SttpClientRequestTests.scala
+client/sttp-client4/src/test/scala/sttp/tapir/client/sttp4/SttpClientSimpleTests.scala
+client/sttp-client4/src/test/scalajs
+client/sttp-client4/src/test/scalajs/sttp
+client/sttp-client4/src/test/scalajs/sttp/tapir
+client/sttp-client4/src/test/scalajs/sttp/tapir/client
+client/sttp-client4/src/test/scalajs/sttp/tapir/client/sttp4
+client/sttp-client4/src/test/scalajs/sttp/tapir/client/sttp4/SttpClientTestsSender.scala
+client/sttp-client4/src/test/scalajs/sttp/tapir/client/sttp4/ws
+client/sttp-client4/src/test/scalajs/sttp/tapir/client/sttp4/ws/WebSocketSttpClientZioTests.scala
+client/sttp-client4/src/test/scalajs/sttp/tapir/client/sttp4/ws/WebSocketSttpClientZioTestsSender.scala
+client/sttp-client4/src/test/scalajvm
+client/sttp-client4/src/test/scalajvm/sttp
+client/sttp-client4/src/test/scalajvm/sttp/tapir
+client/sttp-client4/src/test/scalajvm/sttp/tapir/client
+client/sttp-client4/src/test/scalajvm/sttp/tapir/client/sttp4
+client/sttp-client4/src/test/scalajvm/sttp/tapir/client/sttp4/SttpClientTestsSender.scala
+client/sttp-client4/src/test/scalajvm/sttp/tapir/client/sttp4/SttpClientZioTests.scala
+client/sttp-client4/src/test/scalajvm/sttp/tapir/client/sttp4/SttpClientZioTestsSender.scala
+client/sttp-client4/src/test/scalajvm/sttp/tapir/client/sttp4/stream
+client/sttp-client4/src/test/scalajvm/sttp/tapir/client/sttp4/stream/StreamSttpClientTests.scala
+client/sttp-client4/src/test/scalajvm/sttp/tapir/client/sttp4/stream/StreamSttpClientTestsSender.scala
+client/sttp-client4/src/test/scalajvm/sttp/tapir/client/sttp4/stream/StreamSttpClientZioTests.scala
+client/sttp-client4/src/test/scalajvm/sttp/tapir/client/sttp4/stream/StreamSttpClientZioTestsSender.scala
+client/sttp-client4/src/test/scalajvm/sttp/tapir/client/sttp4/ws
+client/sttp-client4/src/test/scalajvm/sttp/tapir/client/sttp4/ws/WebSocketSttpClientFs2Tests.scala
+client/sttp-client4/src/test/scalajvm/sttp/tapir/client/sttp4/ws/WebSocketSttpClientFs2TestsSender.scala
+client/sttp-client4/src/test/scalajvm/sttp/tapir/client/sttp4/ws/WebSocketSttpClientPekkoTests.scala
+client/sttp-client4/src/test/scalajvm/sttp/tapir/client/sttp4/ws/WebSocketSttpClientPekkoTestsSender.scala
+client/sttp-client4/src/test/scalajvm/sttp/tapir/client/sttp4/ws/WebSocketSttpClientZioTests.scala
+client/sttp-client4/src/test/scalajvm/sttp/tapir/client/sttp4/ws/WebSocketSttpClientZioTestsSender.scala
+client/sttp-client4/src/test/scalanative
+client/sttp-client4/src/test/scalanative/sttp
+client/sttp-client4/src/test/scalanative/sttp/tapir
+client/sttp-client4/src/test/scalanative/sttp/tapir/client
+client/sttp-client4/src/test/scalanative/sttp/tapir/client/sttp
+client/sttp-client4/src/test/scalanative/sttp/tapir/client/sttp/SttpClientTestsSender.scala
+core/src/test
+core/src/test/scala-2
+core/src/test/scala-2/sttp
+core/src/test/scala-2/sttp/tapir
+core/src/test/scala-2/sttp/tapir/LegacySchemaApplyValidationTest.scala
+core/src/test/scala-2/sttp/tapir/SchemaMacroTest2.scala
+core/src/test/scala-2/sttp/tapir/SchemaMacroTestData2.scala
+core/src/test/scala-2/sttp/tapir/generic
+core/src/test/scala-2/sttp/tapir/generic/LegacySchemaGenericAutoTest.scala
+core/src/test/scala-3-2.13+
+core/src/test/scala-3-2.13+/sttp
+core/src/test/scala-3-2.13+/sttp/tapir
+core/src/test/scala-3-2.13+/sttp/tapir/CodecDelimitedTest.scala
+core/src/test/scala-3
+core/src/test/scala-3/sttp
+core/src/test/scala-3/sttp/tapir
+core/src/test/scala-3/sttp/tapir/CodecScala3Test.scala
+core/src/test/scala-3/sttp/tapir/EndpointScala3Test.scala
+core/src/test/scala-3/sttp/tapir/SchemaMacroScala3Test.scala
+core/src/test/scala-3/sttp/tapir/ValidatorScala3EnumTest.scala
+core/src/test/scala
+core/src/test/scala/sttp
+core/src/test/scala/sttp/tapir
+core/src/test/scala/sttp/tapir/AttributeTest.scala
+core/src/test/scala/sttp/tapir/CodecTest.scala
+core/src/test/scala/sttp/tapir/EndpointTest.scala
+core/src/test/scala/sttp/tapir/SchemaAnnotationsTest.scala
+core/src/test/scala/sttp/tapir/SchemaAnnotationsTestData.scala
+core/src/test/scala/sttp/tapir/SchemaApplyValidationTest.scala
+core/src/test/scala/sttp/tapir/SchemaApplyValidationTestData.scala
+core/src/test/scala/sttp/tapir/SchemaMacroTest.scala
+core/src/test/scala/sttp/tapir/SchemaMacroTestData.scala
+core/src/test/scala/sttp/tapir/SchemaTest.scala
+core/src/test/scala/sttp/tapir/TestUtil.scala
+core/src/test/scala/sttp/tapir/ValidatorTest.scala
+core/src/test/scala/sttp/tapir/annotations
+core/src/test/scala/sttp/tapir/annotations/DeriveEndpointIOTest.scala
+core/src/test/scala/sttp/tapir/generic
+core/src/test/scala/sttp/tapir/generic/EnumsCodecDerivationTest.scala
+core/src/test/scala/sttp/tapir/generic/FormCodecDerivationTest.scala
+core/src/test/scala/sttp/tapir/generic/MultipartCodecDerivationTest.scala
+core/src/test/scala/sttp/tapir/generic/SchemaGenericAutoTest.scala
+core/src/test/scala/sttp/tapir/generic/ValueClassCodecDerivationTest.scala
+core/src/test/scala/sttp/tapir/internal
+core/src/test/scala/sttp/tapir/internal/RichEndpointInputTest.scala
+core/src/test/scala/sttp/tapir/internal/RichEndpointOutputTest.scala
+core/src/test/scala/sttp/tapir/internal/UrlencodedDataTest.scala
+core/src/test/scala/sttp/tapir/namespacing
+core/src/test/scala/sttp/tapir/namespacing/SchemaMacroNamespaceTest.scala
+core/src/test/scala/sttp/tapir/testdata
+core/src/test/scala/sttp/tapir/testdata/BuiltinTypenameCollisionCaseClass.scala
+core/src/test/scala/sttp/tapir/testdata/BuiltinTypenameCollisionEnum.scala
+core/src/test/scala/sttp/tapir/typelevel
+core/src/test/scala/sttp/tapir/typelevel/MatchTypeTest.scala
+core/src/test/scala/sttp/tapir/typelevel/ParamConcatTest.scala
+core/src/test/scalajs
+core/src/test/scalajs/sttp
+core/src/test/scalajs/sttp/tapir
+core/src/test/scalajs/sttp/tapir/EndpointTestExtensions.scala
+core/src/test/scalajs/sttp/tapir/generic
+core/src/test/scalajs/sttp/tapir/generic/FormCodecDerivationTestExtensions.scala
+core/src/test/scalajs/sttp/tapir/generic/MultipartCodecDerivationTestExtensions.scala
+core/src/test/scalajs/sttp/tapir/typelevel
+core/src/test/scalajs/sttp/tapir/typelevel/MatchTypeTestExtensions.scala
+core/src/test/scalajvm
+core/src/test/scalajvm/sttp
+core/src/test/scalajvm/sttp/tapir
+core/src/test/scalajvm/sttp/tapir/CodecTestDateTime.scala
+core/src/test/scalajvm/sttp/tapir/EndpointTestExtensions.scala
+core/src/test/scalajvm/sttp/tapir/SchemaSerialisationTest.scala
+core/src/test/scalajvm/sttp/tapir/generic
+core/src/test/scalajvm/sttp/tapir/generic/FormCodecDerivationTestExtensions.scala
+core/src/test/scalajvm/sttp/tapir/generic/MultipartCodecDerivationTestExtensions.scala
+core/src/test/scalajvm/sttp/tapir/generic/SchemaGenericSemiautoTest.scala
+core/src/test/scalajvm/sttp/tapir/internal
+core/src/test/scalajvm/sttp/tapir/internal/MimeByExtensionDBTest.scala
+core/src/test/scalajvm/sttp/tapir/typelevel
+core/src/test/scalajvm/sttp/tapir/typelevel/MatchTypeTestExtensions.scala
+core/src/test/scalanative
+core/src/test/scalanative/sttp
+core/src/test/scalanative/sttp/tapir
+core/src/test/scalanative/sttp/tapir/EndpointTestExtensions.scala
+core/src/test/scalanative/sttp/tapir/generic
+core/src/test/scalanative/sttp/tapir/generic/FormCodecDerivationTestExtensions.scala
+core/src/test/scalanative/sttp/tapir/generic/MultipartCodecDerivationTestExtensions.scala
+core/src/test/scalanative/sttp/tapir/typelevel
+core/src/test/scalanative/sttp/tapir/typelevel/MatchTypeTestExtensions.scala
+doc/server/pekkohttp.md
+docs/apispec-docs/src/test
+docs/apispec-docs/src/test/scala
+docs/apispec-docs/src/test/scala/sttp
+docs/apispec-docs/src/test/scala/sttp/tapir
+docs/apispec-docs/src/test/scala/sttp/tapir/docs
+docs/apispec-docs/src/test/scala/sttp/tapir/docs/apispec
+docs/apispec-docs/src/test/scala/sttp/tapir/docs/apispec/schema
+docs/apispec-docs/src/test/scala/sttp/tapir/docs/apispec/schema/TapirSchemaToJsonSchemaTest.scala
+docs/asyncapi-docs/src/test
+docs/asyncapi-docs/src/test/resources
+docs/asyncapi-docs/src/test/resources/expected_binding.yml
+docs/asyncapi-docs/src/test/resources/expected_coproduct_with_discriminator.yml
+docs/asyncapi-docs/src/test/resources/expected_description_header.yml
+docs/asyncapi-docs/src/test/resources/expected_description_query.yml
+docs/asyncapi-docs/src/test/resources/expected_extensions.yml
+docs/asyncapi-docs/src/test/resources/expected_flags_header.yml
+docs/asyncapi-docs/src/test/resources/expected_flags_query.yml
+docs/asyncapi-docs/src/test/resources/expected_json_custom_schema_name.yml
+docs/asyncapi-docs/src/test/resources/expected_json_example_name_summary.yml
+docs/asyncapi-docs/src/test/resources/expected_json_examples.yml
+docs/asyncapi-docs/src/test/resources/expected_json_json.yml
+docs/asyncapi-docs/src/test/resources/expected_required_parameters.yml
+docs/asyncapi-docs/src/test/resources/expected_security.yml
+docs/asyncapi-docs/src/test/resources/expected_string.yml
+docs/asyncapi-docs/src/test/resources/expected_string_json.yml
+docs/asyncapi-docs/src/test/resources/expected_two_endpoints.yml
+docs/asyncapi-docs/src/test/scala
+docs/asyncapi-docs/src/test/scala/sttp
+docs/asyncapi-docs/src/test/scala/sttp/tapir
+docs/asyncapi-docs/src/test/scala/sttp/tapir/docs
+docs/asyncapi-docs/src/test/scala/sttp/tapir/docs/asyncapi
+docs/asyncapi-docs/src/test/scala/sttp/tapir/docs/asyncapi/VerifyAsyncAPIYamlTest.scala
+docs/openapi-docs/src/test
+docs/openapi-docs/src/test/resources
+docs/openapi-docs/src/test/resources/coproduct
+docs/openapi-docs/src/test/resources/coproduct/expected_coproduct.yml
+docs/openapi-docs/src/test/resources/coproduct/expected_coproduct_discriminator.yml
+docs/openapi-docs/src/test/resources/coproduct/expected_coproduct_discriminator_enum.yml
+docs/openapi-docs/src/test/resources/coproduct/expected_coproduct_discriminator_nested.yml
+docs/openapi-docs/src/test/resources/coproduct/expected_coproduct_discriminator_with_enum_circe.yml
+docs/openapi-docs/src/test/resources/coproduct/expected_coproduct_independent.yml
+docs/openapi-docs/src/test/resources/coproduct/expected_coproduct_nested.yml
+docs/openapi-docs/src/test/resources/coproduct/expected_coproduct_wrapped.yml
+docs/openapi-docs/src/test/resources/coproduct/expected_flat_either.yml
+docs/openapi-docs/src/test/resources/coproduct/expected_generic_coproduct.yml
+docs/openapi-docs/src/test/resources/coproduct/expected_recursive_coproducts.yml
+docs/openapi-docs/src/test/resources/coproduct/expected_unfolded_coproduct_unfolded_array.yml
+docs/openapi-docs/src/test/resources/decode_failure_output
+docs/openapi-docs/src/test/resources/decode_failure_output/expected_default_400_response.yml
+docs/openapi-docs/src/test/resources/decode_failure_output/expected_json_response_defined_in_options.yml
+docs/openapi-docs/src/test/resources/decode_failure_output/expected_no_400_response.yml
+docs/openapi-docs/src/test/resources/decode_failure_output/expected_response_defined_in_options.yml
+docs/openapi-docs/src/test/resources/decode_failure_output/expected_user_defined_response.yml
+docs/openapi-docs/src/test/resources/enum
+docs/openapi-docs/src/test/resources/enum/expected_enum_collections.yml
+docs/openapi-docs/src/test/resources/enum/expected_enum_in_delimited_query.yml
+docs/openapi-docs/src/test/resources/enum/expected_enum_in_delimited_query_with_default.yml
+docs/openapi-docs/src/test/resources/enum/expected_enumeratum_enum_adding_default_when_encoded_value_specified.yml
+docs/openapi-docs/src/test/resources/enum/expected_enumeratum_enum_collection_component.yml
+docs/openapi-docs/src/test/resources/enum/expected_enumeratum_enum_component.yml
+docs/openapi-docs/src/test/resources/enum/expected_enumeratum_enum_default.yml
+docs/openapi-docs/src/test/resources/enum/expected_enumeratum_enum_not_adding_default_when_no_encoded_value_specified.yml
+docs/openapi-docs/src/test/resources/enum/expected_enumeratum_enum_using_first_specified_default_value.yml
+docs/openapi-docs/src/test/resources/enum/expected_enumeratum_int_enum_component.yml
+docs/openapi-docs/src/test/resources/enum/expected_trait_enum_component.yml
+docs/openapi-docs/src/test/resources/example
+docs/openapi-docs/src/test/resources/example/expected_byte_buffer_example.yml
+docs/openapi-docs/src/test/resources/example/expected_examples_of_list_and_not_list_types.yml
+docs/openapi-docs/src/test/resources/example/expected_fixed_header_example.yml
+docs/openapi-docs/src/test/resources/example/expected_multiple_examples.yml
+docs/openapi-docs/src/test/resources/example/expected_multiple_examples_with_default_names.yml
+docs/openapi-docs/src/test/resources/example/expected_multiple_examples_with_explicit_and_default_names.yml
+docs/openapi-docs/src/test/resources/example/expected_multiple_examples_with_names.yml
+docs/openapi-docs/src/test/resources/example/expected_schema_example.yml
+docs/openapi-docs/src/test/resources/example/expected_schema_example_multiple_value.yml
+docs/openapi-docs/src/test/resources/example/expected_single_example_with_description.yml
+docs/openapi-docs/src/test/resources/example/expected_single_example_with_name.yml
+docs/openapi-docs/src/test/resources/example/expected_single_example_with_summary.yml
+docs/openapi-docs/src/test/resources/example/expected_stream_example.yml
+docs/openapi-docs/src/test/resources/expected.json
+docs/openapi-docs/src/test/resources/expected.yml
+docs/openapi-docs/src/test/resources/expected_additional_properties.yml
+docs/openapi-docs/src/test/resources/expected_arbitrary_json_output.yml
+docs/openapi-docs/src/test/resources/expected_array_no_format.yml
+docs/openapi-docs/src/test/resources/expected_callbacks.yml
+docs/openapi-docs/src/test/resources/expected_custom_operation_id.yml
+docs/openapi-docs/src/test/resources/expected_custom_schema_name.yml
+docs/openapi-docs/src/test/resources/expected_date_time.yml
+docs/openapi-docs/src/test/resources/expected_default_and_example_on_nested_option_field.yml
+docs/openapi-docs/src/test/resources/expected_default_query_param.yml
+docs/openapi-docs/src/test/resources/expected_default_request_body.yml
+
+codex
+Maven publishes the normal jar, sources jar, and javadoc jar, but no tests classifier in that artifact directory. The POM confirms the SCM root as `softwaremill/tapir`, so I’m narrowing the upstream test path under the `v1.13.18` tag.
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/softwaremill/tapir/git/trees/v1.13.18?recursive=1 | jq -r '.tree[].path' | rg 'server/.+pekko|pekko-http-server|pekkohttp|Pekko'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5363-8d4611e4
+exec
+/usr/bin/bash -lc 'curl -fsSL -o /tmp/tapir-pekko-http-server_3-1.13.18.jar https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-pekko-http-server_3/1.13.18/tapir-pekko-http-server_3-1.13.18.jar && jar tf /tmp/tapir-pekko-http-server_3-1.13.18.jar | head -80' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5363-8d4611e4
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/softwaremill/tapir/git/trees/v1.13.18?recursive=1 | jq -r '.tree[].path' | rg '"'^(server|servers?)/'"' | head -400" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5363-8d4611e4
+ succeeded in 259ms:
+META-INF/MANIFEST.MF
+sttp/
+sttp/tapir/
+sttp/tapir/server/
+sttp/tapir/server/pekkohttp/
+sttp/tapir/server/pekkohttp/ContentTypeCache$.class
+sttp/tapir/server/pekkohttp/ContentTypeCache.class
+sttp/tapir/server/pekkohttp/ContentTypeCache.tasty
+sttp/tapir/server/pekkohttp/PekkoBodyListener$$anon$1.class
+sttp/tapir/server/pekkohttp/PekkoBodyListener$$anon$2.class
+sttp/tapir/server/pekkohttp/PekkoBodyListener.class
+sttp/tapir/server/pekkohttp/PekkoBodyListener.tasty
+sttp/tapir/server/pekkohttp/PekkoHttpServerInterpreter$$anon$1.class
+sttp/tapir/server/pekkohttp/PekkoHttpServerInterpreter$$anon$2.class
+sttp/tapir/server/pekkohttp/PekkoHttpServerInterpreter$.class
+sttp/tapir/server/pekkohttp/PekkoHttpServerInterpreter.class
+sttp/tapir/server/pekkohttp/PekkoHttpServerInterpreter.tasty
+sttp/tapir/server/pekkohttp/PekkoHttpServerOptions$.class
+sttp/tapir/server/pekkohttp/PekkoHttpServerOptions.class
+sttp/tapir/server/pekkohttp/PekkoHttpServerOptions.tasty
+sttp/tapir/server/pekkohttp/PekkoModel$.class
+sttp/tapir/server/pekkohttp/PekkoModel.class
+sttp/tapir/server/pekkohttp/PekkoModel.tasty
+sttp/tapir/server/pekkohttp/PekkoRequestBody$$anon$1.class
+sttp/tapir/server/pekkohttp/PekkoRequestBody$$anon$2.class
+sttp/tapir/server/pekkohttp/PekkoRequestBody.class
+sttp/tapir/server/pekkohttp/PekkoRequestBody.tasty
+sttp/tapir/server/pekkohttp/PekkoServerRequest$.class
+sttp/tapir/server/pekkohttp/PekkoServerRequest.class
+sttp/tapir/server/pekkohttp/PekkoServerRequest.tasty
+sttp/tapir/server/pekkohttp/PekkoServerSentEvents$.class
+sttp/tapir/server/pekkohttp/PekkoServerSentEvents.class
+sttp/tapir/server/pekkohttp/PekkoServerSentEvents.tasty
+sttp/tapir/server/pekkohttp/PekkoStreamSizeExceptionInterceptor$$anon$1.class
+sttp/tapir/server/pekkohttp/PekkoStreamSizeExceptionInterceptor$.class
+sttp/tapir/server/pekkohttp/PekkoStreamSizeExceptionInterceptor.class
+sttp/tapir/server/pekkohttp/PekkoStreamSizeExceptionInterceptor.tasty
+sttp/tapir/server/pekkohttp/PekkoToResponseBody.class
+sttp/tapir/server/pekkohttp/PekkoToResponseBody.tasty
+sttp/tapir/server/pekkohttp/PekkoWebSockets$.class
+sttp/tapir/server/pekkohttp/PekkoWebSockets.class
+sttp/tapir/server/pekkohttp/PekkoWebSockets.tasty
+sttp/tapir/server/pekkohttp/package$.class
+sttp/tapir/server/pekkohttp/package.class
+sttp/tapir/server/pekkohttp/package.tasty
+
+ succeeded in 500ms:
+client/sttp-client/src/main/scalajvm/sttp/tapir/client/sttp/ws/pekkohttp
+client/sttp-client/src/main/scalajvm/sttp/tapir/client/sttp/ws/pekkohttp/TapirSttpClientPekkoHttpWebSockets.scala
+client/sttp-client/src/main/scalajvm/sttp/tapir/client/sttp/ws/pekkohttp/WebSocketToPekkoPipe.scala
+client/sttp-client/src/main/scalajvm/sttp/tapir/client/sttp/ws/pekkohttp/package.scala
+client/sttp-client/src/test/scalajvm/sttp/tapir/client/sttp/SttpClientPekkoTests.scala
+client/sttp-client/src/test/scalajvm/sttp/tapir/client/sttp/SttpClientWebSocketPekkoTests.scala
+client/sttp-client4/src/main/scalajvm/sttp/tapir/client/sttp4/ws/pekkohttp
+client/sttp-client4/src/main/scalajvm/sttp/tapir/client/sttp4/ws/pekkohttp/TapirSttpClientPekkoHttpWebSockets.scala
+client/sttp-client4/src/main/scalajvm/sttp/tapir/client/sttp4/ws/pekkohttp/WebSocketToPekkoPipe.scala
+client/sttp-client4/src/main/scalajvm/sttp/tapir/client/sttp4/ws/pekkohttp/package.scala
+client/sttp-client4/src/test/scalajvm/sttp/tapir/client/sttp4/ws/WebSocketSttpClientPekkoTests.scala
+client/sttp-client4/src/test/scalajvm/sttp/tapir/client/sttp4/ws/WebSocketSttpClientPekkoTestsSender.scala
+doc/server/pekkohttp.md
+examples/src/main/scala/sttp/tapir/examples/errors/customErrorsOnDecodeFailurePekkoServer.scala
+examples/src/main/scala/sttp/tapir/examples/errors/errorOutputsPekkoServer.scala
+examples/src/main/scala/sttp/tapir/examples/helloWorldPekkoServer.scala
+examples/src/main/scala/sttp/tapir/examples/multipart/multipartFormUploadPekkoServer.scala
+examples/src/main/scala/sttp/tapir/examples/openapi/multipleEndpointsDocumentationPekkoServer.scala
+examples/src/main/scala/sttp/tapir/examples/openapi/swaggerUIOAuth2PekkoServer.scala
+examples/src/main/scala/sttp/tapir/examples/security/basicAuthenticationPekkoServer.scala
+examples/src/main/scala/sttp/tapir/examples/security/corsInterceptorPekkoServer.scala
+examples/src/main/scala/sttp/tapir/examples/security/serverSecurityLogicPekko.scala
+examples/src/main/scala/sttp/tapir/examples/security/serverSecurityLogicRefreshCookiesPekko.scala
+examples/src/main/scala/sttp/tapir/examples/static_content/staticContentFromFilesPekkoServer.scala
+examples/src/main/scala/sttp/tapir/examples/static_content/staticContentFromResourcesPekkoServer.scala
+examples/src/main/scala/sttp/tapir/examples/static_content/staticContentSecurePekkoServer.scala
+examples/src/main/scala/sttp/tapir/examples/streaming/streamingPekkoServer.scala
+examples/src/main/scala/sttp/tapir/examples/testing/PekkoServerStubInterpreter.scala
+examples/src/main/scala/sttp/tapir/examples/websocket/webSocketPekkoServer.scala
+generated-doc/out/server/pekkohttp.md
+grpc/pekko-examples/src/main/scala/sttp/tapir/grpc/examples/PekkoGrpcSimpleBooksExample.scala
+perf-tests/perf-tests-e2e/src/main/scala/sttp/tapir/perf/pekko/PekkoHttp.scala
+server/pekko-grpc-server/src/main/scala/sttp/tapir/server/pekkogrpc
+server/pekko-grpc-server/src/main/scala/sttp/tapir/server/pekkogrpc/PekkoGrpcRequestBody.scala
+server/pekko-grpc-server/src/main/scala/sttp/tapir/server/pekkogrpc/PekkoGrpcServerInterpreter.scala
+server/pekko-grpc-server/src/main/scala/sttp/tapir/server/pekkogrpc/PekkoGrpcToResponseBody.scala
+server/pekko-http-server
+server/pekko-http-server/src
+server/pekko-http-server/src/main
+server/pekko-http-server/src/main/scala
+server/pekko-http-server/src/main/scala/sttp
+server/pekko-http-server/src/main/scala/sttp/tapir
+server/pekko-http-server/src/main/scala/sttp/tapir/server
+server/pekko-http-server/src/main/scala/sttp/tapir/server/pekkohttp
+server/pekko-http-server/src/main/scala/sttp/tapir/server/pekkohttp/ContentTypeCache.scala
+server/pekko-http-server/src/main/scala/sttp/tapir/server/pekkohttp/PekkoBodyListener.scala
+server/pekko-http-server/src/main/scala/sttp/tapir/server/pekkohttp/PekkoHttpServerInterpreter.scala
+server/pekko-http-server/src/main/scala/sttp/tapir/server/pekkohttp/PekkoHttpServerOptions.scala
+server/pekko-http-server/src/main/scala/sttp/tapir/server/pekkohttp/PekkoModel.scala
+server/pekko-http-server/src/main/scala/sttp/tapir/server/pekkohttp/PekkoRequestBody.scala
+server/pekko-http-server/src/main/scala/sttp/tapir/server/pekkohttp/PekkoServerRequest.scala
+server/pekko-http-server/src/main/scala/sttp/tapir/server/pekkohttp/PekkoServerSentEvents.scala
+server/pekko-http-server/src/main/scala/sttp/tapir/server/pekkohttp/PekkoStreamSizeExceptionInterceptor.scala
+server/pekko-http-server/src/main/scala/sttp/tapir/server/pekkohttp/PekkoToResponseBody.scala
+server/pekko-http-server/src/main/scala/sttp/tapir/server/pekkohttp/PekkoWebSockets.scala
+server/pekko-http-server/src/main/scala/sttp/tapir/server/pekkohttp/package.scala
+server/pekko-http-server/src/test
+server/pekko-http-server/src/test/scala
+server/pekko-http-server/src/test/scala/sttp
+server/pekko-http-server/src/test/scala/sttp/tapir
+server/pekko-http-server/src/test/scala/sttp/tapir/server
+server/pekko-http-server/src/test/scala/sttp/tapir/server/pekkohttp
+server/pekko-http-server/src/test/scala/sttp/tapir/server/pekkohttp/PekkoHttpServerStubTest.scala
+server/pekko-http-server/src/test/scala/sttp/tapir/server/pekkohttp/PekkoHttpServerTest.scala
+server/pekko-http-server/src/test/scala/sttp/tapir/server/pekkohttp/PekkoHttpTestServerInterpreter.scala
+server/pekko-http-server/src/test/scala/sttp/tapir/server/pekkohttp/PekkoServerSentEventsTest.scala
+
+ succeeded in 679ms:
+server/akka-grpc-server
+server/akka-grpc-server/src
+server/akka-grpc-server/src/main
+server/akka-grpc-server/src/main/scala
+server/akka-grpc-server/src/main/scala/sttp
+server/akka-grpc-server/src/main/scala/sttp/tapir
+server/akka-grpc-server/src/main/scala/sttp/tapir/server
+server/akka-grpc-server/src/main/scala/sttp/tapir/server/akkagrpc
+server/akka-grpc-server/src/main/scala/sttp/tapir/server/akkagrpc/AkkaGrpcRequestBody.scala
+server/akka-grpc-server/src/main/scala/sttp/tapir/server/akkagrpc/AkkaGrpcServerInterpreter.scala
+server/akka-grpc-server/src/main/scala/sttp/tapir/server/akkagrpc/AkkaGrpcToResponseBody.scala
+server/akka-http-server
+server/akka-http-server/src
+server/akka-http-server/src/main
+server/akka-http-server/src/main/scala
+server/akka-http-server/src/main/scala/sttp
+server/akka-http-server/src/main/scala/sttp/tapir
+server/akka-http-server/src/main/scala/sttp/tapir/server
+server/akka-http-server/src/main/scala/sttp/tapir/server/akkahttp
+server/akka-http-server/src/main/scala/sttp/tapir/server/akkahttp/AkkaBodyListener.scala
+server/akka-http-server/src/main/scala/sttp/tapir/server/akkahttp/AkkaHttpServerInterpreter.scala
+server/akka-http-server/src/main/scala/sttp/tapir/server/akkahttp/AkkaHttpServerOptions.scala
+server/akka-http-server/src/main/scala/sttp/tapir/server/akkahttp/AkkaModel.scala
+server/akka-http-server/src/main/scala/sttp/tapir/server/akkahttp/AkkaRequestBody.scala
+server/akka-http-server/src/main/scala/sttp/tapir/server/akkahttp/AkkaServerRequest.scala
+server/akka-http-server/src/main/scala/sttp/tapir/server/akkahttp/AkkaServerSentEvents.scala
+server/akka-http-server/src/main/scala/sttp/tapir/server/akkahttp/AkkaStreamSizeExceptionInterceptor.scala
+server/akka-http-server/src/main/scala/sttp/tapir/server/akkahttp/AkkaToResponseBody.scala
+server/akka-http-server/src/main/scala/sttp/tapir/server/akkahttp/AkkaWebSockets.scala
+server/akka-http-server/src/main/scala/sttp/tapir/server/akkahttp/ContentTypeCache.scala
+server/akka-http-server/src/main/scala/sttp/tapir/server/akkahttp/package.scala
+server/akka-http-server/src/test
+server/akka-http-server/src/test/scala
+server/akka-http-server/src/test/scala/sttp
+server/akka-http-server/src/test/scala/sttp/tapir
+server/akka-http-server/src/test/scala/sttp/tapir/server
+server/akka-http-server/src/test/scala/sttp/tapir/server/akkahttp
+server/akka-http-server/src/test/scala/sttp/tapir/server/akkahttp/AkkaHttpServerStubTest.scala
+server/akka-http-server/src/test/scala/sttp/tapir/server/akkahttp/AkkaHttpServerTest.scala
+server/akka-http-server/src/test/scala/sttp/tapir/server/akkahttp/AkkaHttpTestServerInterpreter.scala
+server/akka-http-server/src/test/scala/sttp/tapir/server/akkahttp/AkkaServerSentEventsTest.scala
+server/armeria-server
+server/armeria-server/cats
+server/armeria-server/cats/src
+server/armeria-server/cats/src/main
+server/armeria-server/cats/src/main/scala
+server/armeria-server/cats/src/main/scala/sttp
+server/armeria-server/cats/src/main/scala/sttp/tapir
+server/armeria-server/cats/src/main/scala/sttp/tapir/server
+server/armeria-server/cats/src/main/scala/sttp/tapir/server/armeria
+server/armeria-server/cats/src/main/scala/sttp/tapir/server/armeria/cats
+server/armeria-server/cats/src/main/scala/sttp/tapir/server/armeria/cats/ArmeriaCatsServerInterpreter.scala
+server/armeria-server/cats/src/main/scala/sttp/tapir/server/armeria/cats/ArmeriaCatsServerOptions.scala
+server/armeria-server/cats/src/main/scala/sttp/tapir/server/armeria/cats/CatsMonadAsyncError.scala
+server/armeria-server/cats/src/main/scala/sttp/tapir/server/armeria/cats/TapirCatsService.scala
+server/armeria-server/cats/src/test
+server/armeria-server/cats/src/test/scala
+server/armeria-server/cats/src/test/scala/sttp
+server/armeria-server/cats/src/test/scala/sttp/tapir
+server/armeria-server/cats/src/test/scala/sttp/tapir/server
+server/armeria-server/cats/src/test/scala/sttp/tapir/server/armeria
+server/armeria-server/cats/src/test/scala/sttp/tapir/server/armeria/cats
+server/armeria-server/cats/src/test/scala/sttp/tapir/server/armeria/cats/ArmeriaCatsServerTest.scala
+server/armeria-server/cats/src/test/scala/sttp/tapir/server/armeria/cats/ArmeriaCatsTestServerInterpreter.scala
+server/armeria-server/src
+server/armeria-server/src/main
+server/armeria-server/src/main/scala
+server/armeria-server/src/main/scala/sttp
+server/armeria-server/src/main/scala/sttp/tapir
+server/armeria-server/src/main/scala/sttp/tapir/server
+server/armeria-server/src/main/scala/sttp/tapir/server/armeria
+server/armeria-server/src/main/scala/sttp/tapir/server/armeria/ArmeriaBodyListener.scala
+server/armeria-server/src/main/scala/sttp/tapir/server/armeria/ArmeriaFutureServerInterpreter.scala
+server/armeria-server/src/main/scala/sttp/tapir/server/armeria/ArmeriaFutureServerOptions.scala
+server/armeria-server/src/main/scala/sttp/tapir/server/armeria/ArmeriaRequestBody.scala
+server/armeria-server/src/main/scala/sttp/tapir/server/armeria/ArmeriaServerOptions.scala
+server/armeria-server/src/main/scala/sttp/tapir/server/armeria/ArmeriaServerRequest.scala
+server/armeria-server/src/main/scala/sttp/tapir/server/armeria/ArmeriaToResponseBody.scala
+server/armeria-server/src/main/scala/sttp/tapir/server/armeria/FutureConversion.scala
+server/armeria-server/src/main/scala/sttp/tapir/server/armeria/HeaderMapping.scala
+server/armeria-server/src/main/scala/sttp/tapir/server/armeria/MethodMapping.scala
+server/armeria-server/src/main/scala/sttp/tapir/server/armeria/ResultMapping.scala
+server/armeria-server/src/main/scala/sttp/tapir/server/armeria/RouteMapping.scala
+server/armeria-server/src/main/scala/sttp/tapir/server/armeria/StreamCompatible.scala
+server/armeria-server/src/main/scala/sttp/tapir/server/armeria/TapirFutureService.scala
+server/armeria-server/src/main/scala/sttp/tapir/server/armeria/TapirService.scala
+server/armeria-server/src/main/scala/sttp/tapir/server/armeria/package.scala
+server/armeria-server/src/test
+server/armeria-server/src/test/scala
+server/armeria-server/src/test/scala/sttp
+server/armeria-server/src/test/scala/sttp/tapir
+server/armeria-server/src/test/scala/sttp/tapir/server
+server/armeria-server/src/test/scala/sttp/tapir/server/armeria
+server/armeria-server/src/test/scala/sttp/tapir/server/armeria/ArmeriaFutureServerTest.scala
+server/armeria-server/src/test/scala/sttp/tapir/server/armeria/ArmeriaTestFutureServerInterpreter.scala
+server/armeria-server/src/test/scala/sttp/tapir/server/armeria/ArmeriaTestServerInterpreter.scala
+server/armeria-server/src/test/scala/sttp/tapir/server/armeria/RouteMappingTest.scala
+server/armeria-server/zio
+server/armeria-server/zio/src
+server/armeria-server/zio/src/main
+server/armeria-server/zio/src/main/scala
+server/armeria-server/zio/src/main/scala/sttp
+server/armeria-server/zio/src/main/scala/sttp/tapir
+server/armeria-server/zio/src/main/scala/sttp/tapir/server
+server/armeria-server/zio/src/main/scala/sttp/tapir/server/armeria
+server/armeria-server/zio/src/main/scala/sttp/tapir/server/armeria/zio
+server/armeria-server/zio/src/main/scala/sttp/tapir/server/armeria/zio/ArmeriaZioServerInterpreter.scala
+server/armeria-server/zio/src/main/scala/sttp/tapir/server/armeria/zio/ArmeriaZioServerOptions.scala
+server/armeria-server/zio/src/main/scala/sttp/tapir/server/armeria/zio/RIOMonadAsyncError.scala
+server/armeria-server/zio/src/main/scala/sttp/tapir/server/armeria/zio/TapirZioService.scala
+server/armeria-server/zio/src/test
+server/armeria-server/zio/src/test/scala
+server/armeria-server/zio/src/test/scala/sttp
+server/armeria-server/zio/src/test/scala/sttp/tapir
+server/armeria-server/zio/src/test/scala/sttp/tapir/server
+server/armeria-server/zio/src/test/scala/sttp/tapir/server/armeria
+server/armeria-server/zio/src/test/scala/sttp/tapir/server/armeria/zio
+server/armeria-server/zio/src/test/scala/sttp/tapir/server/armeria/zio/ArmeriaZioServerTest.scala
+server/armeria-server/zio/src/test/scala/sttp/tapir/server/armeria/zio/ArmeriaZioTestServerInterpreter.scala
+server/core
+server/core/src
+server/core/src/main
+server/core/src/main/scala
+server/core/src/main/scala/sttp
+server/core/src/main/scala/sttp/tapir
+server/core/src/main/scala/sttp/tapir/server
+server/core/src/main/scala/sttp/tapir/server/interceptor
+server/core/src/main/scala/sttp/tapir/server/interceptor/CustomiseInterceptors.scala
+server/core/src/main/scala/sttp/tapir/server/interceptor/DecodeFailureContext.scala
+server/core/src/main/scala/sttp/tapir/server/interceptor/DecodeSuccessContext.scala
+server/core/src/main/scala/sttp/tapir/server/interceptor/EndpointHandler.scala
+server/core/src/main/scala/sttp/tapir/server/interceptor/Interceptor.scala
+server/core/src/main/scala/sttp/tapir/server/interceptor/RequestHandler.scala
+server/core/src/main/scala/sttp/tapir/server/interceptor/RequestResult.scala
+server/core/src/main/scala/sttp/tapir/server/interceptor/SecurityFailureContext.scala
+server/core/src/main/scala/sttp/tapir/server/interceptor/ServerLogAndExceptionInterceptor.scala
+server/core/src/main/scala/sttp/tapir/server/interceptor/content
+server/core/src/main/scala/sttp/tapir/server/interceptor/content/NotAcceptableInterceptor.scala
+server/core/src/main/scala/sttp/tapir/server/interceptor/cors
+server/core/src/main/scala/sttp/tapir/server/interceptor/cors/CORSConfig.scala
+server/core/src/main/scala/sttp/tapir/server/interceptor/cors/CORSInterceptor.scala
+server/core/src/main/scala/sttp/tapir/server/interceptor/decodefailure
+server/core/src/main/scala/sttp/tapir/server/interceptor/decodefailure/DecodeFailureHandler.scala
+server/core/src/main/scala/sttp/tapir/server/interceptor/decodefailure/DecodeFailureInterceptor.scala
+server/core/src/main/scala/sttp/tapir/server/interceptor/exception
+server/core/src/main/scala/sttp/tapir/server/interceptor/exception/ExceptionContext.scala
+server/core/src/main/scala/sttp/tapir/server/interceptor/exception/ExceptionHandler.scala
+server/core/src/main/scala/sttp/tapir/server/interceptor/exception/ExceptionInterceptor.scala
+server/core/src/main/scala/sttp/tapir/server/interceptor/log
+server/core/src/main/scala/sttp/tapir/server/interceptor/log/ExceptionContext.scala
+server/core/src/main/scala/sttp/tapir/server/interceptor/log/ServerLog.scala
+server/core/src/main/scala/sttp/tapir/server/interceptor/log/ServerLogInterceptor.scala
+server/core/src/main/scala/sttp/tapir/server/interceptor/metrics
+server/core/src/main/scala/sttp/tapir/server/interceptor/metrics/MetricsEndpointInterceptor.scala
+server/core/src/main/scala/sttp/tapir/server/interceptor/reject
+server/core/src/main/scala/sttp/tapir/server/interceptor/reject/RejectContext.scala
+server/core/src/main/scala/sttp/tapir/server/interceptor/reject/RejectHandler.scala
+server/core/src/main/scala/sttp/tapir/server/interceptor/reject/RejectInterceptor.scala
+server/core/src/main/scala/sttp/tapir/server/interpreter
+server/core/src/main/scala/sttp/tapir/server/interpreter/BodyListener.scala
+server/core/src/main/scala/sttp/tapir/server/interpreter/DecodeBasicInputs.scala
+server/core/src/main/scala/sttp/tapir/server/interpreter/EncodeOutputs.scala
+server/core/src/main/scala/sttp/tapir/server/interpreter/FilterServerEndpoints.scala
+server/core/src/main/scala/sttp/tapir/server/interpreter/InputValue.scala
+server/core/src/main/scala/sttp/tapir/server/interpreter/RequestBody.scala
+server/core/src/main/scala/sttp/tapir/server/interpreter/ServerInterpreter.scala
+server/core/src/main/scala/sttp/tapir/server/interpreter/ToResponseBody.scala
+server/core/src/main/scala/sttp/tapir/server/metrics
+server/core/src/main/scala/sttp/tapir/server/metrics/Metric.scala
+server/core/src/main/scala/sttp/tapir/server/model
+server/core/src/main/scala/sttp/tapir/server/model/EndpointExtensions.scala
+server/core/src/main/scala/sttp/tapir/server/model/InvalidMultipartBodyException.scala
+server/core/src/main/scala/sttp/tapir/server/model/ServerResponse.scala
+server/core/src/main/scala/sttp/tapir/server/model/ValuedEndpointOutput.scala
+server/core/src/test
+server/core/src/test/scala
+server/core/src/test/scala/sttp
+server/core/src/test/scala/sttp/tapir
+server/core/src/test/scala/sttp/tapir/server
+server/core/src/test/scala/sttp/tapir/server/TestUtil.scala
+server/core/src/test/scala/sttp/tapir/server/interceptor
+server/core/src/test/scala/sttp/tapir/server/interceptor/CustomiseInterceptorsTest.scala
+server/core/src/test/scala/sttp/tapir/server/interceptor/cors
+server/core/src/test/scala/sttp/tapir/server/interceptor/cors/CORSConfigTest.scala
+server/core/src/test/scala/sttp/tapir/server/interceptor/cors/CORSInterceptorTest.scala
+server/core/src/test/scala/sttp/tapir/server/interceptor/decodefailure
+server/core/src/test/scala/sttp/tapir/server/interceptor/decodefailure/DefaultDecodeFailureHandlerTest.scala
+server/core/src/test/scala/sttp/tapir/server/interpreter
+server/core/src/test/scala/sttp/tapir/server/interpreter/DecodeBasicInputsTest.scala
+server/core/src/test/scala/sttp/tapir/server/interpreter/FilterServerEndpointsTest.scala
+server/core/src/test/scala/sttp/tapir/server/interpreter/ServerInterpreterTest.scala
+server/core/src/test/scalajvm
+server/core/src/test/scalajvm/sttp
+server/core/src/test/scalajvm/sttp/tapir
+server/core/src/test/scalajvm/sttp/tapir/server
+server/core/src/test/scalajvm/sttp/tapir/server/interpreter
+server/core/src/test/scalajvm/sttp/tapir/server/interpreter/DecodeBasicInputsResultTest.scala
+server/finatra-server
+server/finatra-server/cats
+server/finatra-server/cats/src
+server/finatra-server/cats/src/main
+server/finatra-server/cats/src/main/scala
+server/finatra-server/cats/src/main/scala/sttp
+server/finatra-server/cats/src/main/scala/sttp/tapir
+server/finatra-server/cats/src/main/scala/sttp/tapir/server
+server/finatra-server/cats/src/main/scala/sttp/tapir/server/finatra
+server/finatra-server/cats/src/main/scala/sttp/tapir/server/finatra/cats
+server/finatra-server/cats/src/main/scala/sttp/tapir/server/finatra/cats/FinatraCatsServerInterpreter.scala
+server/finatra-server/cats/src/main/scala/sttp/tapir/server/finatra/cats/FinatraCatsServerOptions.scala
+server/finatra-server/cats/src/main/scala/sttp/tapir/server/finatra/cats/conversions.scala
+server/finatra-server/cats/src/test
+server/finatra-server/cats/src/test/scala
+server/finatra-server/cats/src/test/scala/sttp
+server/finatra-server/cats/src/test/scala/sttp/tapir
+server/finatra-server/cats/src/test/scala/sttp/tapir/server
+server/finatra-server/cats/src/test/scala/sttp/tapir/server/finatra
+server/finatra-server/cats/src/test/scala/sttp/tapir/server/finatra/cats
+server/finatra-server/cats/src/test/scala/sttp/tapir/server/finatra/cats/FinatraCatsTestServerInterpreter.scala
+server/finatra-server/cats/src/test/scala/sttp/tapir/server/finatra/cats/FinatraServerCatsTests.scala
+server/finatra-server/src
+server/finatra-server/src/main
+server/finatra-server/src/main/scala
+server/finatra-server/src/main/scala/sttp
+server/finatra-server/src/main/scala/sttp/tapir
+server/finatra-server/src/main/scala/sttp/tapir/server
+server/finatra-server/src/main/scala/sttp/tapir/server/finatra
+server/finatra-server/src/main/scala/sttp/tapir/server/finatra/FileChunk.scala
+server/finatra-server/src/main/scala/sttp/tapir/server/finatra/FinatraBodyListener.scala
+server/finatra-server/src/main/scala/sttp/tapir/server/finatra/FinatraContent.scala
+server/finatra-server/src/main/scala/sttp/tapir/server/finatra/FinatraRequestBody.scala
+server/finatra-server/src/main/scala/sttp/tapir/server/finatra/FinatraRoute.scala
+server/finatra-server/src/main/scala/sttp/tapir/server/finatra/FinatraServerInterpreter.scala
+server/finatra-server/src/main/scala/sttp/tapir/server/finatra/FinatraServerOptions.scala
+server/finatra-server/src/main/scala/sttp/tapir/server/finatra/FinatraServerRequest.scala
+server/finatra-server/src/main/scala/sttp/tapir/server/finatra/FinatraToResponseBody.scala
+server/finatra-server/src/main/scala/sttp/tapir/server/finatra/TapirController.scala
+server/finatra-server/src/test
+server/finatra-server/src/test/scala
+server/finatra-server/src/test/scala/sttp
+server/finatra-server/src/test/scala/sttp/tapir
+server/finatra-server/src/test/scala/sttp/tapir/server
+server/finatra-server/src/test/scala/sttp/tapir/server/finatra
+server/finatra-server/src/test/scala/sttp/tapir/server/finatra/FinatraServerStubTest.scala
+server/finatra-server/src/test/scala/sttp/tapir/server/finatra/FinatraServerTest.scala
+server/finatra-server/src/test/scala/sttp/tapir/server/finatra/FinatraTestServerInterpreter.scala
+server/http4s-server
+server/http4s-server/src
+server/http4s-server/src/main
+server/http4s-server/src/main/scala
+server/http4s-server/src/main/scala/sttp
+server/http4s-server/src/main/scala/sttp/tapir
+server/http4s-server/src/main/scala/sttp/tapir/server
+server/http4s-server/src/main/scala/sttp/tapir/server/http4s
+server/http4s-server/src/main/scala/sttp/tapir/server/http4s/Http4sBodyListener.scala
+server/http4s-server/src/main/scala/sttp/tapir/server/http4s/Http4sRequestBody.scala
+server/http4s-server/src/main/scala/sttp/tapir/server/http4s/Http4sServerInterpreter.scala
+server/http4s-server/src/main/scala/sttp/tapir/server/http4s/Http4sServerOptions.scala
+server/http4s-server/src/main/scala/sttp/tapir/server/http4s/Http4sServerRequest.scala
+server/http4s-server/src/main/scala/sttp/tapir/server/http4s/Http4sServerSentEvents.scala
+server/http4s-server/src/main/scala/sttp/tapir/server/http4s/Http4sToResponseBody.scala
+server/http4s-server/src/main/scala/sttp/tapir/server/http4s/Http4sWebSockets.scala
+server/http4s-server/src/main/scala/sttp/tapir/server/http4s/package.scala
+server/http4s-server/src/main/scalajvm
+server/http4s-server/src/main/scalajvm/sttp
+server/http4s-server/src/main/scalajvm/sttp/tapir
+server/http4s-server/src/main/scalajvm/sttp/tapir/server
+server/http4s-server/src/main/scalajvm/sttp/tapir/server/http4s
+server/http4s-server/src/main/scalajvm/sttp/tapir/server/http4s/Http4sDefaultServerLog.scala
+server/http4s-server/src/main/scalajvm/sttp/tapir/server/http4s/Http4sInputStream.scala
+server/http4s-server/src/main/scalanative
+server/http4s-server/src/main/scalanative/sttp
+server/http4s-server/src/main/scalanative/sttp/tapir
+server/http4s-server/src/main/scalanative/sttp/tapir/server
+server/http4s-server/src/main/scalanative/sttp/tapir/server/http4s
+server/http4s-server/src/main/scalanative/sttp/tapir/server/http4s/Http4sDefaultServerLog.scala
+server/http4s-server/src/main/scalanative/sttp/tapir/server/http4s/Http4sInputStream.scala
+server/http4s-server/src/test
+server/http4s-server/src/test/scala
+server/http4s-server/src/test/scala/sttp
+server/http4s-server/src/test/scala/sttp/tapir
+server/http4s-server/src/test/scala/sttp/tapir/server
+server/http4s-server/src/test/scala/sttp/tapir/server/http4s
+server/http4s-server/src/test/scala/sttp/tapir/server/http4s/Http4sServerSentEventsTest.scala
+server/http4s-server/src/test/scala/sttp/tapir/server/http4s/Http4sServerStubTest.scala
+server/http4s-server/src/test/scala/sttp/tapir/server/http4s/Http4sServerTest.scala
+server/http4s-server/src/test/scala/sttp/tapir/server/http4s/Http4sTestServerInterpreter.scala
+server/http4s-server/zio
+server/http4s-server/zio/src
+server/http4s-server/zio/src/main
+server/http4s-server/zio/src/main/scala
+server/http4s-server/zio/src/main/scala/sttp
+server/http4s-server/zio/src/main/scala/sttp/tapir
+server/http4s-server/zio/src/main/scala/sttp/tapir/server
+server/http4s-server/zio/src/main/scala/sttp/tapir/server/http4s
+server/http4s-server/zio/src/main/scala/sttp/tapir/server/http4s/ztapir
+server/http4s-server/zio/src/main/scala/sttp/tapir/server/http4s/ztapir/ConvertStreams.scala
+server/http4s-server/zio/src/main/scala/sttp/tapir/server/http4s/ztapir/ZHttp4sServerInterpreter.scala
+server/http4s-server/zio/src/main/scala/sttp/tapir/server/http4s/ztapir/package.scala
+server/http4s-server/zio/src/test
+server/http4s-server/zio/src/test/scala
+server/http4s-server/zio/src/test/scala/sttp
+server/http4s-server/zio/src/test/scala/sttp/tapir
+server/http4s-server/zio/src/test/scala/sttp/tapir/server
+server/http4s-server/zio/src/test/scala/sttp/tapir/server/http4s
+server/http4s-server/zio/src/test/scala/sttp/tapir/server/http4s/ztapir
+server/http4s-server/zio/src/test/scala/sttp/tapir/server/http4s/ztapir/ZEndpointTest.scala
+server/http4s-server/zio/src/test/scala/sttp/tapir/server/http4s/ztapir/ZHttp4sServerStubTest.scala
+server/http4s-server/zio/src/test/scala/sttp/tapir/server/http4s/ztapir/ZHttp4sServerTest.scala
+server/http4s-server/zio/src/test/scala/sttp/tapir/server/http4s/ztapir/ZHttp4sTestServerInterpreter.scala
+server/jdkhttp-server
+server/jdkhttp-server/src
+server/jdkhttp-server/src/main
+server/jdkhttp-server/src/main/scala
+server/jdkhttp-server/src/main/scala/sttp
+server/jdkhttp-server/src/main/scala/sttp/tapir
+server/jdkhttp-server/src/main/scala/sttp/tapir/server
+server/jdkhttp-server/src/main/scala/sttp/tapir/server/jdkhttp
+server/jdkhttp-server/src/main/scala/sttp/tapir/server/jdkhttp/JdkHttpServer.scala
+server/jdkhttp-server/src/main/scala/sttp/tapir/server/jdkhttp/JdkHttpServerInterpreter.scala
+server/jdkhttp-server/src/main/scala/sttp/tapir/server/jdkhttp/JdkHttpServerOptions.scala
+server/jdkhttp-server/src/main/scala/sttp/tapir/server/jdkhttp/internal
+server/jdkhttp-server/src/main/scala/sttp/tapir/server/jdkhttp/internal/JdkHttpBodyListener.scala
+server/jdkhttp-server/src/main/scala/sttp/tapir/server/jdkhttp/internal/JdkHttpRequestBody.scala
+server/jdkhttp-server/src/main/scala/sttp/tapir/server/jdkhttp/internal/JdkHttpServerRequest.scala
+server/jdkhttp-server/src/main/scala/sttp/tapir/server/jdkhttp/internal/JdkHttpToResponseBody.scala
+server/jdkhttp-server/src/main/scala/sttp/tapir/server/jdkhttp/internal/KMPMatcher.scala
+server/jdkhttp-server/src/main/scala/sttp/tapir/server/jdkhttp/internal/LimitedInputStream.scala
+server/jdkhttp-server/src/main/scala/sttp/tapir/server/jdkhttp/internal/ParsedMultiPart.scala
+server/jdkhttp-server/src/main/scala/sttp/tapir/server/jdkhttp/internal/package.scala
+server/jdkhttp-server/src/main/scala/sttp/tapir/server/jdkhttp/package.scala
+server/jdkhttp-server/src/test
+server/jdkhttp-server/src/test/scala
+server/jdkhttp-server/src/test/scala/sttp
+server/jdkhttp-server/src/test/scala/sttp/tapir
+server/jdkhttp-server/src/test/scala/sttp/tapir/server
+server/jdkhttp-server/src/test/scala/sttp/tapir/server/jdkhttp
+server/jdkhttp-server/src/test/scala/sttp/tapir/server/jdkhttp/JdkHttpServerTest.scala
+server/jdkhttp-server/src/test/scala/sttp/tapir/server/jdkhttp/JdkHttpTestServerInterpreter.scala
+server/jdkhttp-server/src/test/scala/sttp/tapir/server/jdkhttp/internal
+server/jdkhttp-server/src/test/scala/sttp/tapir/server/jdkhttp/internal/KMPMatcherTest.scala
+server/netty-server
+server/netty-server/cats
+server/netty-server/cats/src
+server/netty-server/cats/src/main
+server/netty-server/cats/src/main/scala-2.12
+server/netty-server/cats/src/main/scala-2.12/sttp
+server/netty-server/cats/src/main/scala-2.12/sttp/tapir
+server/netty-server/cats/src/main/scala-2.12/sttp/tapir/server
+server/netty-server/cats/src/main/scala-2.12/sttp/tapir/server/netty
+server/netty-server/cats/src/main/scala-2.12/sttp/tapir/server/netty/cats
+server/netty-server/cats/src/main/scala-2.12/sttp/tapir/server/netty/cats/internal
+server/netty-server/cats/src/main/scala-2.12/sttp/tapir/server/netty/cats/internal/ExecutionContexts.scala
+server/netty-server/cats/src/main/scala-3-2.13+
+server/netty-server/cats/src/main/scala-3-2.13+/sttp
+server/netty-server/cats/src/main/scala-3-2.13+/sttp/tapir
+server/netty-server/cats/src/main/scala-3-2.13+/sttp/tapir/server
+server/netty-server/cats/src/main/scala-3-2.13+/sttp/tapir/server/netty
+server/netty-server/cats/src/main/scala-3-2.13+/sttp/tapir/server/netty/cats
+server/netty-server/cats/src/main/scala-3-2.13+/sttp/tapir/server/netty/cats/internal
+server/netty-server/cats/src/main/scala-3-2.13+/sttp/tapir/server/netty/cats/internal/ExecutionContexts.scala
+server/netty-server/cats/src/main/scala
+server/netty-server/cats/src/main/scala/sttp
+server/netty-server/cats/src/main/scala/sttp/tapir
+server/netty-server/cats/src/main/scala/sttp/tapir/server
+server/netty-server/cats/src/main/scala/sttp/tapir/server/netty
+server/netty-server/cats/src/main/scala/sttp/tapir/server/netty/cats
+server/netty-server/cats/src/main/scala/sttp/tapir/server/netty/cats/NettyCatsServer.scala
+server/netty-server/cats/src/main/scala/sttp/tapir/server/netty/cats/NettyCatsServerInterpreter.scala
+server/netty-server/cats/src/main/scala/sttp/tapir/server/netty/cats/NettyCatsServerOptions.scala
+server/netty-server/cats/src/main/scala/sttp/tapir/server/netty/cats/internal
+server/netty-server/cats/src/main/scala/sttp/tapir/server/netty/cats/internal/CatsUtil.scala
+server/netty-server/cats/src/main/scala/sttp/tapir/server/netty/cats/internal/Fs2StreamCompatible.scala
+server/netty-server/cats/src/main/scala/sttp/tapir/server/netty/cats/internal/NettyCatsRequestBody.scala
+server/netty-server/cats/src/main/scala/sttp/tapir/server/netty/cats/internal/WebSocketPipeProcessor.scala
+server/netty-server/cats/src/test
+server/netty-server/cats/src/test/scala
+server/netty-server/cats/src/test/scala/sttp
+server/netty-server/cats/src/test/scala/sttp/tapir
+server/netty-server/cats/src/test/scala/sttp/tapir/server
+server/netty-server/cats/src/test/scala/sttp/tapir/server/netty
+server/netty-server/cats/src/test/scala/sttp/tapir/server/netty/cats
+server/netty-server/cats/src/test/scala/sttp/tapir/server/netty/cats/NettyCatsServerStubTest.scala
+server/netty-server/cats/src/test/scala/sttp/tapir/server/netty/cats/NettyCatsServerTest.scala
+server/netty-server/cats/src/test/scala/sttp/tapir/server/netty/cats/NettyCatsTestServerInterpreter.scala
+server/netty-server/cats/src/test/scala/sttp/tapir/server/netty/cats/NettyFs2StreamingCancellationTest.scala
+server/netty-server/src
+server/netty-server/src/main
+server/netty-server/src/main/scala
+server/netty-server/src/main/scala/sttp
+server/netty-server/src/main/scala/sttp/tapir
+server/netty-server/src/main/scala/sttp/tapir/server
+server/netty-server/src/main/scala/sttp/tapir/server/netty
+server/netty-server/src/main/scala/sttp/tapir/server/netty/NettyCompressionConfig.scala
+server/netty-server/src/main/scala/sttp/tapir/server/netty/NettyConfig.scala
+server/netty-server/src/main/scala/sttp/tapir/server/netty/NettyFutureServer.scala
+server/netty-server/src/main/scala/sttp/tapir/server/netty/NettyFutureServerInterpreter.scala
+server/netty-server/src/main/scala/sttp/tapir/server/netty/NettyFutureServerOptions.scala
+server/netty-server/src/main/scala/sttp/tapir/server/netty/NettyResponseContent.scala
+server/netty-server/src/main/scala/sttp/tapir/server/netty/NettyServerRequest.scala
+server/netty-server/src/main/scala/sttp/tapir/server/netty/NettySocketConfig.scala
+
+web search: 
+web search: https://github.com/softwaremill/tapir/tree/v1.13.18/server/pekko-http-server/src/test/scala/sttp/tapir/server/pekkohttp
+web search: 
+web search: repo.maven.apache.org com/softwaremill/sttp/tapir/tapir-pekko-http-server_3/1.13.18 tapir-pekko-http-server_3-1.13.18-sources.jar javadoc.jar
+exec
+/usr/bin/bash -lc "sed -n '1,60p' metadata/com.softwaremill.sttp.tapir/tapir-core_3/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5363-8d4611e4
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.11.25",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-core_3/$version$/tapir-core_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/softwaremill/tapir",
+    "test-code-url" : "https://github.com/softwaremill/tapir/tree/v$version$/core/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-core_3/$version$/tapir-core_3-$version$-javadoc.jar",
+    "description" : "Tapir core provides the Scala endpoint description DSL used to model HTTP APIs as typed inputs, outputs, errors, and capabilities. These endpoint descriptions can be interpreted by Tapir integrations to expose servers, generate clients, and produce OpenAPI, AsyncAPI, or JSON Schema documentation.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "1.11.25",
+      "1.11.28",
+      "1.11.29",
+      "1.11.30",
+      "1.11.32",
+      "1.11.33",
+      "1.11.34",
+      "1.11.35",
+      "1.11.36",
+      "1.11.37",
+      "1.11.38",
+      "1.11.39",
+      "1.11.40",
+      "1.11.41",
+      "1.11.42",
+      "1.11.43",
+      "1.11.44",
+      "1.11.45",
+      "1.11.46",
+      "1.11.47",
+      "1.11.48",
+      "1.11.49",
+      "1.11.50",
+      "1.12.0",
+      "1.12.1",
+      "1.12.2",
+      "1.12.3",
+      "1.12.4",
+      "1.12.5",
+      "1.12.6",
+      "1.13.0"
+    ],
+    "allowed-packages" : [
+      "sttp.tapir"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,60p' metadata/dev.optics/monocle-core_3/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5363-8d4611e4
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.3.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/optics/monocle-core_3/$version$/monocle-core_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/optics-dev/Monocle",
+    "test-code-url" : "https://github.com/optics-dev/Monocle/tree/v$version$/core/shared/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/optics/monocle-core_3/$version$/monocle-core_3-$version$-javadoc.jar",
+    "description" : "Monocle Core is the core module of Monocle, a Scala optics library for immutable data structures. It provides optics such as lenses, prisms, traversals, optionals, and isomorphisms that let Scala applications inspect, transform, and compose nested data updates in a functional style.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "3.3.0"
+    ],
+    "allowed-packages" : [
+      "monocle"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"description\" : \".*Tapir|tapir|Pekko' metadata/com.softwaremill.sttp.tapir build/discovered-artifact-metadata -g '*.json'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5363-8d4611e4
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json:2:  "coordinates" : "com.softwaremill.sttp.tapir:tapir-pekko-http-server_3:1.13.18"
+metadata/com.softwaremill.sttp.tapir/tapir-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-core_3/$version$/tapir-core_3-$version$-sources.jar",
+metadata/com.softwaremill.sttp.tapir/tapir-core_3/index.json:6:    "repository-url" : "https://github.com/softwaremill/tapir",
+metadata/com.softwaremill.sttp.tapir/tapir-core_3/index.json:7:    "test-code-url" : "https://github.com/softwaremill/tapir/tree/v$version$/core/src/test",
+metadata/com.softwaremill.sttp.tapir/tapir-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-core_3/$version$/tapir-core_3-$version$-javadoc.jar",
+metadata/com.softwaremill.sttp.tapir/tapir-core_3/index.json:9:    "description" : "Tapir core provides the Scala endpoint description DSL used to model HTTP APIs as typed inputs, outputs, errors, and capabilities. These endpoint descriptions can be interpreted by Tapir integrations to expose servers, generate clients, and produce OpenAPI, AsyncAPI, or JSON Schema documentation.",
+metadata/com.softwaremill.sttp.tapir/tapir-core_3/index.json:48:      "sttp.tapir"
+metadata/com.softwaremill.sttp.tapir/tapir-http4s-server_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/tapir/tapir-http4s-server_3/$version$/tapir-http4s-server_3-$version$-sources.jar",
+metadata/com.softwaremill.sttp.tapir/tapir-http4s-server_3/index.json:6:    "repository-url" : "https://github.com/softwaremill/tapir",
+metadata/com.softwaremill.sttp.tapir/tapir-http4s-server_3/index.json:7:    "test-code-url" : "https://github.com/softwaremill/tapir/tree/v$version$/server/http4s-server/src/test/scala",
+metadata/com.softwaremill.sttp.tapir/tapir-http4s-server_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/tapir/tapir-http4s-server_3/$version$/tapir-http4s-server_3-$version$-javadoc.jar",
+metadata/com.softwaremill.sttp.tapir/tapir-http4s-server_3/index.json:9:    "description" : "Tapir lets Scala developers describe HTTP API endpoints as immutable, reusable values and derive server, client, and OpenAPI integrations from those descriptions. The tapir-http4s-server module interprets Tapir server endpoints as http4s routes for cats-effect applications, including request and response handling, fs2 streaming, server-sent events, and WebSocket support.",
+metadata/com.softwaremill.sttp.tapir/tapir-http4s-server_3/index.json:68:      "sttp.tapir.server.http4s"
+metadata/com.softwaremill.sttp.tapir/tapir-cats_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/tapir/tapir-cats_3/$version$/tapir-cats_3-$version$-sources.jar",
+metadata/com.softwaremill.sttp.tapir/tapir-cats_3/index.json:6:    "repository-url" : "https://github.com/softwaremill/tapir",
+metadata/com.softwaremill.sttp.tapir/tapir-cats_3/index.json:7:    "test-code-url" : "https://github.com/softwaremill/tapir/tree/v$version$/integrations/cats/src/test/scala",
+metadata/com.softwaremill.sttp.tapir/tapir-cats_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/tapir/tapir-cats_3/$version$/tapir-cats_3-$version$-javadoc.jar",
+metadata/com.softwaremill.sttp.tapir/tapir-cats_3/index.json:9:    "description" : "Tapir is a Scala library for describing HTTP APIs as type-safe endpoints that can be interpreted as servers, clients, and OpenAPI, AsyncAPI, or JSON Schema documentation. The tapir-cats module adds Cats type class instances and syntax for Tapir codecs, validators, examples, endpoint IO, and server endpoints so endpoint definitions compose naturally with Cats abstractions.",
+metadata/com.softwaremill.sttp.tapir/tapir-cats_3/index.json:68:      "sttp.tapir.integ.cats"
+metadata/com.softwaremill.sttp.tapir/tapir-server_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-server_3/$version$/tapir-server_3-$version$-sources.jar",
+metadata/com.softwaremill.sttp.tapir/tapir-server_3/index.json:6:    "repository-url" : "https://github.com/softwaremill/tapir",
+metadata/com.softwaremill.sttp.tapir/tapir-server_3/index.json:7:    "test-code-url" : "https://github.com/softwaremill/tapir/tree/v$version$/server/core/src/test",
+metadata/com.softwaremill.sttp.tapir/tapir-server_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-server_3/$version$/tapir-server_3-$version$-javadoc.jar",
+metadata/com.softwaremill.sttp.tapir/tapir-server_3/index.json:9:    "description" : "Tapir is a Scala library for describing HTTP API endpoints as type-safe values that can be interpreted as servers, clients, and OpenAPI, AsyncAPI, or JSON Schema documentation. The tapir-server module provides the core server-side interpreter, request and response model, interceptors, decode-failure handling, CORS support, metrics hooks, and logging abstractions used by Tapir server backends.",
+metadata/com.softwaremill.sttp.tapir/tapir-server_3/index.json:47:      "sttp.tapir.server"
+metadata/com.softwaremill.sttp.tapir/tapir-zio_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/tapir/tapir-zio_3/$version$/tapir-zio_3-$version$-sources.jar",
+metadata/com.softwaremill.sttp.tapir/tapir-zio_3/index.json:6:    "repository-url" : "https://github.com/softwaremill/tapir",
+metadata/com.softwaremill.sttp.tapir/tapir-zio_3/index.json:7:    "test-code-url" : "https://github.com/softwaremill/tapir/tree/v$version$/integrations/zio/src/test",
+metadata/com.softwaremill.sttp.tapir/tapir-zio_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/softwaremill/sttp/tapir/tapir-zio_3/$version$/tapir-zio_3-$version$-javadoc.jar",
+metadata/com.softwaremill.sttp.tapir/tapir-zio_3/index.json:9:    "description" : "Tapir is a Scala library for describing HTTP APIs as type-safe endpoints that can be interpreted as servers, clients, and OpenAPI, AsyncAPI, or JSON Schema documentation. The tapir-zio module adds ZIO-specific endpoint helpers, server endpoint types, monad support, and streaming support so Tapir endpoints can be written with ZIO effects.",
+metadata/com.softwaremill.sttp.tapir/tapir-zio_3/index.json:20:      "sttp.tapir.ztapir"
+metadata/com.softwaremill.sttp.tapir/tapir-json-circe_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-json-circe_3/$version$/tapir-json-circe_3-$version$-sources.jar",
+metadata/com.softwaremill.sttp.tapir/tapir-json-circe_3/index.json:6:    "repository-url" : "https://github.com/softwaremill/tapir",
+metadata/com.softwaremill.sttp.tapir/tapir-json-circe_3/index.json:7:    "test-code-url" : "https://github.com/softwaremill/tapir/tree/v$version$/json/circe/src/test/scalajvm",
+metadata/com.softwaremill.sttp.tapir/tapir-json-circe_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-json-circe_3/$version$/tapir-json-circe_3-$version$-javadoc.jar",
+metadata/com.softwaremill.sttp.tapir/tapir-json-circe_3/index.json:9:    "description" : "Tapir JSON Circe integrates sttp Tapir endpoints with Circe by providing JSON body and query codecs backed by Circe encoders and decoders. It lets Scala applications describe, decode, and encode JSON endpoint inputs and outputs while keeping Tapir schema information in scope.",
+metadata/com.softwaremill.sttp.tapir/tapir-json-circe_3/index.json:68:      "sttp.tapir.json.circe"
+
+codex
+I found the tagged test suite at `server/pekko-http-server/src/test/scala` and confirmed the published artifact is a JVM jar with `.class` files. I’m updating the discovered metadata with Scala 3 language info and leaving the Native Image exclusion fields out.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5363-8d4611e4/build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json
+diff --git a/build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json b/build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json
+index 188a109c9911cf86241725e3a0d64775391ff060..6bcee4e216e93cf5149ff1cf244663e8500963d4
+--- a/build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json
++++ b/build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.softwaremill.sttp.tapir:tapir-pekko-http-server_3:1.13.18"
++  "coordinates" : "com.softwaremill.sttp.tapir:tapir-pekko-http-server_3:1.13.18",
++  "repository-url" : "https://github.com/softwaremill/tapir",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-pekko-http-server_3/$version$/tapir-pekko-http-server_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/softwaremill/tapir/tree/v$version$/server/pekko-http-server/src/test/scala",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-pekko-http-server_3/$version$/tapir-pekko-http-server_3-$version$-javadoc.jar",
++  "description" : "Tapir lets Scala developers describe HTTP API endpoints as immutable, reusable values and derive server, client, and OpenAPI integrations from those descriptions. The tapir-pekko-http-server module interprets Tapir server endpoints as Apache Pekko HTTP routes, handling request and response conversion, streaming, server-sent events, and WebSocket support.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json b/build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json
+index 188a109c9911cf86241725e3a0d64775391ff060..6bcee4e216e93cf5149ff1cf244663e8500963d4
+--- a/build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json
++++ b/build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.softwaremill.sttp.tapir:tapir-pekko-http-server_3:1.13.18"
++  "coordinates" : "com.softwaremill.sttp.tapir:tapir-pekko-http-server_3:1.13.18",
++  "repository-url" : "https://github.com/softwaremill/tapir",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-pekko-http-server_3/$version$/tapir-pekko-http-server_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/softwaremill/tapir/tree/v$version$/server/pekko-http-server/src/test/scala",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-pekko-http-server_3/$version$/tapir-pekko-http-server_3-$version$-javadoc.jar",
++  "description" : "Tapir lets Scala developers describe HTTP API endpoints as immutable, reusable values and derive server, client, and OpenAPI integrations from those descriptions. The tapir-pekko-http-server module interprets Tapir server endpoints as Apache Pekko HTTP routes, handling request and response conversion, streaming, server-sent events, and WebSocket support.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+codex
+The JSON is patched. I’m doing a quick parse check and probing the substituted URLs so we catch typos before handing it back.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5363-8d4611e4
+ succeeded in 0ms:
+{
+  "coordinates": "com.softwaremill.sttp.tapir:tapir-pekko-http-server_3:1.13.18",
+  "repository-url": "https://github.com/softwaremill/tapir",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-pekko-http-server_3/$version$/tapir-pekko-http-server_3-$version$-sources.jar",
+  "test-code-url": "https://github.com/softwaremill/tapir/tree/v$version$/server/pekko-http-server/src/test/scala",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-pekko-http-server_3/$version$/tapir-pekko-http-server_3-$version$-javadoc.jar",
+  "description": "Tapir lets Scala developers describe HTTP API endpoints as immutable, reusable values and derive server, client, and OpenAPI integrations from those descriptions. The tapir-pekko-http-server module interprets Tapir server endpoints as Apache Pekko HTTP routes, handling request and response conversion, streaming, server-sent events, and WebSocket support.",
+  "language": {
+    "name": "scala",
+    "version": "3"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5363-8d4611e4
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  'https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-pekko-http-server_3/1.13.18/tapir-pekko-http-server_3-1.13.18-sources.jar' \\
+  'https://github.com/softwaremill/tapir/tree/v1.13.18/server/pekko-http-server/src/test/scala' \\
+  'https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-pekko-http-server_3/1.13.18/tapir-pekko-http-server_3-1.13.18-javadoc.jar'; do
+  status="'$(curl -fsSL -o /dev/null -w '"'%{http_code}' \""'$url")
+  printf '"'%s %s\\n' \""'$status" "$url"
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5363-8d4611e4
+diff --git a/build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json b/build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json
+index 188a109c9911cf86241725e3a0d64775391ff060..6bcee4e216e93cf5149ff1cf244663e8500963d4
+--- a/build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json
++++ b/build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.softwaremill.sttp.tapir:tapir-pekko-http-server_3:1.13.18"
++  "coordinates" : "com.softwaremill.sttp.tapir:tapir-pekko-http-server_3:1.13.18",
++  "repository-url" : "https://github.com/softwaremill/tapir",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-pekko-http-server_3/$version$/tapir-pekko-http-server_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/softwaremill/tapir/tree/v$version$/server/pekko-http-server/src/test/scala",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-pekko-http-server_3/$version$/tapir-pekko-http-server_3-$version$-javadoc.jar",
++  "description" : "Tapir lets Scala developers describe HTTP API endpoints as immutable, reusable values and derive server, client, and OpenAPI integrations from those descriptions. The tapir-pekko-http-server module interprets Tapir server endpoints as Apache Pekko HTTP routes, handling request and response conversion, streaming, server-sent events, and WebSocket support.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 1869ms:
+200 https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-pekko-http-server_3/1.13.18/tapir-pekko-http-server_3-1.13.18-sources.jar
+200 https://github.com/softwaremill/tapir/tree/v1.13.18/server/pekko-http-server/src/test/scala
+200 https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-pekko-http-server_3/1.13.18/tapir-pekko-http-server_3-1.13.18-javadoc.jar
+
+codex
+All three substituted URLs return `200`, and `jq` parses the file cleanly. The file is under `build/`, so it may not show in `git diff` if that directory is ignored, but the requested file content is updated on disk.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5363-8d4611e4
+ succeeded in 0ms:
+{
+  "coordinates" : "com.softwaremill.sttp.tapir:tapir-pekko-http-server_3:1.13.18",
+  "repository-url" : "https://github.com/softwaremill/tapir",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-pekko-http-server_3/$version$/tapir-pekko-http-server_3-$version$-sources.jar",
+  "test-code-url" : "https://github.com/softwaremill/tapir/tree/v$version$/server/pekko-http-server/src/test/scala",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-pekko-http-server_3/$version$/tapir-pekko-http-server_3-$version$-javadoc.jar",
+  "description" : "Tapir lets Scala developers describe HTTP API endpoints as immutable, reusable values and derive server, client, and OpenAPI integrations from those descriptions. The tapir-pekko-http-server module interprets Tapir server endpoints as Apache Pekko HTTP routes, handling request and response conversion, streaming, server-sent events, and WebSocket support.",
+  "language" : {
+    "name" : "scala",
+    "version" : "3"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5363-8d4611e4
+diff --git a/build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json b/build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json
+index 188a109c9911cf86241725e3a0d64775391ff060..6bcee4e216e93cf5149ff1cf244663e8500963d4
+--- a/build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json
++++ b/build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.softwaremill.sttp.tapir:tapir-pekko-http-server_3:1.13.18"
++  "coordinates" : "com.softwaremill.sttp.tapir:tapir-pekko-http-server_3:1.13.18",
++  "repository-url" : "https://github.com/softwaremill/tapir",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-pekko-http-server_3/$version$/tapir-pekko-http-server_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/softwaremill/tapir/tree/v$version$/server/pekko-http-server/src/test/scala",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-pekko-http-server_3/$version$/tapir-pekko-http-server_3-$version$-javadoc.jar",
++  "description" : "Tapir lets Scala developers describe HTTP API endpoints as immutable, reusable values and derive server, client, and OpenAPI integrations from those descriptions. The tapir-pekko-http-server module interprets Tapir server endpoints as Apache Pekko HTTP routes, handling request and response conversion, streaming, server-sent events, and WebSocket support.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 427ms:
+!! build/
+
+web search: 
+web search: https://central.sonatype.com/artifact/com.softwaremill.sttp.tapir/tapir-pekko-http-server_3/1.13.18
+web search: 
+web search: central.sonatype.com artifact com.softwaremill.sttp.tapir tapir-pekko-http-server_3 1.13.18
+web search: 
+web search: site:github.com/softwaremill/tapir v1.13.18 server pekko-http-server src test scala PekkoHttpServerTest
+web search: 
+web search: https://mvnrepository.com/artifact/com.softwaremill.sttp.tapir/tapir-pekko-http-server
+web search: 
+web search: https://tapir.softwaremill.com/en/v1.8.1/server/pekkohttp.html
+codex
+Updated [com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5363-8d4611e4/build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json).
+
+I set the Maven sources/javadoc URLs, the tagged GitHub test suite URL, the repository root, a two-sentence description, and `"language": { "name": "scala", "version": "3" }`. I left `not-for-native-image` absent because the artifact is a JVM jar with class files; the substituted source, test, and documentation URLs all returned `200`, and `jq` parsed the file cleanly.
+diff --git a/build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json b/build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json
+index 188a109c9911cf86241725e3a0d64775391ff060..6bcee4e216e93cf5149ff1cf244663e8500963d4
+--- a/build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json
++++ b/build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.softwaremill.sttp.tapir:tapir-pekko-http-server_3:1.13.18"
++  "coordinates" : "com.softwaremill.sttp.tapir:tapir-pekko-http-server_3:1.13.18",
++  "repository-url" : "https://github.com/softwaremill/tapir",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-pekko-http-server_3/$version$/tapir-pekko-http-server_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/softwaremill/tapir/tree/v$version$/server/pekko-http-server/src/test/scala",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/softwaremill/sttp/tapir/tapir-pekko-http-server_3/$version$/tapir-pekko-http-server_3-$version$-javadoc.jar",
++  "description" : "Tapir lets Scala developers describe HTTP API endpoints as immutable, reusable values and derive server, client, and OpenAPI integrations from those descriptions. The tapir-pekko-http-server module interprets Tapir server endpoints as Apache Pekko HTTP routes, handling request and response conversion, streaming, server-sent events, and WebSocket support.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+tokens used
+95,174
+Updated [com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5363-8d4611e4/build/discovered-artifact-metadata/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.json).
+
+I set the Maven sources/javadoc URLs, the tagged GitHub test suite URL, the repository root, a two-sentence description, and `"language": { "name": "scala", "version": "3" }`. I left `not-for-native-image` absent because the artifact is a JVM jar with class files; the substituted source, test, and documentation URLs all returned `200`, and `jq` parsed the file cleanly.
+Ran agent for com.softwaremill.sttp.tapir:tapir-pekko-http-server_3:1.13.18 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5363-8d4611e4/build/agent-artifact-discovery-logs/com.softwaremill.sttp.tapir-tapir-pekko-http-server_3-1.13.18.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5363-8d4611e4/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 7s
+9 actionable tasks: 9 executed
