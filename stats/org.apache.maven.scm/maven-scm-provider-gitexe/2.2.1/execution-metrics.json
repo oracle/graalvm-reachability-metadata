@@ -1,0 +1,60 @@
+{
+  "fix_javac_fail:2026-06-11": {
+    "timestamp": "2026-06-11T06:30:40.172653Z",
+    "library": "org.apache.maven.scm:maven-scm-provider-gitexe:2.2.1",
+    "starting_commit": "92052f411477ab19a5fde81182a19271314b4741",
+    "ending_commit": "5dc4ec233112d85fd3d0b5120ee16a569d14db93",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8354,
+      "issue_label": "fails-javac-compile",
+      "library": "org.apache.maven.scm:maven-scm-provider-gitexe:2.2.1",
+      "summary": "No extra Maven dependency, Docker service, environment variable, or system property is required; the artifact brings its compile/runtime dependencies transitively and the javac failure is due to 2.2.1 API changes in existing tests, not missing setup.",
+      "deterministic_setup": [],
+      "agent_guidance": "No environment or system property setup is required. The gitexe provider shells out to the default `git` executable, configurable via `${user.home}/.scm/git-settings.xml`, but meaningful tests can avoid external services by covering command-line builders and output consumers with temp directories. When updating the existing tests for 2.2.1, adapt to the new tag API: use `CommandParameters.SignOption` instead of boolean signing arguments, and call `createPushCommandLine` on a `GitTagCommand` instance rather than statically.",
+      "risks": [
+        "Tests that execute real git commits/tags may depend on local `git` availability and repository/user configuration; prefer command construction, parsers, or isolated local temp repositories unless Native Image verification proves more is needed.",
+        "The upstream project has test-only helpers such as `maven-scm-provider-gittest`, but they are not needed to fix the observed compile failure or reach meaningful generated coverage."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8354 [Automation] javac compile fails for org.apache.maven.scm:maven-scm-provider-gitexe:2.2.1; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "8 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.apache.maven.scm:maven-scm-provider-gitexe:2.1.0",
+      "new_version": "2.2.1",
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 53411,
+      "output_tokens_used": 3854,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.apache.maven.scm:maven-scm-provider-gitexe:2.2.1/library-preparation-preflight/pi-generation-2026-06-11T06-21-42-742584Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 60967,
+      "cached_input_tokens_used": 702464,
+      "output_tokens_used": 8619,
+      "iterations": 2,
+      "cost_usd": 0.6098,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "test_file": "None",
+      "metadata_file": "None"
+    }
+  }
+}
