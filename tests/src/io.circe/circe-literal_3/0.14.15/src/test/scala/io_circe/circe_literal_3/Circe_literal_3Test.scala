@@ -7,6 +7,7 @@
 package io_circe.circe_literal_3
 
 import io.circe.Json
+import io.circe.KeyEncoder
 import io.circe.literal.*
 import org.junit.jupiter.api.Test
 
@@ -111,6 +112,26 @@ class Circe_literal_3Test:
     assert(cursor.downField("flags").as[List[Boolean]] == Right(List(true, false, true)))
     assert(cursor.downField("nickname").focus.contains(Json.Null))
     assert(cursor.downField("metadata").downField("source").as[String] == Right("encoder interpolation"))
+
+  @Test
+  def jsonLiteralInterpolatesNonStringObjectKeysWithKeyEncoder(): Unit =
+    final case class SectionKey(area: String, index: Int)
+    given KeyEncoder[SectionKey] = KeyEncoder.instance(key => s"${key.area}-${key.index}")
+
+    val summaryKey: SectionKey = SectionKey("summary", 1)
+    val detailsKey: SectionKey = SectionKey("details", 2)
+    val document: Json = json"""
+      {
+        $summaryKey: "ready",
+        $detailsKey: {
+          "count": 3
+        }
+      }
+    """
+    val cursor = document.hcursor
+
+    assert(cursor.downField("summary-1").as[String] == Right("ready"))
+    assert(cursor.downField("details-2").downField("count").as[Int] == Right(3))
 
   @Test
   def jsonLiteralInterpolatesValuesAtMultipleArrayPositions(): Unit =
