@@ -82,6 +82,27 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def decodesAdditionalJsonStringEscapesInLiterals(): Unit = {
+    val document: Json = json"""
+      {
+        "tab": "alpha\tbeta",
+        "carriageReturn": "alpha\rbeta",
+        "backspace": "alpha\bbeta",
+        "formFeed": "alpha\fbeta",
+        "solidus": "https:\/\/example.com\/api",
+        "backslash": "C:\\Users\\Ada"
+      }
+    """
+
+    assertThat(document.hcursor.get[String]("tab")).isEqualTo(Right("alpha\tbeta"))
+    assertThat(document.hcursor.get[String]("carriageReturn")).isEqualTo(Right("alpha\rbeta"))
+    assertThat(document.hcursor.get[String]("backspace")).isEqualTo(Right("alpha\bbeta"))
+    assertThat(document.hcursor.get[String]("formFeed")).isEqualTo(Right("alpha\fbeta"))
+    assertThat(document.hcursor.get[String]("solidus")).isEqualTo(Right("https://example.com/api"))
+    assertThat(document.hcursor.get[String]("backslash")).isEqualTo(Right("C:\\Users\\Ada"))
+  }
+
+  @Test
   def producesTheSameJsonAsRuntimeParsingForLiteralDocuments(): Unit = {
     val literalDocument: Json = json"""
       {
