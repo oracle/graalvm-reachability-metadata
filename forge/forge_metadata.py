@@ -188,8 +188,8 @@ ISSUE_CLAIM_CACHE_VERSION = 1
 ISSUE_CLAIM_CACHE_FILENAME = "issue-cache-v1.json"
 ISSUE_CLAIM_CACHE_LOCK_FILENAME = "issue-cache-v1.lock"
 DEFAULT_ISSUE_CLAIM_CACHE_TTL_SECONDS = 15 * 60
-ISSUE_SEARCH_CACHE_VERSION = 1
-ISSUE_SEARCH_CACHE_FILENAME = "issue-search-cache-v1.json"
+ISSUE_SEARCH_CACHE_VERSION = 2
+ISSUE_SEARCH_CACHE_FILENAME = "issue-search-cache-v2.json"
 ISSUE_SEARCH_CACHE_LOCK_FILENAME = "issue-search-cache-v1.lock"
 DEFAULT_ISSUE_SEARCH_CACHE_TTL_SECONDS = 10 * 60
 GITHUB_RATE_LIMIT_EXIT_CODE = 75
@@ -231,6 +231,14 @@ LABEL_HUMAN_INTERVENTION_FIXED = "human-intervention-fixed"
 LABEL_NOT_FOR_NATIVE_IMAGE = "not-for-native-image"
 LABEL_CHUNKED_DYNAMIC_ACCESS = "chunked-dynamic-access"
 FIXTURE_AUTHENTICATED_USER = "fixture-runner"
+NON_USER_REQUESTED_ISSUE_AUTHORS: tuple[str, ...] = (
+    "graalvmbot",
+    "github-actions[bot]",
+    "github-actions-bot",
+    "vjovanov",
+    "kimeta",
+    "jormundur00",
+)
 
 SCRATCH_WORKTREE_DIRNAME = "forge_worktrees"
 PREFLIGHT_INFO_DIRNAME = "preflight_info"
@@ -699,9 +707,12 @@ def build_issue_search_query(
 
 def normalize_github_issue_search_item(item: dict) -> dict:
     """Convert a GitHub Search API issue item to the shape used by `gh issue list --json`."""
+    author = item.get("user") if isinstance(item.get("user"), dict) else {}
+    author_login = author.get("login")
     return {
         "number": item["number"],
         "title": item.get("title", ""),
+        "author": {"login": author_login} if author_login else None,
         "url": item.get("html_url") or item.get("url"),
         "labels": [
             {"name": label["name"]}
@@ -780,7 +791,11 @@ def get_issue_search_page(query: str, page: int, per_page: int) -> list[dict]:
         return issues
 
 
-def count_issues_with_label(label: str, extra_labels: list[str] | None = None) -> int:
+def count_issues_with_label(
+        label: str,
+        extra_labels: list[str] | None = None,
+        user_requested_only: bool = False,
+) -> int:
     """Return GitHub's count of open issues carrying the given label set."""
     if is_fixture_testing_enabled():
         return require_fixture_github_state().count_open_issues_by_label(label, extra_labels)
@@ -825,11 +840,28 @@ def get_issue_search_count(query: str) -> int:
         return total_count
 
 
-def get_issues_with_label(label: str, limit: int, offset: int = 0, extra_labels: list[str] | None = None) -> list[dict]:
+def get_issues_with_label(
+        label: str,
+        limit: int,
+        offset: int = 0,
+        extra_labels: list[str] | None = None,
+        user_requested_only: bool = False,
+) -> list[dict]:
     """Fetch open issues that carry the given label (and any extra labels)."""
     if is_fixture_testing_enabled():
-        return require_fixture_github_state().list_open_issues_by_label(label, limit, offset, extra_labels)
-    return search_issues_with_label(label, limit, offset, extra_labels)
+        return require_fixture_github_state().list_open_issues_by_label(
+            label,
+            limit,
+            offset,
+            extra_labels,
+            excluded_authors=get_user_requested_issue_excluded_authors(user_requested_only),
+        )
+    return search_issues_with_label(
+        label,
+        limit,
+        offset,
+        extra_labels,
+    )
 
 
 def get_pull_requests_with_label(label: str, fetch_limit: int) -> list[dict]:
@@ -1673,14 +1705,20 @@ def get_prioritized_issues_with_label(
         priority_offset: int = 0,
         regular_offset: int = 0,
         priority_exhausted: bool = False,
+        user_requested_only: bool = False,
 ) -> tuple[list[dict], int, int, bool, bool]:
     """Fetch one issue batch and return priority issues first within that batch."""
-    regular_issues = get_issues_with_label(label, limit, regular_offset)
+    regular_issues = get_issues_with_label(
+        label,
+        limit,
+        regular_offset,
+    )
     regular_offset += len(regular_issues)
+    filtered_issues = filter_user_requested_issues(regular_issues, user_requested_only)
     if not is_fixture_testing_enabled():
-        try_mark_issues_blocking_many_libraries_as_priority(regular_issues)
+        try_mark_issues_blocking_many_libraries_as_priority(filtered_issues)
     sorted_issues = sorted(
-        regular_issues,
+        filtered_issues,
         key=lambda issue: not issue_has_label(issue, LABEL_PRIORITY),
     )
     exhausted = len(regular_issues) == 0
@@ -4762,6 +4800,44 @@ def get_env_zero_one_bool(name: str, default: bool) -> bool:
     return raw_value == "1"
 
 
+def resolve_user_requested_only(cli_override: bool | None = None) -> bool:
+    """Return whether issue queues should exclude configured non-user authors."""
+    if cli_override is not None:
+        return cli_override
+    return get_env_zero_one_bool("FORGE_USER_REQUESTED_ISSUES_ONLY", False)
+
+
+def get_user_requested_issue_excluded_authors(user_requested_only: bool) -> tuple[str, ...]:
+    """Return issue authors excluded when processing only user-requested issues."""
+    if user_requested_only:
+        return NON_USER_REQUESTED_ISSUE_AUTHORS
+    return ()
+
+
+def get_issue_author_login(issue: dict) -> str | None:
+    """Return the issue author login when the issue payload contains it."""
+    author = issue.get("author")
+    if isinstance(author, dict):
+        login = author.get("login")
+        return login if isinstance(login, str) and login else None
+    if isinstance(author, str) and author:
+        return author
+    return None
+
+
+def filter_user_requested_issues(issues: list[dict], user_requested_only: bool) -> list[dict]:
+    """Remove configured automation and maintainer-authored issues when requested."""
+    excluded_authors = get_user_requested_issue_excluded_authors(user_requested_only)
+    if not excluded_authors:
+        return issues
+    excluded_author_set = set(excluded_authors)
+    return [
+        issue
+        for issue in issues
+        if get_issue_author_login(issue) not in excluded_author_set
+    ]
+
+
 def get_work_queue_configs_from_environment(
         work_strategy_name_override: str | None = None,
         random_offset_override: bool | None = None,
@@ -6878,9 +6954,9 @@ def log_issue_scan_progress(
     )
 
 
-def resolve_random_issue_scan_offset(label: str) -> int:
+def resolve_random_issue_scan_offset(label: str, user_requested_only: bool = False) -> int:
     """Choose a random searchable offset for an issue label."""
-    issue_count = count_issues_with_label(label)
+    issue_count = count_issues_with_label(label, user_requested_only=user_requested_only)
     searchable_count = min(issue_count, GITHUB_SEARCH_MAX_RESULTS)
     if searchable_count <= 0:
         return 0
@@ -6895,6 +6971,7 @@ def process_fixture_issues_for_label(
         strategy_name: str | None,
         keep_tests_without_dynamic_access: bool,
         environment_already_validated: bool = False,
+        user_requested_only: bool = False,
 ) -> int:
     """Run the local fixture issues for one label, sequentially, one `run.log` each.
 
@@ -6905,7 +6982,11 @@ def process_fixture_issues_for_label(
     if not environment_already_validated:
         validate_issue_processing_environment()
 
-    issues = require_fixture_github_state().list_open_issues_by_label(label, limit)
+    issues = require_fixture_github_state().list_open_issues_by_label(
+        label,
+        limit,
+        excluded_authors=get_user_requested_issue_excluded_authors(user_requested_only),
+    )
     if not issues:
         print()
         log_stage("issue-scan", f"No open fixture issues found with label '{label}'")
@@ -6944,6 +7025,7 @@ def process_issues_with_label(
         parallelism: int,
         take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
         environment_already_validated: bool = False,
+        user_requested_only: bool = False,
 ) -> int:
     """
     Process up to `limit` claimable issues, skipping over unclaimed candidates.
@@ -6998,6 +7080,7 @@ def process_issues_with_label(
                                     priority_offset,
                                     regular_offset,
                                     priority_exhausted,
+                                    user_requested_only,
                                 )
                             )
                             if not issues:
@@ -7006,14 +7089,21 @@ def process_issues_with_label(
                                     log_stage("issue-scan", f"No open issues found with label '{label}'")
                                 break
                         else:
-                            issues = get_issues_with_label(label, fetch_limit, current_offset)
-                            current_offset += len(issues)
-                            if not issues:
+                            raw_issues = get_issues_with_label(
+                                label,
+                                fetch_limit,
+                                current_offset,
+                            )
+                            current_offset += len(raw_issues)
+                            if not raw_issues:
                                 if current_offset == offset:
                                     print()
                                     log_stage("issue-scan", f"No open issues found with label '{label}'")
                                 exhausted = True
                                 break
+                            issues = filter_user_requested_issues(raw_issues, user_requested_only)
+                            if not issues:
+                                continue
 
                         payload_cache_observations = [
                             observation
@@ -7139,6 +7229,7 @@ def process_work_queues(
         keep_tests_without_dynamic_access_override: bool = False,
         parallelism_default: int = DEFAULT_PARALLELISM,
         random_offset_override: bool | None = None,
+        user_requested_only_override: bool | None = None,
 ) -> None:
     """Process all configured issue and review queues in one Python process."""
     queue_configs = get_work_queue_configs_from_environment(work_strategy_name_override, random_offset_override)
@@ -7150,6 +7241,7 @@ def process_work_queues(
         or os.environ.get("FORGE_KEEP_TESTS_WITHOUT_DYNAMIC_ACCESS") == "1"
     )
     parallelism = get_env_parallelism("FORGE_PARALLELISM", parallelism_default)
+    user_requested_only = resolve_user_requested_only(user_requested_only_override)
     enabled_issue_queues = [queue_config for queue_config in queue_configs if queue_config.limit > 0]
 
     if is_shutdown_requested():
@@ -7187,6 +7279,7 @@ def process_work_queues(
                 canonical_metrics_repo_path,
                 queue_config.strategy_name,
                 keep_tests_without_dynamic_access,
+                user_requested_only=user_requested_only,
                 environment_already_validated=True,
             )
             continue
@@ -7194,7 +7287,10 @@ def process_work_queues(
         authenticated_user = resolve_authenticated_user(authenticated_user)
         issue_scan_offset = 0
         if queue_config.random_offset:
-            issue_scan_offset = resolve_random_issue_scan_offset(queue_config.label)
+            issue_scan_offset = resolve_random_issue_scan_offset(
+                queue_config.label,
+                user_requested_only=user_requested_only,
+            )
             print()
             log_stage(
                 "issue-scan",
@@ -7210,6 +7306,7 @@ def process_work_queues(
             keep_tests_without_dynamic_access,
             authenticated_user,
             parallelism,
+            user_requested_only=user_requested_only,
             environment_already_validated=True,
         )
 
@@ -7336,6 +7433,16 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         dest="random_offset",
         action="store_false",
         help="Disable random issue scan offsets for run-work-queues or selected-label runs.",
+    )
+    parser.add_argument(
+        "--user-requested-only",
+        dest="user_requested_only",
+        action="store_true",
+        default=None,
+        help=(
+            "Fetch only user-requested issue queue items by excluding configured "
+            "automation and maintainer issue authors."
+        ),
     )
     parser.add_argument(
         "--parallelism",
@@ -7493,6 +7600,7 @@ def main() -> None:
                 args.keep_tests_without_dynamic_access,
                 args.parallelism,
                 random_offset_override=args.random_offset,
+                user_requested_only_override=args.user_requested_only,
             )
         elif args.review_pr is not None:
             authenticated_user = resolve_authenticated_user()
@@ -7523,12 +7631,17 @@ def main() -> None:
                 metrics_repo_path,
                 args.strategy_name,
                 args.keep_tests_without_dynamic_access,
+                user_requested_only=resolve_user_requested_only(args.user_requested_only),
             )
         else:
             authenticated_user = resolve_authenticated_user()
+            user_requested_only = resolve_user_requested_only(args.user_requested_only)
             issue_scan_offset = args.offset
             if args.random_offset is True:
-                issue_scan_offset = resolve_random_issue_scan_offset(args.label)
+                issue_scan_offset = resolve_random_issue_scan_offset(
+                    args.label,
+                    user_requested_only=user_requested_only,
+                )
                 print()
                 log_stage("issue-scan", f"Selected random start offset {issue_scan_offset} for label '{args.label}'")
             process_issues_with_label(
@@ -7542,6 +7655,7 @@ def main() -> None:
                 authenticated_user,
                 args.parallelism,
                 take_blocked_issues=args.take_blocked_issues,
+                user_requested_only=user_requested_only,
             )
         normal_exit = True
     except KeyboardInterrupt:
