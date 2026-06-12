@@ -450,7 +450,9 @@ def _copy_tree_from_commit(repo_path: str, commit: str, source_rel: str, destina
 def _write_index_entries(repo_path: str, group: str, artifact: str, entries: list[dict[str, Any]]) -> None:
     path = index_path(repo_path, group, artifact)
     with open(path, "w", encoding="utf-8") as index_file:
-        json.dump(entries, index_file, indent=2)
+        # Match the repository's Jackson pretty-printer (space before the colon,
+        # raw UTF-8) so a split only diffs the entries it changes.
+        json.dump(entries, index_file, indent=2, separators=(",", " : "), ensure_ascii=False)
         index_file.write("\n")
 
 
