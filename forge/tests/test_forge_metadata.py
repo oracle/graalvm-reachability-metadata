@@ -13,6 +13,7 @@ from unittest.mock import call, patch
 
 import forge_metadata
 from git_scripts import common_git
+from utility_scripts.fixture_github import FixtureGitHubState, FixtureIssue
 
 
 def _project_item_status_response(status: str) -> dict:
@@ -58,10 +59,15 @@ def _empty_preflight_response(issue_numbers: list[int]) -> dict:
     }
 
 
-def _search_issue(number: int, label_names: list[str] | None = None) -> dict:
+def _search_issue(
+        number: int,
+        label_names: list[str] | None = None,
+        author: str = "external-user",
+) -> dict:
     return {
         "number": number,
         "title": f"Issue {number}",
+        "user": {"login": author},
         "html_url": f"https://github.com/oracle/graalvm-reachability-metadata/issues/{number}",
         "labels": [
             {"name": label_name}
@@ -981,6 +987,68 @@ class IssueClaimPreflightTests(unittest.TestCase):
             "-F", "page=3",
         )
 
+    def test_user_requested_issue_fetch_uses_regular_search_query_and_normalizes_author(self) -> None:
+        page_items = [
+            _search_issue(1, author="external-user"),
+            _search_issue(2, author="graalvmbot"),
+        ]
+
+        with patch.dict(os.environ, {"FORGE_ISSUE_SEARCH_CACHE": "0"}), \
+                patch.object(forge_metadata, "gh_json", return_value={"items": page_items}) as gh_json:
+            issues = forge_metadata.get_issues_with_label(
+                forge_metadata.LABEL_LIBRARY_NEW,
+                2,
+                user_requested_only=True,
+            )
+
+        self.assertEqual(
+            [issue["author"] for issue in issues],
+            [{"login": "external-user"}, {"login": "graalvmbot"}],
+        )
+        gh_json.assert_called_once_with(
+            "api", "--method", "GET", "/search/issues",
+            "-f", (
+                f"q=repo:{forge_metadata.REPO} is:issue is:open "
+                f'label:"{forge_metadata.LABEL_LIBRARY_NEW}" -label:"{forge_metadata.LABEL_NOT_FOR_NATIVE_IMAGE}"'
+            ),
+            "-f", "sort=updated",
+            "-f", "order=desc",
+            "-F", "per_page=100",
+            "-F", "page=1",
+        )
+
+    def test_user_requested_issue_filter_excludes_configured_authors_locally(self) -> None:
+        issues = [
+            {"number": 1, "author": {"login": "external-user"}},
+            {"number": 2, "author": {"login": "graalvmbot"}},
+            {"number": 3, "author": {"login": "vjovanov"}},
+        ]
+
+        filtered = forge_metadata.filter_user_requested_issues(issues, user_requested_only=True)
+
+        self.assertEqual([issue["number"] for issue in filtered], [1])
+
+    def test_prioritized_issue_fetch_filters_authors_but_advances_raw_offset(self) -> None:
+        issues = [
+            {"number": 1, "author": {"login": "graalvmbot"}, "labels": []},
+            {"number": 2, "author": {"login": "external-user"}, "labels": []},
+        ]
+
+        with patch.object(forge_metadata, "get_issues_with_label", return_value=issues) as get_issues, \
+                patch.object(forge_metadata, "try_mark_issues_blocking_many_libraries_as_priority"):
+            filtered, _priority_offset, regular_offset, _priority_exhausted, exhausted = (
+                forge_metadata.get_prioritized_issues_with_label(
+                    forge_metadata.LABEL_LIBRARY_NEW,
+                    25,
+                    user_requested_only=True,
+                )
+            )
+
+        get_issues.assert_called_once_with(forge_metadata.LABEL_LIBRARY_NEW, 25, 0)
+        self.assertEqual([issue["number"] for issue in filtered], [2])
+        self.assertEqual(regular_offset, 2)
+        self.assertFalse(exhausted)
+
     def test_random_issue_scan_offset_uses_open_issue_count(self) -> None:
         with patch.object(forge_metadata, "count_issues_with_label", return_value=500), \
                 patch.object(forge_metadata.random, "randrange", return_value=123) as randrange:
@@ -990,6 +1058,63 @@ class IssueClaimPreflightTests(unittest.TestCase):
             )
 
         randrange.assert_called_once_with(500)
+
+    def test_random_issue_scan_offset_uses_user_requested_count(self) -> None:
+        with patch.object(forge_metadata, "count_issues_with_label", return_value=500) as count_issues, \
+                patch.object(forge_metadata.random, "randrange", return_value=123):
+            forge_metadata.resolve_random_issue_scan_offset(
+                forge_metadata.LABEL_LIBRARY_NEW,
+                user_requested_only=True,
+            )
+
+        count_issues.assert_called_once_with(
+            forge_metadata.LABEL_LIBRARY_NEW,
+            user_requested_only=True,
+        )
+
+    def test_fixture_issue_listing_can_exclude_non_user_authors(self) -> None:
+        state = FixtureGitHubState([
+            FixtureIssue(
+                number=1,
+                title="Add support for org.example:user:1.0.0",
+                author="external-user",
+                body="",
+                state="OPEN",
+                labels=[forge_metadata.LABEL_LIBRARY_NEW],
+                assignees=[],
+                project_number=forge_metadata.PROJECT_NUMBER,
+                project_item_id="item-1",
+                project_status=forge_metadata.STATUS_TODO,
+                blockers=[],
+                comments=[],
+                fixture_path="/tmp/fixture.yaml",
+                url="fixture://issue/1",
+            ),
+            FixtureIssue(
+                number=2,
+                title="Add support for org.example:bot:1.0.0",
+                author="graalvmbot",
+                body="",
+                state="OPEN",
+                labels=[forge_metadata.LABEL_LIBRARY_NEW],
+                assignees=[],
+                project_number=forge_metadata.PROJECT_NUMBER,
+                project_item_id="item-2",
+                project_status=forge_metadata.STATUS_TODO,
+                blockers=[],
+                comments=[],
+                fixture_path="/tmp/fixture.yaml",
+                url="fixture://issue/2",
+            ),
+        ])
+
+        issues = state.list_open_issues_by_label(
+            forge_metadata.LABEL_LIBRARY_NEW,
+            limit=10,
+            excluded_authors=forge_metadata.NON_USER_REQUESTED_ISSUE_AUTHORS,
+        )
+
+        self.assertEqual([issue["number"] for issue in issues], [1])
 
     def test_process_loop_uses_cache_to_skip_unclaimable_candidates_without_preflight(self) -> None:
         skipped_issue = {
@@ -1066,6 +1191,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
                     0,
                     0,
                     False,
+                    False,
                 ),
                 call(
                     forge_metadata.LABEL_LIBRARY_NEW,
@@ -1073,6 +1199,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
                     0,
                     1,
                     True,
+                    False,
                 ),
             ],
         )
@@ -1360,6 +1487,17 @@ class WorkQueueSchedulerTests(unittest.TestCase):
         self.assertTrue(random_args.random_offset)
         self.assertFalse(no_random_args.random_offset)
 
+    def test_issue_queue_modes_accept_user_requested_only_flag(self) -> None:
+        work_queue_args = forge_metadata.parse_args(["--run-work-queues", "--user-requested-only"])
+        label_args = forge_metadata.parse_args([
+            "--label",
+            forge_metadata.LABEL_LIBRARY_NEW,
+            "--user-requested-only",
+        ])
+
+        self.assertTrue(work_queue_args.user_requested_only)
+        self.assertTrue(label_args.user_requested_only)
+
     def test_review_label_environment_overrides_default_review_queues(self) -> None:
         env = {
             "FORGE_REVIEW_LABEL": forge_metadata.LABEL_PR_LIBRARY_BULK_UPDATE,
@@ -1412,6 +1550,7 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             False,
             "automation-user",
             forge_metadata.DEFAULT_PARALLELISM,
+            user_requested_only=False,
             environment_already_validated=True,
         )
         process_reviews.assert_not_called()
@@ -1443,7 +1582,10 @@ class WorkQueueSchedulerTests(unittest.TestCase):
                 "automation-user",
             )
 
-        random_offset.assert_called_once_with(forge_metadata.LABEL_LIBRARY_NEW)
+        random_offset.assert_called_once_with(
+            forge_metadata.LABEL_LIBRARY_NEW,
+            user_requested_only=False,
+        )
         process_issues.assert_called_once_with(
             forge_metadata.LABEL_LIBRARY_NEW,
             1,
@@ -1454,9 +1596,52 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             False,
             "automation-user",
             forge_metadata.DEFAULT_PARALLELISM,
+            user_requested_only=False,
             environment_already_validated=True,
         )
         process_reviews.assert_not_called()
+
+    def test_process_work_queues_passes_user_requested_only_to_issue_scans(self) -> None:
+        env = {
+            "FORGE_JAVAC_WORK_LIMIT": "0",
+            "FORGE_JAVA_RUN_WORK_LIMIT": "0",
+            "FORGE_NI_RUN_WORK_LIMIT": "0",
+            "FORGE_LIBRARY_UPDATE_WORK_LIMIT": "0",
+            "FORGE_WORK_LIMIT": "1",
+            "FORGE_REVIEW_LIMIT": "0",
+            "FORGE_RANDOM_WORK_OFFSET": "1",
+            "FORGE_USER_REQUESTED_ISSUES_ONLY": "1",
+        }
+
+        with patch.dict(os.environ, env, clear=True), \
+                patch.object(forge_metadata, "validate_issue_processing_environment"), \
+                patch.object(
+                    forge_metadata, "resolve_random_issue_scan_offset", return_value=42
+                ) as random_offset, \
+                patch.object(forge_metadata, "process_issues_with_label", return_value=0) as process_issues:
+            forge_metadata.process_work_queues(
+                "/tmp/reachability",
+                "/tmp/metrics",
+                "automation-user",
+            )
+
+        random_offset.assert_called_once_with(
+            forge_metadata.LABEL_LIBRARY_NEW,
+            user_requested_only=True,
+        )
+        process_issues.assert_called_once_with(
+            forge_metadata.LABEL_LIBRARY_NEW,
+            1,
+            42,
+            "/tmp/reachability",
+            "/tmp/metrics",
+            forge_metadata.DEFAULT_WORK_QUEUE_STRATEGY_NAME,
+            False,
+            "automation-user",
+            forge_metadata.DEFAULT_PARALLELISM,
+            user_requested_only=True,
+            environment_already_validated=True,
+        )
 
     def test_process_work_queues_resolves_auth_for_review_only_queue(self) -> None:
         env = {

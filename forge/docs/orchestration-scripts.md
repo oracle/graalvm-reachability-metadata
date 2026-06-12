@@ -45,6 +45,15 @@ minutes); setting either env var to `0` disables that cache. The caches only
 reduce redundant API calls within a TTL window; claiming itself remains
 optimistic and authoritative against live GitHub state.
 
+Operators can restrict issue queue scans to user-requested issues. In that
+mode, orchestration fetches issue queue batches with the ordinary label query
+and excludes issues authored by repository automation or the configured
+maintainer accounts locally before claim processing. Queue counts and offsets
+remain based on the ordinary GitHub search result order so the filter does not
+make GitHub Search queries more complex. This filter applies only to issue
+queue scans, not to explicit `--issue-number` runs, large-library continuation
+artifacts, or pull request review queues.
+
 ## 1. Library-Specific Preparation Decision
 
 After claiming a supported issue and preparing its isolated worktree, but before

@@ -164,6 +164,9 @@ this functional spec.
   may run concurrently. Valid values are `1` through `4`; the default is `1`.
 - `FORGE_DO_WORK_STOP_FILE` overrides the shared stop marker path used by
   `do-work` loops. The default is `~/.metadata-forge-stop`.
+- `FORGE_USER_REQUESTED_ISSUES_ONLY=1` restricts issue queue scans to
+  user-requested issues by excluding configured automation and maintainer
+  authors locally before claim processing (§ORCH-forge-orchestration-spec).
 - `FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD` configures the class-count threshold
   used by `forge_metadata.py` for `library-new-request` and
   `library-update-request` issues. The implementation-defined default is `5`.

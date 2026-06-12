@@ -153,6 +153,7 @@ def is_github_rate_limit_text(text: str) -> bool:
     return (
         "API rate limit exceeded" in text
         or "API rate limit already exceeded" in text
+        or "secondary rate limit" in text
         or "RATE_LIMITED" in text
     )
 

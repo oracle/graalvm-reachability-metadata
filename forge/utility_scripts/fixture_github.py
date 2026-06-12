@@ -73,6 +73,7 @@ class FixtureComment:
 class FixtureIssue:
     number: int
     title: str
+    author: str
     body: str
     state: str
     labels: list[str]
@@ -89,6 +90,7 @@ class FixtureIssue:
         payload: JsonObject = {
             "number": self.number,
             "title": self.title,
+            "author": {"login": self.author},
             "url": self.url,
             "labels": [{"name": label} for label in self.labels],
             "assignees": [{"login": assignee} for assignee in self.assignees],
@@ -103,6 +105,7 @@ class FixtureIssue:
         return {
             "number": self.number,
             "title": self.title,
+            "author": {"login": self.author},
             "url": self.url,
             "labels": [{"name": label} for label in self.labels],
             "assignees": [{"login": assignee} for assignee in self.assignees],
@@ -112,6 +115,7 @@ class FixtureIssue:
         payload: JsonObject = {
             "number": self.number,
             "title": self.title,
+            "author": self.author,
             "body": self.body,
             "state": self.state,
             "url": self.url,
@@ -183,6 +187,7 @@ class FixtureGitHubState:
             offset: int = 0,
             extra_labels: list[str] | None = None,
             excluded_labels: list[str] | None = None,
+            excluded_authors: tuple[str, ...] = (),
     ) -> list[JsonObject]:
         """Return `gh issue list`/search-shaped open issue payloads."""
         if limit <= 0:
@@ -192,6 +197,7 @@ class FixtureGitHubState:
             for issue in self._iter_open_issues()
             if _issue_has_all_labels(issue, [label, *(extra_labels or [])])
             and not _issue_has_any_label(issue, excluded_labels or [])
+            and issue.author not in excluded_authors
         ]
         return matched[offset:offset + limit]
 
@@ -200,6 +206,7 @@ class FixtureGitHubState:
             label: str,
             extra_labels: list[str] | None = None,
             excluded_labels: list[str] | None = None,
+            excluded_authors: tuple[str, ...] = (),
     ) -> int:
         return len(self.list_open_issues_by_label(
             label,
@@ -207,6 +214,7 @@ class FixtureGitHubState:
             offset=0,
             extra_labels=extra_labels,
             excluded_labels=excluded_labels,
+            excluded_authors=excluded_authors,
         ))
 
     def get_issue_labels(self, issue_number: int) -> list[str]:
@@ -598,6 +606,7 @@ def normalize_fixture_issue(raw_issue: JsonObject, fixture_path: str) -> Fixture
     issue = _require_mapping(raw_issue, context)
     number = _require_int(issue, "number", context)
     title = _require_str(issue, "title", context)
+    author = _optional_str(issue, "author", context, default="fixture-author")
     body = _optional_str(issue, "body", context, default="")
     state = _require_str(issue, "state", context).upper()
     if state not in ALLOWED_ISSUE_STATES:
@@ -618,6 +627,7 @@ def normalize_fixture_issue(raw_issue: JsonObject, fixture_path: str) -> Fixture
     return FixtureIssue(
         number=number,
         title=title,
+        author=author,
         body=body,
         state=state,
         labels=labels,

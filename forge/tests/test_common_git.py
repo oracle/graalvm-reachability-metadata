@@ -337,6 +337,18 @@ class GitHubRateLimitTests(unittest.TestCase):
             with self.assertRaises(common_git.GitHubRateLimitExceeded):
                 common_git.gh("api", "graphql")
 
+    def test_common_gh_raises_typed_rate_limit_error_from_secondary_limit(self) -> None:
+        completed_process = subprocess.CompletedProcess(
+            ["gh"],
+            1,
+            stdout="",
+            stderr="gh: You have exceeded a secondary rate limit. Please wait a few minutes.",
+        )
+
+        with patch.object(common_git.subprocess, "run", return_value=completed_process):
+            with self.assertRaises(common_git.GitHubRateLimitExceeded):
+                common_git.gh("api", "--method", "GET", "/search/issues")
+
     def test_common_gh_retries_transient_failure(self) -> None:
         failed_process = subprocess.CompletedProcess(
             ["gh"],
