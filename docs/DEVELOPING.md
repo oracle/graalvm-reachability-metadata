@@ -12,7 +12,7 @@ Always use the Gradle wrapper from the repository root:
 - Windows: `gradlew.bat <task> [options]`
 
 Prerequisites for most commands:
-- `JAVA_HOME` should be set to JDK 21 or later. GraalVM is recommended to match CI.
+- `JAVA_HOME` should be set to JDK 25 or later. GraalVM is recommended to match CI.
 - Docker (required for pulling/using allowed images during tests). Needs to work without `sudo`: `sudo usermod -aG docker $USER` and reboot.
 - [`grype`](https://github.com/anchore/grype) version `0.104.0` for scanning docker images:
     ```console

@@ -218,9 +218,10 @@ class ScaffoldTaskTests {
                 "/scaffold/build.gradle.kotlin.template"
         );
         assertThat(Files.readString(tempDir.resolve("tests/src/io.ktor/ktor-server-core-jvm/3.1.0/build.gradle"), StandardCharsets.UTF_8))
-                .contains("jvmToolchain(21)")
-                .contains("kotlinOptions.jvmTarget = \"21\"")
-                .doesNotContain("25");
+                .contains("jvmToolchain(25)")
+                .contains("kotlinOptions.jvmTarget = \"25\"")
+                .doesNotContain("jvmToolchain(21)")
+                .doesNotContain("kotlinOptions.jvmTarget = \"21\"");
         List<Map<String, Object>> indexEntries = OBJECT_MAPPER.readValue(
                 tempDir.resolve("metadata/io.ktor/ktor-server-core-jvm/index.json").toFile(),
                 new TypeReference<>() {}
@@ -268,8 +269,8 @@ class ScaffoldTaskTests {
         assertThat(Files.readString(tempDir.resolve("tests/src/org.apache.groovy/groovy-json/4.0.21/build.gradle"), StandardCharsets.UTF_8))
                 .contains("id \"groovy\"")
                 .contains("testImplementation localGroovy()")
-                .contains("JavaLanguageVersion.of(21)")
-                .doesNotContain("25");
+                .contains("JavaLanguageVersion.of(25)")
+                .doesNotContain("JavaLanguageVersion.of(21)");
         List<Map<String, Object>> indexEntries = OBJECT_MAPPER.readValue(
                 tempDir.resolve("metadata/org.apache.groovy/groovy-json/index.json").toFile(),
                 new TypeReference<>() {}
@@ -315,8 +316,8 @@ class ScaffoldTaskTests {
                 "/scaffold/build.gradle.scala3.template"
         );
         assertThat(Files.readString(tempDir.resolve("tests/src/org.typelevel/cats-core_3/2.12.0/build.gradle"), StandardCharsets.UTF_8))
-                .contains("JavaLanguageVersion.of(21)")
-                .doesNotContain("25");
+                .contains("JavaLanguageVersion.of(25)")
+                .doesNotContain("JavaLanguageVersion.of(21)");
     }
 
     @Test
@@ -351,8 +352,12 @@ class ScaffoldTaskTests {
                 "/scaffold/build.gradle.scala2.template"
         );
         assertThat(Files.readString(tempDir.resolve("tests/src/org.typelevel/cats-core_2.13/2.12.0/build.gradle"), StandardCharsets.UTF_8))
-                .contains("JavaLanguageVersion.of(21)")
-                .doesNotContain("25");
+                .contains("JavaLanguageVersion.of(25)")
+                .contains("org.scala-lang:scala-library:2.13.17")
+                .contains("org.scala-lang:scala-compiler:2.13.17")
+                .doesNotContain("JavaLanguageVersion.of(21)")
+                .doesNotContain("org.scala-lang:scala-library:2.13.16")
+                .doesNotContain("org.scala-lang:scala-compiler:2.13.16");
     }
 
     @Test
