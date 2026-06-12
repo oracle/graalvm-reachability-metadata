@@ -378,6 +378,41 @@ verification still passed. That status should not by itself add the
 `human-intervention` label unless the result also meets one of the policy cases
 above.
 
+Metadata-entry-count and coverage-depth objections for libraries that report
+zero dynamic-access calls are never human-intervention, because such libraries
+need no reachability metadata for an end user to run them under `native-image`
+(§FS-zero-dynamic-access-tolerance).
+
+### FS-zero-dynamic-access-tolerance: Zero dynamic-access library tolerance
+
+A library that reports zero dynamic-access calls needs no reachability metadata
+for an end user to run it under `native-image`: there are no reflection,
+resource, proxy, serialization, or JNI call sites for metadata to cover, so its
+`reachability-metadata.json` can legitimately be `{}` and its metadata entry
+count carries little signal. Review automation must treat such libraries
+leniently on metadata depth.
+
+When the PR evidence reports zero dynamic-access calls for the tested version
+(for example `dynamicAccess.totalCalls == 0` in stats, or a `{}`
+`reachability-metadata.json` with no claimed dynamic-access behavior), the
+following must not be escalated to `human-intervention` or a requested-changes
+review on coverage-depth grounds (§FS-human-intervention-policy):
+
+- A drop in total metadata entry count between the previous and new metadata
+  version, including a drop below the normal severe-drop guardrail. The entries
+  are not required for an end user to run the library natively.
+- A test that is shallow or exercises behavior that is not strictly the
+  library's responsibility, when the library still needs no metadata to run.
+
+This tolerance applies to the `library-update-request`, `fixes-javac-fail`,
+`fixes-java-run-fail`, and `fixes-native-image-run-fail` review labels
+(§FS-automated-pr-review). It does not relax the label-specific gates that prove
+the fix itself: compilation, JVM execution, and native-image execution must
+still pass, and reviewers must still reject tests that swallow the failing
+exception or disable native-image behavior. It only removes
+metadata-entry-count and coverage-depth objections for libraries that, by their
+own zero dynamic-access signal, do not need metadata for end users.
+
 ### FS-automated-pr-review: Automated pull request review
 
 Forge review automation processes open pull requests by their PR labels after

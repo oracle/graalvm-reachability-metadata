@@ -20,6 +20,7 @@ The PR number or URL can be passed as an optional argument (for example, `1234`,
 - Treat dynamic-access coverage preservation as the main quality gate, compared by percentage only. Do not treat changes in absolute covered or total call counts as a drop. The new version should not report a coverage percentage more than 20 percentage points lower than the previously tested version unless the PR gives a concrete, credible reason.
 - For numeric gates, compare the reported evidence as-is. Do not inspect generation filters, agent configuration, or metadata contents to second-guess why dynamic-access or metadata-count numbers are what they are.
 - Compare total metadata entry counts between the previous metadata version and the new metadata version only as a severe-drop guardrail, using the counts reported in the PR description. When the PR reports both library metadata entries and test-only metadata entries, sum them for that version's total. Report metadata entry count issues only when the PR-reported new total metadata entry count has fewer than 25% as many entries as the PR-reported original count.
+- A library that reports zero dynamic-access calls for the new version (for example `dynamicAccess.totalCalls == 0`, or a `{}` `reachability-metadata.json` with no claimed dynamic-access behavior) needs no reachability metadata for an end user to run it under native image. Do not report a metadata-entry-count drop, and do not flag a shallow test or a test that exercises behavior outside the library's responsibility, as a blocking issue or `human-intervention` for such a library. The compile fix itself must still pass and must not be made green by deleting meaningful coverage or disabling native-image behavior.
 - Accept only `reachability-metadata.json` files as metadata files. Reject legacy native-image metadata config files such as `reflect-config.json`, `resource-config.json`, `proxy-config.json`, `serialization-config.json`, `jni-config.json`, or `predefined-classes-config.json`.
 - Prefer small, targeted review comments. This label is for repair work, not a full redesign of historical tests.
 
@@ -66,6 +67,7 @@ The PR number or URL can be passed as an optional argument (for example, `1234`,
    - Do not require an exact match. Differences are normal when upstream APIs move, generated metadata is cleaned up, or dynamic-access totals change.
    - Do not report metadata entry count issues unless the PR-reported new total metadata entry count is lower than 25% of the PR-reported original total metadata entry count.
    - When the new total is below 25% of the original and the tests and dynamic-access stats still claim comparable coverage, ask for restored metadata or a concrete explanation of the API/package change.
+   - Skip this comparison entirely when the new version reports zero dynamic-access calls. A library with no dynamic-access call sites needs no metadata to run natively, so a metadata-entry-count drop for it is not a regression and must not be reported or escalated.
    - If the PR description does not report usable old and new metadata entry counts, do not infer them from metadata files; ask for refreshed PR summary evidence when the comparison is needed.
 
 6. Check CI before deciding.
@@ -81,7 +83,7 @@ Approve when all of these are true:
 - The PR is scoped to the target existing library and the compile failure it fixes.
 - Tests still exercise the same meaningful library behavior after the compile repair.
 - The dynamic-access coverage percentage does not drop by more than 20 percentage points between the previous and new tested versions, or a larger drop is convincingly explained by a changed upstream API surface.
-- Total metadata entry counts are not below the 25% severe-drop threshold, or the reduction is convincingly explained by a changed upstream API surface.
+- Total metadata entry counts are not below the 25% severe-drop threshold, or the reduction is convincingly explained by a changed upstream API surface, or the new version reports zero dynamic-access calls and therefore needs no metadata to run natively.
 - Required compile and metadata test checks are green.
 
 Request changes when any of these are true:
@@ -104,7 +106,7 @@ Ask for follow-up instead of rejecting when:
 Keep comments short and factual:
 
 - For coverage drops: report only drops where the new version's coverage percentage is more than 20 percentage points below the previous version's; cite the old and new percentages, and ask for either restored coverage or a concrete explanation. Do not comment on changes in absolute covered or total call counts.
-- For metadata entry drops: report only drops where the new total metadata has fewer than 25% as many entries as the previous version's total metadata; cite the old and new counts, and ask for either restored metadata or a concrete explanation of the API/runtime-surface change.
+- For metadata entry drops: report only drops where the new total metadata has fewer than 25% as many entries as the previous version's total metadata; cite the old and new counts, and ask for either restored metadata or a concrete explanation of the API/runtime-surface change. Do not report a metadata entry drop, and do not flag a shallow or off-target test, when the new version reports zero dynamic-access calls, because that library needs no metadata for end users to run it natively.
 - For deleted coverage: say that the PR fixes compilation by removing coverage and should instead adapt the test to the new API.
 - For native skips that does not depend on the open-ended dynamic class loading: say that the PR avoids the failing native path instead of fixing it, so it does not demonstrate native-image runtime coverage.
 - For unverified `catch (Error)`: say that dynamic class loading tests should verify Native Image failures with `NativeImageSupport.isUnsupportedFeatureError(e)` and re-throw any other error.

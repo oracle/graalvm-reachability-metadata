@@ -15,6 +15,7 @@ The PR number or URL can be passed as an optional argument (for example, `1234`,
 - The PR should stay scoped to one target existing-library update and its generated support files.
 - Dynamic-access coverage percentage must not drop between the previously supported version and the requested version unless the PR gives a concrete, credible reason. Compare the percentage/ratio only; do not block because the absolute covered or total call count changed.
 - Do not require `library-new-request`'s minimum dynamic-access threshold. A library update can be acceptable with low coverage if the percentage did not regress and the requested issue work is covered.
+- A library that reports zero dynamic-access calls for the requested version (for example `dynamicAccess.totalCalls == 0`, or a `{}` `reachability-metadata.json` with no claimed dynamic-access behavior) needs no reachability metadata for an end user to run it under native image. Do not escalate a shallow test, a test that exercises behavior outside the library's responsibility, or a metadata-entry-count drop to a blocking issue or `human-intervention` for such a library. The native execution gate still applies.
 - If the linked issue requests specific metadata, the PR must contain that metadata and include tests that exercise it through public library API paths.
 - Issue-requested metadata may be described in prose, logs, error snippets, JSON, or links. Infer the request from the linked issue body; do not rely only on the PR body summary.
 - When issue-requested metadata lacks conditions, require appropriate conditions in the PR metadata, preferably the narrowest valid `typeReached` condition.
@@ -82,6 +83,7 @@ The PR number or URL can be passed as an optional argument (for example, `1234`,
    - Reject version-pinned assertions unless the version value itself is the behavior under test.
    - Reject tests placed in the target library package without a clear need.
    - Existing baseline tests may be version-compatible and contain branches for old/new behavior, but added branches must still assert meaningful library behavior.
+   - When the requested version reports zero dynamic-access calls, do not escalate test-depth concerns (a shallow test, or one exercising behavior outside the library's responsibility) to a blocking issue or `human-intervention`. Such a library needs no metadata for end users to run it natively, so depth-of-coverage objections carry little signal. The native execution gate still applies.
 
 7. Check CI before deciding.
    - Expected minimum: metadata validation, compile, JVM tests, native-image compile, and native-image runtime tests are green for the target coordinate.
