@@ -16,10 +16,7 @@ dependencies {
 }
 
 tasks.withType(Test).configureEach {
-    javaLauncher = javaToolchains.launcherFor {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-    jvmArgs "--add-opens=java.base/java.lang=ALL-UNNAMED", "-Djava.security.manager=allow"
+    jvmArgs "--add-opens=java.base/java.lang=ALL-UNNAMED"
 }
 
 graalvmNative {
