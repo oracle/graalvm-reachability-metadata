@@ -2,9 +2,9 @@
 **States:** human-intervention-grouper
 
 ## Overview
-Scan open `{{source}}` in `{{repo}}` carrying `{{label}}`, group unscanned
-items by the root cause that earned the label, and open one tracking issue per
-new group.
+Scan the open `{{source}}` in `{{repo}}` carrying `human-intervention`, group
+the open items by the root cause that earned the label — skipping any already
+handled in an earlier pass — and open one tracking issue per new group.
 
 The scanner starts in `sleep` and uses incremental backoff:
 `{{base_sleep}} + (visit_count - 1) * {{sleep_increment}}`. Each scan pass

@@ -61,7 +61,7 @@ states:
         if ! candidates="$(gh pr list \
           --repo "{{repo}}" \
           --state open \
-          --label "{{label}}" \
+          --label "human-intervention" \
           --limit "$fetch_limit" \
           --json number \
           --jq '.[].number' 2>/dev/null)"; then
@@ -71,7 +71,7 @@ states:
         if ! candidates="$(gh issue list \
           --repo "{{repo}}" \
           --state open \
-          --label "{{label}}" \
+          --label "human-intervention" \
           --limit "$fetch_limit" \
           --json number \
           --jq '.[].number' 2>/dev/null)"; then
@@ -109,12 +109,12 @@ states:
 
       Scan configuration:
       - source: `{{source}}`
-      - queue label: `{{label}}`
+      - queue label: `human-intervention`
       - scan limit: `{{scan_limit}}`
       - tracking issue labels: `{{issue_labels}}`
 
       Read `runtime/scan/seen.txt` if it exists. Fetch at most `{{scan_limit}}`
-      open, not-yet-seen items carrying `{{label}}`.
+      open, not-yet-seen items carrying `human-intervention`.
 
       For `source: prs`, use `gh pr list` against `{{repo}}`. Include, for each
       fetched PR:
@@ -180,7 +180,7 @@ states:
           - Source issue: https://github.com/oracle/graalvm-reachability-metadata/issues/8385
           - Repository: `{{repo}}`
           - Source queue: `{{source}}`
-          - Queue label: `{{label}}`
+          - Queue label: `human-intervention`
           - Tracking issue labels: `{{issue_labels}}`
           - Group slug: `<group-slug>`
           - Shared symptom: `<short symptom>`
