@@ -42,8 +42,8 @@ from ai_workflows.core.workflow_strategy import (
 from ai_workflows.core.workflow_strategy import WorkflowStrategy
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists
 from utility_scripts import metrics_writer
+from utility_scripts.dynamic_access_exhaust_report import resolve_workflow_exhaust_report
 from utility_scripts.gradle_environment import gradle_command_environment
-from utility_scripts.large_library_progress import resolve_workflow_progress_state
 from utility_scripts.library_preparation_preflight import (
     prepare_library_preparation_preflight,
 )
@@ -158,30 +158,15 @@ def build_parser():
         ),
     )
     parser.add_argument(
-        "--large-library-series",
-        action="store_true",
-        help="Enable resumable large-library chunking for dynamic-access workflows.",
-    )
-    parser.add_argument(
-        "--chunk-class-limit",
+        "--chunk-class-count",
         type=int,
         default=0,
-        help="Stop a large-library part after this many resolved, skipped, or exhausted classes. 0 disables it.",
-    )
-    parser.add_argument(
-        "--chunk-call-limit",
-        type=int,
-        default=0,
-        help="Stop a large-library part after this many newly covered calls. 0 disables it.",
-    )
-    parser.add_argument(
-        "--resume-artifact",
-        help="Path to a large-library progress state JSON artifact to resume from.",
+        help="Stop a chunked dynamic-access run after this many processed classes. 0 disables chunking.",
     )
     parser.add_argument(
         "--issue-number",
         type=int,
-        help="GitHub issue number for durable large-library progress state.",
+        help="GitHub issue number for the dynamic-access exhaust report.",
     )
     parser.add_argument(
         "--library-preparation-preflight-path",
@@ -219,10 +204,7 @@ def parse_flags(argv_list):
         flags.metrics_repo_path,
         flags.benchmark_mode,
         flags.keep_tests_without_dynamic_access,
-        flags.large_library_series,
-        flags.chunk_class_limit,
-        flags.chunk_call_limit,
-        flags.resume_artifact,
+        flags.chunk_class_count,
         flags.issue_number,
         flags.library_preparation_preflight_path,
     )
@@ -413,10 +395,7 @@ def main(argv=None):
         explicit_metrics_repo_path,
         is_benchmark_mode,
         keep_tests_without_dynamic_access,
-        large_library_series,
-        chunk_class_limit,
-        chunk_call_limit,
-        resume_artifact,
+        chunk_class_count,
         issue_number,
         library_preparation_preflight_path,
     ) = parse_flags(argv if argv is not None else sys.argv[1:])
@@ -446,16 +425,6 @@ def main(argv=None):
         print("ERROR: Strategy is missing required field: workflow", file=sys.stderr)
         sys.exit(1)
     StrategyClass = WorkflowStrategy.get_class(workflow_name)
-    large_library_state, large_library_state_path = resolve_workflow_progress_state(
-        metrics_repo_root=metrics_repo_root,
-        issue_number=issue_number,
-        coordinate=library,
-        request_label="library-new-request",
-        strategy_name=strategy_name,
-        large_library_series=large_library_series,
-        resume_artifact=resume_artifact,
-    )
-
     validate_repo_paths(reachability_repo_path, metrics_repo_dir)
 
     os.chdir(reachability_repo_path)
@@ -494,6 +463,12 @@ def main(argv=None):
     )
     module_dir = os.path.join(reachability_repo_path, "tests", "src", package, artifact, library_version)
     test_source_layout = resolve_test_source_layout(reachability_repo_path, library, module_dir)
+    dynamic_access_exhaust_report, dynamic_access_exhaust_report_path = resolve_workflow_exhaust_report(
+        repo_path=reachability_repo_path,
+        issue_number=issue_number,
+        coordinate=library,
+        chunk_class_count=chunk_class_count,
+    )
 
     strategy_obj = StrategyClass(
         strategy_obj=strategy,
@@ -503,14 +478,9 @@ def main(argv=None):
         source_context_available=prepared_source_context.is_available,
         source_context_files=prepared_source_context.read_only_files,
         keep_tests_without_dynamic_access=keep_tests_without_dynamic_access,
-        large_library_progress_state=large_library_state,
-        large_library_progress_state_path=large_library_state_path,
-        large_library_issue_number=issue_number,
-        large_library_request_label="library-new-request",
-        large_library_metrics_repo_root=metrics_repo_root,
-        large_library_strategy_name=strategy_name,
-        chunk_class_limit=chunk_class_limit,
-        chunk_call_limit=chunk_call_limit,
+        dynamic_access_exhaust_report=dynamic_access_exhaust_report,
+        dynamic_access_exhaust_report_path=dynamic_access_exhaust_report_path,
+        chunk_class_count=chunk_class_count,
         test_language=test_source_layout.language,
         test_language_display_name=test_source_layout.display_language,
         test_source_dir_name=test_source_layout.source_dir_name,
@@ -523,9 +493,6 @@ def main(argv=None):
     subprocess.run(["git", "add", directory_path, index_json_path], check=False)
     subprocess.run(["git", "commit", "-m", f"Scaffold {library}"], check=False, capture_output=True, text=True)
     checkpoint_commit_hash = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
-    if large_library_state is not None and not large_library_state.scaffold_commit:
-        large_library_state.scaffold_commit = checkpoint_commit_hash
-        large_library_state.save(large_library_state_path)
     log_stage("scaffold", f"Committed scaffold at {checkpoint_commit_hash}")
 
     editable_files = list_all_files(test_source_layout.source_root)
