@@ -1056,7 +1056,7 @@ def commit_run_metrics_with_retry(
 
     `extra_paths_to_stage` lists repo-relative paths whose working-tree contents must survive the
     hard reset to origin/master and be staged alongside the metrics file (used for durable
-    large-library progress state). Both files and directories are supported.
+    dynamic-access exhaust report). Both files and directories are supported.
     """
     metrics_json_absolute_path = os.path.join(metrics_repo_root, metrics_json_relative_path)
     has_origin = git_remote_exists("origin", cwd=metrics_repo_root)

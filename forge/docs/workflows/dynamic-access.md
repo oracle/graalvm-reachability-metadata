@@ -80,6 +80,12 @@ iterative phase refines remaining call sites; and library-update coverage
 strategies, where Forge improves dynamic-access coverage on existing tests
 without first generating a new library test suite.
 
+When the iterative dynamic-access phase returns `RUN_STATUS_CHUNK_READY`, the
+composite returns that status immediately. A chunk-ready part is a reviewable
+boundary, so reporter-requested metadata work is deferred until a later resumed
+run reaches final workflow success instead of blocking publication of the
+current chunk.
+
 ### WF-dynamic-access-fallback-and-failure: Required fallback and failure behavior
 
 Dynamic-access fallback is intentionally narrow. The iterative and bulk engines
@@ -148,8 +154,9 @@ coverage phase.
 ### 2.5 Chunked issue runs
 
 Issue-driven runs add a chunk class count computed by `forge_metadata.py`. It
-is required only for chunked `library-new-request` / `library-update-request`
-work and is absent for direct CLI invocations.
+is required only for chunked `library-new-request` work and chunked
+coverage-improvement `library-update-request` work, and is absent for direct
+CLI invocations.
 
 ## 3. Outputs
 
@@ -505,10 +512,10 @@ useful.
 
 ### 6.7 Chunked issue orchestration
 
-Chunked mode applies only to issue-driven `library-new-request` and
-`library-update-request` work. `forge_metadata.py` owns the class threshold and
-is responsible for deciding whether to invoke the normal workflow or the
-chunked workflow:
+Chunked mode applies only to issue-driven `library-new-request` work and
+`library-update-request` work routed to dynamic-access coverage improvement.
+`forge_metadata.py` owns the class threshold and is responsible for deciding
+whether to invoke the normal workflow or the chunked workflow:
 
 1. Claim the issue normally and keep the project item in `In Progress`.
 2. Run setup far enough to generate or refresh the dynamic-access report for
@@ -520,9 +527,9 @@ chunked workflow:
    with the issue number and current chunk class count.
 5. The current chunk class count is normally the threshold. If the exhaust
    report shows fewer unexhausted classes remain than the threshold, pass the
-   remaining class count instead. For example, with threshold `5` and `7`
-   classes, Forge invokes one chunk with count `5` and a second chunk with
-   count `2` (§WF-dynamic-access-exhaust-report).
+   remaining class count instead. For example, with threshold `15` and `22`
+   classes, Forge invokes one chunk with count `15` and a second chunk with
+   count `7` (§WF-dynamic-access-exhaust-report).
 6. The workflow loads the exhaust report from the coordinate-derived persistent
    location, regenerates the current dynamic-access report from the checked-out
    base, and selects the next uncovered classes not present in the exhaust
@@ -543,10 +550,11 @@ chunked workflow:
 #### WF-chunked-dynamic-access-pr-linking: Chunk PR linking
 
 After a chunk passes local CI-equivalent verification, PR creation must link the
-chunk to the issue without completing it unless the chunk is final. Non-final
-chunk PRs use `Refs: #<issue>` and commit the exhaust-report state required for
-the next run to skip classes already completed, skipped, exhausted, or failed.
-Only the final chunk PR may use `Fixes: #<issue>` and move the issue to `Done`.
+chunk to the issue without completing it unless the chunk is final. Chunk PRs
+carry the `chunked-dynamic-access` label. Non-final chunk PRs use
+`Refs: #<issue>` and commit the exhaust-report state required for the next run
+to skip classes already completed, skipped, exhausted, or failed. Only the final
+chunk PR may use `Fixes: #<issue>` and move the issue to `Done`.
 
 #### WF-dynamic-access-exhaust-report: Dynamic-access exhaust report
 
@@ -572,7 +580,7 @@ that chunk and how many uncovered classes remain.
 
 | Component | Responsibility |
 | --- | --- |
-| `forge_metadata.py` | Issue queue orchestration. For `library-new-request` and `library-update-request`, owns the dynamic-access class threshold, computes the current chunk class count, passes chunk flags to the workflow drivers when needed, and adds the `chunked-dynamic-access` issue label. |
+| `forge_metadata.py` | Issue queue orchestration. For `library-new-request` and coverage-improvement `library-update-request` work, owns the dynamic-access class threshold, computes the current chunk class count, passes chunk flags to the workflow drivers when needed, and adds the `chunked-dynamic-access` issue label. |
 | `ai_workflows/drivers/add_new_library_support.py::main` | Driver setup, branch, scaffold, artifact URL population, source-context preparation, agent init, post-workflow finalization, metrics. |
 | `ai_workflows/core/dynamic_access_iterative_strategy.py` | Iterative per-class engine: fallback selection, class prompting, coverage deltas, class checkpoints, native-test gate batching, chunk-ready returns. |
 | `ai_workflows/core/optimistic_dynamic_access_strategy.py` | Bulk full-report engine: optimistic prompts, broad-pass test repair, report regeneration, commit attempts, global native-test gate. |

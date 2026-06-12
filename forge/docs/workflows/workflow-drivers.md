@@ -68,7 +68,7 @@ Preparation:
 - Resolve the requested `group:artifact:version`, repository roots, metrics
   root, GraalVM home, and strategy.
 - Create the feature branch for the new library.
-- Resolve large-library progress state when the issue is chunked.
+- Resolve the dynamic-access exhaust report when the issue is chunked.
 - Decide Native Image eligibility before generation (see below). If the
   artifact is not a Native Image target, write the marker and stop without
   scaffolding, generating tests, or generating metadata.
@@ -132,7 +132,7 @@ Preparation:
 - Commit the current test directory and metadata index as a checkpoint.
 - Snapshot baseline library stats, metadata entry counts, and test-only
   metadata entry counts into the test directory.
-- Resolve large-library progress state when the issue is chunked.
+- Resolve the dynamic-access exhaust report when the issue is chunked.
 - Populate artifact URLs and materialize configured source context.
 - Resolve the test-source layout.
 - Instantiate the coverage workflow strategy with baseline, language layout,

@@ -21,7 +21,6 @@ from git_scripts.common_git import (
     run_git_transport,
     stage_and_commit as stage_and_commit_common,
 )
-from utility_scripts.large_library_progress import LargeLibraryProgressState
 from utility_scripts.library_stats import stats_artifact_dir
 from utility_scripts.local_ci_verification import (
     LocalCIVerificationResult,
@@ -98,28 +97,6 @@ def parse_pr_number(output: str) -> int | None:
     """Extract a PR number from gh pr create output."""
     match = re.search(r"/pull/(\d+)", output)
     return int(match.group(1)) if match else None
-
-
-def update_large_library_state_after_publish(
-        state_path: str | None,
-        branch: str,
-        repo_path: str,
-        pr_number: int | None,
-        final_part: bool,
-) -> None:
-    """Record the published branch/commit in the large-library progress artifact.
-
-    The next chunk resumes only after this published state is present on the
-    base branch (§WF-dynamic-access-exhaust-report).
-    """
-    if not state_path:
-        return
-    state = LargeLibraryProgressState.load(state_path)
-    commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_path, text=True).strip()
-    state.record_published_pr(branch, commit, pr_number)
-    if not final_part:
-        state.advance_to_next_part()
-    state.save(state_path)
 
 
 def _copy_git_files_under(repo_path: str, source_dir: str, destination_dir: str) -> None:

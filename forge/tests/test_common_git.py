@@ -246,7 +246,11 @@ class RemoteBranchDeletionTests(unittest.TestCase):
 
     def test_delete_remote_branch_if_exists_deletes_existing_remote_branch(self) -> None:
         with patch.object(common_git, "git_remote_branch_exists", return_value=True), \
-                patch.object(common_git.subprocess, "run") as run, \
+                patch.object(
+                    common_git.subprocess,
+                    "run",
+                    return_value=subprocess.CompletedProcess(["git"], 0, stdout="", stderr=""),
+                ) as run, \
                 patch("sys.stdout", new_callable=io.StringIO):
             deleted = common_git.delete_remote_branch_if_exists("ai/user/fix-lib", cwd="/repo")
 
@@ -254,7 +258,10 @@ class RemoteBranchDeletionTests(unittest.TestCase):
         run.assert_called_once_with(
             ["git", "push", "origin", "--delete", "ai/user/fix-lib"],
             cwd="/repo",
-            check=True,
+            env=None,
+            capture_output=True,
+            text=True,
+            timeout=None,
         )
 
 

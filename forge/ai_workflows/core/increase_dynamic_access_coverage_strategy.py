@@ -85,6 +85,14 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
                 )
         elif da._last_phase_status == RUN_STATUS_CHUNK_READY:
             status = RUN_STATUS_CHUNK_READY
+            self._print_message(
+                "dynamic-access chunk boundary reached; deferring reporter-requested metadata phase"
+            )
+            if self.primary is None:
+                return status, iterations
+            if len(result) == 2:
+                return status, iterations
+            return (status, iterations) + result[2:]
 
         if has_issue_requested_metadata:
             self._print_message("starting reporter-requested metadata phase")

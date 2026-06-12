@@ -39,10 +39,14 @@ contribute only their workflow-specific parts — the staging policy
 and the PR title/body/label construction (§GIT-pr-body, §GIT-issue-linking) —
 so there is exactly one code path for how a verified diff becomes a pushed
 branch. Publication bookkeeping needed by several publishers (PR-number
-parsing, large-library progress updates after publishing, the old-vs-new test
-diff embedded in PR bodies) lives in the same module instead of per-script
-copies. The target repository, base branch, and configured reviewer list are
-declared once there and shared by every publisher.
+parsing and the old-vs-new test diff embedded in PR bodies) lives in the same
+module instead of per-script copies. Coordinate-local chunked dynamic-access
+publication state remains with the publishers that update the exhaust report.
+If a publisher creates a follow-up bookkeeping commit after the shared branch
+push, it must push that commit to the explicit PR branch instead of depending
+on upstream tracking configuration.
+The target repository, base branch, and configured reviewer list are declared
+once there and shared by every publisher.
 
 ## GIT-expected-paths: Expected path staging
 
@@ -83,7 +87,7 @@ They differ only in the stats view: new-library support reports the generated
 library stats plus an explanation when covered-call and metadata-entry counts
 diverge, while coverage improvement reports a before/after stats diff computed
 from the run's baseline snapshot. New-library PRs link with `Fixes:` for a
-single-PR run and `Refs:` for non-final large-library parts
+single-PR run and `Refs:` for non-final chunked dynamic-access chunks
 (§GIT-chunked-linking).
 
 ### Java fail-fix (javac and java-run)
@@ -134,12 +138,12 @@ to its claimed issue with `Fixes: #<issue>`, so merging the PR closes the issue.
 
 ## GIT-chunked-linking: Chunked dynamic-access PR linking
 
-Chunked dynamic-access PRs must use `Refs: #<issue>` until the final chunk;
-only the final chunk may use `Fixes: #<issue>`, as specified by
-§WF-chunked-dynamic-access-pr-linking. This keeps the backing issue open
-across chunks and preserves it until the final PR closes it. The exhaust report
-state committed by non-final chunks lets the next run resume without
-reprocessing classes (§WF-dynamic-access-exhaust-report).
+Chunked dynamic-access PRs must carry the `chunked-dynamic-access` label and use
+`Refs: #<issue>` until the final chunk; only the final chunk may use
+`Fixes: #<issue>`, as specified by §WF-chunked-dynamic-access-pr-linking. This
+keeps the backing issue open across chunks and preserves it until the final PR
+closes it. The exhaust report state committed by non-final chunks lets the next
+run resume without reprocessing classes (§WF-dynamic-access-exhaust-report).
 
 ## GIT-not-for-native-image-publication: Not-for-native-image publication
 
