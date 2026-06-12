@@ -141,6 +141,7 @@ from utility_scripts.library_preparation_preflight import (
     LIBRARY_PREPARATION_PREFLIGHT_FILENAME,
     run_library_preparation_preflight as run_preflight_decision,
 )
+from utility_scripts.library_update_alias_split import extract_follow_up_issue_numbers
 from utility_scripts.metadata_index import (
     coordinate_parts as metadata_coordinate_parts,
     get_not_for_native_image_marker,
@@ -2440,6 +2441,29 @@ def apply_chunked_dynamic_access_merge_follow_up(pr: dict) -> None:
     )
 
 
+def apply_library_update_alias_split_merge_follow_up(pr: dict) -> None:
+    """Release parked successor issues after their splitting PR merges.
+
+    Library-update alias splits park successor issues in `In Progress`; the PR
+    trailer is the explicit automation signal to move them to `Todo`.
+    §FS-library-update-tested-version-split
+    """
+    for issue_number in extract_follow_up_issue_numbers(pr.get("body")):
+        item_id = get_project_item_id(issue_number)
+        if item_id is None:
+            raise RuntimeError(
+                f"PR #{pr.get('number')} unblocks issue #{issue_number}, "
+                f"but the issue is not linked to project {PROJECT_NUMBER}."
+            )
+        set_item_status(item_id, STATUS_TODO)
+        clear_issue_assignees(issue_number)
+        invalidate_issue_claim_cache_entry(issue_number)
+        log_stage(
+            "library-update-alias-split",
+            f"Released successor issue #{issue_number} after PR #{pr.get('number')} merged.",
+        )
+
+
 def merge_pull_request(pr: dict, reachability_metadata_path: str | None = None) -> None:
     """Merge a pull request using the repository's configured merge method."""
     pr_number = pr.get("number")
@@ -2471,6 +2495,7 @@ def merge_pull_request(pr: dict, reachability_metadata_path: str | None = None) 
     gh(*merge_args)
     if not pr.get("isMergeQueueEnabled"):
         apply_chunked_dynamic_access_merge_follow_up(pr)
+        apply_library_update_alias_split_merge_follow_up(pr)
 
 
 def reconcile_reviewed_pull_request(

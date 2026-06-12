@@ -49,6 +49,12 @@ from utility_scripts.local_ci_verification import (
     format_local_ci_verification_pr_section,
     local_ci_requires_human_intervention,
 )
+from utility_scripts.library_update_alias_split import (
+    ensure_alias_split_follow_up_issue,
+    format_alias_split_pr_section,
+    load_alias_split_metrics,
+    maybe_split_library_update_tested_versions,
+)
 
 BASELINE_STATS_FILENAME = ".baseline-stats.json"
 LIBRARY_UPDATE_TARGET_FILENAME = ".library_update_target.json"
@@ -73,6 +79,7 @@ def build_pull_request_body(
         chunk_final: bool = True,
         dynamic_access_exhaust_report: DynamicAccessExhaustReport | None = None,
         local_ci_verification: dict | None = None,
+        alias_split: dict | None = None,
 ) -> str:
     """Build the PR body with metrics and optional stats."""
     input_tokens_used = metrics.get("input_tokens_used", 0)
@@ -165,6 +172,7 @@ Summary:
         body += f"- Stage: `{post_generation_intervention.get('stage', 'unknown')}`\n\n"
         body += f"- Intervention file: `{post_generation_intervention.get('intervention_file', 'unknown')}`\n\n"
         body += str(post_generation_intervention.get("analysis_markdown", "")).strip() + "\n"
+    body += format_alias_split_pr_section(alias_split)
     body += format_local_ci_verification_pr_section(local_ci_verification)
     return body
 
@@ -300,6 +308,12 @@ def create_pull_request(
         print(f"Pull request already exists for branch {branch}.")
         return
 
+    ensure_alias_split_follow_up_issue(
+        metrics_repo_path=metrics_repo_root,
+        current_issue_number=issue_number,
+        repo=REPO,
+    )
+
     title, body, matched = build_pull_request_preview(
         coordinates=coordinates,
         metrics_repo_root=metrics_repo_root,
@@ -372,6 +386,7 @@ def build_pull_request_preview(
         post_generation_intervention=matched.get("post_generation_intervention"),
         library_update_target=load_library_update_target_sidecar(metrics_repo_root),
         local_ci_verification=matched.get(LOCAL_CI_VERIFICATION_KEY),
+        alias_split=load_alias_split_metrics(metrics_repo_root),
         chunked_dynamic_access=chunked_dynamic_access,
         chunk_final=chunk_final,
         dynamic_access_exhaust_report=load_dynamic_access_exhaust_report(repo_path, coordinates),
@@ -488,12 +503,21 @@ def push_current_branch_to_origin(
         )
         stage_and_commit(group, artifact, library_version, coordinates, repo_path)
 
+    def before_verification(base_ref: str) -> None:
+        maybe_split_library_update_tested_versions(
+            repo_path=repo_path,
+            coordinates=coordinates,
+            base_ref=base_ref,
+            metrics_repo_path=metrics_repo_path,
+        )
+
     new_branch, _ = publish_branch(
         repo_path=repo_path,
         branch_suffix=branch_suffix,
         coordinates=coordinates,
         stage=stage,
         metrics_repo_path=metrics_repo_path,
+        before_verification=before_verification,
     )
 
     return new_branch

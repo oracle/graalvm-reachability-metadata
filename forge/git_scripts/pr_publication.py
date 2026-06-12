@@ -40,6 +40,7 @@ def publish_branch(
         stage: Callable[[], None],
         metrics_repo_path: str | None = None,
         before_rebase: Callable[[], None] | None = None,
+        before_verification: Callable[[str], None] | None = None,
         after_verification: Callable[[], None] | None = None,
 ) -> tuple[str, LocalCIVerificationResult]:
     """Create, stage, rebase, verify, and push the publication branch.
@@ -58,6 +59,10 @@ def publish_branch(
         before_rebase()
     base_ref = fetch_pr_base_ref(repo_path, REPO, BASE_BRANCH)
     subprocess.run(["git", "rebase", base_ref], check=True, cwd=repo_path)
+    if before_verification is not None:
+        # Library-update publishers may refine alias buckets before local CI
+        # decides PR eligibility. §FS-library-update-tested-version-split
+        before_verification(base_ref)
     local_ci_verification = run_local_ci_verification(
         repo_path=repo_path,
         coordinates=coordinates,

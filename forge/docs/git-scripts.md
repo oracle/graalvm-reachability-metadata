@@ -35,8 +35,9 @@ branch namespace, stale remote-branch deletion, workflow-specific staging,
 fork-aware base fetch and rebase, local CI-equivalent verification
 (§FS-local-ci-equivalent-verification), and the final push. Publishers
 contribute only their workflow-specific parts — the staging policy
-(§GIT-expected-paths), optional pre-rebase and post-verification assertions,
-and the PR title/body/label construction (§GIT-pr-body, §GIT-issue-linking) —
+(§GIT-expected-paths), optional pre-rebase, pre-verification, and
+post-verification assertions, and the PR title/body/label construction
+(§GIT-pr-body, §GIT-issue-linking) —
 so there is exactly one code path for how a verified diff becomes a pushed
 branch. Publication bookkeeping needed by several publishers (PR-number
 parsing and the old-vs-new test diff embedded in PR bodies) lives in the same
@@ -135,6 +136,12 @@ references, review text, metrics summaries, and human-intervention visibility.
 It must apply the PR label that corresponds to the successful workflow result,
 not the issue queue label when those differ. A single-PR workflow links the PR
 to its claimed issue with `Fixes: #<issue>`, so merging the PR closes the issue.
+When a library-update publication splits tested-version aliases according to
+§FS-library-update-tested-version-split, the PR body must also include a
+human-visible `Refs: #<follow-up-issue>` line and a machine-readable
+`Forge-Unblocks-Issue: #<follow-up-issue>` trailer. Forge automation must use
+the trailer, not casual issue references, to release the follow-up issue after
+the PR merges.
 
 ## GIT-chunked-linking: Chunked dynamic-access PR linking
 

@@ -317,6 +317,41 @@ paths. If any shared repository file changed, the PR must be labeled
 the repository-level paths that require maintainer review, following
 §FS-human-intervention-policy.
 
+### FS-library-update-tested-version-split: Library-update tested-version split
+
+For a `library-update-request` publication that changes generated tests for an
+existing metadata entry, Forge must run a Java-only compatibility sweep before
+the branch becomes PR-eligible (§FS-local-ci-equivalent-verification). The sweep
+executes `javaTest` for the changed metadata coordinate with `GVM_TCK_LV` set to
+each tested-version alias in the index entry, in index order, and stops at the
+first failing alias. This is intentionally narrower than full CI: it catches
+generated JVM test code that is incompatible with later aliases without paying
+the native-image matrix cost locally.
+
+If the first alias fails, Forge must fail publication instead of splitting,
+because there is no passing prefix for the current update. If a later alias
+fails, Forge must split the index entry at that first failing alias. The
+generated metadata version keeps only the passing prefix. A successor entry uses
+the failing alias as its `metadata-version`, preserves that alias and all later
+aliases as its `tested-versions`, and receives `latest: true` when the split
+entry previously carried `latest: true`.
+
+The successor entry must preserve the repository's pre-generation support for
+the failing range. Forge must copy the metadata directory and test directory
+from the PR base commit entry that originally covered the failing alias, using
+that original entry's `metadata-version` and `test-version` if present, into
+`metadata/<group>/<artifact>/<failing-version>` and
+`tests/src/<group>/<artifact>/<failing-version>`. The current PR then keeps the
+new generated progress for the passing prefix while retaining baseline support
+for the successor range.
+
+When Forge creates such a split, it must also create a follow-up
+`library-update-request` issue for the successor metadata version and place that
+issue in `In Progress`. The current PR must reference the follow-up issue but
+must not close it. After the current PR merges, Forge releases the follow-up
+issue by clearing assignees and moving its project status to `Todo`, making the
+successor update eligible for normal processing.
+
 ### FS-human-intervention-policy: Human intervention policy
 
 The `human-intervention` label is a maintainer follow-up signal, not a generic
