@@ -13,6 +13,8 @@ import org.graalvm.buildtools.gradle.tasks.NativeRunTask
 import org.gradle.api.tasks.PathSensitivity
 
 import java.util.jar.JarFile
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 plugins {
     id 'org.graalvm.internal.tck-base'
@@ -29,8 +31,40 @@ repositories {
     mavenCentral()
 }
 
+Integer explicitTestJvmVersion(File buildFile) {
+    if (!buildFile.isFile()) {
+        return null
+    }
+
+    String buildScript = buildFile.getText("UTF-8")
+    List<Pattern> explicitVersionPatterns = [
+            ~/JavaLanguageVersion\.of\((\d+)\)/,
+            ~/jvmToolchain\((\d+)\)/,
+            ~/kotlinOptions\.jvmTarget\s*=\s*["'](\d+)["']/,
+            ~/options\.release\s*=\s*(\d+)/
+    ]
+
+    for (Pattern pattern : explicitVersionPatterns) {
+        Matcher matcher = pattern.matcher(buildScript)
+        if (matcher.find()) {
+            return Integer.parseInt(matcher.group(1))
+        }
+    }
+
+    null
+}
+
+int testJvmVersion = explicitTestJvmVersion(project.buildFile) ?: 25
+
 tasks.withType(JavaCompile).configureEach {
-    options.release = 21
+    options.release = testJvmVersion
+}
+
+plugins.withId("org.jetbrains.kotlin.jvm") {
+    project.kotlin.jvmToolchain(testJvmVersion)
+    tasks.named("compileTestKotlin").configure {
+        kotlinOptions.jvmTarget = testJvmVersion.toString()
+    }
 }
 
 tasks.withType(org.graalvm.buildtools.gradle.tasks.BuildNativeImageTask).configureEach { task ->

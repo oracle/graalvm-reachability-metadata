@@ -6,6 +6,7 @@ Rules:
 - Do not compile or run tests yourself. The workflow will do that externally.
 - Follow idiomatic `{test_language_display_name}` coding conventions.
 - All top-level test classes must be public.
+- Do not add JDK 21 test overrides or JDK 21-only flags such as `JavaLanguageVersion.of(21)`, `jvmToolchain(21)`, `kotlinOptions.jvmTarget = "21"`, `options.release = 21`, or `-Djava.security.manager=allow`. If a path only works on an older JDK, leave that path untested.
 - Keep tests outside the library's packages. Do not place a test in the same package as the library just to access package-private or internal code.
 - Keep tests version-agnostic. Do not hardcode the artifact version in normal test inputs or assertions.
 - Exception assertions are acceptable only for documented, supported negative-path APIs. Do not write tests whose method name, comments, or assertions describe a known broken behavior path such as "fails before", "regression", "broken", or "version-specific" failure.
