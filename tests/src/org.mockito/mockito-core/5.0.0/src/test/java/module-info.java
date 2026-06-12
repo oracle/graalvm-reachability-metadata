@@ -6,8 +6,9 @@
  */
 module org.mockito.mockito_core.tests {
     requires org.assertj.core;
+    requires junit;
     requires org.junit.jupiter.api;
     requires org.mockito;
 
-    opens org_mockito.mockito_core to org.junit.platform.commons, org.mockito;
+    opens org_mockito.mockito_core to junit, org.junit.platform.commons, org.mockito;
 }
