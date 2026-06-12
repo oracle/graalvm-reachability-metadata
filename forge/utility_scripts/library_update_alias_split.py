@@ -32,11 +32,13 @@ from utility_scripts.metrics_writer import (
     read_pending_metrics,
     write_pending_metrics,
 )
+from utility_scripts.stage_logger import log_stage
 from utility_scripts.task_logs import build_timestamped_task_log_path, display_log_path
 
 
 ALIAS_SPLIT_METRICS_KEY = "library_update_alias_split"
 FOLLOW_UP_TRAILER = "Forge-Unblocks-Issue"
+ALIAS_SWEEP_STAGE = "library-update-alias-sweep"
 PROJECT_NUMBER = 30
 STATUS_FIELD_NAME = "Status"
 STATUS_IN_PROGRESS = "In Progress"
@@ -112,10 +114,19 @@ def maybe_split_library_update_tested_versions(
 
     existing_split = load_alias_split_metrics(metrics_repo_path)
     if existing_split is not None and existing_split.get("successor_metadata_version"):
+        log_stage(
+            ALIAS_SWEEP_STAGE,
+            f"Existing tested-version split already recorded for {target_coordinates}; skipping sweep.",
+        )
         return existing_split
 
     sweep = _run_java_alias_sweep(repo_path, target_coordinates, tested_versions)
     if sweep["failed_version"] is None:
+        log_stage(
+            ALIAS_SWEEP_STAGE,
+            f"All {len(tested_versions)} tested-version alias(es) passed for {target_coordinates}; "
+            "no split needed.",
+        )
         return None
 
     failed_index = int(sweep["failed_index"])
@@ -267,10 +278,16 @@ def _load_index_entries_from_commit(
 
 
 def _run_java_alias_sweep(repo_path: str, coordinates: str, versions: list[str]) -> dict[str, Any]:
+    # Operators need live CLI progress because this sweep can run many Gradle
+    # commands before local CI starts. §FS-library-update-tested-version-split
+    log_stage(
+        ALIAS_SWEEP_STAGE,
+        f"Starting Java compatibility sweep for {coordinates} across {len(versions)} tested-version alias(es).",
+    )
     commands: list[dict[str, Any]] = []
     for index, version in enumerate(versions):
         log_path = build_timestamped_task_log_path(
-            "library-update-alias-sweep",
+            ALIAS_SWEEP_STAGE,
             coordinates,
             f"javaTest-{version}",
         )
@@ -278,6 +295,13 @@ def _run_java_alias_sweep(repo_path: str, coordinates: str, versions: list[str])
         env["GVM_TCK_LV"] = version
         env.pop("GVM_TCK_NATIVE_IMAGE_MODE", None)
         command = ["./gradlew", "clean", "javaTest", f"-Pcoordinates={coordinates}"]
+        display_path = display_log_path(log_path)
+        log_stage(
+            ALIAS_SWEEP_STAGE,
+            f"Testing alias {index + 1}/{len(versions)}: GVM_TCK_LV={version}",
+            indent_level=1,
+        )
+        log_stage(ALIAS_SWEEP_STAGE, f"Log: {display_path}", indent_level=2)
         with open(log_path, "w", encoding="utf-8") as log_file:
             completed = subprocess.run(
                 command,
@@ -293,15 +317,21 @@ def _run_java_alias_sweep(repo_path: str, coordinates: str, versions: list[str])
             "version": version,
             "command": " ".join(command),
             "returncode": completed.returncode,
-            "log_path": display_log_path(log_path),
+            "log_path": display_path,
         }
         commands.append(command_record)
         if completed.returncode != 0:
+            log_stage(
+                ALIAS_SWEEP_STAGE,
+                f"Alias {version} failed with exit {completed.returncode}; stopping sweep.",
+                indent_level=1,
+            )
             return {
                 "commands": commands,
                 "failed_version": version,
                 "failed_index": index,
             }
+        log_stage(ALIAS_SWEEP_STAGE, f"Alias {version} passed.", indent_level=1)
     return {
         "commands": commands,
         "failed_version": None,

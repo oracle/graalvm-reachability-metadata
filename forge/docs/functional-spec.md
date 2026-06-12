@@ -328,6 +328,11 @@ first failing alias. This is intentionally narrower than full CI: it catches
 generated JVM test code that is incompatible with later aliases without paying
 the native-image matrix cost locally.
 
+Forge must print CLI progress for the sweep, including the changed coordinate,
+the number of aliases being checked, each alias version as it starts, the log
+path for that alias, and whether the alias passed or failed. If all aliases
+pass, the CLI output must make clear that no tested-version split is needed.
+
 If the first alias fails, Forge must fail publication instead of splitting,
 because there is no passing prefix for the current update. If a later alias
 fails, Forge must split the index entry at that first failing alias. The
