@@ -17,15 +17,6 @@ dependencies {
     testImplementation "org.jetbrains.kotlin:kotlin-compiler-embeddable:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
-
-kotlin {
-    jvmToolchain(25)
-}
-
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "25"
-}
-
 String findRuntimeClasspathJar(String prefix) {
     File match = sourceSets.test.runtimeClasspath.files.find { File candidate ->
         candidate.name.startsWith(prefix) && candidate.name.endsWith(".jar")
