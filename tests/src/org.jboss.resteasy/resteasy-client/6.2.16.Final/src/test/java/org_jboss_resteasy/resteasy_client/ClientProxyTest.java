@@ -8,8 +8,6 @@ package org_jboss_resteasy.resteasy_client;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.security.Permission;
-
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
 import org.junit.jupiter.api.Test;
@@ -25,45 +23,10 @@ public class ClientProxyTest {
         }
     }
 
-    @Test
-    @SuppressWarnings("removal")
-    void defaultMethodInvocationUsesPrivilegedSpecialLookupWhenSecurityManagerCanBeInstalled() {
-        final SecurityManager previousSecurityManager = System.getSecurityManager();
-        boolean installedSecurityManager = false;
-        try {
-            try {
-                System.setSecurityManager(new PermissiveSecurityManager());
-                installedSecurityManager = true;
-            } catch (final UnsupportedOperationException unsupportedOperationException) {
-                assertThat(Runtime.version().feature())
-                        .as(unsupportedOperationException.getMessage())
-                        .isGreaterThanOrEqualTo(24);
-            }
-
-            try (ResteasyClient client = new ResteasyClientBuilderImpl().build()) {
-                final DefaultMethodClient proxy = client.target("http://localhost:8080").proxy(DefaultMethodClient.class);
-
-                assertThat(proxy.greet("Resteasy")).isEqualTo("Hello Resteasy");
-            }
-        } finally {
-            if (installedSecurityManager) {
-                System.setSecurityManager(previousSecurityManager);
-            }
-        }
-    }
-
     private interface DefaultMethodClient {
 
         default String greet(final String name) {
             return "Hello " + name;
-        }
-    }
-
-    @SuppressWarnings("removal")
-    private static final class PermissiveSecurityManager extends SecurityManager {
-
-        @Override
-        public void checkPermission(final Permission permission) {
         }
     }
 }

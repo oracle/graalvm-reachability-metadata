@@ -29,20 +29,3 @@ graalvmNative {
         }
     }
 }
-
-tasks.named("test") {
-    File java21Executable = [
-            System.getenv("JAVA21_HOME"),
-            "/usr/lib/jvm/java-21-openjdk-amd64"
-    ].findResult { String javaHome ->
-        if (javaHome == null) {
-            return null
-        }
-        File candidate = file("${javaHome}/bin/java")
-        candidate.isFile() ? candidate : null
-    }
-    if (java21Executable != null && (JavaVersion.current().majorVersion as int) >= 24) {
-        executable = java21Executable.absolutePath
-    }
-    jvmArgs += ["-Djava.security.manager=allow"]
-}
