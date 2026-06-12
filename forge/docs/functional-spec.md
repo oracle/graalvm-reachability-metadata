@@ -365,7 +365,9 @@ maintainer to continue. On a pull request, it means Forge produced a reviewable
 artifact, but some part of the result needs explicit maintainer judgment before
 normal review automation may treat it as safe. The companion
 `human-intervention-fixed` PR label means a maintainer has addressed the manual
-follow-up and review automation may resume after normal merge gates pass.
+follow-up and review automation may resume after normal merge gates pass. The
+resulting labeled backlog is drained by automated resolution, not per-item
+manual triage (§FS-human-intervention-resolution).
 
 Post-generation intervention is different: it is an automated recovery step
 inside a workflow. `SUCCESS_WITH_INTERVENTION_STATUS` is PR-eligible when the
@@ -382,8 +384,10 @@ into actionable, tracked work is an automated responsibility, not a manual one.
 
 This resolution is currently automated by Rhei. The `human-intervention-scanner`
 workspace template periodically scans the open `human-intervention` queue —
-pull requests, where the reason lives in the PR comments, or issues, where the
-reason lives in the issue comment and its linked log — clusters the items by the
+pull requests, where the reason is read from the PR comments, reviews, and PR
+description together (PR comments are frequently absent, so the requested-changes
+review carries the reason), or issues, where the reason lives in the issue
+comment and its linked log — clusters the items by the
 underlying system issue that earned the label, and files one tracking issue per
 root-cause group so each cause is addressed once instead of per item. The
 automation only investigates, groups, and opens tracking issues: it never edits,

@@ -13,6 +13,9 @@
 #
 #       sleep exits 0 when the queue is drained          --> completed
 #       sleep exits 75 and visitCount >= visits at cap    --> completed
+#       sleep exits 69 when the GitHub query fails         --> failed
+#         (auth/network/rate-limit; distinct from 75 so a failed fetch never
+#          masquerades as work available and is never scanned)
 #
 #   The scanner only investigates and reports; the opener only files tracking
 #   issues. Each agent state has its own instructions. The single hand-off
@@ -63,6 +66,10 @@ states:
         fetch_limit="{{scan_limit}}"
       fi
 
+      # Exit 69 (EX_UNAVAILABLE) means the GitHub query itself failed
+      # (auth/network/rate-limit). It is NOT the work-available signal (75): a
+      # failed fetch tells us nothing about the queue, so it must terminate the
+      # task instead of feeding the scanner empty or stale results.
       if [ "{{source}}" = "prs" ]; then
         if ! candidates="$(gh pr list \
           --repo "{{repo}}" \
@@ -71,7 +78,7 @@ states:
           --limit "$fetch_limit" \
           --json number \
           --jq '.[].number' 2>/dev/null)"; then
-          exit 75
+          exit 69
         fi
       else
         if ! candidates="$(gh issue list \
@@ -81,7 +88,7 @@ states:
           --limit "$fetch_limit" \
           --json number \
           --jq '.[].number' 2>/dev/null)"; then
-          exit 75
+          exit 69
         fi
       fi
 
@@ -121,9 +128,15 @@ states:
 
       Find WHY each item got the human-intervention label — do not guess from the
       title. The reason lives in:
-        - source: prs    -> the PR's comments. The automation/Forge comment there
-                            states the reason (for example, dynamic-access
-                            coverage stayed too low).
+        - source: prs    -> read the PR's comments, its REVIEWS, and its PR
+                            description (body) together. The automated reviewer
+                            states why the result could not be handled normally
+                            (for example, dynamic-access coverage stayed too low)
+                            in the requested-changes review, and the body/labels
+                            give context. A human-intervention PR often has zero
+                            issue comments, so do not rely on the comment thread
+                            alone — fetch the reviews too
+                            (`gh pr view --json comments,reviews,body`).
         - source: issues -> the issue's comment AND the log link it references.
                             Open the log to see the failing phase and error
                             (javac compile, java run, native-image run, ...).
@@ -136,10 +149,10 @@ states:
       title>` section per group, updating an existing section instead of
       duplicating it:
         - System issue / root cause: the underlying problem, taken from the
-          comments (PRs) or the comment + log (issues), explained well enough to
-          act on.
+          comments + reviews + body (PRs) or the comment + log (issues),
+          explained well enough to act on.
         - Contributing items: numbers and URLs
-        - Evidence: the comment text or log excerpt that proves the cause
+        - Evidence: the comment/review/body text or log excerpt proving the cause
 
       Append every fetched item number to `runtime/scan/seen.txt`, one per line,
       only after it appears in the report. Never mutate the source {{source}}
@@ -193,6 +206,10 @@ states:
     description: Work is complete.
     final: true
 
+  failed:
+    description: The GitHub queue could not be read; the queue state is unknown.
+    final: true
+
   cancelled:
     description: Work was cancelled.
     final: true
@@ -214,6 +231,11 @@ transitions:
     exit_code: 75
     condition: visitCount >= visits
     description: The scanner reached the configured scan cap.
+
+  - from: sleep
+    to: failed
+    exit_code: 69
+    description: The GitHub PR/issue query failed; do not scan on unknown queue state.
 
   - from: scan
     to: open
