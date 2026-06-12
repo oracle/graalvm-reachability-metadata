@@ -714,26 +714,67 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             return
         self.dynamic_access_exhaust_report.save(self.dynamic_access_exhaust_report_path)
 
+    def _commit_dynamic_access_exhaust_report(self, message: str) -> None:
+        """Commit the exhaust report so class checkpoints preserve chunk state."""
+        if self.dynamic_access_exhaust_report_path is None:
+            return
+        self._save_dynamic_access_exhaust_report()
+        if not os.path.isdir(self.reachability_repo_path):
+            return
+        self._run_exhaust_report_git_command(["git", "add", "-A", self.dynamic_access_exhaust_report_path])
+        diff_rc = subprocess.run(
+            ["git", "diff", "--cached", "--quiet", "--", self.dynamic_access_exhaust_report_path],
+            cwd=self.reachability_repo_path,
+            capture_output=True,
+            check=False,
+        ).returncode
+        if diff_rc == 0:
+            return
+        if diff_rc > 1:
+            raise RuntimeError(
+                "Failed to inspect staged dynamic-access exhaust report changes "
+                f"(exit code {diff_rc})."
+            )
+        self._run_exhaust_report_git_command(
+            ["git", "commit", "-m", message, "--", self.dynamic_access_exhaust_report_path]
+        )
+
+    def _run_exhaust_report_git_command(self, command: list[str]) -> None:
+        result = subprocess.run(
+            command,
+            cwd=self.reachability_repo_path,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            check=False,
+        )
+        if result.returncode == 0:
+            return
+        raise RuntimeError(
+            "Dynamic-access exhaust report Git command failed with exit code "
+            f"{result.returncode}: {' '.join(command)}\n{result.stdout}"
+        )
+
     def _mark_chunk_class_completed(self, class_name: str) -> None:
         """Persist a completed class boundary for chunk continuation."""
         if self.dynamic_access_exhaust_report is None:
             return
         self.dynamic_access_exhaust_report.mark_completed(class_name)
-        self._save_dynamic_access_exhaust_report()
+        self._commit_dynamic_access_exhaust_report(f"Record completed dynamic-access class {class_name}")
 
     def _mark_chunk_class_skipped(self, class_name: str) -> None:
         """Persist a skipped class boundary for chunk continuation."""
         if self.dynamic_access_exhaust_report is None:
             return
         self.dynamic_access_exhaust_report.mark_skipped(class_name)
-        self._save_dynamic_access_exhaust_report()
+        self._commit_dynamic_access_exhaust_report(f"Record skipped dynamic-access class {class_name}")
 
     def _mark_chunk_class_exhausted(self, class_name: str) -> None:
         """Persist an exhausted class boundary for chunk continuation."""
         if self.dynamic_access_exhaust_report is None:
             return
         self.dynamic_access_exhaust_report.mark_exhausted(class_name)
-        self._save_dynamic_access_exhaust_report()
+        self._commit_dynamic_access_exhaust_report(f"Record exhausted dynamic-access class {class_name}")
 
     def _mark_chunk_class_failed(self, class_name: str) -> None:
         """Persist a failed class boundary for chunk diagnostics."""
@@ -741,7 +782,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             return
         self.dynamic_access_exhaust_report.mark_failed(class_name)
         self.dynamic_access_exhaust_report.mark_exhausted(class_name)
-        self._save_dynamic_access_exhaust_report()
+        self._commit_dynamic_access_exhaust_report(f"Record failed dynamic-access class {class_name}")
 
     def _should_stop_for_chunked_dynamic_access(
             self,

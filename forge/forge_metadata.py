@@ -286,7 +286,7 @@ PRIORITY_LABEL_COLOR = "FBCA04"
 PRIORITY_LABEL_DESCRIPTION = "Automation should process this issue before regular queue items"
 CHUNKED_DYNAMIC_ACCESS_LABEL_COLOR = "C5DEF5"
 CHUNKED_DYNAMIC_ACCESS_LABEL_DESCRIPTION = "Issue uses chunked dynamic-access processing"
-DEFAULT_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD = 10
+DEFAULT_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD = 15
 
 
 DEFAULT_REVIEW_MODEL = "gpt-5.4"
@@ -4361,6 +4361,7 @@ def build_workflow_driver_invocation(
         keep_tests_without_dynamic_access: bool,
         library_preparation_preflight_path: str | None = None,
         chunk_class_count: int | None = None,
+        library_update_route: LibraryUpdateRoute | None = None,
 ) -> WorkflowDriverInvocation:
     """Build the routed workflow-driver command for a claimed issue."""
     issue_number = claimed_issue.issue["number"]
@@ -4481,11 +4482,9 @@ def build_workflow_driver_invocation(
         )
 
     elif claimed_issue.label == LABEL_LIBRARY_UPDATE:
-        route = select_library_update_route(
-            claimed_issue.worktree_path,
-            library_update_route_artifact_root(claimed_issue),
-            claimed_issue.issue_coordinates,
-        )
+        if library_update_route is None:
+            raise ValueError("Library-update workflow invocation requires a selected route.")
+        route = library_update_route
         if route.selected_driver == ROUTE_FIX_JAVAC:
             if route.baseline_coordinates is None:
                 raise ValueError(f"Missing baseline coordinates for route {route.selected_driver}.")
@@ -4623,16 +4622,34 @@ def invoke_pipeline(
         claimed_issue,
         strategy_name,
     )
-    chunk_class_count = prepare_dynamic_access_chunking(
-        claimed_issue,
-        strategy_name,
-    )
+    library_update_route = None
+    if claimed_issue.label == LABEL_LIBRARY_UPDATE:
+        library_update_route = select_library_update_route(
+            claimed_issue.worktree_path,
+            library_update_route_artifact_root(claimed_issue),
+            claimed_issue.issue_coordinates,
+        )
+
+    chunk_class_count = None
+    if (
+            claimed_issue.label == LABEL_LIBRARY_NEW
+            or (
+                    claimed_issue.label == LABEL_LIBRARY_UPDATE
+                    and library_update_route is not None
+                    and library_update_route.selected_driver == ROUTE_IMPROVE_COVERAGE
+            )
+    ):
+        chunk_class_count = prepare_dynamic_access_chunking(
+            claimed_issue,
+            strategy_name,
+        )
     invocation = build_workflow_driver_invocation(
         claimed_issue,
         strategy_name,
         keep_tests_without_dynamic_access,
         library_preparation_preflight_path,
         chunk_class_count,
+        library_update_route,
     )
 
     print()
