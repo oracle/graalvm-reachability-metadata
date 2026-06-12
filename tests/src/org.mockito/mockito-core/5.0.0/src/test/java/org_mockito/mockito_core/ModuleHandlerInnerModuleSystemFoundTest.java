@@ -80,7 +80,7 @@ public class ModuleHandlerInnerModuleSystemFoundTest {
         }
     }
 
-    interface Tagged {
+    public interface Tagged {
         void tag(String value);
     }
 }
