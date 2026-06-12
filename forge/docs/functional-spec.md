@@ -374,6 +374,22 @@ verification still passed. That status should not by itself add the
 `human-intervention` label unless the result also meets one of the policy cases
 above.
 
+### FS-human-intervention-resolution: Human intervention resolution
+
+Items that carry `human-intervention` must not depend on per-item manual triage
+to be resolved. Reading why the label was applied and turning recurring causes
+into actionable, tracked work is an automated responsibility, not a manual one.
+
+This resolution is currently automated by Rhei. The `human-intervention-scanner`
+workspace template periodically scans the open `human-intervention` queue —
+pull requests, where the reason lives in the PR comments, or issues, where the
+reason lives in the issue comment and its linked log — clusters the items by the
+underlying system issue that earned the label, and files one tracking issue per
+root-cause group so each cause is addressed once instead of per item. The
+automation only investigates, groups, and opens tracking issues: it never edits,
+relabels, closes, or merges the source items, so it preserves the labeling
+guarantees of §FS-human-intervention-policy.
+
 ### FS-automated-pr-review: Automated pull request review
 
 Forge review automation processes open pull requests by their PR labels after

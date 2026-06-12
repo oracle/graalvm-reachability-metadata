@@ -1,0 +1,228 @@
+# State machine diagram
+# ---------------------
+#
+#   One task loops through three states; the opener runs only after a scan:
+#
+#     sleep [initial, program, visits={{max_scans}}]
+#       | exit 75 and visitCount < visits
+#       v
+#     scan [agent] -- writes the root-cause report --> open
+#       ^                                                |
+#       |                                                v
+#       +--------------------- sleep <----------- open [agent]
+#
+#       sleep exits 0 when the queue is drained          --> completed
+#       sleep exits 75 and visitCount >= visits at cap    --> completed
+#
+#   The scanner only investigates and reports; the opener only files tracking
+#   issues. Each agent state has its own instructions. The single hand-off
+#   artifact is the report:
+#     runtime/scan/groups.md   root-cause report (one section per group)
+#   Scanner-internal state (not consumed by the opener):
+#     runtime/scan/seen.txt    source-item numbers already scanned
+#   Deduplication of tracking issues is done against open GitHub issues.
+#
+#   Any non-final state can transition to cancelled.
+
+name: human-intervention-scanner
+version: 1.3.0
+
+states:
+  sleep:
+    description: Backoff, then decide whether more unscanned human-intervention items remain.
+    initial: true
+    visits: {{max_scans}}
+    program: |
+      set -eu
+
+      unit_seconds() {
+        duration="$1"
+        number="${duration%[smh]}"
+        unit="${duration##*[0-9]}"
+        case "$unit" in
+          s) printf '%s\n' "$number" ;;
+          m) printf '%s\n' "$((number * 60))" ;;
+          h) printf '%s\n' "$((number * 3600))" ;;
+          *) printf '0\n' ;;
+        esac
+      }
+
+      base="$(unit_seconds "{{base_sleep}}")"
+      increment="$(unit_seconds "{{sleep_increment}}")"
+      delay="$((base + ({visit_count} - 1) * increment))"
+      if [ "$delay" -gt 0 ]; then
+        sleep "$delay"
+      fi
+
+      mkdir -p runtime/scan
+      touch runtime/scan/seen.txt
+
+      seen_count="$(wc -l < runtime/scan/seen.txt 2>/dev/null | tr -d '[:space:]')"
+      fetch_limit="$(( ${seen_count:-0} + {{scan_limit}} ))"
+      if [ "$fetch_limit" -lt "{{scan_limit}}" ]; then
+        fetch_limit="{{scan_limit}}"
+      fi
+
+      if [ "{{source}}" = "prs" ]; then
+        if ! candidates="$(gh pr list \
+          --repo "{{repo}}" \
+          --state open \
+          --label "human-intervention" \
+          --limit "$fetch_limit" \
+          --json number \
+          --jq '.[].number' 2>/dev/null)"; then
+          exit 75
+        fi
+      else
+        if ! candidates="$(gh issue list \
+          --repo "{{repo}}" \
+          --state open \
+          --label "human-intervention" \
+          --limit "$fetch_limit" \
+          --json number \
+          --jq '.[].number' 2>/dev/null)"; then
+          exit 75
+        fi
+      fi
+
+      unscanned=0
+      for number in $candidates; do
+        if grep -qx "$number" runtime/scan/seen.txt; then
+          continue
+        fi
+        unscanned="$((unscanned + 1))"
+        if [ "$unscanned" -ge 1 ]; then
+          break
+        fi
+      done
+
+      if [ "$unscanned" -gt 0 ]; then
+        exit 75
+      fi
+
+      exit 0
+    program_timeout: 999h
+
+  scan:
+    description: Investigate why items earned the human-intervention label, cluster by root cause, and write the report.
+    visits: {{max_scans}}
+    target: "{{scanner_agent}}"
+    instructions: |
+      You are the human-intervention scanner for `{{repo}}`. This is the scan
+      phase: investigate and report only. You MUST NOT open, comment on, close,
+      label, or otherwise touch any GitHub issue or PR.
+
+      You are on scan pass {visit_count} of {visits}. Work from the Rhei
+      workspace root. GitHub is the source of truth for `{{repo}}`. Source queue:
+      {{source}}; queue label: human-intervention.
+
+      Read `runtime/scan/seen.txt` if it exists. Fetch at most {{scan_limit}}
+      open, not-yet-seen items carrying human-intervention.
+
+      Find WHY each item got the human-intervention label — do not guess from the
+      title. The reason lives in:
+        - source: prs    -> the PR's comments. The automation/Forge comment there
+                            states the reason (for example, dynamic-access
+                            coverage stayed too low).
+        - source: issues -> the issue's comment AND the log link it references.
+                            Open the log to see the failing phase and error
+                            (javac compile, java run, native-image run, ...).
+
+      Cluster items that share the same underlying system cause into a group. A
+      group is simply the set of items with one root cause — it has no slug or
+      fixed name. Keep groups concrete, not catch-all buckets.
+
+      Write the report at `runtime/scan/groups.md` — one `## <short root-cause
+      title>` section per group, updating an existing section instead of
+      duplicating it:
+        - System issue / root cause: the underlying problem, taken from the
+          comments (PRs) or the comment + log (issues), explained well enough to
+          act on.
+        - Contributing items: numbers and URLs
+        - Evidence: the comment text or log excerpt that proves the cause
+
+      Append every fetched item number to `runtime/scan/seen.txt`, one per line,
+      only after it appears in the report. Never mutate the source {{source}}
+      items.
+    outputs:
+      - name: report
+        path: runtime/scan/groups.md
+        description: Root-cause report, one section per group. The only opener input.
+      - name: seen
+        path: runtime/scan/seen.txt
+        description: Item numbers already scanned, one per line (scanner-internal).
+
+  open:
+    description: Open one tracking issue per group in the report, reusing any similar issue that is already open.
+    visits: {{max_scans}}
+    target: "{{opener_agent}}"
+    inputs:
+      - name: report
+        path: runtime/scan/groups.md
+    instructions: |
+      You are the human-intervention issue opener for `{{repo}}`. This is the
+      open phase: file tracking issues only. You read the scanner's report; you
+      MUST NOT touch the source {{source}} items — no labels, comments, fixes,
+      closes, or merges on them.
+
+      Work from the Rhei workspace root. GitHub is the source of truth for
+      `{{repo}}`. Source queue: {{source}}.
+
+      Read only `runtime/scan/groups.md` — the scanner's root-cause report. For
+      each root-cause section:
+        1. Check for an existing tracker first: search OPEN issues in `{{repo}}`
+           by the root cause, the symptom, and the contributing item numbers.
+        2. If a similar tracking issue exists, do NOT open a duplicate — comment
+           any newly contributing items onto it and record its URL.
+        3. Otherwise open exactly one GitHub issue. YOU choose a clear, specific
+           title that names the root cause. The body must include the system
+           issue / root cause from the report, the source queue ({{source}}),
+           every contributing item number and URL, the evidence, and a note that
+           it was generated by the human-intervention-scanner Rhei template.
+           Apply every comma-separated label in {{issue_labels}}.
+
+      Write `runtime/openers/{visit_count}.md` with one line per group: the issue
+      title, the created or reused issue URL, items linked, labels applied, and
+      any follow-up.
+    outputs:
+      - name: opener
+        path: runtime/openers/{visit_count}.md
+        description: Tracking-issue results for one opener pass.
+
+  completed:
+    description: Work is complete.
+    final: true
+
+  cancelled:
+    description: Work was cancelled.
+    final: true
+
+transitions:
+  - from: sleep
+    to: scan
+    exit_code: 75
+    condition: visitCount < visits
+    description: Backoff elapsed and at least one unscanned human-intervention item remains.
+
+  - from: sleep
+    to: completed
+    exit_code: 0
+    description: The selected queue has no unscanned human-intervention items.
+
+  - from: sleep
+    to: completed
+    exit_code: 75
+    condition: visitCount >= visits
+    description: The scanner reached the configured scan cap.
+
+  - from: scan
+    to: open
+    description: Report written; open tracking issues for its groups.
+
+  - from: open
+    to: sleep
+    description: This pass's groups were filed or reused; back off before the next scan.
+
+  - from: "*"
+    to: cancelled
+    description: Cancel any non-final task.

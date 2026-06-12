@@ -1,6 +1,6 @@
-name: human-intervention-grouper
-version: 1.0.0
-description: Periodically scans human-intervention GitHub PRs or issues, groups them by root cause, and opens one tracking issue per new group.
+name: human-intervention-scanner
+version: 1.1.0
+description: One recurring task scans human-intervention GitHub PRs or issues, groups them by root cause into a report, and then opens one tracking issue per group.
 
 inputs:
   - name: repo
@@ -45,11 +45,11 @@ inputs:
     default: rhei
 
   - name: scanner_agent
-    description: Execution target that fetches items, clusters root-cause groups, and appends opener tasks.
+    description: Execution target for the scan state that fetches items, clusters them into root-cause groups, and writes the report.
     type: string
     default: codex[yolo]:openai:gpt-5.5
 
   - name: opener_agent
-    description: Execution target that files one GitHub tracking issue for a generated root-cause group.
+    description: Execution target for the open state that reads the report and files one tracking issue per group.
     type: string
     default: codex[yolo]:openai:gpt-5.5
