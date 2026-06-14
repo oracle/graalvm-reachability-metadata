@@ -1,0 +1,97 @@
+name: code-coverage-improvement
+version: 1.0.0
+description: Convert one improve-code-coverage GitHub issue into a bounded Rhei workflow that improves tests for an already-supported library.
+
+inputs:
+  - name: repo
+    description: GitHub repository containing the source issue, in owner/name form.
+    type: string
+    default: oracle/graalvm-reachability-metadata
+    validate: "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+
+  - name: issue_number
+    description: GitHub issue number to convert. The issue must carry improve-code-coverage.
+    type: number
+    validate: "[1-9][0-9]*"
+
+  - name: coordinate
+    description: Optional Maven coordinate override. Leave empty to parse group:artifact:version from the issue body.
+    type: string
+    default: ""
+    validate: "^$|^[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.+-]+$"
+
+  - name: issue_label
+    description: Label that identifies code coverage improvement issues.
+    type: string
+    default: improve-code-coverage
+    validate: "^[A-Za-z0-9_.-]+$"
+
+  - name: repo_checkout
+    description: Path to the source graalvm-reachability-metadata checkout, relative to the rendered workspace or absolute.
+    type: string
+    default: ../..
+
+  - name: work_subdir
+    description: Subdirectory inside each issue worktree where Forge code and docs live.
+    type: string
+    default: forge
+    validate: "^[A-Za-z0-9_./-]+$"
+
+  - name: worktree_root
+    description: Directory where per-issue worktrees are created or reused, relative to the rendered workspace or absolute.
+    type: string
+    default: ../../.agents/worktrees
+
+  - name: project_owner
+    description: Optional GitHub Project owner used for membership/status verification. Empty disables Project verification.
+    type: string
+    default: oracle
+    validate: "^$|^@me$|^[A-Za-z0-9_.-]+$"
+
+  - name: project_number
+    description: Optional GitHub Project number used with project_owner. Empty disables Project verification.
+    type: string
+    default: "30"
+    validate: "^$|^[1-9][0-9]*$"
+
+  - name: todo_status
+    description: Project status expected before conversion when Project verification is enabled.
+    type: string
+    default: Todo
+
+  - name: in_progress_status
+    description: Project status to set after conversion when Project verification is enabled.
+    type: string
+    default: In Progress
+
+  - name: pr_push_remote
+    description: Writable fork remote used by the publication task. Empty means infer from git remotes.
+    type: string
+    default: ""
+
+  - name: pr_head_owner
+    description: GitHub owner for the pull request head branch. Empty means infer from pr_push_remote.
+    type: string
+    default: ""
+
+  - name: pr_base_branch
+    description: Pull request base branch.
+    type: string
+    default: master
+    validate: "^[A-Za-z0-9_./-]+$"
+
+  - name: worker_agent
+    description: Agent used for execution and fix states.
+    type: string
+    default: codex[yolo]:openai:gpt-5.5
+
+  - name: reviewer_agent
+    description: Agent used for lightweight task review.
+    type: string
+    default: codex[yolo]:openai:gpt-5.5
+
+  - name: review_passes
+    description: Maximum automated review passes for reviewed tasks.
+    type: number
+    default: 2
+    validate: "[1-9][0-9]*"
