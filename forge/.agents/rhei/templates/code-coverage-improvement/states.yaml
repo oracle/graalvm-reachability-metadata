@@ -1,0 +1,267 @@
+# State machine diagram
+# ---------------------
+#
+# Helper-backed tasks:
+#   simple-prepared -> simple-execute -> completed
+#
+# Reviewed tasks:
+#   prepared -> execute -> agent-review -> review-dispatch -- no  -> completed
+#                                      |                  |
+#                                      |                  +-- yes -> agent-fix
+#                                      |                              |
+#                                      +------------------------------+
+#
+# Human intervention is a gate for product/spec decisions, unresolved metadata
+# generation, or Native Image validation that cannot be fixed automatically.
+
+name: code-coverage-improvement
+version: 1.0.0
+
+states:
+  simple-prepared:
+    description: Helper-backed task is generated and ready for execution.
+    initial: true
+    concurrent: true
+    program: "true"
+
+  simple-execute:
+    description: Execute a helper-backed workflow phase and complete after writing artifacts.
+    target: "{{worker_agent}}"
+    concurrent: true
+    instructions: |
+      Execute helper-backed Task {task_id}: {task_title}.
+
+      Read the task body and use the deterministic Forge helper named there
+      when it exists. If the helper is not implemented yet, perform only the
+      deterministic inspection or setup that the task body explicitly allows,
+      then record the missing helper as remaining implementation risk instead of
+      inventing product behavior.
+
+      Keep code/docs edits inside the resolved issue worktree and work path.
+      Keep Rhei artifacts under `runtime/code-coverage/` in this workspace.
+
+      Write `{output.work.path}` with:
+      - source issue URL
+      - coordinate and coverage suite path
+      - worktree and work path used
+      - files inspected or changed
+      - phase artifacts written
+      - commands run and results
+      - decisions made
+      - remaining risk or human follow-up
+    outputs:
+      - name: work
+        path: runtime/code-coverage/work/{task_id}.md
+        description: Execution summary for one helper-backed phase.
+
+  prepared:
+    description: Reviewed task is generated and ready for execution.
+    concurrent: true
+    program: "true"
+
+  execute:
+    description: Execute a reviewed code coverage workflow phase.
+    target: "{{worker_agent}}"
+    concurrent: true
+    instructions: |
+      Execute reviewed Task {task_id}: {task_title}.
+
+      Read the task body, prior runtime artifacts under `runtime/code-coverage/`,
+      and the resolved issue worktree/work path from
+      `runtime/code-coverage/issues/conversion.md`.
+
+      Rules:
+      - Edit generated tests only under
+        `tests/<group>/<artifact>/<version>/code-coverage`.
+      - Do not weaken metadata-generation tests or dynamic-access evidence.
+      - Target public user-callable API behavior, not private internals just for
+        superficial coverage hits.
+      - Use deterministic Forge helper scripts for validation, PGO correlation,
+        and PR publication whenever the task names one.
+      - If metadata generation or Native Image validation cannot be resolved
+        automatically, write the work artifact with the blocker and request
+        `human-intervention`.
+
+      Write `{output.work.path}` with:
+      - source issue URL
+      - coordinate and coverage suite path
+      - worktree and work path used
+      - files inspected or changed
+      - phase artifacts written
+      - commands run and results
+      - decisions made
+      - validation or coverage evidence
+      - remaining risk or human follow-up
+    outputs:
+      - name: work
+        path: runtime/code-coverage/work/{task_id}.md
+        description: Execution summary for one reviewed phase.
+
+  agent-review:
+    description: Lightweight review of a reviewed task before it completes.
+    target: "{{reviewer_agent}}"
+    concurrent: true
+    visits: {{review_passes}}
+    instructions: |
+      Review pass {visit_count} of {visits} for Task {task_id}: {task_title}.
+
+      Read the task body, `{input.work.path}`, prior runtime artifacts, and the
+      current issue worktree diff when the task changed files.
+
+      Check only:
+      - Did the task follow its generated task body?
+      - Did it write the required artifact?
+      - Did it stay inside the intended worktree and coverage-test location?
+      - Did generated tests target public user-callable API behavior?
+      - Did validation output include required commands and results?
+      - For verification tasks, did metadata generation or repair succeed
+        automatically?
+      - If `generateMetadata` or Native Image validation needs manual handling,
+        did the task route to human follow-up?
+
+      Write both `{output.review-summary.path}` and
+      `{output.review-summary-pass.path}` using exactly this structure:
+
+      **Review summary:**
+      <brief review result, including any material findings>
+
+      **Needs fixes:** <yes/no>
+
+      Set `**Needs fixes:** yes` only for material correctness, validation,
+      scope, artifact, metadata, or PR-publication problems. Set
+      `**Needs fixes:** no` for small, stylistic, optional, or non-blocking
+      observations.
+    inputs:
+      - name: work
+        path: runtime/code-coverage/work/{task_id}.md
+    outputs:
+      - name: review-summary
+        path: runtime/code-coverage/review-summary/{task_id}.md
+        description: Latest review summary and fix verdict for one task.
+      - name: review-summary-pass
+        path: runtime/code-coverage/review-summary/{task_id}-pass-{visit_count}.md
+        description: Per-pass review marker so repeated reviews cannot reuse stale output.
+
+  review-dispatch:
+    description: Route a reviewed task based on the latest review verdict.
+    concurrent: true
+    visits: {{review_passes}}
+    program: |
+      review_file="$RHEI_INPUT_REVIEW_SUMMARY_PATH"
+      if grep -qiE '^\*\*Needs fixes:\*\*[[:space:]]*no[[:space:]]*$' "$review_file"; then
+        exit 0
+      fi
+      if grep -qiE '^\*\*Needs fixes:\*\*[[:space:]]*yes[[:space:]]*$' "$review_file"; then
+        exit 75
+      fi
+      printf 'review summary must contain exactly "**Needs fixes:** yes" or "**Needs fixes:** no"\n' >&2
+      exit 2
+    program_timeout: 1m
+    inputs:
+      - name: review-summary
+        path: runtime/code-coverage/review-summary/{task_id}.md
+
+  agent-fix:
+    description: Address only the latest agent-review findings.
+    target: "{{worker_agent}}"
+    concurrent: true
+    instructions: |
+      Fix review findings for Task {task_id}: {task_title}.
+
+      Read `{input.work.path}` and the latest review summary at
+      `{input.review-summary.path}`. Make only the fixes required by that latest
+      review summary in the task's worktree/work path or runtime artifact, then
+      write `{output.fix.path}` with:
+      - findings addressed
+      - files changed
+      - commands run and results
+      - residual risk
+    inputs:
+      - name: work
+        path: runtime/code-coverage/work/{task_id}.md
+      - name: review-summary
+        path: runtime/code-coverage/review-summary/{task_id}.md
+    outputs:
+      - name: fix
+        path: runtime/code-coverage/fixes/{task_id}.md
+        description: Fixes applied after review findings.
+
+  human-intervention:
+    description: Human decision or manual repair is required.
+    gating: true
+    instructions: |
+      Stop autonomous work on Task {task_id}: {task_title}.
+
+      A human must review the task body, the latest work artifact under
+      `runtime/code-coverage/work/`, and any review summary. Do not transition
+      out of this state autonomously.
+
+  completed:
+    description: Work is complete.
+    final: true
+
+  cancelled:
+    description: Work was cancelled.
+    final: true
+
+transitions:
+  - from: simple-prepared
+    to: simple-execute
+    description: Helper-backed task enters execution.
+
+  - from: simple-execute
+    to: completed
+    description: Helper-backed task wrote its artifacts.
+
+  - from: prepared
+    to: execute
+    description: Reviewed task enters execution.
+
+  - from: execute
+    to: agent-review
+    description: Work artifact is ready for review.
+
+  - from: execute
+    to: human-intervention
+    description: Task requires a human decision or manual repair.
+
+  - from: agent-review
+    to: review-dispatch
+    description: Latest review summary written; route by verdict.
+
+  - from: review-dispatch
+    to: completed
+    exit_code: 0
+    description: Review summary says fixes are not needed.
+
+  - from: review-dispatch
+    to: agent-fix
+    exit_code: 75
+    condition: visitCount < visits
+    description: Review summary says fixes are needed.
+
+  - from: review-dispatch
+    to: completed
+    exit_code: 75
+    condition: visitCount >= visits
+    description: Review still requests fixes after the maximum review passes.
+
+  - from: agent-fix
+    to: agent-review
+    description: Required review findings were addressed.
+
+  - from: human-intervention
+    to: execute
+    description: Human requested rework.
+
+  - from: human-intervention
+    to: completed
+    description: Human approved the task as complete.
+
+  - from: human-intervention
+    to: cancelled
+    description: Human cancelled the task.
+
+  - from: "*"
+    to: cancelled
+    description: Cancel any non-final task.
