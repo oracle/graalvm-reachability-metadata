@@ -371,7 +371,10 @@ normal review automation may treat it as safe. The companion
 `human-intervention-fixed` PR label means a maintainer has addressed the manual
 follow-up and review automation may resume after normal merge gates pass. The
 resulting labeled backlog is drained by automated resolution, not per-item
-manual triage (§FS-human-intervention-resolution).
+manual triage (§FS-human-intervention-resolution). The preserved work branch
+additionally carries a continuation marker, so a later run can resume the issue
+from the phase that failed instead of regenerating from scratch
+(§FS-forge-run-continuation).
 
 Post-generation intervention is different: it is an automated recovery step
 inside a workflow. `SUCCESS_WITH_INTERVENTION_STATUS` is PR-eligible when the

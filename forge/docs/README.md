@@ -41,6 +41,7 @@ its IDs in that one file.
 - [grund.md](grund.md) — `GRUND-forge-motivation`: why Forge exists.
 - [goals.md](goals.md) — `GOAL-forge-direction` and the outcome goals beneath it.
 - [functional-spec.md](functional-spec.md) — `FS-forge-functional-spec`: top-level functional spec and the workflow-spec catalog.
+- [continuation.md](continuation.md) — `FS-forge-run-continuation`: resuming a failed run at the phase that failed, and the continuation marker contract.
 - [architecture.md](architecture.md) — `AR-forge-architecture`: control plane, workflow boundaries, and extension points.
 - [agent.md](agent.md) — `AR-agent-api`: the agent API and its Pi implementation.
 - [do-work.md](do-work.md) — `DW-do-work-loop`: the long-running worker loop.
