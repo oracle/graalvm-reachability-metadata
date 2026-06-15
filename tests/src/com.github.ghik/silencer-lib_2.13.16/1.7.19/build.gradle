@@ -19,6 +19,12 @@ dependencies {
     testImplementation 'org.scala-lang:scala-compiler:2.13.17'
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
 tasks.withType(ScalaCompile).configureEach {
     scalaCompileOptions.additionalParameters = [
             "-Wunused:locals",

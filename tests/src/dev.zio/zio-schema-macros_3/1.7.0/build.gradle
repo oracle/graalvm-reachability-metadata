@@ -14,9 +14,16 @@ String libraryVersion = tck.testedLibraryVersion.get()
 dependencies {
     testImplementation "dev.zio:zio-schema-macros_3:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
-    testImplementation 'org.scala-lang:scala3-library_3:3.3.6'
-    testImplementation 'org.scala-lang:scala3-compiler_3:3.3.6'
+    testImplementation 'org.scala-lang:scala3-library_3:3.7.4'
+    testImplementation 'org.scala-lang:scala3-compiler_3:3.7.4'
 }
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
