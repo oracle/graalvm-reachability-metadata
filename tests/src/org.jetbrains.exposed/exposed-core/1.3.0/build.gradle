@@ -17,6 +17,15 @@ dependencies {
     testImplementation 'com.microsoft.sqlserver:mssql-jdbc:13.2.1.jre11'
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
+
+kotlin {
+    jvmToolchain(25)
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "25"
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
