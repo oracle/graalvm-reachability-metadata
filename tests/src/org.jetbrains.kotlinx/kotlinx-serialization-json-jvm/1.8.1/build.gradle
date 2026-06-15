@@ -10,6 +10,7 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+int testJvmVersion = tck.testJvmVersion.get()
 
 dependencies {
     testImplementation "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:$libraryVersion"
@@ -17,11 +18,11 @@ dependencies {
 }
 
 kotlin {
-    jvmToolchain(25)
+    jvmToolchain(testJvmVersion)
 }
 
 compileTestKotlin {
-    kotlinOptions.jvmTarget = "25"
+    kotlinOptions.jvmTarget = testJvmVersion.toString()
 }
 
 graalvmNative {

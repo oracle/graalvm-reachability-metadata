@@ -10,6 +10,7 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+int testJvmVersion = tck.testJvmVersion.get()
 Provider<Directory> generatedTestRuntimePropertiesDir = layout.buildDirectory.dir("generated/test-runtime-properties")
 
 dependencies {
@@ -19,11 +20,11 @@ dependencies {
 }
 
 kotlin {
-    jvmToolchain(25)
+    jvmToolchain(testJvmVersion)
 }
 
 compileTestKotlin {
-    kotlinOptions.jvmTarget = "25"
+    kotlinOptions.jvmTarget = testJvmVersion.toString()
 }
 String findRuntimeClasspathJar(String prefix) {
     File match = sourceSets.test.runtimeClasspath.files.find { File candidate ->
