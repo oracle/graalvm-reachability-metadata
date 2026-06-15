@@ -455,6 +455,19 @@ class WorkflowStrategy(ABC):
         print(f"ERROR: checkMetadataFiles still fails after updating allowed-packages for {library}.", file=sys.stderr)
         return False
 
+    def finalize_run(self, base_commit: str | None, workflow_status: str = RUN_STATUS_SUCCESS) -> str:
+        """Finalize a PR-eligible run and merge the finalization status.
+
+        The single driver-facing finalization path (§WF-forge-workflow-drivers.3):
+        a chunk-ready run stays chunk-ready when finalization succeeds, otherwise
+        the finalization status becomes the run status.
+        """
+        finalize_status, _ = self._finalize_successful_iteration(base_commit=base_commit)
+        finalize_succeeded = finalize_status in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS}
+        if finalize_succeeded and workflow_status == RUN_STATUS_CHUNK_READY:
+            return RUN_STATUS_CHUNK_READY
+        return finalize_status
+
     def _finalize_successful_iteration(self, base_commit: str | None = None) -> tuple[str, str | None]:
         """Generate metadata, run follow-up Gradle tasks, and commit the iteration."""
         log_stage("generate-metadata", f"Running generateMetadata for {self.library}")

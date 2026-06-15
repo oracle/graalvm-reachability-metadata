@@ -68,7 +68,7 @@ Preparation:
 - Resolve the requested `group:artifact:version`, repository roots, metrics
   root, GraalVM home, and strategy.
 - Create the feature branch for the new library.
-- Resolve large-library progress state when the issue is chunked.
+- Resolve the dynamic-access exhaust report when the issue is chunked.
 - Decide Native Image eligibility before generation (see below). If the
   artifact is not a Native Image target, write the marker and stop without
   scaffolding, generating tests, or generating metadata.
@@ -132,7 +132,7 @@ Preparation:
 - Commit the current test directory and metadata index as a checkpoint.
 - Snapshot baseline library stats, metadata entry counts, and test-only
   metadata entry counts into the test directory.
-- Resolve large-library progress state when the issue is chunked.
+- Resolve the dynamic-access exhaust report when the issue is chunked.
 - Populate artifact URLs and materialize configured source context.
 - Resolve the test-source layout.
 - Instantiate the coverage workflow strategy with baseline, language layout,
@@ -161,13 +161,17 @@ Preparation:
 - If compilation passes but the JVM test run fails, dispatch
   `ai_workflows/drivers/fix_java_run_fail.py`; that driver owns runtime repair
   and the java-run composite coverage phase.
-- If compilation and JVM tests pass, dispatch
+- If compilation and JVM tests pass but native-image tests fail, dispatch
+  `ai_workflows/drivers/fix_ni_run.py`; that driver owns native-image runtime
+  repair for the requested version.
+- If compilation, JVM tests, and native-image tests pass, dispatch
   `ai_workflows/drivers/improve_library_coverage.py` for the requested version
   because the latest test suite is compatible.
 
 The selected driver must own its normal setup after the probe; the
-`library-update-request` router must not duplicate javac-fix, java-run-fix, or
-coverage workflow setup logic (§WF-improve-library-coverage.2).
+`library-update-request` router must not duplicate javac-fix, java-run-fix,
+native-image-run-fix, or coverage workflow setup logic
+(§WF-improve-library-coverage.2).
 
 ### `fails-javac-compile`
 
@@ -222,3 +226,28 @@ Preparation:
 - Populate artifact URLs after the new version is prepared.
 - Run library finalization for the generated test and metadata before returning
   success.
+
+## 3. Shared run finalization and metrics publication
+
+After the workflow engine returns, a PR-eligible run must be finalized through
+the engine's public `finalize_run(...)` API on `WorkflowStrategy`. That API
+runs the shared finalization path (metadata generation, the native-test lanes,
+per-coordinate library finalization, and the iteration commit) and owns the
+status merge: a chunk-ready run stays `RUN_STATUS_CHUNK_READY` when
+finalization succeeds, otherwise the finalization status becomes the run
+status. Drivers must not call the private finalization internals and must not
+re-implement the status merge at their call sites.
+
+Run metrics flow through the shared writer
+(`metrics_writer.write_workflow_run_metrics`): it appends the run entry to the
+execution-metrics store (or to the local fallback file named by the driver's
+task type), writes the pending metrics consumed by publication, and
+schema-validates the written file. Drivers contribute only their task type and
+the per-workflow metrics payload; benchmark-mode metrics, which update an
+existing benchmark record instead of appending a run entry, remain
+driver-owned.
+
+Failed runs roll the worktree back through the shared checkpoint-reset helpers
+in `utility_scripts/worktree_reset.py`; drivers contribute only the policy —
+which paths survive the reset for follow-up branches, or which directories are
+removed when they did not pre-exist.

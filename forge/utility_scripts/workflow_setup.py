@@ -10,8 +10,34 @@ import sys
 from ai_workflows.core.fix_metadata_codex import run_codex_metadata_fix
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.library_finalization import run_library_finalization
-from utility_scripts.repo_path_resolver import require_complete_reachability_repo
+from utility_scripts.repo_path_resolver import require_complete_reachability_repo, resolve_repo_roots
 from utility_scripts.stage_logger import log_stage
+
+
+def list_all_files(directory_path: str) -> list[str]:
+    """Recursively list all file paths under the provided directory."""
+    files: list[str] = []
+    if not directory_path or not os.path.exists(directory_path):
+        return files
+    for root_dir, _, file_names in os.walk(directory_path):
+        for file_name in file_names:
+            files.append(os.path.join(root_dir, file_name))
+    return files
+
+
+def resolve_workflow_repo_paths(
+        explicit_repo_path: str | None,
+        explicit_metrics_repo_path: str | None,
+        metrics_subdir: str = "script_run_metrics",
+) -> tuple[str, str, str]:
+    """Resolve the reachability repo, metrics output dir, and metrics root for a driver run."""
+    resolved_reachability_repo, resolved_metrics_repo = resolve_repo_roots(
+        explicit_repo_path,
+        explicit_metrics_repo_path,
+    )
+    resolved_metrics_dir = os.path.join(resolved_metrics_repo, metrics_subdir)
+    os.makedirs(resolved_metrics_dir, exist_ok=True)
+    return resolved_reachability_repo, resolved_metrics_dir, resolved_metrics_repo
 
 
 def resolve_graalvm_java_home():

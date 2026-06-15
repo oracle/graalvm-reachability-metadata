@@ -36,6 +36,12 @@ public final class LibraryStatsModels {
     ) {
     }
 
+    public record CoordinateMetric(
+            String coordinate,
+            long value
+    ) {
+    }
+
     public record ArtifactStats(
             Map<String, MetadataVersionStats> metadataVersions
     ) {

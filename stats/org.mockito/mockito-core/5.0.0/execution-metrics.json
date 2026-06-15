@@ -1,0 +1,100 @@
+{
+  "improve_library_coverage:2026-06-12": {
+    "timestamp": "2026-06-12T16:01:47.160254Z",
+    "library": "org.mockito:mockito-core:5.0.0",
+    "starting_commit": "d8313bd6e96669639bbb739ff89ef6148ddf0745",
+    "ending_commit": "db5d9dc6b12998e6062e056c96bd6dbaeb962672",
+    "strategy_name": "library_update_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "chunk_ready",
+    "stats": {
+      "version": "5.0.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.326733,
+            "coveredCalls": 33,
+            "totalCalls": 101
+          },
+          "resources": {
+            "coverageRatio": 0.666667,
+            "coveredCalls": 2,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 0.336538,
+        "coveredCalls": 35,
+        "totalCalls": 104
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 6695,
+          "missed": 29646,
+          "ratio": 0.184227,
+          "total": 36341
+        },
+        "line": {
+          "covered": 1750,
+          "missed": 7063,
+          "ratio": 0.19857,
+          "total": 8813
+        },
+        "method": {
+          "covered": 591,
+          "missed": 1723,
+          "ratio": 0.255402,
+          "total": 2314
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 3997,
+      "issue_label": "library-update-request",
+      "library": "org.mockito:mockito-core:5.0.0",
+      "summary": "Mockito 5 defaults to the inline Byte Buddy mock maker, which upstream notes is not suitable for GraalVM Native Image; tests need a non-inline mock maker configuration.",
+      "deterministic_setup": [],
+      "agent_guidance": "Add or preserve `src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker` with `mock-maker-proxy` or `org.mockito.internal.creation.proxy.ProxyMockMaker`. Write meaningful coverage around interface mocks, stubbing, verification, default answers, argument matchers/captors, and invocation inspection. Avoid relying on final-class, static, construction, or arbitrary class mocking unless local Native Image verification proves that path works.",
+      "risks": [
+        "The proxy mock maker avoids code generation but only mocks interfaces, so coverage breadth is constrained.",
+        "Using Mockito's default inline mock maker is likely to fail in native-image because it depends on instrumentation/agent attachment.",
+        "The official subclass mock maker is documented as the non-inline alternative, but it still uses Byte Buddy code generation; local Gradle and Native Image verification should remain authoritative."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#3997 Update existing library: org.mockito:mockito-core:5.0.0; label=library-update-request; body_chars=270"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "9 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 56500,
+      "output_tokens_used": 5850,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.mockito:mockito-core:5.0.0/library-preparation-preflight/pi-generation-2026-06-12T13-25-57-190775Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 524961,
+      "cached_input_tokens_used": 5806592,
+      "output_tokens_used": 63910,
+      "iterations": 13,
+      "cost_usd": 4.8206,
+      "generated_loc": 241,
+      "tested_library_loc": 1750,
+      "metadata_entries": 262,
+      "test_only_metadata_entries": 38,
+      "code_coverage_percent": 19.86
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.mockito/mockito-core/5.0.0/src/test/java/org_mockito/mockito_core/MyService.java",
+      "metadata_file": "metadata/org.mockito/mockito-core/5.0.0/reachability-metadata.json"
+    }
+  }
+}

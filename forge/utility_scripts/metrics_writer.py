@@ -19,6 +19,7 @@ import utility_scripts.count_reachability_entries as reachability_metadata_count
 import utility_scripts.count_native_image_config_entries as legacy_metadata_count
 from utility_scripts.library_stats import load_library_stats_entry
 from utility_scripts.metadata_index import resolve_metadata_version, resolve_test_version
+from utility_scripts.schema_validator import validate_run_metrics
 from utility_scripts.native_image_config_policy import (
     find_changed_legacy_test_native_image_config_files_for_coordinate,
     format_legacy_test_native_image_config_error,
@@ -908,6 +909,47 @@ def read_pending_metrics(metrics_repo_root: str) -> dict:
         return json.load(f)
 
 
+def resolve_workflow_metrics_json(
+        run_metrics: dict,
+        metrics_repo_dir: str,
+        metrics_repo_root: str | None,
+        task_type: str,
+) -> str:
+    """Resolve the run-metrics JSON path for a workflow driver execution."""
+    in_repo_root = in_metadata_repo_metrics_root(metrics_repo_root)
+    if in_repo_root:
+        return execution_metrics_path(in_repo_root, run_metrics)
+    return os.path.join(metrics_repo_dir, f"{task_type}.json")
+
+
+def write_workflow_run_metrics(
+        run_metrics: dict,
+        metrics_repo_dir: str,
+        metrics_repo_root: str | None,
+        task_type: str,
+) -> str:
+    """Append run metrics, write pending metrics, and validate the written file.
+
+    The shared metrics-publication path for all workflow drivers
+    (§WF-forge-workflow-drivers.3); drivers contribute only their task type and
+    the per-workflow metrics payload.
+    """
+    metrics_json = resolve_workflow_metrics_json(run_metrics, metrics_repo_dir, metrics_repo_root, task_type)
+    in_repo_root = in_metadata_repo_metrics_root(metrics_repo_root)
+    if in_repo_root:
+        written_metrics_json = append_execution_metrics(in_repo_root, run_metrics, task_type)
+        if written_metrics_json != metrics_json:
+            raise ValueError(
+                f"ERROR: Resolved metrics path {metrics_json} does not match written path {written_metrics_json}"
+            )
+    else:
+        append_run_metrics(run_metrics, metrics_json)
+    if metrics_repo_root:
+        write_pending_metrics(metrics_repo_root, run_metrics)
+    validate_run_metrics(metrics_json)
+    return metrics_json
+
+
 def _resolve_primary_worktree_root(repo_root: str) -> str:
     """Resolve the main checkout root that owns the shared git metadata."""
     result = subprocess.run(
@@ -1014,7 +1056,7 @@ def commit_run_metrics_with_retry(
 
     `extra_paths_to_stage` lists repo-relative paths whose working-tree contents must survive the
     hard reset to origin/master and be staged alongside the metrics file (used for durable
-    large-library progress state). Both files and directories are supported.
+    dynamic-access exhaust report). Both files and directories are supported.
     """
     metrics_json_absolute_path = os.path.join(metrics_repo_root, metrics_json_relative_path)
     has_origin = git_remote_exists("origin", cwd=metrics_repo_root)

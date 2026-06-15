@@ -107,8 +107,8 @@ metadata-relevant coverage from broader behavior coverage.
 | **Human intervention** | A maintainer follow-up signal applied through the `human-intervention` issue or PR label when Forge has evidence that generated work, repository automation, or library execution semantics require human judgment. It is distinct from post-generation intervention, which is an automated recovery step. The policy is defined in §FS-human-intervention-policy. |
 | **Dynamic access** | Reflection, JNI, resource access, serialization, or proxy use that GraalVM `native-image` cannot determine statically. |
 | **Dynamic-access report** | JSON written by Gradle task `generateDynamicAccessCoverageReport` to `tests/src/<group>/<artifact>/<version>/build/reports/dynamic-access/dynamic-access-coverage.json`, listing classes and per-class call sites that require dynamic-access metadata, marked covered/uncovered. |
-| **Dynamic-access exhaust report** | Durable coordinate-scoped JSON state for chunked dynamic-access work. It records the coordinate, issue number, class threshold, processed/exhausted/failed classes, and the latest published chunk PR/commit. It is stored in a stable location derived from the target test suite (for example under `tests/src/<group>/<artifact>/<version>/`) so orchestration scripts can find it from the coordinate alone. It does not predefine all chunks; each resume regenerates the current dynamic-access report and filters out exhausted classes. Specified by §WF-dynamic-access-exhaust-report. |
-| **Chunked dynamic-access workflow** | Dynamic-access generation mode for oversized `library-new-request` and `library-update-request` issues. `forge_metadata.py` owns the class threshold decision and passes the current chunk size to the workflow. The workflow processes at most that many uncovered classes, publishes that chunk, then resumes after the chunk PR merges. PR linking rules are in §WF-chunked-dynamic-access-pr-linking. |
+| **Dynamic-access exhaust report** | Durable coordinate-scoped JSON state for chunked dynamic-access work. It records the coordinate, issue number, class threshold, completed/skipped/exhausted/failed classes, and the latest published chunk PR/commit. It is stored in a stable location derived from the target test suite (for example under `tests/src/<group>/<artifact>/<version>/`) so orchestration scripts can find it from the coordinate alone. It does not predefine all chunks; each resume regenerates the current dynamic-access report and filters out processed classes. Specified by §WF-dynamic-access-exhaust-report. |
+| **Chunked dynamic-access workflow** | Dynamic-access generation mode for oversized `library-new-request` issues and `library-update-request` issues routed to dynamic-access coverage improvement. `forge_metadata.py` owns the class threshold decision and passes the current chunk size to the workflow. The workflow processes at most that many uncovered classes, publishes that chunk, then resumes after the chunk PR merges. PR linking rules are in §WF-chunked-dynamic-access-pr-linking. |
 | **Source context** | Read-only files supplied to the agent. Types: `main` (library source), `test` (upstream tests), `documentation` (Javadoc). Selected by the strategy parameter `source-context-types`. |
 | **Library update target** | The metadata and test directories selected for a `library-update-request` coordinate (§WF-improve-library-coverage.3). Resolution records the requested coordinate, match type (`tested-version`, `metadata-version`, `default-for`, or `new-version`), matched index entry, resolved metadata version, resolved test version, and edit directories. |
 
@@ -164,9 +164,13 @@ this functional spec.
   may run concurrently. Valid values are `1` through `4`; the default is `1`.
 - `FORGE_DO_WORK_STOP_FILE` overrides the shared stop marker path used by
   `do-work` loops. The default is `~/.metadata-forge-stop`.
+- `FORGE_USER_REQUESTED_ISSUES_ONLY=1` restricts issue queue scans to
+  user-requested issues by excluding configured automation and maintainer
+  authors locally before claim processing (§ORCH-forge-orchestration-spec).
 - `FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD` configures the class-count threshold
-  used by `forge_metadata.py` for `library-new-request` and
-  `library-update-request` issues. The implementation-defined default is `5`.
+  used by `forge_metadata.py` for `library-new-request` issues and
+  `library-update-request` issues routed to dynamic-access coverage improvement.
+  The implementation-defined default is `15`.
   If the current dynamic-access report has more uncovered classes than this
   threshold, Forge uses chunked mode. The value is not passed through as a
   generic workflow policy; `forge_metadata.py` computes the concrete chunk size
@@ -365,7 +369,9 @@ maintainer to continue. On a pull request, it means Forge produced a reviewable
 artifact, but some part of the result needs explicit maintainer judgment before
 normal review automation may treat it as safe. The companion
 `human-intervention-fixed` PR label means a maintainer has addressed the manual
-follow-up and review automation may resume after normal merge gates pass.
+follow-up and review automation may resume after normal merge gates pass. The
+resulting labeled backlog is drained by automated resolution, not per-item
+manual triage (§FS-human-intervention-resolution).
 
 Post-generation intervention is different: it is an automated recovery step
 inside a workflow. `SUCCESS_WITH_INTERVENTION_STATUS` is PR-eligible when the
@@ -373,6 +379,24 @@ automated intervention changed the working tree and the local CI-equivalent
 verification still passed. That status should not by itself add the
 `human-intervention` label unless the result also meets one of the policy cases
 above.
+
+### FS-human-intervention-resolution: Human intervention resolution
+
+Items that carry `human-intervention` must not depend on per-item manual triage
+to be resolved. Reading why the label was applied and turning recurring causes
+into actionable, tracked work is an automated responsibility, not a manual one.
+
+This resolution is currently automated by Rhei. The `human-intervention-scanner`
+workspace template periodically scans the open `human-intervention` queue —
+pull requests, where the reason is read from the PR comments, reviews, and PR
+description together (PR comments are frequently absent, so the requested-changes
+review carries the reason), or issues, where the reason lives in the issue
+comment and its linked log — clusters the items by the
+underlying system issue that earned the label, and files one tracking issue per
+root-cause group so each cause is addressed once instead of per item. The
+automation only investigates, groups, and opens tracking issues: it never edits,
+relabels, closes, or merges the source items, so it preserves the labeling
+guarantees of §FS-human-intervention-policy.
 
 ### FS-automated-pr-review: Automated pull request review
 
@@ -456,15 +480,16 @@ The exit code is `0` for PR-eligible statuses and `1` for failure.
 
 ## 8. Chunked Dynamic-Access Semantics
 
-For `library-new-request` and `library-update-request` issues, `forge_metadata.py`
-must run or refresh the dynamic-access report before choosing the execution
-mode. If the current report has more uncovered dynamic-access classes than the
-configured class threshold, `forge_metadata.py` must invoke the matching
-orchestration script with chunking flags: issue number and current chunk size.
+For `library-new-request` issues and `library-update-request` issues routed to
+dynamic-access coverage improvement, `forge_metadata.py` must run or refresh the
+dynamic-access report before choosing the execution mode. If the current report
+has more uncovered dynamic-access classes than the configured class threshold,
+`forge_metadata.py` must invoke the matching orchestration script with chunking
+flags: issue number and current chunk size.
 The current chunk size is normally equal to the threshold; when fewer
 unexhausted classes remain than the threshold, it is equal to the remaining
-class count. For example, with threshold `5` and `7` uncovered classes, the
-first chunk size is `5` and the second chunk size is `2`.
+class count. For example, with threshold `15` and `22` uncovered classes, the
+first chunk size is `15` and the second chunk size is `7`.
 
 Chunked mode is automatic after the issue is marked with the
 `chunked-dynamic-access` label. The normal project status remains the run-state
@@ -492,7 +517,7 @@ they run:
 | Queue | Driver script | Workflow spec |
 | --- | --- | --- |
 | `library-new-request` | `add_new_library_support.py` | new library support (§WF-add-new-library-support), which runs dynamic-access generation plus native metadata tracing and verification |
-| `library-update-request` | `improve_library_coverage.py`, or the missing-version router | dynamic-access coverage improvement (§WF-improve-library-coverage) |
+| `library-update-request` | `improve_library_coverage.py`, or the missing-version router | dynamic-access coverage improvement (§WF-improve-library-coverage), Java repair (§WF-java-fail-fix-workflow), or native-image run repair (§WF-native-image-run-fix-workflow) depending on the compatibility probe |
 | `fails-javac-compile` | `fix_javac_fail.py` | Java failure repair (§WF-java-fail-fix-workflow) |
 | `fails-java-run` | `fix_java_run_fail.py` | Java failure repair (§WF-java-fail-fix-workflow) |
 | `fails-native-image-run` | `fix_ni_run.py` | native-image run repair (§WF-native-image-run-fix-workflow) |

@@ -45,6 +45,15 @@ minutes); setting either env var to `0` disables that cache. The caches only
 reduce redundant API calls within a TTL window; claiming itself remains
 optimistic and authoritative against live GitHub state.
 
+Operators can restrict issue queue scans to user-requested issues. In that
+mode, orchestration fetches issue queue batches with the ordinary label query
+and excludes issues authored by repository automation or the configured
+maintainer accounts locally before claim processing. Queue counts and offsets
+remain based on the ordinary GitHub search result order so the filter does not
+make GitHub Search queries more complex. This filter applies only to issue
+queue scans, not to explicit `--issue-number` runs, large-library continuation
+artifacts, or pull request review queues.
+
 ## 1. Library-Specific Preparation Decision
 
 After claiming a supported issue and preparing its isolated worktree, but before
@@ -81,14 +90,14 @@ workflow driver routes each kind to a different consumer:
   the sole authority for rejecting work CI would not accept.
 
 - **Advisory guidance** is the residual reasoning the agent must apply inside the
-  generated test code (for example, exercise a driver against a stood-up
-  service, or set a system property before a factory lookup). Only this guidance
-  is passed to the workflow as prompt context, and it is evidence, not trusted
-  instructions. Deterministic setup the driver already applied is omitted from
-  the prompt so an iterating workflow does not re-attempt a completed edit; any
-  deterministic item the driver could not apply yet (for example, a `dependency`
-  edit for a new library whose scaffold does not exist until generation) falls
-  back into the advisory guidance so the agent still performs it.
+  generated test code or repo-local test configuration, especially environment
+  variables, system properties, or test initialization. The workflow prompt
+  receives the decision summary, the deterministic setup Forge already applied
+  or found present, and this advisory guidance as evidence, not trusted
+  instructions. Any deterministic item the driver could not apply yet (for
+  example, a `dependency` edit for a new library whose scaffold does not exist
+  until generation) falls back into the advisory guidance so the agent still
+  performs it.
 
 This split is what keeps deterministic, idempotent edits out of the iteration
 loop and confines the prompt to reasoning. The driver — not orchestration and
@@ -101,6 +110,11 @@ evidence, selected deterministic setup, advisory guidance, and the result of
 applying each deterministic action. A preflight decision must not allow tests to
 rely on untracked downloads, undeclared optional dependencies, or Docker images
 that CI would reject (§FS-local-ci-equivalent-verification).
+The dispatcher stores preflight handoff and prompt/response evidence in an
+ignored per-run `local_repositories/preflight_info/` directory, not in the
+isolated reachability worktree; the workflow receives only the explicit handoff
+path, and durable evidence is the normalized record embedded in run metrics
+(§FS-forge-run-metrics).
 
 If the preflight decision cannot run or returns invalid, unavailable, or unsafe
 output, orchestration must degrade to a recorded no-action advisory result. It

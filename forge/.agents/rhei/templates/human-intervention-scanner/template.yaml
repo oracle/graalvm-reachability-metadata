@@ -1,0 +1,55 @@
+name: human-intervention-scanner
+version: 1.1.0
+description: One recurring task scans human-intervention GitHub PRs or issues, groups them by root cause into a report, and then opens one tracking issue per group.
+
+inputs:
+  - name: repo
+    description: GitHub repository to scan and file tracking issues in, in owner/name form.
+    type: string
+    default: oracle/graalvm-reachability-metadata
+    validate: "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+
+  - name: source
+    description: Queue to scan; prs uses GitHub pull requests and issues uses GitHub issues.
+    type: string
+    default: prs
+    validate: "^(prs|issues)$"
+
+  - name: scan_limit
+    description: Maximum open items inspected in one scan pass.
+    type: number
+    default: 20
+    validate: "[1-9][0-9]*"
+
+  - name: base_sleep
+    description: Sleep before the first scan, as a single s/m/h unit.
+    type: string
+    default: 20m
+    validate: "^(0s|[1-9][0-9]*[smh])$"
+
+  - name: sleep_increment
+    description: Additional sleep added on every scanner re-entry, as a single s/m/h unit.
+    type: string
+    default: 2h
+    validate: "^(0s|[1-9][0-9]*[smh])$"
+
+  - name: max_scans
+    description: Safety cap on scan passes before the scanner completes.
+    type: number
+    default: 12
+    validate: "[1-9][0-9]*"
+
+  - name: issue_labels
+    description: Comma-separated labels to apply to created tracking issues.
+    type: string
+    default: rhei
+
+  - name: scanner_agent
+    description: Execution target for the scan state that fetches items, clusters them into root-cause groups, and writes the report.
+    type: string
+    default: codex[yolo]:openai:gpt-5.5
+
+  - name: opener_agent
+    description: Execution target for the open state that reads the report and files one tracking issue per group.
+    type: string
+    default: codex[yolo]:openai:gpt-5.5

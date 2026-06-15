@@ -112,14 +112,14 @@ and releases flowing without a human in the loop.
 
 ### CI-test-all-metadata: Test all metadata
 
-Every three days (`0 2 */3 * *`) and on manual dispatch. Uses
+Every Sunday (`0 2 * * 0`) and on manual dispatch. Uses
 `generateMatrixBatchedCoordinates` with 85 batches to build a JDK/OS matrix, runs
 the full `test` lane, pulls only allowed images, then disables Docker networking.
-Failed batches are isolated down to concrete library versions and reported as one
-aggregated GitHub issue per failed `(library, version)` pair across the
-configured GraalVM JDK/OS combinations and native-image modes. It is
-release-blocking when failures are found (§FS-repository-functional-spec.5.3)
-and gates the scheduled release (§CI-create-scheduled-release).
+Failed batches are isolated down to concrete library versions, publish result
+and failure-log artifacts, and fail in the matrix so the Actions UI points at
+the failing batch. The aggregate job remains release-blocking when failures are
+found (§FS-repository-functional-spec.5.3) and gates the scheduled release
+(§CI-create-scheduled-release).
 
 ### CI-verify-new-library-version-compatibility: Verify new library version compatibility
 
@@ -147,12 +147,25 @@ to the `stats/coverage` branch. The published branch keeps only `COVERAGE.md`,
 
 ### CI-create-scheduled-release: Create scheduled release
 
-On the 1st and 15th of each month (`0 3 1 * *`, `0 3 15 * *`) and on manual
-dispatch. Packages metadata only if it changed and the latest completed
-test-all-metadata workflow passed (§CI-test-all-metadata); runs `spotlessCheck`
-before packaging (§FS-repository-functional-spec.5.3). Manual dispatches bypass
-the test-all gate. The packaged ZIP is the artifact native-build-tools consumes
-(§FS-repository-functional-spec.4, §GOAL-fresh-metadata).
+Every Monday (`0 3 * * 1`) and on manual dispatch. Packages metadata only if it
+changed and the latest completed test-all-metadata workflow passed
+(§CI-test-all-metadata); runs `spotlessCheck` before packaging
+(§FS-repository-functional-spec.5.3). Manual dispatches bypass the test-all gate.
+The workflow considers only semantic version tags when choosing the previous
+numbered release tag, so floating snapshot tags such as `SNAPSHOT` are ignored.
+It then creates the next `<major>.<minor>.<patch>` release. The packaged ZIP is
+the numbered artifact native-build-tools consumes (§FS-repository-functional-spec.4,
+§GOAL-fresh-metadata).
+
+### CI-create-snapshot-release: Create snapshot release
+
+On pushes to `master` and on manual dispatch. Publishes a floating `SNAPSHOT`
+GitHub Release on the `SNAPSHOT` tag when metadata changed since the previous
+`SNAPSHOT` tag; if that tag does not exist yet, it bootstraps the diff from the
+latest numbered release tag. The workflow packages metadata with repository
+version `SNAPSHOT`, deletes the previous snapshot release/tag when present,
+force-pushes a fresh `SNAPSHOT` tag, and marks the release as not GitHub's
+Latest release (§FS-repository-functional-spec.4.4, §GOAL-fresh-metadata).
 
 ## Event-triggered automation
 

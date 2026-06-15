@@ -1,0 +1,31 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "org.apache.maven.plugins:maven-compiler-plugin:$libraryVersion"
+    testImplementation 'org.apache.maven:maven-core:3.2.5'
+    testImplementation 'org.apache.maven:maven-plugin-api:3.2.5'
+    testImplementation 'org.apache.maven.plugin-testing:maven-plugin-testing-harness:3.3.0'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

@@ -73,6 +73,7 @@ class FixtureComment:
 class FixtureIssue:
     number: int
     title: str
+    author: str
     body: str
     state: str
     labels: list[str]
@@ -84,12 +85,12 @@ class FixtureIssue:
     comments: list[FixtureComment]
     fixture_path: str
     url: str
-    library_preparation_preflight_response: Any | None = None
 
     def issue_view_payload(self, include_body: bool = False, include_state: bool = True) -> JsonObject:
         payload: JsonObject = {
             "number": self.number,
             "title": self.title,
+            "author": {"login": self.author},
             "url": self.url,
             "labels": [{"name": label} for label in self.labels],
             "assignees": [{"login": assignee} for assignee in self.assignees],
@@ -104,6 +105,7 @@ class FixtureIssue:
         return {
             "number": self.number,
             "title": self.title,
+            "author": {"login": self.author},
             "url": self.url,
             "labels": [{"name": label} for label in self.labels],
             "assignees": [{"login": assignee} for assignee in self.assignees],
@@ -113,6 +115,7 @@ class FixtureIssue:
         payload: JsonObject = {
             "number": self.number,
             "title": self.title,
+            "author": self.author,
             "body": self.body,
             "state": self.state,
             "url": self.url,
@@ -127,8 +130,6 @@ class FixtureIssue:
             "comments": [comment.to_json() for comment in self.comments],
             "fixture_path": self.fixture_path,
         }
-        if self.library_preparation_preflight_response is not None:
-            payload["library_preparation_preflight_response"] = self.library_preparation_preflight_response
         return payload
 
 
@@ -173,9 +174,6 @@ class FixtureGitHubState:
     def get_issue_fixture_path(self, issue_number: int) -> str:
         return self._issue(issue_number).fixture_path
 
-    def get_issue_library_preparation_preflight_response(self, issue_number: int) -> Any | None:
-        return self._issue(issue_number).library_preparation_preflight_response
-
     def get_issue_project_number(self, issue_number: int) -> int:
         return self._issue(issue_number).project_number
 
@@ -189,6 +187,7 @@ class FixtureGitHubState:
             offset: int = 0,
             extra_labels: list[str] | None = None,
             excluded_labels: list[str] | None = None,
+            excluded_authors: tuple[str, ...] = (),
     ) -> list[JsonObject]:
         """Return `gh issue list`/search-shaped open issue payloads."""
         if limit <= 0:
@@ -198,6 +197,7 @@ class FixtureGitHubState:
             for issue in self._iter_open_issues()
             if _issue_has_all_labels(issue, [label, *(extra_labels or [])])
             and not _issue_has_any_label(issue, excluded_labels or [])
+            and issue.author not in excluded_authors
         ]
         return matched[offset:offset + limit]
 
@@ -206,6 +206,7 @@ class FixtureGitHubState:
             label: str,
             extra_labels: list[str] | None = None,
             excluded_labels: list[str] | None = None,
+            excluded_authors: tuple[str, ...] = (),
     ) -> int:
         return len(self.list_open_issues_by_label(
             label,
@@ -213,6 +214,7 @@ class FixtureGitHubState:
             offset=0,
             extra_labels=extra_labels,
             excluded_labels=excluded_labels,
+            excluded_authors=excluded_authors,
         ))
 
     def get_issue_labels(self, issue_number: int) -> list[str]:
@@ -604,6 +606,7 @@ def normalize_fixture_issue(raw_issue: JsonObject, fixture_path: str) -> Fixture
     issue = _require_mapping(raw_issue, context)
     number = _require_int(issue, "number", context)
     title = _require_str(issue, "title", context)
+    author = _optional_str(issue, "author", context, default="fixture-author")
     body = _optional_str(issue, "body", context, default="")
     state = _require_str(issue, "state", context).upper()
     if state not in ALLOWED_ISSUE_STATES:
@@ -621,18 +624,10 @@ def normalize_fixture_issue(raw_issue: JsonObject, fixture_path: str) -> Fixture
     blockers = _normalize_blockers(issue, context)
     comments = _normalize_comments(_optional_list(issue, "comments", context, default=[]), context)
     url = _optional_str(issue, "url", context, default=f"fixture://fixture_github_issues/{number}")
-    library_preparation_preflight_response = issue.get("library_preparation_preflight_response")
-    if library_preparation_preflight_response is not None and not isinstance(
-            library_preparation_preflight_response,
-            (dict, str),
-    ):
-        raise FixtureValidationError(
-            f"{context}: `library_preparation_preflight_response` must be an object or string"
-        )
-
     return FixtureIssue(
         number=number,
         title=title,
+        author=author,
         body=body,
         state=state,
         labels=labels,
@@ -644,7 +639,6 @@ def normalize_fixture_issue(raw_issue: JsonObject, fixture_path: str) -> Fixture
         comments=comments,
         fixture_path=os.path.abspath(fixture_path),
         url=url,
-        library_preparation_preflight_response=library_preparation_preflight_response,
     )
 
 

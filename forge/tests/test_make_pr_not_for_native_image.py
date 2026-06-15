@@ -7,7 +7,7 @@ import subprocess
 import unittest
 from unittest.mock import patch
 
-from git_scripts import make_pr_not_for_native_image
+from git_scripts import make_pr_not_for_native_image, pr_publication
 from utility_scripts.local_ci_verification import LocalCIVerificationResult
 
 
@@ -20,9 +20,13 @@ class MakePrNotForNativeImageTests(unittest.TestCase):
             del check, cwd
             if command[:2] == ["git", "rebase"]:
                 events.append("rebase")
-            if command[:2] == ["git", "push"]:
-                events.append("push")
             return subprocess.CompletedProcess(command, 0)
+
+        def fake_run_git_transport(args: list[str], cwd: str | None = None):
+            del cwd
+            if args[:1] == ["push"]:
+                events.append("push")
+            return subprocess.CompletedProcess(["git", *args], 0)
 
         def fake_run_local_ci_verification(**kwargs):
             events.append("local-ci")
@@ -30,16 +34,17 @@ class MakePrNotForNativeImageTests(unittest.TestCase):
             self.assertEqual(kwargs["base_commit"], "FETCH_HEAD")
             return result
 
-        with patch.object(make_pr_not_for_native_image, "build_ai_branch_name", return_value="not-native-branch"), \
-                patch.object(make_pr_not_for_native_image, "delete_remote_branch_if_exists"), \
+        with patch.object(pr_publication, "build_ai_branch_name", return_value="not-native-branch"), \
+                patch.object(pr_publication, "delete_remote_branch_if_exists"), \
                 patch.object(make_pr_not_for_native_image, "stage_and_commit"), \
-                patch.object(make_pr_not_for_native_image, "fetch_pr_base", return_value="FETCH_HEAD"), \
+                patch.object(pr_publication, "fetch_pr_base_ref", return_value="FETCH_HEAD"), \
                 patch.object(
-                    make_pr_not_for_native_image,
+                    pr_publication,
                     "run_local_ci_verification",
                     side_effect=fake_run_local_ci_verification,
                 ), \
-                patch.object(make_pr_not_for_native_image.subprocess, "run", side_effect=fake_subprocess_run):
+                patch.object(pr_publication, "run_git_transport", side_effect=fake_run_git_transport), \
+                patch.object(pr_publication.subprocess, "run", side_effect=fake_subprocess_run):
             branch, local_ci_verification = make_pr_not_for_native_image.push_marker_branch(
                 "org.example:demo:1.0.0",
                 "/repo",

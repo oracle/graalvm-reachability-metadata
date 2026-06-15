@@ -246,7 +246,11 @@ class RemoteBranchDeletionTests(unittest.TestCase):
 
     def test_delete_remote_branch_if_exists_deletes_existing_remote_branch(self) -> None:
         with patch.object(common_git, "git_remote_branch_exists", return_value=True), \
-                patch.object(common_git.subprocess, "run") as run, \
+                patch.object(
+                    common_git.subprocess,
+                    "run",
+                    return_value=subprocess.CompletedProcess(["git"], 0, stdout="", stderr=""),
+                ) as run, \
                 patch("sys.stdout", new_callable=io.StringIO):
             deleted = common_git.delete_remote_branch_if_exists("ai/user/fix-lib", cwd="/repo")
 
@@ -254,7 +258,10 @@ class RemoteBranchDeletionTests(unittest.TestCase):
         run.assert_called_once_with(
             ["git", "push", "origin", "--delete", "ai/user/fix-lib"],
             cwd="/repo",
-            check=True,
+            env=None,
+            capture_output=True,
+            text=True,
+            timeout=None,
         )
 
 
@@ -336,6 +343,18 @@ class GitHubRateLimitTests(unittest.TestCase):
         with patch.object(common_git.subprocess, "run", return_value=completed_process):
             with self.assertRaises(common_git.GitHubRateLimitExceeded):
                 common_git.gh("api", "graphql")
+
+    def test_common_gh_raises_typed_rate_limit_error_from_secondary_limit(self) -> None:
+        completed_process = subprocess.CompletedProcess(
+            ["gh"],
+            1,
+            stdout="",
+            stderr="gh: You have exceeded a secondary rate limit. Please wait a few minutes.",
+        )
+
+        with patch.object(common_git.subprocess, "run", return_value=completed_process):
+            with self.assertRaises(common_git.GitHubRateLimitExceeded):
+                common_git.gh("api", "--method", "GET", "/search/issues")
 
     def test_common_gh_retries_transient_failure(self) -> None:
         failed_process = subprocess.CompletedProcess(

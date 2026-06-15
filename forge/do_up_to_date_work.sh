@@ -25,6 +25,7 @@ PARALLELISM="${FORGE_PARALLELISM:-1}"
 REVIEW_LABEL="${FORGE_REVIEW_LABEL:-}"
 REVIEW_LIMIT="${FORGE_REVIEW_LIMIT:-1}"
 REVIEW_MODEL="${FORGE_REVIEW_MODEL:-gpt-5.4}"
+USER_REQUESTED_ONLY="${FORGE_USER_REQUESTED_ISSUES_ONLY:-0}"
 WORK_STRATEGY_NAME="${FORGE_STRATEGY_NAME:-dynamic_access_main_sources_pi_gpt-5.5}"
 GITHUB_RATE_LIMIT_EXIT_CODE=75
 MAX_PARALLELISM=4
@@ -108,6 +109,10 @@ Options:
       Defaults to FORGE_REVIEW_LIMIT, then 1. Without FORGE_REVIEW_LABEL, reviews
       library-new-request, fixes-javac-fail, fixes-java-run-fail,
       fixes-native-image-run-fail, and library-bulk-update PRs each cycle.
+  --user-requested-only
+      Fetch only user-requested issue queue items by excluding configured
+      automation and maintainer issue authors. Defaults to
+      FORGE_USER_REQUESTED_ISSUES_ONLY, then 0.
 
 Environment:
   DO_WORK_SLEEP_SECONDS
@@ -130,6 +135,9 @@ Environment:
   FORGE_REVIEW_LABEL
       Review only PRs with this label. If unset, each generated PR label is
       reviewed every cycle.
+  FORGE_USER_REQUESTED_ISSUES_ONLY
+      Set to 1 to fetch only user-requested issue queue items, or 0 to process
+      all eligible issue authors. Defaults to 0.
   FORGE_LIBRARY_REVIEW_LIMIT, FORGE_JAVAC_REVIEW_LIMIT, FORGE_JAVA_RUN_REVIEW_LIMIT,
   FORGE_NI_RUN_REVIEW_LIMIT, FORGE_BULK_UPDATE_REVIEW_LIMIT
       Override FORGE_REVIEW_LIMIT for one default review queue.
@@ -138,6 +146,7 @@ Examples:
   $0
   $0 master
   $0 --javac-limit 3 --new-limit 1
+  $0 --user-requested-only --new-limit 1
   $0 --once --branch master
   $0 --clear-issue-caches
   DO_WORK_SLEEP_SECONDS=60 $0 origin/main
@@ -379,6 +388,7 @@ export_work_configuration() {
     export FORGE_STRATEGY_NAME="$WORK_STRATEGY_NAME"
     export FORGE_REVIEW_LIMIT="$REVIEW_LIMIT"
     export FORGE_REVIEW_MODEL="$REVIEW_MODEL"
+    export FORGE_USER_REQUESTED_ISSUES_ONLY="$USER_REQUESTED_ONLY"
 
     if [[ -n "$REVIEW_LABEL" ]]; then
         export FORGE_REVIEW_LABEL="$REVIEW_LABEL"
@@ -529,6 +539,10 @@ while [[ "$#" -gt 0 ]]; do
             REVIEW_LIMIT="${1#*=}"
             shift
             ;;
+        --user-requested-only)
+            USER_REQUESTED_ONLY=1
+            shift
+            ;;
         --)
             shift
             if [[ "$#" -gt 1 || -n "$BRANCH_ARG" ]]; then
@@ -610,6 +624,11 @@ require_positive_integer "FORGE_DO_WORK_SLEEP_POLL_SECONDS" "$SLEEP_POLL_SECONDS
 
 if [[ "$RANDOM_WORK_OFFSET" != "0" && "$RANDOM_WORK_OFFSET" != "1" ]]; then
     echo "FORGE_RANDOM_WORK_OFFSET must be 0 or 1." >&2
+    exit 1
+fi
+
+if [[ "$USER_REQUESTED_ONLY" != "0" && "$USER_REQUESTED_ONLY" != "1" ]]; then
+    echo "FORGE_USER_REQUESTED_ISSUES_ONLY must be 0 or 1." >&2
     exit 1
 fi
 

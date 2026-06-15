@@ -12,7 +12,7 @@ Always use the Gradle wrapper from the repository root:
 - Windows: `gradlew.bat <task> [options]`
 
 Prerequisites for most commands:
-- `JAVA_HOME` should be set to JDK 21 or later. GraalVM is recommended to match CI.
+- `JAVA_HOME` should be set to JDK 25 or later. GraalVM is recommended to match CI.
 - Docker (required for pulling/using allowed images during tests). Needs to work without `sudo`: `sudo usermod -aG docker $USER` and reboot.
 - [`grype`](https://github.com/anchore/grype) version `0.104.0` for scanning docker images:
     ```console
@@ -173,9 +173,13 @@ Schema:
 ```console
 ./gradlew generateLibraryStats -Pcoordinates=[group:artifact:version|group:artifact|k/n|all]
 ./gradlew validateLibraryStats
+./gradlew listTopCoordinatesByMetric --metric=dynamic-accesses --limit=256
+./gradlew generateTopCoordinatesByMetricMatrix --metric=dynamic-accesses --limit=256
 ```
 
 - `generateLibraryStats`: recomputes selected coordinates and updates matching exploded stats files under `stats/`.
+- `listTopCoordinatesByMetric`: prints the top-N `group:artifact:version` coordinates from committed stats, currently ordered by `dynamic-accesses`.
+- `generateTopCoordinatesByMetricMatrix`: emits a GitHub Actions matrix with the same coordinates after verifying that each selected version is listed in the committed metadata index and has a metadata directory.
 - Workflow scripts write execution metrics under `stats/<groupId>/<artifactId>/<metadata-version>/execution-metrics.json`.
 - `validateLibraryStats`: validates mirrored committed stats files, schema compliance, and normalized sorting without recomputing metrics.
 

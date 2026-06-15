@@ -1,0 +1,144 @@
+{
+  "fix_javac_fail:2026-06-10": {
+    "timestamp": "2026-06-10T09:41:17.532929Z",
+    "library": "org.jboss:jandex:3.0.0",
+    "starting_commit": "f5e33d58a26fa8f20533c56a6b321cd07495d1f5",
+    "ending_commit": "a8b3b586f911884c049cb2b16db22196d7842cf3",
+    "previous_library": "org.jboss:jandex:2.4.2.Final",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "3.0.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 5,
+        "totalCalls": 5
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 6004,
+          "missed": 30499,
+          "ratio": 0.16448,
+          "total": 36503
+        },
+        "line": {
+          "covered": 1043,
+          "missed": 6341,
+          "ratio": 0.141251,
+          "total": 7384
+        },
+        "method": {
+          "covered": 212,
+          "missed": 1276,
+          "ratio": 0.142473,
+          "total": 1488
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "2.4.2.Final",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 3,
+        "totalCalls": 3
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4650,
+          "missed": 22747,
+          "ratio": 0.169727,
+          "total": 27397
+        },
+        "line": {
+          "covered": 827,
+          "missed": 4863,
+          "ratio": 0.145343,
+          "total": 5690
+        },
+        "method": {
+          "covered": 147,
+          "missed": 1052,
+          "ratio": 0.122602,
+          "total": 1199
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8308,
+      "issue_label": "fails-javac-compile",
+      "library": "org.jboss:jandex:3.0.0",
+      "summary": "No extra setup is needed: Jandex 3.0.0 is a self-contained class-indexing/offline-reflection library, resolves via Maven relocation from org.jboss:jandex to io.smallrye:jandex, and meaningful coverage can use in-memory/sample class indexing, querying, and index read/write without services, Docker, system properties, or extra dependencies.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "org.jboss:jandex:3.0.0 is a relocation POM to io.smallrye:jandex:3.0.0 while the Java package remains org.jboss.jandex.",
+        "The failing existing test is due to an API compatibility issue around Indexer#indexClass usage, not missing setup.",
+        "The artifact has an optional/provided Ant integration; only tests that directly exercise JandexAntTask would need an Ant dependency, but that is not required for meaningful core coverage."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8308 [Automation] javac compile fails for org.jboss:jandex:3.0.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "7 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.jboss:jandex:2.4.2.Final",
+      "new_version": "3.0.0",
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 44992,
+      "output_tokens_used": 3239,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.jboss:jandex:3.0.0/library-preparation-preflight/pi-generation-2026-06-10T09-20-39-976129Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 102324,
+      "cached_input_tokens_used": 484352,
+      "output_tokens_used": 4844,
+      "iterations": 2,
+      "cost_usd": 0.3875,
+      "tested_library_loc": 1043,
+      "metadata_entries": 6,
+      "test_only_metadata_entries": 1,
+      "previous_library_metadata_entries": 3,
+      "code_coverage_percent": 14.13,
+      "previous_library_coverage_percent": 14.53
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.jboss/jandex/3.0.0/src/test/java/org_jboss/jandex/JandexReflectionTest.java",
+      "metadata_file": "metadata/org.jboss/jandex/3.0.0/reachability-metadata.json"
+    }
+  }
+}

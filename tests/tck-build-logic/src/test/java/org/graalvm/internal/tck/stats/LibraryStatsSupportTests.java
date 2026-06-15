@@ -20,6 +20,7 @@ import java.util.jar.JarOutputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class LibraryStatsSupportTests {
 
@@ -742,6 +743,88 @@ class LibraryStatsSupportTests {
                 .containsExactly("2.0.1");
     }
 
+    @Test
+    void topCoordinatesByMetricRanksDynamicAccessAndDeduplicatesCoordinates() {
+        LibraryStatsModels.LibraryStats libraryStats = new LibraryStatsModels.LibraryStats(Map.of());
+        libraryStats = LibraryStatsSupport.withMetadataVersionStats(
+                libraryStats,
+                "com.example:alpha",
+                "1.0.0",
+                new LibraryStatsModels.MetadataVersionStats(List.of(
+                        createVersionStats("1.0.0", 10, 3),
+                        createVersionStats("1.1.0", 6, 2)
+                ))
+        );
+        libraryStats = LibraryStatsSupport.withMetadataVersionStats(
+                libraryStats,
+                "com.example:alpha",
+                "2.0.0",
+                new LibraryStatsModels.MetadataVersionStats(List.of(createVersionStats("1.0.0", 12, 4)))
+        );
+        libraryStats = LibraryStatsSupport.withMetadataVersionStats(
+                libraryStats,
+                "org.demo:beta",
+                "1.0.0",
+                new LibraryStatsModels.MetadataVersionStats(List.of(
+                        createVersionStats("3.0.0", 12, 5),
+                        new LibraryStatsModels.VersionStats(
+                                "4.0.0",
+                                LibraryStatsModels.DynamicAccessStatsValue.notAvailable(),
+                                LibraryStatsSupport.unavailableLibraryCoverage()
+                        )
+                ))
+        );
+
+        List<LibraryStatsModels.CoordinateMetric> topCoordinates = LibraryStatsSupport.topCoordinatesByMetric(
+                libraryStats,
+                LibraryStatsSupport.DYNAMIC_ACCESSES_METRIC,
+                3
+        );
+
+        assertThat(topCoordinates)
+                .extracting(LibraryStatsModels.CoordinateMetric::coordinate)
+                .containsExactly("com.example:alpha:1.0.0", "org.demo:beta:3.0.0", "com.example:alpha:1.1.0");
+        assertThat(topCoordinates)
+                .extracting(LibraryStatsModels.CoordinateMetric::value)
+                .containsExactly(12L, 12L, 6L);
+    }
+
+    @Test
+    void topCoordinatesByMetricRejectsUnsupportedInputs() {
+        LibraryStatsModels.LibraryStats libraryStats = new LibraryStatsModels.LibraryStats(Map.of());
+
+        assertThatThrownBy(() -> LibraryStatsSupport.topCoordinatesByMetric(libraryStats, "coverage", 1))
+                .hasMessageContaining("Unsupported library stats metric 'coverage'");
+        assertThatThrownBy(() -> LibraryStatsSupport.topCoordinatesByMetric(libraryStats, LibraryStatsSupport.DYNAMIC_ACCESSES_METRIC, 0))
+                .hasMessageContaining("Top coordinate limit must be positive");
+    }
+
+    @Test
+    void requireCoordinatesInMetadataAcceptsIndexedTestedVersion() throws IOException {
+        writeMetadataIndex("com.example", "demo", "1.0.0", "1.0.0");
+
+        assertThatCode(() -> LibraryStatsSupport.requireCoordinatesInMetadata(
+                tempDir.resolve("metadata"),
+                List.of("com.example:demo:1.0.0")
+        )).doesNotThrowAnyException();
+    }
+
+    @Test
+    void requireCoordinatesInMetadataRejectsUnknownCoordinates() throws IOException {
+        writeMetadataIndex("com.example", "demo", "1.0.0", "1.0.0");
+
+        assertThatThrownBy(() -> LibraryStatsSupport.requireCoordinatesInMetadata(
+                tempDir.resolve("metadata"),
+                List.of(
+                        "com.example:demo:2.0.0",
+                        "org.demo:missing:1.0.0",
+                        "malformed"
+                )
+        ))
+                .hasMessageContaining("Unknown reachability metadata coordinates: "
+                        + "com.example:demo:2.0.0, org.demo:missing:1.0.0, malformed");
+    }
+
     private LibraryStatsModels.VersionStats createVersionStats(
             String version,
             long totalCalls,
@@ -760,6 +843,30 @@ class LibraryStatsSupportTests {
                         new LibraryStatsModels.CoverageMetric(2, 1, 3, new java.math.BigDecimal("0.666667")),
                         new LibraryStatsModels.CoverageMetric(2, 1, 3, new java.math.BigDecimal("0.666667"))
                 )
+        );
+    }
+
+    private void writeMetadataIndex(
+            String group,
+            String artifact,
+            String metadataVersion,
+            String testedVersion
+    ) throws IOException {
+        Path artifactRoot = tempDir.resolve("metadata").resolve(group).resolve(artifact);
+        Files.createDirectories(artifactRoot.resolve(metadataVersion));
+        Files.writeString(
+                artifactRoot.resolve("index.json"),
+                """
+                [
+                  {
+                    "metadata-version": "%s",
+                    "tested-versions": [
+                      "%s"
+                    ]
+                  }
+                ]
+                """.formatted(metadataVersion, testedVersion),
+                StandardCharsets.UTF_8
         );
     }
 
