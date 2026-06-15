@@ -10,6 +10,7 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+int testJvmVersion = tck.testJvmVersion.get()
 
 dependencies {
     testImplementation "org.scala-lang.modules:scala-java8-compat_3:$libraryVersion"
@@ -20,7 +21,7 @@ dependencies {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
+        languageVersion = JavaLanguageVersion.of(testJvmVersion)
     }
 }
 
