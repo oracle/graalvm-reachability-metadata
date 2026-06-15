@@ -55,6 +55,8 @@ Integer explicitTestJvmVersion(File buildFile) {
 }
 
 int testJvmVersion = explicitTestJvmVersion(project.buildFile) ?: 25
+tck.testJvmVersion.set(testJvmVersion)
+tck.testJvmVersion.finalizeValueOnRead()
 
 tasks.withType(JavaCompile).configureEach {
     options.release = testJvmVersion

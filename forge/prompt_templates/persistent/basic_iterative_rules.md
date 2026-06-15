@@ -6,7 +6,7 @@ Rules:
 - Do not compile or run tests yourself. The workflow will do that externally.
 - Follow idiomatic `{test_language_display_name}` coding conventions.
 - All top-level test classes must be public.
-- Do not add test JVM toolchain, target, or release overrides that move the test away from the repository's stable test JDK in `ci.json`. Avoid settings such as `JavaLanguageVersion.of(...)`, `jvmToolchain(...)`, `kotlinOptions.jvmTarget = "..."`, `options.release = ...`, and old-JDK compatibility flags such as `-Djava.security.manager=allow`. If a path only works on a different JDK, leave that path untested.
+- Do not add test JVM toolchain, target, or release overrides that move the test away from the TCK-resolved test JVM version. If a language plugin needs an explicit setting such as `JavaLanguageVersion.of(...)`, `jvmToolchain(...)`, `kotlinOptions.jvmTarget = ...`, or `options.release = ...`, wire it to the resolved test JVM version instead of hardcoding a number. Do not add old-JDK compatibility flags such as `-Djava.security.manager=allow`. If a path only works on a different JDK, leave that path untested.
 - Keep tests outside the library's packages. Do not place a test in the same package as the library just to access package-private or internal code.
 - Keep tests version-agnostic. Do not hardcode the artifact version in normal test inputs or assertions.
 - Exception assertions are acceptable only for documented, supported negative-path APIs. Do not write tests whose method name, comments, or assertions describe a known broken behavior path such as "fails before", "regression", "broken", or "version-specific" failure.

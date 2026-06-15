@@ -43,6 +43,8 @@ public abstract class TckExtension {
 
     public abstract Property<@NotNull String> getTestedLibraryVersion();
 
+    public abstract Property<Integer> getTestJvmVersion();
+
     @Inject
     public abstract ExecOperations getExecOperations();
 
