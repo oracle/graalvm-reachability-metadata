@@ -66,7 +66,7 @@ each individual workflow is one file:
 - [workflows/java-fail-fix.md](workflows/java-fail-fix.md) — `WF-java-fail-fix-workflow`.
 - [workflows/native-image-run-fix.md](workflows/native-image-run-fix.md) — `WF-native-image-run-fix-workflow`.
 - [workflows/native-metadata-tracing.md](workflows/native-metadata-tracing.md) — `WF-native-metadata-tracing`.
-- [workflows/code-coverage-improvement.md](workflows/code-coverage-improvement.md) — `WF-code-coverage-improvement` and `WF-code-coverage-improvement-architecture`: partially implemented code coverage workflow template, behavior, and architecture in one file.
+- [workflows/code-coverage-improvement.md](workflows/code-coverage-improvement.md) — `WF-code-coverage-improvement` and `WF-code-coverage-improvement-architecture`: partially implemented code coverage workflow — Rhei template plus deterministic helper scripts and PGO Gradle tasks; behavior and architecture in one file.
 
 A workflow file may declare both its behavioral contract and its own
 architecture; both use the `WF` prefix, as the shared overview and the planned

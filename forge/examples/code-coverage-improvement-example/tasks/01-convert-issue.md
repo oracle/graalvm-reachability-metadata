@@ -102,19 +102,14 @@
 **Prior:** Task code-coverage-api-cover-1
 
 - Helper script: `forge/utility_scripts/code_coverage_validate.py`
-- Purpose: compile tests, run JVM tests under JaCoCo, correlate JaCoCo evidence
-  with the API inventory, repair metadata when possible, and run Native Image
-  tests.
+- Purpose: compile tests, run JVM tests under JaCoCo, and correlate JaCoCo
+  evidence with the API inventory. This phase is JVM-only; reachability metadata
+  is prepared once before PGO discovery, not here.
 - Required work:
   - Run Java compilation for the coordinate.
   - Run JVM tests under JaCoCo agent instrumentation.
   - Correlate JaCoCo method/line coverage against the API inventory and report
     covered vs still-uncovered public API targets.
-  - Generate or repair metadata automatically when needed for Native Image
-    validation.
-  - Run Native Image tests.
-  - Route to human follow-up when metadata generation or Native Image validation
-    cannot be resolved automatically.
 - Artifacts:
   - `runtime/code-coverage/validation/jacoco-1.xml`
   - `runtime/code-coverage/validation/api-cover-report-1.md`
@@ -142,14 +137,10 @@
 **Prior:** Task code-coverage-api-cover-2
 
 - Helper script: `forge/utility_scripts/code_coverage_validate.py`
-- Purpose: repeat JVM JaCoCo validation and Native Image validation after the
-  second API-cover pass.
+- Purpose: repeat the JVM-only JaCoCo validation after the second API-cover pass.
 - Required work:
   - Run Java compilation for the coordinate.
   - Run JVM tests under JaCoCo and correlate against the API inventory.
-  - Generate or repair metadata automatically when needed.
-  - Run Native Image tests.
-  - Route unresolved metadata or Native Image validation to human follow-up.
 - Artifacts:
   - `runtime/code-coverage/validation/jacoco-2.xml`
   - `runtime/code-coverage/validation/api-cover-report-2.md`
@@ -177,30 +168,52 @@
 **Prior:** Task code-coverage-api-cover-3
 
 - Helper script: `forge/utility_scripts/code_coverage_validate.py`
-- Purpose: produce the final API-cover validation report that feeds Native Image
-  PGO discovery.
+- Purpose: produce the final JVM-only JaCoCo API-cover report before native
+  metadata preparation and PGO discovery.
 - Required work:
   - Run Java compilation for the coordinate.
   - Run JVM tests under JaCoCo and correlate against the API inventory.
-  - Generate or repair metadata automatically when needed.
-  - Run Native Image tests.
-  - Route unresolved metadata or Native Image validation to human follow-up.
 - Artifacts:
   - `runtime/code-coverage/validation/jacoco-3.xml`
   - `runtime/code-coverage/validation/api-cover-report-3.md`
   - `runtime/code-coverage/validation/api-cover-report-3.json`
   - `runtime/code-coverage/work/code-coverage-test-validate-3.md`
 
-### Task code-coverage-pgo-report-1: Generate PGO correlation report 1
-**State:** simple-prepared
+### Task code-coverage-prepare-native-metadata: Prepare native metadata
+**State:** prepared
 **Prior:** Task code-coverage-test-validate-3
 
+- Helper script: `forge/utility_scripts/code_coverage_prepare_native_metadata.py`
+- Purpose: generate and repair reachability metadata once so the instrumented
+  PGO Native Image builds succeed, keeping metadata work out of the JVM JaCoCo
+  phase and out of every PGO iteration §WF-code-coverage-improvement.
+- Required work:
+  - Generate metadata with `./gradlew generateMetadata -Pcoordinates=org.example:example-library:1.2.3`.
+  - Run `./gradlew nativeTest -Pcoordinates=org.example:example-library:1.2.3`; if it fails, repair
+    metadata with the Codex `fix-missing-reachability-metadata` skill and re-run,
+    up to the helper's fix budget.
+  - If Native Image validation cannot be repaired automatically, request
+    `human-intervention`.
+- Artifacts:
+  - `runtime/code-coverage/prepare/native-metadata-prepare.json`
+  - `runtime/code-coverage/prepare/native-metadata-prepare.md`
+  - `runtime/code-coverage/work/code-coverage-prepare-native-metadata.md`
+
+### Task code-coverage-pgo-report-1: Generate PGO correlation report 1
+**State:** simple-prepared
+**Prior:** Task code-coverage-prepare-native-metadata
+
 - Helper script: `forge/utility_scripts/code_coverage_profile_report.py`
+- Collection tasks: `./gradlew nativeTestPGOInstrument -Pcoordinates=org.example:example-library:1.2.3`
+  then `./gradlew runNativeTestPGO -Pcoordinates=org.example:example-library:1.2.3 -PpgoProfilePath=<abs .iprof>`.
 - Purpose: collect instrumented Native Image PGO evidence and correlate it with
   the static call graph and API inventory.
 - Required work:
-  - Collect an instrumented `.iprof` profile; reject sampled profiles.
-  - Collect the static call graph and reachable-method denominator.
+  - Build the instrumented image and collect an `.iprof` profile with
+    `runNativeTestPGO`; reject sampled profiles.
+  - Read the analysis call tree (`reports/call_tree_*.txt`) and
+    `used_methods_*.txt` reachable-method denominator emitted by the
+    `nativeTestPGOInstrument` build.
   - Parse executed methods and edges from profile context chains, not from the
     profile method symbol table.
   - Compute reachable-but-unobserved targets by joining call-graph edges with

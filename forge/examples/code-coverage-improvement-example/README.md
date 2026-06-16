@@ -19,10 +19,11 @@ The rendered workspace contains a static phase chain:
 1. Convert the issue and create or reuse the per-issue worktree.
 2. Prepare the already-supported library and dedicated coverage suite.
 3. Generate API inventory artifacts.
-4. Run three API-cover and JaCoCo validation iterations.
-5. Run three instrumented-PGO discovery report and discovery-cover iterations.
-6. Finalize local validation.
-7. Publish a pull request with coverage evidence.
+4. Run three JVM-only API-cover and JaCoCo validation iterations.
+5. Prepare native metadata once (generate plus Codex repair) for the PGO builds.
+6. Run three instrumented-PGO discovery report and discovery-cover iterations.
+7. Finalize local validation.
+8. Publish a pull request with coverage evidence.
 
 Generated tests are constrained to
 `tests/<group>/<artifact>/<version>/code-coverage`, while runtime evidence stays

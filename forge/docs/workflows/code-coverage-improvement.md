@@ -113,21 +113,29 @@ The Rhei template should decompose the workflow into these phases:
    Markdown reports for public user-callable API targets.
 4. **API cover loop** — run bounded agent work that adds or refines tests for
    API inventory targets through normal public API usage.
-5. **Test validate** — run Java compilation, JVM tests under JaCoCo, automatic
-   metadata generation or repair when possible, and Native Image tests; emit the
-   per-iteration JaCoCo and API-cover reports.
-6. **Generate PGO correlation report** — collect an instrumented Native Image
+5. **Test validate** — JVM-only: run Java compilation and JVM tests under
+   JaCoCo, correlate JaCoCo coverage against the API inventory, and emit the
+   per-iteration JaCoCo and API-cover reports. Reachability metadata and Native
+   Image are intentionally out of scope here, since JaCoCo coverage needs only
+   the JVM.
+6. **Prepare native metadata** — run once after the API-cover loop and before
+   PGO discovery: generate reachability metadata and repair it with the Codex
+   `fix-missing-reachability-metadata` skill until a Native Image test passes, so
+   the instrumented PGO builds succeed without rediscovering metadata on every
+   iteration. Route unresolved metadata or Native Image failures to human
+   intervention.
+7. **Generate PGO correlation report** — collect an instrumented Native Image
    PGO profile, collect the static call graph and reachable set, reject sampled
    profiles, emit LCOV, and write prompt-ready discovery reports with reaching
    paths from public API entries to reachable-but-unobserved targets.
-7. **Discovery cover loop** — group reachable-but-unobserved targets by shared
+8. **Discovery cover loop** — group reachable-but-unobserved targets by shared
    public entry point, reaching path, or owning class, and cover batches rather
    than one target per iteration.
-8. **Finalization** — verify the final result against latest GraalVM, metadata
+9. **Finalization** — verify the final result against latest GraalVM, metadata
    validity, JVM tests, Native Image tests, and the final PGO correlation report.
-9. **Publication** — open a PR with source issue, coordinate, coverage suite,
-   baseline/final coverage, coverage delta, completed targets,
-   skipped/exhausted targets, and validation commands.
+10. **Publication** — open a PR with source issue, coordinate, coverage suite,
+    baseline/final coverage, coverage delta, completed targets,
+    skipped/exhausted targets, and validation commands.
 
 Agent-reviewed Rhei tasks should use a lightweight review/fix loop. Review
 checks whether the task followed its generated body, wrote required artifacts,
@@ -173,12 +181,14 @@ It should expose the API targets, profile comparison, generated test rationale,
 and skipped/exhausted targets in metrics and the PR description so reviewers
 can judge whether the new tests exercise valuable library behavior.
 
-The workflow is partially implemented as a Rhei workspace template. Until a
-driver, helper-backed profile collector, API inventory builder, target-state
-format, metrics schema, and publication path exist, references to this workflow
-describe intended Forge functionality beyond the template rather than a fully
-runnable automation lane
-(§WF-code-coverage-improvement-architecture).
+The workflow is partially implemented as a Rhei workspace template backed by
+deterministic Forge helper scripts (API inventory, JVM JaCoCo validation,
+instrumented-PGO discovery correlation, and PR publication) and the
+`nativeTestPGOInstrument` / `runNativeTestPGO` Gradle harness tasks. Until a
+Forge driver or driver mode, a target-state store, and a metrics schema wire
+those helpers into an autonomous lane, references to the end-to-end automation
+beyond the template and helpers describe intended Forge functionality rather
+than a fully runnable lane (§WF-code-coverage-improvement-architecture).
 
 # WF-code-coverage-improvement-architecture: Code coverage improvement workflow architecture
 
@@ -201,22 +211,41 @@ engine:
   context, and optional chunk state before constructing the workflow engine.
 - **API inventory builder** — derives promptable API and behavior groups from
   the library artifact, sources, documentation, and upstream tests when
-  available.
+  available. Implemented deterministically from the library jar via `javap` in
+  `forge/utility_scripts/code_coverage_api_inventory.py`.
 - **JVM coverage validator** — runs Java compilation and JVM tests under JaCoCo,
   joins JaCoCo evidence with the API inventory, and writes remaining-target
-  reports for the API-cover loop.
+  reports for the API-cover loop. Implemented in
+  `forge/utility_scripts/code_coverage_validate.py`, driving the existing
+  `compileTestJava`/`javaTest`/`jacocoTestReport` harness tasks. It is JVM-only;
+  reachability metadata and Native Image are handled by the native metadata
+  preparer below.
+- **Native metadata preparer** — runs once after the API-cover loop and before
+  PGO discovery: generates reachability metadata and repairs it with the Codex
+  `fix-missing-reachability-metadata` skill until a Native Image test passes, so
+  the instrumented PGO builds succeed. Implemented in
+  `forge/utility_scripts/code_coverage_prepare_native_metadata.py`.
 - **Native Image PGO analyzer** — collects instrumented `.iprof` data, rejects
   sampled profiles, joins profile contexts with the static call graph and
   reachable-method set, maps BCI evidence to source, and emits LCOV plus
-  prompt-ready discovery reports.
+  prompt-ready discovery reports. Implemented in
+  `forge/utility_scripts/code_coverage_profile_report.py`; the instrumented
+  image and analysis call-tree dump are produced by the `nativeTestPGOInstrument`
+  and `runNativeTestPGO` harness tasks (`--pgo-instrument -g
+  -H:+PrintAnalysisCallTree`). Executed methods and observed edges are derived
+  from the profile `<`-chain contexts, which are leaf-first
+  (`callee:bci<caller:bci`), so observed edges read right-to-left.
 - **Coverage analyzer** — joins the API inventory with JVM and Native Image
-  coverage summaries to identify weakly covered or uncovered behavior.
+  coverage summaries to identify weakly covered or uncovered behavior. Shared
+  identity normalization lives in `forge/utility_scripts/code_coverage_model.py`.
 - **Target-state store** — persists selected, completed, skipped, exhausted,
   and failed API coverage targets for chunked or resumed runs.
 - **Workflow engine** — owns prompt/command cycles, retries, target selection,
   profile comparison, verification interpretation, and terminal status.
 - **Publication handoff** — publishes only PR-eligible runs after local
   CI-equivalent verification passes (§AR-forge-verification-publication-boundary).
+  Implemented in `forge/git_scripts/make_pr_code_coverage_improvement.py`, which
+  renders the PR body from the phase-8 finalization metrics.
 
 ## 2. Workflow State
 
@@ -287,9 +316,12 @@ also ran and reported the dynamic-access workflow (§WF-improve-library-coverage
 
 ## 5. Implementation Status
 
-This architecture is partially implemented. The component has a Rhei template
-and a validated example workspace. It still requires a new driver or driver
-mode, deterministic helper utilities, an API inventory builder, JaCoCo
-validation, instrumented PGO and call-graph correlation, a coverage analyzer, a
-target-state schema, metrics support, and publication wiring before it is a
-fully executable Forge lane.
+This architecture is partially implemented. The component has a Rhei template,
+a validated example workspace, the deterministic helper utilities (API inventory
+builder, JVM JaCoCo coverage validator, instrumented-PGO and call-graph
+correlation analyzer, shared identity model, and PR publication helper), and the
+`nativeTestPGOInstrument` / `runNativeTestPGO` Gradle harness tasks that produce
+the instrumented `.iprof` and analysis call-tree denominator. It still requires
+a new Forge driver or driver mode, a target-state schema for chunked/resumed
+runs, and metrics support before it is a fully autonomous Forge lane; today the
+helpers are invoked through the Rhei task plan.
