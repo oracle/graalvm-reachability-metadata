@@ -69,6 +69,20 @@ def _record_publication_pushed(
     active_marker.save(marker_path)
 
 
+def _record_publication_branch(
+        repo_path: str,
+        branch: str,
+        marker: ContinuationMarker | None = None,
+) -> None:
+    """Record the branch namespace before publication reaches the push."""
+    marker_path = continuation_marker_path(repo_path)
+    active_marker = marker or load_continuation_marker(marker_path)
+    if active_marker is None:
+        return
+    active_marker.record_publication_branch(branch)
+    active_marker.save(marker_path)
+
+
 def _is_preservation_only_path(path: str) -> bool:
     """Return True for files that belong only on failed-run preservation branches."""
     normalized_path = path.replace(os.sep, "/")
@@ -125,14 +139,21 @@ def _remove_preservation_only_files(repo_path: str) -> None:
             shutil.rmtree(absolute_directory)
 
 
-def _prepare_unpushed_publication_resume_branch(repo_path: str, branch: str, base_ref: str) -> None:
+def _prepare_unpushed_publication_resume_branch(
+        repo_path: str,
+        branch: str,
+        base_ref: str,
+        marker: ContinuationMarker,
+) -> None:
     """Create a PR branch from base and replay only non-preservation run commits."""
     preserved_head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_path, text=True).strip()
     commits = _non_preservation_commits(repo_path, base_ref, preserved_head)
     subprocess.run(["git", "switch", "-C", branch, base_ref], check=True, cwd=repo_path)
+    _record_publication_branch(repo_path, branch, marker)
     for commit in commits:
         subprocess.run(["git", "cherry-pick", commit], check=True, cwd=repo_path)
     _remove_preservation_only_files(repo_path)
+    _record_publication_branch(repo_path, branch, marker)
 
 
 def publish_branch(
@@ -163,13 +184,16 @@ def publish_branch(
         )
 
     base_ref = fetch_pr_base_ref(repo_path, REPO, BASE_BRANCH)
-    branch = build_ai_branch_name(branch_suffix, cwd=repo_path)
+    branch = None if resume_marker is None else resume_marker.publication_branch()
+    if branch is None:
+        branch = build_ai_branch_name(branch_suffix, cwd=repo_path)
+    _record_publication_branch(repo_path, branch, resume_marker)
     delete_remote_branch_if_exists(branch, cwd=repo_path)
     if resume_marker is None:
         subprocess.run(["git", "switch", "-C", branch], check=True, cwd=repo_path)
         _remove_preservation_only_files(repo_path)
     else:
-        _prepare_unpushed_publication_resume_branch(repo_path, branch, base_ref)
+        _prepare_unpushed_publication_resume_branch(repo_path, branch, base_ref, resume_marker)
     stage()
     if before_rebase is not None:
         before_rebase()
