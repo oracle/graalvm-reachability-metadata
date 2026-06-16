@@ -6,10 +6,11 @@
  */
 plugins {
     id "org.graalvm.internal.tck"
-    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+    alias(libs.plugins.kotlin.jvm)
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+int testJvmVersion = tck.testJvmVersion.get()
 Provider<Directory> generatedTestRuntimePropertiesDir = layout.buildDirectory.dir("generated/test-runtime-properties")
 
 dependencies {
@@ -19,13 +20,12 @@ dependencies {
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(testJvmVersion)
 }
 
 compileTestKotlin {
-    kotlinOptions.jvmTarget = "21"
+    kotlinOptions.jvmTarget = testJvmVersion.toString()
 }
-
 String findRuntimeClasspathJar(String prefix) {
     File match = sourceSets.test.runtimeClasspath.files.find { File candidate ->
         candidate.name.startsWith(prefix) && candidate.name.endsWith(".jar")

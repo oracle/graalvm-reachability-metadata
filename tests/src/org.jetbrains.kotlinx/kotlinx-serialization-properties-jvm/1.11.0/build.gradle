@@ -6,11 +6,12 @@
  */
 plugins {
     id "org.graalvm.internal.tck"
-    id "org.jetbrains.kotlin.jvm" version "2.3.20"
+    alias(libs.plugins.kotlin.jvm)
     id "org.jetbrains.kotlin.plugin.serialization" version "2.3.20"
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+int testJvmVersion = tck.testJvmVersion.get()
 
 dependencies {
     testImplementation "org.jetbrains.kotlinx:kotlinx-serialization-properties-jvm:$libraryVersion"
@@ -18,11 +19,11 @@ dependencies {
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(testJvmVersion)
 }
 
 compileTestKotlin {
-    kotlinOptions.jvmTarget = "21"
+    kotlinOptions.jvmTarget = testJvmVersion.toString()
 }
 
 graalvmNative {
