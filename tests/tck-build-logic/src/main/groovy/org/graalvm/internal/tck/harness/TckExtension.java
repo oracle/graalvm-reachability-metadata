@@ -45,7 +45,7 @@ public abstract class TckExtension {
 
     public abstract Property<Integer> getTestJvmVersion();
 
-    public abstract Property<@NotNull String> getScala213Version();
+    public abstract Property<@NotNull String> getScala2Version();
 
     public abstract Property<@NotNull String> getScala3Version();
 

@@ -369,10 +369,10 @@ class ScaffoldTaskTests {
         );
         assertThat(Files.readString(tempDir.resolve("tests/src/org.typelevel/cats-core_2.13/2.12.0/build.gradle"), StandardCharsets.UTF_8))
                 .contains("int testJvmVersion = tck.testJvmVersion.get()")
-                .contains("String scala213Version = tck.scala213Version.get()")
+                .contains("String scala2Version = tck.scala2Version.get()")
                 .contains("JavaLanguageVersion.of(testJvmVersion)")
-                .contains("org.scala-lang:scala-library:$scala213Version")
-                .contains("org.scala-lang:scala-compiler:$scala213Version")
+                .contains("org.scala-lang:scala-library:$scala2Version")
+                .contains("org.scala-lang:scala-compiler:$scala2Version")
                 .doesNotContain("JavaLanguageVersion.of(21)")
                 .doesNotContain("JavaLanguageVersion.of(25)")
                 .doesNotContain("org.scala-lang:scala-library:2.13.16")
