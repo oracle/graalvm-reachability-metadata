@@ -176,6 +176,29 @@ this functional spec.
   generic workflow policy; `forge_metadata.py` computes the concrete chunk size
   for each run.
 
+### FS-forge-vm-isolated-execution: VM-isolated Forge execution
+§GOAL-shorten-issue-to-shipped-metadata
+
+Forge should support running unattended issue-resolution and review automation
+inside an Incus virtual machine when operators need host isolation for generated
+tests, agent commands, temporary files, home-directory writes, and Docker-backed
+test resources. Docker containers are workload resources inside that VM, not the
+outer Forge isolation mechanism, because Forge workflows may run third-party
+tools or tests that start Docker containers themselves.
+
+The VM execution environment must preserve Forge's existing local contracts:
+the runnable artifact is a complete reachability-repo checkout or worktree
+(§FS-forge-functional-spec), local Forge automation remains non-privileged
+inside the run (§FS-local-ci-equivalent-verification), Gradle state remains
+scoped per reachability worktree, durable logs and metrics are still written,
+and stop-file, cleanup, and failed-work preservation behavior remain visible to
+the operator.
+
+Incus lifecycle setup may require operator-approved host configuration before a
+run starts, but ordinary Forge issue and review workflows must not request
+interactive privilege escalation or mutate the host outside that explicit VM
+setup boundary.
+
 ### 4.4 Repository availability for test and metadata artifacts
 
 - Every Forge workflow artifact that runs reachability-repo Gradle tasks for
