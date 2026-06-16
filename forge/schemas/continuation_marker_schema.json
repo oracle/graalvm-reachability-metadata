@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "continueFrom": {
+      "enum": [
+        "setup",
+        "fix",
+        "explore",
+        "finalization",
+        "publication"
+      ]
+    },
+    "coordinate": {
+      "type": "string"
+    },
+    "issueNumber": {
+      "type": "integer"
+    },
+    "label": {
+      "type": "string"
+    },
+    "newVersion": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "phases": {
+      "additionalProperties": false,
+      "properties": {
+        "explore": {
+          "$ref": "#/$defs/phase"
+        },
+        "finalization": {
+          "$ref": "#/$defs/phase"
+        },
+        "fix": {
+          "$ref": "#/$defs/phase"
+        },
+        "publication": {
+          "$ref": "#/$defs/phase"
+        },
+        "setup": {
+          "$ref": "#/$defs/phase"
+        }
+      },
+      "required": [
+        "setup",
+        "fix",
+        "explore",
+        "finalization",
+        "publication"
+      ],
+      "type": "object"
+    },
+    "preservedBranch": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "strategyName": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "continueFrom",
+    "preservedBranch",
+    "strategyName",
+    "issueNumber",
+    "label",
+    "coordinate",
+    "newVersion",
+    "phases"
+  ],
+  "type": "object",
+  "$defs": {
+    "phase": {
+      "additionalProperties": true,
+      "properties": {
+        "status": {
+          "enum": [
+            "pending",
+            "running",
+            "completed",
+            "skipped"
+          ]
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "type": "object"
+    }
+  }
+}

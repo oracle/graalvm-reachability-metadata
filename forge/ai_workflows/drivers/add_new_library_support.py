@@ -42,6 +42,12 @@ from ai_workflows.core.workflow_strategy import (
 from ai_workflows.core.workflow_strategy import WorkflowStrategy
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists
 from utility_scripts import metrics_writer
+from utility_scripts.continuation_marker import (
+    PHASE_FINALIZATION,
+    PHASE_SETUP,
+    load_continuation_marker,
+    save_phase_update,
+)
 from utility_scripts.dynamic_access_exhaust_report import resolve_workflow_exhaust_report
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.library_preparation_preflight import (
@@ -172,6 +178,10 @@ def build_parser():
         "--library-preparation-preflight-path",
         help="Path to the dispatcher-created library preparation preflight JSON record.",
     )
+    parser.add_argument(
+        "--continuation-marker-path",
+        help="Path to the Forge run-continuation marker for this issue run.",
+    )
     return parser
 
 
@@ -207,6 +217,7 @@ def parse_flags(argv_list):
         flags.chunk_class_count,
         flags.issue_number,
         flags.library_preparation_preflight_path,
+        flags.continuation_marker_path,
     )
 
 
@@ -398,9 +409,14 @@ def main(argv=None):
         chunk_class_count,
         issue_number,
         library_preparation_preflight_path,
+        continuation_marker_path,
     ) = parse_flags(argv if argv is not None else sys.argv[1:])
 
     strategy = require_strategy_by_name(strategy_name)
+    continuation_marker = load_continuation_marker(continuation_marker_path)
+    resume_from = None if continuation_marker is None else continuation_marker.continue_from
+    resume_existing_tree = resume_from in {"fix", "explore", PHASE_FINALIZATION, "publication"}
+    resume_finalization = resume_from == PHASE_FINALIZATION
 
     # Resolve repository locations (possibly cloning)
     reachability_repo_path, metrics_repo_dir, metrics_repo_root = resolve_workflow_repo_paths(
@@ -416,6 +432,14 @@ def main(argv=None):
             reachability_repo_path,
         )
     )
+    if not resume_existing_tree:
+        save_phase_update(
+            continuation_marker_path,
+            lambda marker: (
+                marker.mark_phase_running(PHASE_SETUP),
+                marker.mark_setup_preflight_done(),
+            ),
+        )
     resolve_graalvm_java_home()
 
     log_stage("setup", f"Selected strategy: {strategy_name}")
@@ -428,32 +452,39 @@ def main(argv=None):
     validate_repo_paths(reachability_repo_path, metrics_repo_dir)
 
     os.chdir(reachability_repo_path)
-    create_feature_branch_for_library(package, artifact, library_version)
-    if is_not_for_native_image(reachability_repo_path, package, artifact):
-        log_stage("native-image-eligibility", f"{package}:{artifact} is already marked not-for-native-image")
-        return 0
-    try:
-        discover_artifact_metadata(reachability_repo_path, library)
-        eligibility = evaluate_native_image_eligibility(reachability_repo_path, library)
-        if eligibility.not_for_native_image:
-            marker_path = write_not_for_native_image_marker(
-                reachability_repo_path,
-                package,
-                artifact,
-                eligibility.reason or "Artifact is not applicable to GraalVM Native Image metadata.",
-                eligibility.replacement,
-            )
-            log_stage(
-                "native-image-eligibility",
-                f"Marked {package}:{artifact} as not-for-native-image in {os.path.relpath(marker_path, reachability_repo_path)}",
-            )
+    if not resume_existing_tree:
+        create_feature_branch_for_library(package, artifact, library_version)
+        if is_not_for_native_image(reachability_repo_path, package, artifact):
+            log_stage("native-image-eligibility", f"{package}:{artifact} is already marked not-for-native-image")
             return 0
-        run_scaffold(library)
-    except ScaffoldError as exc:
-        print(f"ERROR: Gradle 'scaffold' task failed for coordinates: {library}", file=sys.stderr)
-        print(f"ERROR: {exc}", file=sys.stderr)
-        return 1
-    populate_artifact_urls(reachability_repo_path, library)
+        try:
+            discover_artifact_metadata(reachability_repo_path, library)
+            eligibility = evaluate_native_image_eligibility(reachability_repo_path, library)
+            if eligibility.not_for_native_image:
+                marker_path = write_not_for_native_image_marker(
+                    reachability_repo_path,
+                    package,
+                    artifact,
+                    eligibility.reason or "Artifact is not applicable to GraalVM Native Image metadata.",
+                    eligibility.replacement,
+                )
+                log_stage(
+                    "native-image-eligibility",
+                    f"Marked {package}:{artifact} as not-for-native-image in {os.path.relpath(marker_path, reachability_repo_path)}",
+                )
+                return 0
+            run_scaffold(library)
+        except ScaffoldError as exc:
+            print(f"ERROR: Gradle 'scaffold' task failed for coordinates: {library}", file=sys.stderr)
+            print(f"ERROR: {exc}", file=sys.stderr)
+            return 1
+        populate_artifact_urls(reachability_repo_path, library)
+        save_phase_update(
+            continuation_marker_path,
+            lambda marker: marker.mark_setup_done(),
+        )
+    else:
+        log_stage("continuation", f"Resuming {library} from preserved branch at phase {resume_from}")
     source_context_types = normalize_source_context_types(strategy.get("parameters", {}).get("source-context-types"))
     prepared_source_context = prepare_source_contexts(
         repo_root=get_repo_root(),
@@ -485,15 +516,17 @@ def main(argv=None):
         test_language_display_name=test_source_layout.display_language,
         test_source_dir_name=test_source_layout.source_dir_name,
         library_preparation_preflight_context=library_preparation_preflight_context,
+        continuation_marker_path=continuation_marker_path,
     )
 
-    # Add generated files to git and commit; record commit hash (do not use it)
     directory_path = module_dir
     index_json_path = os.path.join(reachability_repo_path, "metadata", package, artifact, "index.json")
-    subprocess.run(["git", "add", directory_path, index_json_path], check=False)
-    subprocess.run(["git", "commit", "-m", f"Scaffold {library}"], check=False, capture_output=True, text=True)
+    if not resume_existing_tree:
+        # Add generated files to git and commit; record commit hash (do not use it)
+        subprocess.run(["git", "add", directory_path, index_json_path], check=False)
+        subprocess.run(["git", "commit", "-m", f"Scaffold {library}"], check=False, capture_output=True, text=True)
     checkpoint_commit_hash = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
-    log_stage("scaffold", f"Committed scaffold at {checkpoint_commit_hash}")
+    log_stage("scaffold", f"Checkpoint at {checkpoint_commit_hash}")
 
     editable_files = list_all_files(test_source_layout.source_root)
     build_gradle_file = os.path.join(
@@ -531,10 +564,15 @@ def main(argv=None):
         ]
         agent.graphify(graphify_dirs)
 
-    workflow_status, global_iterations, unittest_number = strategy_obj.run(
-        agent=agent,
-        checkpoint_commit_hash=checkpoint_commit_hash,
-    )
+    if resume_finalization:
+        workflow_status = RUN_STATUS_SUCCESS
+        global_iterations = 0
+        unittest_number = 1
+    else:
+        workflow_status, global_iterations, unittest_number = strategy_obj.run(
+            agent=agent,
+            checkpoint_commit_hash=checkpoint_commit_hash,
+        )
 
     scaffold_placeholder_quality_gate_failed = False
     generated_test_validity_gate_failed = False

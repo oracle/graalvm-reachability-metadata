@@ -4,6 +4,7 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 from ai_workflows.core.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS, WorkflowStrategy
+from utility_scripts.continuation_marker import PHASE_FIX, save_phase_update
 from utility_scripts.native_test_verification import (
     STATUS_FAILED as NATIVE_TEST_GATE_FAILED,
     global_output_dir,
@@ -98,6 +99,10 @@ class _JavaTestFixIterativeBase(WorkflowStrategy):
         print(f"{'  ' * indent_level}{message}")
 
     def run(self, agent):
+        save_phase_update(
+            self.continuation_marker_path,
+            lambda marker: marker.mark_phase_running(PHASE_FIX),
+        )
         workflow_status = RUN_STATUS_FAILURE
 
         self._print_message("running initial gradle test to collect errors")
@@ -108,6 +113,10 @@ class _JavaTestFixIterativeBase(WorkflowStrategy):
         global_iterations = 1
 
         for test_iter in range(self.max_test_iterations):
+            save_phase_update(
+                self.continuation_marker_path,
+                lambda marker: marker.record_iteration(PHASE_FIX, test_iter + 1),
+            )
             self._print_message(
                 "test {test_iteration}/{max_test_iterations}".format(
                     test_iteration=test_iter + 1,
@@ -152,6 +161,16 @@ class _JavaTestFixIterativeBase(WorkflowStrategy):
                 workflow_status = RUN_STATUS_FAILURE
 
         agent.clear_context()
+        if workflow_status == RUN_STATUS_SUCCESS:
+            save_phase_update(
+                self.continuation_marker_path,
+                lambda marker: marker.mark_phase_completed(PHASE_FIX, iteration=global_iterations),
+            )
+        else:
+            save_phase_update(
+                self.continuation_marker_path,
+                lambda marker: marker.mark_phase_pending(PHASE_FIX, iteration=global_iterations),
+            )
         return workflow_status, global_iterations
 
     def _run_native_test_verification_gate(self) -> bool:

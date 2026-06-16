@@ -42,6 +42,12 @@ from ai_workflows.core.workflow_strategy import (
 )
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists, ensure_gh_authenticated, load_library_stats
 from utility_scripts import metrics_writer
+from utility_scripts.continuation_marker import (
+    PHASE_FINALIZATION,
+    PHASE_SETUP,
+    load_continuation_marker,
+    save_phase_update,
+)
 from utility_scripts.dynamic_access_exhaust_report import resolve_workflow_exhaust_report
 from utility_scripts.issue_requested_metadata import (
     NO_REPORTER_METADATA_CONTEXT,
@@ -162,6 +168,10 @@ def build_parser() -> argparse.ArgumentParser:
         "--library-preparation-preflight-path",
         help="Path to the dispatcher-created library preparation preflight JSON record.",
     )
+    parser.add_argument(
+        "--continuation-marker-path",
+        help="Path to the Forge run-continuation marker for this issue run.",
+    )
     return parser
 
 
@@ -189,6 +199,7 @@ def parse_flags(argv_list: list[str]):
         flags.issue_number,
         flags.issue_requested_metadata_context,
         flags.library_preparation_preflight_path,
+        flags.continuation_marker_path,
     )
 
 
@@ -704,10 +715,15 @@ def main(argv=None) -> int:
         issue_number,
         issue_requested_metadata_context,
         library_preparation_preflight_path,
+        continuation_marker_path,
     ) = parse_flags(argv if argv is not None else sys.argv[1:])
 
     library = f"{group}:{artifact}:{version}"
     strategy = require_strategy_by_name(strategy_name)
+    continuation_marker = load_continuation_marker(continuation_marker_path)
+    resume_from = None if continuation_marker is None else continuation_marker.continue_from
+    resume_existing_tree = resume_from in {"fix", "explore", PHASE_FINALIZATION, "publication"}
+    resume_finalization = resume_from == PHASE_FINALIZATION
     reachability_repo_path, metrics_repo_dir, metrics_repo_root = resolve_workflow_repo_paths(
         explicit_repo_path,
         explicit_metrics_repo_path,
@@ -720,6 +736,14 @@ def main(argv=None) -> int:
             reachability_repo_path,
         )
     )
+    if not resume_existing_tree:
+        save_phase_update(
+            continuation_marker_path,
+            lambda marker: (
+                marker.mark_phase_running(PHASE_SETUP),
+                marker.mark_setup_preflight_done(),
+            ),
+        )
     ensure_gh_authenticated()
     resolve_graalvm_java_home()
     validate_repo_paths(reachability_repo_path, metrics_repo_dir)
@@ -743,10 +767,17 @@ def main(argv=None) -> int:
             ),
         )
     model_name = strategy.get("model") or DEFAULT_MODEL_NAME
-    # Create feature branch
-    new_branch = build_ai_branch_name(f"improve-coverage-{group}-{artifact}-{version}")
-    delete_remote_branch_if_exists(new_branch)
-    subprocess.run(["git", "switch", "-C", new_branch], check=True)
+    if not resume_existing_tree:
+        # Create feature branch
+        new_branch = build_ai_branch_name(f"improve-coverage-{group}-{artifact}-{version}")
+        delete_remote_branch_if_exists(new_branch)
+        subprocess.run(["git", "switch", "-C", new_branch], check=True)
+        save_phase_update(
+            continuation_marker_path,
+            lambda marker: marker.mark_setup_done(),
+        )
+    else:
+        log_stage("continuation", f"Resuming {library} from preserved branch at phase {resume_from}")
 
     # Commit existing state as checkpoint
     test_version = update_target.resolved_test_version
@@ -777,11 +808,12 @@ def main(argv=None) -> int:
             ),
         )
     index_json = os.path.join(reachability_repo_path, "metadata", group, artifact, "index.json")
-    subprocess.run(["git", "add", tests_dir, index_json], check=False)
-    subprocess.run(
-        ["git", "commit", "--allow-empty", "-m", f"Checkpoint for coverage improvement of {library}"],
-        capture_output=True, text=True, check=False,
-    )
+    if not resume_existing_tree:
+        subprocess.run(["git", "add", tests_dir, index_json], check=False)
+        subprocess.run(
+            ["git", "commit", "--allow-empty", "-m", f"Checkpoint for coverage improvement of {library}"],
+            capture_output=True, text=True, check=False,
+        )
     checkpoint_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
     log_stage("setup", f"Checkpoint commit: {checkpoint_commit}")
 
@@ -841,6 +873,7 @@ def main(argv=None) -> int:
         dynamic_access_exhaust_report=dynamic_access_exhaust_report,
         dynamic_access_exhaust_report_path=dynamic_access_exhaust_report_path,
         chunk_class_count=chunk_class_count,
+        continuation_marker_path=continuation_marker_path,
     )
 
     # Initialize agent
@@ -869,11 +902,15 @@ def main(argv=None) -> int:
         persistent_instructions=strategy_obj.persistent_instructions,
     )
 
-    run_result = strategy_obj.run(
-        agent=agent,
-        checkpoint_commit_hash=checkpoint_commit,
-    )
-    workflow_status, iterations = run_result[0], run_result[1]
+    if resume_finalization:
+        workflow_status = RUN_STATUS_SUCCESS
+        iterations = 0
+    else:
+        run_result = strategy_obj.run(
+            agent=agent,
+            checkpoint_commit_hash=checkpoint_commit,
+        )
+        workflow_status, iterations = run_result[0], run_result[1]
 
     if workflow_status in {RUN_STATUS_SUCCESS, RUN_STATUS_CHUNK_READY}:
         workflow_status = strategy_obj.finalize_run(checkpoint_commit, workflow_status)

@@ -19,6 +19,12 @@ from ai_workflows.core.fix_post_generation_pi import (
     run_pi_post_generation_fix,
 )
 from utility_scripts.library_finalization import run_library_finalization
+from utility_scripts.continuation_marker import (
+    PHASE_FINALIZATION,
+    PHASE_PUBLICATION,
+    load_continuation_marker,
+    save_phase_update,
+)
 from utility_scripts.workflow_setup import build_graalvm_environment
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.gradle_test_runner import run_gradle_test_command
@@ -117,6 +123,8 @@ class WorkflowStrategy(ABC):
         self.parameters = self.strategy_obj.get("parameters", {})
         self.persistent_instructions = load_persistent_instructions(self.strategy_obj, **self.context)
         self.post_generation_intervention: dict | None = None
+        self.continuation_marker_path: str | None = self.context.get("continuation_marker_path")
+        self.continuation_marker = load_continuation_marker(self.continuation_marker_path)
         self._validate_required_prompts()
         self._validate_required_params()
 
@@ -462,8 +470,25 @@ class WorkflowStrategy(ABC):
         a chunk-ready run stays chunk-ready when finalization succeeds, otherwise
         the finalization status becomes the run status.
         """
+        save_phase_update(
+            self.continuation_marker_path,
+            lambda marker: marker.mark_phase_running(PHASE_FINALIZATION),
+        )
         finalize_status, _ = self._finalize_successful_iteration(base_commit=base_commit)
         finalize_succeeded = finalize_status in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS}
+        if finalize_succeeded:
+            save_phase_update(
+                self.continuation_marker_path,
+                lambda marker: (
+                    marker.mark_phase_completed(PHASE_FINALIZATION),
+                    marker.mark_phase_pending(PHASE_PUBLICATION),
+                ),
+            )
+        else:
+            save_phase_update(
+                self.continuation_marker_path,
+                lambda marker: marker.mark_phase_pending(PHASE_FINALIZATION),
+            )
         if finalize_succeeded and workflow_status == RUN_STATUS_CHUNK_READY:
             return RUN_STATUS_CHUNK_READY
         return finalize_status

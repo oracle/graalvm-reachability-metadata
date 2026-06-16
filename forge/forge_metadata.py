@@ -45,7 +45,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Optional
-from urllib.parse import quote
+from urllib.parse import quote, unquote
 
 import ai_workflows.core  # noqa: F401 - triggers strategy registration
 from ai_workflows.drivers.add_new_library_support import (
@@ -132,6 +132,13 @@ from utility_scripts.dynamic_access_exhaust_report import (
     DynamicAccessExhaustReport,
     dynamic_access_exhaust_report_path,
     find_dynamic_access_exhaust_report_path,
+)
+from utility_scripts.continuation_marker import (
+    CONTINUATION_MARKER_FILENAME,
+    PHASE_PUBLICATION,
+    ContinuationMarker,
+    continuation_marker_path,
+    load_continuation_marker,
 )
 from utility_scripts.dynamic_access_report import load_dynamic_access_coverage_report
 from utility_scripts.fixture_github import FixtureGitHubState, load_fixture_github_state
@@ -325,6 +332,7 @@ class ClaimedIssue:
     current_coordinates: str | None = None
     new_version: str | None = None
     preflight_info_path: str | None = None
+    continuation_marker: ContinuationMarker | None = None
 
 
 @dataclass(frozen=True)
@@ -3859,6 +3867,185 @@ def build_origin_branch_url(repo_path: str, branch_name: str) -> str:
     return f"https://github.com/{origin_owner}/{repo_name}/tree/{quote(branch_name, safe='')}"
 
 
+def get_issue_comments(issue_number: int) -> list[dict]:
+    """Fetch issue comments used for continuation branch discovery."""
+    if is_fixture_testing_enabled():
+        return []
+    data = gh_json(
+        "issue",
+        "view",
+        str(issue_number),
+        "--repo",
+        REPO,
+        "--json",
+        "comments",
+    )
+    comments = data.get("comments")
+    return comments if isinstance(comments, list) else []
+
+
+def extract_preserved_branch_name(comment_body: str) -> str | None:
+    """Extract the preserved work branch name from a human-intervention comment."""
+    branch_match = re.search(r"Branch name:\s*`([^`]+)`", comment_body)
+    if branch_match:
+        return branch_match.group(1).strip()
+    tree_match = re.search(r"/tree/([A-Za-z0-9%._~!$&'()*+,;=:@/-]+)", comment_body)
+    if tree_match:
+        return unquote(tree_match.group(1)).strip()
+    return None
+
+
+def find_latest_preserved_branch_name(issue_number: int) -> str | None:
+    """Return the latest preserved branch mentioned on the issue, when present."""
+    branch_name = None
+    for comment in get_issue_comments(issue_number):
+        body = comment.get("body")
+        if not isinstance(body, str):
+            continue
+        candidate = extract_preserved_branch_name(body)
+        if candidate:
+            branch_name = candidate
+    return branch_name
+
+
+def fetch_remote_branch(repo_path: str, branch_name: str) -> str:
+    """Fetch a remote branch and return its local remote-tracking ref."""
+    remote_ref = f"refs/remotes/origin/{branch_name}"
+    run_git_transport(
+        ["fetch", "origin", f"+refs/heads/{branch_name}:{remote_ref}"],
+        cwd=repo_path,
+        env=git_env_limited_to_repo_root(repo_path),
+    )
+    return remote_ref
+
+
+def load_continuation_marker_from_branch(
+        repo_path: str,
+        branch_name: str,
+) -> ContinuationMarker | None:
+    """Load the continuation marker stored on a remote preserved branch."""
+    remote_ref = fetch_remote_branch(repo_path, branch_name)
+    marker_relpath = f"forge/{CONTINUATION_MARKER_FILENAME}"
+    result = subprocess.run(
+        ["git", "show", f"{remote_ref}:{marker_relpath}"],
+        cwd=repo_path,
+        env=git_env_limited_to_repo_root(repo_path),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        log_stage(
+            "continuation",
+            f"Preserved branch {branch_name} has no {marker_relpath}; running issue from scratch.",
+        )
+        return None
+    try:
+        marker = ContinuationMarker.from_dict(json.loads(result.stdout))
+    except Exception as exc:
+        print(
+            f"ERROR: Failed to parse continuation marker on branch {branch_name}: {exc!r}",
+            file=sys.stderr,
+        )
+        return None
+    if marker.preserved_branch is None:
+        marker.record_preserved_branch(branch_name)
+    return marker
+
+
+def resolve_issue_continuation_marker(
+        issue: dict,
+        label: str,
+        base_reachability_metadata_path: str,
+) -> ContinuationMarker | None:
+    """Resolve a previously preserved continuation marker for this claim."""
+    issue_number = int(issue["number"])
+    branch_name = find_latest_preserved_branch_name(issue_number)
+    if not branch_name:
+        return None
+    marker = load_continuation_marker_from_branch(base_reachability_metadata_path, branch_name)
+    if marker is None:
+        return None
+    if marker.issue_number != issue_number or marker.label != label:
+        log_stage(
+            "continuation",
+            (
+                f"Ignoring preserved marker on {branch_name}: "
+                f"marker issue/label #{marker.issue_number} {marker.label} does not match "
+                f"#{issue_number} {label}."
+            ),
+        )
+        return None
+    return marker
+
+
+def checkout_continuation_branch(
+        worktree_path: str,
+        marker: ContinuationMarker,
+) -> bool:
+    """Check out and rebase the preserved branch into the isolated worktree."""
+    branch_name = marker.preserved_branch
+    if not branch_name:
+        return False
+    git_env = git_env_limited_to_repo_root(worktree_path)
+    remote_ref = fetch_remote_branch(worktree_path, branch_name)
+    subprocess.run(
+        ["git", "switch", "-C", branch_name, remote_ref],
+        cwd=worktree_path,
+        env=git_env,
+        check=True,
+    )
+    base_ref = fetch_remote_branch(worktree_path, DEFAULT_WORKTREE_BASE_REF)
+    rebase_result = subprocess.run(
+        ["git", "rebase", base_ref],
+        cwd=worktree_path,
+        env=git_env,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=False,
+    )
+    if rebase_result.returncode == 0:
+        log_stage(
+            "continuation",
+            f"Resuming issue #{marker.issue_number} from {branch_name} at phase {marker.continue_from}.",
+        )
+        return True
+    print(
+        (
+            f"ERROR: Could not rebase preserved branch {branch_name} onto "
+            f"{DEFAULT_WORKTREE_BASE_REF}; falling back to a clean run.\n{rebase_result.stdout}"
+        ),
+        file=sys.stderr,
+    )
+    subprocess.run(["git", "rebase", "--abort"], cwd=worktree_path, env=git_env, check=False)
+    subprocess.run(["git", "switch", "--detach", base_ref], cwd=worktree_path, env=git_env, check=True)
+    marker_path = continuation_marker_path(worktree_path)
+    if os.path.exists(marker_path):
+        os.remove(marker_path)
+    return False
+
+
+def create_or_load_run_continuation_marker(
+        claimed_issue: ClaimedIssue,
+        strategy_name: str,
+) -> str:
+    """Ensure this claimed run has an eager continuation marker."""
+    marker_path = continuation_marker_path(claimed_issue.worktree_path)
+    marker = load_continuation_marker(marker_path)
+    if marker is None:
+        marker = claimed_issue.continuation_marker or ContinuationMarker.create(
+            strategy_name=strategy_name,
+            issue_number=int(claimed_issue.issue["number"]),
+            label=claimed_issue.label,
+            coordinate=claimed_issue.issue_coordinates,
+            new_version=claimed_issue.new_version,
+        )
+    marker.save(marker_path)
+    return marker_path
+
+
 def require_claimed_issue_worktree(claimed_issue: ClaimedIssue, stage: str) -> str:
     """Require the claimed issue path to be the exact isolated reachability worktree."""
     try:
@@ -3921,9 +4108,23 @@ def preserve_failed_work_branch(claimed_issue: ClaimedIssue) -> FailurePreservat
     log_stage("preserve-failed-work", f"Preserving failed work for issue #{issue_number} on branch {branch_name}")
     subprocess.run(["git", "switch", "-C", branch_name], cwd=repo_path, env=git_env, check=True)
     logs_destination_relpath = copy_library_logs_to_preserved_worktree(claimed_issue)
+    marker_path = continuation_marker_path(repo_path)
+    marker = load_continuation_marker(marker_path)
+    if marker is not None:
+        marker.record_preserved_branch(branch_name)
+        marker.save(marker_path)
     subprocess.run(["git", "add", "-A"], cwd=repo_path, env=git_env, check=True)
     if logs_destination_relpath is not None:
         subprocess.run(["git", "add", "-f", "--", logs_destination_relpath], cwd=repo_path, env=git_env, check=True)
+    force_add_paths = []
+    marker_relpath = os.path.relpath(marker_path, repo_path)
+    if os.path.exists(marker_path):
+        force_add_paths.append(marker_relpath)
+    pending_metrics_relpath = os.path.join(get_forge_subdir_name(), PENDING_METRICS_FILENAME)
+    if os.path.exists(os.path.join(repo_path, pending_metrics_relpath)):
+        force_add_paths.append(pending_metrics_relpath)
+    if force_add_paths:
+        subprocess.run(["git", "add", "-f", "--", *force_add_paths], cwd=repo_path, env=git_env, check=True)
     diff_result = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=repo_path, env=git_env, check=False)
     committed_changes = diff_result.returncode != 0
     if committed_changes:
@@ -4388,6 +4589,12 @@ def append_library_preparation_preflight_arg(pipeline_argv: list[str], preflight
         pipeline_argv.extend(["--library-preparation-preflight-path", preflight_path])
 
 
+def append_continuation_marker_arg(pipeline_argv: list[str], marker_path: str | None) -> None:
+    """Append the continuation marker path when continuation tracking is active."""
+    if marker_path:
+        pipeline_argv.extend(["--continuation-marker-path", marker_path])
+
+
 def library_update_route_artifact_root(claimed_issue: ClaimedIssue) -> str:
     """Return the non-worktree artifact root for library-update route handoff."""
     return claimed_issue.preflight_info_path or claimed_issue.scratch_metrics_repo_path
@@ -4400,6 +4607,7 @@ def build_workflow_driver_invocation(
         library_preparation_preflight_path: str | None = None,
         chunk_class_count: int | None = None,
         library_update_route: LibraryUpdateRoute | None = None,
+        continuation_marker_path: str | None = None,
 ) -> WorkflowDriverInvocation:
     """Build the routed workflow-driver command for a claimed issue."""
     issue_number = claimed_issue.issue["number"]
@@ -4410,6 +4618,7 @@ def build_workflow_driver_invocation(
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
         append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+        append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
         if keep_tests_without_dynamic_access:
@@ -4442,6 +4651,7 @@ def build_workflow_driver_invocation(
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
         append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+        append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
         return WorkflowDriverInvocation(
@@ -4471,6 +4681,7 @@ def build_workflow_driver_invocation(
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
         append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+        append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
         return WorkflowDriverInvocation(
@@ -4500,6 +4711,7 @@ def build_workflow_driver_invocation(
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
         append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+        append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
         return WorkflowDriverInvocation(
             driver_name="fix_ni_run",
             script_name="fix_ni_run.py",
@@ -4533,6 +4745,7 @@ def build_workflow_driver_invocation(
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
             ]
             append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+            append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
             return WorkflowDriverInvocation(
                 driver_name="fix_javac_fail",
                 script_name="fix_javac_fail.py",
@@ -4561,6 +4774,7 @@ def build_workflow_driver_invocation(
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
             ]
             append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+            append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
             return WorkflowDriverInvocation(
                 driver_name="fix_java_run_fail",
                 script_name="fix_java_run_fail.py",
@@ -4589,6 +4803,7 @@ def build_workflow_driver_invocation(
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
             ]
             append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+            append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
             return WorkflowDriverInvocation(
                 driver_name="fix_ni_run",
                 script_name="fix_ni_run.py",
@@ -4615,6 +4830,7 @@ def build_workflow_driver_invocation(
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
         append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+        append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
         issue_requested_metadata_context = extract_issue_requested_metadata_context(get_issue_body(issue_number))
         if issue_requested_metadata_context:
             pipeline_argv.extend(["--issue-requested-metadata-context", issue_requested_metadata_context])
@@ -4656,9 +4872,23 @@ def invoke_pipeline(
     strategy names, and chunk context.
     """
     require_claimed_issue_worktree(claimed_issue, "workflow execution")
+    effective_strategy_name = strategy_name or DEFAULT_WORK_QUEUE_STRATEGY_NAME
+    if claimed_issue.continuation_marker is not None:
+        effective_strategy_name = claimed_issue.continuation_marker.strategy_name
+    continuation_path = create_or_load_run_continuation_marker(
+        claimed_issue,
+        effective_strategy_name,
+    )
+    marker = load_continuation_marker(continuation_path)
+    if marker is not None and marker.continue_from == PHASE_PUBLICATION:
+        log_stage(
+            "continuation",
+            f"Issue #{claimed_issue.issue['number']} resumes at publication; skipping workflow driver.",
+        )
+        return True
     library_preparation_preflight_path = run_library_preparation_preflight(
         claimed_issue,
-        strategy_name,
+        effective_strategy_name,
     )
     library_update_route = None
     if claimed_issue.label == LABEL_LIBRARY_UPDATE:
@@ -4679,16 +4909,17 @@ def invoke_pipeline(
     ):
         chunk_class_count = prepare_dynamic_access_chunking(
             claimed_issue,
-            strategy_name,
+            effective_strategy_name,
         )
     invocation = build_workflow_driver_invocation(
-        claimed_issue,
-        strategy_name,
-        keep_tests_without_dynamic_access,
-        library_preparation_preflight_path,
-        chunk_class_count,
-        library_update_route,
-    )
+            claimed_issue,
+            effective_strategy_name,
+            keep_tests_without_dynamic_access,
+            library_preparation_preflight_path,
+            chunk_class_count,
+            library_update_route,
+            continuation_path,
+        )
 
     print()
     log_stage(invocation.log_stage_name, invocation.log_message)
@@ -5384,6 +5615,11 @@ def claim_issue_for_processing(
     if claim_metadata is None:
         return None
     issue_coordinates, current_coordinates, new_version = claim_metadata
+    continuation_marker = resolve_issue_continuation_marker(
+        issue,
+        label,
+        base_reachability_metadata_path,
+    )
     try:
         chunked_exhaust_report = resolve_chunked_dynamic_access_exhaust_report(
             issue,
@@ -5408,6 +5644,8 @@ def claim_issue_for_processing(
             issue["number"],
         )
         preflight_info_path = create_preflight_info_dir(worktree_path)
+        if continuation_marker is not None and not checkout_continuation_branch(worktree_path, continuation_marker):
+            continuation_marker = None
         if chunked_exhaust_report is not None:
             verify_chunked_dynamic_access_base_contains_published_commit(
                 chunked_exhaust_report,
@@ -5435,6 +5673,7 @@ def claim_issue_for_processing(
         current_coordinates=current_coordinates,
         new_version=new_version,
         preflight_info_path=preflight_info_path,
+        continuation_marker=continuation_marker,
     )
 
 

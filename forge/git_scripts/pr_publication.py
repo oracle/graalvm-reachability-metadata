@@ -27,10 +27,112 @@ from utility_scripts.local_ci_verification import (
     fetch_pr_base_ref,
     run_local_ci_verification,
 )
+from utility_scripts.continuation_marker import (
+    CONTINUATION_MARKER_FILENAME,
+    PHASE_PUBLICATION,
+    ContinuationMarker,
+    continuation_marker_path,
+    load_continuation_marker,
+)
+from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME
 
 REPO: str = "oracle/graalvm-reachability-metadata"
 BASE_BRANCH: str = "master"
 REVIEWERS: list[str] = get_configured_reviewers()
+PRESERVATION_ONLY_PATHS: set[str] = {
+    f"forge/{CONTINUATION_MARKER_FILENAME}",
+    f"forge/{PENDING_METRICS_FILENAME}",
+}
+PRESERVATION_ONLY_DIRECTORIES: tuple[str, ...] = ("forge/human-intervention-logs",)
+PRESERVATION_ONLY_PREFIXES: tuple[str, ...] = ("forge/human-intervention-logs/",)
+
+
+def _publication_resume_marker(repo_path: str) -> ContinuationMarker | None:
+    """Return the publication continuation marker when this run resumes publication."""
+    marker = load_continuation_marker(continuation_marker_path(repo_path))
+    if marker is None or marker.continue_from != PHASE_PUBLICATION:
+        return None
+    return marker
+
+
+def _record_publication_pushed(
+        repo_path: str,
+        branch: str,
+        marker: ContinuationMarker | None = None,
+) -> None:
+    """Record the push boundary in the continuation marker if one exists."""
+    marker_path = continuation_marker_path(repo_path)
+    active_marker = marker or load_continuation_marker(marker_path)
+    if active_marker is None:
+        return
+    active_marker.record_publication_pushed(branch)
+    active_marker.save(marker_path)
+
+
+def _is_preservation_only_path(path: str) -> bool:
+    """Return True for files that belong only on failed-run preservation branches."""
+    normalized_path = path.replace(os.sep, "/")
+    return (
+        normalized_path in PRESERVATION_ONLY_PATHS
+        or any(normalized_path.startswith(prefix) for prefix in PRESERVATION_ONLY_PREFIXES)
+    )
+
+
+def _commit_touched_paths(repo_path: str, commit: str) -> set[str]:
+    """Return paths touched by one commit."""
+    output = subprocess.check_output(
+        ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", commit],
+        cwd=repo_path,
+        text=True,
+    )
+    return {line.strip() for line in output.splitlines() if line.strip()}
+
+
+def _non_preservation_commits(repo_path: str, base_ref: str, head_ref: str) -> list[str]:
+    """Return commits to replay while excluding preservation-only wrapper commits."""
+    output = subprocess.check_output(
+        ["git", "rev-list", "--reverse", f"{base_ref}..{head_ref}"],
+        cwd=repo_path,
+        text=True,
+    )
+    commits: list[str] = []
+    for commit in [line.strip() for line in output.splitlines() if line.strip()]:
+        touched_paths = _commit_touched_paths(repo_path, commit)
+        if touched_paths and all(_is_preservation_only_path(path) for path in touched_paths):
+            continue
+        commits.append(commit)
+    return commits
+
+
+def _remove_preservation_only_files(repo_path: str) -> None:
+    """Remove files that are tracked only on failed-run preservation branches."""
+    paths: list[str] = sorted(PRESERVATION_ONLY_PATHS)
+    pathspecs = [*paths, *PRESERVATION_ONLY_DIRECTORIES]
+    tracked_paths = subprocess.check_output(
+        ["git", "ls-files", "--", *pathspecs],
+        cwd=repo_path,
+        text=True,
+    ).splitlines()
+    if tracked_paths:
+        subprocess.run(["git", "rm", "-f", "-q", "--", *tracked_paths], cwd=repo_path, check=True)
+    for path in paths:
+        absolute_path = os.path.join(repo_path, path)
+        if os.path.isfile(absolute_path):
+            os.remove(absolute_path)
+    for directory in PRESERVATION_ONLY_DIRECTORIES:
+        absolute_directory = os.path.join(repo_path, directory)
+        if os.path.isdir(absolute_directory):
+            shutil.rmtree(absolute_directory)
+
+
+def _prepare_unpushed_publication_resume_branch(repo_path: str, branch: str, base_ref: str) -> None:
+    """Create a PR branch from base and replay only non-preservation run commits."""
+    preserved_head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_path, text=True).strip()
+    commits = _non_preservation_commits(repo_path, base_ref, preserved_head)
+    subprocess.run(["git", "switch", "-C", branch, base_ref], check=True, cwd=repo_path)
+    for commit in commits:
+        subprocess.run(["git", "cherry-pick", commit], check=True, cwd=repo_path)
+    _remove_preservation_only_files(repo_path)
 
 
 def publish_branch(
@@ -50,13 +152,27 @@ def publish_branch(
     assertions. Local CI-equivalent verification always runs before the push
     that makes the branch PR-eligible (§GIT-pr-eligibility).
     """
+    resume_marker = _publication_resume_marker(repo_path)
+    resume_branch = None if resume_marker is None or not resume_marker.publication_is_pushed() else resume_marker.publication_branch()
+    if resume_branch is not None:
+        commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_path, text=True).strip()
+        return resume_branch, LocalCIVerificationResult(
+            status="skipped-publication-resume",
+            base_commit=commit,
+            final_commit=commit,
+        )
+
+    base_ref = fetch_pr_base_ref(repo_path, REPO, BASE_BRANCH)
     branch = build_ai_branch_name(branch_suffix, cwd=repo_path)
     delete_remote_branch_if_exists(branch, cwd=repo_path)
-    subprocess.run(["git", "switch", "-C", branch], check=True, cwd=repo_path)
+    if resume_marker is None:
+        subprocess.run(["git", "switch", "-C", branch], check=True, cwd=repo_path)
+        _remove_preservation_only_files(repo_path)
+    else:
+        _prepare_unpushed_publication_resume_branch(repo_path, branch, base_ref)
     stage()
     if before_rebase is not None:
         before_rebase()
-    base_ref = fetch_pr_base_ref(repo_path, REPO, BASE_BRANCH)
     subprocess.run(["git", "rebase", base_ref], check=True, cwd=repo_path)
     local_ci_verification = run_local_ci_verification(
         repo_path=repo_path,
@@ -67,6 +183,7 @@ def publish_branch(
     if after_verification is not None:
         after_verification()
     run_git_transport(["push", "origin", branch], cwd=repo_path)
+    _record_publication_pushed(repo_path, branch, resume_marker)
     return branch, local_ci_verification
 
 

@@ -23,6 +23,13 @@ from ai_workflows.core.workflow_strategy import (
 from ai_workflows.drivers.improve_library_coverage import prepare_library_update_target
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists
 from utility_scripts import metrics_writer
+from utility_scripts.continuation_marker import (
+    PHASE_EXPLORE,
+    PHASE_FINALIZATION,
+    PHASE_SETUP,
+    load_continuation_marker,
+    save_phase_update,
+)
 from utility_scripts.dynamic_access_report import load_dynamic_access_coverage_report
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.library_preparation_preflight import (
@@ -98,6 +105,10 @@ def build_parser():
     parser.add_argument(
         "--library-preparation-preflight-path",
         help="Path to the dispatcher-created library preparation preflight JSON record.",
+    )
+    parser.add_argument(
+        "--continuation-marker-path",
+        help="Path to the Forge run-continuation marker for this issue run.",
     )
     return parser
 
@@ -249,6 +260,7 @@ def build_strategy_and_agent(
         version: str,
         library_preparation_preflight_context,
         explore: bool,
+        continuation_marker_path: str | None = None,
 ):
     """Construct the dynamic-access strategy object and its agent for the new coordinate.
 
@@ -303,6 +315,7 @@ def build_strategy_and_agent(
         test_source_dir_name=test_source_layout.source_dir_name,
         metadata_version=metadata_version,
         library_preparation_preflight_context=library_preparation_preflight_context,
+        continuation_marker_path=continuation_marker_path,
     )
 
     model_name = strategy.get("model") or DEFAULT_MODEL_NAME
@@ -342,6 +355,10 @@ def main(argv=None) -> int:
 
     current_coordinates = args.coordinates
     new_version = args.new_version
+    continuation_marker = load_continuation_marker(args.continuation_marker_path)
+    resume_from = None if continuation_marker is None else continuation_marker.continue_from
+    resume_existing_tree = resume_from in {"fix", PHASE_EXPLORE, PHASE_FINALIZATION, "publication"}
+    resume_finalization = resume_from == PHASE_FINALIZATION
     # Apply deterministic preflight setup into the resolved worktree before
     # generation; only advisory guidance reaches the prompt context.
     library_preparation_preflight, library_preparation_preflight_context = (
@@ -350,6 +367,14 @@ def main(argv=None) -> int:
             reachability_metadata_path,
         )
     )
+    if not resume_existing_tree:
+        save_phase_update(
+            args.continuation_marker_path,
+            lambda marker: (
+                marker.mark_phase_running(PHASE_SETUP),
+                marker.mark_setup_preflight_done(),
+            ),
+        )
     if library_preparation_preflight is not None:
         print("[pipeline] Library preparation preflight:")
         print(library_preparation_preflight_context)
@@ -364,57 +389,65 @@ def main(argv=None) -> int:
         f"fix-native-image-run-{group}-{artifact}-{new_version}",
         cwd=reachability_metadata_path,
     )
-    print(f"[pipeline] Creating branch: {branch}")
-    create_or_switch_branch(reachability_metadata_path, branch)
+    if not resume_existing_tree:
+        print(f"[pipeline] Creating branch: {branch}")
+        create_or_switch_branch(reachability_metadata_path, branch)
 
-    print(f"[pipeline] Running fixTestNativeImageRun for: {current_coordinates} -> {new_version}")
-    result = run_fix_test_native_image_run(
-        reachability_metadata_path=reachability_metadata_path,
-        current_coordinates=current_coordinates,
-        new_version=new_version,
-    )
-
-    if result.returncode != 0:
-        generated_metadata_file = os.path.join(
-            reachability_metadata_path,
-            "metadata",
-            group,
-            artifact,
-            new_version,
-            "reachability-metadata.json",
-        )
-        if not os.path.isfile(generated_metadata_file):
-            print(
-                "ERROR: fixTestNativeImageRun failed before generating "
-                f"{generated_metadata_file}. Skipping Codex metadata repair.",
-                file=sys.stderr,
-            )
-            return result.returncode
-        print(f"[pipeline] Detected missing metadata entries for {library}. Running Codex fix.")
-        gradle_env = gradle_command_environment(reachability_metadata_path)
-        codex_rc, _codex_log, _codex_timed_out = run_codex_metadata_fix(
-            reachability_metadata_path,
-            library,
-            graalvm_home=gradle_env.get("GRAALVM_HOME"),
-            library_preparation_preflight_context=library_preparation_preflight_context,
-        )
-        if codex_rc != 0:
-            print(f"ERROR: Codex failed with return code: {codex_rc}", file=sys.stderr)
-            return codex_rc
-        print(f"[pipeline] Codex metadata fix completed. Running Gradle test for {library}.")
-        result = run_gradle_test(
+        print(f"[pipeline] Running fixTestNativeImageRun for: {current_coordinates} -> {new_version}")
+        result = run_fix_test_native_image_run(
             reachability_metadata_path=reachability_metadata_path,
-            coordinates=library,
+            current_coordinates=current_coordinates,
+            new_version=new_version,
         )
-        if result.returncode != 0:
-            print("[pipeline] Gradle test failed after Codex metadata fix. Skipping PR creation.", file=sys.stderr)
-            return result.returncode
 
-    populate_artifact_urls(reachability_metadata_path, library)
-    checkpoint = commit_checkpoint(reachability_metadata_path, library)
+        if result.returncode != 0:
+            generated_metadata_file = os.path.join(
+                reachability_metadata_path,
+                "metadata",
+                group,
+                artifact,
+                new_version,
+                "reachability-metadata.json",
+            )
+            if not os.path.isfile(generated_metadata_file):
+                print(
+                    "ERROR: fixTestNativeImageRun failed before generating "
+                    f"{generated_metadata_file}. Skipping Codex metadata repair.",
+                    file=sys.stderr,
+                )
+                return result.returncode
+            print(f"[pipeline] Detected missing metadata entries for {library}. Running Codex fix.")
+            gradle_env = gradle_command_environment(reachability_metadata_path)
+            codex_rc, _codex_log, _codex_timed_out = run_codex_metadata_fix(
+                reachability_metadata_path,
+                library,
+                graalvm_home=gradle_env.get("GRAALVM_HOME"),
+                library_preparation_preflight_context=library_preparation_preflight_context,
+            )
+            if codex_rc != 0:
+                print(f"ERROR: Codex failed with return code: {codex_rc}", file=sys.stderr)
+                return codex_rc
+            print(f"[pipeline] Codex metadata fix completed. Running Gradle test for {library}.")
+            result = run_gradle_test(
+                reachability_metadata_path=reachability_metadata_path,
+                coordinates=library,
+            )
+            if result.returncode != 0:
+                print("[pipeline] Gradle test failed after Codex metadata fix. Skipping PR creation.", file=sys.stderr)
+                return result.returncode
+
+        populate_artifact_urls(reachability_metadata_path, library)
+        checkpoint = commit_checkpoint(reachability_metadata_path, library)
+        save_phase_update(
+            args.continuation_marker_path,
+            lambda marker: marker.mark_setup_done(),
+        )
+    else:
+        log_stage("continuation", f"Resuming {library} from preserved branch at phase {resume_from}")
+        checkpoint = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
 
     # Coverage gate: explore only when the new version has uncovered calls.
-    explore = should_explore_new_version(reachability_metadata_path, group, artifact, new_version)
+    explore = not resume_finalization and should_explore_new_version(reachability_metadata_path, group, artifact, new_version)
     if explore:
         print(f"[pipeline] Preparing version-specific test-suite for {library}")
         prepare_library_update_target(reachability_metadata_path, group, artifact, new_version)
@@ -428,6 +461,7 @@ def main(argv=None) -> int:
         version=new_version,
         library_preparation_preflight_context=library_preparation_preflight_context,
         explore=explore,
+        continuation_marker_path=args.continuation_marker_path,
     )
 
     iterations = 0
@@ -448,6 +482,7 @@ def main(argv=None) -> int:
                 version=new_version,
                 library_preparation_preflight_context=library_preparation_preflight_context,
                 explore=False,
+                continuation_marker_path=args.continuation_marker_path,
             )
 
     finalize_status = strategy_obj.finalize_run(checkpoint)
