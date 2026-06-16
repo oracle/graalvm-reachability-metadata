@@ -12,12 +12,13 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 int testJvmVersion = tck.testJvmVersion.get()
+String scala213Version = tck.scala213Version.get()
 
 dependencies {
     testImplementation "$group$:$artifact$:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
-    testImplementation 'org.scala-lang:scala-library:2.13.17'
-    testImplementation 'org.scala-lang:scala-compiler:2.13.17'
+    testImplementation "org.scala-lang:scala-library:$scala213Version"
+    testImplementation "org.scala-lang:scala-compiler:$scala213Version"
 }
 
 java {

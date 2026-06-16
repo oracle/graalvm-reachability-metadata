@@ -218,6 +218,8 @@ class ScaffoldTaskTests {
                 "/scaffold/build.gradle.kotlin.template"
         );
         assertThat(Files.readString(tempDir.resolve("tests/src/io.ktor/ktor-server-core-jvm/3.1.0/build.gradle"), StandardCharsets.UTF_8))
+                .contains("alias(libs.plugins.kotlin.jvm)")
+                .doesNotContain("id \"org.jetbrains.kotlin.jvm\" version")
                 .contains("int testJvmVersion = tck.testJvmVersion.get()")
                 .contains("jvmToolchain(testJvmVersion)")
                 .contains("kotlinOptions.jvmTarget = testJvmVersion.toString()")
@@ -322,9 +324,16 @@ class ScaffoldTaskTests {
         );
         assertThat(Files.readString(tempDir.resolve("tests/src/org.typelevel/cats-core_3/2.12.0/build.gradle"), StandardCharsets.UTF_8))
                 .contains("int testJvmVersion = tck.testJvmVersion.get()")
+                .contains("String scala3Version = tck.scala3Version.get()")
+                .contains("org.scala-lang:scala3-library_3:$scala3Version")
+                .contains("org.scala-lang:scala3-compiler_3:$scala3Version")
                 .contains("JavaLanguageVersion.of(testJvmVersion)")
                 .doesNotContain("JavaLanguageVersion.of(21)")
-                .doesNotContain("JavaLanguageVersion.of(25)");
+                .doesNotContain("JavaLanguageVersion.of(25)")
+                .doesNotContain("org.scala-lang:scala3-library_3:3.3.6")
+                .doesNotContain("org.scala-lang:scala3-compiler_3:3.3.6")
+                .doesNotContain("org.scala-lang:scala3-library_3:3.7.4")
+                .doesNotContain("org.scala-lang:scala3-compiler_3:3.7.4");
     }
 
     @Test
@@ -360,13 +369,16 @@ class ScaffoldTaskTests {
         );
         assertThat(Files.readString(tempDir.resolve("tests/src/org.typelevel/cats-core_2.13/2.12.0/build.gradle"), StandardCharsets.UTF_8))
                 .contains("int testJvmVersion = tck.testJvmVersion.get()")
+                .contains("String scala213Version = tck.scala213Version.get()")
                 .contains("JavaLanguageVersion.of(testJvmVersion)")
-                .contains("org.scala-lang:scala-library:2.13.17")
-                .contains("org.scala-lang:scala-compiler:2.13.17")
+                .contains("org.scala-lang:scala-library:$scala213Version")
+                .contains("org.scala-lang:scala-compiler:$scala213Version")
                 .doesNotContain("JavaLanguageVersion.of(21)")
                 .doesNotContain("JavaLanguageVersion.of(25)")
                 .doesNotContain("org.scala-lang:scala-library:2.13.16")
-                .doesNotContain("org.scala-lang:scala-compiler:2.13.16");
+                .doesNotContain("org.scala-lang:scala-compiler:2.13.16")
+                .doesNotContain("org.scala-lang:scala-library:2.13.17")
+                .doesNotContain("org.scala-lang:scala-compiler:2.13.17");
     }
 
     @Test
