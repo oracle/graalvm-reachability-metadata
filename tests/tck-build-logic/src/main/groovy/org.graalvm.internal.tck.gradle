@@ -203,6 +203,11 @@ boolean nativeTraceImageTaskRequested = !informationalTaskRequested &&
 boolean runNativeTraceImageTaskRequested = !informationalTaskRequested && isTaskRequested("runNativeTraceImage")
 boolean nativeTestTaskRequested = !informationalTaskRequested &&
         (isTaskRequested("nativeTest") || isTaskRequested("nativeTestCompile"))
+// §forge/WF-code-coverage-improvement: the phase-6 PGO discovery analyzer needs an
+// instrumented image (so count==0 means not-executed) plus the analysis
+// call-tree dump as the reachable-method denominator.
+boolean nativeTestPGOInstrumentTaskRequested = !informationalTaskRequested &&
+        (isTaskRequested("nativeTestPGOInstrument") || isTaskRequested("runNativeTestPGO"))
 
 Closure<String> requiredGradleProperty = { String propertyName ->
     String propertyValue = providers.gradleProperty(propertyName).getOrElse("")
@@ -406,6 +411,22 @@ Provider<List<String>> nativeTraceBuildArgs = providers.provider {
     return buildArgs
 }
 
+Provider<List<String>> pgoBuildArgs = providers.provider {
+    List<String> buildArgs = []
+    if (nativeTestPGOInstrumentTaskRequested) {
+        // Instrumented profiles only: count==0 ⇒ not executed holds only here,
+        // not for sampled collection. -g preserves the LineNumberTable so the
+        // analyzer can map bytecode indices to source. PrintAnalysisCallTree
+        // dumps reports/call_tree_*.txt + used_methods_*.txt as the denominator.
+        buildArgs.add("--pgo-instrument")
+        buildArgs.add("-g")
+        buildArgs.add("-H:+UnlockExperimentalVMOptions")
+        buildArgs.add("-H:+PrintAnalysisCallTree")
+        buildArgs.add("-H:-UnlockExperimentalVMOptions")
+    }
+    return buildArgs
+}
+
 tasks.named("nativeTestCompile", BuildNativeImageTask).configure { BuildNativeImageTask task ->
     task.doFirst {
         File nativeImageOutputDirectory = task.outputFile.get().asFile.parentFile
@@ -519,6 +540,33 @@ tasks.register("mergeNativeTraceMetadata", Exec) { Exec task ->
         commandLineArgs.addAll(inputDirs.collect { File inputDir -> "--input-dir=${inputDir.absolutePath}" })
         commandLineArgs.add("--output-dir=${outputDir.absolutePath}")
         task.commandLine(commandLineArgs)
+    }
+}
+
+tasks.register("nativeTestPGOInstrument") { task ->
+    task.setDescription("Builds the test native image with instrumented PGO and analysis call-tree dump enabled")
+    task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
+    task.dependsOn(tasks.named("nativeTestCompile"))
+}
+
+tasks.register("runNativeTestPGO", Exec) { Exec task ->
+    task.setDescription("Runs the instrumented PGO test native image once and writes the .iprof profile")
+    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+    task.dependsOn(tasks.named("nativeTestPGOInstrument"))
+    task.ignoreExitValue = true
+    task.doFirst {
+        String pgoProfilePath = requiredAbsolutePathProperty("pgoProfilePath")
+        BuildNativeImageTask nativeTestCompile = tasks.named("nativeTestCompile", BuildNativeImageTask).get()
+        NativeRunTask nativeTest = tasks.named("nativeTest", NativeRunTask).get()
+        File imageFile = nativeTestCompile.outputFile.get().asFile
+        List<String> runtimeArgs = []
+        runtimeArgs.addAll(nativeTest.internalRuntimeArgs.get())
+        runtimeArgs.addAll(nativeTest.runtimeArgs.get())
+        // Instrumented images dump the profile on exit; pin the output path so the
+        // analyzer reads a known location instead of a working-directory default.iprof.
+        runtimeArgs.add("-XX:ProfilesDumpFile=${pgoProfilePath}")
+        task.executable = imageFile.absolutePath
+        task.args = runtimeArgs
     }
 }
 
@@ -639,6 +687,7 @@ graalvmNative {
             }
             buildArgs.addAll(nativeImageArgs)
             buildArgs.addAll(nativeTraceBuildArgs)
+            buildArgs.addAll(pgoBuildArgs)
             if (generateDynamicAccessReport) {
                 buildArgs.addAll(providers.provider {
                     DynamicAccessUtils.buildArgsForClasspathEntries(resolveTestedLibraryJars())
