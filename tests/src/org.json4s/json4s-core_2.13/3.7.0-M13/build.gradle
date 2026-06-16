@@ -11,6 +11,7 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 int testJvmVersion = tck.testJvmVersion.get()
+String scala2Version = tck.scala2Version.get()
 
 configurations.configureEach {
     exclude group: 'org.scala-native'
@@ -19,8 +20,8 @@ configurations.configureEach {
 dependencies {
     testImplementation "org.json4s:json4s-core_2.13:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
-    testImplementation 'org.scala-lang:scala-library:2.13.17'
-    testImplementation 'org.scala-lang:scala-compiler:2.13.17'
+    testImplementation "org.scala-lang:scala-library:$scala2Version"
+    testImplementation "org.scala-lang:scala-compiler:$scala2Version"
 }
 
 java {
