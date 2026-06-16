@@ -21,6 +21,7 @@ structure chosen to satisfy it, with the workflow catalog in
 | §WF-forge-workflow-drivers | behavioral contract for deterministic workflow drivers |
 | §STRAT-forge-predefined-strategy-contract | behavioral contract for named strategy configuration bundles |
 | §AR-forge-control-plane | how the worker loop, dispatcher, GitHub queues, and worktrees compose |
+| §AR-forge-vm-runner-boundary | how VM isolation wraps Forge without changing workflow semantics |
 | §AR-forge-workflow-boundary | how workflow drivers turn a claimed issue into an isolated workflow run |
 | §AR-forge-strategy-agent-boundary | how strategy configuration, workflow engines, agents, and post-generation interventions are separated |
 | §AR-forge-verification-publication-boundary | why PR creation is a publication step after verification, not part of generation |
@@ -80,6 +81,25 @@ flowchart LR
     PR --> GitHub
     Dispatcher -->|failure / review bookkeeping| GitHub
 ```
+
+## AR-forge-vm-runner-boundary: VM isolation wraps Forge worker execution
+
+Incus VM support belongs around the worker and orchestration boundary, not in
+individual workflow engines or generated-test prompts (§FS-forge-vm-isolated-execution).
+A VM runner should prepare or enter an Incus VM that contains the complete
+reachability checkout, Forge tooling, GraalVM installations, GitHub credentials,
+Docker capability needed by tests, Gradle caches, and durable output locations,
+then invoke the existing `do-work.sh`, `do_up_to_date_work.sh`, or
+`forge_metadata.py` entrypoints inside that VM.
+
+Workflow drivers and agents should continue to receive ordinary repository
+paths, environment variables, and strategy configuration. They should not shell
+each Gradle command through Incus, choose VM lifecycle policy, or special-case
+whether the current host is bare metal or a VM. Keeping Incus at the runner
+boundary preserves the control-plane and workflow-driver contracts
+(§AR-forge-control-plane, §AR-forge-workflow-boundary) while giving operators a
+machine-level sandbox for tests that may write to `$HOME`, fill `/tmp`, open
+windows, or start Docker-backed services.
 
 ## AR-forge-workflow-boundary: Workflow drivers compose setup, workflow engine, and metrics
 

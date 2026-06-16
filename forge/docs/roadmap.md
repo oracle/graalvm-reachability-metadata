@@ -6,11 +6,12 @@ Completed roadmap points stay in this file for citation history. It serves the
 overall Forge direction in §GOAL-forge-direction.
 
 1. Better structure of `ai_workflows/` (§ROADMAP-forge-ai-workflows-structure).
-2. Library-specific preparation preflight (§ROADMAP-forge-library-preflight).
-3. Missing-version library-update router (§ROADMAP-forge-missing-version-router).
-4. Native metadata exploration finalization path (§ROADMAP-forge-native-finalization).
-5. Human-intervention strictness (§ROADMAP-forge-human-intervention-strictness).
-6. Planned code coverage improvement workflow (§ROADMAP-forge-code-coverage-workflow).
+2. Incus VM runner and setup docs (§ROADMAP-forge-incus-vm-runner).
+3. Library-specific preparation preflight (§ROADMAP-forge-library-preflight).
+4. Missing-version library-update router (§ROADMAP-forge-missing-version-router).
+5. Native metadata exploration finalization path (§ROADMAP-forge-native-finalization).
+6. Human-intervention strictness (§ROADMAP-forge-human-intervention-strictness).
+7. Planned code coverage improvement workflow (§ROADMAP-forge-code-coverage-workflow).
 
 Completed roadmap points:
 
@@ -40,6 +41,26 @@ and the workflow-engine registration in `__init__.py`, and updates the path
 references in code and in the remaining docs (README.md, AGENTS.md,
 DEVELOPING.md, and workflow specs) to match the canonical layout already
 described by §WF-forge-workflow-drivers and §WF-forge-workflow-engine.
+
+# ROADMAP-forge-incus-vm-runner: Incus VM runner and setup docs
+
+This item of §ROADMAP-forge-implementation adds the operator-facing Incus VM
+runner and setup instructions required by §FS-forge-vm-isolated-execution and
+§AR-forge-vm-runner-boundary.
+
+The implementation should provide a checked-in Incus configuration and
+step-by-step setup documentation for running Forge issue-resolution and review
+automation in a VM that can safely absorb generated-test side effects. The VM
+environment must contain the complete reachability checkout, Forge tooling,
+GraalVM installations, GitHub authentication, Docker capability required by
+library tests, and durable output paths for logs, metrics, preserved worktrees,
+and publication artifacts.
+
+The runner should enter the VM and invoke the existing Forge entrypoints rather
+than teaching workflow drivers or agents about Incus. Acceptance should include
+a documented smoke run that proves stop files, Gradle commands, Docker-backed
+tests, durable logs, metrics, worktree cleanup, and failed-work preservation are
+observable from the operator's expected host/VM boundary.
 
 # ROADMAP-forge-fixture-backed-e2e: Fixture-backed E2E mode
 
