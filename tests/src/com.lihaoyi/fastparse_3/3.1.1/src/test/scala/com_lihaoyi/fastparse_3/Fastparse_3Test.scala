@@ -19,14 +19,14 @@ import org.junit.jupiter.api.Test
 class Fastparse_3Test {
   @Test
   def parsesExpressionLanguageWithCapturesRepetitionAndEndChecking(): Unit = {
-    val parsed: Parsed[Assignment] = parse("answer = 1 + 2 * (3 + 4) - -5", ExpressionGrammar.assignment(_))
+    val parsed: Parsed[Assignment] = parse("answer = 1 + 2 * (3 + 4) - -5", ExpressionGrammar.assignment(using _))
 
     assertThat(parsed).isEqualTo(Parsed.Success(Assignment("answer", 20), 29))
   }
 
   @Test
   def reportsStructuredFailuresAndTraceMessagesForInvalidExpressions(): Unit = {
-    val parsed: Parsed[Assignment] = parse("answer = 1 + * 2", ExpressionGrammar.assignment(_), verboseFailures = true)
+    val parsed: Parsed[Assignment] = parse("answer = 1 + * 2", ExpressionGrammar.assignment(using _), verboseFailures = true)
     val failure: Parsed.Failure = expectFailure(parsed)
     val traced: Parsed.TracedFailure = failure.trace()
 
@@ -43,7 +43,7 @@ class Fastparse_3Test {
   def parsesDelimitedRecordsFromChunkedIteratorInput(): Unit = {
     val inspectedInput: IteratorParserInput = IteratorParserInput(Iterator("alpha,be", "ta,gamma", ",delta"))
     val parsedInput: IteratorParserInput = IteratorParserInput(Iterator("alpha,be", "ta,gamma", ",delta"))
-    val parsed: Parsed[Seq[String]] = parse(parsedInput, CsvGrammar.values(_))
+    val parsed: Parsed[Seq[String]] = parse(parsedInput, CsvGrammar.values(using _))
 
     assertThat(inspectedInput.isReachable(21)).isTrue
     assertThat(inspectedInput.slice(11, 16)).isEqualTo("gamma")
@@ -53,7 +53,7 @@ class Fastparse_3Test {
   @Test
   def exposesIndexedParserInputSlicesPositionsAndFoldedResults(): Unit = {
     val input: IndexedParserInput = IndexedParserInput("first\nsecond\nthird")
-    val parsed: Parsed[SpanToken] = parse(input, SpanGrammar.secondLineToken(_))
+    val parsed: Parsed[SpanToken] = parse(input, SpanGrammar.secondLineToken(using _))
     val folded: String = parsed.fold(
       (label: String, index: Int, extra: Parsed.Extra) => s"failure:$label@$index:${extra.startIndex}",
       (token: SpanToken, index: Int) => s"${token.text}:${token.start}-${token.end}:$index"
@@ -71,10 +71,10 @@ class Fastparse_3Test {
   def handlesWhitespaceModesIncludingNestedAndUnclosedComments(): Unit = {
     val scalaParsed: Parsed[Seq[String]] = parse(
       "alpha /* outer /* nested */ done */ , // line comment\n beta",
-      WhitespaceGrammars.scalaIdentifierList(_)
+      WhitespaceGrammars.scalaIdentifierList(using _)
     )
     val javaFailure: Parsed.Failure = expectFailure(
-      parse("left /* missing close */ right /* unclosed", WhitespaceGrammars.javaIdentifierPair(_), verboseFailures = true)
+      parse("left /* missing close */ right /* unclosed", WhitespaceGrammars.javaIdentifierPair(using _), verboseFailures = true)
     )
 
     assertThat(scalaParsed).isEqualTo(Parsed.Success(Seq("alpha", "beta"), 59))
@@ -84,11 +84,11 @@ class Fastparse_3Test {
 
   @Test
   def usesCaseInsensitiveAlternativesLookaheadPredicatesAndValidation(): Unit = {
-    val command: Parsed[String] = parse("SeLeCt", CommandGrammar.command(_))
-    val identifier: Parsed[String] = parse("customer_42", CommandGrammar.nonKeywordIdentifier(_))
-    val keywordAsIdentifier: Parsed[String] = parse("DELETE", CommandGrammar.nonKeywordIdentifier(_), verboseFailures = true)
-    val evenHalf: Parsed[Int] = parse("42", CommandGrammar.evenHalf(_))
-    val oddHalf: Parsed[Int] = parse("41", CommandGrammar.evenHalf(_), verboseFailures = true)
+    val command: Parsed[String] = parse("SeLeCt", CommandGrammar.command(using _))
+    val identifier: Parsed[String] = parse("customer_42", CommandGrammar.nonKeywordIdentifier(using _))
+    val keywordAsIdentifier: Parsed[String] = parse("DELETE", CommandGrammar.nonKeywordIdentifier(using _), verboseFailures = true)
+    val evenHalf: Parsed[Int] = parse("42", CommandGrammar.evenHalf(using _))
+    val oddHalf: Parsed[Int] = parse("41", CommandGrammar.evenHalf(using _), verboseFailures = true)
 
     assertThat(command).isEqualTo(Parsed.Success("select", 6))
     assertThat(identifier).isEqualTo(Parsed.Success("customer_42", 11))
@@ -99,10 +99,10 @@ class Fastparse_3Test {
 
   @Test
   def synthesizesDefaultValuesAndExplicitFailuresWithPassAndFail(): Unit = {
-    val defaulted: Parsed[Directive] = parse("cache", DirectiveGrammar.directive(_))
-    val enabled: Parsed[Directive] = parse("metrics=true", DirectiveGrammar.directive(_))
+    val defaulted: Parsed[Directive] = parse("cache", DirectiveGrammar.directive(using _))
+    val enabled: Parsed[Directive] = parse("metrics=true", DirectiveGrammar.directive(using _))
     val invalidBoolean: Parsed.Failure = expectFailure(
-      parse("maybe", DirectiveGrammar.booleanValue(_), verboseFailures = true)
+      parse("maybe", DirectiveGrammar.booleanValue(using _), verboseFailures = true)
     )
 
     assertThat(defaulted).isEqualTo(Parsed.Success(Directive("cache", false), 5))
@@ -112,9 +112,9 @@ class Fastparse_3Test {
 
   @Test
   def demonstratesCutBacktrackingAndNoCutRecovery(): Unit = {
-    val noCut: Parsed[Unit] = parse("ac", CutGrammar.withoutCut(_))
-    val cutFailure: Parsed.Failure = expectFailure(parse("ac", CutGrammar.withCut(_), verboseFailures = true))
-    val recovered: Parsed[Unit] = parse("ac", CutGrammar.cutWrappedInNoCut(_))
+    val noCut: Parsed[Unit] = parse("ac", CutGrammar.withoutCut(using _))
+    val cutFailure: Parsed.Failure = expectFailure(parse("ac", CutGrammar.withCut(using _), verboseFailures = true))
+    val recovered: Parsed[Unit] = parse("ac", CutGrammar.cutWrappedInNoCut(using _))
 
     assertThat(noCut).isEqualTo(Parsed.Success((), 2))
     assertThat(cutFailure.index).isEqualTo(1)
@@ -124,16 +124,16 @@ class Fastparse_3Test {
 
   @Test
   def supportsDependentParsingWithFlatMapAndRawSequencing(): Unit = {
-    assertThat(parse("'fastparse'", QuotedGrammar.quoted(_))).isEqualTo(Parsed.Success("fastparse", 11))
-    assertThat(parse("\"Scala 3\"", QuotedGrammar.quoted(_))).isEqualTo(Parsed.Success("Scala 3", 9))
+    assertThat(parse("'fastparse'", QuotedGrammar.quoted(using _))).isEqualTo(Parsed.Success("fastparse", 11))
+    assertThat(parse("\"Scala 3\"", QuotedGrammar.quoted(using _))).isEqualTo(Parsed.Success("Scala 3", 9))
 
-    val failure: Parsed.Failure = expectFailure(parse("'unterminated", QuotedGrammar.quoted(_), verboseFailures = true))
+    val failure: Parsed.Failure = expectFailure(parse("'unterminated", QuotedGrammar.quoted(using _), verboseFailures = true))
     assertThat(failure.msg).contains("Expected")
   }
 
   @Test
   def parsesUsingCharacterPredicatesAndAnyCharacterParsers(): Unit = {
-    val parsed: Parsed[CharacterSummary] = parse("Aλ9!?", CharacterGrammar.summary(_))
+    val parsed: Parsed[CharacterSummary] = parse("Aλ9!?", CharacterGrammar.summary(using _))
 
     assertThat(parsed).isEqualTo(Parsed.Success(CharacterSummary("Aλ", "9", "!?"), 5))
   }
@@ -147,7 +147,7 @@ class Fastparse_3Test {
     try {
       val inspectedInput: ReaderParserInput = ReaderParserInput(inspectedReader, 4)
       val parsedInput: ReaderParserInput = ReaderParserInput(parsedReader, 4)
-      val parsed: Parsed[(String, String)] = parse(parsedInput, ReaderBackedGrammar.assignment(_))
+      val parsed: Parsed[(String, String)] = parse(parsedInput, ReaderBackedGrammar.assignment(using _))
 
       assertThat(inspectedInput.isReachable(16)).isTrue
       assertThat(inspectedInput.slice(0, 4)).isEqualTo("name")
