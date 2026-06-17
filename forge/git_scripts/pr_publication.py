@@ -118,6 +118,12 @@ def _non_preservation_commits(repo_path: str, base_ref: str, head_ref: str) -> l
     return commits
 
 
+def _has_staged_changes(repo_path: str) -> bool:
+    """Return True when the index contains changes ready to commit."""
+    result = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=repo_path, check=False)
+    return result.returncode != 0
+
+
 def _remove_preservation_only_files(repo_path: str) -> None:
     """Remove files that are tracked only on failed-run preservation branches."""
     paths: list[str] = sorted(PRESERVATION_ONLY_PATHS)
@@ -139,6 +145,13 @@ def _remove_preservation_only_files(repo_path: str) -> None:
             shutil.rmtree(absolute_directory)
 
 
+def _commit_preservation_artifact_clearance(repo_path: str) -> None:
+    """Commit removal of resume helper artifacts when publication resumes."""
+    _remove_preservation_only_files(repo_path)
+    if _has_staged_changes(repo_path):
+        subprocess.run(["git", "commit", "-m", "Clear resume helper artifacts"], check=True, cwd=repo_path)
+
+
 def _prepare_unpushed_publication_resume_branch(
         repo_path: str,
         branch: str,
@@ -152,7 +165,7 @@ def _prepare_unpushed_publication_resume_branch(
     _record_publication_branch(repo_path, branch, marker)
     for commit in commits:
         subprocess.run(["git", "cherry-pick", commit], check=True, cwd=repo_path)
-    _remove_preservation_only_files(repo_path)
+    _commit_preservation_artifact_clearance(repo_path)
     _record_publication_branch(repo_path, branch, marker)
 
 

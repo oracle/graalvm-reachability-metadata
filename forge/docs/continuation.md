@@ -43,6 +43,10 @@ A run is an ordered sequence of phases. Continuation classifies each phase by it
 The unifying invariant: **the preserved branch HEAD is the cursor.** The
 committed tree is the source of truth for where a phase got to, so the marker
 never stores commit hashes — only the logical state a rebuild cannot recover.
+Every phase before the active resume point must be terminal: workflows that do
+not have a primary fix phase mark `fix` as `skipped` when setup completes, and
+workflows that do not run dynamic-access exploration mark `explore` as
+`skipped` before finalization.
 
 ## 2. ContinuationMarker
 
@@ -135,6 +139,9 @@ and `isPushed` records whether the branch is already pushed, so a resumed run on
 does the PR making. Opening the pull request is the workflow's
 completion — a marker only exists for a run that failed before that point, so
 continuation never reaches a state with the pull request already open.
+In publication resume mode, Forge creates a clearance commit before it publishes
+the PR branch. The clearance commit deletes resume helper artifacts: the
+continuation marker, pending metrics, and human-intervention logs.
 
 ## 4. Relationship to human intervention
 

@@ -12,7 +12,7 @@ from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_SUCCESS,
     WorkflowStrategy,
 )
-from utility_scripts.continuation_marker import PHASE_EXPLORE, save_phase_update
+from utility_scripts.continuation_marker import PHASE_EXPLORE, PHASE_FIX, save_phase_update
 from utility_scripts.dynamic_access_report import (
     DynamicAccessCoverageReport,
     compute_class_delta,
@@ -221,10 +221,17 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         if current_report is None:
             current_report = self._generate_dynamic_access_report()
         if self._should_fallback_to_basic_flow(current_report):
+            save_phase_update(
+                self.continuation_marker_path,
+                lambda marker: marker.mark_phase_skipped(PHASE_EXPLORE),
+            )
             return True, 0
         save_phase_update(
             self.continuation_marker_path,
-            lambda marker: marker.mark_phase_running(PHASE_EXPLORE),
+            lambda marker: (
+                marker.mark_phase_skipped_if_pending(PHASE_FIX),
+                marker.mark_phase_running(PHASE_EXPLORE),
+            ),
         )
 
         exhausted_classes: set[str] = self._continuation_exhausted_classes()

@@ -193,14 +193,24 @@ class ContinuationMarker:
         phase.update(fields)
         self.recompute_continue_from()
 
+    def mark_phase_skipped_if_pending(self, phase_name: str, **fields: Any) -> None:
+        """Mark a phase skipped only when no workflow has already claimed it."""
+        phase = self._phase(phase_name)
+        if phase.get("status") == STATUS_PENDING:
+            phase["status"] = STATUS_SKIPPED
+        phase.update(fields)
+        self.recompute_continue_from()
+
     def mark_setup_preflight_done(self) -> None:
         """Record the setup preflight sub-step."""
         self._phase(PHASE_SETUP)["preflightDone"] = True
         self.recompute_continue_from()
 
-    def mark_setup_done(self) -> None:
+    def mark_setup_done(self, skip_fix_phase: bool = False) -> None:
         """Record completed deterministic setup."""
         self.mark_phase_completed(PHASE_SETUP, preflightDone=True, setupDone=True)
+        if skip_fix_phase:
+            self.mark_phase_skipped_if_pending(PHASE_FIX)
 
     def record_iteration(self, phase_name: str, iteration: int | None) -> None:
         """Record the latest logical iteration for a continuous phase."""

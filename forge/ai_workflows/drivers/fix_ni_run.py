@@ -26,6 +26,7 @@ from utility_scripts import metrics_writer
 from utility_scripts.continuation_marker import (
     PHASE_EXPLORE,
     PHASE_FINALIZATION,
+    PHASE_FIX,
     PHASE_SETUP,
     load_continuation_marker,
     save_phase_update,
@@ -440,7 +441,10 @@ def main(argv=None) -> int:
         checkpoint = commit_checkpoint(reachability_metadata_path, library)
         save_phase_update(
             args.continuation_marker_path,
-            lambda marker: marker.mark_setup_done(),
+            lambda marker: (
+                marker.mark_setup_done(),
+                marker.mark_phase_completed(PHASE_FIX),
+            ),
         )
     else:
         log_stage("continuation", f"Resuming {library} from preserved branch at phase {resume_from}")
@@ -473,6 +477,10 @@ def main(argv=None) -> int:
         # already valid and the finalization gate decides PR eligibility.
         log_stage("explore", f"Dynamic-access exploration completed with status: {explore_status}")
         if explore_status != RUN_STATUS_SUCCESS:
+            save_phase_update(
+                args.continuation_marker_path,
+                lambda marker: marker.mark_phase_completed(PHASE_EXPLORE, iteration=iterations),
+            )
             strategy_obj, _seed_agent, model_name, tests_root = build_strategy_and_agent(
                 strategy_name=args.strategy_name,
                 reachability_metadata_path=reachability_metadata_path,
@@ -484,6 +492,11 @@ def main(argv=None) -> int:
                 explore=False,
                 continuation_marker_path=args.continuation_marker_path,
             )
+    else:
+        save_phase_update(
+            args.continuation_marker_path,
+            lambda marker: marker.mark_phase_skipped(PHASE_EXPLORE),
+        )
 
     finalize_status = strategy_obj.finalize_run(checkpoint)
     succeeded = finalize_status in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS}

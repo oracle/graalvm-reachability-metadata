@@ -38,6 +38,7 @@ from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_CHUNK_READY,
     RUN_STATUS_SUCCESS,
     SUCCESS_WITH_INTERVENTION_STATUS,
+    strategy_skips_initial_fix_phase,
 )
 from ai_workflows.core.workflow_strategy import WorkflowStrategy
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists
@@ -481,7 +482,9 @@ def main(argv=None):
         populate_artifact_urls(reachability_repo_path, library)
         save_phase_update(
             continuation_marker_path,
-            lambda marker: marker.mark_setup_done(),
+            lambda marker: marker.mark_setup_done(
+                skip_fix_phase=strategy_skips_initial_fix_phase(strategy),
+            ),
         )
     else:
         log_stage("continuation", f"Resuming {library} from preserved branch at phase {resume_from}")

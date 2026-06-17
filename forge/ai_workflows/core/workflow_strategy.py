@@ -46,6 +46,15 @@ RUN_STATUS_FAILURE = "failure"
 SUCCESS_WITH_INTERVENTION_STATUS = "success_with_intervention"
 RUN_STATUS_CHUNK_READY = "chunk_ready"
 
+
+def strategy_skips_initial_fix_phase(strategy_obj: dict) -> bool:
+    """Return True when a strategy enters dynamic-access work without a fix phase."""
+    workflow_name = strategy_obj.get("workflow")
+    if workflow_name in {"dynamic_access_iterative", "optimistic_dynamic_access"}:
+        return True
+    return workflow_name == "increase_dynamic_access_coverage" and not strategy_obj.get("primary-workflow")
+
+
 class WorkflowStrategy(ABC):
     """Base class for workflow strategy implementations.
 

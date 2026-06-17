@@ -7,6 +7,7 @@ import os
 import subprocess
 
 from ai_workflows.core.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS, WorkflowStrategy
+from utility_scripts.continuation_marker import PHASE_EXPLORE, PHASE_FIX, save_phase_update
 from utility_scripts.dynamic_access_report import format_full_report, load_dynamic_access_coverage_report
 from utility_scripts.metadata_index import resolve_test_version
 from utility_scripts.native_test_verification import (
@@ -73,6 +74,13 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
             )
             return self._run_basic_iterative_fallback(agent, **kwargs)
 
+        save_phase_update(
+            self.continuation_marker_path,
+            lambda marker: (
+                marker.mark_phase_skipped_if_pending(PHASE_FIX),
+                marker.mark_phase_running(PHASE_EXPLORE),
+            ),
+        )
         checkpoint = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
         successful_iterations = 0
         prompt_iterations = 0
@@ -173,6 +181,10 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
                     "native_test_verification_gate_failed",
                     issue="nativeTest_did_not_pass_within_verification_budget",
                 )
+                save_phase_update(
+                    self.continuation_marker_path,
+                    lambda marker: marker.mark_phase_pending(PHASE_EXPLORE, iteration=prompt_iterations),
+                )
                 return RUN_STATUS_FAILURE, prompt_iterations, 0
 
             if current_report.total_calls == current_report.covered_calls:
@@ -180,7 +192,15 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
                 break
 
         if successful_iterations > 0:
+            save_phase_update(
+                self.continuation_marker_path,
+                lambda marker: marker.mark_phase_completed(PHASE_EXPLORE, iteration=prompt_iterations),
+            )
             return RUN_STATUS_SUCCESS, prompt_iterations, successful_iterations
+        save_phase_update(
+            self.continuation_marker_path,
+            lambda marker: marker.mark_phase_pending(PHASE_EXPLORE, iteration=prompt_iterations),
+        )
         return RUN_STATUS_FAILURE, prompt_iterations, 0
 
     def _run_native_test_verification_gate(self) -> bool:

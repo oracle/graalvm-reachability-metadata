@@ -39,6 +39,7 @@ from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_SUCCESS,
     SUCCESS_WITH_INTERVENTION_STATUS,
     WorkflowStrategy,
+    strategy_skips_initial_fix_phase,
 )
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists, ensure_gh_authenticated, load_library_stats
 from utility_scripts import metrics_writer
@@ -775,7 +776,9 @@ def main(argv=None) -> int:
         subprocess.run(["git", "switch", "-C", new_branch], check=True)
         save_phase_update(
             continuation_marker_path,
-            lambda marker: marker.mark_setup_done(),
+            lambda marker: marker.mark_setup_done(
+                skip_fix_phase=strategy_skips_initial_fix_phase(strategy),
+            ),
         )
     else:
         log_stage("continuation", f"Resuming {library} from preserved branch at phase {resume_from}")

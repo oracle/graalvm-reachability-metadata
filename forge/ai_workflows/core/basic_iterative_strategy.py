@@ -7,7 +7,7 @@ import os
 import subprocess
 
 from ai_workflows.core.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS, WorkflowStrategy
-from utility_scripts.continuation_marker import PHASE_FIX, save_phase_update
+from utility_scripts.continuation_marker import PHASE_EXPLORE, PHASE_FIX, save_phase_update
 from utility_scripts.metadata_index import resolve_test_version
 from utility_scripts.stage_logger import log_stage
 
@@ -244,6 +244,9 @@ class BasicIterativeStrategy(WorkflowStrategy):
 
         save_phase_update(
             self.continuation_marker_path,
-            lambda marker: marker.mark_phase_completed(PHASE_FIX, iteration=global_iterations),
+            lambda marker: (
+                marker.mark_phase_completed(PHASE_FIX, iteration=global_iterations),
+                marker.mark_phase_skipped(PHASE_EXPLORE),
+            ),
         )
         return RUN_STATUS_SUCCESS, global_iterations, unittest_number

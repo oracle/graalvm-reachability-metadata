@@ -4,7 +4,7 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 from ai_workflows.core.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS, WorkflowStrategy
-from utility_scripts.continuation_marker import PHASE_FIX, save_phase_update
+from utility_scripts.continuation_marker import PHASE_EXPLORE, PHASE_FIX, save_phase_update
 from utility_scripts.native_test_verification import (
     STATUS_FAILED as NATIVE_TEST_GATE_FAILED,
     global_output_dir,
@@ -164,7 +164,10 @@ class _JavaTestFixIterativeBase(WorkflowStrategy):
         if workflow_status == RUN_STATUS_SUCCESS:
             save_phase_update(
                 self.continuation_marker_path,
-                lambda marker: marker.mark_phase_completed(PHASE_FIX, iteration=global_iterations),
+                lambda marker: (
+                    marker.mark_phase_completed(PHASE_FIX, iteration=global_iterations),
+                    marker.mark_phase_skipped(PHASE_EXPLORE),
+                ),
             )
         else:
             save_phase_update(
