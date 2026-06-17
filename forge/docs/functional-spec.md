@@ -379,18 +379,20 @@ verification still passed. That status should not by itself add the
 above.
 
 Metadata-entry-count and coverage-depth objections for libraries that report
-zero dynamic-access calls are never human-intervention, because such libraries
-need no reachability metadata for an end user to run them under `native-image`
+zero dynamic-access calls are never human-intervention on their own, because the
+zero-call report does not provide enough information to decide whether metadata
+is unnecessary or whether an entry-count drop is meaningful
 (§FS-zero-dynamic-access-tolerance).
 
 ### FS-zero-dynamic-access-tolerance: Zero dynamic-access library tolerance
 
-A library that reports zero dynamic-access calls needs no reachability metadata
-for an end user to run it under `native-image`: there are no reflection,
-resource, proxy, serialization, or JNI call sites for metadata to cover, so its
-`reachability-metadata.json` can legitimately be `{}` and its metadata entry
-count carries little signal. Review automation must treat such libraries
-leniently on metadata depth.
+A zero dynamic-access report means the current evidence did not observe
+reflection, resource, proxy, serialization, or JNI call sites for the tested
+version. It is not proof that the target coordinate and its transitive
+dependencies need no reachability metadata: dynamic-access stats can miss
+metadata required through downstream libraries. Review automation must therefore
+treat metadata entry totals, metadata entry drops, and metadata-depth heuristics
+as low-signal evidence for such libraries.
 
 When the PR evidence reports zero dynamic-access calls for the tested version
 (for example `dynamicAccess.totalCalls == 0` in stats, or a `{}`
@@ -399,19 +401,23 @@ following must not be escalated to `human-intervention` or a requested-changes
 review on coverage-depth grounds (§FS-human-intervention-policy):
 
 - A drop in total metadata entry count between the previous and new metadata
-  version, including a drop below the normal severe-drop guardrail. The entries
-  are not required for an end user to run the library natively.
+  version, including a drop below the normal severe-drop guardrail. The zero-call
+  report does not give enough information to decide whether the entries were
+  unnecessary or whether the drop is a regression.
 - A test that is shallow or exercises behavior that is not strictly the
-  library's responsibility, when the library still needs no metadata to run.
+  library's responsibility, when that objection depends on metadata-depth
+  expectations inferred from the zero-call report.
 
-This tolerance applies to the `library-update-request`, `fixes-javac-fail`,
-`fixes-java-run-fail`, and `fixes-native-image-run-fail` review labels
-(§FS-automated-pr-review). It does not relax the label-specific gates that prove
-the fix itself: compilation, JVM execution, and native-image execution must
-still pass, and reviewers must still reject tests that swallow the failing
-exception or disable native-image behavior. It only removes
-metadata-entry-count and coverage-depth objections for libraries that, by their
-own zero dynamic-access signal, do not need metadata for end users.
+This tolerance applies to `library-new-request`, `library-update-request`,
+`fixes-javac-fail`, `fixes-java-run-fail`, and
+`fixes-native-image-run-fail` review labels (§FS-automated-pr-review). It does
+not relax the label-specific gates that prove the submitted support or fix:
+new-library tests must still be library-specific, compilation, JVM execution,
+and native-image execution must still pass where the label requires them, and
+reviewers must still reject tests that swallow the failing exception or disable
+native-image behavior. It only removes metadata-entry-count and coverage-depth
+objections when the zero dynamic-access signal leaves review automation without
+enough information to judge metadata relevance.
 
 ### FS-automated-pr-review: Automated pull request review
 
