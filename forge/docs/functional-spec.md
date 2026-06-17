@@ -176,28 +176,51 @@ this functional spec.
   generic workflow policy; `forge_metadata.py` computes the concrete chunk size
   for each run.
 
-### FS-forge-vm-isolated-execution: VM-isolated Forge execution
-§GOAL-shorten-issue-to-shipped-metadata
+### FS-forge-vm-isolated-execution: Optional VM-isolated Forge execution
 
-Forge should support running unattended issue-resolution and review automation
-inside an Incus virtual machine when operators need host isolation for generated
-tests, agent commands, temporary files, home-directory writes, and Docker-backed
-test resources. Docker containers are workload resources inside that VM, not the
-outer Forge isolation mechanism, because Forge workflows may run third-party
-tools or tests that start Docker containers themselves.
+Forge must offer an optional, opt-in mode that runs a whole generation inside a
+dedicated Incus virtual machine. The mode is selected by a single flag; when the
+flag is absent, Forge runs exactly as it does today, directly on the host. The
+flag changes only *where* a generation runs, never *what* it does.
 
-The VM execution environment must preserve Forge's existing local contracts:
-the runnable artifact is a complete reachability-repo checkout or worktree
-(§FS-forge-functional-spec), local Forge automation remains non-privileged
-inside the run (§FS-local-ci-equivalent-verification), Gradle state remains
-scoped per reachability worktree, durable logs and metrics are still written,
-and stop-file, cleanup, and failed-work preservation behavior remain visible to
-the operator.
+The reason for the VM is host isolation. Generated tests and agent commands can
+open windows, write into `$HOME`, fill `/tmp`, delete files, and start
+Docker-backed services. Running a generation inside an Incus VM keeps every such
+side effect on the VM's disposable disk instead of the operator's machine.
+Docker is deliberately not the isolation boundary: Forge workflows themselves
+start Docker containers for third-party test resources, so Docker stays a
+workload *inside* the VM while the VM is the outer sandbox the operator wants.
 
-Incus lifecycle setup may require operator-approved host configuration before a
-run starts, but ordinary Forge issue and review workflows must not request
-interactive privilege escalation or mutate the host outside that explicit VM
-setup boundary.
+When the flag is set, Forge runs the generation in a fresh, single-use VM
+provisioned for that run, not just a worktree, and discards the VM afterwards so
+no run state carries into the next run. Each VM must contain a complete
+reachability-repo checkout (§FS-forge-functional-spec) at current `master`,
+Forge tooling, the required GraalVM installation(s), `gh` authentication for the
+reachability repo, the Docker capability tests need, and Gradle caches. Forge
+then runs its existing entrypoints inside that VM.
+
+Everything else about a generation stays identical to a host run. Workflow
+selection, strategy configuration, logging, metrics, stop-file handling, worktree
+cleanup, and failed-work preservation behave the same and produce the same
+artifacts; local Forge automation stays non-privileged inside the run
+(§FS-local-ci-equivalent-verification).
+
+Because each run uses a fresh VM, run logs cannot stay inside it. Forge must
+therefore support directing its run logs to an operator-provided location, so
+that location can be a host directory mounted into the VM: every log the run
+produces then lands on the operator's machine as it is written and remains after
+the VM is discarded. Metrics and preserved failed-work branches already leave
+over the network and need no shared storage. The generation worktree and all
+other test side effects stay inside the single-use VM and are discarded with it.
+
+Preparing the host for Incus is an operator/agent prerequisite, not something a
+run does: Forge must not install or configure Incus itself, and ordinary runs
+must not request interactive privilege escalation or mutate the host outside that
+explicit, documented one-time setup. When the flag is passed, Forge must first
+verify the isolated environment is fully prepared — Incus available, the base
+image built, and the required configuration and credentials present — and stop
+with a clear, actionable error rather than running partially or silently falling
+back to the host.
 
 ### 4.4 Repository availability for test and metadata artifacts
 
