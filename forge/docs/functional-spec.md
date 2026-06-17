@@ -395,11 +395,16 @@ pull requests, where the reason is read from the PR comments, reviews, and PR
 description together (PR comments are frequently absent, so the requested-changes
 review carries the reason), or issues, where the reason lives in the issue
 comment and its linked log — clusters the items by the
-underlying system issue that earned the label, and files one tracking issue per
-root-cause group so each cause is addressed once instead of per item. The
-automation only investigates, groups, and opens tracking issues: it never edits,
-relabels, closes, or merges the source items, so it preserves the labeling
-guarantees of §FS-human-intervention-policy.
+common observed cause that earned the label. Groups below the configured support
+threshold are recorded but not escalated. Supported groups get follow-up
+investigation tasks that search the current checkout for a still-current system
+cause; stale, already-fixed, one-off, library-specific, or unsupported groups are
+cancelled without opening an issue. Only groups backed by current code, prompt,
+workflow, or policy evidence may open or reuse a tracking issue, so each live
+system cause is addressed once instead of per source item. The automation only
+investigates, groups, and opens tracking issues: it never edits, relabels,
+closes, or merges the source items, so it preserves the labeling guarantees of
+§FS-human-intervention-policy.
 
 ### FS-automated-pr-review: Automated pull request review
 
