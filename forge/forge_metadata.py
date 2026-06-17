@@ -241,6 +241,7 @@ LABEL_HUMAN_INTERVENTION = "human-intervention"
 LABEL_HUMAN_INTERVENTION_FIXED = "human-intervention-fixed"
 LABEL_NOT_FOR_NATIVE_IMAGE = "not-for-native-image"
 LABEL_CHUNKED_DYNAMIC_ACCESS = "chunked-dynamic-access"
+LABEL_RESUMABLE = "resumable"
 FIXTURE_AUTHENTICATED_USER = "fixture-runner"
 NON_USER_REQUESTED_ISSUE_AUTHORS: tuple[str, ...] = (
     "graalvmbot",
@@ -305,6 +306,8 @@ PRIORITY_LABEL_COLOR = "FBCA04"
 PRIORITY_LABEL_DESCRIPTION = "Automation should process this issue before regular queue items"
 CHUNKED_DYNAMIC_ACCESS_LABEL_COLOR = "C5DEF5"
 CHUNKED_DYNAMIC_ACCESS_LABEL_DESCRIPTION = "Issue uses chunked dynamic-access processing"
+RESUMABLE_LABEL_COLOR = "0E8A16"
+RESUMABLE_LABEL_DESCRIPTION = "Issue has preserved automation work that Forge can resume"
 DEFAULT_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD = 15
 
 
@@ -939,6 +942,11 @@ def issue_has_label(issue: dict, label_name: str) -> bool:
         if isinstance(label, dict) and label.get("name") == label_name:
             return True
     return False
+
+
+def issue_is_resumable(issue: dict) -> bool:
+    """Return True when an issue is explicitly eligible for run continuation."""
+    return issue_has_label(issue, LABEL_RESUMABLE)
 
 
 def add_issue_label_to_payload(issue: dict, label_name: str) -> None:
@@ -3788,6 +3796,9 @@ def add_issue_label(issue_number: int, label_name: str) -> None:
     elif label_name == LABEL_CHUNKED_DYNAMIC_ACCESS:
         label_color = CHUNKED_DYNAMIC_ACCESS_LABEL_COLOR
         label_description = CHUNKED_DYNAMIC_ACCESS_LABEL_DESCRIPTION
+    elif label_name == LABEL_RESUMABLE:
+        label_color = RESUMABLE_LABEL_COLOR
+        label_description = RESUMABLE_LABEL_DESCRIPTION
     ensure_repo_label_exists(
         label_name,
         label_color,
@@ -4049,6 +4060,8 @@ def resolve_issue_continuation_marker(
         base_reachability_metadata_path: str,
 ) -> ContinuationMarker | None:
     """Resolve a previously preserved continuation marker for this claim."""
+    if not issue_is_resumable(issue):
+        return None
     issue_number = int(issue["number"])
     for branch_name in find_preserved_branch_candidates(
             issue,
@@ -4410,7 +4423,12 @@ def ensure_preserved_branch_link_in_comment(
     )
 
 
-def post_human_intervention_comment_and_label(issue_number: int, comment_body: str | None) -> None:
+def post_human_intervention_comment_and_label(
+        issue_number: int,
+        comment_body: str | None,
+        *,
+        resumable: bool = False,
+) -> None:
     """Post the human-intervention comment and always attempt to apply the label."""
     if is_user_interrupt_requested():
         return
@@ -4433,6 +4451,23 @@ def post_human_intervention_comment_and_label(issue_number: int, comment_body: s
             file=sys.stderr,
         )
         traceback.print_exc()
+
+    if resumable:
+        try:
+            add_issue_label(issue_number, LABEL_RESUMABLE)
+        except Exception as exc:
+            print(
+                f"ERROR: Failed to add '{LABEL_RESUMABLE}' label to issue #{issue_number}: {exc!r}",
+                file=sys.stderr,
+            )
+            traceback.print_exc()
+
+
+def preservation_result_has_continuation_marker(preservation_result: FailurePreservationResult | None) -> bool:
+    """Return True when preserved work carries a continuation marker."""
+    if preservation_result is None:
+        return False
+    return os.path.isfile(continuation_marker_path(preservation_result.reviewable_worktree_path))
 
 
 def maybe_apply_human_intervention_follow_up(
@@ -4466,7 +4501,11 @@ def maybe_apply_human_intervention_follow_up(
         comment_body = None
     if is_user_interrupt_requested():
         return False
-    post_human_intervention_comment_and_label(claimed_issue.issue["number"], comment_body)
+    post_human_intervention_comment_and_label(
+        claimed_issue.issue["number"],
+        comment_body,
+        resumable=preservation_result_has_continuation_marker(preservation_result),
+    )
     return True
 
 
@@ -4507,7 +4546,11 @@ def apply_failed_run_follow_up(
         comment_body = None
     if is_user_interrupt_requested():
         raise KeyboardInterrupt
-    post_human_intervention_comment_and_label(claimed_issue.issue["number"], comment_body)
+    post_human_intervention_comment_and_label(
+        claimed_issue.issue["number"],
+        comment_body,
+        resumable=preservation_result_has_continuation_marker(preservation_result),
+    )
 
 
 def dynamic_access_chunk_class_threshold() -> int:
@@ -5805,6 +5848,15 @@ def claim_issue_for_processing(
         issue_coordinates,
         base_reachability_metadata_path,
     )
+    if issue_is_resumable(issue) and continuation_marker is None:
+        log_stage(
+            "continuation",
+            (
+                f"Skipping issue #{issue['number']}: label '{LABEL_RESUMABLE}' is present, "
+                "but no valid continuation marker was found on a preserved branch."
+            ),
+        )
+        return None
     try:
         chunked_exhaust_report = resolve_chunked_dynamic_access_exhaust_report(
             issue,
@@ -6878,7 +6930,7 @@ def get_issue_claim_cache_observation_from_payload(
     issue_number = issue.get("number")
     if not isinstance(issue_number, int):
         return None
-    if issue_has_label(issue, LABEL_HUMAN_INTERVENTION):
+    if issue_has_label(issue, LABEL_HUMAN_INTERVENTION) and not issue_is_resumable(issue):
         return IssueClaimCacheObservation(
             issue_number=issue_number,
             reason=ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION,
@@ -7071,7 +7123,7 @@ def get_issue_claim_preflights(
 
 def issue_needs_claim_preflight(issue: dict, authenticated_user: str | None = None) -> bool:
     """Return True when an issue needs GraphQL preflight before claim attempts."""
-    if issue_has_label(issue, LABEL_HUMAN_INTERVENTION):
+    if issue_has_label(issue, LABEL_HUMAN_INTERVENTION) and not issue_is_resumable(issue):
         return False
     if issue_has_label(issue, LABEL_NOT_FOR_NATIVE_IMAGE):
         return False
@@ -7120,9 +7172,15 @@ def should_skip_issue_from_preflight(
         and cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS
         and issue_has_label(issue, LABEL_CHUNKED_DYNAMIC_ACCESS)
     )
+    cached_human_intervention_now_resumable = (
+        cached_skip is not None
+        and cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION
+        and issue_is_resumable(issue)
+    )
     if (
             cached_skip is not None
             and not cached_chunked_issue_in_progress
+            and not cached_human_intervention_now_resumable
             and cached_skip_blocks_authenticated_user(cached_skip, authenticated_user, take_blocked_issues)
     ):
         return True

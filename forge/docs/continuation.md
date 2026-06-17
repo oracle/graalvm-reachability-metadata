@@ -117,15 +117,17 @@ because the marker never enters a successful run's publication staging
 
 A resume run reads the marker from the preserved branch and:
 
-1. Re-routes the workflow from `issueNumber`/`label`/`coordinate` and
+1. Requires the issue to carry `resumable`; plain `human-intervention` issues
+   stay manual and do not trigger preserved-branch discovery.
+2. Re-routes the workflow from `issueNumber`/`label`/`coordinate` and
    re-instantiates the engine from `strategyName`.
-2. Derives preserved-work branch prefixes from recent issue comment authors and
+3. Derives preserved-work branch prefixes from recent issue comment authors and
    the deterministic `ai/<login>/human-intervention/issue-...-` branch naming
    convention, then selects a matching remote branch that carries a valid marker.
-3. Checks out the preserved branch and rebases it onto current `master`; if it
+4. Checks out the preserved branch and rebases it onto current `master`; if it
    no longer applies cleanly, it falls back to a clean run rather than resuming a
    stale tree.
-4. Enters the phase named by `continueFrom` and applies that phase's resume
+5. Enters the phase named by `continueFrom` and applies that phase's resume
    action from §1, skipping every earlier completed or skipped phase.
 
 Publication resume hinges on the push: the branch is read from the marker
