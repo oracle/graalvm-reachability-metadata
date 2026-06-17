@@ -319,39 +319,40 @@ the repository-level paths that require maintainer review, following
 
 ### FS-library-update-tested-version-split: Library-update tested-version split
 
-A `library-update-request` entry often covers several tested-version aliases at
-once (for example `["1.1", "1.2", "1.3"]`). When a coverage-improvement run
-regenerates the JVM tests for such an entry, the new tests can pass on the
-entry's own version yet stop compiling or running against a *later* alias. Forge
-must catch that break before the branch becomes PR-eligible and split the entry,
-so the PR keeps the regenerated progress for the aliases that still pass while
-the repository keeps its existing support for the rest.
+A `library-update-request` entry often lists several tested versions of the same
+library at once (for example `["1.1", "1.2", "1.3"]`). When a coverage-improvement
+run regenerates the JVM tests for such an entry, the new tests can pass on the
+entry's own version yet stop compiling or running against a *later* tested
+version. Forge must catch that break before the branch becomes PR-eligible and
+split the entry, so the PR keeps the regenerated progress for the versions that
+still pass while the repository keeps its existing support for the rest.
 
-**Alias sweep.** Before publication (§FS-local-ci-equivalent-verification), Forge
-runs a Java-only sweep. It runs `javaTest` for the changed coordinate once per
-tested-version alias, walking the index entry in order with `GVM_TCK_LV` set to
-each alias, and stops at the first alias that fails. The sweep is deliberately
-narrower than full CI — it skips the native-image matrix — because it only needs
-to catch JVM test code that no longer works on a later alias.
+**Version sweep.** Before publication (§FS-local-ci-equivalent-verification),
+Forge runs a Java-only sweep. It runs `javaTest` for the changed coordinate once
+per tested version, walking the entry's `tested-versions` in order with
+`GVM_TCK_LV` set to each version, and stops at the first version that fails. The
+sweep is deliberately narrower than full CI — it skips the native-image matrix —
+because it only needs to catch JVM test code that no longer works on a later
+version.
 
 **Progress output.** Forge must report the sweep on the CLI: the changed
-coordinate, how many aliases it will check, each alias version as it starts, the
-log path for that alias, and whether the alias passed or failed. When every alias
-passes, the output must say plainly that no split is needed.
+coordinate, how many versions it will check, each version as it starts, the log
+path for that version, and whether the version passed or failed. When every
+version passes, the output must say plainly that no split is needed.
 
-**Outcome.** If the *first* alias fails there is no passing prefix to keep, so
-Forge fails publication instead of splitting. If a *later* alias fails, Forge
-splits the index entry at that first failing alias into two entries:
+**Outcome.** If the *first* version fails there is no passing prefix to keep, so
+Forge fails publication instead of splitting. If a *later* version fails, Forge
+splits the index entry at that first failing version into two entries:
 
 | | `metadata-version` | `tested-versions` | `latest` | contents |
 |---|---|---|---|---|
 | **Current entry** | unchanged | the passing prefix | kept unless it moves to the successor | the regenerated metadata and tests from this PR |
-| **Successor entry** | the first failing alias | the failing alias and every later one | inherited when the split entry had `latest: true` | baseline metadata and tests copied from the PR base commit |
+| **Successor entry** | the first failing version | the failing version and every later one | inherited when the split entry had `latest: true` | baseline metadata and tests copied from the PR base commit |
 
 **Successor contents.** The successor entry must preserve the repository's
 pre-generation support for the failing range. Forge copies the metadata and test
 directories from the PR base commit entry that originally covered the failing
-alias — using that entry's `metadata-version` and `test-version` when present —
+version — using that entry's `metadata-version` and `test-version` when present —
 into `metadata/<group>/<artifact>/<failing-version>` and
 `tests/src/<group>/<artifact>/<failing-version>`. The PR then ships the new
 generated progress for the passing prefix and keeps baseline support for the
