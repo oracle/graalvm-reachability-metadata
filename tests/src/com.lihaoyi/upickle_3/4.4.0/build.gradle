@@ -20,12 +20,20 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+int testJvmVersion = tck.testJvmVersion.get()
+String scala3Version = tck.scala3Version.get()
 
 dependencies {
     testImplementation "com.lihaoyi:upickle_3:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
-    testImplementation 'org.scala-lang:scala3-library_3:3.3.6'
-    testImplementation 'org.scala-lang:scala3-compiler_3:3.3.6'
+    testImplementation "org.scala-lang:scala3-library_3:$scala3Version"
+    testImplementation "org.scala-lang:scala3-compiler_3:$scala3Version"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(testJvmVersion)
+    }
 }
 
 String graalvmHome = System.getenv("GRAALVM_HOME") ?: System.getenv("JAVA_HOME")
@@ -40,13 +48,6 @@ if (project.hasProperty("agent") && graalvmJavaExecutable != null && graalvmJava
         }
     }
 }
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
-
 graalvmNative {
     agent {
         defaultMode = "conditional"

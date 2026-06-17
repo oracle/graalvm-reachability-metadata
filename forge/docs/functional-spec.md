@@ -369,7 +369,12 @@ maintainer to continue. On a pull request, it means Forge produced a reviewable
 artifact, but some part of the result needs explicit maintainer judgment before
 normal review automation may treat it as safe. The companion
 `human-intervention-fixed` PR label means a maintainer has addressed the manual
-follow-up and review automation may resume after normal merge gates pass.
+follow-up and review automation may resume after normal merge gates pass. The
+resulting labeled backlog is drained by automated resolution, not per-item
+manual triage (§FS-human-intervention-resolution). The preserved work branch
+additionally carries a continuation marker, so a later run can resume the issue
+from the phase that failed instead of regenerating from scratch
+(§FS-forge-run-continuation).
 
 Post-generation intervention is different: it is an automated recovery step
 inside a workflow. `SUCCESS_WITH_INTERVENTION_STATUS` is PR-eligible when the
@@ -377,6 +382,29 @@ automated intervention changed the working tree and the local CI-equivalent
 verification still passed. That status should not by itself add the
 `human-intervention` label unless the result also meets one of the policy cases
 above.
+
+### FS-human-intervention-resolution: Human intervention resolution
+
+Items that carry `human-intervention` must not depend on per-item manual triage
+to be resolved. Reading why the label was applied and turning recurring causes
+into actionable, tracked work is an automated responsibility, not a manual one.
+
+This resolution is currently automated by Rhei. The `human-intervention-scanner`
+workspace template periodically scans the open `human-intervention` queue —
+pull requests, where the reason is read from the PR comments, reviews, and PR
+description together (PR comments are frequently absent, so the requested-changes
+review carries the reason), or issues, where the reason lives in the issue
+comment and its linked log — clusters the items by the
+common observed cause that earned the label. Groups below the configured support
+threshold are recorded but not escalated. Supported groups get follow-up
+investigation tasks that search the current checkout for a still-current system
+cause; stale, already-fixed, one-off, library-specific, or unsupported groups are
+cancelled without opening an issue. Only groups backed by current code, prompt,
+workflow, or policy evidence may open or reuse a tracking issue, so each live
+system cause is addressed once instead of per source item. The automation only
+investigates, groups, and opens tracking issues: it never edits, relabels,
+closes, or merges the source items, so it preserves the labeling guarantees of
+§FS-human-intervention-policy.
 
 Metadata-entry-count and coverage-depth objections for libraries that report
 zero dynamic-access calls are never human-intervention on their own, because the

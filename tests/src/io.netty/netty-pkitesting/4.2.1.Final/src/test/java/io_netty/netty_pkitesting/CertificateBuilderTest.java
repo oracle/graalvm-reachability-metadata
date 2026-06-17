@@ -17,6 +17,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
+import java.security.spec.AlgorithmParameterSpec;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -67,7 +68,7 @@ public class CertificateBuilderTest {
         }
     }
 
-    public static final class MlDsaParameters {
+    public static final class MlDsaParameters implements AlgorithmParameterSpec {
         public String getName() {
             return "test-ml-dsa";
         }

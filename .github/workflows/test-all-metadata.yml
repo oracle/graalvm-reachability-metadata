@@ -31,7 +31,7 @@ jobs:
         uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
         with:
           distribution: 'graalvm'
-          java-version: '21'
+          java-version: '25'
 
       - name: "🕸️ Populate matrix"
         id: set-matrix
@@ -61,18 +61,12 @@ jobs:
       - name: "🛠️ Setup latest native-build-tools snapshot"
         uses: ./.github/actions/setup-native-build-tools
 
-      - name: "🔧 Setup java"
-        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
-        with:
-          distribution: 'graalvm'
-          java-version: '21'
-
       - name: "🔧 Download GraalVM for metadata testing"
         uses: graalvm/setup-graalvm@60c26726de13f8b90771df4bc1641a52a3159994 # v1
         with:
           distribution: 'graalvm'
           java-version: ${{ matrix.version }}
-          set-java-home: 'false'
+          set-java-home: 'true'
           native-image-job-reports: 'true'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 

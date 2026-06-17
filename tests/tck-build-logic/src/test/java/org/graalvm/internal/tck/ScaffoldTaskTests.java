@@ -218,9 +218,15 @@ class ScaffoldTaskTests {
                 "/scaffold/build.gradle.kotlin.template"
         );
         assertThat(Files.readString(tempDir.resolve("tests/src/io.ktor/ktor-server-core-jvm/3.1.0/build.gradle"), StandardCharsets.UTF_8))
-                .contains("jvmToolchain(21)")
-                .contains("kotlinOptions.jvmTarget = \"21\"")
-                .doesNotContain("25");
+                .contains("alias(libs.plugins.kotlin.jvm)")
+                .doesNotContain("id \"org.jetbrains.kotlin.jvm\" version")
+                .contains("int testJvmVersion = tck.testJvmVersion.get()")
+                .contains("jvmToolchain(testJvmVersion)")
+                .contains("kotlinOptions.jvmTarget = testJvmVersion.toString()")
+                .doesNotContain("jvmToolchain(21)")
+                .doesNotContain("jvmToolchain(25)")
+                .doesNotContain("kotlinOptions.jvmTarget = \"21\"")
+                .doesNotContain("kotlinOptions.jvmTarget = \"25\"");
         List<Map<String, Object>> indexEntries = OBJECT_MAPPER.readValue(
                 tempDir.resolve("metadata/io.ktor/ktor-server-core-jvm/index.json").toFile(),
                 new TypeReference<>() {}
@@ -268,8 +274,10 @@ class ScaffoldTaskTests {
         assertThat(Files.readString(tempDir.resolve("tests/src/org.apache.groovy/groovy-json/4.0.21/build.gradle"), StandardCharsets.UTF_8))
                 .contains("id \"groovy\"")
                 .contains("testImplementation localGroovy()")
-                .contains("JavaLanguageVersion.of(21)")
-                .doesNotContain("25");
+                .contains("int testJvmVersion = tck.testJvmVersion.get()")
+                .contains("JavaLanguageVersion.of(testJvmVersion)")
+                .doesNotContain("JavaLanguageVersion.of(21)")
+                .doesNotContain("JavaLanguageVersion.of(25)");
         List<Map<String, Object>> indexEntries = OBJECT_MAPPER.readValue(
                 tempDir.resolve("metadata/org.apache.groovy/groovy-json/index.json").toFile(),
                 new TypeReference<>() {}
@@ -315,8 +323,17 @@ class ScaffoldTaskTests {
                 "/scaffold/build.gradle.scala3.template"
         );
         assertThat(Files.readString(tempDir.resolve("tests/src/org.typelevel/cats-core_3/2.12.0/build.gradle"), StandardCharsets.UTF_8))
-                .contains("JavaLanguageVersion.of(21)")
-                .doesNotContain("25");
+                .contains("int testJvmVersion = tck.testJvmVersion.get()")
+                .contains("String scala3Version = tck.scala3Version.get()")
+                .contains("org.scala-lang:scala3-library_3:$scala3Version")
+                .contains("org.scala-lang:scala3-compiler_3:$scala3Version")
+                .contains("JavaLanguageVersion.of(testJvmVersion)")
+                .doesNotContain("JavaLanguageVersion.of(21)")
+                .doesNotContain("JavaLanguageVersion.of(25)")
+                .doesNotContain("org.scala-lang:scala3-library_3:3.3.6")
+                .doesNotContain("org.scala-lang:scala3-compiler_3:3.3.6")
+                .doesNotContain("org.scala-lang:scala3-library_3:3.7.4")
+                .doesNotContain("org.scala-lang:scala3-compiler_3:3.7.4");
     }
 
     @Test
@@ -351,8 +368,17 @@ class ScaffoldTaskTests {
                 "/scaffold/build.gradle.scala2.template"
         );
         assertThat(Files.readString(tempDir.resolve("tests/src/org.typelevel/cats-core_2.13/2.12.0/build.gradle"), StandardCharsets.UTF_8))
-                .contains("JavaLanguageVersion.of(21)")
-                .doesNotContain("25");
+                .contains("int testJvmVersion = tck.testJvmVersion.get()")
+                .contains("String scala2Version = tck.scala2Version.get()")
+                .contains("JavaLanguageVersion.of(testJvmVersion)")
+                .contains("org.scala-lang:scala-library:$scala2Version")
+                .contains("org.scala-lang:scala-compiler:$scala2Version")
+                .doesNotContain("JavaLanguageVersion.of(21)")
+                .doesNotContain("JavaLanguageVersion.of(25)")
+                .doesNotContain("org.scala-lang:scala-library:2.13.16")
+                .doesNotContain("org.scala-lang:scala-compiler:2.13.16")
+                .doesNotContain("org.scala-lang:scala-library:2.13.17")
+                .doesNotContain("org.scala-lang:scala-compiler:2.13.17");
     }
 
     @Test

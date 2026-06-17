@@ -42,6 +42,7 @@ import org.graalvm.internal.tck.utils.MetadataGenerationUtils
 import org.graalvm.internal.tck.harness.tasks.JacocoTestReportInvocationTask
 import org.graalvm.internal.tck.harness.tasks.GenerateDependencyGraphTask
 import org.graalvm.internal.tck.harness.tasks.GenerateLibraryStatsTask
+import org.graalvm.internal.tck.harness.tasks.GenerateTopCoordinatesByMetricMatrixTask
 import org.graalvm.internal.tck.harness.tasks.ListTopCoordinatesByMetricTask
 import org.graalvm.internal.tck.harness.tasks.ValidateLibraryStatsTask
 import org.graalvm.internal.tck.harness.tasks.AnalyzeExternalLibraryDynamicAccessTask
@@ -330,6 +331,12 @@ tasks.register("generateLibraryStats", GenerateLibraryStatsTask.class) { task ->
 // §TCK-test-harness.8
 tasks.register("listTopCoordinatesByMetric", ListTopCoordinatesByMetricTask.class) { task ->
     task.setDescription("Lists top-N coordinates from committed library stats by metric")
+    task.setGroup(METADATA_GROUP)
+}
+
+// §TCK-test-harness.8
+tasks.register("generateTopCoordinatesByMetricMatrix", GenerateTopCoordinatesByMetricMatrixTask.class) { task ->
+    task.setDescription("Emits a GitHub Actions matrix from top-N coordinates in committed library stats by metric")
     task.setGroup(METADATA_GROUP)
 }
 
