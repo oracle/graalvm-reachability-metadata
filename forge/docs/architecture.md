@@ -84,22 +84,49 @@ flowchart LR
 
 ## AR-forge-vm-runner-boundary: VM isolation wraps Forge worker execution
 
-Incus VM support belongs around the worker and orchestration boundary, not in
-individual workflow engines or generated-test prompts (§FS-forge-vm-isolated-execution).
-A VM runner should prepare or enter an Incus VM that contains the complete
-reachability checkout, Forge tooling, GraalVM installations, GitHub credentials,
-Docker capability needed by tests, Gradle caches, and durable output locations,
-then invoke the existing `do-work.sh`, `do_up_to_date_work.sh`, or
-`forge_metadata.py` entrypoints inside that VM.
+The optional VM mode (§FS-forge-vm-isolated-execution) belongs around the worker
+and orchestration boundary, not in individual workflow engines or generated-test
+prompts. A VM runner, gated by the opt-in flag, launches a fresh single-use
+Incus VM per run from a reusable golden base image that bakes in the expensive
+immutable bits — GraalVM installations, Gradle caches, Docker layers, and a
+reachability checkout — and refreshes that checkout to current `master` at
+launch. The runner then invokes the existing `do-work.sh`,
+`do_up_to_date_work.sh`, or `forge_metadata.py` entrypoints inside that VM and
+tears the VM down afterwards. Because `FORGE_PARALLELISM` allows several
+concurrent runs, each run gets its own VM.
 
-Workflow drivers and agents should continue to receive ordinary repository
-paths, environment variables, and strategy configuration. They should not shell
-each Gradle command through Incus, choose VM lifecycle policy, or special-case
-whether the current host is bare metal or a VM. Keeping Incus at the runner
-boundary preserves the control-plane and workflow-driver contracts
+Run logs cross the host/VM boundary through a shared directory device, since a
+single-use VM keeps nothing after teardown. The runner mounts a per-run host
+directory at a clean top-level path in the VM (Incus disk device / virtiofs) and
+points Forge's configurable log destination at that path, rather than mounting
+inside the checkout. Logs then land on the host as the run proceeds and outlive
+teardown. Metrics and preserved failed-work branches keep leaving over the
+network, so they need no shared storage; the worktree and other side effects
+stay on the single-use VM's own disk.
+
+Workflow drivers and agents continue to receive ordinary repository paths,
+environment variables, and strategy configuration. They must not shell each
+Gradle command through Incus, choose VM lifecycle policy, or special-case whether
+the current host is bare metal or a VM. Keeping Incus at the runner boundary
+preserves the control-plane and workflow-driver contracts
 (§AR-forge-control-plane, §AR-forge-workflow-boundary) while giving operators a
 machine-level sandbox for tests that may write to `$HOME`, fill `/tmp`, open
 windows, or start Docker-backed services.
+
+The runner's per-run sequence is:
+
+1. **Preflight.** With the flag set, verify Incus, the golden base image, the
+   required Incus configuration, and GitHub credentials are present, and stop
+   with an actionable error if anything is missing. The runner never installs or
+   configures Incus itself.
+2. **Launch** a fresh VM by cloning the cached golden base image.
+3. **Mount** a per-run host log directory at a clean top-level path and point the
+   configurable log destination (`FORGE_LOGS_DIR`) at it.
+4. **Seed** the run: inject GitHub credentials and refresh the baked checkout to
+   current `master`.
+5. **Run** the existing Forge entrypoint inside the VM.
+6. **Publish** as usual — branches, PRs, and metrics leave over the network.
+7. **Destroy** the VM; the mounted logs remain on the host.
 
 ## AR-forge-workflow-boundary: Workflow drivers compose setup, workflow engine, and metrics
 

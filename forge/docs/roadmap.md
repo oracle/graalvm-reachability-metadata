@@ -48,19 +48,30 @@ This item of §ROADMAP-forge-implementation adds the operator-facing Incus VM
 runner and setup instructions required by §FS-forge-vm-isolated-execution and
 §AR-forge-vm-runner-boundary.
 
-The implementation should provide a checked-in Incus configuration and
-step-by-step setup documentation for running Forge issue-resolution and review
-automation in a VM that can safely absorb generated-test side effects. The VM
-environment must contain the complete reachability checkout, Forge tooling,
-GraalVM installations, GitHub authentication, Docker capability required by
-library tests, and durable output paths for logs, metrics, preserved worktrees,
-and publication artifacts.
+The implementation should add the opt-in flag, a reusable golden base image, a
+checked-in Incus configuration, and step-by-step setup documentation in
+README.md and AGENTS.md — written so a human or agent can install Incus and build
+the base image on any machine — for running a whole Forge generation in a fresh,
+single-use VM that can safely absorb generated-test side effects. The base image
+bakes in the expensive immutable bits — GraalVM installations, Gradle caches,
+Docker layers, and a reachability checkout — is built once and cached in the
+host's local Incus image store for reuse across runs, and is rebuilt only to
+refresh tooling; each run clones it copy-on-write, and the runner refreshes the
+baked checkout to current `master` and injects GitHub authentication at launch.
+It must also add a configurable log destination (for example a `FORGE_LOGS_DIR`
+setting routed through `resolve_logs_root()`) so a per-run host directory mounted
+at a clean top-level path in the VM captures logs that land on the host as the
+run proceeds and survive teardown; metrics and preserved failed-work branches
+keep leaving over the network.
 
-The runner should enter the VM and invoke the existing Forge entrypoints rather
-than teaching workflow drivers or agents about Incus. Acceptance should include
-a documented smoke run that proves stop files, Gradle commands, Docker-backed
-tests, durable logs, metrics, worktree cleanup, and failed-work preservation are
-observable from the operator's expected host/VM boundary.
+The runner should preflight the environment when the flag is set — failing
+clearly if Incus, the base image, configuration, or credentials are missing
+rather than installing anything — then launch the VM per run, invoke the existing
+Forge entrypoints, and tear the VM down afterwards rather than teaching workflow
+drivers or agents about Incus. Acceptance should include a documented smoke run
+that proves stop files, Gradle commands, Docker-backed tests, worktree cleanup,
+and failed-work preservation behave as on the host, and that run logs are
+observable on the host through the mounted log directory.
 
 # ROADMAP-forge-fixture-backed-e2e: Fixture-backed E2E mode
 
