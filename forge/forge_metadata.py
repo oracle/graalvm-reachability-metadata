@@ -45,7 +45,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Optional
-from urllib.parse import quote, unquote
+from urllib.parse import quote
 
 import ai_workflows.core  # noqa: F401 - triggers strategy registration
 from ai_workflows.drivers.add_new_library_support import (
@@ -3850,12 +3850,29 @@ def _sanitize_branch_segment(value: str) -> str:
 
 def build_failure_preservation_branch_name(claimed_issue: ClaimedIssue) -> str:
     """Build a unique branch name for preserving a failed issue run."""
-    authenticated_login = _sanitize_branch_segment(get_authenticated_user())
-    coordinate = _sanitize_branch_segment(claimed_issue.issue_coordinates)
-    label = _sanitize_branch_segment(claimed_issue.label)
+    branch_prefix = build_failure_preservation_branch_prefix(
+        issue_number=int(claimed_issue.issue["number"]),
+        label=claimed_issue.label,
+        coordinate=claimed_issue.issue_coordinates,
+        github_login=get_authenticated_user(),
+    )
+    return f"{branch_prefix}{uuid.uuid4().hex[:8]}"
+
+
+def build_failure_preservation_branch_prefix(
+        *,
+        issue_number: int,
+        label: str,
+        coordinate: str,
+        github_login: str,
+) -> str:
+    """Build the deterministic prefix for failed-work preservation branches."""
+    authenticated_login = _sanitize_branch_segment(github_login)
+    coordinate_segment = _sanitize_branch_segment(coordinate)
+    label_segment = _sanitize_branch_segment(label)
     return (
         f"ai/{authenticated_login}/human-intervention/"
-        f"issue-{claimed_issue.issue['number']}-{label}-{coordinate}-{uuid.uuid4().hex[:8]}"
+        f"issue-{issue_number}-{label_segment}-{coordinate_segment}-"
     )
 
 
@@ -3888,28 +3905,95 @@ def get_issue_comments(issue_number: int) -> list[dict]:
     return comments if isinstance(comments, list) else []
 
 
-def extract_preserved_branch_name(comment_body: str) -> str | None:
-    """Extract the preserved work branch name from a human-intervention comment."""
-    branch_match = re.search(r"Branch name:\s*`([^`]+)`", comment_body)
-    if branch_match:
-        return branch_match.group(1).strip()
-    tree_match = re.search(r"/tree/([A-Za-z0-9%._~!$&'()*+,;=:@/-]+)", comment_body)
-    if tree_match:
-        return unquote(tree_match.group(1)).strip()
+def comment_author_login(comment: dict) -> str | None:
+    """Return the GitHub login that posted an issue comment."""
+    author = comment.get("author")
+    if isinstance(author, dict):
+        login = author.get("login")
+        return login if isinstance(login, str) and login else None
+    if isinstance(author, str) and author:
+        return author
     return None
 
 
-def find_latest_preserved_branch_name(issue_number: int) -> str | None:
-    """Return the latest preserved branch mentioned on the issue, when present."""
-    branch_name = None
-    for comment in get_issue_comments(issue_number):
-        body = comment.get("body")
-        if not isinstance(body, str):
+def list_remote_branches_by_prefix(repo_path: str, branch_prefix: str) -> list[str]:
+    """Return remote branch names whose heads match the given prefix."""
+    result = run_git_transport(
+        ["ls-remote", "--heads", "origin", f"{branch_prefix}*"],
+        cwd=repo_path,
+        env=git_env_limited_to_repo_root(repo_path),
+    )
+    branch_names = []
+    for line in result.stdout.splitlines():
+        parts = line.split()
+        if len(parts) < 2:
             continue
-        candidate = extract_preserved_branch_name(body)
-        if candidate:
-            branch_name = candidate
-    return branch_name
+        ref_name = parts[1]
+        if not ref_name.startswith("refs/heads/"):
+            continue
+        branch_name = ref_name[len("refs/heads/"):]
+        if branch_name.startswith(branch_prefix):
+            branch_names.append(branch_name)
+    return sorted(set(branch_names))
+
+
+def remote_branch_commit_timestamp(repo_path: str, branch_name: str) -> int:
+    """Fetch a remote branch and return its tip commit timestamp."""
+    remote_ref = fetch_remote_branch(repo_path, branch_name)
+    result = subprocess.run(
+        ["git", "show", "-s", "--format=%ct", remote_ref],
+        cwd=repo_path,
+        env=git_env_limited_to_repo_root(repo_path),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=True,
+    )
+    return int(result.stdout.strip())
+
+
+def sort_remote_branches_by_commit_time(repo_path: str, branch_names: list[str]) -> list[str]:
+    """Return remote branch names newest-first by tip commit time."""
+    return sorted(
+        branch_names,
+        key=lambda branch_name: remote_branch_commit_timestamp(repo_path, branch_name),
+        reverse=True,
+    )
+
+
+def find_preserved_branch_candidates(
+        issue: dict,
+        label: str,
+        coordinate: str,
+        repo_path: str,
+) -> list[str]:
+    """Return likely preserved-work branches derived from recent comment authors."""
+    issue_number = int(issue["number"])
+    candidates = []
+    seen_branches = set()
+    seen_prefixes = set()
+    for comment in reversed(get_issue_comments(issue_number)):
+        author_login = comment_author_login(comment)
+        if author_login is None:
+            continue
+        branch_prefix = build_failure_preservation_branch_prefix(
+            issue_number=issue_number,
+            label=label,
+            coordinate=coordinate,
+            github_login=author_login,
+        )
+        if branch_prefix in seen_prefixes:
+            continue
+        seen_prefixes.add(branch_prefix)
+        for branch_name in sort_remote_branches_by_commit_time(
+                repo_path,
+                list_remote_branches_by_prefix(repo_path, branch_prefix),
+        ):
+            if branch_name in seen_branches:
+                continue
+            candidates.append(branch_name)
+            seen_branches.add(branch_name)
+    return candidates
 
 
 def fetch_remote_branch(repo_path: str, branch_name: str) -> str:
@@ -3953,7 +4037,7 @@ def load_continuation_marker_from_branch(
             file=sys.stderr,
         )
         return None
-    if marker.preserved_branch is None:
+    if marker.preserved_branch != branch_name:
         marker.record_preserved_branch(branch_name)
     return marker
 
@@ -3961,17 +4045,22 @@ def load_continuation_marker_from_branch(
 def resolve_issue_continuation_marker(
         issue: dict,
         label: str,
+        coordinate: str,
         base_reachability_metadata_path: str,
 ) -> ContinuationMarker | None:
     """Resolve a previously preserved continuation marker for this claim."""
     issue_number = int(issue["number"])
-    branch_name = find_latest_preserved_branch_name(issue_number)
-    if not branch_name:
-        return None
-    marker = load_continuation_marker_from_branch(base_reachability_metadata_path, branch_name)
-    if marker is None:
-        return None
-    if marker.issue_number != issue_number or marker.label != label:
+    for branch_name in find_preserved_branch_candidates(
+            issue,
+            label,
+            coordinate,
+            base_reachability_metadata_path,
+    ):
+        marker = load_continuation_marker_from_branch(base_reachability_metadata_path, branch_name)
+        if marker is None:
+            continue
+        if marker.issue_number == issue_number and marker.label == label:
+            return marker
         log_stage(
             "continuation",
             (
@@ -3980,8 +4069,7 @@ def resolve_issue_continuation_marker(
                 f"#{issue_number} {label}."
             ),
         )
-        return None
-    return marker
+    return None
 
 
 def checkout_continuation_branch(
@@ -5714,6 +5802,7 @@ def claim_issue_for_processing(
     continuation_marker = resolve_issue_continuation_marker(
         issue,
         label,
+        issue_coordinates,
         base_reachability_metadata_path,
     )
     try:
