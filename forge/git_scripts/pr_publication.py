@@ -44,7 +44,6 @@ PRESERVATION_ONLY_PATHS: set[str] = {
     f"forge/{PENDING_METRICS_FILENAME}",
 }
 PRESERVATION_ONLY_DIRECTORIES: tuple[str, ...] = ("forge/human-intervention-logs",)
-PRESERVATION_ONLY_PREFIXES: tuple[str, ...] = ("forge/human-intervention-logs/",)
 
 
 def _publication_resume_marker(repo_path: str) -> ContinuationMarker | None:
@@ -81,41 +80,6 @@ def _record_publication_branch(
         return
     active_marker.record_publication_branch(branch)
     active_marker.save(marker_path)
-
-
-def _is_preservation_only_path(path: str) -> bool:
-    """Return True for files that belong only on failed-run preservation branches."""
-    normalized_path = path.replace(os.sep, "/")
-    return (
-        normalized_path in PRESERVATION_ONLY_PATHS
-        or any(normalized_path.startswith(prefix) for prefix in PRESERVATION_ONLY_PREFIXES)
-    )
-
-
-def _commit_touched_paths(repo_path: str, commit: str) -> set[str]:
-    """Return paths touched by one commit."""
-    output = subprocess.check_output(
-        ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", commit],
-        cwd=repo_path,
-        text=True,
-    )
-    return {line.strip() for line in output.splitlines() if line.strip()}
-
-
-def _non_preservation_commits(repo_path: str, base_ref: str, head_ref: str) -> list[str]:
-    """Return commits to replay while excluding preservation-only wrapper commits."""
-    output = subprocess.check_output(
-        ["git", "rev-list", "--reverse", f"{base_ref}..{head_ref}"],
-        cwd=repo_path,
-        text=True,
-    )
-    commits: list[str] = []
-    for commit in [line.strip() for line in output.splitlines() if line.strip()]:
-        touched_paths = _commit_touched_paths(repo_path, commit)
-        if touched_paths and all(_is_preservation_only_path(path) for path in touched_paths):
-            continue
-        commits.append(commit)
-    return commits
 
 
 def _has_staged_changes(repo_path: str) -> bool:
@@ -155,16 +119,11 @@ def _commit_preservation_artifact_clearance(repo_path: str) -> None:
 def _prepare_unpushed_publication_resume_branch(
         repo_path: str,
         branch: str,
-        base_ref: str,
         marker: ContinuationMarker,
 ) -> None:
-    """Create a PR branch from base and replay only non-preservation run commits."""
-    preserved_head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_path, text=True).strip()
-    commits = _non_preservation_commits(repo_path, base_ref, preserved_head)
-    subprocess.run(["git", "switch", "-C", branch, base_ref], check=True, cwd=repo_path)
+    """Create the PR branch from the resumed preserved branch and clear helpers."""
+    subprocess.run(["git", "switch", "-C", branch], check=True, cwd=repo_path)
     _record_publication_branch(repo_path, branch, marker)
-    for commit in commits:
-        subprocess.run(["git", "cherry-pick", commit], check=True, cwd=repo_path)
     _commit_preservation_artifact_clearance(repo_path)
     _record_publication_branch(repo_path, branch, marker)
 
@@ -206,7 +165,7 @@ def publish_branch(
         subprocess.run(["git", "switch", "-C", branch], check=True, cwd=repo_path)
         _remove_preservation_only_files(repo_path)
     else:
-        _prepare_unpushed_publication_resume_branch(repo_path, branch, base_ref, resume_marker)
+        _prepare_unpushed_publication_resume_branch(repo_path, branch, resume_marker)
     stage()
     if before_rebase is not None:
         before_rebase()
