@@ -72,6 +72,8 @@ class ContinuationMarker:
     label: str
     coordinate: str
     new_version: str | None
+    library_update_route: dict[str, Any] | None = None
+    library_preparation_preflight: dict[str, Any] | None = None
     phases: dict[str, dict[str, Any]] = field(default_factory=_default_phases)
     schema_version: int = SCHEMA_VERSION
 
@@ -115,6 +117,8 @@ class ContinuationMarker:
             label=str(payload["label"]),
             coordinate=str(payload["coordinate"]),
             new_version=payload.get("newVersion"),
+            library_update_route=_optional_dict(payload.get("libraryUpdateRoute")),
+            library_preparation_preflight=_optional_dict(payload.get("libraryPreparationPreflight")),
             phases=phases,
             schema_version=SCHEMA_VERSION,
         )
@@ -139,6 +143,8 @@ class ContinuationMarker:
             "label": self.label,
             "coordinate": self.coordinate,
             "newVersion": self.new_version,
+            "libraryUpdateRoute": self.library_update_route,
+            "libraryPreparationPreflight": self.library_preparation_preflight,
             "phases": self.phases,
         }
 
@@ -212,6 +218,16 @@ class ContinuationMarker:
         """Record the preservation branch that carries this marker."""
         self.preserved_branch = branch_name
 
+    def record_library_update_route(self, route_payload: dict[str, Any]) -> None:
+        """Record the selected library-update route for publication resume."""
+        self.library_update_route = dict(route_payload)
+        self.recompute_continue_from()
+
+    def record_library_preparation_preflight(self, preflight_payload: dict[str, Any]) -> None:
+        """Record dispatcher preflight output for continuation resume."""
+        self.library_preparation_preflight = dict(preflight_payload)
+        self.recompute_continue_from()
+
     def record_publication_branch(self, branch_name: str) -> None:
         """Record the branch that publication should use."""
         self._phase(PHASE_PUBLICATION)["branch"] = branch_name
@@ -256,3 +272,9 @@ def save_phase_update(path: str | None, update: Callable[[ContinuationMarker], N
         return
     update(marker)
     marker.save(path)
+
+
+def _optional_dict(value: Any) -> dict[str, Any] | None:
+    if isinstance(value, dict):
+        return dict(value)
+    return None

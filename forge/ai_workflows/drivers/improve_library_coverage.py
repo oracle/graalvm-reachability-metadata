@@ -70,6 +70,7 @@ from utility_scripts.source_context import (
     populate_artifact_urls,
     prepare_source_contexts,
     resolve_test_source_layout,
+    source_context_urls_available,
 )
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.strategy_loader import require_strategy_by_name
@@ -817,23 +818,42 @@ def main(argv=None) -> int:
     checkpoint_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
     log_stage("setup", f"Checkpoint commit: {checkpoint_commit}")
 
-    # Snapshot baseline stats and metadata entry counts before the workflow modifies them
-    baseline_stats = load_library_stats(reachability_repo_path, library)
-    baseline_metadata_entries = count_metadata_entries(reachability_repo_path, group, artifact, version)
-    baseline_test_only_entries = count_test_only_metadata_entries(reachability_repo_path, group, artifact, version)
-    baseline_snapshot = {
-        "stats": baseline_stats,
-        "metadata_entries": baseline_metadata_entries,
-        "test_only_metadata_entries": baseline_test_only_entries,
-    }
     baseline_stats_path = os.path.join(tests_dir, BASELINE_STATS_FILENAME)
-    with open(baseline_stats_path, "w", encoding="utf-8") as f:
-        json.dump(baseline_snapshot, f, indent=2)
-    log_stage("setup", f"Saved baseline snapshot to {BASELINE_STATS_FILENAME}")
-
-    populate_artifact_urls(reachability_repo_path, library)
+    if resume_existing_tree:
+        if not os.path.isfile(baseline_stats_path):
+            print(
+                f"ERROR: Resumed {library} is missing cached baseline snapshot: "
+                f"{os.path.relpath(baseline_stats_path, reachability_repo_path)}",
+                file=sys.stderr,
+            )
+            return 1
+        log_stage("setup", f"Reusing cached baseline snapshot from {BASELINE_STATS_FILENAME}")
+    else:
+        # Snapshot baseline stats and metadata entry counts before the workflow modifies them.
+        baseline_stats = load_library_stats(reachability_repo_path, library)
+        baseline_metadata_entries = count_metadata_entries(reachability_repo_path, group, artifact, version)
+        baseline_test_only_entries = count_test_only_metadata_entries(reachability_repo_path, group, artifact, version)
+        baseline_snapshot = {
+            "stats": baseline_stats,
+            "metadata_entries": baseline_metadata_entries,
+            "test_only_metadata_entries": baseline_test_only_entries,
+        }
+        with open(baseline_stats_path, "w", encoding="utf-8") as f:
+            json.dump(baseline_snapshot, f, indent=2)
+        log_stage("setup", f"Saved baseline snapshot to {BASELINE_STATS_FILENAME}")
 
     source_context_types = normalize_source_context_types(strategy.get("parameters", {}).get("source-context-types"))
+    if not resume_existing_tree or not source_context_urls_available(
+            reachability_repo_path,
+            library,
+            source_context_types,
+    ):
+        populate_artifact_urls(reachability_repo_path, library)
+    else:
+        log_stage(
+            "populate-artifact-urls",
+            f"Skipping artifact URL population for resumed {library}; index.json already has requested source-context URLs.",
+        )
     prepared_source_context = prepare_source_contexts(
         repo_root=os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
         reachability_repo_path=reachability_repo_path,

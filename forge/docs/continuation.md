@@ -61,6 +61,8 @@ classes re-appear in the regenerated report.
   "label": "library-new-request",
   "coordinate": "com.acme:widget:1.4.0",
   "newVersion": null,
+  "libraryUpdateRoute": null,
+  "libraryPreparationPreflight": null,
   "phases": {
     "setup":        { "status": "completed", "preflightDone": true, "setupDone": true },
     "fix":          { "status": "skipped",   "iteration": null },
@@ -93,6 +95,16 @@ because the marker never enters a successful run's publication staging
 - `issueNumber`, `label`, `coordinate`, and `newVersion` re-route the workflow;
   they are kept explicit because the coordinate is sanitized inside the branch
   name and cannot be parsed back reliably.
+- `libraryUpdateRoute` records the dispatcher-selected route for
+  `library-update-request` issues so publication-only resume does not depend on
+  a per-run sidecar directory that is absent from the preserved branch.
+- `libraryPreparationPreflight` records dispatcher preflight output so resume
+  can skip the preflight agent while still passing the original advisory setup
+  context back to the workflow driver.
+- Improve-coverage runs write the original `.baseline-stats.json` into the
+  resolved test directory during setup. Resume treats that as preserved worktree
+  state and reuses it instead of recomputing the baseline after generation may
+  already have changed the tree.
 - `explore.exhaustedClasses` is the only EXPLORE state worth keeping: a fresh
   report cannot distinguish an uncovered-but-abandoned class from an
   uncovered-but-untried one.

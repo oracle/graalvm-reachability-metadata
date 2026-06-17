@@ -77,6 +77,7 @@ from ai_workflows.drivers.library_update_router import (
     LibraryUpdateRoute,
     load_library_update_route,
     select_library_update_route,
+    write_library_update_route,
 )
 from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_CHUNK_READY,
@@ -139,6 +140,7 @@ from utility_scripts.continuation_marker import (
     ContinuationMarker,
     continuation_marker_path,
     load_continuation_marker,
+    save_phase_update,
 )
 from utility_scripts.dynamic_access_report import load_dynamic_access_coverage_report
 from utility_scripts.fixture_github import FixtureGitHubState, load_fixture_github_state
@@ -146,7 +148,9 @@ from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.library_stats import resolve_stats_file_path
 from utility_scripts.library_preparation_preflight import (
     LIBRARY_PREPARATION_PREFLIGHT_FILENAME,
+    load_library_preparation_preflight,
     run_library_preparation_preflight as run_preflight_decision,
+    write_library_preparation_preflight,
 )
 from utility_scripts.metadata_index import (
     coordinate_parts as metadata_coordinate_parts,
@@ -3870,7 +3874,7 @@ def build_origin_branch_url(repo_path: str, branch_name: str) -> str:
 def get_issue_comments(issue_number: int) -> list[dict]:
     """Fetch issue comments used for continuation branch discovery."""
     if is_fixture_testing_enabled():
-        return []
+        return require_fixture_github_state().get_issue_comments(issue_number)
     data = gh_json(
         "issue",
         "view",
@@ -4044,6 +4048,82 @@ def create_or_load_run_continuation_marker(
         )
     marker.save(marker_path)
     return marker_path
+
+
+def library_update_route_from_marker(marker: ContinuationMarker | None) -> LibraryUpdateRoute | None:
+    """Return the marker-backed library-update route when continuation has one."""
+    if marker is None or marker.library_update_route is None:
+        return None
+    return LibraryUpdateRoute.from_json(marker.library_update_route)
+
+
+def restore_library_update_route_from_marker(
+        claimed_issue: ClaimedIssue,
+        marker: ContinuationMarker | None,
+        *,
+        required: bool = False,
+) -> LibraryUpdateRoute | None:
+    """Restore marker-backed library-update route state into the run sidecar."""
+    if claimed_issue.label != LABEL_LIBRARY_UPDATE:
+        return None
+    route = library_update_route_from_marker(marker)
+    if route is None:
+        if required:
+            raise ValueError(
+                f"Issue #{claimed_issue.issue['number']} resumes publication without a library-update route."
+            )
+        return None
+    write_library_update_route(library_update_route_artifact_root(claimed_issue), route)
+    log_stage(
+        "continuation",
+        f"Restored library-update route {route.selected_driver} for issue #{claimed_issue.issue['number']}.",
+    )
+    return route
+
+
+def record_library_update_route_in_marker(marker_path: str | None, route: LibraryUpdateRoute | None) -> None:
+    """Persist the selected library-update route into the continuation marker."""
+    if marker_path is None or route is None:
+        return
+    save_phase_update(
+        marker_path,
+        lambda marker: marker.record_library_update_route(route.to_json()),
+    )
+
+
+def restore_library_preparation_preflight_from_marker(
+        claimed_issue: ClaimedIssue,
+        marker: ContinuationMarker | None,
+) -> str | None:
+    """Restore marker-backed dispatcher preflight state into the run sidecar."""
+    if marker is None or marker.library_preparation_preflight is None:
+        return None
+    preflight_root = claimed_issue.preflight_info_path or claimed_issue.scratch_metrics_repo_path
+    preflight_path = write_library_preparation_preflight(
+        preflight_root,
+        marker.library_preparation_preflight,
+    )
+    log_stage(
+        "continuation",
+        f"Restored library preparation preflight for issue #{claimed_issue.issue['number']}.",
+    )
+    return preflight_path
+
+
+def record_library_preparation_preflight_in_marker(
+        marker_path: str | None,
+        preflight_path: str | None,
+) -> None:
+    """Persist dispatcher preflight output into the continuation marker."""
+    if marker_path is None or preflight_path is None:
+        return
+    preflight = load_library_preparation_preflight(preflight_path)
+    if preflight is None:
+        return
+    save_phase_update(
+        marker_path,
+        lambda marker: marker.record_library_preparation_preflight(preflight),
+    )
 
 
 def require_claimed_issue_worktree(claimed_issue: ClaimedIssue, stage: str) -> str:
@@ -4881,22 +4961,41 @@ def invoke_pipeline(
     )
     marker = load_continuation_marker(continuation_path)
     if marker is not None and marker.continue_from == PHASE_PUBLICATION:
+        restore_library_update_route_from_marker(claimed_issue, marker, required=True)
         log_stage(
             "continuation",
             f"Issue #{claimed_issue.issue['number']} resumes at publication; skipping workflow driver.",
         )
         return True
-    library_preparation_preflight_path = run_library_preparation_preflight(
-        claimed_issue,
-        effective_strategy_name,
-    )
+    setup_phase = {} if marker is None else marker.phases.get("setup", {})
+    if bool(setup_phase.get("preflightDone")):
+        library_preparation_preflight_path = restore_library_preparation_preflight_from_marker(
+            claimed_issue,
+            marker,
+        )
+        log_stage(
+            "continuation",
+            f"Issue #{claimed_issue.issue['number']} skips completed setup preflight.",
+        )
+    else:
+        library_preparation_preflight_path = run_library_preparation_preflight(
+            claimed_issue,
+            effective_strategy_name,
+        )
+        record_library_preparation_preflight_in_marker(
+            continuation_path,
+            library_preparation_preflight_path,
+        )
     library_update_route = None
     if claimed_issue.label == LABEL_LIBRARY_UPDATE:
-        library_update_route = select_library_update_route(
-            claimed_issue.worktree_path,
-            library_update_route_artifact_root(claimed_issue),
-            claimed_issue.issue_coordinates,
-        )
+        library_update_route = restore_library_update_route_from_marker(claimed_issue, marker)
+        if library_update_route is None:
+            library_update_route = select_library_update_route(
+                claimed_issue.worktree_path,
+                library_update_route_artifact_root(claimed_issue),
+                claimed_issue.issue_coordinates,
+            )
+            record_library_update_route_in_marker(continuation_path, library_update_route)
 
     chunk_class_count = None
     if (
@@ -4924,13 +5023,10 @@ def invoke_pipeline(
     print()
     log_stage(invocation.log_stage_name, invocation.log_message)
     if is_fixture_testing_enabled():
-        display_argv, issue_context = list(invocation.argv), None
+        display_argv = list(invocation.argv)
         if "--issue-requested-metadata-context" in display_argv:
             context_flag_index = display_argv.index("--issue-requested-metadata-context")
-            issue_context = display_argv[context_flag_index + 1]
             del display_argv[context_flag_index:context_flag_index + 2]
-        if issue_context:
-            log_stage("workflow-driver", f"Issue body/context passed to workflow:\n{issue_context}")
         log_stage(
             "workflow-driver",
             (
@@ -5749,6 +5845,7 @@ def build_fixture_claimed_issue(
         return None
 
     issue_coordinates, current_coordinates, new_version = claim_metadata
+    continuation_marker = load_continuation_marker(continuation_marker_path(worktree_path))
     return ClaimedIssue(
         issue=issue,
         label=label,
@@ -5760,6 +5857,7 @@ def build_fixture_claimed_issue(
         current_coordinates=current_coordinates,
         new_version=new_version,
         preflight_info_path=preflight_info_path,
+        continuation_marker=continuation_marker,
     )
 
 
