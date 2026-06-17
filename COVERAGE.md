@@ -1,6 +1,6 @@
 # Coverage
 
-Updated: 2026-06-16
+Updated: 2026-06-17
 
 ![Coverage over Time](https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/stats/coverage/latest/metrics-over-time.svg#gh-light-mode-only)
 ![Coverage over Time](https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/stats/coverage/latest/metrics-over-time-dark.svg#gh-dark-mode-only)
