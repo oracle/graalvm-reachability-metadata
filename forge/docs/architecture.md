@@ -86,14 +86,18 @@ flowchart LR
 
 The optional VM mode (§FS-forge-vm-isolated-execution) belongs around the worker
 and orchestration boundary, not in individual workflow engines or generated-test
-prompts. A VM runner, gated by the opt-in flag, launches a fresh single-use
-Incus VM per run from a reusable golden base image that bakes in the expensive
-immutable bits — GraalVM installations, Gradle caches, Docker layers, and a
-reachability checkout — and refreshes that checkout to current `master` at
-launch. The runner then invokes the existing `do-work.sh`,
-`do_up_to_date_work.sh`, or `forge_metadata.py` entrypoints inside that VM and
-tears the VM down afterwards. Because `FORGE_PARALLELISM` allows several
-concurrent runs, each run gets its own VM.
+prompts. The opt-in flag is `--incus` on the `forge_metadata.py` entry point,
+forwarded unchanged by the `do-work.sh` / `do_up_to_date_work.sh` loop wrappers
+(the loops stay on the host; they do not run inside a VM). `forge_metadata.py`
+keeps claiming work from the GitHub queues on the host; for each claimed run, its
+VM runner launches a fresh single-use Incus VM from a reusable golden base image
+that bakes in the expensive immutable bits — GraalVM installations, Gradle
+caches, Docker layers, and a reachability checkout — refreshes that checkout to
+current `master` at launch, runs that run's existing per-issue workflow inside
+the VM, and tears the VM down afterwards. `--incus` is the only Incus-aware
+surface; the workflow drivers, engines, and agents run the same code they run on
+the host. Because `FORGE_PARALLELISM` allows several concurrent runs, each run
+gets its own VM.
 
 Run logs cross the host/VM boundary through a shared directory device, since a
 single-use VM keeps nothing after teardown. The runner mounts a per-run host
@@ -124,7 +128,8 @@ The runner's per-run sequence is:
    configurable log destination (`FORGE_LOGS_DIR`) at it.
 4. **Seed** the run: inject GitHub credentials and refresh the baked checkout to
    current `master`.
-5. **Run** the existing Forge entrypoint inside the VM.
+5. **Run** that run's existing per-issue workflow (the same path as
+   `forge_metadata.py --issue-number N`) inside the VM.
 6. **Publish** as usual — branches, PRs, and metrics leave over the network.
 7. **Destroy** the VM; the mounted logs remain on the host.
 

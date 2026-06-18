@@ -179,9 +179,11 @@ this functional spec.
 ### FS-forge-vm-isolated-execution: Optional VM-isolated Forge execution
 
 Forge must offer an optional, opt-in mode that runs a whole generation inside a
-dedicated Incus virtual machine. The mode is selected by a single flag; when the
-flag is absent, Forge runs exactly as it does today, directly on the host. The
-flag changes only *where* a generation runs, never *what* it does.
+dedicated Incus virtual machine. The mode is selected by a single opt-in flag,
+`--incus`, on the `forge_metadata.py` entry point — forwarded unchanged by the
+`do-work.sh` / `do_up_to_date_work.sh` loop wrappers, the same way `--parallelism`
+is today. When the flag is absent, Forge runs exactly as it does now, directly on
+the host. The flag changes only *where* a generation runs, never *what* it does.
 
 The reason for the VM is host isolation. Generated tests and agent commands can
 open windows, write into `$HOME`, fill `/tmp`, delete files, and start
@@ -197,7 +199,7 @@ no run state carries into the next run. Each VM must contain a complete
 reachability-repo checkout (§FS-forge-functional-spec) at current `master`,
 Forge tooling, the required GraalVM installation(s), `gh` authentication for the
 reachability repo, the Docker capability tests need, and Gradle caches. Forge
-then runs its existing entrypoints inside that VM.
+then runs that run's existing per-issue workflow inside that VM.
 
 Everything else about a generation stays identical to a host run. Workflow
 selection, strategy configuration, logging, metrics, stop-file handling, worktree
