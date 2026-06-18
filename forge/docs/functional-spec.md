@@ -178,51 +178,38 @@ this functional spec.
 
 ### FS-forge-vm-isolated-execution: Optional VM-isolated Forge execution
 
-Forge must offer an optional, opt-in mode that runs a whole generation inside a
-dedicated Incus virtual machine. The mode is selected by a single opt-in flag,
-`--incus`, on the `forge_metadata.py` entry point — forwarded unchanged by the
-`do-work.sh` / `do_up_to_date_work.sh` loop wrappers, the same way `--parallelism`
-is today. When the flag is absent, Forge runs exactly as it does now, directly on
-the host. The flag changes only *where* a generation runs, never *what* it does.
+Forge must offer an optional `--incus` mode that runs a whole generation inside a
+fresh, single-use Incus VM, so generated tests and agent commands that open
+windows, write into `$HOME`, fill `/tmp`, delete files, or start Docker-backed
+services hit a disposable VM instead of the operator's machine. Docker is not the
+isolation boundary — Forge workflows start their own Docker containers for test
+resources, so Docker is a workload *inside* the VM. The flag changes only *where*
+a generation runs, never *what* it does.
 
-The reason for the VM is host isolation. Generated tests and agent commands can
-open windows, write into `$HOME`, fill `/tmp`, delete files, and start
-Docker-backed services. Running a generation inside an Incus VM keeps every such
-side effect on the VM's disposable disk instead of the operator's machine.
-Docker is deliberately not the isolation boundary: Forge workflows themselves
-start Docker containers for third-party test resources, so Docker stays a
-workload *inside* the VM while the VM is the outer sandbox the operator wants.
-
-When the flag is set, Forge runs the generation in a fresh, single-use VM
-provisioned for that run, not just a worktree, and discards the VM afterwards so
-no run state carries into the next run. Each VM must contain a complete
-reachability-repo checkout (§FS-forge-functional-spec) at current `master`,
-Forge tooling, the required GraalVM installation(s), `gh` authentication for the
-reachability repo, the Docker capability tests need, and Gradle caches. Forge
-then runs that run's existing per-issue workflow inside that VM.
-
-Everything else about a generation stays identical to a host run. Workflow
-selection, strategy configuration, logging, metrics, stop-file handling, worktree
-cleanup, and failed-work preservation behave the same and produce the same
-artifacts; local Forge automation stays non-privileged inside the run
-(§FS-local-ci-equivalent-verification).
-
-Because each run uses a fresh VM, run logs cannot stay inside it. Forge must
-therefore support directing its run logs to an operator-provided location, so
-that location can be a host directory mounted into the VM: every log the run
-produces then lands on the operator's machine as it is written and remains after
-the VM is discarded. Metrics and preserved failed-work branches already leave
-over the network and need no shared storage. The generation worktree and all
-other test side effects stay inside the single-use VM and are discarded with it.
-
-Preparing the host for Incus is an operator/agent prerequisite, not something a
-run does: Forge must not install or configure Incus itself, and ordinary runs
-must not request interactive privilege escalation or mutate the host outside that
-explicit, documented one-time setup. When the flag is passed, Forge must first
-verify the isolated environment is fully prepared — Incus available, the base
-image built, and the required configuration and credentials present — and stop
-with a clear, actionable error rather than running partially or silently falling
-back to the host.
+- **Opt-in flag.** `--incus` lives on the `forge_metadata.py` entry point,
+  forwarded by the `do-work.sh` / `do_up_to_date_work.sh` loops like
+  `--parallelism`. When it is absent, Forge runs on the host exactly as today.
+- **Fresh VM per run.** Each claimed run gets its own single-use VM, discarded
+  afterwards so no state carries over. The VM must hold a complete
+  reachability-repo checkout (§FS-forge-functional-spec) at current `master`,
+  Forge tooling, the required GraalVM installation(s), `gh` authentication, the
+  Docker capability tests need, and Gradle caches; Forge runs that run's existing
+  per-issue workflow inside it.
+- **Behavior unchanged.** Workflow selection, strategy configuration, logging,
+  metrics, stop-file handling, worktree cleanup, and failed-work preservation
+  behave the same and produce the same artifacts, and local Forge automation
+  stays non-privileged inside the run (§FS-local-ci-equivalent-verification).
+- **Logs survive the VM.** Forge must support directing run logs to an
+  operator-provided location so it can be a host directory mounted into the VM;
+  logs then land on the host as they are written and remain after teardown.
+  Metrics and preserved failed-work branches already leave over the network; the
+  worktree and other side effects stay in the VM and are discarded with it.
+- **Setup is a prerequisite, not a run action.** Forge must not install or
+  configure Incus, or otherwise mutate the host outside the documented one-time
+  setup. When the flag is passed, Forge must verify the environment is ready —
+  Incus available, base image built, configuration and credentials present — and
+  stop with a clear, actionable error rather than running partially or falling
+  back to the host.
 
 ### 4.4 Repository availability for test and metadata artifacts
 

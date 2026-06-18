@@ -93,6 +93,67 @@ distribution cache under the system temp directory. Set
 `FORGE_GRADLE_USER_HOME` to override the full Gradle user home.
 §AR-forge-workflow-boundary
 
+## Isolated execution with Incus (optional)
+
+`forge_metadata.py --incus` runs each generation inside a fresh, single-use Incus
+VM instead of on the host, so generated tests that open windows, fill `/tmp`,
+write into `$HOME`, or start Docker containers cannot touch the operator's
+machine. Forge never installs or configures Incus: prepare the host once with the
+steps below, then pass `--incus`. With the flag set Forge preflights this setup
+and fails fast if anything is missing. The runner itself is tracked in
+§ROADMAP-forge-incus-vm-runner.
+§FS-forge-vm-isolated-execution §AR-forge-vm-runner-boundary
+
+### Install and initialize Incus (one-time, on the host)
+
+```console
+# Install Incus from your distribution's packages, then:
+sudo incus admin init --minimal          # storage pool + default network
+sudo usermod -aG incus-admin "$USER"     # drive Incus without sudo; re-login to apply
+incus list                               # should print an empty table
+```
+
+### Build the base image (one-time, rebuilt only to refresh tooling)
+
+The base image is a template the per-run VMs are launched from. It bakes in the
+expensive setup so each run reuses it instead of rebuilding it: GraalVM, Docker,
+warmed Gradle caches, and a reachability checkout.
+
+```console
+# Launch a Docker-capable builder VM (Debian 12 shown):
+incus launch images:debian/12 forge-build --vm -c security.secureboot=false
+incus exec forge-build -- bash -lc '
+  set -eux
+  apt-get update && apt-get install -y git curl docker.io
+  systemctl enable --now docker
+  # Install the GraalVM your strategies require and expose it on
+  # GRAALVM_HOME / PATH (see the Setup section above).
+  git clone https://github.com/oracle/graalvm-reachability-metadata.git ~/reachability
+  cd ~/reachability && ./gradlew --no-daemon help    # warm the Gradle caches
+'
+# Snapshot the prepared VM into a reusable base image, then drop the builder:
+incus stop forge-build
+incus publish forge-build --alias forge-base
+incus delete forge-build
+incus image list                         # "forge-base" should be listed
+```
+
+### Credentials and logs
+
+- Authenticate `gh` for the reachability repo on the host (`gh auth login`); the
+  runner injects those credentials into each VM at launch.
+- The runner mounts a per-run host directory into the VM and points the
+  configurable log destination (`FORGE_LOGS_DIR`) at it, so run logs land on the
+  host and survive VM teardown. Metrics and preserved-work branches leave over
+  the network, so they need no shared directory.
+
+### Run
+
+```console
+python3 forge_metadata.py --run-work-queues --incus
+./do-work.sh --incus                     # same flag, forwarded by the loop wrapper
+```
+
 ## Manual Workflows
 
 The top-level worker delegates to these lower-level entry points. Use them
