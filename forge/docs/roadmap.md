@@ -48,8 +48,9 @@ This item of §ROADMAP-forge-implementation adds the operator-facing Incus VM
 runner and setup instructions required by §FS-forge-vm-isolated-execution and
 §AR-forge-vm-runner-boundary.
 
-The implementation should add the opt-in flag, a reusable golden base image, a
-checked-in Incus configuration, and step-by-step setup documentation in
+The implementation should add the opt-in `--incus` flag on `forge_metadata.py`
+(forwarded by the loop wrappers), a reusable golden base image, a checked-in
+Incus configuration, and step-by-step setup documentation in
 README.md and AGENTS.md — written so a human or agent can install Incus and build
 the base image on any machine — for running a whole Forge generation in a fresh,
 single-use VM that can safely absorb generated-test side effects. The base image
