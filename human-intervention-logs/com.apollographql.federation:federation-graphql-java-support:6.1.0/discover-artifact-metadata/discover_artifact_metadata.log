@@ -1,0 +1,1135 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.130.0
+--------
+workdir: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019edb1e-e997-7d13-9944-d6438bea2b17
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.apollographql.federation:federation-graphql-java-support:6.1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "6.1.0" when "$version$" is replaced with "6.1.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9/build/discovered-artifact-metadata/com.apollographql.federation-federation-graphql-java-support-6.1.0.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "com.apollographql.federation:federation-graphql-java-support:6.1.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "6.1.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing discovered metadata patterns, then verify the artifact’s POM/source/test/docs locations from Maven or the upstream repository before editing the JSON.
+exec
+/bin/bash -lc "test -f build/discovered-artifact-metadata/com.apollographql.federation-federation-graphql-java-support-6.1.0.json && sed -n '1,160p' build/discovered-artifact-metadata/com.apollographql.federation-federation-graphql-java-support-6.1.0.json || true" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9
+ succeeded in 0ms:
+{
+  "coordinates" : "com.apollographql.federation:federation-graphql-java-support:6.1.0"
+}
+
+exec
+/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -20' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9
+ succeeded in 0ms:
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9
+build/discovered-artifact-metadata/com.apollographql.federation-federation-graphql-java-support-6.1.0.json
+
+exec
+/bin/bash -lc "rg -n \"apollographql|federation-graphql-java-support|source-code-url|test-code-url|documentation-url\" build/discovered-artifact-metadata metadata tests docs -g '*.json' -g '*.md'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9
+ succeeded in 102ms:
+codex
+The local file currently only has the coordinate. I’m checking Maven Central first because this repo’s metadata prefers Maven source and javadoc artifacts when they exist.
+exec
+/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/apollographql/federation/federation-graphql-java-support/6.1.0/federation-graphql-java-support-6.1.0.pom' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.apollographql.federation</groupId>
+  <artifactId>federation-graphql-java-support</artifactId>
+  <version>6.1.0</version>
+  <name>com.apollographql.federation:federation-graphql-java-support</name>
+  <description>GraphQL Java server support for Apollo Federation</description>
+  <url>https://github.com/apollographql/federation-jvm</url>
+  <inceptionYear>2019</inceptionYear>
+  <organization>
+    <name>https://www.apollographql.com/about-us</name>
+  </organization>
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>http://www.opensource.org/licenses/mit-license.php</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>apollographql.com</id>
+      <name>The Apollo Contributors</name>
+      <url>https://www.apollographql.com/careers/team</url>
+      <organization>Apollo Graph Inc.</organization>
+      <organizationUrl>https://www.apollographql.com/about-us</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/apollographql/federation-jvm.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/apollographql/federation-jvm.git</developerConnection>
+    <url>https://github.com/apollographql/federation-jvm</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>com.graphql-java</groupId>
+      <artifactId>graphql-java</artifactId>
+      <version>25.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>2.0.16</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>3.25.5</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/com/apollographql/federation/federation-graphql-java-support/6.1.0/federation-graphql-java-support-6.1.0-sources.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 18 Jun 2026 14:25:12 GMT
+content-type: application/java-archive
+content-length: 205776
+cf-ray: a0daf6443b758e88-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1258
+etag: "9a1a7111d38f7cd032a95ca7cff53889"
+last-modified: Fri, 08 May 2026 18:05:21 GMT
+x-checksum-md5: 9a1a7111d38f7cd032a95ca7cff53889
+x-checksum-sha1: 9d11665bbca5a12a94eef782ce369245759e4fd3
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/apollographql/federation/federation-graphql-java-support/6.1.0/' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9
+exec
+/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/com/apollographql/federation/federation-graphql-java-support/6.1.0/federation-graphql-java-support-6.1.0-javadoc.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 18 Jun 2026 14:25:12 GMT
+content-type: application/java-archive
+content-length: 833875
+cf-ray: a0daf6444beaf339-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 109731
+etag: "2ad4508264140c86f20b3e313c1f143d"
+last-modified: Fri, 08 May 2026 18:05:21 GMT
+x-checksum-md5: 2ad4508264140c86f20b3e313c1f143d
+x-checksum-sha1: 90b6215c27365db4978340c2c6beab7f953722d0
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 313ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/apollographql/federation/federation-graphql-java-support/6.1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/apollographql/federation/federation-graphql-java-support/6.1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="federation-graphql-java-support-6.1.0-javadoc.jar" title="federation-graphql-java-support-6.1.0-javadoc.jar">federation-graphql-java-support-6.1.0-javadoc...</a>  2026-05-08 18:05    833875      
+<a href="federation-graphql-java-support-6.1.0-javadoc.jar.asc" title="federation-graphql-java-support-6.1.0-javadoc.jar.asc">federation-graphql-java-support-6.1.0-javadoc...</a>  2026-05-08 18:05       485      
+<a href="federation-graphql-java-support-6.1.0-javadoc.jar.asc.md5" title="federation-graphql-java-support-6.1.0-javadoc.jar.asc.md5">federation-graphql-java-support-6.1.0-javadoc...</a>  2026-05-08 18:05        32      
+<a href="federation-graphql-java-support-6.1.0-javadoc.jar.asc.sha1" title="federation-graphql-java-support-6.1.0-javadoc.jar.asc.sha1">federation-graphql-java-support-6.1.0-javadoc...</a>  2026-05-08 18:05        40      
+<a href="federation-graphql-java-support-6.1.0-javadoc.jar.asc.sha256" title="federation-graphql-java-support-6.1.0-javadoc.jar.asc.sha256">federation-graphql-java-support-6.1.0-javadoc...</a>  2026-05-08 18:05        64      
+<a href="federation-graphql-java-support-6.1.0-javadoc.jar.asc.sha512" title="federation-graphql-java-support-6.1.0-javadoc.jar.asc.sha512">federation-graphql-java-support-6.1.0-javadoc...</a>  2026-05-08 18:05       128      
+<a href="federation-graphql-java-support-6.1.0-javadoc.jar.md5" title="federation-graphql-java-support-6.1.0-javadoc.jar.md5">federation-graphql-java-support-6.1.0-javadoc...</a>  2026-05-08 18:05        32      
+<a href="federation-graphql-java-support-6.1.0-javadoc.jar.sha1" title="federation-graphql-java-support-6.1.0-javadoc.jar.sha1">federation-graphql-java-support-6.1.0-javadoc...</a>  2026-05-08 18:05        40      
+<a href="federation-graphql-java-support-6.1.0-javadoc.jar.sha256" title="federation-graphql-java-support-6.1.0-javadoc.jar.sha256">federation-graphql-java-support-6.1.0-javadoc...</a>  2026-05-08 18:05        64      
+<a href="federation-graphql-java-support-6.1.0-javadoc.jar.sha512" title="federation-graphql-java-support-6.1.0-javadoc.jar.sha512">federation-graphql-java-support-6.1.0-javadoc...</a>  2026-05-08 18:05       128      
+<a href="federation-graphql-java-support-6.1.0-sources.jar" title="federation-graphql-java-support-6.1.0-sources.jar">federation-graphql-java-support-6.1.0-sources...</a>  2026-05-08 18:05    205776      
+<a href="federation-graphql-java-support-6.1.0-sources.jar.asc" title="federation-graphql-java-support-6.1.0-sources.jar.asc">federation-graphql-java-support-6.1.0-sources...</a>  2026-05-08 18:05       485      
+<a href="federation-graphql-java-support-6.1.0-sources.jar.asc.md5" title="federation-graphql-java-support-6.1.0-sources.jar.asc.md5">federation-graphql-java-support-6.1.0-sources...</a>  2026-05-08 18:05        32      
+<a href="federation-graphql-java-support-6.1.0-sources.jar.asc.sha1" title="federation-graphql-java-support-6.1.0-sources.jar.asc.sha1">federation-graphql-java-support-6.1.0-sources...</a>  2026-05-08 18:05        40      
+<a href="federation-graphql-java-support-6.1.0-sources.jar.asc.sha256" title="federation-graphql-java-support-6.1.0-sources.jar.asc.sha256">federation-graphql-java-support-6.1.0-sources...</a>  2026-05-08 18:05        64      
+<a href="federation-graphql-java-support-6.1.0-sources.jar.asc.sha512" title="federation-graphql-java-support-6.1.0-sources.jar.asc.sha512">federation-graphql-java-support-6.1.0-sources...</a>  2026-05-08 18:05       128      
+<a href="federation-graphql-java-support-6.1.0-sources.jar.md5" title="federation-graphql-java-support-6.1.0-sources.jar.md5">federation-graphql-java-support-6.1.0-sources...</a>  2026-05-08 18:05        32      
+<a href="federation-graphql-java-support-6.1.0-sources.jar.sha1" title="federation-graphql-java-support-6.1.0-sources.jar.sha1">federation-graphql-java-support-6.1.0-sources...</a>  2026-05-08 18:05        40      
+<a href="federation-graphql-java-support-6.1.0-sources.jar.sha256" title="federation-graphql-java-support-6.1.0-sources.jar.sha256">federation-graphql-java-support-6.1.0-sources...</a>  2026-05-08 18:05        64      
+<a href="federation-graphql-java-support-6.1.0-sources.jar.sha512" title="federation-graphql-java-support-6.1.0-sources.jar.sha512">federation-graphql-java-support-6.1.0-sources...</a>  2026-05-08 18:05       128      
+<a href="federation-graphql-java-support-6.1.0.jar" title="federation-graphql-java-support-6.1.0.jar">federation-graphql-java-support-6.1.0.jar</a>         2026-05-08 18:05    585626      
+<a href="federation-graphql-java-support-6.1.0.jar.asc" title="federation-graphql-java-support-6.1.0.jar.asc">federation-graphql-java-support-6.1.0.jar.asc</a>     2026-05-08 18:05       485      
+<a href="federation-graphql-java-support-6.1.0.jar.asc.md5" title="federation-graphql-java-support-6.1.0.jar.asc.md5">federation-graphql-java-support-6.1.0.jar.asc...</a>  2026-05-08 18:05        32      
+<a href="federation-graphql-java-support-6.1.0.jar.asc.sha1" title="federation-graphql-java-support-6.1.0.jar.asc.sha1">federation-graphql-java-support-6.1.0.jar.asc...</a>  2026-05-08 18:05        40      
+<a href="federation-graphql-java-support-6.1.0.jar.asc.sha256" title="federation-graphql-java-support-6.1.0.jar.asc.sha256">federation-graphql-java-support-6.1.0.jar.asc...</a>  2026-05-08 18:05        64      
+<a href="federation-graphql-java-support-6.1.0.jar.asc.sha512" title="federation-graphql-java-support-6.1.0.jar.asc.sha512">federation-graphql-java-support-6.1.0.jar.asc...</a>  2026-05-08 18:05       128      
+<a href="federation-graphql-java-support-6.1.0.jar.md5" title="federation-graphql-java-support-6.1.0.jar.md5">federation-graphql-java-support-6.1.0.jar.md5</a>     2026-05-08 18:05        32      
+<a href="federation-graphql-java-support-6.1.0.jar.sha1" title="federation-graphql-java-support-6.1.0.jar.sha1">federation-graphql-java-support-6.1.0.jar.sha...</a>  2026-05-08 18:05        40      
+<a href="federation-graphql-java-support-6.1.0.jar.sha256" title="federation-graphql-java-support-6.1.0.jar.sha256">federation-graphql-java-support-6.1.0.jar.sha...</a>  2026-05-08 18:05        64      
+<a href="federation-graphql-java-support-6.1.0.jar.sha512" title="federation-graphql-java-support-6.1.0.jar.sha512">federation-graphql-java-support-6.1.0.jar.sha...</a>  2026-05-08 18:05       128      
+<a href="federation-graphql-java-support-6.1.0.module" title="federation-graphql-java-support-6.1.0.module">federation-graphql-java-support-6.1.0.module</a>      2026-05-08 18:05      4702      
+<a href="federation-graphql-java-support-6.1.0.module.asc" title="federation-graphql-java-support-6.1.0.module.asc">federation-graphql-java-support-6.1.0.module....</a>  2026-05-08 18:05       485      
+<a href="federation-graphql-java-support-6.1.0.module.asc.md5" title="federation-graphql-java-support-6.1.0.module.asc.md5">federation-graphql-java-support-6.1.0.module....</a>  2026-05-08 18:05        32      
+<a href="federation-graphql-java-support-6.1.0.module.asc.sha1" title="federation-graphql-java-support-6.1.0.module.asc.sha1">federation-graphql-java-support-6.1.0.module....</a>  2026-05-08 18:05        40      
+<a href="federation-graphql-java-support-6.1.0.module.asc.sha256" title="federation-graphql-java-support-6.1.0.module.asc.sha256">federation-graphql-java-support-6.1.0.module....</a>  2026-05-08 18:05        64      
+<a href="federation-graphql-java-support-6.1.0.module.asc.sha512" title="federation-graphql-java-support-6.1.0.module.asc.sha512">federation-graphql-java-support-6.1.0.module....</a>  2026-05-08 18:05       128      
+<a href="federation-graphql-java-support-6.1.0.module.md5" title="federation-graphql-java-support-6.1.0.module.md5">federation-graphql-java-support-6.1.0.module....</a>  2026-05-08 18:05        32      
+<a href="federation-graphql-java-support-6.1.0.module.sha1" title="federation-graphql-java-support-6.1.0.module.sha1">federation-graphql-java-support-6.1.0.module....</a>  2026-05-08 18:05        40      
+<a href="federation-graphql-java-support-6.1.0.module.sha256" title="federation-graphql-java-support-6.1.0.module.sha256">federation-graphql-java-support-6.1.0.module....</a>  2026-05-08 18:05        64      
+<a href="federation-graphql-java-support-6.1.0.module.sha512" title="federation-graphql-java-support-6.1.0.module.sha512">federation-graphql-java-support-6.1.0.module....</a>  2026-05-08 18:05       128      
+<a href="federation-graphql-java-support-6.1.0.pom" title="federation-graphql-java-support-6.1.0.pom">federation-graphql-java-support-6.1.0.pom</a>         2026-05-08 18:05      2512      
+<a href="federation-graphql-java-support-6.1.0.pom.asc" title="federation-graphql-java-support-6.1.0.pom.asc">federation-graphql-java-support-6.1.0.pom.asc</a>     2026-05-08 18:05       485      
+<a href="federation-graphql-java-support-6.1.0.pom.asc.md5" title="federation-graphql-java-support-6.1.0.pom.asc.md5">federation-graphql-java-support-6.1.0.pom.asc...</a>  2026-05-08 18:05        32      
+<a href="federation-graphql-java-support-6.1.0.pom.asc.sha1" title="federation-graphql-java-support-6.1.0.pom.asc.sha1">federation-graphql-java-support-6.1.0.pom.asc...</a>  2026-05-08 18:05        40      
+<a href="federation-graphql-java-support-6.1.0.pom.asc.sha256" title="federation-graphql-java-support-6.1.0.pom.asc.sha256">federation-graphql-java-support-6.1.0.pom.asc...</a>  2026-05-08 18:05        64      
+<a href="federation-graphql-java-support-6.1.0.pom.asc.sha512" title="federation-graphql-java-support-6.1.0.pom.asc.sha512">federation-graphql-java-support-6.1.0.pom.asc...</a>  2026-05-08 18:05       128      
+<a href="federation-graphql-java-support-6.1.0.pom.md5" title="federation-graphql-java-support-6.1.0.pom.md5">federation-graphql-java-support-6.1.0.pom.md5</a>     2026-05-08 18:05        32      
+<a href="federation-graphql-java-support-6.1.0.pom.sha1" title="federation-graphql-java-support-6.1.0.pom.sha1">federation-graphql-java-support-6.1.0.pom.sha...</a>  2026-05-08 18:05        40      
+<a href="federation-graphql-java-support-6.1.0.pom.sha256" title="federation-graphql-java-support-6.1.0.pom.sha256">federation-graphql-java-support-6.1.0.pom.sha...</a>  2026-05-08 18:05        64      
+<a href="federation-graphql-java-support-6.1.0.pom.sha512" title="federation-graphql-java-support-6.1.0.pom.sha512">federation-graphql-java-support-6.1.0.pom.sha...</a>  2026-05-08 18:05       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+codex
+Maven Central has the main JVM JAR plus source and javadoc JARs, and no test JAR in that version directory. I’m checking the upstream tag and module layout now so the test URL points at the exact 6.1.0 tag.
+exec
+/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/apollographql/federation/federation-graphql-java-support/6.1.0/federation-graphql-java-support-6.1.0.module' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9
+ succeeded in 0ms:
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.apollographql.federation",
+    "module": "federation-graphql-java-support",
+    "version": "6.1.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.12"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "com.graphql-java",
+          "module": "graphql-java",
+          "version": {
+            "requires": "25.0"
+          }
+        },
+        {
+          "group": "org.slf4j",
+          "module": "slf4j-api",
+          "version": {
+            "requires": "2.0.16"
+          }
+        },
+        {
+          "group": "com.google.protobuf",
+          "module": "protobuf-java",
+          "version": {
+            "requires": "3.25.5"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "federation-graphql-java-support-6.1.0.jar",
+          "url": "federation-graphql-java-support-6.1.0.jar",
+          "size": 585626,
+          "sha512": "a84421cac2b9775f02b9d7d8c63dbf16e360e9ecd00d18c7d113aba39392a6de28b3eda64eaa6f043a1ac3dfc35ff0c0fea97298bf746c0cffdf8138684b2540",
+          "sha256": "da95068467b390f88bf07d68b2c21746a4578f5f39ef9efcd2d1e50399bb652f",
+          "sha1": "352e0caa3258fe0ba07a2ae2123f3f44497f6181",
+          "md5": "14af9da79c0216e2ac66f3b40af444b6"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "com.graphql-java",
+          "module": "graphql-java",
+          "version": {
+            "requires": "25.0"
+          }
+        },
+        {
+          "group": "org.slf4j",
+          "module": "slf4j-api",
+          "version": {
+            "requires": "2.0.16"
+          }
+        },
+        {
+          "group": "com.google.protobuf",
+          "module": "protobuf-java",
+          "version": {
+            "requires": "3.25.5"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "federation-graphql-java-support-6.1.0.jar",
+          "url": "federation-graphql-java-support-6.1.0.jar",
+          "size": 585626,
+          "sha512": "a84421cac2b9775f02b9d7d8c63dbf16e360e9ecd00d18c7d113aba39392a6de28b3eda64eaa6f043a1ac3dfc35ff0c0fea97298bf746c0cffdf8138684b2540",
+          "sha256": "da95068467b390f88bf07d68b2c21746a4578f5f39ef9efcd2d1e50399bb652f",
+          "sha1": "352e0caa3258fe0ba07a2ae2123f3f44497f6181",
+          "md5": "14af9da79c0216e2ac66f3b40af444b6"
+        }
+      ]
+    },
+    {
+      "name": "javadocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "federation-graphql-java-support-6.1.0-javadoc.jar",
+          "url": "federation-graphql-java-support-6.1.0-javadoc.jar",
+          "size": 833875,
+          "sha512": "d87d202b6aad274e152f1b2c9b6501f946909ff8183d4a5d213cba9549400ed696c4bf48c8a425175c7aecd3f26ddf89b01f4df3a973335799050a470cb1c91a",
+          "sha256": "13762ed5076f765c413c1b57a66b065565e86b842d7242182d5f9f1a70650555",
+          "sha1": "90b6215c27365db4978340c2c6beab7f953722d0",
+          "md5": "2ad4508264140c86f20b3e313c1f143d"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "federation-graphql-java-support-6.1.0-sources.jar",
+          "url": "federation-graphql-java-support-6.1.0-sources.jar",
+          "size": 205776,
+          "sha512": "0c876c95754f8fffc01a42dcd8c57ed0730901b0bfcf2daa9262a08fc218b766df7242951d70b05811514d522224995202fd51232e1391111ff875e27e51481c",
+          "sha256": "360b2c8c67a9fd0e5d3bbff6c297030d6ce04503baa4d166d57270cacd400522",
+          "sha1": "9d11665bbca5a12a94eef782ce369245759e4fd3",
+          "md5": "9a1a7111d38f7cd032a95ca7cff53889"
+        }
+      ]
+    }
+  ]
+}
+
+exec
+/bin/bash -lc "git ls-remote --tags https://github.com/apollographql/federation-jvm.git '*6.1.0*'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9
+exec
+/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apollographql/federation-jvm/contents?ref=v6.1.0' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9
+exec
+/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/apollographql/federation/federation-graphql-java-support/6.1.0/federation-graphql-java-support-6.1.0-sources.jar -o /tmp/federation-graphql-java-support-6.1.0-sources.jar && jar tf /tmp/federation-graphql-java-support-6.1.0-sources.jar | sed -n '1,80p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9
+ succeeded in 229ms:
+META-INF/
+META-INF/MANIFEST.MF
+definitions_fed2_0.graphqls
+definitions_fed2_6.graphqls
+definitions_fed2_5.graphqls
+definitions_fed2_12.graphqls
+definitions_fed2_1.graphqls
+definitions_fed2_2.graphqls
+definitions_fed2_9.graphqls
+definitions_fed2_8.graphqls
+definitions_fed2_7.graphqls
+definitions_fed2_3.graphqls
+com/
+com/apollographql/
+com/apollographql/federation/
+com/apollographql/federation/graphqljava/
+com/apollographql/federation/graphqljava/exceptions/
+com/apollographql/federation/graphqljava/exceptions/UnsupportedFederationVersionException.java
+com/apollographql/federation/graphqljava/exceptions/MissingKeyException.java
+com/apollographql/federation/graphqljava/exceptions/UnsupportedLinkImportException.java
+com/apollographql/federation/graphqljava/exceptions/MultipleFederationLinksException.java
+com/apollographql/federation/graphqljava/exceptions/UnsupportedRenameException.java
+com/apollographql/federation/graphqljava/_Any.java
+com/apollographql/federation/graphqljava/tracing/
+com/apollographql/federation/graphqljava/tracing/FederatedTracingInstrumentation.java
+com/apollographql/federation/graphqljava/FederationDirectives.java
+com/apollographql/federation/graphqljava/_Entity.java
+com/apollographql/federation/graphqljava/Federation.java
+com/apollographql/federation/graphqljava/printer/
+com/apollographql/federation/graphqljava/printer/ServiceSDLPrinter.java
+com/apollographql/federation/graphqljava/link__Import.java
+com/apollographql/federation/graphqljava/_Service.java
+com/apollographql/federation/graphqljava/FederationError.java
+com/apollographql/federation/graphqljava/SchemaTransformer.java
+com/apollographql/federation/graphqljava/_FieldSet.java
+com/apollographql/federation/graphqljava/caching/
+com/apollographql/federation/graphqljava/caching/CacheControlInstrumentation.java
+com/apollographql/federation/graphqljava/directives/
+com/apollographql/federation/graphqljava/directives/LinkImportsRenamingVisitor.java
+com/apollographql/federation/graphqljava/directives/LinkDirectiveProcessor.java
+mdg/
+mdg/engine/
+mdg/engine/proto/
+mdg/engine/proto/Reports.java
+
+ succeeded in 264ms:
+[
+  {
+    "name": ".circleci",
+    "path": ".circleci",
+    "sha": "fe996d50586d673f3ee338e07b2f78b860b4f61d",
+    "size": 0,
+    "url": "https://api.github.com/repos/apollographql/federation-jvm/contents/.circleci?ref=v6.1.0",
+    "html_url": "https://github.com/apollographql/federation-jvm/tree/v6.1.0/.circleci",
+    "git_url": "https://api.github.com/repos/apollographql/federation-jvm/git/trees/fe996d50586d673f3ee338e07b2f78b860b4f61d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apollographql/federation-jvm/contents/.circleci?ref=v6.1.0",
+      "git": "https://api.github.com/repos/apollographql/federation-jvm/git/trees/fe996d50586d673f3ee338e07b2f78b860b4f61d",
+      "html": "https://github.com/apollographql/federation-jvm/tree/v6.1.0/.circleci"
+    }
+  },
+  {
+    "name": ".editorconfig",
+    "path": ".editorconfig",
+    "sha": "9ef2d3981c4cff0427e14da493cf330972a00317",
+    "size": 489,
+    "url": "https://api.github.com/repos/apollographql/federation-jvm/contents/.editorconfig?ref=v6.1.0",
+    "html_url": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/.editorconfig",
+    "git_url": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/9ef2d3981c4cff0427e14da493cf330972a00317",
+    "download_url": "https://raw.githubusercontent.com/apollographql/federation-jvm/v6.1.0/.editorconfig",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apollographql/federation-jvm/contents/.editorconfig?ref=v6.1.0",
+      "git": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/9ef2d3981c4cff0427e14da493cf330972a00317",
+      "html": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/.editorconfig"
+    }
+  },
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "7910d152ec6f7192f8b91a1a0a3db6a78dbe08ca",
+    "size": 0,
+    "url": "https://api.github.com/repos/apollographql/federation-jvm/contents/.github?ref=v6.1.0",
+    "html_url": "https://github.com/apollographql/federation-jvm/tree/v6.1.0/.github",
+    "git_url": "https://api.github.com/repos/apollographql/federation-jvm/git/trees/7910d152ec6f7192f8b91a1a0a3db6a78dbe08ca",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apollographql/federation-jvm/contents/.github?ref=v6.1.0",
+      "git": "https://api.github.com/repos/apollographql/federation-jvm/git/trees/7910d152ec6f7192f8b91a1a0a3db6a78dbe08ca",
+      "html": "https://github.com/apollographql/federation-jvm/tree/v6.1.0/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "58447624c6505f4c878a041d7ab5b4c170eb6b12",
+    "size": 247,
+    "url": "https://api.github.com/repos/apollographql/federation-jvm/contents/.gitignore?ref=v6.1.0",
+    "html_url": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/.gitignore",
+    "git_url": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/58447624c6505f4c878a041d7ab5b4c170eb6b12",
+    "download_url": "https://raw.githubusercontent.com/apollographql/federation-jvm/v6.1.0/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apollographql/federation-jvm/contents/.gitignore?ref=v6.1.0",
+      "git": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/58447624c6505f4c878a041d7ab5b4c170eb6b12",
+      "html": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/.gitignore"
+    }
+  },
+  {
+    "name": ".gitleaks.toml",
+    "path": ".gitleaks.toml",
+    "sha": "0d98c194cf2f7e124eab7145b9e1067aed3d8ad4",
+    "size": 1564,
+    "url": "https://api.github.com/repos/apollographql/federation-jvm/contents/.gitleaks.toml?ref=v6.1.0",
+    "html_url": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/.gitleaks.toml",
+    "git_url": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/0d98c194cf2f7e124eab7145b9e1067aed3d8ad4",
+    "download_url": "https://raw.githubusercontent.com/apollographql/federation-jvm/v6.1.0/.gitleaks.toml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apollographql/federation-jvm/contents/.gitleaks.toml?ref=v6.1.0",
+      "git": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/0d98c194cf2f7e124eab7145b9e1067aed3d8ad4",
+      "html": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/.gitleaks.toml"
+    }
+  },
+  {
+    "name": "CONTRIBUTING.md",
+    "path": "CONTRIBUTING.md",
+    "sha": "08ab498b8b0443f093cddd47cc359f53540adbc9",
+    "size": 4031,
+    "url": "https://api.github.com/repos/apollographql/federation-jvm/contents/CONTRIBUTING.md?ref=v6.1.0",
+    "html_url": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/CONTRIBUTING.md",
+    "git_url": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/08ab498b8b0443f093cddd47cc359f53540adbc9",
+    "download_url": "https://raw.githubusercontent.com/apollographql/federation-jvm/v6.1.0/CONTRIBUTING.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apollographql/federation-jvm/contents/CONTRIBUTING.md?ref=v6.1.0",
+      "git": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/08ab498b8b0443f093cddd47cc359f53540adbc9",
+      "html": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/CONTRIBUTING.md"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "1e7d7fe0efb81fc30b07b9c1509518954e9305b8",
+    "size": 1097,
+    "url": "https://api.github.com/repos/apollographql/federation-jvm/contents/LICENSE?ref=v6.1.0",
+    "html_url": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/LICENSE",
+    "git_url": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/1e7d7fe0efb81fc30b07b9c1509518954e9305b8",
+    "download_url": "https://raw.githubusercontent.com/apollographql/federation-jvm/v6.1.0/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apollographql/federation-jvm/contents/LICENSE?ref=v6.1.0",
+      "git": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/1e7d7fe0efb81fc30b07b9c1509518954e9305b8",
+      "html": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/LICENSE"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "7db6749a0c8bc34b514c8892df88f5ceef5ad86a",
+    "size": 3972,
+    "url": "https://api.github.com/repos/apollographql/federation-jvm/contents/README.md?ref=v6.1.0",
+    "html_url": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/README.md",
+    "git_url": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/7db6749a0c8bc34b514c8892df88f5ceef5ad86a",
+    "download_url": "https://raw.githubusercontent.com/apollographql/federation-jvm/v6.1.0/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apollographql/federation-jvm/contents/README.md?ref=v6.1.0",
+      "git": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/7db6749a0c8bc34b514c8892df88f5ceef5ad86a",
+      "html": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/README.md"
+    }
+  },
+  {
+    "name": "build.gradle.kts",
+    "path": "build.gradle.kts",
+    "sha": "645e569f28c401cd124f7c9abe5a1ae2e170415f",
+    "size": 553,
+    "url": "https://api.github.com/repos/apollographql/federation-jvm/contents/build.gradle.kts?ref=v6.1.0",
+    "html_url": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/build.gradle.kts",
+    "git_url": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/645e569f28c401cd124f7c9abe5a1ae2e170415f",
+    "download_url": "https://raw.githubusercontent.com/apollographql/federation-jvm/v6.1.0/build.gradle.kts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apollographql/federation-jvm/contents/build.gradle.kts?ref=v6.1.0",
+      "git": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/645e569f28c401cd124f7c9abe5a1ae2e170415f",
+      "html": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/build.gradle.kts"
+    }
+  },
+  {
+    "name": "buildSrc",
+    "path": "buildSrc",
+    "sha": "45ba6f1525fca62d9b08d9ee1562a17cc54659d4",
+    "size": 0,
+    "url": "https://api.github.com/repos/apollographql/federation-jvm/contents/buildSrc?ref=v6.1.0",
+    "html_url": "https://github.com/apollographql/federation-jvm/tree/v6.1.0/buildSrc",
+    "git_url": "https://api.github.com/repos/apollographql/federation-jvm/git/trees/45ba6f1525fca62d9b08d9ee1562a17cc54659d4",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apollographql/federation-jvm/contents/buildSrc?ref=v6.1.0",
+      "git": "https://api.github.com/repos/apollographql/federation-jvm/git/trees/45ba6f1525fca62d9b08d9ee1562a17cc54659d4",
+      "html": "https://github.com/apollographql/federation-jvm/tree/v6.1.0/buildSrc"
+    }
+  },
+  {
+    "name": "compatibility",
+    "path": "compatibility",
+    "sha": "af01c9b52051d6ce9da212055e0b595ee7dcea80",
+    "size": 0,
+    "url": "https://api.github.com/repos/apollographql/federation-jvm/contents/compatibility?ref=v6.1.0",
+    "html_url": "https://github.com/apollographql/federation-jvm/tree/v6.1.0/compatibility",
+    "git_url": "https://api.github.com/repos/apollographql/federation-jvm/git/trees/af01c9b52051d6ce9da212055e0b595ee7dcea80",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apollographql/federation-jvm/contents/compatibility?ref=v6.1.0",
+      "git": "https://api.github.com/repos/apollographql/federation-jvm/git/trees/af01c9b52051d6ce9da212055e0b595ee7dcea80",
+      "html": "https://github.com/apollographql/federation-jvm/tree/v6.1.0/compatibility"
+    }
+  },
+  {
+    "name": "gradle.properties",
+    "path": "gradle.properties",
+    "sha": "16cc088bb39d2b2d21ebf4f77edf3ae4991776a1",
+    "size": 385,
+    "url": "https://api.github.com/repos/apollographql/federation-jvm/contents/gradle.properties?ref=v6.1.0",
+    "html_url": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/gradle.properties",
+    "git_url": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/16cc088bb39d2b2d21ebf4f77edf3ae4991776a1",
+    "download_url": "https://raw.githubusercontent.com/apollographql/federation-jvm/v6.1.0/gradle.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apollographql/federation-jvm/contents/gradle.properties?ref=v6.1.0",
+      "git": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/16cc088bb39d2b2d21ebf4f77edf3ae4991776a1",
+      "html": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/gradle.properties"
+    }
+  },
+  {
+    "name": "gradle",
+    "path": "gradle",
+    "sha": "9959a0f985179ff4ba343175f7f96734a1cde56a",
+    "size": 0,
+    "url": "https://api.github.com/repos/apollographql/federation-jvm/contents/gradle?ref=v6.1.0",
+    "html_url": "https://github.com/apollographql/federation-jvm/tree/v6.1.0/gradle",
+    "git_url": "https://api.github.com/repos/apollographql/federation-jvm/git/trees/9959a0f985179ff4ba343175f7f96734a1cde56a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apollographql/federation-jvm/contents/gradle?ref=v6.1.0",
+      "git": "https://api.github.com/repos/apollographql/federation-jvm/git/trees/9959a0f985179ff4ba343175f7f96734a1cde56a",
+      "html": "https://github.com/apollographql/federation-jvm/tree/v6.1.0/gradle"
+    }
+  },
+  {
+    "name": "gradlew",
+    "path": "gradlew",
+    "sha": "b740cf13397ab16efc23cba3d6234ff8433403b1",
+    "size": 8706,
+    "url": "https://api.github.com/repos/apollographql/federation-jvm/contents/gradlew?ref=v6.1.0",
+    "html_url": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/gradlew",
+    "git_url": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/b740cf13397ab16efc23cba3d6234ff8433403b1",
+    "download_url": "https://raw.githubusercontent.com/apollographql/federation-jvm/v6.1.0/gradlew",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apollographql/federation-jvm/contents/gradlew?ref=v6.1.0",
+      "git": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/b740cf13397ab16efc23cba3d6234ff8433403b1",
+      "html": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/gradlew"
+    }
+  },
+  {
+    "name": "gradlew.bat",
+    "path": "gradlew.bat",
+    "sha": "7101f8e4676fcad8adc961e929ea3bcb37b5262f",
+    "size": 2918,
+    "url": "https://api.github.com/repos/apollographql/federation-jvm/contents/gradlew.bat?ref=v6.1.0",
+    "html_url": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/gradlew.bat",
+    "git_url": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/7101f8e4676fcad8adc961e929ea3bcb37b5262f",
+    "download_url": "https://raw.githubusercontent.com/apollographql/federation-jvm/v6.1.0/gradlew.bat",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apollographql/federation-jvm/contents/gradlew.bat?ref=v6.1.0",
+      "git": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/7101f8e4676fcad8adc961e929ea3bcb37b5262f",
+      "html": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/gradlew.bat"
+    }
+  },
+  {
+    "name": "graphql-java-support",
+    "path": "graphql-java-support",
+    "sha": "6d9f4617fbd6f88d903000677b990faf876d0452",
+    "size": 0,
+    "url": "https://api.github.com/repos/apollographql/federation-jvm/contents/graphql-java-support?ref=v6.1.0",
+    "html_url": "https://github.com/apollographql/federation-jvm/tree/v6.1.0/graphql-java-support",
+    "git_url": "https://api.github.com/repos/apollographql/federation-jvm/git/trees/6d9f4617fbd6f88d903000677b990faf876d0452",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apollographql/federation-jvm/contents/graphql-java-support?ref=v6.1.0",
+      "git": "https://api.github.com/repos/apollographql/federation-jvm/git/trees/6d9f4617fbd6f88d903000677b990faf876d0452",
+      "html": "https://github.com/apollographql/federation-jvm/tree/v6.1.0/graphql-java-support"
+    }
+  },
+  {
+    "name": "renovate.json",
+    "path": "renovate.json",
+    "sha": "6941e3e9371de3f55b815cfa239bbc983a477e9e",
+    "size": 734,
+    "url": "https://api.github.com/repos/apollographql/federation-jvm/contents/renovate.json?ref=v6.1.0",
+    "html_url": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/renovate.json",
+    "git_url": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/6941e3e9371de3f55b815cfa239bbc983a477e9e",
+    "download_url": "https://raw.githubusercontent.com/apollographql/federation-jvm/v6.1.0/renovate.json",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apollographql/federation-jvm/contents/renovate.json?ref=v6.1.0",
+      "git": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/6941e3e9371de3f55b815cfa239bbc983a477e9e",
+      "html": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/renovate.json"
+    }
+  },
+  {
+    "name": "settings.gradle.kts",
+    "path": "settings.gradle.kts",
+    "sha": "989efd1b23a4d2a400c7fba26b76e5fc0b4929fa",
+    "size": 322,
+    "url": "https://api.github.com/repos/apollographql/federation-jvm/contents/settings.gradle.kts?ref=v6.1.0",
+    "html_url": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/settings.gradle.kts",
+    "git_url": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/989efd1b23a4d2a400c7fba26b76e5fc0b4929fa",
+    "download_url": "https://raw.githubusercontent.com/apollographql/federation-jvm/v6.1.0/settings.gradle.kts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apollographql/federation-jvm/contents/settings.gradle.kts?ref=v6.1.0",
+      "git": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/989efd1b23a4d2a400c7fba26b76e5fc0b4929fa",
+      "html": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/settings.gradle.kts"
+    }
+  },
+  {
+    "name": "spring-subscription-callback",
+    "path": "spring-subscription-callback",
+    "sha": "7979246813ad1e76f9ce9812fbb3feb609cc9658",
+    "size": 0,
+    "url": "https://api.github.com/repos/apollographql/federation-jvm/contents/spring-subscription-callback?ref=v6.1.0",
+    "html_url": "https://github.com/apollographql/federation-jvm/tree/v6.1.0/spring-subscription-callback",
+    "git_url": "https://api.github.com/repos/apollographql/federation-jvm/git/trees/7979246813ad1e76f9ce9812fbb3feb609cc9658",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apollographql/federation-jvm/contents/spring-subscription-callback?ref=v6.1.0",
+      "git": "https://api.github.com/repos/apollographql/federation-jvm/git/trees/7979246813ad1e76f9ce9812fbb3feb609cc9658",
+      "html": "https://github.com/apollographql/federation-jvm/tree/v6.1.0/spring-subscription-callback"
+    }
+  }
+]
+
+ succeeded in 430ms:
+f30dbcc917bf1716ac2bb0b5e3b747bc96dfbfde	refs/tags/v6.1.0
+
+codex
+The upstream release tag is `v6.1.0`, and Maven Gradle metadata marks the artifact as a normal JVM `jar` with Java API/runtime variants. I found Java sources in the source JAR, so this should remain a Native Image metadata target and does not need `not-for-native-image`.
+exec
+/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apollographql/federation-jvm/contents/graphql-java-support?ref=v6.1.0' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9
+exec
+/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apollographql/federation-jvm/contents/graphql-java-support/src?ref=v6.1.0' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9
+exec
+/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apollographql/federation-jvm/v6.1.0/README.md | sed -n '1,180p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9
+exec
+/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apollographql/federation-jvm/v6.1.0/graphql-java-support/build.gradle.kts | sed -n '1,200p'" in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9
+ succeeded in 204ms:
+[![Continuous Integration](https://github.com/apollographql/federation-jvm/workflows/Continuous%20Integration/badge.svg)](https://github.com/apollographql/federation-jvm/actions?query=workflow%3A%22Continuous+Integration%22)
+[![MIT License](https://img.shields.io/github/license/apollographql/federation-jvm.svg)](LICENSE)
+[![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.federation/federation-graphql-java-support.svg)](https://maven-badges.herokuapp.com/maven-central/com.apollographql.federation/federation-graphql-java-support)
+[![Join the community forum](https://img.shields.io/badge/join%20the%20community-forum-blueviolet)](https://community.apollographql.com)
+
+# Apollo Federation on the JVM
+
+[**Apollo Federation**](https://www.apollographql.com/docs/federation/) is a powerful, open architecture that helps you create a **unified supergraph** that combines multiple GraphQL APIs.
+`federation-graphql-java-support` provides Apollo Federation support for building subgraphs in the `graphql-java` ecosystem. Individual subgraphs can be run independently of each other but can also specify
+relationships to the other subgraphs by using Federated directives. See [Apollo Federation documentation](https://www.apollographql.com/docs/federation/) for details.
+
+```mermaid
+graph BT;
+  gateway([Supergraph<br/>gateway]);
+  serviceA[Users<br/>subgraph];
+  serviceB[Products<br/>subgraph];
+  serviceC[Reviews<br/>subgraph];
+  gateway --- serviceA & serviceB & serviceC;
+```
+
+## Modules
+
+### Federation JVM Support
+
+`federation-graphql-java-support` is built on top of `graphql-java` and provides transformation logic to make your GraphQL schemas Federation compatible. `SchemaTransformer` adds common Federation
+type definitions (e.g. `_Any` scalar, `_Entity` union, Federation directives, etc) and allows you to easily specify your Federated entity resolvers.
+
+This project also provides a set of Federation aware instrumentations:
+
+* `CacheControlInstrumentation` - instrumentation that computes a max age for an operation based on `@cacheControl` directives
+* `FederatedTracingInstrumentation` - instrumentation that generates trace information for federated operations
+
+See module [README](graphql-java-support/README.md) for details.
+
+### Subscription HTTP Callback Support for Spring GraphQL
+
+GraphQL subscriptions enable clients to receive continual, real-time updates whenever new data becomes available. Unlike
+queries and mutations, subscriptions are long-lasting. This means a client can receive multiple updates from a single subscription.
+
+[Spring GraphQL](https://docs.spring.io/spring-graphql/reference/) provides out of box support for GraphQL subscriptions
+over WebSockets using [graphql-transport-ws](https://github.com/enisdenjo/graphql-ws) protocol. This library adds support
+for subscriptions using [Apollo HTTP callback protocol](https://www.apollographql.com/docs/router/executing-operations/subscription-callback-protocol).
+
+See [Apollo Router](https://www.apollographql.com/docs/router/executing-operations/subscription-support) for additional
+details about Federation and Subscription support. See module [README](spring-subscription-callback/README.md) for library
+details.
+
+## Contact
+
+If you have a specific question about the library or code, please start a discussion in the [Apollo community forums](https://community.apollographql.com/).
+
+## Contributing
+
+To get started, please fork the repo and checkout a new branch. You can then build the library locally with Gradle
+
+```shell
+./gradlew clean build
+```
+
+See more info in [CONTRIBUTING.md](CONTRIBUTING.md).
+
+After you have your local branch set up, take a look at our open issues to see where you can contribute.
+
+## Security
+
+For more info on how to contact the team for security issues, see our [Security Policy](https://github.com/apollographql/federation-jvm/security/policy).
+
+## License
+
+This library is licensed under [The MIT License (MIT)](LICENSE).
+
+ succeeded in 231ms:
+[
+  {
+    "name": "main",
+    "path": "graphql-java-support/src/main",
+    "sha": "ae0c52c6844231d60f374695862739a26749114b",
+    "size": 0,
+    "url": "https://api.github.com/repos/apollographql/federation-jvm/contents/graphql-java-support/src/main?ref=v6.1.0",
+    "html_url": "https://github.com/apollographql/federation-jvm/tree/v6.1.0/graphql-java-support/src/main",
+    "git_url": "https://api.github.com/repos/apollographql/federation-jvm/git/trees/ae0c52c6844231d60f374695862739a26749114b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apollographql/federation-jvm/contents/graphql-java-support/src/main?ref=v6.1.0",
+      "git": "https://api.github.com/repos/apollographql/federation-jvm/git/trees/ae0c52c6844231d60f374695862739a26749114b",
+      "html": "https://github.com/apollographql/federation-jvm/tree/v6.1.0/graphql-java-support/src/main"
+    }
+  },
+  {
+    "name": "test",
+    "path": "graphql-java-support/src/test",
+    "sha": "6f7d0608816e16c0e3bf6508d50ebefd36202ad3",
+    "size": 0,
+    "url": "https://api.github.com/repos/apollographql/federation-jvm/contents/graphql-java-support/src/test?ref=v6.1.0",
+    "html_url": "https://github.com/apollographql/federation-jvm/tree/v6.1.0/graphql-java-support/src/test",
+    "git_url": "https://api.github.com/repos/apollographql/federation-jvm/git/trees/6f7d0608816e16c0e3bf6508d50ebefd36202ad3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apollographql/federation-jvm/contents/graphql-java-support/src/test?ref=v6.1.0",
+      "git": "https://api.github.com/repos/apollographql/federation-jvm/git/trees/6f7d0608816e16c0e3bf6508d50ebefd36202ad3",
+      "html": "https://github.com/apollographql/federation-jvm/tree/v6.1.0/graphql-java-support/src/test"
+    }
+  }
+]
+
+ succeeded in 237ms:
+description = "GraphQL Java server support for Apollo Federation"
+
+plugins {
+    id("com.apollographql.federation.java-conventions")
+    id("com.google.protobuf") version "0.9.4"
+}
+
+val annotationsVersion: String by project
+val graphQLJavaVersion: String by project
+val protobufVersion: String by project
+val slf4jVersion: String by project
+dependencies {
+    compileOnly("org.jetbrains:annotations:$annotationsVersion")
+    api("com.graphql-java:graphql-java:$graphQLJavaVersion")
+    api("org.slf4j:slf4j-api:$slf4jVersion")
+    api("com.google.protobuf:protobuf-java:$protobufVersion")
+    testCompileOnly("org.jetbrains:annotations:$annotationsVersion")
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:$protobufVersion"
+    }
+}
+
+ succeeded in 261ms:
+[
+  {
+    "name": "README.md",
+    "path": "graphql-java-support/README.md",
+    "sha": "73576c6bed32f53d36da1039655d7cf4cc475b2e",
+    "size": 6798,
+    "url": "https://api.github.com/repos/apollographql/federation-jvm/contents/graphql-java-support/README.md?ref=v6.1.0",
+    "html_url": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/graphql-java-support/README.md",
+    "git_url": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/73576c6bed32f53d36da1039655d7cf4cc475b2e",
+    "download_url": "https://raw.githubusercontent.com/apollographql/federation-jvm/v6.1.0/graphql-java-support/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apollographql/federation-jvm/contents/graphql-java-support/README.md?ref=v6.1.0",
+      "git": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/73576c6bed32f53d36da1039655d7cf4cc475b2e",
+      "html": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/graphql-java-support/README.md"
+    }
+  },
+  {
+    "name": "build.gradle.kts",
+    "path": "graphql-java-support/build.gradle.kts",
+    "sha": "7f630b549c7e2e9302ffbf648250409b8c3d79a2",
+    "size": 758,
+    "url": "https://api.github.com/repos/apollographql/federation-jvm/contents/graphql-java-support/build.gradle.kts?ref=v6.1.0",
+    "html_url": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/graphql-java-support/build.gradle.kts",
+    "git_url": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/7f630b549c7e2e9302ffbf648250409b8c3d79a2",
+    "download_url": "https://raw.githubusercontent.com/apollographql/federation-jvm/v6.1.0/graphql-java-support/build.gradle.kts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apollographql/federation-jvm/contents/graphql-java-support/build.gradle.kts?ref=v6.1.0",
+      "git": "https://api.github.com/repos/apollographql/federation-jvm/git/blobs/7f630b549c7e2e9302ffbf648250409b8c3d79a2",
+      "html": "https://github.com/apollographql/federation-jvm/blob/v6.1.0/graphql-java-support/build.gradle.kts"
+    }
+  },
+  {
+    "name": "src",
+    "path": "graphql-java-support/src",
+    "sha": "65600f487eed50b2fd403c6f995bbad44621a6d1",
+    "size": 0,
+    "url": "https://api.github.com/repos/apollographql/federation-jvm/contents/graphql-java-support/src?ref=v6.1.0",
+    "html_url": "https://github.com/apollographql/federation-jvm/tree/v6.1.0/graphql-java-support/src",
+    "git_url": "https://api.github.com/repos/apollographql/federation-jvm/git/trees/65600f487eed50b2fd403c6f995bbad44621a6d1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apollographql/federation-jvm/contents/graphql-java-support/src?ref=v6.1.0",
+      "git": "https://api.github.com/repos/apollographql/federation-jvm/git/trees/65600f487eed50b2fd403c6f995bbad44621a6d1",
+      "html": "https://github.com/apollographql/federation-jvm/tree/v6.1.0/graphql-java-support/src"
+    }
+  }
+]
+
+codex
+I have enough evidence to fill this in: Maven for sources and javadoc, GitHub tag `v$version$` for tests, no language-specific field, and no Native Image exclusion. I’m updating the discovered metadata JSON now.
+apply patch
+patch: completed
+/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9/build/discovered-artifact-metadata/com.apollographql.federation-federation-graphql-java-support-6.1.0.json
+diff --git a/build/discovered-artifact-metadata/com.apollographql.federation-federation-graphql-java-support-6.1.0.json b/build/discovered-artifact-metadata/com.apollographql.federation-federation-graphql-java-support-6.1.0.json
+index 6c99c8ad9ff1014363d3aa0be6b30495853cb249..615fe282837e7378cfc95bb90e2524b724518408
+--- a/build/discovered-artifact-metadata/com.apollographql.federation-federation-graphql-java-support-6.1.0.json
++++ b/build/discovered-artifact-metadata/com.apollographql.federation-federation-graphql-java-support-6.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.apollographql.federation:federation-graphql-java-support:6.1.0"
++  "coordinates" : "com.apollographql.federation:federation-graphql-java-support:6.1.0",
++  "repository-url" : "https://github.com/apollographql/federation-jvm",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/apollographql/federation/federation-graphql-java-support/$version$/federation-graphql-java-support-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apollographql/federation-jvm/tree/v$version$/graphql-java-support/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/apollographql/federation/federation-graphql-java-support/$version$/federation-graphql-java-support-$version$-javadoc.jar",
++  "description" : "federation-graphql-java-support adds Apollo Federation support for building GraphQL Java subgraph services on the JVM. It transforms GraphQL Java schemas with Federation types and directives and provides federation-aware instrumentation for cache control and tracing."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.apollographql.federation-federation-graphql-java-support-6.1.0.json b/build/discovered-artifact-metadata/com.apollographql.federation-federation-graphql-java-support-6.1.0.json
+index 6c99c8ad9ff1014363d3aa0be6b30495853cb249..615fe282837e7378cfc95bb90e2524b724518408
+--- a/build/discovered-artifact-metadata/com.apollographql.federation-federation-graphql-java-support-6.1.0.json
++++ b/build/discovered-artifact-metadata/com.apollographql.federation-federation-graphql-java-support-6.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.apollographql.federation:federation-graphql-java-support:6.1.0"
++  "coordinates" : "com.apollographql.federation:federation-graphql-java-support:6.1.0",
++  "repository-url" : "https://github.com/apollographql/federation-jvm",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/apollographql/federation/federation-graphql-java-support/$version$/federation-graphql-java-support-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apollographql/federation-jvm/tree/v$version$/graphql-java-support/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/apollographql/federation/federation-graphql-java-support/$version$/federation-graphql-java-support-$version$-javadoc.jar",
++  "description" : "federation-graphql-java-support adds Apollo Federation support for building GraphQL Java subgraph services on the JVM. It transforms GraphQL Java schemas with Federation types and directives and provides federation-aware instrumentation for cache control and tracing."
+ }
+
+codex
+The file is patched. I’m doing a quick JSON parse and checking the expanded versioned URLs so there isn’t a typo in the Maven path or GitHub tag path.
+exec
+/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.apollographql.federation-federation-graphql-java-support-6.1.0.json' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9
+ succeeded in 0ms:
+{
+  "coordinates": "com.apollographql.federation:federation-graphql-java-support:6.1.0",
+  "repository-url": "https://github.com/apollographql/federation-jvm",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/apollographql/federation/federation-graphql-java-support/$version$/federation-graphql-java-support-$version$-sources.jar",
+  "test-code-url": "https://github.com/apollographql/federation-jvm/tree/v$version$/graphql-java-support/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/apollographql/federation/federation-graphql-java-support/$version$/federation-graphql-java-support-$version$-javadoc.jar",
+  "description": "federation-graphql-java-support adds Apollo Federation support for building GraphQL Java subgraph services on the JVM. It transforms GraphQL Java schemas with Federation types and directives and provides federation-aware instrumentation for cache control and tracing."
+}
+
+exec
+/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/com/apollographql/federation/federation-graphql-java-support/6.1.0/federation-graphql-java-support-6.1.0-sources.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 18 Jun 2026 14:25:49 GMT
+content-type: application/java-archive
+content-length: 205776
+cf-ray: a0daf729ff01e293-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1295
+etag: "9a1a7111d38f7cd032a95ca7cff53889"
+last-modified: Fri, 08 May 2026 18:05:21 GMT
+x-checksum-md5: 9a1a7111d38f7cd032a95ca7cff53889
+x-checksum-sha1: 9d11665bbca5a12a94eef782ce369245759e4fd3
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/com/apollographql/federation/federation-graphql-java-support/6.1.0/federation-graphql-java-support-6.1.0-javadoc.jar' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9
+ succeeded in 0ms:
+HTTP/2 200 
+date: Thu, 18 Jun 2026 14:25:49 GMT
+content-type: application/java-archive
+content-length: 833875
+cf-ray: a0daf729fc4f8e88-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 109767
+etag: "2ad4508264140c86f20b3e313c1f143d"
+last-modified: Fri, 08 May 2026 18:05:21 GMT
+x-checksum-md5: 2ad4508264140c86f20b3e313c1f143d
+x-checksum-sha1: 90b6215c27365db4978340c2c6beab7f953722d0
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/bin/bash -lc 'curl -fsI https://github.com/apollographql/federation-jvm/tree/v6.1.0/graphql-java-support/src/test' in /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9
+diff --git a/build/discovered-artifact-metadata/com.apollographql.federation-federation-graphql-java-support-6.1.0.json b/build/discovered-artifact-metadata/com.apollographql.federation-federation-graphql-java-support-6.1.0.json
+index 6c99c8ad9ff1014363d3aa0be6b30495853cb249..615fe282837e7378cfc95bb90e2524b724518408
+--- a/build/discovered-artifact-metadata/com.apollographql.federation-federation-graphql-java-support-6.1.0.json
++++ b/build/discovered-artifact-metadata/com.apollographql.federation-federation-graphql-java-support-6.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.apollographql.federation:federation-graphql-java-support:6.1.0"
++  "coordinates" : "com.apollographql.federation:federation-graphql-java-support:6.1.0",
++  "repository-url" : "https://github.com/apollographql/federation-jvm",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/apollographql/federation/federation-graphql-java-support/$version$/federation-graphql-java-support-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apollographql/federation-jvm/tree/v$version$/graphql-java-support/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/apollographql/federation/federation-graphql-java-support/$version$/federation-graphql-java-support-$version$-javadoc.jar",
++  "description" : "federation-graphql-java-support adds Apollo Federation support for building GraphQL Java subgraph services on the JVM. It transforms GraphQL Java schemas with Federation types and directives and provides federation-aware instrumentation for cache control and tracing."
+ }
+
+ succeeded in 763ms:
+HTTP/2 200 
+date: Thu, 18 Jun 2026 14:25:49 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"f172a614b0e0c99ef28b7f7b86f70078"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com wss://production-copilot-host.webpubsub.azure.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=566sOvyQ9XAEosRLVvj1IrMPH9stVo41tG4wV%2Bq%2BO3cwD3kYFhaei%2BfwT2J3zBAxHsUellogcIYwesFjCsd1uH5l9gA4MaVDxUd56DBwuCRILdxbMq3ZSyfXrMpWTNhpNvxa9J5wpeCu%2Bjhk5BUTSfyLEIINwy4h6o%2FJ2DlawNLBwV2vQILdYsjEtQFRhJzdx22UEt6ycLvu%2FQIhHLsUKcpzMJLoYl7xOaAaNqOIG0afmgdfVA3oM5H8sqrFItxrkbEk8YQptj5t0e9y3RlRVQ%3D%3D--oRByJ%2FnmFMcVwTmt--oQx4qKFMWz5%2FJOUXR77OLA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.757626972.1781792749; expires=Fri, 18 Jun 2027 14:25:49 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Fri, 18 Jun 2027 14:25:49 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 9A90:3D1C1B:35364B:2B2A9F:6A33FFED
+
+
+codex
+Updated [com.apollographql.federation-federation-graphql-java-support-6.1.0.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9/build/discovered-artifact-metadata/com.apollographql.federation-federation-graphql-java-support-6.1.0.json).
+
+Set Maven Central source and javadoc URLs, GitHub `v$version$` test URL, repository root, and a two-sentence description. I left `language` absent and did not set `not-for-native-image` because this is a normal JVM JAR with Java sources/classes.
+
+Verified with `jq` and checked the expanded `6.1.0` source, javadoc, and test URLs return `200`.
+diff --git a/build/discovered-artifact-metadata/com.apollographql.federation-federation-graphql-java-support-6.1.0.json b/build/discovered-artifact-metadata/com.apollographql.federation-federation-graphql-java-support-6.1.0.json
+index 6c99c8ad9ff1014363d3aa0be6b30495853cb249..615fe282837e7378cfc95bb90e2524b724518408
+--- a/build/discovered-artifact-metadata/com.apollographql.federation-federation-graphql-java-support-6.1.0.json
++++ b/build/discovered-artifact-metadata/com.apollographql.federation-federation-graphql-java-support-6.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.apollographql.federation:federation-graphql-java-support:6.1.0"
++  "coordinates" : "com.apollographql.federation:federation-graphql-java-support:6.1.0",
++  "repository-url" : "https://github.com/apollographql/federation-jvm",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/apollographql/federation/federation-graphql-java-support/$version$/federation-graphql-java-support-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apollographql/federation-jvm/tree/v$version$/graphql-java-support/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/apollographql/federation/federation-graphql-java-support/$version$/federation-graphql-java-support-$version$-javadoc.jar",
++  "description" : "federation-graphql-java-support adds Apollo Federation support for building GraphQL Java subgraph services on the JVM. It transforms GraphQL Java schemas with Federation types and directives and provides federation-aware instrumentation for cache control and tracing."
+ }
+
+tokens used
+48,630
+Updated [com.apollographql.federation-federation-graphql-java-support-6.1.0.json](/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9/build/discovered-artifact-metadata/com.apollographql.federation-federation-graphql-java-support-6.1.0.json).
+
+Set Maven Central source and javadoc URLs, GitHub `v$version$` test URL, repository root, and a two-sentence description. I left `language` absent and did not set `not-for-native-image` because this is a normal JVM JAR with Java sources/classes.
+
+Verified with `jq` and checked the expanded `6.1.0` source, javadoc, and test URLs return `200`.
+Ran agent for com.apollographql.federation:federation-graphql-java-support:6.1.0 (exit 0). Log: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9/build/agent-artifact-discovery-logs/com.apollographql.federation-federation-graphql-java-support-6.1.0.log
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8508-f67e29a9/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 59s
+9 actionable tasks: 1 executed, 8 up-to-date
