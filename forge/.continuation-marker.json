@@ -1,0 +1,77 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "org.apache.tomcat.embed:tomcat-embed-core:11.0.18",
+  "issueNumber": 8328,
+  "label": "library-update-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No environment variables or system properties are required for the targeted coverage. Tests can exercise the Spring Boot failure path directly with org.apache.catalina.connector.Connector by calling getProperty(\"bindOnInit\") and setProperty(\"bindOnInit\", \"false\"); if starting Tomcat, bind to port 0 rather than a fixed port.",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8328 Update existing library: org.apache.tomcat.embed:tomcat-embed-core:11.0.18; label=library-update-request; body_chars=2556"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "12 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 37930,
+    "issue_label": "library-update-request",
+    "issue_number": 8328,
+    "library": "org.apache.tomcat.embed:tomcat-embed-core:11.0.18",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 2388,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "A broader Spring Boot PetClinic-style reproduction would introduce many unrelated dependencies and is unnecessary for this metadata issue.",
+      "Starting a full embedded server is optional; if used, fixed ports may be flaky, so use Tomcat/Connector auto-bind port 0."
+    ],
+    "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.apache.tomcat.embed:tomcat-embed-core:11.0.18/library-preparation-preflight/pi-generation-2026-06-18T14-21-39-119091Z.log",
+    "status": "completed",
+    "summary": "No extra setup is required: tomcat-embed-core is an in-process embedded servlet container, its POM only adds tomcat-annotations-api transitively, and the reported failure is reachable through Connector.getProperty/setProperty without Docker, external services, or additional Maven dependencies."
+  },
+  "libraryUpdateRoute": {
+    "baseline_coordinates": null,
+    "new_version": "11.0.18",
+    "selected_driver": "improve_library_coverage"
+  },
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "exhaustedClasses": [
+        "org.apache.catalina.core.StandardContext",
+        "org.apache.catalina.realm.RealmBase",
+        "org.apache.catalina.startup.HostConfig",
+        "org.apache.catalina.startup.UserConfig",
+        "org.apache.tomcat.SimpleInstanceManager",
+        "org.apache.tomcat.util.descriptor.DigesterFactory"
+      ],
+      "iteration": 5,
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-8328-library-update-request-org.apache.tomcat.embed-tomcat-embed-core-11.0.18-c4934ba9",
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
