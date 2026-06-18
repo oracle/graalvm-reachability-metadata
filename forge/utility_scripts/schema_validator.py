@@ -20,6 +20,7 @@ SCHEMA_NAME_MAP = {
     "run_metrics_output": "run-metrics-output-schema-v1.0.1.json",
     "benchmark_run_metrics": "benchmark_run_metrics_schema.json",
     "benchmark_suite": "benchmark_suite_schema.json",
+    "continuation_marker": "continuation_marker_schema.json",
     "strategy": "strategy_schema.json",
 }
 
@@ -91,7 +92,13 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "schema_name",
-        choices=["run_metrics_output", "benchmark_run_metrics", "benchmark_suite", "strategy"],
+        choices=[
+            "run_metrics_output",
+            "benchmark_run_metrics",
+            "benchmark_suite",
+            "continuation_marker",
+            "strategy",
+        ],
         help="Schema alias to validate against.",
     )
     parser.add_argument("file_path", help="Path to the JSON file to validate.")

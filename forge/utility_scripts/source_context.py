@@ -185,6 +185,24 @@ def populate_artifact_urls(reachability_repo_path: str, coordinate: str, agent_c
     log_stage("populate-artifact-urls", f"Artifact URLs populated for {coordinate}")
 
 
+def source_context_urls_available(
+        reachability_repo_path: str,
+        coordinate: str,
+        source_context_types: list[str],
+) -> bool:
+    """Return True when all requested source-context URL fields are already present."""
+    if not source_context_types:
+        return True
+    index_entry = load_index_entry(reachability_repo_path, coordinate)
+    _, _, requested_version = _coordinate_parts(coordinate)
+    for source_type in source_context_types:
+        field_name = SOURCE_CONTEXT_FIELD_BY_TYPE[source_type]
+        url = render_url_template(normalize_url_value(index_entry.get(field_name)), requested_version)
+        if url is None:
+            return False
+    return True
+
+
 def discover_artifact_metadata(
         reachability_repo_path: str,
         coordinate: str,

@@ -77,6 +77,7 @@ from ai_workflows.drivers.library_update_router import (
     LibraryUpdateRoute,
     load_library_update_route,
     select_library_update_route,
+    write_library_update_route,
 )
 from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_CHUNK_READY,
@@ -133,13 +134,23 @@ from utility_scripts.dynamic_access_exhaust_report import (
     dynamic_access_exhaust_report_path,
     find_dynamic_access_exhaust_report_path,
 )
+from utility_scripts.continuation_marker import (
+    CONTINUATION_MARKER_FILENAME,
+    PHASE_PUBLICATION,
+    ContinuationMarker,
+    continuation_marker_path,
+    load_continuation_marker,
+    save_phase_update,
+)
 from utility_scripts.dynamic_access_report import load_dynamic_access_coverage_report
 from utility_scripts.fixture_github import FixtureGitHubState, load_fixture_github_state
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.library_stats import resolve_stats_file_path
 from utility_scripts.library_preparation_preflight import (
     LIBRARY_PREPARATION_PREFLIGHT_FILENAME,
+    load_library_preparation_preflight,
     run_library_preparation_preflight as run_preflight_decision,
+    write_library_preparation_preflight,
 )
 from utility_scripts.metadata_index import (
     coordinate_parts as metadata_coordinate_parts,
@@ -230,6 +241,7 @@ LABEL_HUMAN_INTERVENTION = "human-intervention"
 LABEL_HUMAN_INTERVENTION_FIXED = "human-intervention-fixed"
 LABEL_NOT_FOR_NATIVE_IMAGE = "not-for-native-image"
 LABEL_CHUNKED_DYNAMIC_ACCESS = "chunked-dynamic-access"
+LABEL_RESUMABLE = "resumable"
 FIXTURE_AUTHENTICATED_USER = "fixture-runner"
 NON_USER_REQUESTED_ISSUE_AUTHORS: tuple[str, ...] = (
     "graalvmbot",
@@ -294,6 +306,8 @@ PRIORITY_LABEL_COLOR = "FBCA04"
 PRIORITY_LABEL_DESCRIPTION = "Automation should process this issue before regular queue items"
 CHUNKED_DYNAMIC_ACCESS_LABEL_COLOR = "C5DEF5"
 CHUNKED_DYNAMIC_ACCESS_LABEL_DESCRIPTION = "Issue uses chunked dynamic-access processing"
+RESUMABLE_LABEL_COLOR = "0E8A16"
+RESUMABLE_LABEL_DESCRIPTION = "Issue has preserved automation work that Forge can resume"
 DEFAULT_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD = 15
 
 
@@ -325,6 +339,7 @@ class ClaimedIssue:
     current_coordinates: str | None = None
     new_version: str | None = None
     preflight_info_path: str | None = None
+    continuation_marker: ContinuationMarker | None = None
 
 
 @dataclass(frozen=True)
@@ -927,6 +942,11 @@ def issue_has_label(issue: dict, label_name: str) -> bool:
         if isinstance(label, dict) and label.get("name") == label_name:
             return True
     return False
+
+
+def issue_is_resumable(issue: dict) -> bool:
+    """Return True when an issue is explicitly eligible for run continuation."""
+    return issue_has_label(issue, LABEL_RESUMABLE)
 
 
 def add_issue_label_to_payload(issue: dict, label_name: str) -> None:
@@ -3776,6 +3796,9 @@ def add_issue_label(issue_number: int, label_name: str) -> None:
     elif label_name == LABEL_CHUNKED_DYNAMIC_ACCESS:
         label_color = CHUNKED_DYNAMIC_ACCESS_LABEL_COLOR
         label_description = CHUNKED_DYNAMIC_ACCESS_LABEL_DESCRIPTION
+    elif label_name == LABEL_RESUMABLE:
+        label_color = RESUMABLE_LABEL_COLOR
+        label_description = RESUMABLE_LABEL_DESCRIPTION
     ensure_repo_label_exists(
         label_name,
         label_color,
@@ -3838,12 +3861,29 @@ def _sanitize_branch_segment(value: str) -> str:
 
 def build_failure_preservation_branch_name(claimed_issue: ClaimedIssue) -> str:
     """Build a unique branch name for preserving a failed issue run."""
-    authenticated_login = _sanitize_branch_segment(get_authenticated_user())
-    coordinate = _sanitize_branch_segment(claimed_issue.issue_coordinates)
-    label = _sanitize_branch_segment(claimed_issue.label)
+    branch_prefix = build_failure_preservation_branch_prefix(
+        issue_number=int(claimed_issue.issue["number"]),
+        label=claimed_issue.label,
+        coordinate=claimed_issue.issue_coordinates,
+        github_login=get_authenticated_user(),
+    )
+    return f"{branch_prefix}{uuid.uuid4().hex[:8]}"
+
+
+def build_failure_preservation_branch_prefix(
+        *,
+        issue_number: int,
+        label: str,
+        coordinate: str,
+        github_login: str,
+) -> str:
+    """Build the deterministic prefix for failed-work preservation branches."""
+    authenticated_login = _sanitize_branch_segment(github_login)
+    coordinate_segment = _sanitize_branch_segment(coordinate)
+    label_segment = _sanitize_branch_segment(label)
     return (
         f"ai/{authenticated_login}/human-intervention/"
-        f"issue-{claimed_issue.issue['number']}-{label}-{coordinate}-{uuid.uuid4().hex[:8]}"
+        f"issue-{issue_number}-{label_segment}-{coordinate_segment}-"
     )
 
 
@@ -3857,6 +3897,334 @@ def build_origin_branch_url(repo_path: str, branch_name: str) -> str:
         origin_owner = REPO.split("/", 1)[0]
     repo_name = REPO.split("/", 1)[1]
     return f"https://github.com/{origin_owner}/{repo_name}/tree/{quote(branch_name, safe='')}"
+
+
+def get_issue_comments(issue_number: int) -> list[dict]:
+    """Fetch issue comments used for continuation branch discovery."""
+    if is_fixture_testing_enabled():
+        return require_fixture_github_state().get_issue_comments(issue_number)
+    data = gh_json(
+        "issue",
+        "view",
+        str(issue_number),
+        "--repo",
+        REPO,
+        "--json",
+        "comments",
+    )
+    comments = data.get("comments")
+    return comments if isinstance(comments, list) else []
+
+
+def comment_author_login(comment: dict) -> str | None:
+    """Return the GitHub login that posted an issue comment."""
+    author = comment.get("author")
+    if isinstance(author, dict):
+        login = author.get("login")
+        return login if isinstance(login, str) and login else None
+    if isinstance(author, str) and author:
+        return author
+    return None
+
+
+def list_remote_branches_by_prefix(repo_path: str, branch_prefix: str) -> list[str]:
+    """Return remote branch names whose heads match the given prefix."""
+    result = run_git_transport(
+        ["ls-remote", "--heads", "origin", f"{branch_prefix}*"],
+        cwd=repo_path,
+        env=git_env_limited_to_repo_root(repo_path),
+    )
+    branch_names = []
+    for line in result.stdout.splitlines():
+        parts = line.split()
+        if len(parts) < 2:
+            continue
+        ref_name = parts[1]
+        if not ref_name.startswith("refs/heads/"):
+            continue
+        branch_name = ref_name[len("refs/heads/"):]
+        if branch_name.startswith(branch_prefix):
+            branch_names.append(branch_name)
+    return sorted(set(branch_names))
+
+
+def remote_branch_commit_timestamp(repo_path: str, branch_name: str) -> int:
+    """Fetch a remote branch and return its tip commit timestamp."""
+    remote_ref = fetch_remote_branch(repo_path, branch_name)
+    result = subprocess.run(
+        ["git", "show", "-s", "--format=%ct", remote_ref],
+        cwd=repo_path,
+        env=git_env_limited_to_repo_root(repo_path),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=True,
+    )
+    return int(result.stdout.strip())
+
+
+def sort_remote_branches_by_commit_time(repo_path: str, branch_names: list[str]) -> list[str]:
+    """Return remote branch names newest-first by tip commit time."""
+    return sorted(
+        branch_names,
+        key=lambda branch_name: remote_branch_commit_timestamp(repo_path, branch_name),
+        reverse=True,
+    )
+
+
+def find_preserved_branch_candidates(
+        issue: dict,
+        label: str,
+        coordinate: str,
+        repo_path: str,
+) -> list[str]:
+    """Return likely preserved-work branches derived from recent comment authors."""
+    issue_number = int(issue["number"])
+    candidates = []
+    seen_branches = set()
+    seen_prefixes = set()
+    for comment in reversed(get_issue_comments(issue_number)):
+        author_login = comment_author_login(comment)
+        if author_login is None:
+            continue
+        branch_prefix = build_failure_preservation_branch_prefix(
+            issue_number=issue_number,
+            label=label,
+            coordinate=coordinate,
+            github_login=author_login,
+        )
+        if branch_prefix in seen_prefixes:
+            continue
+        seen_prefixes.add(branch_prefix)
+        for branch_name in sort_remote_branches_by_commit_time(
+                repo_path,
+                list_remote_branches_by_prefix(repo_path, branch_prefix),
+        ):
+            if branch_name in seen_branches:
+                continue
+            candidates.append(branch_name)
+            seen_branches.add(branch_name)
+    return candidates
+
+
+def fetch_remote_branch(repo_path: str, branch_name: str) -> str:
+    """Fetch a remote branch and return its local remote-tracking ref."""
+    remote_ref = f"refs/remotes/origin/{branch_name}"
+    run_git_transport(
+        ["fetch", "origin", f"+refs/heads/{branch_name}:{remote_ref}"],
+        cwd=repo_path,
+        env=git_env_limited_to_repo_root(repo_path),
+    )
+    return remote_ref
+
+
+def load_continuation_marker_from_branch(
+        repo_path: str,
+        branch_name: str,
+) -> ContinuationMarker | None:
+    """Load the continuation marker stored on a remote preserved branch."""
+    remote_ref = fetch_remote_branch(repo_path, branch_name)
+    marker_relpath = f"forge/{CONTINUATION_MARKER_FILENAME}"
+    result = subprocess.run(
+        ["git", "show", f"{remote_ref}:{marker_relpath}"],
+        cwd=repo_path,
+        env=git_env_limited_to_repo_root(repo_path),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        log_stage(
+            "continuation",
+            f"Preserved branch {branch_name} has no {marker_relpath}; running issue from scratch.",
+        )
+        return None
+    try:
+        marker = ContinuationMarker.from_dict(json.loads(result.stdout))
+    except Exception as exc:
+        print(
+            f"ERROR: Failed to parse continuation marker on branch {branch_name}: {exc!r}",
+            file=sys.stderr,
+        )
+        return None
+    if marker.preserved_branch != branch_name:
+        marker.record_preserved_branch(branch_name)
+    return marker
+
+
+def resolve_issue_continuation_marker(
+        issue: dict,
+        label: str,
+        coordinate: str,
+        base_reachability_metadata_path: str,
+) -> ContinuationMarker | None:
+    """Resolve a previously preserved continuation marker for this claim."""
+    if not issue_is_resumable(issue):
+        return None
+    issue_number = int(issue["number"])
+    for branch_name in find_preserved_branch_candidates(
+            issue,
+            label,
+            coordinate,
+            base_reachability_metadata_path,
+    ):
+        marker = load_continuation_marker_from_branch(base_reachability_metadata_path, branch_name)
+        if marker is None:
+            continue
+        if marker.issue_number == issue_number and marker.label == label:
+            return marker
+        log_stage(
+            "continuation",
+            (
+                f"Ignoring preserved marker on {branch_name}: "
+                f"marker issue/label #{marker.issue_number} {marker.label} does not match "
+                f"#{issue_number} {label}."
+            ),
+        )
+    return None
+
+
+def checkout_continuation_branch(
+        worktree_path: str,
+        marker: ContinuationMarker,
+) -> bool:
+    """Check out and rebase the preserved branch into the isolated worktree."""
+    branch_name = marker.preserved_branch
+    if not branch_name:
+        return False
+    git_env = git_env_limited_to_repo_root(worktree_path)
+    remote_ref = fetch_remote_branch(worktree_path, branch_name)
+    subprocess.run(
+        ["git", "switch", "-C", branch_name, remote_ref],
+        cwd=worktree_path,
+        env=git_env,
+        check=True,
+    )
+    base_ref = fetch_remote_branch(worktree_path, DEFAULT_WORKTREE_BASE_REF)
+    rebase_result = subprocess.run(
+        ["git", "rebase", base_ref],
+        cwd=worktree_path,
+        env=git_env,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=False,
+    )
+    if rebase_result.returncode == 0:
+        log_stage(
+            "continuation",
+            f"Resuming issue #{marker.issue_number} from {branch_name} at phase {marker.continue_from}.",
+        )
+        return True
+    print(
+        (
+            f"ERROR: Could not rebase preserved branch {branch_name} onto "
+            f"{DEFAULT_WORKTREE_BASE_REF}; falling back to a clean run.\n{rebase_result.stdout}"
+        ),
+        file=sys.stderr,
+    )
+    subprocess.run(["git", "rebase", "--abort"], cwd=worktree_path, env=git_env, check=False)
+    subprocess.run(["git", "switch", "--detach", base_ref], cwd=worktree_path, env=git_env, check=True)
+    marker_path = continuation_marker_path(worktree_path)
+    if os.path.exists(marker_path):
+        os.remove(marker_path)
+    return False
+
+
+def create_or_load_run_continuation_marker(
+        claimed_issue: ClaimedIssue,
+        strategy_name: str,
+) -> str:
+    """Ensure this claimed run has an eager continuation marker."""
+    marker_path = continuation_marker_path(claimed_issue.worktree_path)
+    marker = load_continuation_marker(marker_path)
+    if marker is None:
+        marker = claimed_issue.continuation_marker or ContinuationMarker.create(
+            strategy_name=strategy_name,
+            issue_number=int(claimed_issue.issue["number"]),
+            label=claimed_issue.label,
+            coordinate=claimed_issue.issue_coordinates,
+            new_version=claimed_issue.new_version,
+        )
+    marker.save(marker_path)
+    return marker_path
+
+
+def library_update_route_from_marker(marker: ContinuationMarker | None) -> LibraryUpdateRoute | None:
+    """Return the marker-backed library-update route when continuation has one."""
+    if marker is None or marker.library_update_route is None:
+        return None
+    return LibraryUpdateRoute.from_json(marker.library_update_route)
+
+
+def restore_library_update_route_from_marker(
+        claimed_issue: ClaimedIssue,
+        marker: ContinuationMarker | None,
+        *,
+        required: bool = False,
+) -> LibraryUpdateRoute | None:
+    """Restore marker-backed library-update route state into the run sidecar."""
+    if claimed_issue.label != LABEL_LIBRARY_UPDATE:
+        return None
+    route = library_update_route_from_marker(marker)
+    if route is None:
+        if required:
+            raise ValueError(
+                f"Issue #{claimed_issue.issue['number']} resumes publication without a library-update route."
+            )
+        return None
+    write_library_update_route(library_update_route_artifact_root(claimed_issue), route)
+    log_stage(
+        "continuation",
+        f"Restored library-update route {route.selected_driver} for issue #{claimed_issue.issue['number']}.",
+    )
+    return route
+
+
+def record_library_update_route_in_marker(marker_path: str | None, route: LibraryUpdateRoute | None) -> None:
+    """Persist the selected library-update route into the continuation marker."""
+    if marker_path is None or route is None:
+        return
+    save_phase_update(
+        marker_path,
+        lambda marker: marker.record_library_update_route(route.to_json()),
+    )
+
+
+def restore_library_preparation_preflight_from_marker(
+        claimed_issue: ClaimedIssue,
+        marker: ContinuationMarker | None,
+) -> str | None:
+    """Restore marker-backed dispatcher preflight state into the run sidecar."""
+    if marker is None or marker.library_preparation_preflight is None:
+        return None
+    preflight_root = claimed_issue.preflight_info_path or claimed_issue.scratch_metrics_repo_path
+    preflight_path = write_library_preparation_preflight(
+        preflight_root,
+        marker.library_preparation_preflight,
+    )
+    log_stage(
+        "continuation",
+        f"Restored library preparation preflight for issue #{claimed_issue.issue['number']}.",
+    )
+    return preflight_path
+
+
+def record_library_preparation_preflight_in_marker(
+        marker_path: str | None,
+        preflight_path: str | None,
+) -> None:
+    """Persist dispatcher preflight output into the continuation marker."""
+    if marker_path is None or preflight_path is None:
+        return
+    preflight = load_library_preparation_preflight(preflight_path)
+    if preflight is None:
+        return
+    save_phase_update(
+        marker_path,
+        lambda marker: marker.record_library_preparation_preflight(preflight),
+    )
 
 
 def require_claimed_issue_worktree(claimed_issue: ClaimedIssue, stage: str) -> str:
@@ -3921,9 +4289,23 @@ def preserve_failed_work_branch(claimed_issue: ClaimedIssue) -> FailurePreservat
     log_stage("preserve-failed-work", f"Preserving failed work for issue #{issue_number} on branch {branch_name}")
     subprocess.run(["git", "switch", "-C", branch_name], cwd=repo_path, env=git_env, check=True)
     logs_destination_relpath = copy_library_logs_to_preserved_worktree(claimed_issue)
+    marker_path = continuation_marker_path(repo_path)
+    marker = load_continuation_marker(marker_path)
+    if marker is not None:
+        marker.record_preserved_branch(branch_name)
+        marker.save(marker_path)
     subprocess.run(["git", "add", "-A"], cwd=repo_path, env=git_env, check=True)
     if logs_destination_relpath is not None:
         subprocess.run(["git", "add", "-f", "--", logs_destination_relpath], cwd=repo_path, env=git_env, check=True)
+    force_add_paths = []
+    marker_relpath = os.path.relpath(marker_path, repo_path)
+    if os.path.exists(marker_path):
+        force_add_paths.append(marker_relpath)
+    pending_metrics_relpath = os.path.join(get_forge_subdir_name(), PENDING_METRICS_FILENAME)
+    if os.path.exists(os.path.join(repo_path, pending_metrics_relpath)):
+        force_add_paths.append(pending_metrics_relpath)
+    if force_add_paths:
+        subprocess.run(["git", "add", "-f", "--", *force_add_paths], cwd=repo_path, env=git_env, check=True)
     diff_result = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=repo_path, env=git_env, check=False)
     committed_changes = diff_result.returncode != 0
     if committed_changes:
@@ -4041,7 +4423,12 @@ def ensure_preserved_branch_link_in_comment(
     )
 
 
-def post_human_intervention_comment_and_label(issue_number: int, comment_body: str | None) -> None:
+def post_human_intervention_comment_and_label(
+        issue_number: int,
+        comment_body: str | None,
+        *,
+        resumable: bool = False,
+) -> None:
     """Post the human-intervention comment and always attempt to apply the label."""
     if is_user_interrupt_requested():
         return
@@ -4064,6 +4451,23 @@ def post_human_intervention_comment_and_label(issue_number: int, comment_body: s
             file=sys.stderr,
         )
         traceback.print_exc()
+
+    if resumable:
+        try:
+            add_issue_label(issue_number, LABEL_RESUMABLE)
+        except Exception as exc:
+            print(
+                f"ERROR: Failed to add '{LABEL_RESUMABLE}' label to issue #{issue_number}: {exc!r}",
+                file=sys.stderr,
+            )
+            traceback.print_exc()
+
+
+def preservation_result_has_continuation_marker(preservation_result: FailurePreservationResult | None) -> bool:
+    """Return True when preserved work carries a continuation marker."""
+    if preservation_result is None:
+        return False
+    return os.path.isfile(continuation_marker_path(preservation_result.reviewable_worktree_path))
 
 
 def maybe_apply_human_intervention_follow_up(
@@ -4097,7 +4501,11 @@ def maybe_apply_human_intervention_follow_up(
         comment_body = None
     if is_user_interrupt_requested():
         return False
-    post_human_intervention_comment_and_label(claimed_issue.issue["number"], comment_body)
+    post_human_intervention_comment_and_label(
+        claimed_issue.issue["number"],
+        comment_body,
+        resumable=preservation_result_has_continuation_marker(preservation_result),
+    )
     return True
 
 
@@ -4138,7 +4546,11 @@ def apply_failed_run_follow_up(
         comment_body = None
     if is_user_interrupt_requested():
         raise KeyboardInterrupt
-    post_human_intervention_comment_and_label(claimed_issue.issue["number"], comment_body)
+    post_human_intervention_comment_and_label(
+        claimed_issue.issue["number"],
+        comment_body,
+        resumable=preservation_result_has_continuation_marker(preservation_result),
+    )
 
 
 def dynamic_access_chunk_class_threshold() -> int:
@@ -4388,6 +4800,12 @@ def append_library_preparation_preflight_arg(pipeline_argv: list[str], preflight
         pipeline_argv.extend(["--library-preparation-preflight-path", preflight_path])
 
 
+def append_continuation_marker_arg(pipeline_argv: list[str], marker_path: str | None) -> None:
+    """Append the continuation marker path when continuation tracking is active."""
+    if marker_path:
+        pipeline_argv.extend(["--continuation-marker-path", marker_path])
+
+
 def library_update_route_artifact_root(claimed_issue: ClaimedIssue) -> str:
     """Return the non-worktree artifact root for library-update route handoff."""
     return claimed_issue.preflight_info_path or claimed_issue.scratch_metrics_repo_path
@@ -4400,6 +4818,7 @@ def build_workflow_driver_invocation(
         library_preparation_preflight_path: str | None = None,
         chunk_class_count: int | None = None,
         library_update_route: LibraryUpdateRoute | None = None,
+        continuation_marker_path: str | None = None,
 ) -> WorkflowDriverInvocation:
     """Build the routed workflow-driver command for a claimed issue."""
     issue_number = claimed_issue.issue["number"]
@@ -4410,6 +4829,7 @@ def build_workflow_driver_invocation(
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
         append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+        append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
         if keep_tests_without_dynamic_access:
@@ -4442,6 +4862,7 @@ def build_workflow_driver_invocation(
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
         append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+        append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
         return WorkflowDriverInvocation(
@@ -4471,6 +4892,7 @@ def build_workflow_driver_invocation(
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
         append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+        append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
         return WorkflowDriverInvocation(
@@ -4500,6 +4922,7 @@ def build_workflow_driver_invocation(
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
         append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+        append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
         return WorkflowDriverInvocation(
             driver_name="fix_ni_run",
             script_name="fix_ni_run.py",
@@ -4533,6 +4956,7 @@ def build_workflow_driver_invocation(
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
             ]
             append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+            append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
             return WorkflowDriverInvocation(
                 driver_name="fix_javac_fail",
                 script_name="fix_javac_fail.py",
@@ -4561,6 +4985,7 @@ def build_workflow_driver_invocation(
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
             ]
             append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+            append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
             return WorkflowDriverInvocation(
                 driver_name="fix_java_run_fail",
                 script_name="fix_java_run_fail.py",
@@ -4589,6 +5014,7 @@ def build_workflow_driver_invocation(
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
             ]
             append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+            append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
             return WorkflowDriverInvocation(
                 driver_name="fix_ni_run",
                 script_name="fix_ni_run.py",
@@ -4615,6 +5041,7 @@ def build_workflow_driver_invocation(
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
         append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+        append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
         issue_requested_metadata_context = extract_issue_requested_metadata_context(get_issue_body(issue_number))
         if issue_requested_metadata_context:
             pipeline_argv.extend(["--issue-requested-metadata-context", issue_requested_metadata_context])
@@ -4656,17 +5083,50 @@ def invoke_pipeline(
     strategy names, and chunk context.
     """
     require_claimed_issue_worktree(claimed_issue, "workflow execution")
-    library_preparation_preflight_path = run_library_preparation_preflight(
+    effective_strategy_name = strategy_name or DEFAULT_WORK_QUEUE_STRATEGY_NAME
+    if claimed_issue.continuation_marker is not None:
+        effective_strategy_name = claimed_issue.continuation_marker.strategy_name
+    continuation_path = create_or_load_run_continuation_marker(
         claimed_issue,
-        strategy_name,
+        effective_strategy_name,
     )
+    marker = load_continuation_marker(continuation_path)
+    if marker is not None and marker.continue_from == PHASE_PUBLICATION:
+        restore_library_update_route_from_marker(claimed_issue, marker, required=True)
+        log_stage(
+            "continuation",
+            f"Issue #{claimed_issue.issue['number']} resumes at publication; skipping workflow driver.",
+        )
+        return True
+    setup_phase = {} if marker is None else marker.phases.get("setup", {})
+    if bool(setup_phase.get("preflightDone")):
+        library_preparation_preflight_path = restore_library_preparation_preflight_from_marker(
+            claimed_issue,
+            marker,
+        )
+        log_stage(
+            "continuation",
+            f"Issue #{claimed_issue.issue['number']} skips completed setup preflight.",
+        )
+    else:
+        library_preparation_preflight_path = run_library_preparation_preflight(
+            claimed_issue,
+            effective_strategy_name,
+        )
+        record_library_preparation_preflight_in_marker(
+            continuation_path,
+            library_preparation_preflight_path,
+        )
     library_update_route = None
     if claimed_issue.label == LABEL_LIBRARY_UPDATE:
-        library_update_route = select_library_update_route(
-            claimed_issue.worktree_path,
-            library_update_route_artifact_root(claimed_issue),
-            claimed_issue.issue_coordinates,
-        )
+        library_update_route = restore_library_update_route_from_marker(claimed_issue, marker)
+        if library_update_route is None:
+            library_update_route = select_library_update_route(
+                claimed_issue.worktree_path,
+                library_update_route_artifact_root(claimed_issue),
+                claimed_issue.issue_coordinates,
+            )
+            record_library_update_route_in_marker(continuation_path, library_update_route)
 
     chunk_class_count = None
     if (
@@ -4679,27 +5139,25 @@ def invoke_pipeline(
     ):
         chunk_class_count = prepare_dynamic_access_chunking(
             claimed_issue,
-            strategy_name,
+            effective_strategy_name,
         )
     invocation = build_workflow_driver_invocation(
-        claimed_issue,
-        strategy_name,
-        keep_tests_without_dynamic_access,
-        library_preparation_preflight_path,
-        chunk_class_count,
-        library_update_route,
-    )
+            claimed_issue,
+            effective_strategy_name,
+            keep_tests_without_dynamic_access,
+            library_preparation_preflight_path,
+            chunk_class_count,
+            library_update_route,
+            continuation_path,
+        )
 
     print()
     log_stage(invocation.log_stage_name, invocation.log_message)
     if is_fixture_testing_enabled():
-        display_argv, issue_context = list(invocation.argv), None
+        display_argv = list(invocation.argv)
         if "--issue-requested-metadata-context" in display_argv:
             context_flag_index = display_argv.index("--issue-requested-metadata-context")
-            issue_context = display_argv[context_flag_index + 1]
             del display_argv[context_flag_index:context_flag_index + 2]
-        if issue_context:
-            log_stage("workflow-driver", f"Issue body/context passed to workflow:\n{issue_context}")
         log_stage(
             "workflow-driver",
             (
@@ -5384,6 +5842,21 @@ def claim_issue_for_processing(
     if claim_metadata is None:
         return None
     issue_coordinates, current_coordinates, new_version = claim_metadata
+    continuation_marker = resolve_issue_continuation_marker(
+        issue,
+        label,
+        issue_coordinates,
+        base_reachability_metadata_path,
+    )
+    if issue_is_resumable(issue) and continuation_marker is None:
+        log_stage(
+            "continuation",
+            (
+                f"Skipping issue #{issue['number']}: label '{LABEL_RESUMABLE}' is present, "
+                "but no valid continuation marker was found on a preserved branch."
+            ),
+        )
+        return None
     try:
         chunked_exhaust_report = resolve_chunked_dynamic_access_exhaust_report(
             issue,
@@ -5408,6 +5881,8 @@ def claim_issue_for_processing(
             issue["number"],
         )
         preflight_info_path = create_preflight_info_dir(worktree_path)
+        if continuation_marker is not None and not checkout_continuation_branch(worktree_path, continuation_marker):
+            continuation_marker = None
         if chunked_exhaust_report is not None:
             verify_chunked_dynamic_access_base_contains_published_commit(
                 chunked_exhaust_report,
@@ -5435,6 +5910,7 @@ def claim_issue_for_processing(
         current_coordinates=current_coordinates,
         new_version=new_version,
         preflight_info_path=preflight_info_path,
+        continuation_marker=continuation_marker,
     )
 
 
@@ -5510,6 +5986,7 @@ def build_fixture_claimed_issue(
         return None
 
     issue_coordinates, current_coordinates, new_version = claim_metadata
+    continuation_marker = load_continuation_marker(continuation_marker_path(worktree_path))
     return ClaimedIssue(
         issue=issue,
         label=label,
@@ -5521,6 +5998,7 @@ def build_fixture_claimed_issue(
         current_coordinates=current_coordinates,
         new_version=new_version,
         preflight_info_path=preflight_info_path,
+        continuation_marker=continuation_marker,
     )
 
 
@@ -6452,7 +6930,7 @@ def get_issue_claim_cache_observation_from_payload(
     issue_number = issue.get("number")
     if not isinstance(issue_number, int):
         return None
-    if issue_has_label(issue, LABEL_HUMAN_INTERVENTION):
+    if issue_has_label(issue, LABEL_HUMAN_INTERVENTION) and not issue_is_resumable(issue):
         return IssueClaimCacheObservation(
             issue_number=issue_number,
             reason=ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION,
@@ -6645,7 +7123,7 @@ def get_issue_claim_preflights(
 
 def issue_needs_claim_preflight(issue: dict, authenticated_user: str | None = None) -> bool:
     """Return True when an issue needs GraphQL preflight before claim attempts."""
-    if issue_has_label(issue, LABEL_HUMAN_INTERVENTION):
+    if issue_has_label(issue, LABEL_HUMAN_INTERVENTION) and not issue_is_resumable(issue):
         return False
     if issue_has_label(issue, LABEL_NOT_FOR_NATIVE_IMAGE):
         return False
@@ -6694,9 +7172,15 @@ def should_skip_issue_from_preflight(
         and cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS
         and issue_has_label(issue, LABEL_CHUNKED_DYNAMIC_ACCESS)
     )
+    cached_human_intervention_now_resumable = (
+        cached_skip is not None
+        and cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION
+        and issue_is_resumable(issue)
+    )
     if (
             cached_skip is not None
             and not cached_chunked_issue_in_progress
+            and not cached_human_intervention_now_resumable
             and cached_skip_blocks_authenticated_user(cached_skip, authenticated_user, take_blocked_issues)
     ):
         return True

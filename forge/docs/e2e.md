@@ -199,10 +199,38 @@ body: |
 comments:
   - author: fixture-author
     body: "Please cover reflective field metadata, data models, and I/O helpers."
+worktree_files:
+  tests/src/com.google.http-client/google-http-client/1.42.2/.baseline-stats.json:
+    stats: null
+    metadata_entries: 0
+    test_only_metadata_entries: 0
+continuation_marker:
+  schemaVersion: 1
+  continueFrom: explore
+  preservedBranch: fixture/preserved-work/issue-9101
+  strategyName: dynamic_access_main_sources_pi_gpt-5.5
+  issueNumber: 9101
+  label: library-new-request
+  coordinate: com.google.http-client:google-http-client:1.42.2
+  newVersion: null
+  libraryUpdateRoute: null
+  libraryPreparationPreflight: null
+  phases:
+    setup: {status: completed, preflightDone: true, setupDone: true}
+    fix: {status: skipped, iteration: null}
+    explore: {status: running, iteration: 1, exhaustedClasses: []}
+    finalization: {status: pending}
+    publication: {status: pending, isPushed: false, branch: null}
 ```
 
 Fixture queue scanning is local to the loaded YAML issues. It does not perform
 live GitHub search, live issue claiming, or live project-board mutation.
+The optional `continuation_marker` block is written to the isolated fixture
+worktree as `forge/.continuation-marker.json` before dispatch, allowing fixture
+E2E to exercise run-continuation entry points without a live preserved branch.
+The optional `worktree_files` map writes small fixture-owned files into the
+isolated checkout before dispatch; continuation fixtures use it for preserved
+worktree state such as improve-coverage baseline snapshots.
 
 ## 3. Live GitHub Smoke E2E
 

@@ -27,10 +27,105 @@ from utility_scripts.local_ci_verification import (
     fetch_pr_base_ref,
     run_local_ci_verification,
 )
+from utility_scripts.continuation_marker import (
+    CONTINUATION_MARKER_FILENAME,
+    PHASE_PUBLICATION,
+    ContinuationMarker,
+    continuation_marker_path,
+    load_continuation_marker,
+)
+from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME
 
 REPO: str = "oracle/graalvm-reachability-metadata"
 BASE_BRANCH: str = "master"
 REVIEWERS: list[str] = get_configured_reviewers()
+PRESERVATION_ONLY_PATHS: set[str] = {
+    f"forge/{CONTINUATION_MARKER_FILENAME}",
+    f"forge/{PENDING_METRICS_FILENAME}",
+}
+PRESERVATION_ONLY_DIRECTORIES: tuple[str, ...] = ("forge/human-intervention-logs",)
+
+
+def _publication_resume_marker(repo_path: str) -> ContinuationMarker | None:
+    """Return the publication continuation marker when this run resumes publication."""
+    marker = load_continuation_marker(continuation_marker_path(repo_path))
+    if marker is None or marker.continue_from != PHASE_PUBLICATION:
+        return None
+    return marker
+
+
+def _record_publication_pushed(
+        repo_path: str,
+        branch: str,
+        marker: ContinuationMarker | None = None,
+) -> None:
+    """Record the push boundary in the continuation marker if one exists."""
+    marker_path = continuation_marker_path(repo_path)
+    active_marker = marker or load_continuation_marker(marker_path)
+    if active_marker is None:
+        return
+    active_marker.record_publication_pushed(branch)
+    active_marker.save(marker_path)
+
+
+def _record_publication_branch(
+        repo_path: str,
+        branch: str,
+        marker: ContinuationMarker | None = None,
+) -> None:
+    """Record the branch namespace before publication reaches the push."""
+    marker_path = continuation_marker_path(repo_path)
+    active_marker = marker or load_continuation_marker(marker_path)
+    if active_marker is None:
+        return
+    active_marker.record_publication_branch(branch)
+    active_marker.save(marker_path)
+
+
+def _has_staged_changes(repo_path: str) -> bool:
+    """Return True when the index contains changes ready to commit."""
+    result = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=repo_path, check=False)
+    return result.returncode != 0
+
+
+def _remove_preservation_only_files(repo_path: str) -> None:
+    """Remove files that are tracked only on failed-run preservation branches."""
+    paths: list[str] = sorted(PRESERVATION_ONLY_PATHS)
+    pathspecs = [*paths, *PRESERVATION_ONLY_DIRECTORIES]
+    tracked_paths = subprocess.check_output(
+        ["git", "ls-files", "--", *pathspecs],
+        cwd=repo_path,
+        text=True,
+    ).splitlines()
+    if tracked_paths:
+        subprocess.run(["git", "rm", "-f", "-q", "--", *tracked_paths], cwd=repo_path, check=True)
+    for path in paths:
+        absolute_path = os.path.join(repo_path, path)
+        if os.path.isfile(absolute_path):
+            os.remove(absolute_path)
+    for directory in PRESERVATION_ONLY_DIRECTORIES:
+        absolute_directory = os.path.join(repo_path, directory)
+        if os.path.isdir(absolute_directory):
+            shutil.rmtree(absolute_directory)
+
+
+def _commit_preservation_artifact_clearance(repo_path: str) -> None:
+    """Commit removal of resume helper artifacts when publication resumes."""
+    _remove_preservation_only_files(repo_path)
+    if _has_staged_changes(repo_path):
+        subprocess.run(["git", "commit", "-m", "Clear resume helper artifacts"], check=True, cwd=repo_path)
+
+
+def _prepare_unpushed_publication_resume_branch(
+        repo_path: str,
+        branch: str,
+        marker: ContinuationMarker,
+) -> None:
+    """Create the PR branch from the resumed preserved branch and clear helpers."""
+    subprocess.run(["git", "switch", "-C", branch], check=True, cwd=repo_path)
+    _record_publication_branch(repo_path, branch, marker)
+    _commit_preservation_artifact_clearance(repo_path)
+    _record_publication_branch(repo_path, branch, marker)
 
 
 def publish_branch(
@@ -50,13 +145,30 @@ def publish_branch(
     assertions. Local CI-equivalent verification always runs before the push
     that makes the branch PR-eligible (§GIT-pr-eligibility).
     """
-    branch = build_ai_branch_name(branch_suffix, cwd=repo_path)
+    resume_marker = _publication_resume_marker(repo_path)
+    resume_branch = None if resume_marker is None or not resume_marker.publication_is_pushed() else resume_marker.publication_branch()
+    if resume_branch is not None:
+        commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_path, text=True).strip()
+        return resume_branch, LocalCIVerificationResult(
+            status="skipped-publication-resume",
+            base_commit=commit,
+            final_commit=commit,
+        )
+
+    base_ref = fetch_pr_base_ref(repo_path, REPO, BASE_BRANCH)
+    branch = None if resume_marker is None else resume_marker.publication_branch()
+    if branch is None:
+        branch = build_ai_branch_name(branch_suffix, cwd=repo_path)
+    _record_publication_branch(repo_path, branch, resume_marker)
     delete_remote_branch_if_exists(branch, cwd=repo_path)
-    subprocess.run(["git", "switch", "-C", branch], check=True, cwd=repo_path)
+    if resume_marker is None:
+        subprocess.run(["git", "switch", "-C", branch], check=True, cwd=repo_path)
+        _remove_preservation_only_files(repo_path)
+    else:
+        _prepare_unpushed_publication_resume_branch(repo_path, branch, resume_marker)
     stage()
     if before_rebase is not None:
         before_rebase()
-    base_ref = fetch_pr_base_ref(repo_path, REPO, BASE_BRANCH)
     subprocess.run(["git", "rebase", base_ref], check=True, cwd=repo_path)
     local_ci_verification = run_local_ci_verification(
         repo_path=repo_path,
@@ -67,6 +179,7 @@ def publish_branch(
     if after_verification is not None:
         after_verification()
     run_git_transport(["push", "origin", branch], cwd=repo_path)
+    _record_publication_pushed(repo_path, branch, resume_marker)
     return branch, local_ci_verification
 
 

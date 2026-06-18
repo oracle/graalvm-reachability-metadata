@@ -7,6 +7,7 @@ import os
 import subprocess
 
 from ai_workflows.core.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS, WorkflowStrategy
+from utility_scripts.continuation_marker import PHASE_EXPLORE, PHASE_FIX, save_phase_update
 from utility_scripts.metadata_index import resolve_test_version
 from utility_scripts.stage_logger import log_stage
 
@@ -149,6 +150,10 @@ class BasicIterativeStrategy(WorkflowStrategy):
             agent,
             checkpoint_commit_hash,
     ):
+        save_phase_update(
+            self.continuation_marker_path,
+            lambda marker: marker.mark_phase_running(PHASE_FIX),
+        )
         global_iterations = 0
         failed_iterations = 0
         unittest_number = 0
@@ -172,6 +177,10 @@ class BasicIterativeStrategy(WorkflowStrategy):
             self._print_detail("agent: complete")
 
             global_iterations += 1
+            save_phase_update(
+                self.continuation_marker_path,
+                lambda marker: marker.record_iteration(PHASE_FIX, global_iterations),
+            )
             reached_native_test = False
             for test_iter in range(self.max_test_iterations):
                 self._print_detail(
@@ -227,6 +236,17 @@ class BasicIterativeStrategy(WorkflowStrategy):
             subprocess.run(["git", "reset", "--hard", checkpoint_commit_hash], check=False)
 
         if unittest_number == 0:
+            save_phase_update(
+                self.continuation_marker_path,
+                lambda marker: marker.mark_phase_pending(PHASE_FIX, iteration=global_iterations),
+            )
             return RUN_STATUS_FAILURE, global_iterations, unittest_number
 
+        save_phase_update(
+            self.continuation_marker_path,
+            lambda marker: (
+                marker.mark_phase_completed(PHASE_FIX, iteration=global_iterations),
+                marker.mark_phase_skipped(PHASE_EXPLORE),
+            ),
+        )
         return RUN_STATUS_SUCCESS, global_iterations, unittest_number

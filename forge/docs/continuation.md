@@ -43,6 +43,10 @@ A run is an ordered sequence of phases. Continuation classifies each phase by it
 The unifying invariant: **the preserved branch HEAD is the cursor.** The
 committed tree is the source of truth for where a phase got to, so the marker
 never stores commit hashes — only the logical state a rebuild cannot recover.
+Every phase before the active resume point must be terminal: workflows that do
+not have a primary fix phase mark `fix` as `skipped` when setup completes, and
+workflows that do not run dynamic-access exploration mark `explore` as
+`skipped` before finalization.
 
 ## 2. ContinuationMarker
 
@@ -61,6 +65,8 @@ classes re-appear in the regenerated report.
   "label": "library-new-request",
   "coordinate": "com.acme:widget:1.4.0",
   "newVersion": null,
+  "libraryUpdateRoute": null,
+  "libraryPreparationPreflight": null,
   "phases": {
     "setup":        { "status": "completed", "preflightDone": true, "setupDone": true },
     "fix":          { "status": "skipped",   "iteration": null },
@@ -93,6 +99,16 @@ because the marker never enters a successful run's publication staging
 - `issueNumber`, `label`, `coordinate`, and `newVersion` re-route the workflow;
   they are kept explicit because the coordinate is sanitized inside the branch
   name and cannot be parsed back reliably.
+- `libraryUpdateRoute` records the dispatcher-selected route for
+  `library-update-request` issues so publication-only resume does not depend on
+  a per-run sidecar directory that is absent from the preserved branch.
+- `libraryPreparationPreflight` records dispatcher preflight output so resume
+  can skip the preflight agent while still passing the original advisory setup
+  context back to the workflow driver.
+- Improve-coverage runs write the original `.baseline-stats.json` into the
+  resolved test directory during setup. Resume treats that as preserved worktree
+  state and reuses it instead of recomputing the baseline after generation may
+  already have changed the tree.
 - `explore.exhaustedClasses` is the only EXPLORE state worth keeping: a fresh
   report cannot distinguish an uncovered-but-abandoned class from an
   uncovered-but-untried one.
@@ -105,12 +121,17 @@ because the marker never enters a successful run's publication staging
 
 A resume run reads the marker from the preserved branch and:
 
-1. Re-routes the workflow from `issueNumber`/`label`/`coordinate` and
+1. Requires the issue to carry `resumable`; plain `human-intervention` issues
+   stay manual and do not trigger preserved-branch discovery.
+2. Re-routes the workflow from `issueNumber`/`label`/`coordinate` and
    re-instantiates the engine from `strategyName`.
-2. Checks out the preserved branch and rebases it onto current `master`; if it
+3. Derives preserved-work branch prefixes from recent issue comment authors and
+   the deterministic `ai/<login>/human-intervention/issue-...-` branch naming
+   convention, then selects a matching remote branch that carries a valid marker.
+4. Checks out the preserved branch and rebases it onto current `master`; if it
    no longer applies cleanly, it falls back to a clean run rather than resuming a
    stale tree.
-3. Enters the phase named by `continueFrom` and applies that phase's resume
+5. Enters the phase named by `continueFrom` and applies that phase's resume
    action from §1, skipping every earlier completed or skipped phase.
 
 Publication resume hinges on the push: the branch is read from the marker
@@ -118,6 +139,9 @@ and `isPushed` records whether the branch is already pushed, so a resumed run on
 does the PR making. Opening the pull request is the workflow's
 completion — a marker only exists for a run that failed before that point, so
 continuation never reaches a state with the pull request already open.
+In publication resume mode, Forge creates a clearance commit before it publishes
+the PR branch. The clearance commit deletes resume helper artifacts: the
+continuation marker, pending metrics, and human-intervention logs.
 
 ## 4. Relationship to human intervention
 
