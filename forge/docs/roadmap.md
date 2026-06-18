@@ -49,16 +49,17 @@ runner and setup instructions required by §FS-forge-vm-isolated-execution and
 §AR-forge-vm-runner-boundary.
 
 The implementation should add the opt-in `--incus` flag on `forge_metadata.py`
-(forwarded by the loop wrappers), a reusable golden base image, a checked-in
+(forwarded by the loop wrappers), a reusable base image, a checked-in
 Incus configuration, and step-by-step setup documentation in
 README.md and AGENTS.md — written so a human or agent can install Incus and build
 the base image on any machine — for running a whole Forge generation in a fresh,
 single-use VM that can safely absorb generated-test side effects. The base image
-bakes in the expensive immutable bits — GraalVM installations, Gradle caches,
-Docker layers, and a reachability checkout — is built once and cached in the
-host's local Incus image store for reuse across runs, and is rebuilt only to
-refresh tooling; each run clones it copy-on-write, and the runner refreshes the
-baked checkout to current `master` and injects GitHub authentication at launch.
+is a template that bakes in the expensive setup — GraalVM installations, Gradle
+caches, Docker layers, and a reachability checkout — is built once and cached in
+the host's local Incus image store for reuse across runs, and is rebuilt only to
+refresh tooling. Each run launches a fresh VM from the image without modifying it,
+refreshes the baked checkout to current `master`, and injects GitHub
+authentication at launch.
 It must also add a configurable log destination (for example a `FORGE_LOGS_DIR`
 setting routed through `resolve_logs_root()`) so a per-run host directory mounted
 at a clean top-level path in the VM captures logs that land on the host as the

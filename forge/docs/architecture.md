@@ -84,54 +84,94 @@ flowchart LR
 
 ## AR-forge-vm-runner-boundary: VM isolation wraps Forge worker execution
 
-The optional VM mode (§FS-forge-vm-isolated-execution) belongs around the worker
-and orchestration boundary, not in individual workflow engines or generated-test
-prompts. The opt-in flag is `--incus` on the `forge_metadata.py` entry point,
-forwarded unchanged by the `do-work.sh` / `do_up_to_date_work.sh` loop wrappers
-(the loops stay on the host; they do not run inside a VM). `forge_metadata.py`
-keeps claiming work from the GitHub queues on the host; for each claimed run, its
-VM runner launches a fresh single-use Incus VM from a reusable golden base image
-that bakes in the expensive immutable bits — GraalVM installations, Gradle
-caches, Docker layers, and a reachability checkout — refreshes that checkout to
-current `master` at launch, runs that run's existing per-issue workflow inside
-the VM, and tears the VM down afterwards. `--incus` is the only Incus-aware
-surface; the workflow drivers, engines, and agents run the same code they run on
-the host. Because `FORGE_PARALLELISM` allows several concurrent runs, each run
-gets its own VM.
+VM isolation lives at the worker and orchestration boundary
+(§FS-forge-vm-isolated-execution), not in workflow engines or generated-test
+prompts. The opt-in flag is `--incus` on `forge_metadata.py`, forwarded by the
+`do-work.sh` / `do_up_to_date_work.sh` loops (which stay on the host). The
+realization is re-entrant: the *same* script runs twice — on the host to claim
+work, then again inside a fresh VM to do the generation.
 
-Run logs cross the host/VM boundary through a shared directory device, since a
-single-use VM keeps nothing after teardown. The runner mounts a per-run host
-directory at a clean top-level path in the VM (Incus disk device / virtiofs) and
-points Forge's configurable log destination at that path, rather than mounting
-inside the checkout. Logs then land on the host as the run proceeds and outlive
-teardown. Metrics and preserved failed-work branches keep leaving over the
-network, so they need no shared storage; the worktree and other side effects
-stay on the single-use VM's own disk.
+```mermaid
+flowchart TB
+    Base[("base image — a template<br/>GraalVM · caches · Docker · checkout")]
+    GitHub[("GitHub<br/>issues · branches · PRs · metrics")]
 
-Workflow drivers and agents continue to receive ordinary repository paths,
-environment variables, and strategy configuration. They must not shell each
-Gradle command through Incus, choose VM lifecycle policy, or special-case whether
-the current host is bare metal or a VM. Keeping Incus at the runner boundary
-preserves the control-plane and workflow-driver contracts
-(§AR-forge-control-plane, §AR-forge-workflow-boundary) while giving operators a
-machine-level sandbox for tests that may write to `$HOME`, fill `/tmp`, open
-windows, or start Docker-backed services.
+    subgraph Host["HOST"]
+        Loop["do-work.sh → do_up_to_date_work.sh"]
+        Disp["forge_metadata.py --incus<br/>(claim work)"]
+        Runner["VM runner<br/>launch · mount · seed · destroy"]
+        HostLogs[("forge logs<br/>host directory")]
+        Loop --> Disp -->|per claimed run| Runner
+    end
 
-The runner's per-run sequence is:
+    subgraph VM["FRESH SINGLE-USE VM — per run"]
+        Inner["forge_metadata.py --issue-number N<br/>(generate · Gradle · Docker · agent)"]
+    end
 
-1. **Preflight.** With the flag set, verify Incus, the golden base image, the
-   required Incus configuration, and GitHub credentials are present, and stop
-   with an actionable error if anything is missing. The runner never installs or
-   configures Incus itself.
-2. **Launch** a fresh VM by cloning the cached golden base image.
+    Disp -->|scan + claim| GitHub
+    Runner -->|launch fresh VM| VM
+    Base -.->|template for| VM
+    Runner -->|incus exec| Inner
+    Inner -->|logs via mount| HostLogs
+    Inner -->|push: branch · PR · metrics| GitHub
+    Runner -->|destroy after run| VM
+```
+
+For each claimed run, the VM runner executes this per-run sequence:
+
+1. **Preflight** — verify Incus, the base image, configuration, and GitHub
+   credentials; stop with an actionable error if anything is missing. The runner
+   never installs or configures Incus itself.
+2. **Launch** a fresh VM from the cached base image (the image is never modified).
 3. **Mount** a per-run host log directory at a clean top-level path and point the
    configurable log destination (`FORGE_LOGS_DIR`) at it.
-4. **Seed** the run: inject GitHub credentials and refresh the baked checkout to
-   current `master`.
-5. **Run** that run's existing per-issue workflow (the same path as
-   `forge_metadata.py --issue-number N`) inside the VM.
-6. **Publish** as usual — branches, PRs, and metrics leave over the network.
-7. **Destroy** the VM; the mounted logs remain on the host.
+4. **Seed** — inject GitHub credentials and refresh the baked checkout to `master`.
+5. **Run** the run's existing per-issue workflow (`forge_metadata.py
+   --issue-number N`) inside the VM.
+6. **Publish** — branches, PRs, and metrics leave over the network.
+7. **Destroy** the VM; mounted logs remain on the host.
+
+Two invariants hold the boundary. `--incus` is the only Incus-aware surface:
+workflow drivers, engines, and agents run the same code as on the host and never
+shell through Incus or pick VM policy (§AR-forge-control-plane,
+§AR-forge-workflow-boundary). And nothing durable lives on the disposable VM —
+logs cross through the mount, metrics and preserved-work branches leave over the
+network, and `FORGE_PARALLELISM` gives each concurrent run its own VM.
+
+The base image is a template, not a running machine: a saved disk (OS, GraalVM,
+Gradle caches, Docker, and a reachability checkout) plus metadata, built once and
+cached in the local Incus image store. Each run launches a fresh VM *from* that
+image, adds the issue's worktree, and runs `forge_metadata.py --issue-number N`;
+the image itself is never modified, and the VM is deleted afterwards. Building the
+image once is what makes runs cheap — GraalVM, Docker, and caches are installed a
+single time and reused, not rebuilt per run:
+
+```text
+  BUILT ONCE, reused by every run (a template, not a running machine):
+  +---------------------------------------------------+
+  | base image "forge-base"                           |
+  |   OS · GraalVM · Gradle caches · Docker · checkout |
+  +---------------------------------------------------+
+                 |
+                 |  each run launches a fresh VM FROM the image
+                 |  (the image itself is never modified)
+                 v
+  +---------------------------------------------------+
+  | fresh VM for issue 9101   (deleted after the run) |
+  |   = base image  +  this issue's worktree          |
+  |   runs:  forge_metadata.py --issue-number 9101    |
+  +---------------------------------------------------+
+                 |
+                 |  logs -> mounted host directory
+                 v
+  ~/forge-out/9101    (stays on the HOST after the VM is gone)
+
+  Concurrency: each issue gets its own fresh VM (up to FORGE_PARALLELISM).
+  Teardown deletes the VM and its worktree; the base image and host logs remain.
+```
+
+Rebuilding the base image (to refresh GraalVM, caches, or the baked checkout) is
+the only time the expensive setup is paid for again.
 
 ## AR-forge-workflow-boundary: Workflow drivers compose setup, workflow engine, and metrics
 
