@@ -26,8 +26,8 @@ import shutil
 import subprocess
 import tempfile
 from dataclasses import dataclass, field
+from typing import Any
 
-from ai_workflows.core.fix_metadata_codex import run_codex_metadata_fix
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.metadata_index import resolve_metadata_version
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
@@ -84,6 +84,13 @@ class NativeTestVerificationResult:
     intervention_records: list[InterventionRecord] = field(default_factory=list)
 
 
+def run_codex_metadata_fix(*args: Any, **kwargs: Any) -> tuple[int, str, bool]:
+    """Lazy wrapper around Codex repair to avoid workflow import cycles."""
+    from ai_workflows.core.fix_metadata_codex import run_codex_metadata_fix as _run_codex_metadata_fix
+
+    return _run_codex_metadata_fix(*args, **kwargs)
+
+
 DEFAULT_CYCLE_TIMEOUT_SECONDS = 30 * 60
 
 
@@ -115,7 +122,7 @@ def verify_native_test_passes(
     _reset_directory(runs_dir)
     agent_metadata_dir = os.path.join(output_dir, "agent")
     trace_metadata_dir = os.path.join(output_dir, "trace")
-    condition_packages = condition_packages or _default_condition_packages(coordinate)
+    trace_condition_packages: list[str] | None = list(condition_packages) if condition_packages else None
 
     log_stage(
         _GATE_STAGE,
@@ -180,6 +187,46 @@ def verify_native_test_passes(
         log_stage(_GATE_STAGE, "codex finished; trusting codex's outcome")
         return _make_result(STATUS_PASSED_WITH_INTERVENTION, iterations_used)
 
+    def _finalize_and_verify_durable_metadata(
+            metadata_dirs: list[str],
+            iterations_used: int,
+            stage: str,
+    ) -> NativeTestVerificationResult | None:
+        """Finalize staged metadata and verify the durable merged form."""
+        nonlocal last_log_path
+        if not _finalize_staged_metadata(
+            reachability_repo_path=reachability_repo_path,
+            coordinate=coordinate,
+            metadata_dirs=metadata_dirs,
+            env=command_env,
+        ):
+            return _make_result(STATUS_FAILED, iterations_used)
+
+        finalized_test_log_path = _gate_log_path(coordinate, iterations_used, "finalizedTest")
+        test_rc, failed_task = _run_coordinate_test(
+            reachability_repo_path=reachability_repo_path,
+            coordinate=coordinate,
+            metadata_config_dirs=[],
+            log_path=finalized_test_log_path,
+            timeout_seconds=cycle_timeout_seconds,
+            env=command_env,
+        )
+        last_log_path = finalized_test_log_path
+        if test_rc == 0:
+            log_stage(_GATE_STAGE, "finalized durable metadata passed native tests")
+            return None
+
+        failed_task_display = failed_task or "unknown"
+        return _route_to_codex(
+            stage=f"{stage}-finalized-test",
+            reason=(
+                "finalized durable metadata failed coordinate test "
+                f"(failed_task={failed_task_display}, exit={test_rc})"
+            ),
+            reproduction_command=_coordinate_test_command(coordinate),
+            iterations_used=iterations_used,
+        )
+
     generate_metadata_log_path = _gate_log_path(coordinate, 0, "generateMetadata")
     generate_metadata_rc = _run_generate_metadata(
         reachability_repo_path=reachability_repo_path,
@@ -210,13 +257,13 @@ def verify_native_test_passes(
         last_log_path = test_log_path
         if test_rc == 0:
             log_stage(_GATE_STAGE, "JVM-agent metadata made native tests pass")
-            if not _finalize_staged_metadata(
-                reachability_repo_path=reachability_repo_path,
-                coordinate=coordinate,
-                metadata_dirs=[agent_metadata_dir],
-                env=command_env,
-            ):
-                return _make_result(STATUS_FAILED, 0)
+            finalized_result = _finalize_and_verify_durable_metadata(
+                [agent_metadata_dir],
+                0,
+                "jvm-agent",
+            )
+            if finalized_result is not None:
+                return finalized_result
             return _make_result(STATUS_PASSED, 0)
         if failed_task != "nativeTest":
             failed_task_display = failed_task or "unknown"
@@ -229,6 +276,14 @@ def verify_native_test_passes(
 
         log_stage(_GATE_STAGE, "nativeTest still fails after JVM-agent metadata; starting native trace fallback")
 
+    if trace_condition_packages is None:
+        trace_condition_packages = _default_condition_packages(reachability_repo_path, coordinate)
+    log_stage(
+        _GATE_STAGE,
+        f"trace condition packages: {','.join(trace_condition_packages)}",
+        indent_level=1,
+    )
+
     for cycle in range(max_iterations):
         log_stage(_GATE_STAGE, f"cycle {cycle + 1}/{max_iterations}")
 
@@ -239,7 +294,7 @@ def verify_native_test_passes(
             reachability_repo_path=reachability_repo_path,
             coordinate=coordinate,
             run_dir=run_dir,
-            condition_packages=condition_packages,
+            condition_packages=trace_condition_packages,
             metadata_config_dirs=_existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
             log_path=log_path,
             timeout_seconds=cycle_timeout_seconds,
@@ -266,13 +321,13 @@ def verify_native_test_passes(
                 env=command_env,
             ):
                 return _make_result(STATUS_FAILED, cycle + 1)
-            if not _finalize_staged_metadata(
-                reachability_repo_path=reachability_repo_path,
-                coordinate=coordinate,
-                metadata_dirs=agent_metadata_dirs + [trace_metadata_dir],
-                env=command_env,
-            ):
-                return _make_result(STATUS_FAILED, cycle + 1)
+            finalized_result = _finalize_and_verify_durable_metadata(
+                agent_metadata_dirs + [trace_metadata_dir],
+                cycle + 1,
+                f"cycle-{cycle + 1}",
+            )
+            if finalized_result is not None:
+                return finalized_result
             return _make_result(STATUS_PASSED, cycle + 1)
 
         if binary_rc == MISSING_METADATA_EXIT_CODE:
@@ -288,7 +343,7 @@ def verify_native_test_passes(
                     reproduction_command=_run_native_trace_image_command(
                         coordinate=coordinate,
                         run_dir=run_dir,
-                        condition_packages=condition_packages,
+                        condition_packages=trace_condition_packages,
                         metadata_config_dirs=_existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
                     ),
                     iterations_used=cycle + 1,
@@ -309,7 +364,7 @@ def verify_native_test_passes(
                     reproduction_command=_run_native_trace_image_command(
                         coordinate=coordinate,
                         run_dir=run_dir,
-                        condition_packages=condition_packages,
+                        condition_packages=trace_condition_packages,
                         metadata_config_dirs=_existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
                     ),
                     iterations_used=cycle + 1,
@@ -332,7 +387,7 @@ def verify_native_test_passes(
             reproduction_command=_run_native_trace_image_command(
                 coordinate=coordinate,
                 run_dir=run_dir,
-                condition_packages=condition_packages,
+                condition_packages=trace_condition_packages,
                 metadata_config_dirs=_existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
             ),
             iterations_used=cycle + 1,
@@ -349,7 +404,7 @@ def verify_native_test_passes(
         reproduction_command=_run_native_trace_image_command(
             coordinate=coordinate,
             run_dir=os.path.join(runs_dir, "codex-repro-metadata-gap-exhausted"),
-            condition_packages=condition_packages,
+            condition_packages=trace_condition_packages,
             metadata_config_dirs=_existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
         ),
         iterations_used=max_iterations,
@@ -363,8 +418,171 @@ def _coordinate_test_command(coordinate: str, metadata_config_dirs: list[str] | 
     return " ".join(parts)
 
 
-def _default_condition_packages(coordinate: str) -> list[str]:
+def _default_condition_packages(reachability_repo_path: str, coordinate: str) -> list[str]:
+    """Return native-trace condition packages for ``coordinate``.
+
+    Native tracing conditions must be package roots that can actually appear on
+    the access stack (§WF-native-test-verification-gate). Maven groups are only
+    a fallback because many artifacts execute code outside the group-shaped
+    package, e.g. ``org.apache.tomcat.embed`` artifacts using
+    ``org.apache.catalina``.
+    """
+    packages = _condition_packages_from_user_code_filter(reachability_repo_path, coordinate)
+    if packages:
+        return packages
     return [coordinate.split(":", 1)[0]]
+
+
+def _condition_packages_from_user_code_filter(
+        reachability_repo_path: str,
+        coordinate: str,
+) -> list[str]:
+    """Read trace condition packages from the coordinate's user-code filter."""
+    try:
+        group, artifact, version = coordinate.split(":", 2)
+    except ValueError:
+        return []
+    filter_path = os.path.join(
+        reachability_repo_path,
+        "tests",
+        "src",
+        group,
+        artifact,
+        version,
+        "user-code-filter.json",
+    )
+    try:
+        with open(filter_path, "r", encoding="utf-8") as handle:
+            payload = json.load(handle)
+    except (OSError, json.JSONDecodeError, UnicodeDecodeError):
+        return []
+    rules = payload.get("rules") if isinstance(payload, dict) else None
+    if not isinstance(rules, list):
+        return []
+
+    raw_packages: list[str] = []
+    for rule in rules:
+        if not isinstance(rule, dict):
+            continue
+        include_pattern = rule.get("includeClasses")
+        if not isinstance(include_pattern, str):
+            continue
+        package_name = _include_classes_pattern_to_package(include_pattern)
+        if package_name:
+            raw_packages.append(package_name)
+
+    unique_packages = _deduplicate(raw_packages)
+    if not unique_packages:
+        return []
+
+    test_packages = _test_source_packages(reachability_repo_path, group, artifact, version)
+    filtered_packages = [
+        package_name
+        for package_name in unique_packages
+        if not _is_test_only_condition_package(package_name, test_packages, group)
+    ]
+    return filtered_packages or unique_packages
+
+
+def _include_classes_pattern_to_package(include_pattern: str) -> str | None:
+    """Convert a ``user-code-filter.json`` include pattern to a package root."""
+    pattern = include_pattern.strip()
+    for suffix in (".**", ".*"):
+        if pattern.endswith(suffix):
+            pattern = pattern[:-len(suffix)]
+            break
+    if "*" in pattern or not pattern:
+        return None
+    if "." in pattern and pattern.rsplit(".", 1)[-1][:1].isupper():
+        pattern = pattern.rsplit(".", 1)[0]
+    if not _is_java_package_name(pattern):
+        return None
+    return pattern
+
+
+def _is_java_package_name(package_name: str) -> bool:
+    return bool(re.fullmatch(
+        r"[A-Za-z_$][A-Za-z0-9_$]*(\.[A-Za-z_$][A-Za-z0-9_$]*)*",
+        package_name,
+    ))
+
+
+def _test_source_packages(
+        reachability_repo_path: str,
+        group: str,
+        artifact: str,
+        version: str,
+) -> set[str]:
+    test_dir = os.path.join(
+        reachability_repo_path,
+        "tests",
+        "src",
+        group,
+        artifact,
+        version,
+        "src",
+        "test",
+    )
+    packages: set[str] = set()
+    if not os.path.isdir(test_dir):
+        return packages
+    for root, _dirs, files in os.walk(test_dir):
+        for file_name in files:
+            if file_name.endswith((".java", ".kt", ".scala")):
+                package_name = _read_source_package(os.path.join(root, file_name))
+                if package_name:
+                    packages.add(package_name)
+    return packages
+
+
+def _read_source_package(path: str) -> str | None:
+    try:
+        with open(path, "r", encoding="utf-8", errors="replace") as handle:
+            for _index in range(80):
+                line = handle.readline()
+                if not line:
+                    break
+                match = re.match(
+                    r"\s*package\s+([A-Za-z_$][A-Za-z0-9_$]*(?:\.[A-Za-z_$][A-Za-z0-9_$]*)*)\s*;?",
+                    line,
+                )
+                if match:
+                    return match.group(1)
+    except OSError:
+        return None
+    return None
+
+
+def _is_test_only_condition_package(
+        package_name: str,
+        test_packages: set[str],
+        group: str,
+) -> bool:
+    if _package_overlaps(package_name, group):
+        return False
+    return any(
+        _package_overlaps(package_name, test_package)
+        for test_package in test_packages
+    )
+
+
+def _package_overlaps(left: str, right: str) -> bool:
+    return (
+        left == right
+        or left.startswith(f"{right}.")
+        or right.startswith(f"{left}.")
+    )
+
+
+def _deduplicate(values: list[str]) -> list[str]:
+    seen: set[str] = set()
+    result: list[str] = []
+    for value in values:
+        if value in seen:
+            continue
+        seen.add(value)
+        result.append(value)
+    return result
 
 
 def _run_generate_metadata(
