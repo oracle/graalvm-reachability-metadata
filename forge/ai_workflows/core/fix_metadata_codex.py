@@ -138,5 +138,11 @@ def _codex_graalvm_instructions(graalvm_home: str, graalvm_version: str) -> str:
         "unless it resolves to this same distribution.\n"
         "Before verifying, check `native-image --version` and ensure it matches this required version:\n"
         f"{graalvm_version}\n"
-        "If this GraalVM distribution is unavailable, fail instead of reproducing or verifying with another version."
+        "If this GraalVM distribution is unavailable, fail instead of reproducing or verifying with another version.\n\n"
+        "Reachability metadata condition rule: if GraalVM reports that metadata for an access was found "
+        "but is inactive because runtime conditions were not satisfied, treat the existing condition as "
+        "too late for that access. Read the access stack and move or duplicate the matching metadata entry "
+        "under the narrowest library type that is reached before the reflective, resource, proxy, "
+        "serialization, or JNI access occurs. Do not reuse an unsatisfied condition merely because it is "
+        "related to the same library feature."
     )
