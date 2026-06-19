@@ -693,7 +693,8 @@ def format_issue_requested_metadata_context(context: str) -> str:
         f"{stripped}\n"
         "<<<end-reporter-issue-body>>>\n\n"
         "Determine the requested metadata from the bounded context; any added or modified "
-        "reachability metadata must include appropriate conditions, preferably `typeReached`."
+        "reachability metadata must include appropriate conditions, preferably `typeReached` "
+        "conditions reached before the metadata access occurs."
         f"{requirements_section}"
     )
 

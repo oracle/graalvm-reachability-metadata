@@ -157,8 +157,8 @@ logged and routed to Codex.
 | --- | --- | --- |
 | Coordinate `group:artifact:version` | Caller | Identifies the test module. |
 | Reachability repo path | Caller | Working directory for Gradle. |
-| Output directory | Caller | Absolute staging root for this gate invocation. The caller picks a path namespaced per (library, class) for the dynamic-access caller, or per coordinate for non-class-scoped callers. The gate writes JVM-agent metadata to `<output_dir>/agent`, merged trace metadata to `<output_dir>/trace`, and writes durable repository metadata only after the final native-image-utils merge succeeds. |
-| Condition packages | `condition_packages` argument to `verify_native_test_passes` | Default `[group]`. Passed to the binary at run time as `-XX:TraceMetadataConditionPackages=...`. |
+| Output directory | Caller | Absolute staging root for this gate invocation. The caller picks a path namespaced per (library, class) for the dynamic-access caller, or per coordinate for non-class-scoped callers. The gate writes JVM-agent metadata to `<output_dir>/agent`, merged trace metadata to `<output_dir>/trace`, and writes durable repository metadata only after the final native-image-utils merge succeeds and the durable metadata passes `./gradlew test -Pcoordinates=<g:a:v>`. |
+| Condition packages | `condition_packages` argument to `verify_native_test_passes` | When omitted, Forge derives packages from the coordinate's `user-code-filter.json` after the JVM-agent metadata step has had a chance to create or refresh it, excluding obvious generated-test packages. If no usable package filter exists, Forge falls back to `[group]`. Passed to the binary at run time as `-XX:TraceMetadataConditionPackages=...`. |
 | Outer budget | Strategy parameter `max-native-test-verification-iterations` | Default **100**. In practice convergence is expected within a handful of cycles; the high default is a soft cap, not a target. Each cycle rebuilds `nativeTestCompile`, so the wall-clock cost is dominated by native-image build time. |
 | Per-cycle timeout | `cycle_timeout_seconds` argument | Default 30 minutes. Caps the preflight `./gradlew test` invocation and each `runNativeTraceImage` invocation; on timeout the step is treated as a non-zero exit and routed to codex. |
 
@@ -197,7 +197,9 @@ flowchart TD
     Agent -- fail --> Outer{i &lt; max-native-test-verification-iterations?}
     Agent -- pass --> Test[gradlew test<br/>-Pcoordinates=&lt;g:a:v&gt;<br/>-PmetadataConfigDirs=agent_dir]
     Test -- pass --> FinalAgent[final merge<br/>durable + agent_dir]
-    FinalAgent --> PassAgent([return PASSED])
+    FinalAgent --> DurableAgent[gradlew test<br/>-Pcoordinates=&lt;g:a:v&gt;]
+    DurableAgent -- pass --> PassAgent([return PASSED])
+    DurableAgent -- fail --> Codex
     Test -- fails before nativeTest --> Codex
     Test -- nativeTest fails --> Outer
     Outer -- no --> Codex
@@ -205,7 +207,9 @@ flowchart TD
     Run --> Route{binary exit code}
     Route -- 0 --> MergeTrace[mergeNativeTraceMetadata<br/>accepted trace dirs &rarr; trace_dir]
     MergeTrace --> FinalTrace[final merge<br/>durable + agent_dir + trace_dir]
-    FinalTrace --> Pass([return PASSED])
+    FinalTrace --> DurableTrace[gradlew test<br/>-Pcoordinates=&lt;g:a:v&gt;]
+    DurableTrace -- pass --> Pass([return PASSED])
+    DurableTrace -- fail --> Codex
     Route -- 172 --> Append[config_dirs += runs/cycle-i]
     Append --> Bump[i = i + 1]
     Bump --> Outer
@@ -225,15 +229,41 @@ Gate semantics:
   metadata. Native tracing must not run before this step. If metadata
   generation fails, the gate logs the failure and starts native tracing with
   no accepted trace dirs.
+- **Condition packages follow the library code, not only Maven coordinates.**
+  Before the native trace loop starts, the gate resolves
+  `-PtraceMetadataConditionPackages` from the generated test fixture's
+  `user-code-filter.json` when available. Maven groups are often not Java
+  package roots (for example an `org.apache.tomcat.embed` artifact can execute
+  `org.apache.catalina`, `org.apache.coyote`, and `org.apache.tomcat` code).
+  Using the package filter keeps tracing able to select a condition class that
+  is actually on the access stack before a missing metadata access occurs. If
+  the filter cannot be read, the legacy `[group]` fallback is used.
+- **Inactive metadata conditions are too-late conditions.** When GraalVM reports
+  that metadata for an access exists but is inactive because runtime conditions
+  were not satisfied, the repair must move or duplicate the matching metadata
+  under a condition reached before the access. The condition should be inferred
+  from the access stack, usually the library frame performing the reflective,
+  resource, proxy, serialization, or JNI access. Reusing the unsatisfied
+  condition is invalid because it preserves the same timing failure.
 - **Native test run second.** After JVM-agent metadata is generated, the
   gate runs `./gradlew test -Pcoordinates=<g:a:v>
   -PmetadataConfigDirs=<output_dir>/agent`. A pass finalizes staged agent
-  metadata into durable repository metadata and returns `PASSED` without
-  invoking native tracing. A failure before `nativeTest` is treated as a
+  metadata into durable repository metadata and then re-runs
+  `./gradlew test -Pcoordinates=<g:a:v>` without `metadataConfigDirs`.
+  The durable re-run must pass before the gate returns `PASSED`; otherwise the
+  finalized metadata is routed to codex for repair. This catches merge-time
+  condition invalidation where raw staged metadata passes but the merged
+  `reachability-metadata.json` leaves an access behind an unsatisfied
+  `typeReached` condition. A failure before `nativeTest` is treated as a
   code/test problem and is routed to codex.
 - **Native tracing is fallback.** The trace loop starts after JVM-agent
   metadata generation fails, or after JVM-agent metadata exists and native
   testing still fails.
+- **Trace success must survive finalization.** A trace-cycle binary exit `0`
+  first merges accepted trace dirs into `<output_dir>/trace`, then merges staged
+  metadata into durable repository metadata, and finally runs
+  `./gradlew test -Pcoordinates=<g:a:v>` without staged metadata dirs. Only that
+  durable test pass returns `PASSED`.
 - **One Gradle invocation per trace cycle.** The cycle runs only
   `./gradlew runNativeTraceImage -Pcoordinates=<g:a:v>
   -PtraceMetadataPath=<runs_dir>/cycle-<i>
