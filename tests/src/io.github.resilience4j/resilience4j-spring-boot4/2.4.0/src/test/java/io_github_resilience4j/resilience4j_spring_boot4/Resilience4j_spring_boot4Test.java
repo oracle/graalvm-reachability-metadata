@@ -80,16 +80,16 @@ import io.github.resilience4j.timelimiter.TimeLimiterRegistry;
 import io.github.resilience4j.timelimiter.event.TimeLimiterEvent;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.AutoConfigurations;
+import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
 import org.springframework.boot.health.contributor.Health;
 import org.springframework.boot.health.contributor.Status;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.time.Duration;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
@@ -110,86 +110,91 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class Resilience4j_spring_boot4Test {
 
+    private final ApplicationContextRunner applicationContextRunner = new ApplicationContextRunner()
+            .withConfiguration(AutoConfigurations.of(
+                    AopAutoConfiguration.class,
+                    io.github.resilience4j.springboot.verifier.autoconfigure.SpringBoot4VerifierAutoConfiguration.class,
+                    io.github.resilience4j.springboot.circuitbreaker.autoconfigure.CircuitBreakerAutoConfiguration.class,
+                    io.github.resilience4j.springboot.retry.autoconfigure.RetryAutoConfiguration.class,
+                    io.github.resilience4j.springboot.ratelimiter.autoconfigure.RateLimiterAutoConfiguration.class,
+                    io.github.resilience4j.springboot.bulkhead.autoconfigure.BulkheadAutoConfiguration.class,
+                    io.github.resilience4j.springboot.timelimiter.autoconfigure.TimeLimiterAutoConfiguration.class))
+            .withPropertyValues("spring.aop.proxy-target-class=false");
+
     @Test
     void springBootContextAppliesResilience4jAnnotationsThroughAop() {
-        SpringApplication application = new SpringApplication(AnnotatedResilienceApplication.class);
-        application.setDefaultProperties(Map.<String, Object>ofEntries(
-                Map.entry("spring.main.web-application-type", "none"),
-                Map.entry("spring.jmx.enabled", "false"),
-                Map.entry("management.endpoints.enabled-by-default", "false"),
-                Map.entry("resilience4j.circuitbreaker.instances.annotatedBreaker.sliding-window-size", "2"),
-                Map.entry("resilience4j.circuitbreaker.instances.annotatedBreaker.minimum-number-of-calls", "1"),
-                Map.entry("resilience4j.circuitbreaker.instances.annotatedBreaker.failure-rate-threshold", "50"),
-                Map.entry("resilience4j.circuitbreaker.instances.annotatedBreaker.wait-duration-in-open-state", "1s"),
-                Map.entry("resilience4j.retry.instances.annotatedRetry.max-attempts", "3"),
-                Map.entry("resilience4j.retry.instances.annotatedRetry.wait-duration", "0ms"),
-                Map.entry("resilience4j.ratelimiter.instances.annotatedLimiter.limit-for-period", "1"),
-                Map.entry("resilience4j.ratelimiter.instances.annotatedLimiter.limit-refresh-period", "1h"),
-                Map.entry("resilience4j.ratelimiter.instances.annotatedLimiter.timeout-duration", "0ms")));
+        this.applicationContextRunner
+                .withUserConfiguration(AnnotatedResilienceApplication.class)
+                .withPropertyValues(
+                        "resilience4j.circuitbreaker.instances.annotatedBreaker.sliding-window-size=2",
+                        "resilience4j.circuitbreaker.instances.annotatedBreaker.minimum-number-of-calls=1",
+                        "resilience4j.circuitbreaker.instances.annotatedBreaker.failure-rate-threshold=50",
+                        "resilience4j.circuitbreaker.instances.annotatedBreaker.wait-duration-in-open-state=1s",
+                        "resilience4j.retry.instances.annotatedRetry.max-attempts=3",
+                        "resilience4j.retry.instances.annotatedRetry.wait-duration=0ms",
+                        "resilience4j.ratelimiter.instances.annotatedLimiter.limit-for-period=1",
+                        "resilience4j.ratelimiter.instances.annotatedLimiter.limit-refresh-period=1h",
+                        "resilience4j.ratelimiter.instances.annotatedLimiter.timeout-duration=0ms")
+                .run((context) -> {
+                    AnnotatedOperations service = context.getBean(AnnotatedOperations.class);
 
-        try (ConfigurableApplicationContext context = application.run()) {
-            AnnotatedService service = context.getBean(AnnotatedService.class);
+                    assertThat(service.retryProtectedCall()).isEqualTo("retry-ok-3");
+                    assertThat(service.retryAttempts()).isEqualTo(3);
+                    assertThat(service.circuitBreakerProtectedCall()).isEqualTo("breaker-fallback");
+                    assertThat(service.rateLimitedCall()).isEqualTo("limited-ok");
+                    assertThat(service.rateLimitedCall()).isEqualTo("limited-fallback");
 
-            assertThat(service.retryProtectedCall()).isEqualTo("retry-ok-3");
-            assertThat(service.retryAttempts()).isEqualTo(3);
-            assertThat(service.circuitBreakerProtectedCall()).isEqualTo("breaker-fallback");
-            assertThat(service.rateLimitedCall()).isEqualTo("limited-ok");
-            assertThat(service.rateLimitedCall()).isEqualTo("limited-fallback");
-
-            CircuitBreakerRegistry circuitBreakers = context.getBean(CircuitBreakerRegistry.class);
-            assertThat(circuitBreakers.getAllCircuitBreakers()).extracting(CircuitBreaker::getName)
-                    .contains("annotatedBreaker");
-            RetryRegistry retries = context.getBean(RetryRegistry.class);
-            assertThat(retries.getAllRetries()).extracting(Retry::getName).contains("annotatedRetry");
-            RateLimiterRegistry rateLimiters = context.getBean(RateLimiterRegistry.class);
-            assertThat(rateLimiters.rateLimiter("annotatedLimiter").getMetrics().getAvailablePermissions())
-                    .isLessThanOrEqualTo(0);
-        }
+                    CircuitBreakerRegistry circuitBreakers = context.getBean(CircuitBreakerRegistry.class);
+                    assertThat(circuitBreakers.getAllCircuitBreakers()).extracting(CircuitBreaker::getName)
+                            .contains("annotatedBreaker");
+                    RetryRegistry retries = context.getBean(RetryRegistry.class);
+                    assertThat(retries.getAllRetries()).extracting(Retry::getName).contains("annotatedRetry");
+                    RateLimiterRegistry rateLimiters = context.getBean(RateLimiterRegistry.class);
+                    assertThat(rateLimiters.rateLimiter("annotatedLimiter").getMetrics().getAvailablePermissions())
+                            .isLessThanOrEqualTo(0);
+                });
     }
 
     @Test
     void springBootContextAppliesBulkheadAndTimeLimiterAnnotationsThroughAop() throws Exception {
-        SpringApplication application = new SpringApplication(BulkheadAndTimeLimiterApplication.class);
-        application.setDefaultProperties(Map.<String, Object>ofEntries(
-                Map.entry("spring.main.web-application-type", "none"),
-                Map.entry("spring.jmx.enabled", "false"),
-                Map.entry("management.endpoints.enabled-by-default", "false"),
-                Map.entry("resilience4j.bulkhead.instances.annotatedBulkhead.max-concurrent-calls", "1"),
-                Map.entry("resilience4j.bulkhead.instances.annotatedBulkhead.max-wait-duration", "0ms"),
-                Map.entry("resilience4j.timelimiter.instances.annotatedTimeLimiter.timeout-duration", "10ms"),
-                Map.entry("resilience4j.timelimiter.instances.annotatedTimeLimiter.cancel-running-future", "true")));
+        this.applicationContextRunner
+                .withUserConfiguration(BulkheadAndTimeLimiterApplication.class)
+                .withPropertyValues(
+                        "resilience4j.bulkhead.instances.annotatedBulkhead.max-concurrent-calls=1",
+                        "resilience4j.bulkhead.instances.annotatedBulkhead.max-wait-duration=0ms",
+                        "resilience4j.timelimiter.instances.annotatedTimeLimiter.timeout-duration=10ms",
+                        "resilience4j.timelimiter.instances.annotatedTimeLimiter.cancel-running-future=true")
+                .run((context) -> {
+                    BulkheadAndTimeLimiterOperations service = context.getBean(BulkheadAndTimeLimiterOperations.class);
+                    ExecutorService executorService = Executors.newSingleThreadExecutor();
+                    CountDownLatch enteredBulkhead = new CountDownLatch(1);
+                    CountDownLatch releaseBulkhead = new CountDownLatch(1);
+                    Future<String> firstCall = executorService.submit(
+                            () -> service.bulkheadProtectedCall(enteredBulkhead, releaseBulkhead));
+                    try {
+                        assertThat(enteredBulkhead.await(5, TimeUnit.SECONDS)).isTrue();
+                        assertThat(service.bulkheadProtectedCall(new CountDownLatch(1), new CountDownLatch(1)))
+                                .isEqualTo("bulkhead-fallback");
+                        releaseBulkhead.countDown();
+                        assertThat(firstCall.get(5, TimeUnit.SECONDS)).isEqualTo("bulkhead-ok");
+                    } finally {
+                        releaseBulkhead.countDown();
+                        firstCall.cancel(true);
+                        executorService.shutdownNow();
+                        assertThat(executorService.awaitTermination(3, TimeUnit.SECONDS)).isTrue();
+                    }
 
-        try (ConfigurableApplicationContext context = application.run()) {
-            BulkheadAndTimeLimiterService service = context.getBean(BulkheadAndTimeLimiterService.class);
-            ExecutorService executorService = Executors.newSingleThreadExecutor();
-            CountDownLatch enteredBulkhead = new CountDownLatch(1);
-            CountDownLatch releaseBulkhead = new CountDownLatch(1);
-            Future<String> firstCall = executorService.submit(
-                    () -> service.bulkheadProtectedCall(enteredBulkhead, releaseBulkhead));
-            try {
-                assertThat(enteredBulkhead.await(5, TimeUnit.SECONDS)).isTrue();
-                assertThat(service.bulkheadProtectedCall(new CountDownLatch(1), new CountDownLatch(1)))
-                        .isEqualTo("bulkhead-fallback");
-                releaseBulkhead.countDown();
-                assertThat(firstCall.get(5, TimeUnit.SECONDS)).isEqualTo("bulkhead-ok");
-            } finally {
-                releaseBulkhead.countDown();
-                firstCall.cancel(true);
-                executorService.shutdownNow();
-                assertThat(executorService.awaitTermination(3, TimeUnit.SECONDS)).isTrue();
-            }
+                    assertThat(service.timeLimitedCall().toCompletableFuture().get(5, TimeUnit.SECONDS))
+                            .isEqualTo("time-limiter-fallback");
 
-            assertThat(service.timeLimitedCall().toCompletableFuture().get(5, TimeUnit.SECONDS))
-                    .isEqualTo("time-limiter-fallback");
-
-            BulkheadRegistry bulkheads = context.getBean(BulkheadRegistry.class);
-            assertThat(bulkheads.getAllBulkheads()).extracting(Bulkhead::getName).contains("annotatedBulkhead");
-            TimeLimiterRegistry timeLimiters = context.getBean(TimeLimiterRegistry.class);
-            assertThat(timeLimiters.getAllTimeLimiters()).extracting(TimeLimiter::getName)
-                    .contains("annotatedTimeLimiter");
-            assertThat(timeLimiters.timeLimiter("annotatedTimeLimiter").getTimeLimiterConfig().getTimeoutDuration())
-                    .isEqualTo(Duration.ofMillis(10));
-        }
+                    BulkheadRegistry bulkheads = context.getBean(BulkheadRegistry.class);
+                    assertThat(bulkheads.getAllBulkheads()).extracting(Bulkhead::getName).contains("annotatedBulkhead");
+                    TimeLimiterRegistry timeLimiters = context.getBean(TimeLimiterRegistry.class);
+                    assertThat(timeLimiters.getAllTimeLimiters()).extracting(TimeLimiter::getName)
+                            .contains("annotatedTimeLimiter");
+                    assertThat(timeLimiters.timeLimiter("annotatedTimeLimiter").getTimeLimiterConfig()
+                            .getTimeoutDuration()).isEqualTo(Duration.ofMillis(10));
+                });
     }
 
     @Test
@@ -644,23 +649,31 @@ public class Resilience4j_spring_boot4Test {
         assertThat(timerConfig.getMetricNames()).isEqualTo("custom.calls");
     }
 
-    @SpringBootApplication
+    @Configuration(proxyBeanMethods = false)
     public static class AnnotatedResilienceApplication {
         @Bean
-        public AnnotatedService annotatedService() {
+        public AnnotatedOperations annotatedService() {
             return new AnnotatedService();
         }
     }
 
-    @SpringBootApplication
+    @Configuration(proxyBeanMethods = false)
     public static class BulkheadAndTimeLimiterApplication {
         @Bean
-        public BulkheadAndTimeLimiterService bulkheadAndTimeLimiterService() {
+        public BulkheadAndTimeLimiterOperations bulkheadAndTimeLimiterService() {
             return new BulkheadAndTimeLimiterService();
         }
     }
 
-    public static class BulkheadAndTimeLimiterService {
+    public interface BulkheadAndTimeLimiterOperations {
+        String bulkheadProtectedCall(CountDownLatch enteredBulkhead, CountDownLatch releaseBulkhead)
+                throws InterruptedException;
+
+        CompletionStage<String> timeLimitedCall();
+    }
+
+    public static class BulkheadAndTimeLimiterService implements BulkheadAndTimeLimiterOperations {
+        @Override
         @io.github.resilience4j.bulkhead.annotation.Bulkhead(name = "annotatedBulkhead",
                 fallbackMethod = "bulkheadFallback")
         public String bulkheadProtectedCall(CountDownLatch enteredBulkhead, CountDownLatch releaseBulkhead)
@@ -678,6 +691,7 @@ public class Resilience4j_spring_boot4Test {
             return "bulkhead-fallback";
         }
 
+        @Override
         @io.github.resilience4j.timelimiter.annotation.TimeLimiter(name = "annotatedTimeLimiter",
                 fallbackMethod = "timeLimiterFallback")
         public CompletionStage<String> timeLimitedCall() {
@@ -709,13 +723,25 @@ public class Resilience4j_spring_boot4Test {
         }
     }
 
-    public static class AnnotatedService {
+    public interface AnnotatedOperations {
+        String retryProtectedCall();
+
+        int retryAttempts();
+
+        String circuitBreakerProtectedCall();
+
+        String rateLimitedCall();
+    }
+
+    public static class AnnotatedService implements AnnotatedOperations {
         private final AtomicInteger retryAttempts = new AtomicInteger();
 
+        @Override
         public int retryAttempts() {
             return retryAttempts.get();
         }
 
+        @Override
         @io.github.resilience4j.retry.annotation.Retry(name = "annotatedRetry")
         public String retryProtectedCall() {
             int attempt = retryAttempts.incrementAndGet();
@@ -725,6 +751,7 @@ public class Resilience4j_spring_boot4Test {
             return "retry-ok-" + attempt;
         }
 
+        @Override
         @io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker(name = "annotatedBreaker",
                 fallbackMethod = "circuitBreakerFallback")
         public String circuitBreakerProtectedCall() {
@@ -736,6 +763,7 @@ public class Resilience4j_spring_boot4Test {
             return "breaker-fallback";
         }
 
+        @Override
         @io.github.resilience4j.ratelimiter.annotation.RateLimiter(name = "annotatedLimiter",
                 fallbackMethod = "rateLimiterFallback")
         public String rateLimitedCall() {
