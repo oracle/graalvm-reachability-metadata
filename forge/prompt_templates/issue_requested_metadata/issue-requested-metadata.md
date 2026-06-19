@@ -21,4 +21,4 @@ Rules:
 - Update `build.gradle` only if a missing dependency is required to exercise the public API path.
 - Do not compile or run tests yourself. The workflow will do that externally.
 - Do not edit reachability metadata or Native Image config files directly. The workflow will collect and merge metadata from the tests.
-- If the issue omits metadata conditions, make the tests drive a specific public API path so collected metadata can receive narrow conditions, preferably `typeReached`.
+- If the issue omits metadata conditions, make the tests drive a specific public API path so collected metadata can receive narrow conditions, preferably `typeReached`. The condition must be reached before the metadata access occurs; a later or merely related class is not a valid condition.
