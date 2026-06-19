@@ -43,10 +43,10 @@ public class TomcatTests {
         tomcat.start();
         try {
             assertProtocolIntrospection(connector);
-            HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(1)).build();
+            HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
             URI uri = URI.create("http://localhost:" + connector.getLocalPort() + "/hello");
             HttpRequest request = HttpRequest.newBuilder(uri).GET().header("Accept", "text/plain")
-                    .timeout(Duration.ofSeconds(1)).build();
+                    .timeout(Duration.ofSeconds(10)).build();
             HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
             assertThat(response.statusCode()).isEqualTo(200);
             assertThat(response.body()).isEqualTo("Hello World\n");

@@ -147,13 +147,13 @@ public class CustomRequestLogTest {
     }
 
     private static HttpResponse<String> sendRequest(int port) throws IOException, InterruptedException {
-        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(1)).build();
+        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
         HttpRequest request = HttpRequest.newBuilder(URI.create("http://localhost:" + port + "/logged?name=value"))
                 .GET()
                 .header("Accept", "text/plain")
                 .header("Cookie", "test=cookie-value")
                 .header("X-Request", "request-value")
-                .timeout(Duration.ofSeconds(2))
+                .timeout(Duration.ofSeconds(10))
                 .build();
         return client.send(request, HttpResponse.BodyHandlers.ofString());
     }

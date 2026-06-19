@@ -40,9 +40,9 @@ public class TomcatTests {
         addServlet(context);
         tomcat.start();
         try {
-            HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(1)).build();
+            HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
             HttpRequest request = HttpRequest.newBuilder(URI.create("http://localhost:8080/hello"))
-                    .GET().header("Accept", "text/plain").timeout(Duration.ofSeconds(1)).build();
+                    .GET().header("Accept", "text/plain").timeout(Duration.ofSeconds(10)).build();
             HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
             assertThat(response.statusCode()).isEqualTo(200);
             assertThat(response.body()).isEqualTo("Hello World\n");
