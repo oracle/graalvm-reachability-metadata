@@ -1,0 +1,97 @@
+# Weekly full sweep and manual test for the cached layered Native Image lane. §CI-layered-tests.
+name: "Layered tests"
+
+on:
+  schedule:
+    - cron: "30 0 * * 0"
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Branch, tag, or SHA to test"
+        required: true
+        default: "master"
+      coordinates:
+        description: "Coordinates to test"
+        required: true
+        default: "all"
+      java-version:
+        description: "GraalVM Java version"
+        required: true
+        default: "latest-ea"
+      native-image-mode:
+        description: "Native Image mode from ci.json"
+        required: true
+        default: "current-defaults"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "workflow = ${{ github.workflow }}, ref = ${{ inputs.ref || github.event.repository.default_branch }}, coordinates = ${{ inputs.coordinates || 'all' }}, java = ${{ inputs.java-version || 'latest-ea' }}, mode = ${{ inputs.native-image-mode || 'current-defaults' }}"
+  cancel-in-progress: true
+
+jobs:
+  prepare-shards:
+    name: "Prepare layered test shards"
+    runs-on: "ubuntu-latest"
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+
+    steps:
+      - name: "Create coordinate matrix"
+        id: matrix
+        env:
+          COORDINATES: ${{ inputs.coordinates || 'all' }}
+        run: |
+          if [[ "${COORDINATES}" == "all" ]]; then
+            matrix="$(jq -cn '{coordinates: [range(1; 17) | "\(.)/16"]}')"
+          else
+            matrix="$(jq -cn --arg coordinates "${COORDINATES}" '{coordinates: [$coordinates]}')"
+          fi
+          echo "matrix=${matrix}" >> "${GITHUB_OUTPUT}"
+
+  shared-layer-tests:
+    name: "Shared layer tests for ${{ matrix.coordinates }} on ${{ inputs.ref || github.event.repository.default_branch }}"
+    runs-on: "ubuntu-latest"
+    timeout-minutes: 360
+    needs: prepare-shards
+    strategy:
+      fail-fast: false
+      max-parallel: 16
+      matrix: ${{ fromJson(needs.prepare-shards.outputs.matrix) }}
+    env:
+      GVM_TCK_NATIVE_IMAGE_MODE: ${{ inputs.native-image-mode || 'current-defaults' }}
+
+    steps:
+      - name: "Checkout test ref"
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          ref: ${{ inputs.ref || github.event.repository.default_branch }}
+
+      - name: "Setup latest native-build-tools snapshot"
+        uses: ./.github/actions/setup-native-build-tools
+
+      - name: "Download GraalVM for layered metadata testing"
+        uses: graalvm/setup-graalvm@60c26726de13f8b90771df4bc1641a52a3159994 # v1
+        with:
+          distribution: "graalvm"
+          java-version: ${{ inputs.java-version || 'latest-ea' }}
+          set-java-home: "true"
+          native-image-job-reports: "true"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "Setup Native Image base layer"
+        uses: ./.github/actions/setup-native-image-base-layer
+
+      - name: "Pull allowed docker images"
+        run: |
+          ./gradlew pullAllowedDockerImages -Pcoordinates="${{ matrix.coordinates }}"
+
+      - name: "Check metadata files content"
+        run: |
+          ./gradlew checkMetadataFiles -Pcoordinates="${{ matrix.coordinates }}"
+
+      - name: "Run shared layer tests"
+        run: |
+          ./gradlew testSharedLayer -Pcoordinates="${{ matrix.coordinates }}" --stacktrace
