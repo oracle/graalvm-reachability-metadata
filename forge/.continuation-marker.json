@@ -1,0 +1,82 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "org.apache.tomcat.embed:tomcat-embed-core:11.0.18",
+  "issueNumber": 8328,
+  "label": "library-update-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No special environment or system properties are required. Meaningful coverage can directly instantiate org.apache.catalina.connector.Connector and exercise getProperty(\"bindOnInit\") and setProperty(\"bindOnInit\", \"false\"); avoid requiring a full Spring Boot/PetClinic application.",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8328 Update existing library: org.apache.tomcat.embed:tomcat-embed-core:11.0.18; label=library-update-request; body_chars=2556"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "12 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 38395,
+    "issue_label": "library-update-request",
+    "issue_number": 8328,
+    "library": "org.apache.tomcat.embed:tomcat-embed-core:11.0.18",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 3626,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "A full Spring Boot PetClinic reproduction would require many unrelated Spring dependencies, but the missing metadata is exposed by Tomcat's direct Connector property introspection path.",
+      "If a test starts a Connector or embedded Tomcat server, it should use an automatically assigned local port such as 0 to avoid fixed-port conflicts; this is ordinary test-code setup, not deterministic Forge setup."
+    ],
+    "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.apache.tomcat.embed:tomcat-embed-core:11.0.18/library-preparation-preflight/pi-generation-2026-06-19T12-16-38-216292Z.log",
+    "status": "completed",
+    "summary": "No extra Maven dependency, Docker image, environment variable, or system property is needed: tomcat-embed-core resolves with only tomcat-annotations-api as a compile dependency, and the reported Connector/IntrospectionUtils path is reachable in-process via public Tomcat APIs."
+  },
+  "libraryUpdateRoute": {
+    "baseline_coordinates": null,
+    "new_version": "11.0.18",
+    "selected_driver": "improve_library_coverage"
+  },
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "exhaustedClasses": [
+        "org.apache.catalina.core.StandardContext",
+        "org.apache.catalina.realm.RealmBase",
+        "org.apache.catalina.startup.HostConfig",
+        "org.apache.catalina.startup.UserConfig",
+        "org.apache.tomcat.SimpleInstanceManager",
+        "org.apache.tomcat.util.descriptor.DigesterFactory"
+      ],
+      "iteration": 5,
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-8328-library-update-request-org.apache.tomcat.embed-tomcat-embed-core-11.0.18-98227c44",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.apache.tomcat.embed:tomcat-embed-core:11.0.18",
+    "timestamp": "2026-06-19T13:16:22.035182Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
