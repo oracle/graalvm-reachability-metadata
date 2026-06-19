@@ -17,7 +17,6 @@ import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * Base task providing unified coordinate resolution from -Pcoordinates and optional overrides.
@@ -26,7 +25,8 @@ import java.util.stream.Collectors;
  *  - filter by group/artifact
  *  - "all"
  *  - fractional batches "k/n"
- * Always filters out "samples:".
+ * Fixture coordinates remain runnable; reporting tasks decide which coordinates
+ * are excluded from supported-library outputs. §TCK-test-harness.1
  */
 public abstract class CoordinatesAwareTask extends DefaultTask {
 
@@ -60,9 +60,7 @@ public abstract class CoordinatesAwareTask extends DefaultTask {
             String coordinateFilter = Objects.toString(getProject().findProperty("coordinates"), "");
             coords = computeMatchingCoordinates(coordinateFilter);
         }
-        return coords.stream()
-                .filter(c -> !c.startsWith("samples:"))
-                .collect(Collectors.toList());
+        return coords;
     }
 
     protected List<String> computeMatchingCoordinates(String filter) {

@@ -23,6 +23,12 @@ Every coordinate-scoped task accepts the single filter `-Pcoordinates=`, which
 takes `all`, `group:artifact`, `group:artifact:version`, or a shard `k/n` so CI
 can parallelize the work (§FS-repository-functional-spec.6). The tasks here
 resolve that filter into concrete coordinates and inspect what they select.
+Fixture coordinates such as `org.example:*` and `samples:*` are selectable by
+the coordinate resolver and runnable through style and test lanes, but they must
+not be counted as public supported-library output. The `testInfra` bundle uses
+the public-library coordinate set and excludes `samples:*`, because the bundle
+includes reporting/public-output tasks that do not operate on fixture-only
+coordinates.
 
 | Task | Purpose |
 | --- | --- |

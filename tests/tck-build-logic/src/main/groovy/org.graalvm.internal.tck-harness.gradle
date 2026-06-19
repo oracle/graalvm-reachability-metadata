@@ -150,7 +150,6 @@ if (CoordinateUtils.isFractionalBatch(coordinateFilter)) {
 } else {
     matchingCoordinates = tck.getMatchingCoordinates(coordinateFilter)
 }
-matchingCoordinates = matchingCoordinates.findAll { !it.startsWith("samples:") }
 
 
 // gradle checkstyle -Pcoordinates=<maven-coordinates>  §TCK-test-harness.2
@@ -280,7 +279,6 @@ tasks.register("listCoordinates", DefaultTask) { task ->
             } else {
                 coords = tck.getMatchingCoordinatesStrict(coordinateFilter)
             }
-            coords = coords.findAll { !it.startsWith("samples:") }
         } else {
             coords = new ArrayList<>(matchingCoordinates)
         }
@@ -526,7 +524,6 @@ Provider<Task> generateMatrixMatchingCoordinates = tasks.register("generateMatri
             def frac = CoordinateUtils.parseFraction(coordinateFilter)
             List<String> allStrict = tck.getMatchingCoordinatesStrict("all")
             matrixCoordinates = CoordinateUtils.computeBatchedCoordinates(allStrict, frac[0], frac[1])
-                    .findAll { !it.startsWith("samples:") }
         }
         def matrix = [
                 "coordinates": matrixCoordinates
