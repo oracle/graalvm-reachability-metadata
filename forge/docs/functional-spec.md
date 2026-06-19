@@ -592,10 +592,16 @@ Chunked mode is automatic after the issue is marked with the
 `chunked-dynamic-access` label. The normal project status remains the run-state
 signal: `Todo` means Forge may claim the next chunk, `In Progress` means a chunk
 is currently being generated or reviewed, and the final PR's `Fixes: #<issue>`
-transition moves the issue to `Done`. Forge must not require an explicit
-resume-state CLI flag; the exhaust report location must be derived from the
-coordinate and loaded automatically by the orchestration scripts, as specified
-by §WF-dynamic-access-exhaust-report.
+transition moves the issue to `Done`. If a non-final chunk PR has failed CI and
+no failed-job rerun remains available, Forge must move the issue back to `Todo`
+and mark that PR for human follow-up so a replacement chunk can be generated.
+Forge must not require an explicit resume-state CLI flag; the exhaust report
+location must be derived from the coordinate and loaded automatically by the
+orchestration scripts, as specified by §WF-dynamic-access-exhaust-report. When
+the issue is being resumed from a preserved failed-run continuation marker,
+Forge may proceed without a coordinate-local exhaust report and use
+`explore.exhaustedClasses` from the marker as the processed-class set for the
+resumed run (§FS-forge-run-continuation.2).
 
 Chunk PRs use `Refs: #<issue>` until the final chunk. Only the final chunk PR
 may use `Fixes: #<issue>` and move the issue to `Done`. Non-final chunk PRs

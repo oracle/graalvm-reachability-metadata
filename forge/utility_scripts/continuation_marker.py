@@ -50,7 +50,12 @@ def _default_phases() -> dict[str, dict[str, Any]]:
     return {
         PHASE_SETUP: {"status": STATUS_PENDING, "preflightDone": False, "setupDone": False},
         PHASE_FIX: {"status": STATUS_PENDING, "iteration": None},
-        PHASE_EXPLORE: {"status": STATUS_PENDING, "exhaustedClasses": []},
+        PHASE_EXPLORE: {
+            "status": STATUS_PENDING,
+            "exhaustedClasses": [],
+            "chunkClassCount": None,
+            "chunkProcessedClassCount": 0,
+        },
         PHASE_FINALIZATION: {"status": STATUS_PENDING},
         PHASE_PUBLICATION: {"status": STATUS_PENDING, "isPushed": False, "branch": None},
     }
@@ -222,6 +227,19 @@ class ContinuationMarker:
     def record_exhausted_classes(self, exhausted_classes: list[str]) -> None:
         """Record dynamic-access classes that a fresh report cannot reconstruct."""
         self._phase(PHASE_EXPLORE)["exhaustedClasses"] = sorted(set(exhausted_classes))
+        self.recompute_continue_from()
+
+    def record_chunk_progress(
+            self,
+            chunk_class_count: int | None,
+            chunk_processed_class_count: int | None,
+    ) -> None:
+        """Record active chunk progress for failed-run continuation."""
+        phase = self._phase(PHASE_EXPLORE)
+        if chunk_class_count is not None and chunk_class_count > 0:
+            phase["chunkClassCount"] = int(chunk_class_count)
+        if chunk_processed_class_count is not None:
+            phase["chunkProcessedClassCount"] = max(0, int(chunk_processed_class_count))
         self.recompute_continue_from()
 
     def record_preserved_branch(self, branch_name: str) -> None:

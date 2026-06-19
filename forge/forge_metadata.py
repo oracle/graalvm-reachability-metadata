@@ -136,6 +136,7 @@ from utility_scripts.dynamic_access_exhaust_report import (
 )
 from utility_scripts.continuation_marker import (
     CONTINUATION_MARKER_FILENAME,
+    PHASE_EXPLORE,
     PHASE_PUBLICATION,
     ContinuationMarker,
     continuation_marker_path,
@@ -2478,11 +2479,11 @@ def resolve_non_final_chunked_dynamic_access_issue(pr: dict) -> int | None:
     return int(match.group(1))
 
 
-def apply_chunked_dynamic_access_merge_follow_up(pr: dict) -> None:
-    """Move a merged non-final chunk issue back to Todo for the next chunk."""
+def release_non_final_chunked_dynamic_access_issue(pr: dict, reason: str) -> int | None:
+    """Move a non-final chunk issue back to Todo and return the issue number."""
     issue_number = resolve_non_final_chunked_dynamic_access_issue(pr)
     if issue_number is None:
-        return
+        return None
 
     item_id = get_project_item_id(issue_number)
     if item_id is None:
@@ -2495,8 +2496,31 @@ def apply_chunked_dynamic_access_merge_follow_up(pr: dict) -> None:
     invalidate_issue_claim_cache_entry(issue_number)
     log_stage(
         "chunked-dynamic-access",
-        f"Released issue #{issue_number} for the next chunk after PR #{pr.get('number')} merged.",
+        f"Released issue #{issue_number} for the next chunk after PR #{pr.get('number')} {reason}.",
     )
+    return issue_number
+
+
+def apply_chunked_dynamic_access_merge_follow_up(pr: dict) -> None:
+    """Move a merged non-final chunk issue back to Todo for the next chunk."""
+    release_non_final_chunked_dynamic_access_issue(pr, "merged")
+
+
+def apply_chunked_dynamic_access_failed_ci_follow_up(pr: dict) -> None:
+    """Release a non-final chunk issue when its PR has failed CI and no rerun remains."""
+    issue_number = release_non_final_chunked_dynamic_access_issue(pr, "failed CI")
+    if issue_number is None:
+        return
+    pr_number = pr.get("number")
+    if isinstance(pr_number, int):
+        add_pull_request_label(pr_number, LABEL_HUMAN_INTERVENTION)
+        log_stage(
+            "chunked-dynamic-access",
+            (
+                f"Marked failed non-final chunk PR #{pr_number} as "
+                f"'{LABEL_HUMAN_INTERVENTION}' after releasing issue #{issue_number}."
+            ),
+        )
 
 
 def apply_library_update_alias_split_merge_follow_up(pr: dict) -> None:
@@ -2573,6 +2597,21 @@ def reconcile_reviewed_pull_request(
             f"mergeStateStatus={pr.get('mergeStateStatus')}, "
             f"ci={((pr.get('statusCheckRollup') or {}).get('state'))}]"
         )
+
+        if has_failed_pull_request_ci(pr) and resolve_non_final_chunked_dynamic_access_issue(pr) is not None:
+            head_sha = pr.get("headRefOid")
+            if not isinstance(head_sha, str) or not head_sha:
+                print(f"ERROR: Missing head SHA for chunked PR #{pr_number} with failed CI.", file=sys.stderr)
+                raise RuntimeError(f"Missing head SHA for chunked PR #{pr_number} with failed CI")
+            rerun_count = rerun_failed_pull_request_workflow_jobs(pr_number, head_sha)
+            if rerun_count:
+                print(
+                    f"[Reran failed GitHub Actions job(s) in {rerun_count} workflow run(s) "
+                    f"for chunked PR #{pr_number}; keeping the backing issue in progress for this pass.]"
+                )
+                return True
+            apply_chunked_dynamic_access_failed_ci_follow_up(pr)
+            return True
 
         if review_decision == "CHANGES_REQUESTED":
             add_pull_request_label(pr_number, LABEL_HUMAN_INTERVENTION)
@@ -4604,12 +4643,57 @@ def _processed_dynamic_access_classes(report: DynamicAccessExhaustReport | None)
     return report.processed_classes()
 
 
+def _continuation_processed_dynamic_access_classes(marker: ContinuationMarker | None) -> set[str]:
+    """Return dynamic-access classes recorded in the continuation marker."""
+    if marker is None:
+        return set()
+    explore_phase: dict[str, object] = marker.phases.get(PHASE_EXPLORE, {})
+    exhausted_classes: object = explore_phase.get("exhaustedClasses", [])
+    if not isinstance(exhausted_classes, list):
+        return set()
+    return {
+        class_name
+        for class_name in exhausted_classes
+        if isinstance(class_name, str) and class_name
+    }
+
+
+def _dynamic_access_processed_class_count(
+        report: DynamicAccessExhaustReport | None,
+        marker: ContinuationMarker | None,
+) -> int:
+    """Return the processed class count used for chunking logs."""
+    processed_classes = _processed_dynamic_access_classes(report)
+    processed_classes.update(_continuation_processed_dynamic_access_classes(marker))
+    return len(processed_classes)
+
+
+def _continuation_active_chunk_remaining_budget(marker: ContinuationMarker | None) -> int | None:
+    """Return the remaining class budget for a resumed active chunk."""
+    if marker is None or marker.continue_from != PHASE_EXPLORE:
+        return None
+    explore_phase: dict[str, object] = marker.phases.get(PHASE_EXPLORE, {})
+    raw_chunk_class_count: object = explore_phase.get("chunkClassCount")
+    if raw_chunk_class_count is None:
+        return None
+    try:
+        chunk_class_count = int(raw_chunk_class_count)
+        chunk_processed_class_count = int(explore_phase.get("chunkProcessedClassCount") or 0)
+    except (TypeError, ValueError):
+        return None
+    if chunk_class_count <= 0:
+        return None
+    return max(chunk_class_count - max(chunk_processed_class_count, 0), 0)
+
+
 def _remaining_uncovered_dynamic_access_classes(
         report,
         exhaust_report: DynamicAccessExhaustReport | None,
+        continuation_marker: ContinuationMarker | None,
 ) -> list[str]:
-    """Return current uncovered classes not already recorded in the exhaust report."""
+    """Return current uncovered classes not already recorded as processed."""
     processed_classes = _processed_dynamic_access_classes(exhaust_report)
+    processed_classes.update(_continuation_processed_dynamic_access_classes(continuation_marker))
     return [
         class_coverage.class_name
         for class_coverage in report.classes
@@ -4746,15 +4830,24 @@ def prepare_dynamic_access_chunking(
         )
         return None
 
-    remaining_classes = _remaining_uncovered_dynamic_access_classes(report, exhaust_report)
+    remaining_classes = _remaining_uncovered_dynamic_access_classes(
+        report,
+        exhaust_report,
+        claimed_issue.continuation_marker,
+    )
     current_chunk_class_count = min(threshold, len(remaining_classes))
+    active_chunk_remaining_budget = _continuation_active_chunk_remaining_budget(
+        claimed_issue.continuation_marker
+    )
+    if active_chunk_remaining_budget is not None:
+        current_chunk_class_count = min(current_chunk_class_count, active_chunk_remaining_budget)
     if current_chunk_class_count <= 0:
         log_stage(
             "dynamic-access-chunking",
             (
                 f"No chunk selected for issue #{claimed_issue.issue['number']}: "
                 f"all {len(current_uncovered_classes)} uncovered class(es) are already recorded "
-                "in the exhaust report."
+                "as processed."
             ),
         )
         return None
@@ -4770,15 +4863,21 @@ def prepare_dynamic_access_chunking(
 
     log_stage(
         "dynamic-access-chunking",
-        (
-            f"Chunked dynamic-access selected for issue #{claimed_issue.issue['number']}: "
-            f"already_chunked={already_chunked}, "
-            f"total_uncovered_classes={len(current_uncovered_classes)}, "
-            f"processed_classes={exhaust_report.processed_class_count()}, "
-            f"remaining_classes={len(remaining_classes)}, "
-            f"threshold={threshold}, "
-            f"chunk_class_count={current_chunk_class_count}, "
-            f"exhaust_report={os.path.relpath(exhaust_report_path, claimed_issue.worktree_path)}."
+        "Chunked dynamic-access selected for issue #{issue_number}: "
+        "already_chunked={already_chunked}, total_uncovered_classes={uncovered_count}, "
+        "processed_classes={processed_count}, remaining_classes={remaining_count}, "
+        "threshold={threshold}, chunk_class_count={chunk_count}, exhaust_report={report_path}.".format(
+            issue_number=claimed_issue.issue["number"],
+            already_chunked=already_chunked,
+            uncovered_count=len(current_uncovered_classes),
+            processed_count=_dynamic_access_processed_class_count(
+                exhaust_report,
+                claimed_issue.continuation_marker,
+            ),
+            remaining_count=len(remaining_classes),
+            threshold=threshold,
+            chunk_count=current_chunk_class_count,
+            report_path=os.path.relpath(exhaust_report_path, claimed_issue.worktree_path),
         ),
     )
     return current_chunk_class_count
@@ -5713,12 +5812,22 @@ def resolve_chunked_dynamic_access_exhaust_report(
         issue: dict,
         base_reachability_metadata_path: str,
         coordinate: str,
+        continuation_marker: ContinuationMarker | None = None,
 ) -> DynamicAccessExhaustReport | None:
     """Resolve the persisted exhaust report for an already chunked issue."""
     if not issue_has_label(issue, LABEL_CHUNKED_DYNAMIC_ACCESS):
         return None
     report_path = find_dynamic_access_exhaust_report_path(base_reachability_metadata_path, coordinate)
     if report_path is None:
+        if continuation_marker is not None:
+            log_stage(
+                "chunked-dynamic-access",
+                (
+                    f"Resuming chunked dynamic-access issue #{issue['number']} without an exhaust report; "
+                    "processed classes will be read from the continuation marker."
+                ),
+            )
+            return None
         raise RuntimeError(
             f"Chunked dynamic-access issue #{issue['number']} has no exhaust report for {coordinate}."
         )
@@ -5887,6 +5996,7 @@ def claim_issue_for_processing(
             issue,
             base_reachability_metadata_path,
             issue_coordinates,
+            continuation_marker,
         )
     except Exception as exc:
         print(
@@ -6620,6 +6730,41 @@ def preserve_failed_work_for_follow_up(claimed_issue: ClaimedIssue) -> FailurePr
         return None
 
 
+def _repeated_resume_failure_phase(claimed_issue: ClaimedIssue) -> str | None:
+    """Return the phase when a resumed run failed again without advancing."""
+    resumed_marker = claimed_issue.continuation_marker
+    if resumed_marker is None:
+        return None
+    active_marker = load_continuation_marker(continuation_marker_path(claimed_issue.worktree_path))
+    if active_marker is None:
+        return None
+    resumed_phase = resumed_marker.continue_from
+    if resumed_phase and active_marker.continue_from == resumed_phase:
+        return resumed_phase
+    return None
+
+
+def handle_repeated_resume_failure(claimed_issue: ClaimedIssue, phase_name: str, reason: str) -> None:
+    """Stop automatic continuation after the same resumed phase fails again."""
+    issue_number = claimed_issue.issue["number"]
+    log_stage(
+        "continuation",
+        (
+            f"Issue #{issue_number} resumed at phase {phase_name} and failed there again; "
+            f"removing '{LABEL_RESUMABLE}' without posting another human-intervention report."
+        ),
+    )
+    try:
+        remove_issue_label(issue_number, LABEL_RESUMABLE)
+    except Exception as exc:
+        print(
+            f"ERROR: Failed to remove '{LABEL_RESUMABLE}' label from issue #{issue_number}: {exc!r}",
+            file=sys.stderr,
+        )
+        traceback.print_exc()
+    revert_claimed_issue(claimed_issue, f"{reason}; repeated resume failure at {phase_name}")
+
+
 def handle_failed_claimed_issue(
         claimed_issue: ClaimedIssue,
         reason: str,
@@ -6644,6 +6789,10 @@ def handle_failed_claimed_issue(
             ),
         )
         revert_claimed_issue(claimed_issue, reason)
+        return
+    repeated_resume_failure_phase = _repeated_resume_failure_phase(claimed_issue)
+    if repeated_resume_failure_phase is not None:
+        handle_repeated_resume_failure(claimed_issue, repeated_resume_failure_phase, reason)
         return
     preservation_result = preserve_failed_work_for_follow_up(claimed_issue)
     if is_user_interrupt_requested():
