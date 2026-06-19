@@ -66,8 +66,22 @@ data.
 | `compileTestJava` | Compile the coordinate's test sources. |
 | `javaTest` | Run the tests on the JVM. |
 | `nativeTestCompile` | Build the native image used by native tests (compile-only). |
+| `buildBaseLayer` | Build or validate the shared JDK-module Native Image layer used by layered tests. |
+| `testSharedLayer` | Run the native tests with `LayerUse` pointing at the shared base layer. |
 | `test` / `tckTest` | The full lane: validation, JVM tests, then native-image tests. |
 | `clean` / `tckClean` | Clear a coordinate's build outputs. |
+
+Layered test tasks use `-Ptck.baseLayerDir=<dir>` or `GVM_TCK_BASE_LAYER_DIR`
+when supplied; otherwise they default to `build/native-base-layer`. The base
+layer directory contains `base-layer.nil` plus a manifest keyed by the exact
+`native-image --version`, OS/architecture, native-image mode,
+base-layer module set (`java.base`, `java.management`, `java.naming`, `java.sql`,
+`jdk.unsupported`, `java.desktop`, `java.scripting`, `jdk.httpserver`,
+`java.net.http`, `java.sql.rowset`, `jdk.jfr`, `java.smartcardio`,
+`java.transaction.xa`, `java.security.sasl`, `java.xml`, `jdk.dynalink`,
+`jdk.jsobject`, `jdk.localedata`, and `jdk.xml.dom`), and build arguments,
+so a stale or mismatched layer is rejected before any per-coordinate native
+image is built.
 
 ## 4. Native-image metadata tracing
 

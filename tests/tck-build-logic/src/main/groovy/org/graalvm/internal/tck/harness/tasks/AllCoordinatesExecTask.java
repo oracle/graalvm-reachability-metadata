@@ -10,6 +10,7 @@ import org.gradle.api.GradleException;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.process.ExecOperations;
 import org.gradle.process.ExecSpec;
+import org.graalvm.internal.tck.utils.BaseLayerUtils;
 import org.graalvm.internal.tck.utils.CoordinateUtils;
 
 import javax.inject.Inject;
@@ -204,6 +205,14 @@ public abstract class AllCoordinatesExecTask extends CoordinatesAwareTask {
         if (propertyValue != null) {
             command.add("-P" + propertyName + "=" + propertyValue);
         }
+    }
+
+    /**
+     * Forward the shared Native Image base-layer file to per-coordinate builds.
+     */
+    protected void appendBaseLayerFileProperty(List<String> command) {
+        File baseLayerFile = BaseLayerUtils.resolveBaseLayerFile(getProject());
+        command.add("-Ptck.baseLayerFile=" + baseLayerFile.getAbsolutePath());
     }
 
     private static String md5(String s) {
