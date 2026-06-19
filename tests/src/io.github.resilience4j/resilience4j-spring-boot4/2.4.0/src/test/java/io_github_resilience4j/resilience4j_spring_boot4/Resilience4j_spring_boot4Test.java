@@ -35,6 +35,8 @@ import io.github.resilience4j.common.timelimiter.configuration.TimeLimiterConfig
 import io.github.resilience4j.consumer.CircularEventConsumer;
 import io.github.resilience4j.consumer.DefaultEventConsumerRegistry;
 import io.github.resilience4j.consumer.EventConsumerRegistry;
+import io.github.resilience4j.core.ContextAwareScheduledThreadPoolExecutor;
+import io.github.resilience4j.core.ContextPropagator;
 import io.github.resilience4j.core.functions.Either;
 import io.github.resilience4j.micrometer.Timer;
 import io.github.resilience4j.micrometer.TimerConfig;
@@ -66,6 +68,8 @@ import io.github.resilience4j.springboot.ratelimiter.monitoring.health.RateLimit
 import io.github.resilience4j.springboot.retry.autoconfigure.RetryProperties;
 import io.github.resilience4j.springboot.retry.monitoring.endpoint.RetryEndpoint;
 import io.github.resilience4j.springboot.retry.monitoring.endpoint.RetryEventsEndpoint;
+import io.github.resilience4j.springboot.scheduled.threadpool.autoconfigure.ContextAwareScheduledThreadPoolAutoConfiguration;
+import io.github.resilience4j.springboot.scheduled.threadpool.autoconfigure.ContextAwareScheduledThreadPoolProperties;
 import io.github.resilience4j.springboot.timelimiter.autoconfigure.TimeLimiterProperties;
 import io.github.resilience4j.springboot.timelimiter.monitoring.endpoint.TimeLimiterEndpoint;
 import io.github.resilience4j.springboot.timelimiter.monitoring.endpoint.TimeLimiterEventsEndpoint;
@@ -85,12 +89,16 @@ import org.springframework.context.annotation.Bean;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -394,6 +402,35 @@ public class Resilience4j_spring_boot4Test {
     }
 
     @Test
+    void scheduledThreadPoolAutoConfigurationPropagatesContextIntoScheduledTasks() throws Exception {
+        ContextAwareScheduledThreadPoolProperties properties = new ContextAwareScheduledThreadPoolProperties();
+        properties.setCorePoolSize(1);
+        properties.setContextPropagators(ThreadLocalContextPropagator.class);
+        ThreadLocalContextPropagator.CONTEXT.set("request-context");
+
+        ContextAwareScheduledThreadPoolExecutor executor = new ContextAwareScheduledThreadPoolAutoConfiguration()
+                .getContextAwareScheduledThreadPool(properties);
+        try {
+            Callable<String> contextLookup = ThreadLocalContextPropagator.CONTEXT::get;
+            ScheduledFuture<String> future = executor.schedule(contextLookup, 0, TimeUnit.MILLISECONDS);
+
+            assertThat(executor.getCorePoolSize()).isEqualTo(1);
+            assertThat(executor.getContextPropagators())
+                    .hasSize(1)
+                    .first()
+                    .isInstanceOf(ThreadLocalContextPropagator.class);
+            assertThat(future.get(5, TimeUnit.SECONDS)).isEqualTo("request-context");
+        } finally {
+            try {
+                executor.shutdownNow();
+                assertThat(executor.awaitTermination(3, TimeUnit.SECONDS)).isTrue();
+            } finally {
+                ThreadLocalContextPropagator.CONTEXT.remove();
+            }
+        }
+    }
+
+    @Test
     void springBootPropertiesCreateResilience4jCoreConfigs() {
         CircuitBreakerProperties circuitBreakerProperties = new CircuitBreakerProperties();
         CommonCircuitBreakerConfigurationProperties.InstanceProperties circuitBreakerInstance =
@@ -562,6 +599,25 @@ public class Resilience4j_spring_boot4Test {
         @Bean
         public AnnotatedService annotatedService() {
             return new AnnotatedService();
+        }
+    }
+
+    public static class ThreadLocalContextPropagator implements ContextPropagator<String> {
+        private static final ThreadLocal<String> CONTEXT = new ThreadLocal<>();
+
+        @Override
+        public Supplier<Optional<String>> retrieve() {
+            return () -> Optional.ofNullable(CONTEXT.get());
+        }
+
+        @Override
+        public Consumer<Optional<String>> copy() {
+            return value -> value.ifPresentOrElse(CONTEXT::set, CONTEXT::remove);
+        }
+
+        @Override
+        public Consumer<Optional<String>> clear() {
+            return value -> CONTEXT.remove();
         }
     }
 
