@@ -5,13 +5,13 @@
   "label": "library-new-request",
   "libraryPreparationPreflight": {
     "action": "advisory_preparation",
-    "agent_guidance": "Treat the requested coordinate as a BOM/platform, not as a library JAR. No Docker image or environment variables are required for in-process tests; prefer noop/in-memory OpenTelemetry usage and avoid tests that rely on the Java agent's default OTLP export to localhost.",
+    "agent_guidance": "Consume the requested BOM coordinate as a Gradle platform/POM import, not as a normal jar dependency. Tests should focus on stable in-process OpenTelemetry instrumentation APIs and avoid attaching or executing the javaagent.",
     "applied_setup": [],
     "deterministic_setup": [
       {
         "coordinate": "io.opentelemetry.instrumentation:opentelemetry-instrumentation-api:2.28.1",
         "kind": "dependency",
-        "reason": "The BOM manages this stable instrumentation API module, which contains actual JVM classes and can be exercised without external services.",
+        "reason": "The BOM only provides dependency management for OpenTelemetry instrumentation modules; this managed API module supplies actual classes and normal library APIs that can be exercised in JVM and native-image tests.",
         "scope": "testImplementation"
       }
     ],
@@ -25,21 +25,22 @@
         "summary": "0 existing test file path(s) included"
       }
     ],
-    "input_tokens_used": 55211,
+    "input_tokens_used": 32445,
     "issue_label": "library-new-request",
     "issue_number": 8516,
     "library": "io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom:2.28.1",
     "model": "oca/gpt-5.5",
-    "output_tokens_used": 5231,
+    "output_tokens_used": 4074,
     "prompt_path": "library-preflight-prompt.txt",
     "raw_response_path": "library-preflight-response.txt",
     "risks": [
-      "The BOM itself has no JAR, sources JAR, or tests JAR on Maven Central, so local verification may conclude the coordinate is not suitable for native-image reachability metadata.",
-      "Tests using the added module exercise a BOM-managed component rather than classes from the BOM artifact itself."
+      "The BOM itself has no bytecode, so reachability metadata and dynamic-access coverage for the BOM coordinate may remain empty or not meaningful.",
+      "If the scaffold cannot represent the requested coordinate as a platform dependency, local Gradle verification may fail before test generation is useful.",
+      "Coverage from the added module primarily validates a BOM-managed artifact rather than the BOM artifact itself."
     ],
-    "session_log_path": "/home/jovan/Work/graalvm-reachability-metadata/forge/logs/io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom:2.28.1/library-preparation-preflight/pi-generation-2026-06-19T12-03-54-750301Z.log",
+    "session_log_path": "/home/jovan/Work/graalvm-reachability-metadata/forge/logs/io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom:2.28.1/library-preparation-preflight/pi-generation-2026-06-19T12-10-15-381772Z.log",
     "status": "completed",
-    "summary": "The requested artifact is a POM-only BOM/Gradle platform with no JAR or class files; meaningful tests need at least one managed OpenTelemetry instrumentation module on the test classpath."
+    "summary": "The requested artifact is a BOM/POM-only platform with no jar or classes, so the normal scaffold cannot reach meaningful runtime coverage without adding a real BOM-managed module to exercise."
   },
   "libraryUpdateRoute": null,
   "newVersion": null,
@@ -66,7 +67,7 @@
       "status": "pending"
     }
   },
-  "preservedBranch": "ai/jormundur00/human-intervention/issue-8516-library-new-request-io.opentelemetry.instrumentation-opentelemetry-instrumentation-bom-2.28.1-9d22b1ad",
+  "preservedBranch": "ai/jormundur00/human-intervention/issue-8516-library-new-request-io.opentelemetry.instrumentation-opentelemetry-instrumentation-bom-2.28.1-a10401c4",
   "publicationMetrics": null,
   "schemaVersion": 1,
   "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
