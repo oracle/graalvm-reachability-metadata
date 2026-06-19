@@ -155,7 +155,10 @@ as a prompt-based requirement, not a deterministic post-generation merge:
    target — and includes the requested metadata whenever the generated metadata
    does not already contain it.
 4. **Add conditions.** When the issue omits metadata conditions, the agent adds
-   appropriate ones, preferably the narrowest valid `typeReached`.
+   appropriate ones, preferably the narrowest valid `typeReached` that is
+   reached before the dynamic access occurs. A condition that is reached only
+   after the reflective, resource, proxy, serialization, or JNI access is not
+   valid, even if it belongs to the same library surface.
 
 Each inferred requested need is mandatory even when dynamic-access coverage is
 already complete or the need is unrelated to an uncovered class. Forge does not

@@ -127,6 +127,101 @@ class ClassKeyTests(unittest.TestCase):
         )
 
 
+class ConditionPackageDerivationTests(unittest.TestCase):
+    """Trace condition packages come from library code, not only Maven groups."""
+
+    def setUp(self) -> None:
+        self.repo = tempfile.mkdtemp(prefix="repo-")
+        self.addCleanup(_rmtree, self.repo)
+        _make_complete_reachability_repo(self.repo)
+
+    def test_derives_package_roots_from_user_code_filter_in_order(self) -> None:
+        _write_user_code_filter(
+            self.repo,
+            "org.example:demo:1.0",
+            [
+                {"excludeClasses": "**"},
+                {"includeClasses": "org.example.demo.**"},
+                {"includeClasses": "org.example.spi.*"},
+                {"includeClasses": "org.example.SingleType"},
+                {"includeClasses": "invalid*pattern"},
+                {"includeClasses": "org.example.demo.**"},
+            ],
+        )
+
+        self.assertEqual(
+            ntv._condition_packages_from_user_code_filter(self.repo, "org.example:demo:1.0"),
+            ["org.example.demo", "org.example.spi", "org.example"],
+        )
+
+    def test_excludes_generated_test_packages_from_condition_packages(self) -> None:
+        _write_user_code_filter(
+            self.repo,
+            "org.apache.tomcat.embed:tomcat-embed-core:11.0.18",
+            [
+                {"excludeClasses": "**"},
+                {"includeClasses": "org.apache.catalina.**"},
+                {"includeClasses": "org.apache.tomcat.**"},
+                {"includeClasses": "tomcat.**"},
+            ],
+        )
+        test_source = Path(
+            self.repo,
+            "tests",
+            "src",
+            "org.apache.tomcat.embed",
+            "tomcat-embed-core",
+            "11.0.18",
+            "src",
+            "test",
+            "java",
+            "tomcat",
+            "BootstrapTest.java",
+        )
+        test_source.parent.mkdir(parents=True, exist_ok=True)
+        test_source.write_text("package tomcat;\nclass BootstrapTest {}\n", encoding="utf-8")
+
+        self.assertEqual(
+            ntv._condition_packages_from_user_code_filter(
+                self.repo,
+                "org.apache.tomcat.embed:tomcat-embed-core:11.0.18",
+            ),
+            ["org.apache.catalina", "org.apache.tomcat"],
+        )
+
+    def test_keeps_test_package_when_it_overlaps_maven_group(self) -> None:
+        _write_user_code_filter(
+            self.repo,
+            "com.example:demo:1.0",
+            [
+                {"excludeClasses": "**"},
+                {"includeClasses": "com.example.tests.**"},
+            ],
+        )
+        test_source = Path(
+            self.repo,
+            "tests",
+            "src",
+            "com.example",
+            "demo",
+            "1.0",
+            "src",
+            "test",
+            "java",
+            "com",
+            "example",
+            "tests",
+            "DemoTest.java",
+        )
+        test_source.parent.mkdir(parents=True, exist_ok=True)
+        test_source.write_text("package com.example.tests;\nclass DemoTest {}\n", encoding="utf-8")
+
+        self.assertEqual(
+            ntv._condition_packages_from_user_code_filter(self.repo, "com.example:demo:1.0"),
+            ["com.example.tests"],
+        )
+
+
 class CollectEntriesTests(unittest.TestCase):
     """Convergence semantics for the trace driver."""
 
@@ -341,6 +436,8 @@ class GateRoutingTests(unittest.TestCase):
             generate_metadata_rc: int = 0,
             test_rc: int = 1,
             test_failed_task: str | None = "nativeTest",
+            finalized_test_rc: int = 0,
+            finalized_test_failed_task: str | None = None,
     ):
         """Build a subprocess.run replacement that consumes ``scripted_exits``.
 
@@ -374,9 +471,15 @@ class GateRoutingTests(unittest.TestCase):
                     )
                 return subprocess.CompletedProcess(cmd, generate_metadata_rc)
             if "test" in cmd:
-                if hasattr(stdout, "write") and test_failed_task is not None:
-                    stdout.write(f"> Task :{test_failed_task} FAILED\n")
-                return subprocess.CompletedProcess(cmd, test_rc)
+                uses_staged_metadata = any(
+                    arg.startswith("-PmetadataConfigDirs=")
+                    for arg in cmd
+                )
+                rc = test_rc if uses_staged_metadata else finalized_test_rc
+                failed_task = test_failed_task if uses_staged_metadata else finalized_test_failed_task
+                if hasattr(stdout, "write") and failed_task is not None:
+                    stdout.write(f"> Task :{failed_task} FAILED\n")
+                return subprocess.CompletedProcess(cmd, rc)
             if "runNativeTraceImage" in cmd:
                 exit_file = next(
                     (a.split("=", 1)[1] for a in cmd if a.startswith("-PtraceBinaryExitFile=")),
@@ -446,6 +549,10 @@ class GateRoutingTests(unittest.TestCase):
         self.assertTrue(any("generateMetadata" in c for c in calls))
         self.assertTrue(any("test" in c for c in calls))
         self.assertFalse(any("runNativeTraceImage" in c for c in calls))
+        test_calls = [call for call in calls if "test" in call]
+        self.assertEqual(len(test_calls), 2)
+        self.assertTrue(any(arg.startswith("-PmetadataConfigDirs=") for arg in test_calls[0]))
+        self.assertFalse(any(arg.startswith("-PmetadataConfigDirs=") for arg in test_calls[1]))
 
     def test_preflight_coordinate_test_uses_gate_timeout(self) -> None:
         observed_test_timeouts: list[int | None] = []
@@ -464,7 +571,34 @@ class GateRoutingTests(unittest.TestCase):
                 cycle_timeout_seconds=17,
             )
         self.assertEqual(result.status, ntv.STATUS_PASSED)
-        self.assertEqual(observed_test_timeouts, [17])
+        self.assertEqual(observed_test_timeouts, [17, 17])
+
+    def test_routes_to_codex_when_finalized_jvm_agent_metadata_fails(self) -> None:
+        fake, calls = self._fake_run_factory(
+            [],
+            test_rc=0,
+            test_failed_task=None,
+            finalized_test_rc=1,
+            finalized_test_failed_task="nativeTest",
+        )
+        with patch("utility_scripts.native_test_verification.subprocess.run", side_effect=fake), patch(
+            "utility_scripts.native_test_verification.run_codex_metadata_fix",
+            return_value=(0, "/tmp/codex.log", False),
+        ) as codex_mock:
+            result = ntv.verify_native_test_passes(
+                reachability_repo_path=self.repo,
+                coordinate="g:a:1.0",
+                output_dir=self.output_dir,
+                max_iterations=5,
+            )
+
+        self.assertEqual(result.status, ntv.STATUS_PASSED_WITH_INTERVENTION)
+        codex_mock.assert_called_once()
+        reproduction_command = codex_mock.call_args.kwargs["reproduction_command"]
+        self.assertEqual(reproduction_command, "./gradlew test -Pcoordinates=g:a:1.0")
+        test_calls = [call for call in calls if "test" in call]
+        self.assertEqual(len(test_calls), 2)
+        self.assertFalse(any("runNativeTraceImage" in call for call in calls))
 
     def test_continues_on_172_until_pass(self) -> None:
         fake, calls = self._fake_run_factory([172, 172, 0])
@@ -481,6 +615,54 @@ class GateRoutingTests(unittest.TestCase):
         trace_calls = [call for call in calls if "runNativeTraceImage" in call]
         self.assertTrue(trace_calls)
         self.assertIn("-PtraceMetadataConditionPackages=g", trace_calls[0])
+
+    def test_trace_fallback_uses_user_code_filter_condition_packages(self) -> None:
+        _write_user_code_filter(
+            self.repo,
+            "org.apache.tomcat.embed:tomcat-embed-core:11.0.18",
+            [
+                {"excludeClasses": "**"},
+                {"includeClasses": "org.apache.catalina.**"},
+                {"includeClasses": "org.apache.tomcat.**"},
+                {"includeClasses": "tomcat.**"},
+            ],
+        )
+        test_source = Path(
+            self.repo,
+            "tests",
+            "src",
+            "org.apache.tomcat.embed",
+            "tomcat-embed-core",
+            "11.0.18",
+            "src",
+            "test",
+            "java",
+            "tomcat",
+            "BootstrapTest.java",
+        )
+        test_source.parent.mkdir(parents=True, exist_ok=True)
+        test_source.write_text("package tomcat;\nclass BootstrapTest {}\n", encoding="utf-8")
+        fake, calls = self._fake_run_factory([172, 0])
+
+        with patch("utility_scripts.native_test_verification.subprocess.run", side_effect=fake):
+            result = ntv.verify_native_test_passes(
+                reachability_repo_path=self.repo,
+                coordinate="org.apache.tomcat.embed:tomcat-embed-core:11.0.18",
+                output_dir=self.output_dir,
+                max_iterations=5,
+            )
+
+        self.assertEqual(result.status, ntv.STATUS_PASSED)
+        trace_calls = [call for call in calls if "runNativeTraceImage" in call]
+        self.assertTrue(trace_calls)
+        trace_condition_arg = next(
+            arg for arg in trace_calls[0]
+            if arg.startswith("-PtraceMetadataConditionPackages=")
+        )
+        self.assertEqual(
+            trace_condition_arg,
+            "-PtraceMetadataConditionPackages=org.apache.catalina,org.apache.tomcat",
+        )
 
     def test_routes_to_codex_when_172_repeats_same_metadata(self) -> None:
         fake, _calls = self._fake_run_factory([172, 172], repeated_metadata=True)
@@ -807,7 +989,9 @@ class GateRoutingTests(unittest.TestCase):
         self.assertEqual(result.status, ntv.STATUS_PASSED)
         codex_mock.assert_not_called()
         self.assertTrue(any("generateMetadata" in c for c in calls))
-        self.assertFalse(any("test" in c for c in calls))
+        test_calls = [call for call in calls if "test" in call]
+        self.assertEqual(len(test_calls), 1)
+        self.assertFalse(any(arg.startswith("-PmetadataConfigDirs=") for arg in test_calls[0]))
         self.assertTrue(any("runNativeTraceImage" in c for c in calls))
         first_trace_call = next(c for c in calls if "runNativeTraceImage" in c)
         self.assertFalse(any(c.startswith("-PmetadataConfigDirs=") for c in first_trace_call))
@@ -936,6 +1120,25 @@ def _make_complete_reachability_repo(path: str) -> None:
         "distributionUrl=https\\://services.gradle.org/distributions/gradle-bin.zip\n",
         encoding="utf-8",
     )
+
+
+def _write_user_code_filter(
+        repo: str,
+        coordinate: str,
+        rules: list[dict[str, str]],
+) -> None:
+    group, artifact, version = coordinate.split(":", 2)
+    filter_path = Path(
+        repo,
+        "tests",
+        "src",
+        group,
+        artifact,
+        version,
+        "user-code-filter.json",
+    )
+    filter_path.parent.mkdir(parents=True, exist_ok=True)
+    filter_path.write_text(json.dumps({"rules": rules}), encoding="utf-8")
 
 
 if __name__ == "__main__":
