@@ -41,8 +41,8 @@ BASE_BRANCH: str = "master"
 REVIEWERS: list[str] = get_configured_reviewers()
 PRESERVATION_ONLY_PATHS: set[str] = {
     f"forge/{CONTINUATION_MARKER_FILENAME}",
-    f"forge/{PENDING_METRICS_FILENAME}",
 }
+LOCAL_PUBLICATION_INPUT_PATHS: set[str] = {f"forge/{PENDING_METRICS_FILENAME}"}
 PRESERVATION_ONLY_DIRECTORIES: tuple[str, ...] = ("forge/human-intervention-logs",)
 
 
@@ -88,9 +88,30 @@ def _has_staged_changes(repo_path: str) -> bool:
     return result.returncode != 0
 
 
+def _snapshot_local_publication_inputs(repo_path: str) -> dict[str, bytes]:
+    """Read local-only inputs that PR creation still needs after branch cleanup."""
+    snapshots: dict[str, bytes] = {}
+    for path in sorted(LOCAL_PUBLICATION_INPUT_PATHS):
+        absolute_path = os.path.join(repo_path, path)
+        if os.path.isfile(absolute_path):
+            with open(absolute_path, "rb") as local_input:
+                snapshots[path] = local_input.read()
+    return snapshots
+
+
+def _restore_local_publication_inputs(repo_path: str, snapshots: dict[str, bytes]) -> None:
+    """Restore PR inputs as untracked files after removing them from the branch."""
+    for path, contents in snapshots.items():
+        absolute_path = os.path.join(repo_path, path)
+        os.makedirs(os.path.dirname(absolute_path), exist_ok=True)
+        with open(absolute_path, "wb") as local_input:
+            local_input.write(contents)
+
+
 def _remove_preservation_only_files(repo_path: str) -> None:
     """Remove files that are tracked only on failed-run preservation branches."""
-    paths: list[str] = sorted(PRESERVATION_ONLY_PATHS)
+    local_input_snapshots = _snapshot_local_publication_inputs(repo_path)
+    paths: list[str] = sorted(PRESERVATION_ONLY_PATHS | LOCAL_PUBLICATION_INPUT_PATHS)
     pathspecs = [*paths, *PRESERVATION_ONLY_DIRECTORIES]
     tracked_paths = subprocess.check_output(
         ["git", "ls-files", "--", *pathspecs],
@@ -107,6 +128,7 @@ def _remove_preservation_only_files(repo_path: str) -> None:
         absolute_directory = os.path.join(repo_path, directory)
         if os.path.isdir(absolute_directory):
             shutil.rmtree(absolute_directory)
+    _restore_local_publication_inputs(repo_path, local_input_snapshots)
 
 
 def _commit_preservation_artifact_clearance(repo_path: str) -> None:

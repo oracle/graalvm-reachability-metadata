@@ -16,8 +16,10 @@ class MakePrNotForNativeImageTests(unittest.TestCase):
         result = LocalCIVerificationResult(status="success", base_commit="FETCH_HEAD")
         events: list[str] = []
 
-        def fake_subprocess_run(command: list[str], check: bool = False, cwd: str | None = None):
-            del check, cwd
+        def fake_subprocess_run(command: list[str], check: bool = False, cwd: str | None = None, **kwargs):
+            del check, cwd, kwargs
+            if command[:2] == ["git", "ls-files"]:
+                return subprocess.CompletedProcess(command, 0, stdout="")
             if command[:2] == ["git", "rebase"]:
                 events.append("rebase")
             return subprocess.CompletedProcess(command, 0)

@@ -5,10 +5,11 @@
 
 """Durable run-continuation marker for failed Forge issue runs."""
 
+import copy
 import json
 import os
 from dataclasses import dataclass, field
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from typing import Any
 
 CONTINUATION_MARKER_FILENAME = ".continuation-marker.json"
@@ -74,6 +75,7 @@ class ContinuationMarker:
     new_version: str | None
     library_update_route: dict[str, Any] | None = None
     library_preparation_preflight: dict[str, Any] | None = None
+    publication_metrics: dict[str, Any] | None = None
     phases: dict[str, dict[str, Any]] = field(default_factory=_default_phases)
     schema_version: int = SCHEMA_VERSION
 
@@ -119,6 +121,7 @@ class ContinuationMarker:
             new_version=payload.get("newVersion"),
             library_update_route=_optional_dict(payload.get("libraryUpdateRoute")),
             library_preparation_preflight=_optional_dict(payload.get("libraryPreparationPreflight")),
+            publication_metrics=_optional_dict(payload.get("publicationMetrics")),
             phases=phases,
             schema_version=SCHEMA_VERSION,
         )
@@ -145,6 +148,7 @@ class ContinuationMarker:
             "newVersion": self.new_version,
             "libraryUpdateRoute": self.library_update_route,
             "libraryPreparationPreflight": self.library_preparation_preflight,
+            "publicationMetrics": self.publication_metrics,
             "phases": self.phases,
         }
 
@@ -236,6 +240,26 @@ class ContinuationMarker:
     def record_library_preparation_preflight(self, preflight_payload: dict[str, Any]) -> None:
         """Record dispatcher preflight output for continuation resume."""
         self.library_preparation_preflight = dict(preflight_payload)
+        self.recompute_continue_from()
+
+    def record_publication_metrics(self, run_metrics: dict[str, Any], extra_keys: Iterable[str]) -> None:
+        """Record the durable metrics pointer and local-only PR fields for publication resume."""
+        library = run_metrics.get("library")
+        timestamp = run_metrics.get("timestamp")
+        if not isinstance(library, str) or not library:
+            return
+        if not isinstance(timestamp, str) or not timestamp:
+            return
+        extras = {
+            key: copy.deepcopy(run_metrics[key])
+            for key in extra_keys
+            if key in run_metrics
+        }
+        self.publication_metrics = {
+            "library": library,
+            "timestamp": timestamp,
+            "extras": extras,
+        }
         self.recompute_continue_from()
 
     def record_publication_branch(self, branch_name: str) -> None:
