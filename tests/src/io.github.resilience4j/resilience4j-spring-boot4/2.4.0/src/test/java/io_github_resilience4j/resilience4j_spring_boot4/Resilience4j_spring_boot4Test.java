@@ -8,6 +8,7 @@ package io_github_resilience4j.resilience4j_spring_boot4;
 
 import io.github.resilience4j.bulkhead.Bulkhead;
 import io.github.resilience4j.bulkhead.BulkheadConfig;
+import io.github.resilience4j.bulkhead.BulkheadFullException;
 import io.github.resilience4j.bulkhead.BulkheadRegistry;
 import io.github.resilience4j.bulkhead.ThreadPoolBulkheadRegistry;
 import io.github.resilience4j.bulkhead.event.BulkheadEvent;
@@ -91,11 +92,15 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -139,6 +144,51 @@ public class Resilience4j_spring_boot4Test {
             RateLimiterRegistry rateLimiters = context.getBean(RateLimiterRegistry.class);
             assertThat(rateLimiters.rateLimiter("annotatedLimiter").getMetrics().getAvailablePermissions())
                     .isLessThanOrEqualTo(0);
+        }
+    }
+
+    @Test
+    void springBootContextAppliesBulkheadAndTimeLimiterAnnotationsThroughAop() throws Exception {
+        SpringApplication application = new SpringApplication(BulkheadAndTimeLimiterApplication.class);
+        application.setDefaultProperties(Map.<String, Object>ofEntries(
+                Map.entry("spring.main.web-application-type", "none"),
+                Map.entry("spring.jmx.enabled", "false"),
+                Map.entry("management.endpoints.enabled-by-default", "false"),
+                Map.entry("resilience4j.bulkhead.instances.annotatedBulkhead.max-concurrent-calls", "1"),
+                Map.entry("resilience4j.bulkhead.instances.annotatedBulkhead.max-wait-duration", "0ms"),
+                Map.entry("resilience4j.timelimiter.instances.annotatedTimeLimiter.timeout-duration", "10ms"),
+                Map.entry("resilience4j.timelimiter.instances.annotatedTimeLimiter.cancel-running-future", "true")));
+
+        try (ConfigurableApplicationContext context = application.run()) {
+            BulkheadAndTimeLimiterService service = context.getBean(BulkheadAndTimeLimiterService.class);
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            CountDownLatch enteredBulkhead = new CountDownLatch(1);
+            CountDownLatch releaseBulkhead = new CountDownLatch(1);
+            Future<String> firstCall = executorService.submit(
+                    () -> service.bulkheadProtectedCall(enteredBulkhead, releaseBulkhead));
+            try {
+                assertThat(enteredBulkhead.await(5, TimeUnit.SECONDS)).isTrue();
+                assertThat(service.bulkheadProtectedCall(new CountDownLatch(1), new CountDownLatch(1)))
+                        .isEqualTo("bulkhead-fallback");
+                releaseBulkhead.countDown();
+                assertThat(firstCall.get(5, TimeUnit.SECONDS)).isEqualTo("bulkhead-ok");
+            } finally {
+                releaseBulkhead.countDown();
+                firstCall.cancel(true);
+                executorService.shutdownNow();
+                assertThat(executorService.awaitTermination(3, TimeUnit.SECONDS)).isTrue();
+            }
+
+            assertThat(service.timeLimitedCall().toCompletableFuture().get(5, TimeUnit.SECONDS))
+                    .isEqualTo("time-limiter-fallback");
+
+            BulkheadRegistry bulkheads = context.getBean(BulkheadRegistry.class);
+            assertThat(bulkheads.getAllBulkheads()).extracting(Bulkhead::getName).contains("annotatedBulkhead");
+            TimeLimiterRegistry timeLimiters = context.getBean(TimeLimiterRegistry.class);
+            assertThat(timeLimiters.getAllTimeLimiters()).extracting(TimeLimiter::getName)
+                    .contains("annotatedTimeLimiter");
+            assertThat(timeLimiters.timeLimiter("annotatedTimeLimiter").getTimeLimiterConfig().getTimeoutDuration())
+                    .isEqualTo(Duration.ofMillis(10));
         }
     }
 
@@ -599,6 +649,44 @@ public class Resilience4j_spring_boot4Test {
         @Bean
         public AnnotatedService annotatedService() {
             return new AnnotatedService();
+        }
+    }
+
+    @SpringBootApplication
+    public static class BulkheadAndTimeLimiterApplication {
+        @Bean
+        public BulkheadAndTimeLimiterService bulkheadAndTimeLimiterService() {
+            return new BulkheadAndTimeLimiterService();
+        }
+    }
+
+    public static class BulkheadAndTimeLimiterService {
+        @io.github.resilience4j.bulkhead.annotation.Bulkhead(name = "annotatedBulkhead",
+                fallbackMethod = "bulkheadFallback")
+        public String bulkheadProtectedCall(CountDownLatch enteredBulkhead, CountDownLatch releaseBulkhead)
+                throws InterruptedException {
+            enteredBulkhead.countDown();
+            assertThat(releaseBulkhead.await(5, TimeUnit.SECONDS)).isTrue();
+            return "bulkhead-ok";
+        }
+
+        public String bulkheadFallback(CountDownLatch enteredBulkhead, CountDownLatch releaseBulkhead,
+                BulkheadFullException exception) {
+            assertThat(enteredBulkhead.getCount()).isEqualTo(1);
+            assertThat(releaseBulkhead.getCount()).isEqualTo(1);
+            assertThat(exception).isNotNull();
+            return "bulkhead-fallback";
+        }
+
+        @io.github.resilience4j.timelimiter.annotation.TimeLimiter(name = "annotatedTimeLimiter",
+                fallbackMethod = "timeLimiterFallback")
+        public CompletionStage<String> timeLimitedCall() {
+            return new CompletableFuture<>();
+        }
+
+        public CompletionStage<String> timeLimiterFallback(TimeoutException exception) {
+            assertThat(exception).isNotNull();
+            return CompletableFuture.completedFuture("time-limiter-fallback");
         }
     }
 
