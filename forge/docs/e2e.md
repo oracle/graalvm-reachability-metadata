@@ -108,6 +108,12 @@ intended to make routing and current-version resolution demonstrable for those
 labels; the primary `9101` fixture remains the default dynamic-access acceptance
 target. §E2E-forge-workflow-testing.5
 
+The `9107` fixture is a publication-continuation smoke test: its marker starts at
+`publication` and points at durable execution metrics plus marker-local PR
+extras, so it verifies `.pending_metrics.json` reconstruction and dry-run PR
+body generation without invoking an agent-backed generation workflow.
+§FS-forge-run-continuation.2
+
 For `library-new-request` fixtures that use an already-supported dynamic-access
 library, fixture setup removes the requested version entry and version-scoped
 metadata, tests, and stats from the isolated worktree before workflow routing.

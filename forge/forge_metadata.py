@@ -160,7 +160,12 @@ from utility_scripts.metadata_index import (
     resolve_metadata_version,
     resolve_test_dir,
 )
-from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME, read_pending_metrics
+from utility_scripts.metrics_writer import (
+    PENDING_METRICS_FILENAME,
+    load_execution_metrics_for_timestamp,
+    read_pending_metrics,
+    write_pending_metrics,
+)
 from utility_scripts.repo_path_resolver import (
     git_env_limited_to_repo_root,
     get_forge_subdir_name,
@@ -292,6 +297,11 @@ HUMAN_INTERVENTION_NON_FAILURE_STATUSES = {
     RUN_STATUS_CHUNK_READY,
     SUCCESS_WITH_INTERVENTION_STATUS,
 }
+PUBLICATION_METRICS_EXTRA_KEYS: tuple[str, ...] = (
+    "post_generation_intervention",
+    "local_ci_verification",
+    "library_update_alias_split",
+)
 # A workflow failure is logical (driver/core/CI-check) and gets `human-intervention`
 # by default. The only exception is an external dependency failure, which surfaces
 # as a typed exception at the Python boundary that issues it: GitHub (`gh`) as
@@ -4317,6 +4327,7 @@ def preserve_failed_work_branch(claimed_issue: ClaimedIssue) -> FailurePreservat
     marker_path = continuation_marker_path(repo_path)
     marker = load_continuation_marker(marker_path)
     if marker is not None:
+        record_publication_metrics_from_pending(marker, claimed_issue.scratch_metrics_repo_path)
         marker.record_preserved_branch(branch_name)
         marker.save(marker_path)
     subprocess.run(["git", "add", "-A"], cwd=repo_path, env=git_env, check=True)
@@ -6150,6 +6161,92 @@ def _load_library_update_publication_route(claimed_issue: ClaimedIssue) -> Libra
     return load_library_update_route(library_update_route_artifact_root(claimed_issue))
 
 
+def _pending_run_metrics_path(claimed_issue: ClaimedIssue) -> str:
+    """Return the transient metrics file path for this claimed issue."""
+    return os.path.join(
+        claimed_issue.scratch_metrics_repo_path,
+        PENDING_METRICS_FILENAME,
+    )
+
+
+def record_publication_metrics_from_pending(
+        marker: ContinuationMarker,
+        metrics_repo_path: str,
+) -> bool:
+    """Copy local-only pending metrics fields into the continuation marker."""
+    pending_metrics_path = os.path.join(metrics_repo_path, PENDING_METRICS_FILENAME)
+    if not os.path.isfile(pending_metrics_path):
+        return False
+    try:
+        run_metrics = read_pending_metrics(metrics_repo_path)
+    except (OSError, json.JSONDecodeError, TypeError) as exc:
+        log_stage(
+            "publication",
+            f"Could not snapshot pending metrics into continuation marker: {exc!r}.",
+        )
+        return False
+    marker.record_publication_metrics(run_metrics, PUBLICATION_METRICS_EXTRA_KEYS)
+    return marker.publication_metrics is not None
+
+
+def record_pending_publication_metrics_for_resume(claimed_issue: ClaimedIssue) -> None:
+    """Persist the pending metrics reconstruction inputs in the continuation marker."""
+    marker_path = continuation_marker_path(claimed_issue.worktree_path)
+    marker = load_continuation_marker(marker_path)
+    if marker is None:
+        return
+    if record_publication_metrics_from_pending(marker, claimed_issue.scratch_metrics_repo_path):
+        marker.save(marker_path)
+
+
+def _restore_pending_run_metrics_from_marker(
+        claimed_issue: ClaimedIssue,
+        marker: ContinuationMarker,
+) -> bool:
+    """Restore transient metrics from durable metrics plus marker-local extras."""
+    marker_metrics = marker.publication_metrics
+    if not isinstance(marker_metrics, dict):
+        return False
+    library = marker_metrics.get("library")
+    timestamp = marker_metrics.get("timestamp")
+    if not isinstance(library, str) or not isinstance(timestamp, str):
+        return False
+    run_metrics = load_execution_metrics_for_timestamp(claimed_issue.worktree_path, library, timestamp)
+    if run_metrics is None:
+        log_stage(
+            "publication",
+            (
+                "Could not restore pending metrics from continuation marker because no durable "
+                f"execution metrics entry matched {library} at {timestamp}."
+            ),
+        )
+        return False
+    extras = marker_metrics.get("extras")
+    if isinstance(extras, dict):
+        run_metrics.update(extras)
+    write_pending_metrics(claimed_issue.scratch_metrics_repo_path, run_metrics)
+    log_stage(
+        "publication",
+        (
+            "Restored missing pending metrics from durable execution metrics and "
+            f"continuation marker extras for {library}."
+        ),
+    )
+    return True
+
+
+def restore_pending_run_metrics_from_execution_metrics(claimed_issue: ClaimedIssue) -> None:
+    """Restore or snapshot transient publication metrics for resumable PR creation."""
+    pending_metrics_path = _pending_run_metrics_path(claimed_issue)
+    if os.path.isfile(pending_metrics_path):
+        record_pending_publication_metrics_for_resume(claimed_issue)
+        return
+
+    marker = load_continuation_marker(continuation_marker_path(claimed_issue.worktree_path))
+    if marker is not None:
+        _restore_pending_run_metrics_from_marker(claimed_issue, marker)
+
+
 def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff:
     """Build the live-or-fixture PR publication handoff.
 
@@ -6159,6 +6256,7 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
     """
     require_claimed_issue_worktree(claimed_issue, "successful finalization")
     issue_number = claimed_issue.issue["number"]
+    restore_pending_run_metrics_from_execution_metrics(claimed_issue)
     exhaust_report_path = find_dynamic_access_exhaust_report_path(
         claimed_issue.worktree_path,
         claimed_issue.issue_coordinates,

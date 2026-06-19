@@ -754,6 +754,17 @@ def execution_metrics_path(repo_path: str, run_metrics: dict) -> str:
     return os.path.join(repo_path, "stats", group, artifact, metadata_version, "execution-metrics.json")
 
 
+def execution_metrics_path_for_library(repo_path: str, library: str) -> str:
+    """Return the per-library execution metrics path for a coordinate."""
+    parts = library.split(":")
+    if len(parts) != 3 or any(not part for part in parts):
+        raise ValueError(f"ERROR: library must be group:artifact:version: {library}")
+
+    group, artifact, version = parts
+    metadata_version = resolve_metadata_version(repo_path, group, artifact, version)
+    return os.path.join(repo_path, "stats", group, artifact, metadata_version, "execution-metrics.json")
+
+
 def _load_execution_metrics_entries(path: str) -> dict:
     """Load an execution-metrics object from disk."""
     if not os.path.isfile(path):
@@ -765,6 +776,29 @@ def _load_execution_metrics_entries(path: str) -> dict:
     if not isinstance(data, dict):
         raise TypeError(f"ERROR: Expected execution metrics object in {path}")
     return data
+
+
+def load_execution_metrics_for_timestamp(
+        repo_path: str,
+        library: str,
+        timestamp: str,
+        task_type: str | None = None,
+) -> dict | None:
+    """Load the committed execution metrics entry for a library and timestamp."""
+    metrics_path = execution_metrics_path_for_library(repo_path, library)
+    entries = _load_execution_metrics_entries(metrics_path)
+    if task_type is not None:
+        entries = {
+            key: entry
+            for key, entry in entries.items()
+            if key.startswith(f"{task_type}:")
+        }
+    for entry in entries.values():
+        if not isinstance(entry, dict):
+            continue
+        if entry.get("library") == library and entry.get("timestamp") == timestamp:
+            return dict(entry)
+    return None
 
 
 def _public_execution_metrics_entry(run_metrics: dict) -> dict:

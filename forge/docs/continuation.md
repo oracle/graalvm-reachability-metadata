@@ -67,6 +67,14 @@ classes re-appear in the regenerated report.
   "newVersion": null,
   "libraryUpdateRoute": null,
   "libraryPreparationPreflight": null,
+  "publicationMetrics": {
+    "library": "com.acme:widget:1.4.0",
+    "timestamp": "2026-06-18T14:44:56.782450Z",
+    "extras": {
+      "post_generation_intervention": { "stage": "future-defaults-all" },
+      "local_ci_verification": { "status": "passed" }
+    }
+  },
   "phases": {
     "setup":        { "status": "completed", "preflightDone": true, "setupDone": true },
     "fix":          { "status": "skipped",   "iteration": null },
@@ -105,6 +113,13 @@ because the marker never enters a successful run's publication staging
 - `libraryPreparationPreflight` records dispatcher preflight output so resume
   can skip the preflight agent while still passing the original advisory setup
   context back to the workflow driver.
+- `publicationMetrics` records the committed per-library execution-metrics
+  entry (`library` plus `timestamp`) and only the local-only PR fields needed to
+  reconstruct `.pending_metrics.json` during publication resume. Durable metrics
+  remain the source for normal cost, token, coverage, and status evidence
+  (§FS-forge-run-metrics); the marker carries local extras such as
+  `post_generation_intervention`, `local_ci_verification`, and
+  `library_update_alias_split` when they exist.
 - Improve-coverage runs write the original `.baseline-stats.json` into the
   resolved test directory during setup. Resume treats that as preserved worktree
   state and reuses it instead of recomputing the baseline after generation may
@@ -140,8 +155,15 @@ does the PR making. Opening the pull request is the workflow's
 completion — a marker only exists for a run that failed before that point, so
 continuation never reaches a state with the pull request already open.
 In publication resume mode, Forge creates a clearance commit before it publishes
-the PR branch. The clearance commit deletes resume helper artifacts: the
-continuation marker, pending metrics, and human-intervention logs.
+the PR branch. The clearance commit deletes resume helper artifacts from the
+branch: the continuation marker and human-intervention logs. Pending metrics are
+a local PR-publication input, so they must remain readable until PR creation
+finishes even when the cleanup removes them from the branch index.
+If that transient pending file is missing in a later publication resume, Forge
+reconstructs it from the durable execution-metrics entry referenced by
+`publicationMetrics` and overlays the marker's `extras`. A publication marker
+without `publicationMetrics` is incomplete: Forge does not guess from the latest
+durable execution-metrics entry because that would lose local-only PR fields.
 
 ## 4. Relationship to human intervention
 
