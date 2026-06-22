@@ -92,6 +92,7 @@ def run_codex_metadata_fix(*args: Any, **kwargs: Any) -> tuple[int, str, bool]:
 
 
 DEFAULT_CYCLE_TIMEOUT_SECONDS = 30 * 60
+DEFAULT_MAX_ITERATIONS = 40
 
 
 def verify_native_test_passes(
@@ -99,7 +100,7 @@ def verify_native_test_passes(
         coordinate: str,
         output_dir: str,
         condition_packages: list[str] | None = None,
-        max_iterations: int = 100,
+        max_iterations: int = DEFAULT_MAX_ITERATIONS,
         cycle_timeout_seconds: int = DEFAULT_CYCLE_TIMEOUT_SECONDS,
 ) -> NativeTestVerificationResult:
     """Try JVM-agent metadata first, then use native tracing as fallback.
