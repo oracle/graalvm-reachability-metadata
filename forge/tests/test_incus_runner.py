@@ -93,7 +93,7 @@ class InnerCommandTests(unittest.TestCase):
 
 
 class ExecCommandTests(unittest.TestCase):
-    def test_exec_command_sets_cwd_env_and_inner_command(self) -> None:
+    def test_exec_command_sources_env_then_runs_inner_command(self) -> None:
         with patch.dict(os.environ, {}, clear=True):
             exec_command = build_incus_exec_command(
                 "forge-run-7-abcd",
@@ -108,12 +108,20 @@ class ExecCommandTests(unittest.TestCase):
             exec_command[exec_command.index("--cwd") + 1],
             f"{DEFAULT_VM_REPO_PATH}/forge",
         )
-        self.assertIn("--env", exec_command)
-        self.assertIn(f"FORGE_LOGS_DIR={VM_LOGS_MOUNT_PATH}", exec_command)
-        self.assertIn("FORGE_STRATEGY_NAME=s", exec_command)
+        # The inner run is wrapped in bash that sources the baked /etc/environment
+        # (GraalVM homes + PATH), then applies the forwarded settings after so they
+        # win over anything forge.env baked in.
         separator_index = exec_command.index("--")
+        self.assertEqual(exec_command[separator_index + 1], "bash")
+        self.assertEqual(exec_command[separator_index + 2], "-c")
+        script = exec_command[separator_index + 3]
+        self.assertIn(". /etc/environment", script)
+        self.assertIn(f"FORGE_LOGS_DIR={VM_LOGS_MOUNT_PATH}", script)
+        self.assertIn("FORGE_STRATEGY_NAME=s", script)
+        self.assertLess(script.index(". /etc/environment"), script.index("FORGE_LOGS_DIR="))
+        # Inner command follows the bash arg0 sentinel as positional args.
         self.assertEqual(
-            exec_command[separator_index + 1:],
+            exec_command[separator_index + 5:],
             ["python3", "forge_metadata.py", "--issue-number", "7"],
         )
 

@@ -18,6 +18,7 @@ Incus; they run the same code inside the VM as on the host.
 from __future__ import annotations
 
 import os
+import shlex
 import shutil
 import subprocess
 import sys
@@ -275,13 +276,37 @@ def build_incus_exec_command(
         inner_command: Sequence[str],
         forwarded_env: dict[str, str],
 ) -> list[str]:
-    """Build the `incus exec` command that runs the inner run inside the VM."""
-    command = ["exec", vm_name, "--cwd", f"{vm_repo_path()}/forge"]
-    for name in sorted(forwarded_env):
-        command += ["--env", f"{name}={forwarded_env[name]}"]
-    command.append("--")
-    command += list(inner_command)
-    return command
+    """Build the `incus exec` command that runs the inner run inside the VM.
+
+    `incus exec` does not go through PAM, so the GraalVM homes and PATH baked
+    into the VM's `/etc/environment` are not loaded for the run (neither a plain
+    nor a login shell sources that file). Wrap the inner command in a shell that
+    sources `/etc/environment` first, then applies the forwarded `FORGE_*`
+    settings so they win over anything `forge.env` baked in — notably the
+    host-mounted `FORGE_LOGS_DIR`. §FS-forge-vm-isolated-execution
+    """
+    assignments = "".join(
+        f"{name}={shlex.quote(forwarded_env[name])}\n" for name in sorted(forwarded_env)
+    )
+    script = (
+        "set -a\n"
+        ". /etc/environment 2>/dev/null || true\n"
+        f"{assignments}"
+        "set +a\n"
+        'exec "$@"\n'
+    )
+    return [
+        "exec",
+        vm_name,
+        "--cwd",
+        f"{vm_repo_path()}/forge",
+        "--",
+        "bash",
+        "-c",
+        script,
+        "forge-inner",
+        *inner_command,
+    ]
 
 
 def _wait_for_guest_agent(vm_name: str, timeout_seconds: int) -> None:
