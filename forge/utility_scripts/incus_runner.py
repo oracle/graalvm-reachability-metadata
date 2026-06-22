@@ -57,6 +57,18 @@ LOGS_DEVICE_NAME = "forge-logs"
 FORGE_INCUS_LAUNCH_TIMEOUT_ENV = "FORGE_INCUS_LAUNCH_TIMEOUT"
 DEFAULT_LAUNCH_TIMEOUT_SECONDS = 300
 
+# Minimal codex/pi config seeded into each VM at launch. Generation drives the
+# codex and pi CLIs, which authenticate against an internal gateway using small
+# config files (a few KB); the rest of ~/.codex and ~/.pi (sessions, sqlite
+# state, logs — gigabytes) is never needed. Seeding these at runtime keeps the
+# secrets out of the published base image (§FS-forge-vm-isolated-execution).
+FORGE_INCUS_CODEX_DIR_ENV = "FORGE_INCUS_CODEX_DIR"
+FORGE_INCUS_PI_DIR_ENV = "FORGE_INCUS_PI_DIR"
+DEFAULT_CODEX_DIR = "~/.codex"
+DEFAULT_PI_DIR = "~/.pi"
+VM_CODEX_DIR = "/root/.codex"
+VM_PI_AGENT_DIR = "/root/.pi/agent"
+
 # Environment variables forwarded into the VM run. The behavior-shaping FORGE_*
 # settings are forwarded dynamically; these are the credentials and fixed names.
 FORWARDED_TOKEN_ENV_NAMES = ("GH_TOKEN", "GITHUB_TOKEN")
@@ -106,6 +118,32 @@ def host_logs_root() -> str:
     if override:
         return os.path.abspath(os.path.expanduser(override))
     return resolve_logs_root()
+
+
+def _codex_host_dir() -> str:
+    """Return the host codex config dir whose key/provider files are seeded."""
+    return os.path.expanduser(os.environ.get(FORGE_INCUS_CODEX_DIR_ENV) or DEFAULT_CODEX_DIR)
+
+
+def _pi_host_dir() -> str:
+    """Return the host pi config dir whose key/provider files are seeded."""
+    return os.path.expanduser(os.environ.get(FORGE_INCUS_PI_DIR_ENV) or DEFAULT_PI_DIR)
+
+
+def agent_config_files() -> list[tuple[str, str]]:
+    """Return `(host_path, vm_path)` pairs for the minimal codex/pi config.
+
+    Only the small auth/provider files are seeded — never the gigabytes of
+    session and sqlite state under the agent dirs (§FS-forge-vm-isolated-execution).
+    """
+    codex = _codex_host_dir()
+    pi_agent = os.path.join(_pi_host_dir(), "agent")
+    return [
+        (os.path.join(codex, "auth.json"), f"{VM_CODEX_DIR}/auth.json"),
+        (os.path.join(codex, "config.toml"), f"{VM_CODEX_DIR}/config.toml"),
+        (os.path.join(pi_agent, "models.json"), f"{VM_PI_AGENT_DIR}/models.json"),
+        (os.path.join(pi_agent, "settings.json"), f"{VM_PI_AGENT_DIR}/settings.json"),
+    ]
 
 
 def launch_timeout_seconds() -> int:
@@ -376,6 +414,7 @@ def _seed_credentials_and_refresh_checkout(vm_name: str, github_token: str) -> N
         ["exec", vm_name, "--", "gh", "auth", "setup-git"],
         capture=True,
     )
+    _seed_git_identity(vm_name)
     repo_path = vm_repo_path()
     _run_incus(
         [
@@ -407,6 +446,67 @@ def _seed_credentials_and_refresh_checkout(vm_name: str, github_token: str) -> N
     )
 
 
+def _host_git_config(key: str) -> str | None:
+    """Return the host's git config value for `key`, or None if unset."""
+    try:
+        result = subprocess.run(
+            ["git", "config", "--get", key],
+            check=False,
+            text=True,
+            capture_output=True,
+        )
+    except FileNotFoundError:
+        return None
+    value = (result.stdout or "").strip()
+    return value or None
+
+
+def _seed_git_identity(vm_name: str) -> None:
+    """Mirror the host git author identity into the VM.
+
+    `incus exec` runs as a bare `root@<vm>` with no identity, so preserve-work
+    and generation commits fail with "Author identity unknown". Copy the host's
+    `user.name`/`user.email` so commits made in the VM are attributed normally.
+    """
+    for key in ("user.name", "user.email"):
+        value = _host_git_config(key)
+        if value:
+            _run_incus(
+                ["exec", vm_name, "--", "git", "config", "--global", key, value],
+                capture=True,
+            )
+
+
+def _seed_agent_config(vm_name: str) -> None:
+    """Seed the minimal codex/pi auth + provider config into the VM.
+
+    Pushes only the small key/provider files (a few KB total), never the
+    gigabytes of session state, so secrets stay out of the published image
+    (§FS-forge-vm-isolated-execution). Files absent on the host are skipped; if
+    none are found the run continues but agent strategies will fail to
+    authenticate, so warn.
+    """
+    seeded = 0
+    for host_path, vm_path in agent_config_files():
+        if not os.path.isfile(host_path):
+            continue
+        _run_incus(
+            ["exec", vm_name, "--", "mkdir", "-p", os.path.dirname(vm_path)],
+            capture=True,
+        )
+        _run_incus(
+            ["file", "push", host_path, f"{vm_name}{vm_path}", "--mode=0600"],
+            capture=True,
+        )
+        seeded += 1
+    if seeded == 0:
+        print(
+            "WARNING: no codex/pi config found on the host (looked under "
+            f"{_codex_host_dir()} and {_pi_host_dir()}); agent strategies may fail to authenticate.",
+            file=sys.stderr,
+        )
+
+
 def run_issue_in_vm(
         issue_number: int,
         *,
@@ -435,6 +535,7 @@ def run_issue_in_vm(
     with _launched_vm(vm_name):
         _mount_host_logs(vm_name, host_log_dir)
         _seed_credentials_and_refresh_checkout(vm_name, github_token)
+        _seed_agent_config(vm_name)
         exec_command = build_incus_exec_command(
             vm_name,
             inner_command,

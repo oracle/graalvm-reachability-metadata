@@ -12,16 +12,41 @@ from utility_scripts.incus_runner import (
     DEFAULT_INCUS_IMAGE,
     DEFAULT_INCUS_PROFILE,
     DEFAULT_VM_REPO_PATH,
+    VM_CODEX_DIR,
     VM_LOGS_MOUNT_PATH,
-    IncusPreflightError,
+    VM_PI_AGENT_DIR,
+    agent_config_files,
     build_incus_exec_command,
     build_inner_forge_command,
     incus_image_name,
     incus_profile_name,
+    IncusPreflightError,
     preflight,
     vm_repo_path,
 )
 from utility_scripts.task_logs import FORGE_LOGS_DIR_ENV, resolve_logs_root
+
+
+class AgentConfigFilesTests(unittest.TestCase):
+    def test_maps_small_codex_and_pi_files_to_vm_paths(self) -> None:
+        with patch.dict(os.environ, {"FORGE_INCUS_CODEX_DIR": "/h/cx", "FORGE_INCUS_PI_DIR": "/h/pi"}, clear=True):
+            pairs = agent_config_files()
+        self.assertEqual(
+            pairs,
+            [
+                ("/h/cx/auth.json", f"{VM_CODEX_DIR}/auth.json"),
+                ("/h/cx/config.toml", f"{VM_CODEX_DIR}/config.toml"),
+                ("/h/pi/agent/models.json", f"{VM_PI_AGENT_DIR}/models.json"),
+                ("/h/pi/agent/settings.json", f"{VM_PI_AGENT_DIR}/settings.json"),
+            ],
+        )
+
+    def test_defaults_expand_user_home(self) -> None:
+        with patch.dict(os.environ, {}, clear=True):
+            host_paths = [host for host, _ in agent_config_files()]
+        self.assertTrue(all(os.path.isabs(p) for p in host_paths))
+        self.assertTrue(any(p.endswith("/.codex/auth.json") for p in host_paths))
+        self.assertTrue(any(p.endswith("/.pi/agent/models.json") for p in host_paths))
 
 
 class LogsRootOverrideTests(unittest.TestCase):
