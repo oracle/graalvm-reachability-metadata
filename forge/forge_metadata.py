@@ -4353,6 +4353,20 @@ def copy_library_logs_to_preserved_worktree(claimed_issue: ClaimedIssue) -> str 
     return logs_destination_relpath
 
 
+def baseline_stats_relpaths_for_preservation(repo_path: str) -> list[str]:
+    """Return improve-coverage baseline snapshots that must survive continuation."""
+    tests_root = os.path.join(repo_path, "tests", "src")
+    if not os.path.isdir(tests_root):
+        return []
+
+    relpaths: list[str] = []
+    for root, _dirs, files in os.walk(tests_root):
+        if ".baseline-stats.json" not in files:
+            continue
+        relpaths.append(os.path.relpath(os.path.join(root, ".baseline-stats.json"), repo_path))
+    return sorted(relpaths)
+
+
 def preserve_failed_work_branch(claimed_issue: ClaimedIssue) -> FailurePreservationResult:
     """Commit and push the failed run worktree so it survives workspace cleanup."""
     branch_name = build_failure_preservation_branch_name(claimed_issue)
@@ -4379,6 +4393,7 @@ def preserve_failed_work_branch(claimed_issue: ClaimedIssue) -> FailurePreservat
     pending_metrics_relpath = os.path.join(get_forge_subdir_name(), PENDING_METRICS_FILENAME)
     if os.path.exists(os.path.join(repo_path, pending_metrics_relpath)):
         force_add_paths.append(pending_metrics_relpath)
+    force_add_paths.extend(baseline_stats_relpaths_for_preservation(repo_path))
     if force_add_paths:
         subprocess.run(["git", "add", "-f", "--", *force_add_paths], cwd=repo_path, env=git_env, check=True)
     diff_result = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=repo_path, env=git_env, check=False)
