@@ -17,6 +17,11 @@ Rules:
 - Exception assertions are acceptable only for documented, supported negative-path APIs. Do not write tests whose method name, comments, or assertions describe a known broken behavior path such as "fails before", "regression", "broken", or "version-specific" failure.
 - Every individual test must complete in under 60 seconds. Use bounded waits and close all clients, servers, executors, and other background resources.
 - When tests use connection, request, read, socket, server, client, process, database, messaging, or HTTP timeouts, set each explicit timeout to at least 10 seconds. Shorter timeouts are flaky under native-image-agent metadata generation and Native Image startup, while unbounded waits are still not allowed.
+- Do not make tests depend on Native Image resource metadata for temporary, build, or
+  machine-local absolute paths. If a test creates files under a temp/build directory,
+  exercise them through normal file APIs or create the optional file that the library
+  expects; do not rely on classloader resource lookup for paths such as `/tmp/...`,
+  JUnit temp dirs, or `build/...`.
 - Never generate, write, or modify reachability metadata or Native Image config entries. Do not create or edit `reachability-metadata.json`, `reflect-config.json`, `resource-config.json`, `proxy-config.json`, `serialization-config.json`, `jni-config.json`, `predefined-classes-config.json`, or any other file under `src/test/resources/META-INF/native-image`; Forge handles metadata generation and merging externally.
 
 Native Image execution contract (non-negotiable):
