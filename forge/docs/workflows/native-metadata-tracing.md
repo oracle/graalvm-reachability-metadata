@@ -159,7 +159,7 @@ logged and routed to Codex.
 | Reachability repo path | Caller | Working directory for Gradle. |
 | Output directory | Caller | Absolute staging root for this gate invocation. The caller picks a path namespaced per (library, class) for the dynamic-access caller, or per coordinate for non-class-scoped callers. The gate writes JVM-agent metadata to `<output_dir>/agent`, merged trace metadata to `<output_dir>/trace`, and writes durable repository metadata only after the final native-image-utils merge succeeds and the durable metadata passes `./gradlew test -Pcoordinates=<g:a:v>`. |
 | Condition packages | `condition_packages` argument to `verify_native_test_passes` | When omitted, Forge derives packages from the coordinate's `user-code-filter.json` after the JVM-agent metadata step has had a chance to create or refresh it, excluding obvious generated-test packages. If no usable package filter exists, Forge falls back to `[group]`. Passed to the binary at run time as `-XX:TraceMetadataConditionPackages=...`. |
-| Outer budget | Strategy parameter `max-native-test-verification-iterations` | Default **100**. In practice convergence is expected within a handful of cycles; the high default is a soft cap, not a target. Each cycle rebuilds `nativeTestCompile`, so the wall-clock cost is dominated by native-image build time. |
+| Outer budget | Strategy parameter `max-native-test-verification-iterations` | Default **40**. In practice convergence is expected within a handful of cycles; the default is a soft cap, not a target. Each cycle rebuilds `nativeTestCompile`, so the wall-clock cost is dominated by native-image build time. |
 | Per-cycle timeout | `cycle_timeout_seconds` argument | Default 30 minutes. Caps the preflight `./gradlew test` invocation and each `runNativeTraceImage` invocation; on timeout the step is treated as a non-zero exit and routed to codex. |
 
 ## 4. Outputs
@@ -446,7 +446,7 @@ def verify_native_test_passes(
     coordinate: str,
     output_dir: str,
     condition_packages: list[str] | None = None,
-    max_iterations: int = 100,
+    max_iterations: int = 40,
     cycle_timeout_seconds: int = 30 * 60,
 ) -> NativeTestVerificationResult: ...
 ```
