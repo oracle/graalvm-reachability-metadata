@@ -64,5 +64,61 @@
       "test_file": "tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.18/src/test/java/tomcat/TomcatTests.java",
       "metadata_file": "metadata/org.apache.tomcat.embed/tomcat-embed-core/11.0.18/reachability-metadata.json"
     }
+  },
+  "improve_library_coverage:2026-06-22": {
+    "timestamp": "2026-06-22T15:04:50.780303Z",
+    "library": "org.apache.tomcat.embed:tomcat-embed-core:11.0.18",
+    "starting_commit": "17c923d78ac4323c147e446d80946e1787c792fe",
+    "ending_commit": "17c923d78ac4323c147e446d80946e1787c792fe",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8328,
+      "issue_label": "library-update-request",
+      "library": "org.apache.tomcat.embed:tomcat-embed-core:11.0.18",
+      "summary": "No extra setup is required: tomcat-embed-core 11.0.18 resolves with only tomcat-annotations-api as a compile dependency, bundles the servlet/security APIs needed for direct embedded-core usage, and the reported Connector/AbstractProtocol introspection path is reachable with the library itself.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "Optional Tomcat areas such as JSP/Jasper, WebSocket, APR/native SSL, clustering, or external persistence would need additional artifacts or native libraries, but they are not needed for the reported Connector.getProperty/setProperty coverage path.",
+        "Tests should avoid fixed ports and external services; use local embedded Tomcat/Connector APIs and clean lifecycle shutdown, with Gradle/native-image verification remaining authoritative."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8328 Update existing library: org.apache.tomcat.embed:tomcat-embed-core:11.0.18; label=library-update-request; body_chars=2556"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "12 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 54059,
+      "output_tokens_used": 3640,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.apache.tomcat.embed:tomcat-embed-core:11.0.18/library-preparation-preflight/pi-generation-2026-06-22T12-10-29-258589Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 311971,
+      "cached_input_tokens_used": 3326976,
+      "output_tokens_used": 29121,
+      "iterations": 5,
+      "cost_usd": 2.5371,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "test_file": "None",
+      "metadata_file": "None"
+    }
   }
 }
