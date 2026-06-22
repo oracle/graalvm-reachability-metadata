@@ -214,10 +214,19 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubc
 apt-get update
 apt-get install -y --no-install-recommends gh
 
-# 3. Reachability checkout + warmed Gradle caches: the expensive state every run
-#    reuses. GraalVM is already in place (copied from the host) and exposed via
-#    /etc/environment. Each run later refreshes this checkout to current master.
+# 3. Reachability checkout: the expensive state every run reuses. GraalVM is
+#    already in place (copied from the host) and exposed via /etc/environment.
+#    Each run later refreshes this checkout to current master.
 git clone "$REPO_URL" "$REPO_PATH"
+
+# 4. Forge Python package + dependencies (jsonschema, PyYAML, ...), installed
+#    editable so it tracks the refreshed checkout. Debian marks its system Python
+#    as externally managed (PEP 668); the VM is single-use and root-only, so
+#    install into the system interpreter with --break-system-packages.
+apt-get install -y --no-install-recommends python3-pip
+python3 -m pip install --break-system-packages -e "$REPO_PATH/forge"
+
+# 5. Warm the Gradle caches.
 cd "$REPO_PATH"
 PATH="$GRAALVM_HOME/bin:$PATH" GRAALVM_HOME="$GRAALVM_HOME" JAVA_HOME="$GRAALVM_HOME" ./gradlew --no-daemon help
 PROVISION
