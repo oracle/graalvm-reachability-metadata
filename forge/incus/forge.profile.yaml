@@ -16,6 +16,11 @@ config:
   security.secureboot: "false"
 description: Forge single-use metadata-generation VM
 devices:
+  # Managed bridge created by `incus admin init --minimal`; the VM needs network
+  # for apt, the repo clone, Docker pulls, and gh/metrics over the network.
+  eth0:
+    network: incusbr0
+    type: nic
   root:
     path: /
     pool: default
