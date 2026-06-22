@@ -128,7 +128,7 @@ driver may thread through.
 | Reachability repo path | `--reachability-metadata-path` (default: parent checkout of `forge/`) |
 | Strategy bundle | `--strategy-name <name>`, selecting one dynamic-access bundle |
 | Source-context types | strategy parameter `source-context-types`; downloaded into the agent's read-only context (§4) |
-| Native-test verification budget | strategy parameter `max-native-test-verification-iterations` (default 100) |
+| Native-test verification budget | strategy parameter `max-native-test-verification-iterations` (default 40) |
 
 ### 2.2 Iterative engine (`dynamic_access_iterative`)
 
