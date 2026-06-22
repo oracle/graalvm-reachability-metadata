@@ -1,0 +1,23 @@
+# Incus profile for Forge single-use metadata-generation VMs.
+# §AR-forge-vm-runner-boundary §FS-forge-vm-isolated-execution
+#
+# Apply once on the host, then the runner launches every VM with it
+# (FORGE_INCUS_PROFILE defaults to "forge"):
+#
+#   incus profile create forge
+#   incus profile edit forge < forge/incus/forge.profile.yaml
+#
+# The defaults size a VM for a full generation: several copied-in GraalVM
+# installs, Gradle caches, Docker-backed test resources, native-image scratch,
+# and the reachability checkout. Tune limits to the host.
+config:
+  limits.cpu: "4"
+  limits.memory: 16GiB
+  security.secureboot: "false"
+description: Forge single-use metadata-generation VM
+devices:
+  root:
+    path: /
+    pool: default
+    size: 20GiB
+    type: disk

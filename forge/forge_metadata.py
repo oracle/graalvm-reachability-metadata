@@ -146,6 +146,12 @@ from utility_scripts.continuation_marker import (
 from utility_scripts.dynamic_access_report import load_dynamic_access_coverage_report
 from utility_scripts.fixture_github import FixtureGitHubState, load_fixture_github_state
 from utility_scripts.gradle_environment import gradle_command_environment
+from utility_scripts.incus_runner import (
+    IncusError,
+    IncusPreflightError,
+    preflight as incus_preflight,
+    run_issue_in_vm,
+)
 from utility_scripts.library_stats import resolve_stats_file_path
 from utility_scripts.library_preparation_preflight import (
     LIBRARY_PREPARATION_PREFLIGHT_FILENAME,
@@ -7769,6 +7775,35 @@ def process_fixture_issues_for_label(
     return processed_count
 
 
+def dispatch_issue_to_vm(
+        issue_number: int,
+        strategy_name: str | None,
+        keep_tests_without_dynamic_access: bool,
+) -> bool:
+    """Run one selected issue inside a fresh Incus VM.
+
+    The host scans and selects work; the VM claims the issue, builds its
+    worktree, runs the per-issue workflow, and publishes over the network
+    (§AR-forge-vm-runner-boundary). A failed VM run is reported as a failed
+    issue; a setup failure (`IncusPreflightError`) propagates to abort the run
+    rather than falling back to the host (§FS-forge-vm-isolated-execution).
+    """
+    try:
+        return run_issue_in_vm(
+            issue_number,
+            strategy_name=strategy_name,
+            keep_tests_without_dynamic_access=keep_tests_without_dynamic_access,
+        )
+    except IncusPreflightError:
+        raise
+    except IncusError as exc:
+        log_failure_banner(
+            f"Incus VM run for issue #{issue_number} failed: {exc}",
+            file=sys.stderr,
+        )
+        return False
+
+
 def process_issues_with_label(
         label: str,
         limit: int,
@@ -7782,6 +7817,7 @@ def process_issues_with_label(
         take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
         environment_already_validated: bool = False,
         user_requested_only: bool = False,
+        use_incus: bool = False,
 ) -> int:
     """
     Process up to `limit` claimable issues, skipping over unclaimed candidates.
@@ -7811,7 +7847,7 @@ def process_issues_with_label(
     priority_exhausted = False
     unresolved_candidates: list[tuple[dict, CachedIssueClaimSkip | None]] = []
     pending_issues: list[tuple[dict, IssueClaimPreflight | None, CachedIssueClaimSkip | None]] = []
-    active_futures: dict[concurrent.futures.Future[bool], ClaimedIssue] = {}
+    active_futures: dict[concurrent.futures.Future[bool], ClaimedIssue | None] = {}
 
     log_issue_scan_start(label, offset)
 
@@ -7907,6 +7943,20 @@ def process_issues_with_label(
                     ):
                         continue
 
+                    if use_incus:
+                        # In Incus mode the host only selects work; the VM claims
+                        # the issue and runs it, so there is no host claim to
+                        # track for revert (§AR-forge-vm-runner-boundary).
+                        future = executor.submit(
+                            dispatch_issue_to_vm,
+                            issue["number"],
+                            strategy_name,
+                            keep_tests_without_dynamic_access,
+                        )
+                        active_futures[future] = None
+                        processed_count += 1
+                        continue
+
                     claim_kwargs: dict[str, bool] = {}
                     if not take_blocked_issues:
                         claim_kwargs["take_blocked_issues"] = False
@@ -7962,6 +8012,11 @@ def process_issues_with_label(
             file=sys.stderr,
         )
         for future, claimed_issue in list(active_futures.items()):
+            if claimed_issue is None:
+                # Incus run: the VM owns the claim and is torn down by the
+                # runner; there is no host claim to revert.
+                future.cancel()
+                continue
             if future.cancel():
                 print(
                     f"[Cancelled queued issue #{claimed_issue.issue['number']} future before revert.]",
@@ -7986,6 +8041,7 @@ def process_work_queues(
         parallelism_default: int = DEFAULT_PARALLELISM,
         random_offset_override: bool | None = None,
         user_requested_only_override: bool | None = None,
+        use_incus: bool = False,
 ) -> None:
     """Process all configured issue and review queues in one Python process."""
     queue_configs = get_work_queue_configs_from_environment(work_strategy_name_override, random_offset_override)
@@ -8064,6 +8120,7 @@ def process_work_queues(
             parallelism,
             user_requested_only=user_requested_only,
             environment_already_validated=True,
+            use_incus=use_incus,
         )
 
     for review_queue_config in review_queue_configs:
@@ -8213,6 +8270,17 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=DEFAULT_TAKE_BLOCKED_ISSUES,
         help="Claim issues even when GitHub shows open blocking issues. Defaults to enabled.",
     )
+    parser.add_argument(
+        "--incus",
+        dest="incus",
+        action="store_true",
+        default=False,
+        help=(
+            "Run each generation inside a fresh, single-use Incus VM instead of on the host. "
+            "Requires a host prepared per forge/README.md; Forge preflights and fails fast if the "
+            "setup is incomplete rather than installing anything."
+        ),
+    )
 
     args = parser.parse_args(argv)
     if args.period is not None and args.review_pr is None:
@@ -8224,6 +8292,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
             parser.error("--fixture-testing cannot be combined with --offset")
         if args.random_offset is not None:
             parser.error("--fixture-testing cannot be combined with --random-offset/--no-random-offset")
+    if args.incus:
+        if args.review_pr is not None or args.clear_issue_caches:
+            parser.error("--incus only applies to issue generation (--label, --issue-number, or --run-work-queues)")
+        if args.fixture_testing:
+            parser.error("--incus cannot be combined with --fixture-testing")
     if args.random_offset is not None and args.label is None and not args.run_work_queues:
         parser.error("--random-offset/--no-random-offset can only be used with --label or --run-work-queues")
     if args.random_offset is True and args.offset != 0:
@@ -8256,8 +8329,17 @@ def process_single_issue(
         keep_tests_without_dynamic_access: bool,
         authenticated_user: str,
         take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
+        use_incus: bool = False,
 ) -> bool:
     """Fetch and process a single issue by number, claiming only in live GitHub mode."""
+    if use_incus:
+        # The VM claims and runs the issue; the host only dispatches
+        # (§AR-forge-vm-runner-boundary).
+        return dispatch_issue_to_vm(
+            issue_number,
+            strategy_name,
+            keep_tests_without_dynamic_access,
+        )
     validate_issue_processing_environment()
 
     issue, label = get_issue_by_number(issue_number)
@@ -8347,6 +8429,11 @@ def main() -> None:
         if not PROJECT_NUMBER:
             print("ERROR: GITHUB_PROJECT_NUMBER env var is not set.", file=sys.stderr)
             sys.exit(1)
+        if args.incus:
+            # Fail fast before any scanning if the host is not set up for Incus,
+            # rather than running partially or falling back to the host
+            # (§FS-forge-vm-isolated-execution).
+            incus_preflight()
         if args.run_work_queues:
             process_work_queues(
                 reachability_metadata_path,
@@ -8357,6 +8444,7 @@ def main() -> None:
                 args.parallelism,
                 random_offset_override=args.random_offset,
                 user_requested_only_override=args.user_requested_only,
+                use_incus=args.incus,
             )
         elif args.review_pr is not None:
             authenticated_user = resolve_authenticated_user()
@@ -8378,6 +8466,7 @@ def main() -> None:
                 args.keep_tests_without_dynamic_access,
                 authenticated_user,
                 args.take_blocked_issues,
+                use_incus=args.incus,
             )
         elif is_fixture_testing_enabled():
             process_fixture_issues_for_label(
@@ -8412,6 +8501,7 @@ def main() -> None:
                 args.parallelism,
                 take_blocked_issues=args.take_blocked_issues,
                 user_requested_only=user_requested_only,
+                use_incus=args.incus,
             )
         normal_exit = True
     except KeyboardInterrupt:
@@ -8430,6 +8520,12 @@ def main() -> None:
     except GitHubRateLimitExceeded as exc:
         log_failure_banner(f"{exc}. Stop current run and retry after reset.", file=sys.stderr)
         sys.exit(GITHUB_RATE_LIMIT_EXIT_CODE)
+    except IncusPreflightError as exc:
+        log_failure_banner(
+            f"Incus setup is incomplete; cannot run with --incus.\n{exc}",
+            file=sys.stderr,
+        )
+        sys.exit(1)
     finally:
         if normal_exit:
             log_success_banner("Run complete.")
