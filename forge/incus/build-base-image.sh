@@ -192,6 +192,10 @@ incus exec "$BUILDER_VM" \
     -- bash -seuo pipefail <<'PROVISION'
 export DEBIAN_FRONTEND=noninteractive
 
+# The managed incusbr0 bridge is IPv4-only; without this apt resolves mirrors to
+# IPv6 and fails with "Network is unreachable".
+printf 'Acquire::ForceIPv4 "true";\n' > /etc/apt/apt.conf.d/99force-ipv4
+
 # 1. Base tooling + Docker. Test resources run as Docker containers INSIDE this
 #    VM, so the VM needs a working Docker engine.
 apt-get update
