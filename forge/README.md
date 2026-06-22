@@ -111,41 +111,75 @@ and fails fast if anything is missing. The runner itself is tracked in
 sudo incus admin init --minimal          # storage pool + default network
 sudo usermod -aG incus-admin "$USER"     # drive Incus without sudo; re-login to apply
 incus list                               # should print an empty table
+
+# Apply the checked-in profile the runner launches every VM with:
+incus profile create forge
+incus profile edit forge < incus/forge.profile.yaml
 ```
 
 ### Build the base image (one-time, rebuilt only to refresh tooling)
 
-The base image is a template the per-run VMs are launched from. It bakes in the
-expensive setup so each run reuses it instead of rebuilding it: GraalVM, Docker,
-warmed Gradle caches, and a reachability checkout.
+The base image is a read-only template the per-run VMs are launched from (via
+copy-on-write, so launching is cheap). It bakes in the expensive, generic,
+non-secret setup so each run reuses it instead of rebuilding it: GraalVM, Docker,
+warmed Gradle caches, and a reachability checkout at
+`/root/graalvm-reachability-metadata` (override with `FORGE_INCUS_REPO_PATH`).
+The image is built locally on each host and never shipped.
+
+First record your machine's VM environment. Copy the template and set the
+GraalVM homes generation needs — all of `GRAALVM_HOME`/`JAVA_HOME`,
+`GRAALVM_HOME_25_0`, and `GRAALVM_HOME_LATEST_EA` are required by Forge's
+pre-processing preflight — to your local installs. The build copies each
+referenced installation into the image so the VM matches local generation
+rather than downloading a separate version; `GRAALVM_HOME` and
+`GRAALVM_HOME_25_0` typically share one JDK 25 path, while
+`GRAALVM_HOME_LATEST_EA` is a distinct early-access build:
 
 ```console
-# Launch a Docker-capable builder VM (Debian 12 shown):
-incus launch images:debian/12 forge-build --vm -c security.secureboot=false
-incus exec forge-build -- bash -lc '
-  set -eux
-  apt-get update && apt-get install -y git curl docker.io
-  systemctl enable --now docker
-  # Install the GraalVM your strategies require and expose it on
-  # GRAALVM_HOME / PATH (see the Setup section above).
-  git clone https://github.com/oracle/graalvm-reachability-metadata.git ~/reachability
-  cd ~/reachability && ./gradlew --no-daemon help    # warm the Gradle caches
-'
-# Snapshot the prepared VM into a reusable base image, then drop the builder:
-incus stop forge-build
-incus publish forge-build --alias forge-base
-incus delete forge-build
-incus image list                         # "forge-base" should be listed
+cp incus/forge.env.example incus/forge.env
+$EDITOR incus/forge.env                   # set the GraalVM homes; add any generation vars
 ```
+
+`incus/build-base-image.sh` is the reproducible definition of the image. It
+launches a throwaway builder VM, copies in your local GraalVM, bakes
+`forge.env` into the VM's environment, provisions it, publishes the disk as the
+`forge-base` alias, and deletes the builder:
+
+```console
+./incus/build-base-image.sh
+incus image list forge-base              # "forge-base" should be listed
+```
+
+Everything `forge.env` defines becomes part of the VM's environment, so put any
+other variable a generation run needs there. Override any of `FORGE_INCUS_IMAGE`,
+`FORGE_INCUS_SOURCE_IMAGE`, `FORGE_INCUS_REPO_URL`, or `FORGE_INCUS_REPO_PATH` to
+target a different image alias, base OS, or checkout. Re-run the script to
+refresh the image when GraalVM, the checkout, or `forge.env` change.
 
 ### Credentials and logs
 
-- Authenticate `gh` for the reachability repo on the host (`gh auth login`); the
-  runner injects those credentials into each VM at launch.
-- The runner mounts a per-run host directory into the VM and points the
-  configurable log destination (`FORGE_LOGS_DIR`) at it, so run logs land on the
-  host and survive VM teardown. Metrics and preserved-work branches leave over
-  the network, so they need no shared directory.
+- Authenticate `gh` for the reachability repo on the host (`gh auth login`, or
+  export `GH_TOKEN`/`GITHUB_TOKEN`); the runner reads that token and seeds it
+  into each VM at launch with `gh auth login --with-token`.
+- The runner mounts a per-run host directory into each VM at `/forge-logs` and
+  points the configurable log destination (`FORGE_LOGS_DIR`) at it, so run logs
+  land on the host under `<logs-root>/issue-<number>` and survive VM teardown.
+  Metrics and preserved-work branches leave over the network, so they need no
+  shared directory.
+
+### Settings
+
+The runner reads these optional environment variables; defaults match the setup
+above.
+
+- `FORGE_INCUS_IMAGE` — base image alias (default `forge-base`).
+- `FORGE_INCUS_PROFILE` — profile applied at launch (default `forge`).
+- `FORGE_INCUS_REPO_PATH` — baked checkout path in the VM
+  (default `/root/graalvm-reachability-metadata`).
+- `FORGE_INCUS_LOGS_ROOT` — host directory holding the per-run log mounts
+  (default the Forge `logs/` root).
+- `FORGE_INCUS_LAUNCH_TIMEOUT` — seconds to wait for the VM guest agent
+  (default `300`).
 
 ### Run
 
