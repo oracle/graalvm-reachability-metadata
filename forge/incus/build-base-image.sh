@@ -199,7 +199,7 @@ printf 'Acquire::ForceIPv4 "true";\n' > /etc/apt/apt.conf.d/99force-ipv4
 # 1. Base tooling + Docker. Test resources run as Docker containers INSIDE this
 #    VM, so the VM needs a working Docker engine.
 apt-get update
-apt-get install -y --no-install-recommends ca-certificates curl git docker.io
+apt-get install -y --no-install-recommends ca-certificates curl gnupg git docker.io
 systemctl enable --now docker
 
 # 2. GitHub CLI. The runner authenticates with `gh auth login --with-token`
@@ -214,19 +214,27 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubc
 apt-get update
 apt-get install -y --no-install-recommends gh
 
-# 3. Reachability checkout: the expensive state every run reuses. GraalVM is
+# 3. Node.js + the AI agent CLIs generation drives: `codex` (failure analysis)
+#    and `pi` (the *_pi_* strategies). Both are public npm packages; pin to the
+#    versions used on the host. Their credentials are seeded per run by the
+#    runner, never baked into this image.
+curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+apt-get install -y --no-install-recommends nodejs
+npm install -g @openai/codex@0.133.0 @mariozechner/pi-coding-agent@0.72.1
+
+# 4. Reachability checkout: the expensive state every run reuses. GraalVM is
 #    already in place (copied from the host) and exposed via /etc/environment.
 #    Each run later refreshes this checkout to current master.
 git clone "$REPO_URL" "$REPO_PATH"
 
-# 4. Forge Python package + dependencies (jsonschema, PyYAML, ...), installed
+# 5. Forge Python package + dependencies (jsonschema, PyYAML, ...), installed
 #    editable so it tracks the refreshed checkout. Debian marks its system Python
 #    as externally managed (PEP 668); the VM is single-use and root-only, so
 #    install into the system interpreter with --break-system-packages.
 apt-get install -y --no-install-recommends python3-pip
 python3 -m pip install --break-system-packages -e "$REPO_PATH/forge"
 
-# 5. Warm the Gradle caches.
+# 6. Warm the Gradle caches.
 cd "$REPO_PATH"
 PATH="$GRAALVM_HOME/bin:$PATH" GRAALVM_HOME="$GRAALVM_HOME" JAVA_HOME="$GRAALVM_HOME" ./gradlew --no-daemon help
 PROVISION
