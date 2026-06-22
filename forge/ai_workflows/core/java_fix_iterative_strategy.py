@@ -12,7 +12,7 @@ from utility_scripts.native_test_verification import (
 )
 
 
-DEFAULT_MAX_NATIVE_TEST_VERIFICATION_ITERATIONS = 100
+DEFAULT_MAX_NATIVE_TEST_VERIFICATION_ITERATIONS = 40
 
 
 """
