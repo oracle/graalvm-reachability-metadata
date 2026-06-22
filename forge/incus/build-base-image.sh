@@ -202,7 +202,19 @@ apt-get update
 apt-get install -y --no-install-recommends ca-certificates curl git docker.io
 systemctl enable --now docker
 
-# 2. Reachability checkout + warmed Gradle caches: the expensive state every run
+# 2. GitHub CLI. The runner authenticates with `gh auth login --with-token`
+#    inside the VM, and generation uses `gh` for issue/PR/project operations.
+#    `gh` is not in Debian's repos, so add the official GitHub CLI apt source.
+mkdir -p -m 755 /etc/apt/keyrings
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+    -o /etc/apt/keyrings/githubcli-archive-keyring.gpg
+chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
+    > /etc/apt/sources.list.d/github-cli.list
+apt-get update
+apt-get install -y --no-install-recommends gh
+
+# 3. Reachability checkout + warmed Gradle caches: the expensive state every run
 #    reuses. GraalVM is already in place (copied from the host) and exposed via
 #    /etc/environment. Each run later refreshes this checkout to current master.
 git clone "$REPO_URL" "$REPO_PATH"
