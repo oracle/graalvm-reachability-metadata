@@ -1,0 +1,17 @@
+Handled the post-generation failure for `org.mockito:mockito-core:5.0.0`.
+
+Changes made:
+- Removed unsupported generated test:
+  - `tests/src/org.mockito/mockito-core/5.0.0/src/test/java/org_mockito/mockito_core/ModuleHandlerInnerModuleSystemFoundTest.java`
+- Removed generated test-side native-image entries only needed by that deleted test:
+  - `tests/src/org.mockito/mockito-core/5.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json`
+- Wrote the required report:
+  - `post-gen-interventions/org.mockito_mockito-core_5.0.0.md`
+
+Root cause:
+- The two failures were not metadata-related.
+- They were caused by Mockito `MockMakers.SUBCLASS` using Byte Buddy runtime class definition, specifically `net.bytebuddy.utility.Invoker$Dispatcher`, which Native Image does not support through normal reachability metadata.
+
+Validation:
+- Ran `./gradlew test -Pcoordinates=org.mockito:mockito-core:5.0.0 --stacktrace`
+- Result: `BUILD SUCCESSFUL`, with 7 native tests passing.
