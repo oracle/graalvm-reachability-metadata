@@ -44,18 +44,6 @@ DEFAULT_INCUS_PROFILE = "forge"
 FORGE_INCUS_REPO_PATH_ENV = "FORGE_INCUS_REPO_PATH"
 DEFAULT_VM_REPO_PATH = "/root/graalvm-reachability-metadata"
 
-# The VM clones upstream at build time, but the forge tooling under test lives in
-# the operator's local checkout (e.g. the in-development branch merged to local
-# master). Before each run the runner mounts that host repo read-only and resets
-# the VM checkout to its `<base ref>`, so the VM runs the local code rather than
-# stale upstream master (§FS-forge-vm-isolated-execution). Only the missing
-# objects transfer over the local fetch.
-FORGE_INCUS_HOST_REPO_ENV = "FORGE_INCUS_HOST_REPO"
-FORGE_INCUS_BASE_REF_ENV = "FORGE_INCUS_BASE_REF"
-DEFAULT_BASE_REF = "master"
-HOST_REPO_MOUNT_PATH = "/forge-host-repo"
-HOST_REPO_DEVICE_NAME = "forge-host-repo"
-
 # Host directory that holds each run's mounted log directory. Per-run logs land
 # in `<root>/issue-<number>` and survive VM teardown.
 FORGE_INCUS_LOGS_ROOT_ENV = "FORGE_INCUS_LOGS_ROOT"
@@ -122,23 +110,6 @@ def incus_profile_name() -> str:
 def vm_repo_path() -> str:
     """Return the baked reachability checkout path inside the VM."""
     return os.environ.get(FORGE_INCUS_REPO_PATH_ENV) or DEFAULT_VM_REPO_PATH
-
-
-def host_repo_root() -> str:
-    """Return the host repo whose local `<base ref>` seeds the VM checkout.
-
-    Defaults to this forge package's own repository (`<repo>/forge/utility_scripts`
-    → `<repo>`), overridable via `FORGE_INCUS_HOST_REPO`.
-    """
-    override = os.environ.get(FORGE_INCUS_HOST_REPO_ENV)
-    if override:
-        return os.path.abspath(os.path.expanduser(override))
-    return os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-
-def base_ref() -> str:
-    """Return the git ref the VM checkout is reset to (default `master`)."""
-    return os.environ.get(FORGE_INCUS_BASE_REF_ENV) or DEFAULT_BASE_REF
 
 
 def host_logs_root() -> str:
@@ -431,9 +402,14 @@ def _mount_host_logs(vm_name: str, host_log_dir: str) -> None:
     )
 
 
-def _seed_credentials_and_refresh_checkout(vm_name: str, github_token: str) -> None:
-    """Inject GitHub credentials and reset the VM checkout to the host's base ref."""
-    log_stage("incus", f"Seeding credentials and refreshing checkout in '{vm_name}'")
+def _seed_credentials(vm_name: str, github_token: str) -> None:
+    """Inject GitHub credentials and author identity into the VM.
+
+    The forge code is already baked into the image (a shallow copy of the
+    operator's local repository), so there is no checkout to refresh here
+    (§FS-forge-vm-isolated-execution).
+    """
+    log_stage("incus", f"Seeding credentials in '{vm_name}'")
     _run_incus(
         ["exec", vm_name, "--", "gh", "auth", "login", "--with-token"],
         input_text=github_token + "\n",
@@ -444,41 +420,6 @@ def _seed_credentials_and_refresh_checkout(vm_name: str, github_token: str) -> N
         capture=True,
     )
     _seed_git_identity(vm_name)
-    _reset_checkout_to_host_ref(vm_name)
-
-
-def _reset_checkout_to_host_ref(vm_name: str) -> None:
-    """Reset the VM checkout to the host repo's base ref (local `master`).
-
-    Mounts the host repo read-only and fetches from it so the VM runs the local
-    forge code under development rather than stale upstream master; only the
-    missing objects transfer (§FS-forge-vm-isolated-execution). The mount is
-    removed before generation runs so the VM cannot reach the host repo.
-    """
-    repo_path = vm_repo_path()
-    ref = base_ref()
-    _run_incus(
-        [
-            "config", "device", "add", vm_name, HOST_REPO_DEVICE_NAME, "disk",
-            f"source={host_repo_root()}", f"path={HOST_REPO_MOUNT_PATH}", "readonly=true",
-        ],
-        capture=True,
-    )
-    try:
-        _run_incus(
-            ["exec", vm_name, "--cwd", repo_path, "--", "git", "fetch", HOST_REPO_MOUNT_PATH, ref],
-            capture=True,
-        )
-        _run_incus(
-            ["exec", vm_name, "--cwd", repo_path, "--", "git", "reset", "--hard", "FETCH_HEAD"],
-            capture=True,
-        )
-    finally:
-        _run_incus(
-            ["config", "device", "remove", vm_name, HOST_REPO_DEVICE_NAME],
-            capture=True,
-            check=False,
-        )
 
 
 def _host_git_config(key: str) -> str | None:
@@ -569,7 +510,7 @@ def run_issue_in_vm(
 
     with _launched_vm(vm_name):
         _mount_host_logs(vm_name, host_log_dir)
-        _seed_credentials_and_refresh_checkout(vm_name, github_token)
+        _seed_credentials(vm_name, github_token)
         _seed_agent_config(vm_name)
         exec_command = build_incus_exec_command(
             vm_name,

@@ -48,6 +48,15 @@ REPO_URL="${FORGE_INCUS_REPO_URL:-https://github.com/oracle/graalvm-reachability
 REPO_PATH="${FORGE_INCUS_REPO_PATH:-/root/graalvm-reachability-metadata}"
 AGENT_TIMEOUT="${FORGE_INCUS_LAUNCH_TIMEOUT:-300}"
 
+# The image bakes a shallow copy of the operator's LOCAL repository (this
+# checkout), so the VM runs the local forge code under development rather than
+# upstream master. HOST_REPO is mounted read-only into the builder and its
+# BASE_REF tip is cloned in; origin is then repointed at REPO_URL so generated
+# branches/PRs push to the real remote. Override HOST_REPO when building from a
+# linked worktree (whose objects live in the main checkout).
+HOST_REPO="${FORGE_INCUS_HOST_REPO:-$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel)}"
+HOST_REPO_BASE_REF="${FORGE_INCUS_BASE_REF:-master}"
+
 log() { printf '[build-base-image] %s\n' "$*"; }
 
 # GraalVM homes the build copies into the VM and generation requires inside it.
@@ -183,12 +192,17 @@ wait_for_agent
 copy_local_graalvm
 write_vm_environment
 
+log "Mounting local repository '$HOST_REPO' into the builder VM (read-only)"
+incus config device add "$BUILDER_VM" forge-host-repo disk \
+    source="$HOST_REPO" path=/forge-host-repo readonly=true
+
 log "Provisioning the builder VM (Docker, repo checkout, warmed Gradle caches)"
 incus exec "$BUILDER_VM" \
     --env GRAALVM_HOME="$GRAALVM_HOME" \
     --env JAVA_HOME="$GRAALVM_HOME" \
     --env REPO_URL="$REPO_URL" \
     --env REPO_PATH="$REPO_PATH" \
+    --env BASE_REF="$HOST_REPO_BASE_REF" \
     -- bash -seuo pipefail <<'PROVISION'
 export DEBIAN_FRONTEND=noninteractive
 
@@ -226,10 +240,13 @@ curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 apt-get install -y --no-install-recommends nodejs
 npm install -g @openai/codex@0.133.0 @mariozechner/pi-coding-agent@0.72.1
 
-# 4. Reachability checkout: the expensive state every run reuses. GraalVM is
-#    already in place (copied from the host) and exposed via /etc/environment.
-#    Each run later refreshes this checkout to current master.
-git clone "$REPO_URL" "$REPO_PATH"
+# 4. Reachability checkout: a shallow copy of the operator's LOCAL repository
+#    (mounted read-only at /forge-host-repo), so the VM runs the local forge code
+#    rather than upstream master. Only the base ref tip is cloned (--depth 1, via
+#    file:// so git honors the depth on a local path). origin is repointed at the
+#    real remote so generated branches/PRs push to the right place.
+git clone --depth 1 --branch "$BASE_REF" "file:///forge-host-repo" "$REPO_PATH"
+git -C "$REPO_PATH" remote set-url origin "$REPO_URL"
 
 # 5. Forge Python package + dependencies (jsonschema, PyYAML, ...), installed
 #    editable so it tracks the refreshed checkout. Debian marks its system Python
@@ -242,6 +259,9 @@ python3 -m pip install --break-system-packages -e "$REPO_PATH/forge"
 cd "$REPO_PATH"
 PATH="$GRAALVM_HOME/bin:$PATH" GRAALVM_HOME="$GRAALVM_HOME" JAVA_HOME="$GRAALVM_HOME" ./gradlew --no-daemon help
 PROVISION
+
+log "Unmounting the local repository from the builder VM"
+incus config device remove "$BUILDER_VM" forge-host-repo
 
 log "Stopping the builder VM before publishing"
 incus stop "$BUILDER_VM"
