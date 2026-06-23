@@ -7,6 +7,17 @@ that would fail without it passes the harness gates, so the additive contract is
 demonstrated rather than asserted.
 §GRUND-repository-motivation
 
+# GOAL-framework-owned: Framework-inferred metadata stays with frameworks
+
+Frameworks that infer reachability metadata from application structure,
+configuration, annotations, generated code, or classpath composition own that
+metadata. The repository cannot reliably test metadata whose correctness depends
+on a framework's dynamic analysis of a user's application, so it should not ship
+such entries. Instead, this repository should stay compatible with framework
+metadata generation while providing only statically testable library metadata;
+framework-owned inference belongs in the framework release and its tests.
+§GRUND-repository-motivation
+
 # GOAL-broad-version-coverage: As many tested versions as practical
 
 Supported artifacts should have as many tested library versions as practical, so

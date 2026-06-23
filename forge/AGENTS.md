@@ -60,9 +60,9 @@ Agents MUST read and strictly adhere to the following before making any changes:
 - Summarize each open question briefly and concretely so a reviewer can understand the decision point without re-reading the whole conversation.
 - If there are no open questions or user-requested notes for reviewers, omit the section instead of adding an empty heading.
 
-## Grounding with grund (v2)
+## Grounding with grund (v3)
 
-This project uses [`grund`](https://github.com/vjovanov/grund): every spec, goal, decision, and end-to-end test has a stable ID `<KIND>-<slug>[.<section>]` (`KIND ∈ {GRUND, GOAL, AR, FS, DW, STRAT, ORCH, GIT, WF, E2E, BENCH, ROADMAP}`), cited with the marker `§` — e.g. `FS-user-login.3.1` (the `FS-user-login` here is a shape illustration, not a real ID in this repo). Type `$$` in a grund-aware editor and it becomes `§`. Bare ID-shaped tokens are ignored — `[reference] strict = true` is set in `.agents/grund.toml`, so only `§`-prefixed citations are checked.
+This project uses [`grund`](https://github.com/vjovanov/grund): every spec, goal, decision, and end-to-end test has a stable ID `<KIND>-<slug>[.<section>]` (`KIND ∈ {GRUND, GOAL, AR, FS, DW, STRAT, ORCH, GIT, WF, E2E, BENCH, ROADMAP}`), cited with the marker `§` — for example, `FS-user-login.3.1` is only a shape illustration, not a real ID in this repo. Type `$$` in a grund-aware editor and it becomes `§`. Bare ID-shaped tokens are ignored — `[reference] strict = true` is set in `.agents/grund.toml`, so only `§`-prefixed citations are checked.
 
 ### Grounding from a citation
 
@@ -81,13 +81,14 @@ A `§<ID>` is a pointer to a fact, not a file path. Resolve it with `grund` and 
 - [GOAL](docs/goals.md): Where: Forge direction and outcomes
 - [AR](docs): Forge architecture and technical structure
 - [FS](docs): Forge functional behavior and requirements
-- [DW](docs/do-work.md): Forge do-work loop architecture
-- [STRAT](docs/strategies.md): Forge strategy configuration architecture
-- [ORCH](docs/orchestration-scripts.md): Forge orchestration scripts behavior and architecture
-- [GIT](docs/git-scripts.md): Forge git scripts publication behavior and architecture
+- [DW](docs): Forge do-work loop architecture
+- [STRAT](docs): Forge strategy configuration architecture
+- [ORCH](docs): Forge orchestration scripts behavior and architecture
+- [GIT](docs): Forge git scripts publication behavior and architecture
 - [WF](docs/workflows): Forge workflow specifications and operating rules
-- [BENCH](docs/benchmarking.md): Forge benchmark specifications
-- [ROADMAP](docs/roadmap.md): Forge implementation roadmap
+- [E2E](docs): Forge end-to-end test specifications
+- [BENCH](docs): Forge benchmark specifications
+- [ROADMAP](docs): Forge implementation roadmap
 
 ### Project namespaces
 
@@ -101,8 +102,8 @@ Do not create a namespace for a regular module or component that still belongs t
 
 Cross-project citations use §alias/<ID>.
 
-- `forge` → [AGENTS.md](AGENTS.md)
-- `root` → [../AGENTS.md](../AGENTS.md)
+- [`forge`](AGENTS.md): Automation subproject that turns labeled issues into reviewed metadata pull requests
+- [`root`](../AGENTS.md): Repository for shared GraalVM reachability metadata, tests, and release infrastructure
 
 ### Declarations and citations
 
@@ -114,4 +115,19 @@ Declarations are heading lines `# FS-user-login: …` in markdown. In a code doc
 - **Cite as you write.** Place `§<ID>` at the point a claim or behavior is made — on the doc-comment for a whole behavior, inline beside the clause it enforces.
 - **Inline citation style.** Inline notes: ≤ 1 line preferred, hard cap 3 lines; ≤ 100 columns.
 - **Always cite the most-specific point.**
-- **Citations climb to reasons (grund.md).** Goals cite reasons, specs cite goals; architecture cites specs; code and executable tests cite specs.
+
+### Citation directions
+
+- **GOAL** should cite GRUND or GOAL.
+- **AR** should cite FS or GOAL.
+- **FS** should cite GOAL or FS.
+- **DW** should cite FS or AR.
+- **STRAT** should cite FS or AR or GOAL.
+- **ORCH** should cite FS or AR or STRAT.
+- **GIT** should cite FS or AR.
+- **WF** should cite FS or STRAT or ORCH or GIT.
+- **E2E** should cite FS or WF or ORCH.
+- **BENCH** should cite FS or AR or GOAL.
+- **ROADMAP** should cite GOAL or FS or AR.
+- **code** (any file outside a kind home) should cite FS or AR or DW or STRAT or ORCH or GIT or WF.
+Unlisted kinds and pairs are fine.

@@ -47,7 +47,7 @@ all of its IDs in that one file.
 ### Files at a glance
 
 - [grund.md](grund.md) — `GRUND-repository-motivation`: why this repository exists.
-- [goals.md](goals.md) — the outcome goals: tested metadata, broad version coverage, fresh releases, and no regressions.
+- [goals.md](goals.md) — the outcome goals: tested metadata, framework-owned inference, broad version coverage, fresh releases, and no regressions.
 - [functional-spec.md](functional-spec.md) — `FS-repository-functional-spec`: the system's behavior, requirements, the native-build-tools interface contract, library-version compatibility automation, and how each audience uses the repository.
 - [architecture.md](architecture.md) — `AR-repository-architecture`: the component map and high-level implementation overview.
 - [build-infra.md](build-infra.md) — `AR-build-infrastructure`: the two-layer Gradle build, convention plugins, and scaffolding.

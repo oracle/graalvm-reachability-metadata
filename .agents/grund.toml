@@ -1,5 +1,6 @@
 grund_config_version = 1
 project_name = "root"
+project_description = "Repository for shared GraalVM reachability metadata, tests, and release infrastructure"
 
 [workspace]
 members = ["forge"]
@@ -89,3 +90,36 @@ relative_paths = true
 [fmt.cross_refs]
 enabled = false
 anchor_format = "github" # github | gitlab | mkdocs | pandoc | none
+
+[citations]
+default = "may"
+
+[citations.GOAL]
+should = ["GRUND|GOAL"]
+
+[citations.FS]
+should = ["GOAL|FS"]
+
+[citations.AR]
+should = ["FS|GOAL"]
+
+[citations.TCK]
+should = ["FS|AR|GOAL"]
+
+[citations.E2E]
+should = ["FS|TCK|AR"]
+
+[citations.CI]
+should = ["FS|TCK|METADATA|TESTS|E2E|GOAL"]
+
+[citations.METADATA]
+should = ["FS|GOAL"]
+
+[citations.TESTS]
+should = ["FS|METADATA|GOAL"]
+
+[citations.SKILL]
+should = ["FS|CI|METADATA|TESTS"]
+
+[citations.code]
+should = ["FS|AR|TCK|E2E|CI|METADATA|TESTS"]
