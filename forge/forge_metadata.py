@@ -5883,11 +5883,11 @@ def verify_chunked_dynamic_access_previous_pr_merged(exhaust_report: DynamicAcce
         "--repo",
         REPO,
         "--json",
-        "state,merged",
+        "state",
         check=True,
     )
     payload = json.loads(result.stdout)
-    if not payload.get("merged"):
+    if payload.get("state") != "MERGED":
         raise RuntimeError(
             f"Chunked dynamic-access issue #{exhaust_report.issue_number} cannot continue "
             f"before PR #{previous_pr} is merged "
