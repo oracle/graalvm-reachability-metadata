@@ -1,0 +1,152 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.mockito:mockito-core:5.0.0
+Command: `/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-4ea59083/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 12 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources UP-TO-DATE
+> Task :testClasses
+
+> Task :test
+
+ModuleHandlerInnerModuleSystemFoundTest > mocksConcreteFileManagerDiscoveredFromCompilerApi() FAILED
+    org.mockito.exceptions.base.MockitoException: 
+    Mockito cannot mock this class: class com.sun.tools.javac.file.JavacFileManager.
+
+    Mockito can only mock non-private & non-final classes, but the root cause of this error might be different.
+    Please check the full stacktrace to understand what the issue is.
+    If you're still not sure why you're getting this error, please open an issue on GitHub.
+
+
+    Java               : 25
+    JVM vendor name    : Oracle Corporation
+    JVM vendor version : 25.0.2+10-LTS-jvmci-25.1-b17
+    JVM name           : Java HotSpot(TM) 64-Bit Server VM
+    JVM version        : 25.0.2+10-LTS-jvmci-25.1-b17
+    JVM info           : mixed mode, sharing
+    OS name            : Linux
+    OS version         : 6.17.0-35-generic
+
+
+    Underlying exception : org.mockito.exceptions.base.MockitoException: 
+    Could not force module adjustment of the module of class com.sun.tools.javac.file.JavacFileManager
+
+    This is required to adjust the module graph to enable mock creation
+        at app//org_mockito.mockito_core.ModuleHandlerInnerModuleSystemFoundTest.mocksConcreteFileManagerDiscoveredFromCompilerApi(ModuleHandlerInnerModuleSystemFoundTest.java:36)
+
+        Caused by:
+        org.mockito.exceptions.base.MockitoException: 
+        Could not force module adjustment of the module of class com.sun.tools.javac.file.JavacFileManager
+
+        This is required to adjust the module graph to enable mock creation
+            at app//net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:168)
+            at app//net.bytebuddy.TypeCache$WithInlineExpunction.findOrInsert(TypeCache.java:399)
+            at app//net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:190)
+            at app//net.bytebuddy.TypeCache$WithInlineExpunction.findOrInsert(TypeCache.java:410)
+            ... 1 more
+
+            Caused by:
+            java.lang.IllegalArgumentException: com.sun.tools.javac.file.JavacFileManager$MockitoModuleProbe$j49ebj3vg24vv1 must be defined in the same package as org.mockito.codegen.InjectionBase
+                at net.bytebuddy.dynamic.loading.ClassInjector$UsingLookup.injectRaw(ClassInjector.java:1635)
+                at net.bytebuddy.dynamic.loading.ClassInjector$AbstractBase.inject(ClassInjector.java:118)
+                at net.bytebuddy.dynamic.loading.ClassLoadingStrategy$UsingLookup.load(ClassLoadingStrategy.java:519)
+                at net.bytebuddy.dynamic.TypeResolutionStrategy$Passive.initialize(TypeResolutionStrategy.java:101)
+                at net.bytebuddy.dynamic.DynamicType$Default$Unloaded.load(DynamicType.java:6317)
+                at org.mockito.internal.creation.bytebuddy.ModuleHandler$ModuleSystemFound.adjustModuleGraph(ModuleHandler.java:276)
+                at org.mockito.internal.creation.bytebuddy.SubclassBytecodeGenerator.mockClass(SubclassBytecodeGenerator.java:217)
+                at org.mockito.internal.creation.bytebuddy.TypeCachingBytecodeGenerator.lambda$mockClass$0(TypeCachingBytecodeGenerator.java:47)
+                at net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:168)
+                at net.bytebuddy.TypeCache$WithInlineExpunction.findOrInsert(TypeCache.java:399)
+                at net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:190)
+                at net.bytebuddy.TypeCache$WithInlineExpunction.findOrInsert(TypeCache.java:410)
+                at org.mockito.internal.creation.bytebuddy.TypeCachingBytecodeGenerator.mockClass(TypeCachingBytecodeGenerator.java:40)
+                at org.mockito.internal.creation.bytebuddy.SubclassByteBuddyMockMaker.createMockType(SubclassByteBuddyMockMaker.java:77)
+                at org.mockito.internal.creation.bytebuddy.SubclassByteBuddyMockMaker.createMock(SubclassByteBuddyMockMaker.java:43)
+                at org.mockito.internal.creation.bytebuddy.ByteBuddyMockMaker.createMock(ByteBuddyMockMaker.java:42)
+                at org.mockito.internal.util.MockUtil.createMock(MockUtil.java:99)
+                at org.mockito.internal.MockitoCore.mock(MockitoCore.java:88)
+                at org.mockito.Mockito.mock(Mockito.java:2037)
+                ... 1 more
+
+6 tests completed, 1 failed
+
+> Task :test FAILED
+
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-4ea59083/tests/src/org.mockito/mockito-core/5.0.0/build/reports/problems/problems-report.html
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-4ea59083/tests/src/org.mockito/mockito-core/5.0.0/build/reports/tests/test/index.html
+
+* Try:
+
+> Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+Run with --scan to generate a Build Scan (Powered by Develocity).
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 27s
+15 actionable tasks: 3 executed, 12 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3997-4ea59083/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.mockito:mockito-core:5.0.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 33s
+9 actionable tasks: 1 executed, 8 up-to-date
