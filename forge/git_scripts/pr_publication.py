@@ -39,11 +39,18 @@ from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME
 REPO: str = "oracle/graalvm-reachability-metadata"
 BASE_BRANCH: str = "master"
 REVIEWERS: list[str] = get_configured_reviewers()
+LIBRARY_UPDATE_TARGET_FILENAME: str = ".library_update_target.json"
 PRESERVATION_ONLY_PATHS: set[str] = {
     f"forge/{CONTINUATION_MARKER_FILENAME}",
 }
-LOCAL_PUBLICATION_INPUT_PATHS: set[str] = {f"forge/{PENDING_METRICS_FILENAME}"}
-PRESERVATION_ONLY_DIRECTORIES: tuple[str, ...] = ("forge/human-intervention-logs",)
+LOCAL_PUBLICATION_INPUT_PATHS: set[str] = {
+    f"forge/{PENDING_METRICS_FILENAME}",
+    f"forge/{LIBRARY_UPDATE_TARGET_FILENAME}",
+}
+PRESERVATION_ONLY_DIRECTORIES: tuple[str, ...] = (
+    "human-intervention-logs",
+    "forge/human-intervention-logs",
+)
 
 
 def _publication_resume_marker(repo_path: str) -> ContinuationMarker | None:
