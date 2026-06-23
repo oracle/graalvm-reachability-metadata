@@ -4,6 +4,7 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+import java.io.OutputStream
 import java.nio.charset.StandardCharsets
 import javax.tools.JavaCompiler
 import javax.tools.ToolProvider
@@ -17,6 +18,7 @@ String kotlinVersion = '1.8.22'
 String nativeJavaHome = System.getenv('JAVA_HOME')
 Provider<Directory> inlineFixtureClassesDir = layout.buildDirectory.dir('generated/inline-fixture/classes')
 Provider<Directory> inlineFixtureSourcesDir = layout.buildDirectory.dir('generated/inline-fixture/src')
+Provider<Directory> generatedTestRuntimePropertiesDir = layout.buildDirectory.dir('generated/test-runtime-properties')
 String inlineFixtureSource = '''
 package org_mockito.mockito_core;
 
@@ -92,10 +94,32 @@ TaskProvider<Task> generateKotlinInlineFixture = tasks.register('generateKotlinI
     }
 }
 
+tasks.register("generateNativeRuntimeProperties") {
+    outputs.dir(generatedTestRuntimePropertiesDir)
+    doLast {
+        File outputDir = generatedTestRuntimePropertiesDir.get().asFile
+        outputDir.mkdirs()
+
+        Properties properties = new Properties()
+        properties.setProperty("java.home", System.getenv("JAVA_HOME") ?: "")
+        properties.setProperty("java.class.path", sourceSets.test.runtimeClasspath.asPath)
+
+        File outputFile = new File(outputDir, "native-runtime.properties")
+        outputFile.withOutputStream { OutputStream outputStream ->
+            properties.store(outputStream, "Generated runtime properties for Mockito native tests")
+        }
+    }
+}
+
 sourceSets {
     test {
         output.dir(inlineFixtureClassesDir, builtBy: generateKotlinInlineFixture)
     }
+}
+
+processTestResources {
+    dependsOn(tasks.named("generateNativeRuntimeProperties"))
+    from(generatedTestRuntimePropertiesDir)
 }
 
 tasks.named('compileTestJava') {
