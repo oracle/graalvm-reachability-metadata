@@ -98,28 +98,59 @@
     }
   },
   "improve_library_coverage:2026-06-23": {
-    "timestamp": "2026-06-23T16:12:38.064037Z",
+    "timestamp": "2026-06-23T23:46:43.322134Z",
     "library": "org.mockito:mockito-core:5.0.0",
-    "starting_commit": "7150c6a0ba96d6f36a4bf629a68b4e089fed6cfe",
-    "ending_commit": "7150c6a0ba96d6f36a4bf629a68b4e089fed6cfe",
+    "starting_commit": "ff55d49d6f35478d4e6b7e31c58ede12cdf95d91",
+    "ending_commit": "84fa6823e83df8e8290bbb36e863b7a2a603532f",
     "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
     "agent": "pi",
     "model": "oca/gpt-5.5",
-    "status": "failure",
+    "status": "success_with_intervention",
+    "stats": {
+      "version": "5.0.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.405941,
+            "coveredCalls": 41,
+            "totalCalls": 101
+          },
+          "resources": {
+            "coverageRatio": 0.666667,
+            "coveredCalls": 2,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 0.413462,
+        "coveredCalls": 43,
+        "totalCalls": 104
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 7768,
+          "missed": 28573,
+          "ratio": 0.213753,
+          "total": 36341
+        },
+        "line": {
+          "covered": 2011,
+          "missed": 6802,
+          "ratio": 0.228186,
+          "total": 8813
+        },
+        "method": {
+          "covered": 623,
+          "missed": 1691,
+          "ratio": 0.269231,
+          "total": 2314
+        }
+      }
+    },
     "library_preparation_preflight": {
-      "status": "completed",
       "action": "advisory_preparation",
-      "issue_number": 3997,
-      "issue_label": "library-update-request",
-      "library": "org.mockito:mockito-core:5.0.0",
-      "summary": "Mockito 5.0.0 defaults to the inline Byte Buddy mock maker, which depends on runtime instrumentation/agent attachment; meaningful Native Image coverage is reachable by configuring Mockito to use the proxy mock maker for interface-only mocks.",
-      "deterministic_setup": [],
       "agent_guidance": "Add a test resource `src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker` containing `org.mockito.internal.creation.proxy.ProxyMockMaker` (or the `mock-maker-proxy` alias) and focus generated tests on mocking interfaces. Avoid tests that require the default inline mock maker, class/final/static/constructor mocking, or runtime Java-agent attachment.",
-      "risks": [
-        "The proxy mock maker only mocks interfaces, so class-based Mockito scenarios will not be covered by this setup.",
-        "No extra dependency should be needed: `mockito-core:5.0.0` already declares `byte-buddy`, `byte-buddy-agent`, and `objenesis` in its resolved Maven dependencies."
-      ],
       "applied_setup": [],
+      "deterministic_setup": [],
       "input_evidence": [
         {
           "name": "issue",
@@ -130,27 +161,37 @@
           "summary": "13 existing test file path(s) included"
         }
       ],
-      "model": "oca/gpt-5.5",
       "input_tokens_used": 51165,
+      "issue_label": "library-update-request",
+      "issue_number": 3997,
+      "library": "org.mockito:mockito-core:5.0.0",
+      "model": "oca/gpt-5.5",
       "output_tokens_used": 2874,
       "prompt_path": "library-preflight-prompt.txt",
       "raw_response_path": "library-preflight-response.txt",
-      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.mockito:mockito-core:5.0.0/library-preparation-preflight/pi-generation-2026-06-23T12-55-45-202618Z.log"
+      "risks": [
+        "The proxy mock maker only mocks interfaces, so class-based Mockito scenarios will not be covered by this setup.",
+        "No extra dependency should be needed: `mockito-core:5.0.0` already declares `byte-buddy`, `byte-buddy-agent`, and `objenesis` in its resolved Maven dependencies."
+      ],
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.mockito:mockito-core:5.0.0/library-preparation-preflight/pi-generation-2026-06-23T12-55-45-202618Z.log",
+      "status": "completed",
+      "summary": "Mockito 5.0.0 defaults to the inline Byte Buddy mock maker, which depends on runtime instrumentation/agent attachment; meaningful Native Image coverage is reachable by configuring Mockito to use the proxy mock maker for interface-only mocks."
     },
     "metrics": {
-      "input_tokens_used": 1174941,
-      "cached_input_tokens_used": 8844800,
-      "output_tokens_used": 106007,
-      "iterations": 24,
-      "cost_usd": 7.6026,
-      "generated_loc": 0,
-      "tested_library_loc": 0,
-      "metadata_entries": 0,
-      "code_coverage_percent": 0.0
+      "input_tokens_used": 0,
+      "cached_input_tokens_used": 0,
+      "output_tokens_used": 0,
+      "iterations": 0,
+      "cost_usd": 0.0,
+      "generated_loc": 482,
+      "tested_library_loc": 2011,
+      "metadata_entries": 293,
+      "test_only_metadata_entries": 57,
+      "code_coverage_percent": 22.82
     },
     "artifacts": {
-      "test_file": "None",
-      "metadata_file": "None"
+      "test_file": "tests/src/org.mockito/mockito-core/5.0.0/src/test/java/org_mockito/mockito_core/ProxyMockMakerInnerCommonClassLoaderTest.java",
+      "metadata_file": "metadata/org.mockito/mockito-core/5.0.0/reachability-metadata.json"
     }
   }
 }
