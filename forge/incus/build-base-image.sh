@@ -245,6 +245,9 @@ npm install -g @openai/codex@0.133.0 @mariozechner/pi-coding-agent@0.72.1
 #    rather than upstream master. Only the base ref tip is cloned (--depth 1, via
 #    file:// so git honors the depth on a local path). origin is repointed at the
 #    real remote so generated branches/PRs push to the right place.
+# The mounted host repo is owned by the host user (uid 1000), not the VM's root,
+# so git's ownership guard would refuse it; trust it for this throwaway builder.
+git config --global --add safe.directory '*'
 git clone --depth 1 --branch "$BASE_REF" "file:///forge-host-repo" "$REPO_PATH"
 git -C "$REPO_PATH" remote set-url origin "$REPO_URL"
 
