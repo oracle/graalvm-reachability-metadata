@@ -8,4 +8,6 @@ package org_mockito.mockito_core;
 
 public interface MyService {
     String getGreeting();
+
+    int counter();
 }
