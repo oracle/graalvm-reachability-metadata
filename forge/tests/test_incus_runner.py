@@ -49,6 +49,19 @@ class AgentConfigFilesTests(unittest.TestCase):
         self.assertTrue(any(p.endswith("/.pi/agent/models.json") for p in host_paths))
 
 
+class HostRepoBaseRefTests(unittest.TestCase):
+    def test_defaults(self) -> None:
+        with patch.dict(os.environ, {}, clear=True):
+            self.assertEqual(incus_runner.base_ref(), "master")
+            # Defaults to the repo containing the forge package (…/<repo>).
+            self.assertTrue(os.path.isabs(incus_runner.host_repo_root()))
+
+    def test_overrides(self) -> None:
+        with patch.dict(os.environ, {"FORGE_INCUS_BASE_REF": "feature/x", "FORGE_INCUS_HOST_REPO": "/h/repo"}, clear=True):
+            self.assertEqual(incus_runner.base_ref(), "feature/x")
+            self.assertEqual(incus_runner.host_repo_root(), "/h/repo")
+
+
 class LogsRootOverrideTests(unittest.TestCase):
     def test_logs_root_defaults_under_repo(self) -> None:
         with patch.dict(os.environ, {}, clear=True):
