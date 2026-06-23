@@ -1,0 +1,68 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "io.confluent:kafka-schema-serializer:8.3.0",
+  "issueNumber": 8564,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "For tests that configure or exercise Schema Registry-backed serde behavior, set the serializer/deserializer config `schema.registry.url` to a unique `mock://<test-scope>` value, or inject/use `MockSchemaRegistryClient` directly. Clean up mock scopes after tests with `MockSchemaRegistry.dropScope(...)` when using `mock://`. Do not require a running Kafka broker or Schema Registry container for unit coverage.",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8564 Support for io.confluent:kafka-schema-serializer:8.3.0; label=library-new-request; body_chars=214"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 68809,
+    "issue_label": "library-new-request",
+    "issue_number": 8564,
+    "library": "io.confluent:kafka-schema-serializer:8.3.0",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 5724,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The artifact is a shared/base serializer module; concrete Avro/JSON/Protobuf serializers live in separate Confluent artifacts, so tests should focus on classes in `kafka-schema-serializer` rather than adding format-specific serializers just to drive behavior.",
+      "Formatter classes reference Kafka tools APIs through a provided Kafka dependency; avoid centering coverage on formatter entry points unless local Gradle resolution shows those APIs are available."
+    ],
+    "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/io.confluent:kafka-schema-serializer:8.3.0/library-preparation-preflight/pi-generation-2026-06-23T23-11-43-005505Z.log",
+    "status": "completed",
+    "summary": "No extra test dependency or Docker image is concretely required; the artifact already depends on Schema Registry client, Kafka clients, Avro types, Guava, and Jackson. Meaningful in-process coverage is reachable, but Schema Registry interactions must be configured to use Confluent's mock registry rather than a real service."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": false,
+      "setupDone": false,
+      "status": "pending"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-8564-library-new-request-io.confluent-kafka-schema-serializer-8.3.0-fe30fd5a",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
