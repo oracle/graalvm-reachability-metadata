@@ -230,6 +230,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             self.continuation_marker_path,
             lambda marker: (
                 marker.mark_phase_skipped_if_pending(PHASE_FIX),
+                marker.record_chunk_progress(self.chunk_class_count, 0),
                 marker.mark_phase_running(PHASE_EXPLORE),
             ),
         )
@@ -292,7 +293,11 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             active_class = current_report.next_uncovered_class(exhausted_classes)
             if active_class is None:
                 if not flush_native_test_batch("end-of-classes"):
-                    self._mark_continuation_explore_pending(prompt_iterations, exhausted_classes)
+                    self._mark_continuation_explore_pending(
+                        prompt_iterations,
+                        exhausted_classes,
+                        len(terminal_classes_this_part),
+                    )
                     return False, prompt_iterations
                 if (
                         successful_classes == 0
@@ -301,12 +306,24 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                         and self._library_test_change_signature() != initial_test_change_signature
                 ):
                     self._print_dynamic_access_message("Coverage not improved. Keeping generated tests by request.")
-                    self._mark_continuation_explore_completed(prompt_iterations, exhausted_classes)
+                    self._mark_continuation_explore_completed(
+                        prompt_iterations,
+                        exhausted_classes,
+                        len(terminal_classes_this_part),
+                    )
                     return True, prompt_iterations
                 if successful_classes > 0:
-                    self._mark_continuation_explore_completed(prompt_iterations, exhausted_classes)
+                    self._mark_continuation_explore_completed(
+                        prompt_iterations,
+                        exhausted_classes,
+                        len(terminal_classes_this_part),
+                    )
                 else:
-                    self._mark_continuation_explore_pending(prompt_iterations, exhausted_classes)
+                    self._mark_continuation_explore_pending(
+                        prompt_iterations,
+                        exhausted_classes,
+                        len(terminal_classes_this_part),
+                    )
                 return successful_classes > 0, prompt_iterations
 
             class_name = active_class.class_name
@@ -434,7 +451,11 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                         indent_level=2,
                         class_name=class_name,
                     )
-                    self._mark_continuation_explore_pending(prompt_iterations, exhausted_classes)
+                    self._mark_continuation_explore_pending(
+                        prompt_iterations,
+                        exhausted_classes,
+                        len(terminal_classes_this_part),
+                    )
                     return False, prompt_iterations
                 record_indirectly_completed_classes(class_name)
 
@@ -538,7 +559,11 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     indent_level=1,
                     class_name=class_name,
                 )
-                self._mark_continuation_explore_pending(prompt_iterations, exhausted_classes)
+                self._mark_continuation_explore_pending(
+                    prompt_iterations,
+                    exhausted_classes,
+                    len(terminal_classes_this_part),
+                )
                 return False, prompt_iterations
             if class_failed:
                 self._print_dynamic_access_detail(
@@ -566,7 +591,11 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                         terminal_classes_this_part,
                 ):
                     if not flush_native_test_batch("chunked-dynamic-access-boundary"):
-                        self._mark_continuation_explore_pending(prompt_iterations, exhausted_classes)
+                        self._mark_continuation_explore_pending(
+                            prompt_iterations,
+                            exhausted_classes,
+                            len(terminal_classes_this_part),
+                        )
                         return False, prompt_iterations
                     self._last_phase_status = RUN_STATUS_CHUNK_READY
                     self._print_dynamic_access_message(
@@ -575,7 +604,11 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                         )
                     )
                     self._save_dynamic_access_exhaust_report()
-                    self._mark_continuation_explore_completed(prompt_iterations, exhausted_classes)
+                    self._mark_continuation_explore_completed(
+                        prompt_iterations,
+                        exhausted_classes,
+                        len(terminal_classes_this_part),
+                    )
                     return True, prompt_iterations
                 continue
             updated_class = current_report.get_class(class_name)
@@ -613,7 +646,11 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     terminal_classes_this_part,
             ):
                 if not flush_native_test_batch("chunked-dynamic-access-boundary"):
-                    self._mark_continuation_explore_pending(prompt_iterations, exhausted_classes)
+                    self._mark_continuation_explore_pending(
+                        prompt_iterations,
+                        exhausted_classes,
+                        len(terminal_classes_this_part),
+                    )
                     return False, prompt_iterations
                 self._last_phase_status = RUN_STATUS_CHUNK_READY
                 self._print_dynamic_access_message(
@@ -622,25 +659,41 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     )
                 )
                 self._save_dynamic_access_exhaust_report()
-                self._mark_continuation_explore_completed(prompt_iterations, exhausted_classes)
+                self._mark_continuation_explore_completed(
+                    prompt_iterations,
+                    exhausted_classes,
+                    len(terminal_classes_this_part),
+                )
                 return True, prompt_iterations
 
-    def _mark_continuation_explore_completed(self, iteration: int, exhausted_classes: set[str]) -> None:
+    def _mark_continuation_explore_completed(
+            self,
+            iteration: int,
+            exhausted_classes: set[str],
+            chunk_processed_class_count: int | None = None,
+    ) -> None:
         """Persist successful dynamic-access phase completion."""
         save_phase_update(
             self.continuation_marker_path,
             lambda marker: (
                 marker.record_exhausted_classes(sorted(exhausted_classes)),
+                marker.record_chunk_progress(self.chunk_class_count, chunk_processed_class_count),
                 marker.mark_phase_completed(PHASE_EXPLORE, iteration=iteration),
             ),
         )
 
-    def _mark_continuation_explore_pending(self, iteration: int, exhausted_classes: set[str]) -> None:
+    def _mark_continuation_explore_pending(
+            self,
+            iteration: int,
+            exhausted_classes: set[str],
+            chunk_processed_class_count: int | None = None,
+    ) -> None:
         """Persist an incomplete dynamic-access phase."""
         save_phase_update(
             self.continuation_marker_path,
             lambda marker: (
                 marker.record_exhausted_classes(sorted(exhausted_classes)),
+                marker.record_chunk_progress(self.chunk_class_count, chunk_processed_class_count),
                 marker.mark_phase_pending(PHASE_EXPLORE, iteration=iteration),
             ),
         )

@@ -229,7 +229,9 @@ runs never populate them (§WF-dynamic-access-exhaust-report):
 - `chunk_class_count` — maximum number of newly selected dynamic-access classes
   this chunk may process. `forge_metadata.py` computes it from the global class
   threshold and the number of unexhausted classes remaining. A class is never
-  split across chunks.
+  split across chunks. Failed-run continuation also records how many classes in
+  the active chunk already reached a terminal state, so the resumed invocation
+  receives only the remaining budget for that same chunk.
 
 ## 6. Workflow
 
@@ -533,7 +535,10 @@ whether to invoke the normal workflow or the chunked workflow:
 6. The workflow loads the exhaust report from the coordinate-derived persistent
    location, regenerates the current dynamic-access report from the checked-out
    base, and selects the next uncovered classes not present in the exhaust
-   report (§WF-dynamic-access-exhaust-report).
+   report (§WF-dynamic-access-exhaust-report). If this is a failed-run resume
+   with a continuation marker but no coordinate-local exhaust report, the
+   dispatcher uses `explore.exhaustedClasses` from the marker as the processed
+   class set for that resumed invocation (§FS-forge-run-continuation.2).
 7. The workflow processes at most the current chunk class count. Each selected
    class owns all of its dynamic-access call sites; call sites inside one class
    must not be split across chunks.
@@ -542,8 +547,10 @@ whether to invoke the normal workflow or the chunked workflow:
    chunk PR using the linking contract in
    §WF-chunked-dynamic-access-pr-linking.
 9. The issue project status controls continuation: `Todo` means Forge may claim
-   the next chunk, `In Progress` means the current chunk is active. No separate
-   ready/in-progress chunk labels are required.
+   the next chunk, `In Progress` means the current chunk is active. A non-final
+   chunk PR with failed CI is no longer an active chunk after Forge exhausts
+   available reruns; Forge releases the issue back to `Todo` and marks that PR
+   for human follow-up. No separate ready/in-progress chunk labels are required.
 10. Before resuming, Forge verifies that the latest recorded chunk PR commit is
     present in the base branch (§WF-dynamic-access-exhaust-report).
 
@@ -554,7 +561,10 @@ chunk to the issue without completing it unless the chunk is final. Chunk PRs
 carry the `chunked-dynamic-access` label. Non-final chunk PRs use
 `Refs: #<issue>` and commit the exhaust-report state required for the next run
 to skip classes already completed, skipped, exhausted, or failed. Only the final
-chunk PR may use `Fixes: #<issue>` and move the issue to `Done`.
+chunk PR may use `Fixes: #<issue>` and move the issue to `Done`. If a non-final
+chunk PR has failed CI and no eligible failed GitHub Actions job remains to
+rerun, Forge releases the linked issue back to `Todo` so a replacement chunk can
+be generated.
 
 #### WF-dynamic-access-exhaust-report: Dynamic-access exhaust report
 
@@ -571,6 +581,8 @@ dynamic-access report and filters out classes recorded in the exhaust report.
 The exhaust report path is not passed as an explicit resume-state argument. It
 is derived from the coordinate and stored persistently with the library test
 suite so that each merged chunk carries the state needed by the next run.
+Failed-run continuation can resume without this file when the preserved
+continuation marker already records the processed dynamic-access classes.
 Global repository stats remain authoritative: `generateLibraryStats` reports
 dynamic-access coverage against the full current dynamic-access surface, while
 the chunk PR body may additionally report how many classes were processed in

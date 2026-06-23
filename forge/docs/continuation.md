@@ -78,7 +78,8 @@ classes re-appear in the regenerated report.
   "phases": {
     "setup":        { "status": "completed", "preflightDone": true, "setupDone": true },
     "fix":          { "status": "skipped",   "iteration": null },
-    "explore":      { "status": "completed", "exhaustedClasses": ["com.acme.Foo"] },
+    "explore":      { "status": "completed", "exhaustedClasses": ["com.acme.Foo"],
+                      "chunkClassCount": 15, "chunkProcessedClassCount": 4 },
     "finalization": { "status": "completed" },
     "publication":  { "status": "pending",   "isPushed": false,
                       "branch": "ai/<login>/add-lib-support-com.acme-widget-1.4.0" }
@@ -127,6 +128,9 @@ because the marker never enters a successful run's publication staging
 - `explore.exhaustedClasses` is the only EXPLORE state worth keeping: a fresh
   report cannot distinguish an uncovered-but-abandoned class from an
   uncovered-but-untried one.
+- `explore.chunkClassCount` and `explore.chunkProcessedClassCount` record active
+  chunk budget already spent by a failed run, so resume continues the same
+  chunk instead of starting a full new threshold-sized chunk.
 - `publication.isPushed` is stored rather than derived so a stale remote branch
   from an earlier aborted attempt cannot be mistaken for this run's push;
   `publication.branch` is stored so resume targets the original branch namespace
@@ -148,6 +152,12 @@ A resume run reads the marker from the preserved branch and:
    stale tree.
 5. Enters the phase named by `continueFrom` and applies that phase's resume
    action from §1, skipping every earlier completed or skipped phase.
+
+If a resumed run fails again while `continueFrom` still points to the same
+phase, Forge treats automatic continuation as exhausted for that issue. It
+removes the `resumable` label, releases the issue claim, and does not post a
+second human-intervention analysis because the first failed-run report remains
+the maintainer-facing diagnostic (§FS-human-intervention-policy).
 
 Publication resume hinges on the push: the branch is read from the marker
 and `isPushed` records whether the branch is already pushed, so a resumed run only
@@ -172,5 +182,7 @@ Continuation does not change the human-intervention contract
 branch and labels the issue `human-intervention`, so a maintainer always retains
 the existing safety signal and diagnostics. The marker rides that same preserved
 branch, giving a later automated run — or the maintainer — a precise place to
-continue. External or transient failures take no issue action and write no
-marker, exactly as today.
+continue. A repeated failure in the same resumed phase only removes
+`resumable`; it leaves the earlier `human-intervention` signal and comment in
+place instead of adding another report. External or transient failures take no
+issue action and write no marker, exactly as today.
