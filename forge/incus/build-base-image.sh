@@ -196,10 +196,14 @@ export DEBIAN_FRONTEND=noninteractive
 # IPv6 and fails with "Network is unreachable".
 printf 'Acquire::ForceIPv4 "true";\n' > /etc/apt/apt.conf.d/99force-ipv4
 
-# 1. Base tooling + Docker. Test resources run as Docker containers INSIDE this
-#    VM, so the VM needs a working Docker engine.
+# 1. Base tooling + Docker + native-image toolchain. Test resources run as
+#    Docker containers INSIDE this VM, so it needs a working Docker engine; and
+#    GraalVM native-image needs a C toolchain (gcc/make/libc) and zlib headers
+#    to compile, otherwise `nativeTestCompile` fails with "executable 'gcc' not
+#    found".
 apt-get update
-apt-get install -y --no-install-recommends ca-certificates curl gnupg git docker.io
+apt-get install -y --no-install-recommends \
+    ca-certificates curl gnupg git docker.io build-essential zlib1g-dev
 systemctl enable --now docker
 
 # 2. GitHub CLI. The runner authenticates with `gh auth login --with-token`
