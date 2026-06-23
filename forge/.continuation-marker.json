@@ -1,0 +1,68 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "io.confluent:kafka-avro-serializer:8.2.1",
+  "issueNumber": 7009,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Configure serializer/deserializer tests with a config map containing `schema.registry.url` set to a unique `mock://<scope>` value, using the same scope for serializer and deserializer. Exercise `KafkaAvroSerializer` and `KafkaAvroDeserializer` with an Avro `Schema` and `GenericData.Record`; do not require a real Kafka broker or Schema Registry. Clean up mock state with `io.confluent.kafka.schemaregistry.testutil.MockSchemaRegistry.dropScope(scope)` after the test when possible.",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7009 Support for io.confluent:kafka-avro-serializer:8.2.1; label=library-new-request; body_chars=109"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 75003,
+    "issue_label": "library-new-request",
+    "issue_number": 7009,
+    "library": "io.confluent:kafka-avro-serializer:8.2.1",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 3790,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The artifact is hosted in Confluent's Maven repository rather than Maven Central; local Gradle resolution remains authoritative and repository setup is outside the supported deterministic setup entry types.",
+      "Using a real `http://...` Schema Registry URL would make tests flaky or require Docker; the `mock://` URL is the low-risk path for generated coverage."
+    ],
+    "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/io.confluent:kafka-avro-serializer:8.2.1/library-preparation-preflight/pi-generation-2026-06-23T23-19-56-103344Z.log",
+    "status": "completed",
+    "summary": "Meaningful kafka-avro-serializer coverage needs a configured Schema Registry endpoint, but the resolved dependencies already include the Schema Registry client and Kafka client; use Confluent's in-process mock registry rather than Docker or extra Maven dependencies."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": false,
+      "setupDone": false,
+      "status": "pending"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-7009-library-new-request-io.confluent-kafka-avro-serializer-8.2.1-300e190b",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
