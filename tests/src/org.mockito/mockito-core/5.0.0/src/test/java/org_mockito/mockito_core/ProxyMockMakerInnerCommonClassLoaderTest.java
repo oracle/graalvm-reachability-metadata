@@ -77,6 +77,7 @@ public class ProxyMockMakerInnerCommonClassLoaderTest {
     }
 
     private static URL[] testClasspathUrls() {
+        NativeRuntimePropertiesSupport.restoreMissingRuntimeProperties();
         return Arrays.stream(System.getProperty("java.class.path", "").split(File.pathSeparator))
                 .filter(entry -> !entry.isEmpty())
                 .map(File::new)

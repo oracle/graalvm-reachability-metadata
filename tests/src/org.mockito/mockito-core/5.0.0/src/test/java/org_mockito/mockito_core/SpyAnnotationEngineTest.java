@@ -48,7 +48,7 @@ public class SpyAnnotationEngineTest {
     }
 
     static final class NoArgCollaborator {
-        NoArgCollaborator() {}
+        NoArgCollaborator() { }
     }
 
     static final class ConstructorOnlyCollaborator {
