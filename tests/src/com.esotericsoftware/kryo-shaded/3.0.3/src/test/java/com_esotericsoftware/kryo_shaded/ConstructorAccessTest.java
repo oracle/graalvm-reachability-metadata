@@ -35,6 +35,13 @@ public class ConstructorAccessTest {
     }
 
     @Test
+    void rejectsTypeWithPrivateNoArgumentConstructor() {
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> ConstructorAccess.get(TypeWithPrivateNoArgumentConstructor.class))
+                .withMessageContaining("no-arg constructor is private");
+    }
+
+    @Test
     void rejectsInnerTypeWithPrivateConstructor() {
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> ConstructorAccess.get(
@@ -67,6 +74,11 @@ public class ConstructorAccessTest {
 
     public static class TypeWithoutNoArgumentConstructor {
         public TypeWithoutNoArgumentConstructor(String value) {
+        }
+    }
+
+    public static class TypeWithPrivateNoArgumentConstructor {
+        private TypeWithPrivateNoArgumentConstructor() {
         }
     }
 
