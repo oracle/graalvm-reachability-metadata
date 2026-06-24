@@ -48,12 +48,13 @@ REPO_URL="${FORGE_INCUS_REPO_URL:-https://github.com/oracle/graalvm-reachability
 REPO_PATH="${FORGE_INCUS_REPO_PATH:-/root/graalvm-reachability-metadata}"
 AGENT_TIMEOUT="${FORGE_INCUS_LAUNCH_TIMEOUT:-300}"
 
-# The image bakes a shallow copy of the operator's LOCAL repository (this
+# The image bakes a full-history copy of the operator's LOCAL repository (this
 # checkout), so the VM runs the local forge code under development rather than
 # upstream master. HOST_REPO is mounted read-only into the builder and its
-# BASE_REF tip is cloned in; origin is then repointed at REPO_URL so generated
-# branches/PRs push to the real remote. Override HOST_REPO when building from a
-# linked worktree (whose objects live in the main checkout).
+# BASE_REF history is cloned in full (see step 4: a shallow clone cannot push a
+# branch rooted on the diverged local base); origin is then repointed at REPO_URL
+# so generated branches/PRs push to the real remote. Override HOST_REPO when
+# building from a linked worktree (whose objects live in the main checkout).
 HOST_REPO="${FORGE_INCUS_HOST_REPO:-$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel)}"
 HOST_REPO_BASE_REF="${FORGE_INCUS_BASE_REF:-master}"
 
@@ -240,15 +241,22 @@ curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 apt-get install -y --no-install-recommends nodejs
 npm install -g @openai/codex@0.133.0 @mariozechner/pi-coding-agent@0.72.1
 
-# 4. Reachability checkout: a shallow copy of the operator's LOCAL repository
+# 4. Reachability checkout: a full clone of the operator's LOCAL repository
 #    (mounted read-only at /forge-host-repo), so the VM runs the local forge code
-#    rather than upstream master. Only the base ref tip is cloned (--depth 1, via
-#    file:// so git honors the depth on a local path). origin is repointed at the
-#    real remote so generated branches/PRs push to the right place.
+#    rather than upstream master. The clone keeps full history (NOT --depth 1): the
+#    base ref is the operator's local master, which has diverged from upstream with
+#    unmerged commits, so a generated branch built on it can only push to origin
+#    when its complete ancestry is present. A shallow clone makes git emit a thin
+#    pack that assumes the remote already has the local base commit, so the push is
+#    rejected with "did not receive expected object / index-pack failed". Full
+#    history makes the VM push exactly what a local run would: the branch plus the
+#    local commits underneath it. Cloning via file:// keeps objects copied (no
+#    hardlinks into the mounted host repo); origin is repointed at the real remote
+#    so generated branches/PRs push to the right place.
 # The mounted host repo is owned by the host user (uid 1000), not the VM's root,
 # so git's ownership guard would refuse it; trust it for this throwaway builder.
 git config --global --add safe.directory '*'
-git clone --depth 1 --branch "$BASE_REF" "file:///forge-host-repo" "$REPO_PATH"
+git clone --branch "$BASE_REF" "file:///forge-host-repo" "$REPO_PATH"
 git -C "$REPO_PATH" remote set-url origin "$REPO_URL"
 
 # 5. Forge Python package + dependencies (jsonschema, PyYAML, ...), installed
