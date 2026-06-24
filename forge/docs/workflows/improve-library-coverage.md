@@ -41,8 +41,9 @@ The workflow must preserve the existing implementation shape:
    resolve the existing test directory for the requested version.
 2. **Baseline snapshot** — save the current stats to `.baseline-stats.json`
    so the git publication script can produce a before/after comparison.
-3. **Checkpoint** — commit the current test directory and metadata index so
-   failure handling can distinguish pre-existing state from generated changes.
+3. **Checkpoint** — commit the current test directory, metadata index, and
+   `.baseline-stats.json` so failure handling can distinguish pre-existing
+   state from generated changes and resume from preserved branches.
 4. **Context preparation** — populate artifact URLs, materialize configured
    source context, resolve the test-source layout, and initialize the agent
    with only the target test sources and `build.gradle` editable.
@@ -99,8 +100,9 @@ coverage starts:
 
 `git_scripts/make_pr_improve_coverage.py` reads the baseline snapshot,
 loads the current on-disk stats, and formats a before/after comparison in
-the PR body. The baseline file is removed before staging so it is never
-committed (§GIT-forge-publication).
+the PR body. The baseline file is removed before staging the final PR commit,
+so it is present in resumable checkpoints but absent from the published tree
+(§GIT-forge-publication).
 
 ### Pipeline label
 
