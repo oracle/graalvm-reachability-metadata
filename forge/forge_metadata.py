@@ -6987,7 +6987,9 @@ def process_claimed_issue_lifecycle(
     """Run workflow, finalize or revert, and always clean up the claimed issue workspace."""
     lifecycle_completed = False
     started_at = time.time()
+    stable_cwd = claimed_issue.base_reachability_metadata_path
     try:
+        os.chdir(stable_cwd)
         run_result = run_claimed_issue(
             claimed_issue,
             strategy_name,
@@ -7048,6 +7050,7 @@ def process_claimed_issue_lifecycle(
         raise
     finally:
         try:
+            os.chdir(stable_cwd)
             cleanup_issue_workspace(claimed_issue, canonical_metrics_repo_path)
         except Exception as exc:
             print(
