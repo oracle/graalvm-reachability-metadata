@@ -40,6 +40,15 @@ public class LoadClassTest {
     }
 
     @Test
+    void reportsValidatorNamespaceClassUnavailableFromThreadContextClassLoader() {
+        String missingResolverName = "org.hibernate.validator.ContextOnlyLocaleResolver";
+
+        assertThatThrownBy(() -> buildValidatorFactoryWithContextClassLoader(missingResolverName))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining(missingResolverName);
+    }
+
+    @Test
     void reportsValidatorNamespaceClassConfiguredButUnavailable() {
         HibernateValidatorConfiguration configuration = Validation.byProvider(HibernateValidator.class)
                 .configure()
@@ -96,6 +105,22 @@ public class LoadClassTest {
         });
     }
 
+    private static void buildValidatorFactoryWithContextClassLoader(String localeResolverName) {
+        Thread thread = Thread.currentThread();
+        ClassLoader originalContextClassLoader = thread.getContextClassLoader();
+        thread.setContextClassLoader(new DelegatingContextClassLoader(originalContextClassLoader));
+        try {
+            ValidatorFactory factory = Validation.byProvider(HibernateValidator.class)
+                    .configure()
+                    .addProperty(LOCALE_RESOLVER_CLASSNAME, localeResolverName)
+                    .buildValidatorFactory();
+            factory.close();
+        }
+        finally {
+            thread.setContextClassLoader(originalContextClassLoader);
+        }
+    }
+
     public static final class ConfiguredLocaleResolver implements LocaleResolver {
         public ConfiguredLocaleResolver() {
         }
@@ -103,6 +128,12 @@ public class LoadClassTest {
         @Override
         public Locale resolve(LocaleResolverContext context) {
             return Locale.US;
+        }
+    }
+
+    private static final class DelegatingContextClassLoader extends ClassLoader {
+        private DelegatingContextClassLoader(ClassLoader parent) {
+            super(parent);
         }
     }
 
