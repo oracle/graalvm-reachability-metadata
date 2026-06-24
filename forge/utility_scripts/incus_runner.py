@@ -411,7 +411,7 @@ def _mount_host_logs(vm_name: str, host_log_dir: str) -> None:
 def _seed_credentials(vm_name: str, github_token: str) -> None:
     """Inject GitHub credentials and author identity into the VM.
 
-    The forge code is already baked into the image (a shallow copy of the
+    The forge code is already baked into the image (a full-history copy of the
     operator's local repository), so there is no checkout to refresh here
     (§FS-forge-vm-isolated-execution).
     """
