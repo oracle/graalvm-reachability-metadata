@@ -4846,21 +4846,27 @@ def prepare_dynamic_access_chunking(
         for class_coverage in report.classes
         if class_coverage.uncovered_calls > 0
     ]
-    if not already_chunked and len(current_uncovered_classes) <= threshold:
-        log_stage(
-            "dynamic-access-chunking",
-            (
-                f"Chunking not selected for issue #{claimed_issue.issue['number']}: "
-                f"uncovered_classes={len(current_uncovered_classes)} <= threshold={threshold}."
-            ),
-        )
-        return None
-
     remaining_classes = _remaining_uncovered_dynamic_access_classes(
         report,
         exhaust_report,
         claimed_issue.continuation_marker,
     )
+    processed_class_count = _dynamic_access_processed_class_count(
+        exhaust_report,
+        claimed_issue.continuation_marker,
+    )
+    if not already_chunked and len(current_uncovered_classes) <= threshold:
+        log_stage(
+            "dynamic-access-chunking",
+            (
+                f"Chunking not selected for issue #{claimed_issue.issue['number']}: "
+                f"total_uncovered_classes={len(current_uncovered_classes)}, "
+                f"processed_classes={processed_class_count}, "
+                f"remaining_classes={len(remaining_classes)}, threshold={threshold}."
+            ),
+        )
+        return None
+
     current_chunk_class_count = min(threshold, len(remaining_classes))
     active_chunk_remaining_budget = _continuation_active_chunk_remaining_budget(
         claimed_issue.continuation_marker
@@ -4872,8 +4878,9 @@ def prepare_dynamic_access_chunking(
             "dynamic-access-chunking",
             (
                 f"No chunk selected for issue #{claimed_issue.issue['number']}: "
-                f"all {len(current_uncovered_classes)} uncovered class(es) are already recorded "
-                "as processed."
+                f"total_uncovered_classes={len(current_uncovered_classes)}, "
+                f"processed_classes={processed_class_count}, "
+                f"remaining_classes={len(remaining_classes)}."
             ),
         )
         return None
@@ -4896,10 +4903,7 @@ def prepare_dynamic_access_chunking(
             issue_number=claimed_issue.issue["number"],
             already_chunked=already_chunked,
             uncovered_count=len(current_uncovered_classes),
-            processed_count=_dynamic_access_processed_class_count(
-                exhaust_report,
-                claimed_issue.continuation_marker,
-            ),
+            processed_count=processed_class_count,
             remaining_count=len(remaining_classes),
             threshold=threshold,
             chunk_count=current_chunk_class_count,
