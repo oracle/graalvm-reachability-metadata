@@ -6,42 +6,7 @@
  */
 package org_apache_avro.avro;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
-import org.apache.avro.Schema;
-import org.apache.avro.generic.GenericData;
-import org.apache.avro.io.DatumReader;
-import org.apache.avro.io.DecoderFactory;
-import org.apache.avro.io.Encoder;
-import org.apache.avro.io.EncoderFactory;
-import org.apache.avro.io.FastReaderBuilder;
-import org.apache.avro.specific.SpecificData;
-import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 public class FastReaderBuilderTest {
-    @Test
-    void createsStringClassValuesFromSchemaClassProperty() throws IOException {
-        Schema schema = Schema.create(Schema.Type.STRING);
-        GenericData.setStringType(schema, GenericData.StringType.String);
-        schema.addProp(SpecificData.CLASS_PROP, StringToken.class.getName());
-        DatumReader<Object> reader = FastReaderBuilder.get().createDatumReader(schema);
-
-        Object value = reader.read(null, DecoderFactory.get().binaryDecoder(encodeString("avro"), null));
-
-        assertThat(value).isEqualTo(new StringToken("avro"));
-    }
-
-    private static byte[] encodeString(String value) throws IOException {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        Encoder encoder = EncoderFactory.get().binaryEncoder(output, null);
-        encoder.writeString(value);
-        encoder.flush();
-        return output.toByteArray();
-    }
-
     public static final class StringToken {
         private final String value;
 

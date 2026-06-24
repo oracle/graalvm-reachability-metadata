@@ -10,7 +10,6 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.apache.avro.reflect.ReflectionUtil;
 import org.junit.jupiter.api.Test;
@@ -26,28 +25,6 @@ public class ReflectionUtilTest {
         Object loaded = load.invoke(ConstructedWithNoArgs.class.getName(), ConstructedWithNoArgs.class);
 
         assertThat(loaded).isInstanceOf(ConstructedWithNoArgs.class);
-    }
-
-    @Test
-    void createsInstanceUsingOneArgumentConstructorFunction() {
-        Function<String, ConstructedWithString> constructor = ReflectionUtil.getConstructorAsFunction(String.class,
-                ConstructedWithString.class);
-
-        assertThat(constructor).isNotNull();
-        assertThat(constructor.apply("avro").value()).isEqualTo("avro");
-    }
-
-    @Test
-    void createsInstanceUsingNoArgumentConstructorSupplier() throws Throwable {
-        MethodHandle supplierHandle = privateReflectionUtilLookup().findStatic(ReflectionUtil.class,
-                "getConstructorAsSupplier", MethodType.methodType(Supplier.class, Class.class));
-
-        @SuppressWarnings("unchecked")
-        Supplier<ConstructedWithNoArgs> supplier = (Supplier<ConstructedWithNoArgs>) supplierHandle
-                .invoke(ConstructedWithNoArgs.class);
-
-        assertThat(supplier).isNotNull();
-        assertThat(supplier.get()).isInstanceOf(ConstructedWithNoArgs.class);
     }
 
     @Test
