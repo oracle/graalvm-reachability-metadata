@@ -640,7 +640,11 @@ support iff **all** requirements for its selected engine hold at exit:
    `RUN_STATUS_CHUNK_READY` only after local CI-equivalent verification passed
    (§FS-local-ci-equivalent-verification).
 8. The scaffold-placeholder quality gate
-   (`cleanup_scaffold_placeholder_tests`) leaves no remaining placeholders.
+   (`cleanup_scaffold_placeholder_tests`) deletes pure scaffold placeholder test
+   files and removes scaffold-shaped placeholder test blocks from mixed generated
+   test files regardless of whether they were added by the current resume
+   checkpoint, then leaves no remaining scaffold-shaped placeholders in
+   generated test sources.
 9. The generated-test validity gate (`collect_generated_test_validity_issues`)
    found no generated test that codifies a known version-specific broken-behavior
    path (for example asserting an exception the issue describes as a defect);
