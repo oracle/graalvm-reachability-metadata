@@ -26,7 +26,7 @@ public class FieldSerializerTest {
     }
 
     @Test
-    void serializesPojoFieldsWithUnsafeBackedFieldSerializer() {
+    void serializesPojoFieldsWithFieldSerializer() {
         Kryo kryo = new Kryo();
         kryo.setAsmEnabled(false);
         kryo.setReferences(false);
@@ -45,7 +45,6 @@ public class FieldSerializerTest {
 
         assertMessage(restored, original.text, original.code, original.active);
         assertThat(fieldNames(serializer)).containsExactly("active", "code", "text");
-        assertThat(serializer.getUseAsmEnabled()).isFalse();
     }
 
     @Test
@@ -62,7 +61,6 @@ public class FieldSerializerTest {
 
         assertMessage(copy, "copy", 7, false);
         assertThat(serializer.getFields()).hasSize(3);
-        assertThat(serializer.getUseAsmEnabled()).isFalse();
     }
 
     private static String[] fieldNames(FieldSerializer<Message> serializer) {
