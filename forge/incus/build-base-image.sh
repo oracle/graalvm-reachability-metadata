@@ -9,7 +9,7 @@
 #
 # This is the reproducible definition of the base image's contents. It runs on
 # the HOST and drives Incus to:
-#   1. launch a throwaway builder VM from a stock Debian image,
+#   1. launch a throwaway builder VM from a stock Ubuntu image,
 #   2. install Docker, copy the LOCAL GraalVM into the VM, bake the per-user VM
 #      environment (incus/forge.env) into /etc/environment, clone the
 #      reachability repo, and warm the Gradle caches,
@@ -43,7 +43,13 @@ FORGE_ENV_FILE="${FORGE_INCUS_ENV_FILE:-$SCRIPT_DIR/forge.env}"
 IMAGE_ALIAS="${FORGE_INCUS_IMAGE:-forge-base}"
 PROFILE="${FORGE_INCUS_PROFILE:-forge}"
 BUILDER_VM="${FORGE_INCUS_BUILDER_VM:-forge-build}"
-SOURCE_IMAGE="${FORGE_INCUS_SOURCE_IMAGE:-images:debian/12}"
+# Ubuntu 24.04 (glibc 2.39), NOT Debian 12 (glibc 2.36): a from-source GRAALVM_HOME
+# is compiled on the operator's host and its static libsvm_container.a references
+# C23 glibc symbols (e.g. __isoc23_sscanf, __isoc23_strtol) that only exist in
+# glibc >= 2.38. Linking nativeTestCompile against an older base glibc then fails
+# with "undefined reference to __isoc23_*". The base glibc must be >= the glibc the
+# GraalVM was built against; 24.04 matches a current Ubuntu host build.
+SOURCE_IMAGE="${FORGE_INCUS_SOURCE_IMAGE:-images:ubuntu/24.04}"
 REPO_URL="${FORGE_INCUS_REPO_URL:-https://github.com/oracle/graalvm-reachability-metadata.git}"
 REPO_PATH="${FORGE_INCUS_REPO_PATH:-/root/graalvm-reachability-metadata}"
 AGENT_TIMEOUT="${FORGE_INCUS_LAUNCH_TIMEOUT:-300}"
@@ -223,7 +229,7 @@ systemctl enable --now docker
 
 # 2. GitHub CLI. The runner authenticates with `gh auth login --with-token`
 #    inside the VM, and generation uses `gh` for issue/PR/project operations.
-#    `gh` is not in Debian's repos, so add the official GitHub CLI apt source.
+#    add the official GitHub CLI apt source (distro-agnostic) for a current `gh`.
 mkdir -p -m 755 /etc/apt/keyrings
 curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
     -o /etc/apt/keyrings/githubcli-archive-keyring.gpg
