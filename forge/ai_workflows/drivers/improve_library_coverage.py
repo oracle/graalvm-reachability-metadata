@@ -775,12 +775,6 @@ def main(argv=None) -> int:
         new_branch = build_ai_branch_name(f"improve-coverage-{group}-{artifact}-{version}")
         delete_remote_branch_if_exists(new_branch)
         subprocess.run(["git", "switch", "-C", new_branch], check=True)
-        save_phase_update(
-            continuation_marker_path,
-            lambda marker: marker.mark_setup_done(
-                skip_fix_phase=strategy_skips_initial_fix_phase(strategy),
-            ),
-        )
     else:
         log_stage("continuation", f"Resuming {library} from preserved branch at phase {resume_from}")
 
@@ -813,15 +807,6 @@ def main(argv=None) -> int:
             ),
         )
     index_json = os.path.join(reachability_repo_path, "metadata", group, artifact, "index.json")
-    if not resume_existing_tree:
-        subprocess.run(["git", "add", tests_dir, index_json], check=False)
-        subprocess.run(
-            ["git", "commit", "--allow-empty", "-m", f"Checkpoint for coverage improvement of {library}"],
-            capture_output=True, text=True, check=False,
-        )
-    checkpoint_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
-    log_stage("setup", f"Checkpoint commit: {checkpoint_commit}")
-
     baseline_stats_path = os.path.join(tests_dir, BASELINE_STATS_FILENAME)
     if resume_existing_tree:
         if not os.path.isfile(baseline_stats_path):
@@ -845,6 +830,21 @@ def main(argv=None) -> int:
         with open(baseline_stats_path, "w", encoding="utf-8") as f:
             json.dump(baseline_snapshot, f, indent=2)
         log_stage("setup", f"Saved baseline snapshot to {BASELINE_STATS_FILENAME}")
+    if not resume_existing_tree:
+        subprocess.run(["git", "add", tests_dir, index_json], check=False)
+        subprocess.run(
+            ["git", "commit", "--allow-empty", "-m", f"Checkpoint for coverage improvement of {library}"],
+            capture_output=True, text=True, check=False,
+        )
+    checkpoint_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+    log_stage("setup", f"Checkpoint commit: {checkpoint_commit}")
+    if not resume_existing_tree:
+        save_phase_update(
+            continuation_marker_path,
+            lambda marker: marker.mark_setup_done(
+                skip_fix_phase=strategy_skips_initial_fix_phase(strategy),
+            ),
+        )
 
     source_context_types = normalize_source_context_types(strategy.get("parameters", {}).get("source-context-types"))
     if not resume_existing_tree or not source_context_urls_available(
