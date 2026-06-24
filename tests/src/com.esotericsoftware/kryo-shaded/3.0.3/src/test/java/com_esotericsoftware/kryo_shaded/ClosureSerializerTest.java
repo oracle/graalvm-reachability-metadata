@@ -96,7 +96,7 @@ public class ClosureSerializerTest {
                     "(Ljava/lang/String;)Ljava/lang/String;", MethodHandleInfo.REF_invokeStatic,
                     internalName(ClosureSerializerTest.class), "rebuildTransformer",
                     "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;",
-                    "(Ljava/lang/String;)Ljava/lang/String;", new Object[] { prefix, suffix });
+                    "(Ljava/lang/String;)Ljava/lang/String;", new Object[] {prefix, suffix });
         }
     }
 
