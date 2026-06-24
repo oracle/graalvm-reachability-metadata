@@ -38,6 +38,7 @@ class AgentConfigFilesTests(unittest.TestCase):
                 ("/h/cx/config.toml", f"{VM_CODEX_DIR}/config.toml"),
                 ("/h/pi/agent/models.json", f"{VM_PI_AGENT_DIR}/models.json"),
                 ("/h/pi/agent/settings.json", f"{VM_PI_AGENT_DIR}/settings.json"),
+                ("/h/pi/agent/.oca-key", f"{VM_PI_AGENT_DIR}/.oca-key"),
             ],
         )
 

@@ -135,6 +135,11 @@ def agent_config_files() -> list[tuple[str, str]]:
 
     Only the small auth/provider files are seeded — never the gigabytes of
     session and sqlite state under the agent dirs (§FS-forge-vm-isolated-execution).
+
+    `.oca-key` holds the OCA gateway JWT that pi's `models.json` resolves at
+    runtime via `"apiKey": "!cat $HOME/.pi/agent/.oca-key"`. Without it the VM's
+    pi reads an empty key and every model call returns nothing (0 tokens), so it
+    must be seeded to the exact path `models.json` shells out to.
     """
     codex = _codex_host_dir()
     pi_agent = os.path.join(_pi_host_dir(), "agent")
@@ -143,6 +148,7 @@ def agent_config_files() -> list[tuple[str, str]]:
         (os.path.join(codex, "config.toml"), f"{VM_CODEX_DIR}/config.toml"),
         (os.path.join(pi_agent, "models.json"), f"{VM_PI_AGENT_DIR}/models.json"),
         (os.path.join(pi_agent, "settings.json"), f"{VM_PI_AGENT_DIR}/settings.json"),
+        (os.path.join(pi_agent, ".oca-key"), f"{VM_PI_AGENT_DIR}/.oca-key"),
     ]
 
 
