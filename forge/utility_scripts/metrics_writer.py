@@ -929,6 +929,58 @@ def append_matching_run_metrics(source_path, destination_path, library, previous
 PENDING_METRICS_FILENAME = ".pending_metrics.json"
 
 
+def _numeric_metric(value) -> int | float | None:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)):
+        return value
+    return None
+
+
+def _same_metrics_series(previous_run_metrics: dict, run_metrics: dict) -> bool:
+    """Return True when two metrics payloads describe the same logical library run."""
+    if previous_run_metrics.get("library") != run_metrics.get("library"):
+        return False
+    return previous_run_metrics.get("timestamp") != run_metrics.get("timestamp")
+
+
+def _merge_usage_metric(previous_metrics: dict, current_metrics: dict, key: str, integer: bool) -> None:
+    previous = _numeric_metric(previous_metrics.get(key))
+    if previous is None:
+        return
+    current = _numeric_metric(current_metrics.get(key)) or 0
+    if integer:
+        current_metrics[key] = int(current) + int(previous)
+    else:
+        current_metrics[key] = round(float(current) + float(previous), 4)
+
+
+def merge_pending_usage_metrics(metrics_repo_root: str | None, run_metrics: dict) -> dict:
+    """Add prior pending token/cost counters to this run before metrics are persisted."""
+    if not metrics_repo_root:
+        return run_metrics
+    pending_path = os.path.join(metrics_repo_root, PENDING_METRICS_FILENAME)
+    if not os.path.isfile(pending_path):
+        return run_metrics
+    try:
+        previous_run_metrics = read_pending_metrics(metrics_repo_root)
+    except (OSError, json.JSONDecodeError, TypeError):
+        return run_metrics
+    if not isinstance(previous_run_metrics, dict) or not _same_metrics_series(previous_run_metrics, run_metrics):
+        return run_metrics
+
+    previous_metrics = previous_run_metrics.get("metrics")
+    current_metrics = run_metrics.get("metrics")
+    if not isinstance(previous_metrics, dict) or not isinstance(current_metrics, dict):
+        return run_metrics
+
+    for key in ["input_tokens_used", "cached_input_tokens_used", "output_tokens_used", "iterations"]:
+        _merge_usage_metric(previous_metrics, current_metrics, key, integer=True)
+    for key in ["input_cost_usd", "cached_input_cost_usd", "output_cost_usd", "cost_usd"]:
+        _merge_usage_metric(previous_metrics, current_metrics, key, integer=False)
+    return run_metrics
+
+
 def write_pending_metrics(metrics_repo_root: str, run_metrics: dict) -> None:
     """Write a run metrics dict to a pending file in the metrics worktree root."""
     path = os.path.join(metrics_repo_root, PENDING_METRICS_FILENAME)
@@ -968,6 +1020,7 @@ def write_workflow_run_metrics(
     (§WF-forge-workflow-drivers.3); drivers contribute only their task type and
     the per-workflow metrics payload.
     """
+    run_metrics = merge_pending_usage_metrics(metrics_repo_root, run_metrics)
     metrics_json = resolve_workflow_metrics_json(run_metrics, metrics_repo_dir, metrics_repo_root, task_type)
     in_repo_root = in_metadata_repo_metrics_root(metrics_repo_root)
     if in_repo_root:
